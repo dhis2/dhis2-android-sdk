@@ -16,8 +16,14 @@ jobs:
           distribution: temurin
           cache: 'gradle'
 
-      - name: Run tests
+      - name: Run unit test
+        run: ./gradlew testDebugUnitTest --stacktrace --no-daemon
+
+      - name: Run android test
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           script: ./gradlew :core:connectedDebugAndroidTest
+
+      - name: Jacoco report
+        run: ./gradlew jacocoReport --stacktrace --no-daemon

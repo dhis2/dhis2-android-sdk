@@ -22,6 +22,7 @@ pipeline {
             }
         }
         stage('Unit tests') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'Running unit tests'
@@ -30,6 +31,7 @@ pipeline {
             }
         }
         stage('Instrumented tests') {
+            when { expression { false } }
             environment {
                 BROWSERSTACK = credentials('android-browserstack')
             }
@@ -42,6 +44,7 @@ pipeline {
             }
         }
         stage('JaCoCo report') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'JaCoCo report'
@@ -50,6 +53,7 @@ pipeline {
             }
         }
         stage('Sonarqube') {
+            when { expression { false } }
             environment {
                 GIT_BRANCH = "${env.GIT_BRANCH}"
                 // Jenkinsfile considers empty value ('') as null

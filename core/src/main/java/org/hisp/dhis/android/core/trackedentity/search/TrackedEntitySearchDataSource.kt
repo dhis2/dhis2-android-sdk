@@ -25,32 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.search
 
-package org.hisp.dhis.android.core.trackedentity;
+import androidx.paging.ItemKeyedDataSource
+import org.hisp.dhis.android.core.arch.helpers.Result
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository;
+internal class TrackedEntitySearchDataSource constructor(
+    private val dataFetcher: TrackedEntitySearchDataFetcher,
+) : ItemKeyedDataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
 
-public interface TrackedEntityModule {
+    override fun loadInitial(
+        params: LoadInitialParams<TrackedEntitySearchItem>,
+        callback: LoadInitialCallback<TrackedEntitySearchItem>,
+    ) {
+        dataFetcher.refresh()
+        callback.onResult(loadPages(params.requestedLoadSize))
+    }
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    override fun loadAfter(
+        params: LoadParams<TrackedEntitySearchItem>,
+        callback: LoadCallback<TrackedEntitySearchItem>,
+    ) {
+        callback.onResult(loadPages(params.requestedLoadSize))
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-    TrackedEntitySearchCollectionRepository trackedEntitySearch();
+    override fun loadBefore(
+        params: LoadParams<TrackedEntitySearchItem>,
+        callback: LoadCallback<TrackedEntitySearchItem>,
+    ) {
+        // do nothing
+    }
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
+    override fun getKey(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
+        return item
+    }
 
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
-
-    OwnershipManager ownershipManager();
+    private fun loadPages(requestedLoadSize: Int): List<TrackedEntitySearchItem> {
+        return dataFetcher.loadPages(requestedLoadSize).mapNotNull {
+            when (it) {
+                is Result.Success -> it.value
+                is Result.Failure -> null
+            }
+        }
+    }
 }

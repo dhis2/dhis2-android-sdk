@@ -26,31 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository;
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import java.util.Date
 
-public interface TrackedEntityModule {
-
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-    TrackedEntitySearchCollectionRepository trackedEntitySearch();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
-
-    OwnershipManager ownershipManager();
+data class TrackedEntitySearchItem(
+    val uid: String,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val createdAtClient: Date?,
+    val lastUpdatedAtClient: Date?,
+    val organisationUnit: String?,
+    val trackedEntityType: String?,
+    val geometry: Geometry?,
+    val trackedEntityAttributeValues: List<TrackedEntityAttributeValue>?,
+    val syncState: State?,
+    val aggregatedSyncState: State?,
+    val deleted: Boolean,
+    val header: String? = null,
+) : ObjectWithUidInterface {
+    override fun uid(): String = uid
 }

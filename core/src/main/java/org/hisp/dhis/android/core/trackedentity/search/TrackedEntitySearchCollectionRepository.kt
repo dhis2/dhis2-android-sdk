@@ -25,6 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.lifecycle.LiveData
@@ -41,27 +42,24 @@ import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import java.util.Date
 import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions", "LongParameterList")
-class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructor(
+class TrackedEntitySearchCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstance>>,
@@ -73,8 +71,9 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     private val onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
-) : ReadOnlyWithUidCollectionRepository<TrackedEntityInstance>,
-    TrackedEntitySearchOperators<TrackedEntityInstanceQueryCollectionRepository>(
+    private val trackerHeaderEngine: TrackerHeaderEngine,
+) : ReadOnlyWithUidCollectionRepository<TrackedEntitySearchItem>,
+    TrackedEntitySearchOperators<TrackedEntitySearchCollectionRepository>(
         scope,
         scopeHelper,
         versionManager,
@@ -84,59 +83,29 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
 
     override val connectorFactory:
         ScopedFilterConnectorFactory<
-            TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntitySearchCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope,
             > =
         ScopedFilterConnectorFactory { s: TrackedEntityInstanceQueryRepositoryScope ->
-            TrackedEntityInstanceQueryCollectionRepository(
+            TrackedEntitySearchCollectionRepository(
                 store, trackerParentCallFactory, childrenAppenders,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
-                onlineHelper, localQueryHelper,
+                onlineHelper, localQueryHelper, trackerHeaderEngine,
             )
         }
 
-    @Deprecated("use {@link #byProgramDate()} instead.")
-    fun byProgramStartDate(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> {
-        return connectorFactory.eqConnector { byProgramDate().afterOrEqual(it!!).scope }
-    }
-
-    @Deprecated("use {@link #byProgramDate()} instead.")
-    fun byProgramEndDate(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> {
-        return connectorFactory.eqConnector { byProgramDate().beforeOrEqual(it!!).scope }
-    }
-
-    @Deprecated("use {@link #byEventDate()} instead.")
-    fun byEventStartDate(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> {
-        return connectorFactory.eqConnector {
-            byEventDate().afterOrEqual(it!!).scope
-        }
-    }
-
-    @Deprecated("use {@link #byEventDate()} instead.")
-    fun byEventEndDate(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> {
-        return connectorFactory.eqConnector {
-            byEventDate().beforeOrEqual(it!!).scope
-        }
-    }
-
-    @Deprecated("use {@link #byEnrollmentStatus()} instead.")
-    fun byProgramStatus(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EnrollmentStatus> {
-        return connectorFactory.eqConnector { status: EnrollmentStatus? ->
-            scope.toBuilder().enrollmentStatus(listOf(status)).build()
-        }
-    }
-
-    override fun getPaged(pageSize: Int): LiveData<PagedList<TrackedEntityInstance>> {
-        val factory: DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance> =
-            object : DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance>() {
-                override fun create(): DataSource<TrackedEntityInstance, TrackedEntityInstance> {
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
+    override fun getPaged(pageSize: Int): LiveData<PagedList<TrackedEntitySearchItem>> {
+        val factory: DataSource.Factory<TrackedEntitySearchItem, TrackedEntitySearchItem> =
+            object : DataSource.Factory<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
+                override fun create(): DataSource<TrackedEntitySearchItem, TrackedEntitySearchItem> {
                     return dataSource
                 }
             }
         return LivePagedListBuilder(factory, pageSize).build()
     }
 
-    override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntityInstance>> {
+    override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntitySearchItem>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
@@ -144,11 +113,11 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         }.flow
     }
 
-    val dataSource: DataSource<TrackedEntityInstance, TrackedEntityInstance>
-        get() = TrackedEntityInstanceQueryDataSource(getDataFetcher())
+    val dataSource: DataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
+        get() = TrackedEntitySearchDataSource(getDataFetcher())
 
-    val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
-        get() = TrackedEntityInstanceQueryPagingSource(
+    val pagingSource: PagingSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
+        get() = TrackedEntitySearchPagingSource(
             store,
             trackerParentCallFactory,
             scope,
@@ -156,14 +125,11 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
             onlineCache,
             onlineHelper,
             localQueryHelper,
+            trackerHeaderEngine,
         )
 
-    @Deprecated("use getPagingdata")
-    val resultDataSource: DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
-        get() = TrackedEntityInstanceQueryDataSourceResult(getDataFetcher())
-
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-    override fun blockingGet(): List<TrackedEntityInstance> {
+    override fun blockingGet(): List<TrackedEntitySearchItem> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -180,7 +146,7 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         }
     }
 
-    override fun get(): Single<List<TrackedEntityInstance>> {
+    override fun get(): Single<List<TrackedEntitySearchItem>> {
         return Single.fromCallable { blockingGet() }
     }
 
@@ -200,18 +166,18 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         return blockingCount() == 0
     }
 
-    override fun one(): ReadOnlyObjectRepository<TrackedEntityInstance> {
+    override fun one(): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
         return objectRepository(
-            object : Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?> {
-                override fun transform(o: List<TrackedEntityInstance>): TrackedEntityInstance? {
+            object : Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?> {
+                override fun transform(o: List<TrackedEntitySearchItem>): TrackedEntitySearchItem? {
                     return o.firstOrNull()
                 }
             },
         )
     }
 
-    private fun getDataFetcher(): TrackedEntityInstanceQueryDataFetcher {
-        return TrackedEntityInstanceQueryDataFetcher(
+    private fun getDataFetcher(): TrackedEntitySearchDataFetcher {
+        return TrackedEntitySearchDataFetcher(
             store,
             trackerParentCallFactory,
             scope,
@@ -219,13 +185,14 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
             onlineCache,
             onlineHelper,
             localQueryHelper,
+            trackerHeaderEngine,
         )
     }
 
-    override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntityInstance> {
+    override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
         return objectRepository(
-            object : Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?> {
-                override fun transform(o: List<TrackedEntityInstance>): TrackedEntityInstance? {
+            object : Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?> {
+                override fun transform(o: List<TrackedEntitySearchItem>): TrackedEntitySearchItem? {
                     return o.find { uid == it.uid() }
                 }
             },
@@ -240,20 +207,20 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            getUids(blockingGet()).toList()
+            UidsHelper.getUids(blockingGet()).toList()
         }
     }
 
     private fun objectRepository(
-        transformer: Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?>,
-    ): ReadOnlyObjectRepository<TrackedEntityInstance> {
-        return object : ReadOnlyObjectRepository<TrackedEntityInstance> {
-            override fun get(): Single<TrackedEntityInstance?> {
+        transformer: Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?>,
+    ): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
+        return object : ReadOnlyObjectRepository<TrackedEntitySearchItem> {
+            override fun get(): Single<TrackedEntitySearchItem?> {
                 return Single.fromCallable { this.blockingGet() }
             }
 
-            override fun blockingGet(): TrackedEntityInstance? {
-                val list = this@TrackedEntityInstanceQueryCollectionRepository.blockingGet()
+            override fun blockingGet(): TrackedEntitySearchItem? {
+                val list = this@TrackedEntitySearchCollectionRepository.blockingGet()
                 return transformer.transform(list)
             }
 

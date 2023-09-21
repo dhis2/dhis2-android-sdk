@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
-internal class TrackeEntityInstanceQueryPagingSource(
+internal class TrackedEntityInstanceQueryPagingSource(
     store: TrackedEntityInstanceStore,
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,

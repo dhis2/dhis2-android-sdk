@@ -26,31 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-public interface TrackedEntityModule {
+object TrackedEntitySearchItemHelper {
+    fun from(i: TrackedEntityInstance): TrackedEntitySearchItem {
+        return TrackedEntitySearchItem(
+            uid = i.uid(),
+            created = i.created(),
+            lastUpdated = i.lastUpdated(),
+            createdAtClient = i.createdAtClient(),
+            lastUpdatedAtClient = i.lastUpdatedAtClient(),
+            organisationUnit = i.organisationUnit(),
+            trackedEntityType = i.trackedEntityType(),
+            geometry = i.geometry(),
+            trackedEntityAttributeValues = i.trackedEntityAttributeValues(),
+            syncState = i.syncState(),
+            aggregatedSyncState = i.aggregatedSyncState(),
+            deleted = i.deleted() ?: false,
+        )
+    }
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-    TrackedEntitySearchCollectionRepository trackedEntitySearch();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
-
-    OwnershipManager ownershipManager();
+    fun toTrackedEntityInstance(i: TrackedEntitySearchItem): TrackedEntityInstance {
+        return TrackedEntityInstance.builder()
+            .uid(i.uid)
+            .created(i.created)
+            .lastUpdated(i.lastUpdated)
+            .createdAtClient(i.createdAtClient)
+            .lastUpdatedAtClient(i.lastUpdatedAtClient)
+            .organisationUnit(i.organisationUnit)
+            .trackedEntityType(i.trackedEntityType)
+            .geometry(i.geometry)
+            .trackedEntityAttributeValues(i.trackedEntityAttributeValues)
+            .syncState(i.syncState)
+            .aggregatedSyncState(i.aggregatedSyncState)
+            .build()
+    }
 }

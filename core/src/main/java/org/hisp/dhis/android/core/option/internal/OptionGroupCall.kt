@@ -25,43 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.program.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramRule;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.option.OptionGroup
+import java.lang.Boolean
+import javax.inject.Inject
 
 @Reusable
-final class ProgramRuleCall implements UidsCall<ProgramRule> {
-
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final ProgramRuleService service;
-    private final ProgramRuleHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ProgramRuleCall(ProgramRuleService service, ProgramRuleHandler handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+class OptionGroupCall @Inject internal constructor(
+    private val service: OptionGroupService,
+    private val handler: OptionGroupHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<OptionGroup> {
+    override fun download(optionSetUids: Set<String>): Single<List<OptionGroup>> {
+        return apiDownloader.downloadPartitioned(
+            optionSetUids,
+            MAX_UID_LIST_SIZE,
+            handler,
+        ) { partitionUids: Set<String> ->
+            val optionSetUidsFilterStr =
+                "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
+            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE)
+        }
     }
 
-    @Override
-    public Single<List<ProgramRule>> download(Set<String> programUids) {
-        return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String programUidsFilterStr = "program." + ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getProgramRules(ProgramRuleFields.allFields, programUidsFilterStr, Boolean.FALSE);
-        });
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 130
     }
 }

@@ -25,11 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.validation.internal;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.validation.ValidationRule
+import java.lang.Boolean
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+@Reusable
+class ValidationRuleCall @Inject internal constructor(
+    private val service: ValidationRuleService,
+    private val handler: ValidationRuleHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<ValidationRule> {
+    override fun download(validationRuleUids: Set<String>): Single<List<ValidationRule>> {
+        return apiDownloader.downloadPartitioned(
+            validationRuleUids,
+            MAX_UID_LIST_SIZE,
+            handler,
+        ) { partitionUids: Set<String> ->
+            val uidsFilterStr = ObjectWithUid.uid.`in`(partitionUids).generateString()
+            service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE)
+        }
+    }
 
-public interface ValidationRuleUidsCall extends UidsCall<ObjectWithUid> {
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 64
+    }
 }

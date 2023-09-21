@@ -25,45 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.validation.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.validation.ValidationRule;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.resource.internal.Resource
+import java.lang.Boolean
+import javax.inject.Inject
 
 @Reusable
-public final class ValidationRuleCall implements UidsCall<ValidationRule> {
-
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final ValidationRuleService service;
-    private final ValidationRuleHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ValidationRuleCall(ValidationRuleService service,
-                       ValidationRuleHandler handler,
-                       APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<ValidationRule>> download(Set<String> validationRuleUids) {
-        return apiDownloader.downloadPartitioned(validationRuleUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String uidsFilterStr = ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE);
-        });
+class RelationshipTypeCall @Inject internal constructor(
+    private val service: RelationshipTypeService,
+    private val handler: RelationshipTypeHandler,
+    private val apiDownloader: APIDownloader,
+) : ListCall<RelationshipType> {
+    private val resourceType = Resource.Type.RELATIONSHIP_TYPE
+    override fun download(): Single<List<RelationshipType>> {
+        return apiDownloader.downloadWithLastUpdated(
+            handler,
+            resourceType,
+        ) { lastUpdated: String? ->
+            val accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+            service.getRelationshipTypes(
+                RelationshipTypeFields.allFields,
+                RelationshipTypeFields.lastUpdated.gt(lastUpdated),
+                accessDataFilter,
+                Boolean.FALSE,
+            )
+        }
     }
 }

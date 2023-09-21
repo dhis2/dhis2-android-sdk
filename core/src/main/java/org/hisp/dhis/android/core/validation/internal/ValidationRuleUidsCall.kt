@@ -25,39 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
-
-@Reusable
-final class OrganisationUnitLevelEndpointCall implements ListCall<OrganisationUnitLevel> {
-
-    private final OrganisationUnitLevelService service;
-    private final OrganisationUnitLevelHandler handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    OrganisationUnitLevelEndpointCall(OrganisationUnitLevelService service,
-                                      OrganisationUnitLevelHandler handler,
-                                      APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<OrganisationUnitLevel>> download() {
-        return apiDownloader.download(handler,
-                service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, Boolean.FALSE));
-    }
-}
+internal interface ValidationRuleUidsCall : UidsCall<ObjectWithUid>

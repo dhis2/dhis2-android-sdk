@@ -25,48 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.internal.DataAccessFields;
-import org.hisp.dhis.android.core.program.Program;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.program.ProgramRule
+import java.lang.Boolean
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramCall implements UidsCall<Program> {
-
-    private static final int MAX_UID_LIST_SIZE = 50;
-
-    private final ProgramService service;
-    private final Handler<Program> handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ProgramCall(ProgramService service,
-                ProgramHandler handler,
-                APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+internal class ProgramRuleCall @Inject constructor(
+    private val service: ProgramRuleService,
+    private val handler: ProgramRuleHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCall<ProgramRule> {
+    override fun download(programUids: Set<String>): Single<List<ProgramRule>> {
+        return apiDownloader.downloadPartitioned(
+            programUids,
+            MAX_UID_LIST_SIZE,
+            handler,
+        ) { partitionUids: Set<String> ->
+            val programUidsFilterStr =
+                "program." + ObjectWithUid.uid.`in`(partitionUids).generateString()
+            service.getProgramRules(
+                ProgramRuleFields.allFields,
+                programUidsFilterStr,
+                Boolean.FALSE,
+            )
+        }
     }
 
-    @Override
-    public Single<List<Program>> download(Set<String> uids) {
-        String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getPrograms(ProgramFields.allFields,
-                        ProgramFields.uid.in(partitionUids),
-                        accessDataReadFilter,
-                        Boolean.FALSE));
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 64
     }
 }

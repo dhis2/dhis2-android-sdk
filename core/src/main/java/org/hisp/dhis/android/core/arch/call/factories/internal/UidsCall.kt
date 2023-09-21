@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.call.factories.internal
 
 import io.reactivex.Single
 
-interface UidsCall<P> {
+internal fun interface UidsCall<P> {
     fun download(uids: Set<String>): Single<List<P>>
 }

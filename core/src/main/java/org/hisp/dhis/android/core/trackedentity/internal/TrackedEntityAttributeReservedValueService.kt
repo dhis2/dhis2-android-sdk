@@ -25,14 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+fun interface TrackedEntityAttributeReservedValueService {
+    @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")
+    suspend fun generateAndReserveWithOrgUnitCode(
+        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String,
+        @Query("numberToReserve") numberToReserve: Int,
+        @Query("ORG_UNIT_CODE") orgUnitCode: String?,
+    ): List<TrackedEntityAttributeReservedValue>
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public interface QueryCallFactory<P, Q extends BaseQuery> {
-    Callable<List<P>> create(Q query);
+    companion object {
+        const val TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid"
+    }
 }

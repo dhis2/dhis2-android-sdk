@@ -25,34 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public abstract class QueryCallFactoryImpl<P, Q extends BaseQuery> implements QueryCallFactory<P, Q> {
-
-    protected final GenericCallData data;
-    protected final APICallExecutor apiCallExecutor;
-
-    protected QueryCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
-        this.data = data;
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    @Override
-    public final Callable<List<P>> create(Q query) {
-        return new EndpointCall<>(fetcher(query), processor(query));
-    }
-
-    protected abstract CallFetcher<P> fetcher(Q query);
-    protected abstract CallProcessor<P> processor(Q query);
+internal fun interface QueryCallFactory<P, Q : BaseQueryKt> {
+    suspend fun create(query: Q): List<P>
 }

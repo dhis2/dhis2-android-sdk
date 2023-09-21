@@ -25,42 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.arch.call.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
 
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import androidx.annotation.VisibleForTesting;
-
-public final class EndpointCall<P> implements Callable<List<P>> {
-
-    private final CallFetcher<P> fetcher;
-    private final CallProcessor<P> processor;
-
-    public EndpointCall(CallFetcher<P> fetcher,
-                        CallProcessor<P> processor) {
-        this.fetcher = fetcher;
-        this.processor = processor;
+internal abstract class QueryCoroutineCallFactoryImpl<P, Q : BaseQueryKt> protected constructor(
+    protected val data: GenericCallData,
+    protected val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : QueryCallFactory<P, Q> {
+    override suspend fun create(query: Q): List<P> {
+        val objects: List<P> = fetcher(query).fetch()
+        processor(query).process(objects)
+        return objects
     }
 
-    @Override
-    public List<P> call() throws Exception {
-        List<P> objects = fetcher.fetch();
-        processor.process(objects);
-        return objects;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public CallFetcher<P> getFetcher() {
-        return fetcher;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public CallProcessor<P> getProcessor() {
-        return processor;
-    }
+    protected abstract fun fetcher(query: Q): CoroutineCallFetcher<P>
+    protected abstract fun processor(query: Q): CallProcessor<P>
 }

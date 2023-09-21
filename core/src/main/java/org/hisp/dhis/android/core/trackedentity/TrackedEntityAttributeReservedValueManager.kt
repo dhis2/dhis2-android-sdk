@@ -40,7 +40,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
@@ -79,7 +78,6 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val generalSettingObjectRepository: GeneralSettingObjectRepository,
     private val reservedValueSettingStore: ReservedValueSettingStore,
-    private val executor: D2CallExecutor,
     private val reservedValueQueryCallFactory: QueryCallFactory<
         TrackedEntityAttributeReservedValue,
         TrackedEntityAttributeReservedValueQuery,
@@ -335,16 +333,14 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
         pattern: String?,
         storeError: Boolean,
     ) {
-        executor.executeD2Call(
-            reservedValueQueryCallFactory.create(
-                TrackedEntityAttributeReservedValueQuery.create(
-                    trackedEntityAttributeUid,
-                    numberToReserve,
-                    organisationUnit,
-                    pattern,
-                ),
+        reservedValueQueryCallFactory.create(
+            TrackedEntityAttributeReservedValueQuery.create(
+                trackedEntityAttributeUid,
+                numberToReserve,
+                organisationUnit,
+                pattern,
+                storeError,
             ),
-            storeError,
         )
 
         if (pattern != null) {

@@ -25,30 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.internal
 
-package org.hisp.dhis.android.core.arch.call.fetchers.internal;
+import androidx.annotation.VisibleForTesting
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import java.util.concurrent.Callable
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+class EndpointCall<P>(
+    @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val fetcher: CallFetcher<P>,
+    @get:VisibleForTesting(otherwise = VisibleForTesting.NONE) val processor: CallProcessor<P>,
+) : Callable<List<P>> {
 
-import java.util.List;
-
-public abstract class ListNoResourceWithErrorCatcherCallFetcher<P> implements CallFetcher<P> {
-
-    private final APICallExecutor apiCallExecutor;
-    private final APICallErrorCatcher errorCatcher;
-
-    protected ListNoResourceWithErrorCatcherCallFetcher(APICallExecutor apiCallExecutor,
-                                                        APICallErrorCatcher errorCatcher) {
-        this.apiCallExecutor = apiCallExecutor;
-        this.errorCatcher = errorCatcher;
-    }
-
-    protected abstract retrofit2.Call<List<P>> getCall();
-
-    @Override
-    public final List<P> fetch() throws D2Error {
-        return apiCallExecutor.executeObjectCallWithErrorCatcher(getCall(), errorCatcher);
+    @Throws(Exception::class)
+    override fun call(): List<P> {
+        val objects = fetcher.fetch()
+        processor.process(objects)
+        return objects
     }
 }

@@ -25,28 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import java.util.concurrent.Callable
 
-import java.util.List;
+abstract class UidsCallFactoryImpl<P> protected constructor(
+    @JvmField protected val data: GenericCallData,
+    @JvmField protected val apiCallExecutor: APICallExecutor,
+) : UidsCallFactory<P> {
+    override fun create(uids: Set<String>): Callable<List<P>> {
+        return EndpointCall(fetcher(uids), processor())
+    }
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-public interface TrackedEntityAttributeReservedValueService {
-    String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
-
-    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserve(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
-            @Query("numberToReserve") Integer numberToReserve);
-
-    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserveWithOrgUnitCode(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
-            @Query("numberToReserve") Integer numberToReserve,
-            @Query("ORG_UNIT_CODE") String orgUnitCode);
+    protected abstract fun fetcher(uids: Set<String>): CallFetcher<P>
+    protected abstract fun processor(): CallProcessor<P>
 }

@@ -36,7 +36,7 @@ abstract class BaseMockIntegrationTestEmptyEnqueable : BaseMockIntegrationTest()
         @JvmStatic
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable)
-            if (isNewInstance) {
+            if (isNewInstance || !objects.d2.userModule().blockingIsLogged()) {
                 dhis2MockServer.enqueueLoginResponses()
                 objects.d2.userModule().blockingLogIn(
                     RealServerMother.username,

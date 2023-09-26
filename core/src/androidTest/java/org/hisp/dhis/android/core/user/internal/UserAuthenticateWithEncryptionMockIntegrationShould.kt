@@ -32,10 +32,13 @@ import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory.clear
 import org.hisp.dhis.android.core.D2Factory.forNewDatabase
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(D2JunitRunner::class)
 class UserAuthenticateWithEncryptionMockIntegrationShould {
     @Test
     fun return_false_for_blocking_is_logged_when_not_logged() {

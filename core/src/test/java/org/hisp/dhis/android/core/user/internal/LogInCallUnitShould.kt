@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -105,7 +104,10 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT)
         whenever(d2Error.isOffline).thenReturn(true)
-        whenever(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false))
+        generalSettingCall.stub {
+            onBlocking { isDatabaseEncrypted() }.doReturn(false)
+        }
+
         whenever(versionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }
 

@@ -32,30 +32,19 @@ import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
-class EventFilterCall @Inject internal constructor(
+internal class EventFilterCall @Inject internal constructor(
     private val service: EventFilterService,
-    handler: EventFilterHandler,
-    apiDownloader: APIDownloader,
-    versionManager: DHISVersionManager,
+    val handler: EventFilterHandler,
+    val apiDownloader: APIDownloader,
+    val versionManager: DHISVersionManager,
 ) : UidsCall<EventFilter> {
-    private val handler: Handler<EventFilter>
-    private val apiDownloader: APIDownloader
-    private val versionManager: DHISVersionManager
-
-    init {
-        this.handler = handler
-        this.apiDownloader = apiDownloader
-        this.versionManager = versionManager
-    }
 
     override fun download(programUids: Set<String>): Single<List<EventFilter>> {
         return if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
@@ -69,7 +58,7 @@ class EventFilterCall @Inject internal constructor(
                     EventFilterFields.programUid.`in`(partitionUids),
                     accessDataReadFilter,
                     EventFilterFields.allFields,
-                    Boolean.FALSE,
+                    false,
                 )
             }
         } else {

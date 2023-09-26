@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import javax.inject.Inject
@@ -39,24 +38,21 @@ internal class LogInDatabaseManager @Inject internal constructor(
     private val generalSettingCall: GeneralSettingCall,
 ) {
 
-    fun loadDatabaseOnline(serverUrl: String, username: String): Completable {
-        return generalSettingCall.isDatabaseEncrypted()
-            .doOnSuccess { encrypt: Boolean ->
-                multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
-                    serverUrl,
-                    username,
-                    encrypt,
-                )
-            }
-            .doOnError {
-                multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
-                    serverUrl,
-                    username,
-                    false,
-                )
-            }
-            .ignoreElement()
-            .onErrorComplete()
+    suspend fun loadDatabaseOnline(serverUrl: String, username: String) {
+        try {
+            val isEncrypted = generalSettingCall.isDatabaseEncrypted()
+            multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                serverUrl,
+                username,
+                isEncrypted,
+            )
+        } catch (swallowed: Exception) {
+            multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
+                serverUrl,
+                username,
+                false,
+            )
+        }
     }
 
     fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {

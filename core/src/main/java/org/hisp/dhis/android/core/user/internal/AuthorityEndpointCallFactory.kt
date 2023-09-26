@@ -25,52 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.user.Authority;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.user.Authority
+import retrofit2.Call
+import javax.inject.Inject
 
 @Reusable
-final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
+internal class AuthorityEndpointCallFactory @Inject constructor(
+    data: GenericCallData,
+    apiCallExecutor: APICallExecutor,
+    handler: AuthorityHandler,
+    service: AuthorityService,
+) : ListCallFactoryImpl<Authority>(data, apiCallExecutor) {
+    private val handler: Handler<Authority>
+    private val service: AuthorityService
 
-    private final Handler<Authority> handler;
-    private final AuthorityService service;
-
-    @Inject
-    AuthorityEndpointCallFactory(GenericCallData data,
-                                 APICallExecutor apiCallExecutor,
-                                 AuthorityHandler handler,
-                                 AuthorityService service) {
-        super(data, apiCallExecutor);
-        this.handler = handler;
-        this.service = service;
+    init {
+        this.handler = handler
+        this.service = service
     }
 
-    @Override
-    protected CallFetcher<Authority> fetcher() {
-        return new AuthorityCallFetcher(getApiCallExecutor()) {
-            @Override
-            protected retrofit2.Call<List<String>> getCall() {
-                return service.getAuthorities();
+    override fun fetcher(): CallFetcher<Authority> {
+        return object : AuthorityCallFetcher(apiCallExecutor) {
+            override fun getCall(): Call<List<String>> {
+                return service.authorities
             }
-        };
+        }
     }
 
-    @Override
-    protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(getData().databaseAdapter(), handler);
+    override fun processor(): CallProcessor<Authority> {
+        return AuthorityCallProcessor(data.databaseAdapter(), handler)
     }
-
 }

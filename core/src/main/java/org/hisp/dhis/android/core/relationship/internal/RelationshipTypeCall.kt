@@ -34,11 +34,10 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
-class RelationshipTypeCall @Inject internal constructor(
+internal class RelationshipTypeCall @Inject internal constructor(
     private val service: RelationshipTypeService,
     private val handler: RelationshipTypeHandler,
     private val apiDownloader: APIDownloader,
@@ -54,7 +53,7 @@ class RelationshipTypeCall @Inject internal constructor(
                 RelationshipTypeFields.allFields,
                 RelationshipTypeFields.lastUpdated.gt(lastUpdated),
                 accessDataFilter,
-                Boolean.FALSE,
+                false,
             )
         }
     }

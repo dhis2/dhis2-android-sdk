@@ -25,12 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import java.util.concurrent.Callable
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public interface ListCallFactory<P> {
-    Callable<List<P>> create();
+internal fun interface UidsCallFactory<P> {
+    fun create(uids: Set<String>): Callable<List<P>>
 }

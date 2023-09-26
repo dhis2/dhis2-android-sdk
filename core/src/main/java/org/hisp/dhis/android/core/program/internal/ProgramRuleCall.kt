@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRule
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
@@ -53,7 +52,7 @@ internal class ProgramRuleCall @Inject constructor(
             service.getProgramRules(
                 ProgramRuleFields.allFields,
                 programUidsFilterStr,
-                Boolean.FALSE,
+                false,
             )
         }
     }

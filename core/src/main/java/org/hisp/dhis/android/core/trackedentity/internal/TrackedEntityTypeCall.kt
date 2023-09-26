@@ -34,11 +34,10 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
-class TrackedEntityTypeCall @Inject internal constructor(
+internal class TrackedEntityTypeCall @Inject internal constructor(
     private val service: TrackedEntityTypeService,
     private val handler: TrackedEntityTypeHandler,
     private val apiDownloader: APIDownloader,
@@ -54,7 +53,7 @@ class TrackedEntityTypeCall @Inject internal constructor(
                     TrackedEntityTypeFields.allFields,
                     TrackedEntityTypeFields.uid.`in`(optionSetUids),
                     accessDataReadFilter,
-                    Boolean.FALSE,
+                    false,
                 )
             },
         ) { type: TrackedEntityType -> transform(type) }

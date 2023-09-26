@@ -46,7 +46,7 @@ internal class LogInDatabaseManager @Inject internal constructor(
                 username,
                 isEncrypted,
             )
-        } catch (swallowed: Exception) {
+        } catch (ignored: Exception) {
             multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
                 serverUrl,
                 username,

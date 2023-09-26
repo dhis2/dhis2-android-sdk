@@ -179,7 +179,7 @@ internal class MetadataCall @Inject constructor(
                 credentialsSecureStore.get(),
                 encrypt,
             )
-        } catch (swallowed: Exception) {
+        } catch (ignored: Exception) {
         }
     }
 

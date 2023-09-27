@@ -25,32 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.common.Geometry
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import java.util.Date
+import androidx.paging.PageKeyedDataSource
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-data class TrackedEntitySearchItem(
-    val uid: String,
-    val created: Date?,
-    val lastUpdated: Date?,
-    val createdAtClient: Date?,
-    val lastUpdatedAtClient: Date?,
-    val organisationUnit: String?,
-    val geometry: Geometry?,
-    val syncState: State?,
-    val aggregatedSyncState: State?,
-    val deleted: Boolean,
+internal class TrackedEntitySearchDataSourceResult constructor(
+    private val dataFetcher: TrackedEntitySearchDataFetcher,
+) : PageKeyedDataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>() {
 
-    val isOnline: Boolean = false,
-    val type: TrackedEntityType,
-    val header: String? = null,
-    val attributeValues: List<TrackedEntitySearchItemAttribute>? = emptyList(),
+    override fun loadInitial(
+        params: LoadInitialParams<TrackedEntitySearchItem>,
+        callback: LoadInitialCallback<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>,
+    ) {
+        dataFetcher.refresh()
+        val result = loadPages(params.requestedLoadSize)
+        callback.onResult(result, null, getKey(result))
+    }
 
-) : ObjectWithUidInterface {
-    override fun uid(): String = uid
+    override fun loadAfter(
+        params: LoadParams<TrackedEntitySearchItem>,
+        callback: LoadCallback<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>,
+    ) {
+        val result = loadPages(params.requestedLoadSize)
+        callback.onResult(result, getKey(result))
+    }
+
+    override fun loadBefore(
+        params: LoadParams<TrackedEntitySearchItem>,
+        callback: LoadCallback<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>,
+    ) {
+        // do nothing
+    }
+
+    private fun getKey(result: List<Result<TrackedEntitySearchItem, D2Error>>): TrackedEntitySearchItem? {
+        return result.filterIsInstance<Result.Success<TrackedEntitySearchItem, D2Error>>().lastOrNull()?.value
+    }
+
+    private fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+        return dataFetcher.loadPages(requestedLoadSize)
+    }
 }

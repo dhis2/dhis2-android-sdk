@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCo
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
-import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -66,7 +66,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     private val onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
-    private val trackerHeaderEngine: TrackerHeaderEngine,
+    private val searchDataFetcherHelper: TrackedEntitySearchDataFetcherHelper,
 ) : ReadOnlyWithUidCollectionRepository<TrackedEntitySearchItem>,
     TrackedEntitySearchOperators<TrackedEntitySearchCollectionRepository>(
         scope,
@@ -85,7 +85,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
             TrackedEntitySearchCollectionRepository(
                 store, trackerParentCallFactory, childrenAppenders,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
-                onlineHelper, localQueryHelper, trackerHeaderEngine,
+                onlineHelper, localQueryHelper, searchDataFetcherHelper,
             )
         }
 
@@ -102,6 +102,9 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
 
     val dataSource: DataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
         get() = TrackedEntitySearchDataSource(getDataFetcher())
+
+    val resultDataSource: DataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>
+        get() = TrackedEntitySearchDataSourceResult(getDataFetcher())
 
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntitySearchItem> {
@@ -160,7 +163,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
             onlineCache,
             onlineHelper,
             localQueryHelper,
-            trackerHeaderEngine,
+            searchDataFetcherHelper,
         )
     }
 

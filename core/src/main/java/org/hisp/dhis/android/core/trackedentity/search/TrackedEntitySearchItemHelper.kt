@@ -28,10 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
 object TrackedEntitySearchItemHelper {
-    fun from(i: TrackedEntityInstance): TrackedEntitySearchItem {
+    internal fun from(
+        i: TrackedEntityInstance,
+        attributes: List<SimpleTrackedEntityAttribute>,
+        type: TrackedEntityType,
+    ): TrackedEntitySearchItem {
         return TrackedEntitySearchItem(
             uid = i.uid(),
             created = i.created(),
@@ -39,12 +45,13 @@ object TrackedEntitySearchItemHelper {
             createdAtClient = i.createdAtClient(),
             lastUpdatedAtClient = i.lastUpdatedAtClient(),
             organisationUnit = i.organisationUnit(),
-            trackedEntityType = i.trackedEntityType(),
             geometry = i.geometry(),
-            trackedEntityAttributeValues = i.trackedEntityAttributeValues(),
+            attributeValues = i.trackedEntityAttributeValues()?.mapNotNull { from(it, attributes) },
             syncState = i.syncState(),
             aggregatedSyncState = i.aggregatedSyncState(),
             deleted = i.deleted() ?: false,
+            isOnline = i.id() != null,
+            type = type,
         )
     }
 
@@ -56,11 +63,39 @@ object TrackedEntitySearchItemHelper {
             .createdAtClient(i.createdAtClient)
             .lastUpdatedAtClient(i.lastUpdatedAtClient)
             .organisationUnit(i.organisationUnit)
-            .trackedEntityType(i.trackedEntityType)
+            .trackedEntityType(i.type.uid())
             .geometry(i.geometry)
-            .trackedEntityAttributeValues(i.trackedEntityAttributeValues)
+            .trackedEntityAttributeValues(i.attributeValues?.map(::toTrackedEntityAttributeValue))
             .syncState(i.syncState)
             .aggregatedSyncState(i.aggregatedSyncState)
+            .build()
+    }
+
+    private fun from(
+        a: TrackedEntityAttributeValue,
+        attributes: List<SimpleTrackedEntityAttribute>,
+    ): TrackedEntitySearchItemAttribute? {
+        return attributes.find { it.attribute == a.trackedEntityAttribute() }?.let { attribute ->
+            TrackedEntitySearchItemAttribute(
+                attribute = a.trackedEntityAttribute()!!,
+                displayName = attribute.displayName,
+                displayFormName = attribute.displayFormName ?: attribute.displayName,
+                value = a.value(),
+                created = a.created(),
+                lastUpdated = a.lastUpdated(),
+                valueType = attribute.valueType,
+                displayInList = attribute.displayInList,
+                optionSet = attribute.optionSet,
+            )
+        }
+    }
+
+    private fun toTrackedEntityAttributeValue(a: TrackedEntitySearchItemAttribute): TrackedEntityAttributeValue {
+        return TrackedEntityAttributeValue.builder()
+            .trackedEntityAttribute(a.attribute)
+            .value(a.value)
+            .created(a.created)
+            .lastUpdated(a.lastUpdated)
             .build()
     }
 }

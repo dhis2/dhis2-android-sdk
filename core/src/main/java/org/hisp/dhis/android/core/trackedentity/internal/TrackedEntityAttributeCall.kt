@@ -32,11 +32,10 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
-class TrackedEntityAttributeCall @Inject internal constructor(
+internal class TrackedEntityAttributeCall @Inject internal constructor(
     private val service: TrackedEntityAttributeService,
     private val handler: TrackedEntityAttributeHandler,
     private val apiDownloader: APIDownloader,
@@ -50,7 +49,7 @@ class TrackedEntityAttributeCall @Inject internal constructor(
             service.getTrackedEntityAttributes(
                 TrackedEntityAttributeFields.allFields,
                 TrackedEntityAttributeFields.uid.`in`(partitionUids),
-                Boolean.FALSE,
+                false,
             )
         }
     }

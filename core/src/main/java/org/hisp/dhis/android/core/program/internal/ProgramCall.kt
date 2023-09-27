@@ -31,25 +31,16 @@ import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.program.Program
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
-class ProgramCall @Inject internal constructor(
+internal class ProgramCall @Inject internal constructor(
     private val service: ProgramService,
-    handler: ProgramHandler,
-    apiDownloader: APIDownloader,
+    val handler: ProgramHandler,
+    val apiDownloader: APIDownloader,
 ) : UidsCall<Program> {
-    private val handler: Handler<Program>
-    private val apiDownloader: APIDownloader
-
-    init {
-        this.handler = handler
-        this.apiDownloader = apiDownloader
-    }
 
     override fun download(uids: Set<String>): Single<List<Program>> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
@@ -62,7 +53,7 @@ class ProgramCall @Inject internal constructor(
                 ProgramFields.allFields,
                 ProgramFields.uid.`in`(partitionUids),
                 accessDataReadFilter,
-                Boolean.FALSE,
+                false,
             )
         }
     }

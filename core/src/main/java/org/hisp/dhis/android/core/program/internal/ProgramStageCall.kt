@@ -36,11 +36,10 @@ import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
-class ProgramStageCall @Inject internal constructor(
+internal class ProgramStageCall @Inject internal constructor(
     private val service: ProgramStageService,
     private val handler: ProgramStageHandler,
     private val apiDownloader: APIDownloader,
@@ -59,7 +58,7 @@ class ProgramStageCall @Inject internal constructor(
                     ProgramStageFields.allFields,
                     programUidsFilterStr,
                     accessDataReadFilter,
-                    Boolean.FALSE,
+                    false,
                 )
             },
         ) { stage: ProgramStage -> transform(stage) }

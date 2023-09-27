@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.metadata
 
 import dagger.Reusable
-import io.reactivex.Completable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
@@ -105,7 +104,9 @@ internal class MetadataCall @Inject constructor(
     @Suppress("TooGenericExceptionCaught")
     fun download(): Flow<D2Progress> = channelFlow {
         val progressManager = D2ProgressManager(CALLS_COUNT)
-        changeEncryptionIfRequired().blockingAwait()
+
+        changeEncryptionIfRequiredCoroutines()
+
         coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
             try {
                 systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
@@ -169,13 +170,17 @@ internal class MetadataCall @Inject constructor(
         emit(progressManager.increaseProgress(ExpressionDimensionItem::class.java, true))
     }
 
-    private fun changeEncryptionIfRequired(): Completable {
-        return generalSettingCall.isDatabaseEncrypted()
-            .doOnSuccess { encrypt: Boolean ->
-                multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt)
-            }
-            .ignoreElement()
-            .onErrorComplete()
+    private suspend fun changeEncryptionIfRequiredCoroutines() {
+        // TODO explore the possibility of "CoroutineExceptionHandler"
+
+        try {
+            val encrypt = generalSettingCall.isDatabaseEncrypted()
+            multiUserDatabaseManager.changeEncryptionIfRequired(
+                credentialsSecureStore.get(),
+                encrypt,
+            )
+        } catch (ignored: Exception) {
+        }
     }
 
     fun blockingDownload() {

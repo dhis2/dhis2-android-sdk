@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.await
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import javax.inject.Inject
@@ -62,13 +63,13 @@ internal class GeneralSettingCall @Inject constructor(
         generalSettingHandler.handleMany(generalSettingsList)
     }
 
-    fun isDatabaseEncrypted(): Single<Boolean> {
+    suspend fun isDatabaseEncrypted(): Boolean {
         // TODO Should we decrypt the database if the settings app is uninstalled?
         return appVersionManager.updateAppVersion()
             .flatMap { appVersionManager.getDataStoreVersion() }
             .flatMap { version ->
                 apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = false)
             }
-            .map { obj: GeneralSettings -> obj.encryptDB() }
+            .map { obj: GeneralSettings -> obj.encryptDB() }.await()
     }
 }

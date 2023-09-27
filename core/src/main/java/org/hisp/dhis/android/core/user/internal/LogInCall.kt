@@ -120,7 +120,9 @@ internal class LogInCall @Inject internal constructor(
     private suspend fun loginOnline(user: User, credentials: Credentials): User {
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
-        databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username).blockingAwait()
+
+        databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username)
+
         return coroutineAPICallExecutor.wrapTransactionally {
             try {
                 val authenticatedUser = AuthenticatedUser.builder()

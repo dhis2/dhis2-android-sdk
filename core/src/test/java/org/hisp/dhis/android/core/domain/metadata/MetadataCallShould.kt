@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.domain.metadata
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
-import io.reactivex.Single
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -134,7 +133,10 @@ class MetadataCallShould : BaseCallShould() {
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
-        whenever(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false))
+
+        generalSettingCall.stub {
+            onBlocking { isDatabaseEncrypted() }.doReturn(false)
+        }
 
         // Metadata call
         metadataCall = MetadataCall(

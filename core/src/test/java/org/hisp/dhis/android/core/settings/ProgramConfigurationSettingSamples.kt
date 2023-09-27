@@ -36,7 +36,7 @@ object ProgramConfigurationSettingSamples {
             .completionSpinner(true)
             .optionalSearch(true)
             .disableReferrals(true)
-            .collapsibleSections(true)
+            .disableCollapsibleSections(true)
             .build()
     }
 }

@@ -55,7 +55,7 @@ public class ProgramConfigurationSettingTableInfo {
         public static final String COMPLETION_SPINNER = "completionSpinner";
         public static final String OPTIONAL_SEARCH = "optionalSearch";
         public static final String DISABLE_REFERRALS = "disableReferrals";
-        public static final String COLLAPSIBLE_SECTIONS = "collapsibleSections";
+        public static final String DISABLE_COLLAPSIBLE_SECTIONS = "disableCollapsibleSections";
 
         @Override
         public String[] all() {
@@ -64,7 +64,7 @@ public class ProgramConfigurationSettingTableInfo {
                     COMPLETION_SPINNER,
                     OPTIONAL_SEARCH,
                     DISABLE_REFERRALS,
-                    COLLAPSIBLE_SECTIONS
+                    DISABLE_COLLAPSIBLE_SECTIONS
             );
         }
     }

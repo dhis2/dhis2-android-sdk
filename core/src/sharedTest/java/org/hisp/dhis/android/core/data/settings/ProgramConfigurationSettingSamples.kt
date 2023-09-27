@@ -25,21 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.settings
 
-package org.hisp.dhis.android.core.data.settings;
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting;
-
-public class ProgramConfigurationSettingSamples {
-
-    public static ProgramConfigurationSetting get() {
+object ProgramConfigurationSettingSamples {
+    fun get(): ProgramConfigurationSetting {
         return ProgramConfigurationSetting.builder()
-                .id(1L)
-                .uid("aBcDeFg")
-                .completionSpinner(true)
-                .optionalSearch(true)
-                .disableReferrals(true)
-                .collapsibleSections(true)
-                .build();
+            .id(1L)
+            .uid("aBcDeFg")
+            .completionSpinner(true)
+            .optionalSearch(true)
+            .disableReferrals(true)
+            .disableCollapsibleSections(true)
+            .build()
     }
 }

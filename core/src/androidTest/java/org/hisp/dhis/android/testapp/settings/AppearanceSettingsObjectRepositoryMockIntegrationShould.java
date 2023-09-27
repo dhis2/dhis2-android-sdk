@@ -127,14 +127,14 @@ public class AppearanceSettingsObjectRepositoryMockIntegrationShould extends Bas
     @Test
     public void should_return_collapsibleSections_settings() {
         ProgramConfigurationSetting setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting();
-        assertThat(setting.collapsibleSections()).isEqualTo(false);
+        assertThat(setting.disableCollapsibleSections()).isEqualTo(false);
 
         String UID = "IpHINAT79UW";
         setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
-        assertThat(setting.collapsibleSections()).isEqualTo(false);
+        assertThat(setting.disableCollapsibleSections()).isEqualTo(false);
 
         UID = "IpHINAT79UQ";
         setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(UID);
-        assertThat(setting.collapsibleSections()).isEqualTo(true);
+        assertThat(setting.disableCollapsibleSections()).isEqualTo(true);
     }
 }

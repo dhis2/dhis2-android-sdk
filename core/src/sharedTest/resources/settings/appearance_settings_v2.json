@@ -131,20 +131,20 @@
     "globalSettings": {
       "completionSpinner": "true",
       "disableReferrals": "true",
-      "collapsibleSections": "false"
+      "disableCollapsibleSections": "false"
     },
     "specificSettings": {
       "IpHINAT79UW": {
         "completionSpinner": "true",
         "optionalSearch": "true",
         "disableReferrals": "true",
-        "collapsibleSections": "false"
+        "disableCollapsibleSections": "false"
       },
       "IpHINAT79UQ": {
         "completionSpinner": "true",
         "optionalSearch": "true",
         "disableReferrals": "false",
-        "collapsibleSections": "true"
+        "disableCollapsibleSections": "true"
       }
     }
   }

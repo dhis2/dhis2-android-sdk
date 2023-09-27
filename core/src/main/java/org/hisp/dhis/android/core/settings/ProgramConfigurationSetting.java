@@ -56,7 +56,7 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     public abstract  Boolean disableReferrals();
 
     @Nullable
-    public abstract  Boolean collapsibleSections();
+    public abstract  Boolean disableCollapsibleSections();
 
     public static ProgramConfigurationSetting create(Cursor cursor) {
         return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
@@ -82,7 +82,7 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
 
         public abstract Builder disableReferrals(Boolean disableReferrals);
 
-        public abstract Builder collapsibleSections(Boolean collapsibleSections);
+        public abstract Builder disableCollapsibleSections(Boolean disableCollapsibleSections);
 
         public abstract ProgramConfigurationSetting build();
     }

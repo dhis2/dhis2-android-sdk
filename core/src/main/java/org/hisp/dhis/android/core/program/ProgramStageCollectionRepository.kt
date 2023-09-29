@@ -25,152 +25,153 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.ValidationStrategy;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.FormType
+import org.hisp.dhis.android.core.common.ValidationStrategy
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramStageCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStage, ProgramStageCollectionRepository> {
-
-    @Inject
-    ProgramStageCollectionRepository(final ProgramStageStore store,
-                                     final Map<String, ChildrenAppender<ProgramStage>> childrenAppenders,
-                                     final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramStageCollectionRepository(store, childrenAppenders, s)));
+class ProgramStageCollectionRepository @Inject internal constructor(
+    store: ProgramStageStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStage>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStage, ProgramStageCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramStageCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byDescription(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.DESCRIPTION)
     }
 
-
-    public StringFilterConnector<ProgramStageCollectionRepository> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
+    fun byDisplayDescription(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.DISPLAY_DESCRIPTION)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byDisplayDescription() {
-        return cf.string(Columns.DISPLAY_DESCRIPTION);
+    fun byExecutionDateLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byExecutionDateLabel() {
-        return cf.string(Columns.EXECUTION_DATE_LABEL);
+    fun byDueDateLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.DUE_DATE_LABEL)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byDueDateLabel() {
-        return cf.string(Columns.DUE_DATE_LABEL);
+    fun byAllowGenerateNextVisit(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byAllowGenerateNextVisit() {
-        return cf.bool(Columns.ALLOW_GENERATE_NEXT_VISIT);
+    fun byValidCompleteOnly(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byValidCompleteOnly() {
-        return cf.bool(Columns.VALID_COMPLETE_ONLY);
+    fun byReportDateToUse(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.REPORT_DATE_TO_USE)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byReportDateToUse() {
-        return cf.string(Columns.REPORT_DATE_TO_USE);
+    fun byOpenAfterEnrollment(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.OPEN_AFTER_ENROLLMENT)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byOpenAfterEnrollment() {
-        return cf.bool(Columns.OPEN_AFTER_ENROLLMENT);
+    fun byRepeatable(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.REPEATABLE)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byRepeatable() {
-        return cf.bool(Columns.REPEATABLE);
+    fun byFeatureType(): EnumFilterConnector<ProgramStageCollectionRepository, FeatureType> {
+        return cf.enumC(ProgramStageTableInfo.Columns.FEATURE_TYPE)
     }
 
-    public EnumFilterConnector<ProgramStageCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(Columns.FEATURE_TYPE);
+    fun byFormType(): EnumFilterConnector<ProgramStageCollectionRepository, FormType> {
+        return cf.enumC(ProgramStageTableInfo.Columns.FORM_TYPE)
     }
 
-    public EnumFilterConnector<ProgramStageCollectionRepository, FormType> byFormType() {
-        return cf.enumC(Columns.FORM_TYPE);
+    fun byDisplayGenerateEventBox(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.DISPLAY_GENERATE_EVENT_BOX)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byDisplayGenerateEventBox() {
-        return cf.bool(Columns.DISPLAY_GENERATE_EVENT_BOX);
+    fun byGeneratedByEnrollmentDate(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLMENT_DATE)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byGeneratedByEnrollmentDate() {
-        return cf.bool(Columns.GENERATED_BY_ENROLMENT_DATE);
+    fun byAutoGenerateEvent(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.AUTO_GENERATE_EVENT)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byAutoGenerateEvent() {
-        return cf.bool(Columns.AUTO_GENERATE_EVENT);
+    fun bySortOrder(): IntegerFilterConnector<ProgramStageCollectionRepository> {
+        return cf.integer(ProgramStageTableInfo.Columns.SORT_ORDER)
     }
 
-    public IntegerFilterConnector<ProgramStageCollectionRepository> bySortOrder() {
-        return cf.integer(Columns.SORT_ORDER);
+    fun byHideDueDate(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.HIDE_DUE_DATE)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byHideDueDate() {
-        return cf.bool(Columns.HIDE_DUE_DATE);
+    fun byBlockEntryForm(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.BLOCK_ENTRY_FORM)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byBlockEntryForm() {
-        return cf.bool(Columns.BLOCK_ENTRY_FORM);
+    fun byMinDaysFromStart(): IntegerFilterConnector<ProgramStageCollectionRepository> {
+        return cf.integer(ProgramStageTableInfo.Columns.MIN_DAYS_FROM_START)
     }
 
-    public IntegerFilterConnector<ProgramStageCollectionRepository> byMinDaysFromStart() {
-        return cf.integer(Columns.MIN_DAYS_FROM_START);
+    fun byStandardInterval(): IntegerFilterConnector<ProgramStageCollectionRepository> {
+        return cf.integer(ProgramStageTableInfo.Columns.STANDARD_INTERVAL)
     }
 
-    public IntegerFilterConnector<ProgramStageCollectionRepository> byStandardInterval() {
-        return cf.integer(Columns.STANDARD_INTERVAL);
+    fun byEnableUserAssignment(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.ENABLE_USER_ASSIGNMENT)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byEnableUserAssignment() {
-        return cf.bool(Columns.ENABLE_USER_ASSIGNMENT);
+    fun byPeriodType(): EnumFilterConnector<ProgramStageCollectionRepository, PeriodType> {
+        return cf.enumC(ProgramStageTableInfo.Columns.PERIOD_TYPE)
     }
 
-    public EnumFilterConnector<ProgramStageCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(Columns.PERIOD_TYPE);
+    fun byProgramUid(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byProgramUid() {
-        return cf.string(Columns.PROGRAM);
+    fun byAccessDataWrite(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.ACCESS_DATA_WRITE)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byAccessDataWrite() {
-        return cf.bool(ProgramStageTableInfo.Columns.ACCESS_DATA_WRITE);
+    fun byRemindCompleted(): BooleanFilterConnector<ProgramStageCollectionRepository> {
+        return cf.bool(ProgramStageTableInfo.Columns.REMIND_COMPLETED)
     }
 
-    public BooleanFilterConnector<ProgramStageCollectionRepository> byRemindCompleted() {
-        return cf.bool(Columns.REMIND_COMPLETED);
+    fun byValidationStrategy(): EnumFilterConnector<ProgramStageCollectionRepository, ValidationStrategy> {
+        return cf.enumC(ProgramStageTableInfo.Columns.VALIDATION_STRATEGY)
     }
 
-    public EnumFilterConnector<ProgramStageCollectionRepository, ValidationStrategy> byValidationStrategy() {
-        return cf.enumC(Columns.VALIDATION_STRATEGY);
+    fun byColor(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
-    }
-
-    public ProgramStageCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.SORT_ORDER, direction);
+    fun orderBySortOrder(direction: OrderByDirection?): ProgramStageCollectionRepository {
+        return cf.withOrderBy(ProgramStageTableInfo.Columns.SORT_ORDER, direction)
     }
 }

@@ -68,7 +68,7 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
     @Test
     public void get_scope() {
         EventQueryRepositoryScope scope =
-                d2.eventModule().eventQuery().getScope();
+                d2.eventModule().eventQuery().scope;
 
         assertThat(scope.mode()).isNotNull();
     }

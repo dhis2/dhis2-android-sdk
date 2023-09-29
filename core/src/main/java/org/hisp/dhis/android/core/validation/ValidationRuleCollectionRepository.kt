@@ -25,95 +25,100 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation
 
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore
+import javax.inject.Inject
 
 @Reusable
-public final class ValidationRuleCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<ValidationRule, ValidationRuleCollectionRepository> {
-
-    @Inject
-    ValidationRuleCollectionRepository(final ValidationRuleStore store,
-                                       final Map<String, ChildrenAppender<ValidationRule>> childrenAppenders,
-                                       final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ValidationRuleCollectionRepository(store, childrenAppenders, s)));
+class ValidationRuleCollectionRepository @Inject internal constructor(
+    store: ValidationRuleStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ValidationRule>>,
+    scope: RepositoryScope,
+) : ReadOnlyNameableCollectionRepositoryImpl<ValidationRule, ValidationRuleCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ValidationRuleCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byInstruction(): StringFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.string(ValidationRuleTableInfo.Columns.INSTRUCTION)
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byInstruction() {
-        return cf.string(Columns.INSTRUCTION);
+    fun byImportance(): EnumFilterConnector<ValidationRuleCollectionRepository, ValidationRuleImportance> {
+        return cf.enumC(ValidationRuleTableInfo.Columns.IMPORTANCE)
     }
 
-    public EnumFilterConnector<ValidationRuleCollectionRepository, ValidationRuleImportance> byImportance() {
-        return cf.enumC(Columns.IMPORTANCE);
+    fun byOperator(): EnumFilterConnector<ValidationRuleCollectionRepository, ValidationRuleOperator> {
+        return cf.enumC(ValidationRuleTableInfo.Columns.OPERATOR)
     }
 
-    public EnumFilterConnector<ValidationRuleCollectionRepository, ValidationRuleOperator> byOperator() {
-        return cf.enumC(Columns.OPERATOR);
+    fun byPeriodType(): EnumFilterConnector<ValidationRuleCollectionRepository, PeriodType> {
+        return cf.enumC(ValidationRuleTableInfo.Columns.PERIOD_TYPE)
     }
 
-    public EnumFilterConnector<ValidationRuleCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(Columns.PERIOD_TYPE);
+    fun bySkipFormValidation(): BooleanFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.bool(ValidationRuleTableInfo.Columns.SKIP_FORM_VALIDATION)
     }
 
-    public BooleanFilterConnector<ValidationRuleCollectionRepository> bySkipFormValidation() {
-        return cf.bool(Columns.SKIP_FORM_VALIDATION);
+    fun byLeftSideExpression(): StringFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.string(ValidationRuleTableInfo.Columns.LEFT_SIDE_EXPRESSION)
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byLeftSideExpression() {
-        return cf.string(Columns.LEFT_SIDE_EXPRESSION);
+    fun byLeftSideDescription(): StringFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.string(ValidationRuleTableInfo.Columns.LEFT_SIDE_DESCRIPTION)
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byLeftSideDescription() {
-        return cf.string(Columns.LEFT_SIDE_DESCRIPTION);
+    fun byLeftSideMissingValueStrategy(): EnumFilterConnector<
+        ValidationRuleCollectionRepository,
+        MissingValueStrategy,
+        > {
+        return cf.enumC(ValidationRuleTableInfo.Columns.LEFT_SIDE_MISSING_VALUE_STRATEGY)
     }
 
-    public EnumFilterConnector<ValidationRuleCollectionRepository, MissingValueStrategy>
-    byLeftSideMissingValueStrategy() {
-        return cf.enumC(Columns.LEFT_SIDE_MISSING_VALUE_STRATEGY);
+    fun byRightSideExpression(): StringFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.string(ValidationRuleTableInfo.Columns.RIGHT_SIDE_EXPRESSION)
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byRightSideExpression() {
-        return cf.string(Columns.RIGHT_SIDE_EXPRESSION);
+    fun byRightSideDescription(): StringFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.string(ValidationRuleTableInfo.Columns.RIGHT_SIDE_DESCRIPTION)
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byRightSideDescription() {
-        return cf.string(Columns.RIGHT_SIDE_DESCRIPTION);
+    fun byRightSideMissingValueStrategy(): EnumFilterConnector<
+        ValidationRuleCollectionRepository,
+        MissingValueStrategy,
+        > {
+        return cf.enumC(ValidationRuleTableInfo.Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY)
     }
 
-    public EnumFilterConnector<ValidationRuleCollectionRepository, MissingValueStrategy>
-    byRightSideMissingValueStrategy() {
-        return cf.enumC(Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY);
+    fun byOrganisationUnitLevels(): StringFilterConnector<ValidationRuleCollectionRepository> {
+        return cf.string(ValidationRuleTableInfo.Columns.ORGANISATION_UNIT_LEVELS)
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byOrganisationUnitLevels() {
-        return cf.string(Columns.ORGANISATION_UNIT_LEVELS);
-    }
-
-    public ValidationRuleCollectionRepository byDataSetUids(List<String> dataSetUids) {
+    fun byDataSetUids(dataSetUids: List<String>): ValidationRuleCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                DataSetValidationRuleLinkTableInfo.TABLE_INFO.name(),
-                DataSetValidationRuleLinkTableInfo.Columns.VALIDATION_RULE,
-                DataSetValidationRuleLinkTableInfo.Columns.DATA_SET,
-                dataSetUids);
+            DataSetValidationRuleLinkTableInfo.TABLE_INFO.name(),
+            DataSetValidationRuleLinkTableInfo.Columns.VALIDATION_RULE,
+            DataSetValidationRuleLinkTableInfo.Columns.DATA_SET,
+            dataSetUids,
+        )
     }
 }

@@ -25,133 +25,123 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipManager;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
+import org.hisp.dhis.android.core.relationship.internal.RelationshipManager
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import javax.inject.Inject
 
 @Reusable
-public class RelationshipCollectionRepository
-        extends BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
-        implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
-
-    private final RelationshipStore store;
-    private final RelationshipHandler relationshipHandler;
-    private final RelationshipItemElementStoreSelector storeSelector;
-    private final RelationshipManager relationshipManager;
-    private final TrackerDataManager trackerDataManager;
-
-    @Inject
-    RelationshipCollectionRepository(final RelationshipStore store,
-                                     final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
-                                     final RepositoryScope scope,
-                                     final RelationshipHandler relationshipHandler,
-                                     final RelationshipItemElementStoreSelector storeSelector,
-                                     final RelationshipManager relationshipManager,
-                                     final TrackerDataManager trackerDataManager) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new RelationshipCollectionRepository(store, childrenAppenders, s,
-                        relationshipHandler, storeSelector, relationshipManager, trackerDataManager)));
-        this.store = store;
-        this.relationshipHandler = relationshipHandler;
-        this.storeSelector = storeSelector;
-        this.relationshipManager = relationshipManager;
-        this.trackerDataManager = trackerDataManager;
+class RelationshipCollectionRepository @Inject internal constructor(
+    private val relationshipStore: RelationshipStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Relationship>>,
+    scope: RepositoryScope,
+    private val relationshipHandler: RelationshipHandler,
+    private val storeSelector: RelationshipItemElementStoreSelector,
+    private val relationshipManager: RelationshipManager,
+    private val trackerDataManager: TrackerDataManager,
+) : BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>(
+    relationshipStore,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        RelationshipCollectionRepository(
+            relationshipStore,
+            childrenAppenders,
+            s,
+            relationshipHandler,
+            storeSelector,
+            relationshipManager,
+            trackerDataManager,
+        )
+    },
+),
+    ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
+    override fun add(o: Relationship): Single<String> {
+        return Single.fromCallable { blockingAdd(o) }
     }
 
-    @Override
-    public Single<String> add(Relationship relationship) {
-        return Single.fromCallable(() -> blockingAdd(relationship));
-    }
-
-    @Override
-    public String blockingAdd(Relationship relationship) throws D2Error {
-        Relationship relationshipWithUid;
-        if (relationshipHandler.doesRelationshipExist(relationship)) {
+    @Throws(D2Error::class)
+    override fun blockingAdd(o: Relationship): String {
+        val relationshipWithUid: Relationship
+        if (relationshipHandler.doesRelationshipExist(o)) {
             throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Tried to create already existing Relationship: " + relationship)
-                    .build();
-        } else if (relationship.from() == null || relationship.to() == null) {
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                .errorDescription("Tried to create already existing Relationship: $o")
+                .build()
+        } else if (o.from() == null || o.to() == null) {
             throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Relationship is missing either 'from' or 'to' component.")
-                    .build();
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                .errorDescription("Relationship is missing either 'from' or 'to' component.")
+                .build()
         } else {
-            RelationshipItem from = relationship.from();
-            if (relationship.uid() == null) {
-                String generatedUid = new UidGeneratorImpl().generate();
-                relationshipWithUid = relationship.toBuilder().uid(generatedUid).build();
+            val from = o.from()
+            relationshipWithUid = if (o.uid() == null) {
+                val generatedUid = UidGeneratorImpl().generate()
+                o.toBuilder().uid(generatedUid).build()
             } else {
-                relationshipWithUid = relationship;
+                o
             }
-
-            StoreWithState fromStore = storeSelector.getElementStore(from);
-            State fromState = fromStore.getSyncState(from.elementUid());
-
+            val fromStore = storeSelector.getElementStore(from)
+            val fromState = fromStore.getSyncState(from!!.elementUid())
             if (isUpdatableState(fromState)) {
-                relationshipHandler.handle(relationshipWithUid, r -> r.toBuilder()
+                relationshipHandler.handle(relationshipWithUid) { r: Relationship ->
+                    r.toBuilder()
                         .syncState(State.TO_POST)
                         .deleted(false)
-                        .build());
-                trackerDataManager.propagateRelationshipUpdate(relationship, HandleAction.Insert);
+                        .build()
+                }
+                trackerDataManager.propagateRelationshipUpdate(o, HandleAction.Insert)
             } else {
                 throw D2Error
-                        .builder()
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
-                        .errorDescription(
-                                "RelationshipItem from doesn't have updatable state: " +
-                                        "(" + from + ": " + fromState + ")")
-                        .build();
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
+                    .errorDescription(
+                        "RelationshipItem from doesn't have updatable state: " +
+                            "(" + from + ": " + fromState + ")",
+                    )
+                    .build()
             }
         }
-        return relationshipWithUid.uid();
+        return relationshipWithUid.uid()!!
     }
 
-    @Override
-    public ReadWriteObjectRepository<Relationship> uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new RelationshipObjectRepository(store, uid, childrenAppenders, updatedScope, trackerDataManager);
+    override fun uid(uid: String?): ReadWriteObjectRepository<Relationship> {
+        val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
+        return RelationshipObjectRepository(relationshipStore, uid, childrenAppenders, updatedScope, trackerDataManager)
     }
 
-    private boolean isUpdatableState(State state) {
-        return state != State.RELATIONSHIP;
+    private fun isUpdatableState(state: State?): Boolean {
+        return state !== State.RELATIONSHIP
     }
 
     /**
@@ -160,8 +150,8 @@ public class RelationshipCollectionRepository
      * @param searchItem Relationship item
      * @return List of relationships
      */
-    public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
-        return relationshipManager.getByItem(searchItem, false, true);
+    fun getByItem(searchItem: RelationshipItem): List<Relationship> {
+        return relationshipManager.getByItem(searchItem, includeDeleted = false, onlyAccessible = true)
     }
 
     /**
@@ -171,8 +161,8 @@ public class RelationshipCollectionRepository
      * @param includeDeleted Whether to include deleted relationships or not
      * @return List of relationships
      */
-    public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted) {
-        return relationshipManager.getByItem(searchItem, includeDeleted, true);
+    fun getByItem(searchItem: RelationshipItem, includeDeleted: Boolean): List<Relationship> {
+        return relationshipManager.getByItem(searchItem, includeDeleted, true)
     }
 
     /**
@@ -180,39 +170,42 @@ public class RelationshipCollectionRepository
      * @param searchItem Relationship item
      * @param includeDeleted Whether to include deleted relationships or not
      * @param onlyAccessible Whether to include only accessible relationships (owned relationships or any bidirectional
-     *                       relationship) or all linked relationships
+     * relationship) or all linked relationships
      * @return List of relationships
      */
-    public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted,
-                                        Boolean onlyAccessible) {
-        return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible);
+    fun getByItem(
+        searchItem: RelationshipItem,
+        includeDeleted: Boolean,
+        onlyAccessible: Boolean,
+    ): List<Relationship> {
+        return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible)
     }
 
-    public StringFilterConnector<RelationshipCollectionRepository> byUid() {
-        return cf.string(IdentifiableColumns.UID);
+    fun byUid(): StringFilterConnector<RelationshipCollectionRepository> {
+        return cf.string(IdentifiableColumns.UID)
     }
 
-    public StringFilterConnector<RelationshipCollectionRepository> byName() {
-        return cf.string(IdentifiableColumns.NAME);
+    fun byName(): StringFilterConnector<RelationshipCollectionRepository> {
+        return cf.string(IdentifiableColumns.NAME)
     }
 
-    public DateFilterConnector<RelationshipCollectionRepository> byCreated() {
-        return cf.date(IdentifiableColumns.CREATED);
+    fun byCreated(): DateFilterConnector<RelationshipCollectionRepository> {
+        return cf.date(IdentifiableColumns.CREATED)
     }
 
-    public DateFilterConnector<RelationshipCollectionRepository> byLastUpdated() {
-        return cf.date(IdentifiableColumns.LAST_UPDATED);
+    fun byLastUpdated(): DateFilterConnector<RelationshipCollectionRepository> {
+        return cf.date(IdentifiableColumns.LAST_UPDATED)
     }
 
-    public StringFilterConnector<RelationshipCollectionRepository> byRelationshipType() {
-        return cf.string(RelationshipTableInfo.Columns.RELATIONSHIP_TYPE);
+    fun byRelationshipType(): StringFilterConnector<RelationshipCollectionRepository> {
+        return cf.string(RelationshipTableInfo.Columns.RELATIONSHIP_TYPE)
     }
 
-    public EnumFilterConnector<RelationshipCollectionRepository, State> bySyncState() {
-        return cf.enumC(RelationshipTableInfo.Columns.SYNC_STATE);
+    fun bySyncState(): EnumFilterConnector<RelationshipCollectionRepository, State> {
+        return cf.enumC(RelationshipTableInfo.Columns.SYNC_STATE)
     }
 
-    public RelationshipCollectionRepository withItems() {
-        return cf.withChild(RelationshipFields.ITEMS);
+    fun withItems(): RelationshipCollectionRepository {
+        return cf.withChild(RelationshipFields.ITEMS)
     }
 }

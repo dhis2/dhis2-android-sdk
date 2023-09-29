@@ -25,30 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.user.internal.UserRoleStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.UserRoleStore
+import javax.inject.Inject
 
 @Reusable
-public final class UserRoleCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository> {
-
-    @Inject
-    UserRoleCollectionRepository(
-            final UserRoleStore store,
-            final Map<String, ChildrenAppender<UserRole>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new UserRoleCollectionRepository(store, childrenAppenders, s)));
-    }
-}
+class UserRoleCollectionRepository @Inject internal constructor(
+    store: UserRoleStore,
+    childrenAppenders: Map<String, ChildrenAppender<UserRole>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        UserRoleCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+)

@@ -31,13 +31,8 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import dagger.Reusable
 import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -136,27 +131,8 @@ class TrackedEntityInstanceQueryCollectionRepository @Inject internal constructo
         return LivePagedListBuilder(factory, pageSize).build()
     }
 
-    override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntityInstance>> {
-        return Pager(
-            config = PagingConfig(pageSize = pageSize),
-        ) {
-            pagingSource
-        }.flow
-    }
-
     val dataSource: DataSource<TrackedEntityInstance, TrackedEntityInstance>
         get() = TrackedEntityInstanceQueryDataSource(getDataFetcher())
-
-    val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
-        get() = TrackedEntityInstanceQueryPagingSource(
-            store,
-            trackerParentCallFactory,
-            scope,
-            childrenAppenders,
-            onlineCache,
-            onlineHelper,
-            localQueryHelper,
-        )
 
     @Deprecated("use getPagingdata")
     val resultDataSource: DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>

@@ -56,7 +56,7 @@ val libraryDesugaring = "2.0.3"
 
 // android
 val annotation = "1.6.0"
-val paging = "3.2.0"
+val paging = "2.1.2"
 
 // java
 val jackson = "2.13.4"
@@ -222,7 +222,6 @@ dependencies {
         exclude(group = "junit") // Android has JUnit built in.
     }
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
-    androidTestImplementation("androidx.paging:paging-testing:$paging")
 
     debugImplementation("com.facebook.flipper:flipper:$flipper")
     debugImplementation("com.facebook.soloader:soloader:$soloader")

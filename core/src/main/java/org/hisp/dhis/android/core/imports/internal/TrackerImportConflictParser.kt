@@ -147,11 +147,11 @@ internal class TrackerImportConflictParser @Inject constructor(
 
         return if (auxConflict.dataElement() != null && auxConflict.event() != null) {
             trackedEntityInstanceDataValueRepository
-                .value(auxConflict.event(), auxConflict.dataElement())
+                .value(auxConflict.event()!!, auxConflict.dataElement()!!)
                 .blockingGet()?.value()
         } else if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
             trackedEntityAttributeValueRepository
-                .value(auxConflict.trackedEntityAttribute(), auxConflict.trackedEntityInstance())
+                .value(auxConflict.trackedEntityAttribute()!!, auxConflict.trackedEntityInstance()!!)
                 .blockingGet()?.value()
         } else {
             null

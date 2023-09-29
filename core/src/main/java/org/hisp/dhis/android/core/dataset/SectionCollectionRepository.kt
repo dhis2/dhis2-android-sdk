@@ -25,65 +25,68 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.dataset.internal.SectionFields;
-import org.hisp.dhis.android.core.dataset.internal.SectionStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.dataset.internal.SectionFields
+import org.hisp.dhis.android.core.dataset.internal.SectionStore
+import javax.inject.Inject
 
 @Reusable
-public final class SectionCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Section, SectionCollectionRepository> {
-
-    @Inject
-    SectionCollectionRepository(final SectionStore store,
-                                final Map<String, ChildrenAppender<Section>> childrenAppenders,
-                                final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new SectionCollectionRepository(store, childrenAppenders, s)));
+class SectionCollectionRepository @Inject internal constructor(
+    store: SectionStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Section>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Section, SectionCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        SectionCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byDescription(): StringFilterConnector<SectionCollectionRepository> {
+        return cf.string(SectionTableInfo.Columns.DESCRIPTION)
     }
 
-    public StringFilterConnector<SectionCollectionRepository> byDescription() {
-        return cf.string(SectionTableInfo.Columns.DESCRIPTION);
+    fun bySortOrder(): IntegerFilterConnector<SectionCollectionRepository> {
+        return cf.integer(SectionTableInfo.Columns.SORT_ORDER)
     }
 
-    public IntegerFilterConnector<SectionCollectionRepository> bySortOrder() {
-        return cf.integer(SectionTableInfo.Columns.SORT_ORDER);
+    fun byShowRowTotals(): BooleanFilterConnector<SectionCollectionRepository> {
+        return cf.bool(SectionTableInfo.Columns.SHOW_ROW_TOTALS)
     }
 
-    public BooleanFilterConnector<SectionCollectionRepository> byShowRowTotals() {
-        return cf.bool(SectionTableInfo.Columns.SHOW_ROW_TOTALS);
+    fun byShowColumnTotals(): BooleanFilterConnector<SectionCollectionRepository> {
+        return cf.bool(SectionTableInfo.Columns.SHOW_COLUMN_TOTALS)
     }
 
-    public BooleanFilterConnector<SectionCollectionRepository> byShowColumnTotals() {
-        return cf.bool(SectionTableInfo.Columns.SHOW_COLUMN_TOTALS);
+    fun byDataSetUid(): StringFilterConnector<SectionCollectionRepository> {
+        return cf.string(SectionTableInfo.Columns.DATA_SET)
     }
 
-    public StringFilterConnector<SectionCollectionRepository> byDataSetUid() {
-        return cf.string(SectionTableInfo.Columns.DATA_SET);
+    fun withDataElements(): SectionCollectionRepository {
+        return cf.withChild(SectionFields.DATA_ELEMENTS)
     }
 
-    public SectionCollectionRepository withDataElements() {
-        return cf.withChild(SectionFields.DATA_ELEMENTS);
+    fun withGreyedFields(): SectionCollectionRepository {
+        return cf.withChild(SectionFields.GREYED_FIELDS)
     }
 
-    public SectionCollectionRepository withGreyedFields() {
-        return cf.withChild(SectionFields.GREYED_FIELDS);
-    }
-
-    public SectionCollectionRepository withIndicators() {
-        return cf.withChild(SectionFields.INDICATORS);
+    fun withIndicators(): SectionCollectionRepository {
+        return cf.withChild(SectionFields.INDICATORS)
     }
 }

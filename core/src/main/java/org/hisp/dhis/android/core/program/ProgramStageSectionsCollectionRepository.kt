@@ -25,66 +25,67 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields;
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
-        <ProgramStageSection, ProgramStageSectionsCollectionRepository> {
-
-    @Inject
-    ProgramStageSectionsCollectionRepository(final ProgramStageSectionStore store,
-                                             final Map<String, ChildrenAppender<ProgramStageSection>> childrenAppenders,
-                                             final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, s)));
+class ProgramStageSectionsCollectionRepository @Inject internal constructor(
+    store: ProgramStageSectionStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageSection>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageSection, ProgramStageSectionsCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramStageSectionsCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun bySortOrder(): IntegerFilterConnector<ProgramStageSectionsCollectionRepository> {
+        return cf.integer(ProgramStageSectionTableInfo.Columns.SORT_ORDER)
     }
 
-
-    public IntegerFilterConnector<ProgramStageSectionsCollectionRepository> bySortOrder() {
-        return cf.integer(ProgramStageSectionTableInfo.Columns.SORT_ORDER);
+    fun byProgramStageUid(): StringFilterConnector<ProgramStageSectionsCollectionRepository> {
+        return cf.string(ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byProgramStageUid() {
-        return cf.string(ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE);
+    fun byDesktopRenderType(): StringFilterConnector<ProgramStageSectionsCollectionRepository> {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE)
     }
 
-    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDesktopRenderType() {
-        return cf.string(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
+    fun byMobileRenderType(): StringFilterConnector<ProgramStageSectionsCollectionRepository> {
+        return cf.string(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE)
     }
 
-    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byMobileRenderType() {
-        return cf.string(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
+    fun byDescription(): StringFilterConnector<ProgramStageSectionsCollectionRepository> {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DESCRIPTION)
     }
 
-    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDescription() {
-        return cf.string(ProgramStageSectionTableInfo.Columns.DESCRIPTION);
+    fun byDisplayDescription(): StringFilterConnector<ProgramStageSectionsCollectionRepository> {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION)
     }
 
-    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDisplayDescription() {
-        return cf.string(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION);
+    fun withProgramIndicators(): ProgramStageSectionsCollectionRepository {
+        return cf.withChild(ProgramStageSectionFields.PROGRAM_INDICATORS)
     }
 
-    public ProgramStageSectionsCollectionRepository withProgramIndicators() {
-        return cf.withChild(ProgramStageSectionFields.PROGRAM_INDICATORS);
+    fun withDataElements(): ProgramStageSectionsCollectionRepository {
+        return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS)
     }
-
-    public ProgramStageSectionsCollectionRepository withDataElements() {
-        return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS);
-    }
-
 }

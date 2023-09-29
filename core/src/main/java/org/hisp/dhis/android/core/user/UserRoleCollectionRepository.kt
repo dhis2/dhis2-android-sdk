@@ -38,7 +38,7 @@ import javax.inject.Inject
 @Reusable
 class UserRoleCollectionRepository @Inject internal constructor(
     store: UserRoleStore,
-    childrenAppenders: Map<String, ChildrenAppender<UserRole>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<UserRole>>,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository>(
     store,

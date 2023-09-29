@@ -41,7 +41,7 @@ import javax.inject.Inject
 @Reusable
 class TrackerImportConflictCollectionRepository @Inject internal constructor(
     store: TrackerImportConflictStore,
-    childrenAppenders: Map<String, ChildrenAppender<TrackerImportConflict>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackerImportConflict>>,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<TrackerImportConflict, TrackerImportConflictCollectionRepository>(
     store,

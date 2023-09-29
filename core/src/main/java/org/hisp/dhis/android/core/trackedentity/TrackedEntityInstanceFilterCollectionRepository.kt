@@ -25,127 +25,129 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityInstanceFilterCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<TrackedEntityInstanceFilter,
-        TrackedEntityInstanceFilterCollectionRepository> {
-
-    @Inject
-    TrackedEntityInstanceFilterCollectionRepository(
-            final TrackedEntityInstanceFilterStore store,
-            final Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityInstanceFilterCollectionRepository(store, childrenAppenders, s)));
+class TrackedEntityInstanceFilterCollectionRepository @Inject internal constructor(
+    store: TrackedEntityInstanceFilterStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstanceFilter>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<
+    TrackedEntityInstanceFilter,
+    TrackedEntityInstanceFilterCollectionRepository,
+    >(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackedEntityInstanceFilterCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byProgram(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byProgram() {
-        return cf.string(Columns.PROGRAM);
+    fun byDescription(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.DESCRIPTION)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
+    fun bySortOrder(): IntegerFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.integer(TrackedEntityInstanceFilterTableInfo.Columns.SORT_ORDER)
     }
 
-    public IntegerFilterConnector<TrackedEntityInstanceFilterCollectionRepository> bySortOrder() {
-        return cf.integer(Columns.SORT_ORDER);
+    fun byEnrollmentStatus(): EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, EnrollmentStatus> {
+        return cf.enumC(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_STATUS)
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, EnrollmentStatus> byEnrollmentStatus() {
-        return cf.enumC(Columns.ENROLLMENT_STATUS);
+    fun byFollowUp(): BooleanFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.bool(TrackedEntityInstanceFilterTableInfo.Columns.FOLLOW_UP)
     }
 
-    public BooleanFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byFollowUp() {
-        return cf.bool(Columns.FOLLOW_UP);
+    fun byOrganisationUnit(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrganisationUnit() {
-        return cf.string(Columns.ORGANISATION_UNIT);
+    fun byOuMode(): EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, OrganisationUnitMode> {
+        return cf.enumC(TrackedEntityInstanceFilterTableInfo.Columns.OU_MODE)
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, OrganisationUnitMode> byOuMode() {
-        return cf.enumC(Columns.OU_MODE);
+    fun byAssignedUserMode(): EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, AssignedUserMode> {
+        return cf.enumC(TrackedEntityInstanceFilterTableInfo.Columns.ASSIGNED_USER_MODE)
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, AssignedUserMode> byAssignedUserMode() {
-        return cf.enumC(Columns.ASSIGNED_USER_MODE);
+    fun byOrderProperty(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ORDER)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byOrderProperty() {
-        return cf.string(Columns.ORDER);
+    fun byDisplayColumnOrder(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.DISPLAY_COLUMN_ORDER)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byDisplayColumnOrder() {
-        return cf.string(Columns.DISPLAY_COLUMN_ORDER);
+    fun byEventStatus(): EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, EventStatus> {
+        return cf.enumC(TrackedEntityInstanceFilterTableInfo.Columns.EVENT_STATUS)
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceFilterCollectionRepository, EventStatus> byEventStatus() {
-        return cf.enumC(Columns.EVENT_STATUS);
+    fun byEventDate(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.EVENT_DATE)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEventDate() {
-        return cf.string(Columns.EVENT_DATE);
+    fun byLastUpdatedDate(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.LAST_UPDATED_DATE)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byLastUpdatedDate() {
-        return cf.string(Columns.LAST_UPDATED_DATE);
+    fun byProgramStage(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byProgramStage() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun byTrackedEntityInstances(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCES)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byTrackedEntityInstances() {
-        return cf.string(Columns.TRACKED_ENTITY_INSTANCES);
+    fun byEnrollmentIncidentDate(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_INCIDENT_DATE)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEnrollmentIncidentDate() {
-        return cf.string(Columns.ENROLLMENT_INCIDENT_DATE);
+    fun byEnrollmentCreatedDate(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_CREATED_DATE)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byEnrollmentCreatedDate() {
-        return cf.string(Columns.ENROLLMENT_CREATED_DATE);
+    fun byColor(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
+    fun withTrackedEntityInstanceEventFilters(): TrackedEntityInstanceFilterCollectionRepository {
+        return cf.withChild(TrackedEntityInstanceFilterFields.EVENT_FILTERS)
     }
 
-    public TrackedEntityInstanceFilterCollectionRepository withTrackedEntityInstanceEventFilters() {
-        return cf.withChild(TrackedEntityInstanceFilterFields.EVENT_FILTERS);
-    }
-
-    public TrackedEntityInstanceFilterCollectionRepository withAttributeValueFilters() {
-        return cf.withChild(EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER);
+    fun withAttributeValueFilters(): TrackedEntityInstanceFilterCollectionRepository {
+        return cf.withChild(EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER)
     }
 }

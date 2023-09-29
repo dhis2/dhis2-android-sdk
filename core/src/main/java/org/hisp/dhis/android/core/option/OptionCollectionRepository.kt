@@ -25,52 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.option.OptionTableInfo.Columns;
-import org.hisp.dhis.android.core.option.internal.OptionStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.option.internal.OptionStore
+import javax.inject.Inject
 
 @Reusable
-public final class OptionCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Option, OptionCollectionRepository> {
-
-    @Inject
-    OptionCollectionRepository(final OptionStore store,
-                               final Map<String, ChildrenAppender<Option>> childrenAppenders,
-                               final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new OptionCollectionRepository(store, childrenAppenders, s)));
+class OptionCollectionRepository @Inject internal constructor(
+    store: OptionStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Option>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Option, OptionCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        OptionCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun bySortOrder(): IntegerFilterConnector<OptionCollectionRepository> {
+        return cf.integer(OptionTableInfo.Columns.SORT_ORDER)
     }
 
-    public IntegerFilterConnector<OptionCollectionRepository> bySortOrder() {
-        return cf.integer(Columns.SORT_ORDER);
+    fun byOptionSetUid(): StringFilterConnector<OptionCollectionRepository> {
+        return cf.string(OptionTableInfo.Columns.OPTION_SET)
     }
 
-    public StringFilterConnector<OptionCollectionRepository> byOptionSetUid() {
-        return cf.string(Columns.OPTION_SET);
+    fun byColor(): StringFilterConnector<OptionCollectionRepository> {
+        return cf.string(OptionTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<OptionCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<OptionCollectionRepository> {
+        return cf.string(OptionTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<OptionCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
-    }
-
-    public OptionCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.SORT_ORDER, direction);
+    fun orderBySortOrder(direction: OrderByDirection?): OptionCollectionRepository {
+        return cf.withOrderBy(OptionTableInfo.Columns.SORT_ORDER, direction)
     }
 }

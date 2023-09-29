@@ -12,6 +12,13 @@
       "displayShortName": "Badjia",
       "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I",
       "openingDate": "1970-01-01T00:00:00.000",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -11.618041992187502,
+          9.508486893003065
+        ]
+      },
       "parent": {
         "id": "O6uvpzGd5pu"
       },

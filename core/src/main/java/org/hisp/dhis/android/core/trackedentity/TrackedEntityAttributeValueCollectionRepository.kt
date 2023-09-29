@@ -25,74 +25,78 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DeletedFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DeletedFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityAttributeValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl
-        <TrackedEntityAttributeValue, TrackedEntityAttributeValueCollectionRepository> {
-
-    private final TrackedEntityAttributeValueStore store;
-    private final DataStatePropagator dataStatePropagator;
-
-    @Inject
-    TrackedEntityAttributeValueCollectionRepository(
-            final TrackedEntityAttributeValueStore store,
-            final Map<String, ChildrenAppender<TrackedEntityAttributeValue>> childrenAppenders,
-            final RepositoryScope scope,
-            final DataStatePropagator dataStatePropagator) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope, s ->
-                new TrackedEntityAttributeValueCollectionRepository(store, childrenAppenders, s, dataStatePropagator)));
-        this.store = store;
-        this.dataStatePropagator = dataStatePropagator;
+class TrackedEntityAttributeValueCollectionRepository @Inject internal constructor(
+    private val store: TrackedEntityAttributeValueStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityAttributeValue>>,
+    scope: RepositoryScope,
+    private val dataStatePropagator: DataStatePropagator,
+) : ReadOnlyCollectionRepositoryImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackedEntityAttributeValueCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+            dataStatePropagator,
+        )
+    },
+) {
+    fun value(
+        trackedEntityAttribute: String,
+        trackedEntityInstance: String,
+    ): TrackedEntityAttributeValueObjectRepository {
+        val updatedScope = byTrackedEntityAttribute().eq(trackedEntityAttribute)
+            .byTrackedEntityInstance().eq(trackedEntityInstance).scope
+        return TrackedEntityAttributeValueObjectRepository(
+            store,
+            childrenAppenders,
+            updatedScope,
+            dataStatePropagator,
+            trackedEntityAttribute,
+            trackedEntityInstance,
+        )
     }
 
-    public TrackedEntityAttributeValueObjectRepository value(String trackedEntityAttribute,
-                                                             String trackedEntityInstance) {
-        RepositoryScope updatedScope = byTrackedEntityAttribute().eq(trackedEntityAttribute)
-                .byTrackedEntityInstance().eq(trackedEntityInstance).scope;
-        return new TrackedEntityAttributeValueObjectRepository(store, childrenAppenders, updatedScope,
-                dataStatePropagator, trackedEntityAttribute, trackedEntityInstance);
+    fun byTrackedEntityAttribute(): StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
+        return cf.string(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byTrackedEntityAttribute() {
-        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
+    fun byValue(): StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
+        return cf.string(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byValue() {
-        return cf.string(Columns.VALUE);
+    fun byCreated(): DateFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
+        return cf.date(TrackedEntityAttributeValueTableInfo.Columns.CREATED)
     }
 
-    public DateFilterConnector<TrackedEntityAttributeValueCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
+    fun byLastUpdated(): DateFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
+        return cf.date(TrackedEntityAttributeValueTableInfo.Columns.LAST_UPDATED)
     }
 
-    public DateFilterConnector<TrackedEntityAttributeValueCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    fun byTrackedEntityInstance(): StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
+        return cf.string(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byTrackedEntityInstance() {
-        return cf.string(Columns.TRACKED_ENTITY_INSTANCE);
-    }
-
-    public DeletedFilterConnector<TrackedEntityAttributeValueCollectionRepository> byDeleted() {
-        return cf.deleted(Columns.VALUE);
+    fun byDeleted(): DeletedFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
+        return cf.deleted(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
     }
 }

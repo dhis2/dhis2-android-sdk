@@ -25,51 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo.Columns;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityTypeCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypeCollectionRepository> {
-
-    @Inject
-    TrackedEntityTypeCollectionRepository(final TrackedEntityTypeStore store,
-                                          final Map<String, ChildrenAppender<TrackedEntityType>> childrenAppenders,
-                                          final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityTypeCollectionRepository(store, childrenAppenders, s)));
+class TrackedEntityTypeCollectionRepository @Inject internal constructor(
+    store: TrackedEntityTypeStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityType>>,
+    scope: RepositoryScope,
+) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypeCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackedEntityTypeCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byFeatureType(): EnumFilterConnector<TrackedEntityTypeCollectionRepository, FeatureType> {
+        return cf.enumC(TrackedEntityTypeTableInfo.Columns.FEATURE_TYPE)
     }
 
-    public EnumFilterConnector<TrackedEntityTypeCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(Columns.FEATURE_TYPE);
+    fun byColor(): StringFilterConnector<TrackedEntityTypeCollectionRepository> {
+        return cf.string(TrackedEntityTypeTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<TrackedEntityTypeCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<TrackedEntityTypeCollectionRepository> {
+        return cf.string(TrackedEntityTypeTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<TrackedEntityTypeCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
-    }
-
-    public TrackedEntityTypeCollectionRepository withTrackedEntityTypeAttributes() {
-        return cf.withChild(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES);
+    fun withTrackedEntityTypeAttributes(): TrackedEntityTypeCollectionRepository {
+        return cf.withChild(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES)
     }
 }

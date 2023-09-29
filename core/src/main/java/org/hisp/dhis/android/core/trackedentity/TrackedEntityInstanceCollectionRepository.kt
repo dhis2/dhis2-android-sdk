@@ -25,184 +25,191 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.TrackerDataManager;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Observable;
+import dagger.Reusable
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityInstanceCollectionRepository
-        extends ReadWriteWithUidCollectionRepositoryImpl
-        <TrackedEntityInstance, TrackedEntityInstanceCreateProjection, TrackedEntityInstanceCollectionRepository>
-        implements ReadWriteWithUploadWithUidCollectionRepository
-        <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
-
-    private final TrackedEntityInstancePostParentCall postCall;
-    private final TrackedEntityInstanceStore store;
-    private final TrackerDataManager trackerDataManager;
-    private final JobQueryCall jobQueryCall;
-
-    @Inject
-    TrackedEntityInstanceCollectionRepository(
-            final TrackedEntityInstanceStore store,
-            final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-            final RepositoryScope scope,
-            final TrackedEntityInstanceProjectionTransformer transformer,
-            final TrackerDataManager trackerDataManager,
-            final TrackedEntityInstancePostParentCall postCall,
-            final JobQueryCall jobQueryCall) {
-        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer,
-                        trackerDataManager, postCall, jobQueryCall)));
-        this.postCall = postCall;
-        this.store = store;
-        this.trackerDataManager = trackerDataManager;
-        this.jobQueryCall = jobQueryCall;
+class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstance>>,
+    scope: RepositoryScope,
+    transformer: TrackedEntityInstanceProjectionTransformer,
+    private val trackerDataManager: TrackerDataManager,
+    private val postCall: TrackedEntityInstancePostParentCall,
+    private val jobQueryCall: JobQueryCall,
+) : ReadWriteWithUidCollectionRepositoryImpl<
+    TrackedEntityInstance,
+    TrackedEntityInstanceCreateProjection,
+    TrackedEntityInstanceCollectionRepository,
+    >(
+    trackedEntityInstanceStore,
+    childrenAppenders,
+    scope,
+    transformer,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackedEntityInstanceCollectionRepository(
+            trackedEntityInstanceStore,
+            childrenAppenders,
+            s,
+            transformer,
+            trackerDataManager,
+            postCall,
+            jobQueryCall,
+        )
+    },
+),
+    ReadWriteWithUploadWithUidCollectionRepository<TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
+    override fun propagateState(m: TrackedEntityInstance, action: HandleAction?) {
+        trackerDataManager.propagateTrackedEntityUpdate(m, action!!)
     }
 
-    @Override
-    protected void propagateState(TrackedEntityInstance trackedEntityInstance, HandleAction action) {
-        trackerDataManager.propagateTrackedEntityUpdate(trackedEntityInstance, action);
-    }
-
-    @Override
-    public Observable<D2Progress> upload() {
+    override fun upload(): Observable<D2Progress> {
         return Observable.concat(
-                jobQueryCall.queryPendingJobs(),
-                Observable.fromCallable(() ->
-                        byAggregatedSyncState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
-                ).flatMap(postCall::uploadTrackedEntityInstances)
-        );
+            jobQueryCall.queryPendingJobs(),
+            Observable.fromCallable {
+                byAggregatedSyncState().`in`(*uploadableStatesIncludingError()).blockingGetWithoutChildren()
+            }
+                .flatMap { trackedEntityInstances: List<TrackedEntityInstance> ->
+                    postCall.uploadTrackedEntityInstances(
+                        trackedEntityInstances,
+                    )
+                },
+        )
     }
 
-    @Override
-    public void blockingUpload() {
-        upload().blockingSubscribe();
+    override fun blockingUpload() {
+        upload().blockingSubscribe()
     }
 
-    @Override
-    public TrackedEntityInstanceObjectRepository uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope,
-                trackerDataManager);
+    override fun uid(uid: String?): TrackedEntityInstanceObjectRepository {
+        val updatedScope = withUidFilterItem(scope, uid)
+        return TrackedEntityInstanceObjectRepository(
+            trackedEntityInstanceStore,
+            uid,
+            childrenAppenders,
+            updatedScope,
+            trackerDataManager,
+        )
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
-        return cf.string(Columns.UID);
+    fun byUid(): StringFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.UID)
     }
 
-    public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
+    fun byCreated(): DateFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.date(TrackedEntityInstanceTableInfo.Columns.CREATED)
     }
 
-    public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    fun byLastUpdated(): DateFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.date(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCreatedAtClient() {
-        return cf.string(Columns.CREATED_AT_CLIENT);
+    fun byCreatedAtClient(): StringFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdatedAtClient() {
-        return cf.string(Columns.LAST_UPDATED_AT_CLIENT);
+    fun byLastUpdatedAtClient(): StringFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byOrganisationUnitUid() {
-        return cf.string(Columns.ORGANISATION_UNIT);
+    fun byOrganisationUnitUid(): StringFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byTrackedEntityType() {
-        return cf.string(Columns.TRACKED_ENTITY_TYPE);
+    fun byTrackedEntityType(): StringFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE)
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byGeometryType() {
-        return cf.enumC(Columns.GEOMETRY_TYPE);
+    fun byGeometryType(): EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> {
+        return cf.enumC(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_TYPE)
     }
 
-    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byGeometryCoordinates() {
-        return cf.string(Columns.GEOMETRY_COORDINATES);
+    fun byGeometryCoordinates(): StringFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.GEOMETRY_COORDINATES)
     }
 
-    /**
-     * @deprecated Use {@link #byAggregatedSyncState()} instead.
-     */
-    @Deprecated
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
-        return byAggregatedSyncState();
+    @Deprecated(
+        "Use {@link #byAggregatedSyncState()} instead.",
+        ReplaceWith("byAggregatedSyncState()"),
+    )
+    fun byState(): EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> {
+        return byAggregatedSyncState()
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> bySyncState() {
-        return cf.enumC(Columns.SYNC_STATE);
+    fun bySyncState(): EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> {
+        return cf.enumC(TrackedEntityInstanceTableInfo.Columns.SYNC_STATE)
     }
 
-    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byAggregatedSyncState() {
-        return cf.enumC(Columns.AGGREGATED_SYNC_STATE);
+    fun byAggregatedSyncState(): EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> {
+        return cf.enumC(TrackedEntityInstanceTableInfo.Columns.AGGREGATED_SYNC_STATE)
     }
 
-    public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {
-        return cf.bool(Columns.DELETED);
+    fun byDeleted(): BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> {
+        return cf.bool(TrackedEntityInstanceTableInfo.Columns.DELETED)
     }
 
-    public TrackedEntityInstanceCollectionRepository byProgramUids(List<String> programUids) {
-        return cf.subQuery(Columns.UID).inLinkTable(
-                EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                EnrollmentTableInfo.Columns.PROGRAM,
-                programUids);
+    fun byProgramUids(programUids: List<String>): TrackedEntityInstanceCollectionRepository {
+        return cf.subQuery(TrackedEntityInstanceTableInfo.Columns.UID).inLinkTable(
+            EnrollmentTableInfo.TABLE_INFO.name(),
+            EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+            EnrollmentTableInfo.Columns.PROGRAM,
+            programUids,
+        )
     }
 
-    public TrackedEntityInstanceCollectionRepository orderByCreated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.CREATED, direction);
+    fun orderByCreated(direction: OrderByDirection?): TrackedEntityInstanceCollectionRepository {
+        return cf.withOrderBy(TrackedEntityInstanceTableInfo.Columns.CREATED, direction)
     }
 
-    public TrackedEntityInstanceCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    fun orderByLastUpdated(direction: OrderByDirection?): TrackedEntityInstanceCollectionRepository {
+        return cf.withOrderBy(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED, direction)
     }
 
-    public TrackedEntityInstanceCollectionRepository orderByCreatedAtClient(
-            RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.CREATED_AT_CLIENT, direction);
+    fun orderByCreatedAtClient(
+        direction: OrderByDirection?,
+    ): TrackedEntityInstanceCollectionRepository {
+        return cf.withOrderBy(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT, direction)
     }
 
-    public TrackedEntityInstanceCollectionRepository orderByLastUpdatedAtClient(
-            RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
+    fun orderByLastUpdatedAtClient(
+        direction: OrderByDirection?,
+    ): TrackedEntityInstanceCollectionRepository {
+        return cf.withOrderBy(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT, direction)
     }
 
-    public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
-        return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
+    fun withTrackedEntityAttributeValues(): TrackedEntityInstanceCollectionRepository {
+        return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
     }
 
-    public TrackedEntityInstanceCollectionRepository withProgramOwners() {
-        return cf.withChild(TrackedEntityInstanceFields.PROGRAM_OWNERS);
+    fun withProgramOwners(): TrackedEntityInstanceCollectionRepository {
+        return cf.withChild(TrackedEntityInstanceFields.PROGRAM_OWNERS)
     }
 }

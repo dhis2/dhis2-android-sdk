@@ -25,40 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
+import javax.inject.Inject
 
 @Reusable
-public final class OrganisationUnitGroupCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
-        OrganisationUnitGroup, OrganisationUnitGroupCollectionRepository> {
-
-    @Inject
-    OrganisationUnitGroupCollectionRepository(
-            final OrganisationUnitGroupStore store,
-            final Map<String, ChildrenAppender<OrganisationUnitGroup>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new OrganisationUnitGroupCollectionRepository(store, childrenAppenders, s)));
+class OrganisationUnitGroupCollectionRepository @Inject internal constructor(
+    store: OrganisationUnitGroupStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<OrganisationUnitGroup>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnitGroup, OrganisationUnitGroupCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        OrganisationUnitGroupCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byShortName(): StringFilterConnector<OrganisationUnitGroupCollectionRepository> {
+        return cf.string(OrganisationUnitGroupTableInfo.Columns.SHORT_NAME)
     }
 
-    public StringFilterConnector<OrganisationUnitGroupCollectionRepository> byShortName() {
-        return cf.string(Columns.SHORT_NAME);
-    }
-
-    public StringFilterConnector<OrganisationUnitGroupCollectionRepository> byDisplayShortName() {
-        return cf.string(Columns.DISPLAY_SHORT_NAME);
+    fun byDisplayShortName(): StringFilterConnector<OrganisationUnitGroupCollectionRepository> {
+        return cf.string(OrganisationUnitGroupTableInfo.Columns.DISPLAY_SHORT_NAME)
     }
 }

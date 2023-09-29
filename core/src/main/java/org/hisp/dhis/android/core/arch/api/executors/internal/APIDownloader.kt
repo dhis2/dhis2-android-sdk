@@ -84,6 +84,8 @@ internal interface APIDownloader {
 
     fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P>
 
+    suspend fun <P> downloadObjectAsCoroutine(handler: Handler<P>, downloader: suspend () -> P): P
+
     fun <P> downloadPagedPayload(
         pageSize: Int,
         downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>,

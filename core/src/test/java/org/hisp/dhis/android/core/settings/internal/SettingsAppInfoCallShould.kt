@@ -29,9 +29,13 @@ package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Single
+import com.nhaarman.mockitokotlin2.stub
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
@@ -44,94 +48,134 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@OptIn(ExperimentalCoroutinesApi::class)
+
 @RunWith(JUnit4::class)
 class SettingsAppInfoCallShould {
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
 
-    private val settingAppInfoSingle: Single<SettingsAppInfo> = mock()
+    private val settingAppInfoCall: SettingsAppInfo = mock()
     private val settingsAppInfo = SettingsAppInfo.builder()
         .dataStoreVersion(SettingsAppDataStoreVersion.V2_0)
         .build()
 
-    private val generalSettingsSingle: Single<GeneralSettings> = mock()
+    private val generalSettingsCall: GeneralSettings = mock()
     private val generalSettings = GeneralSettings.builder()
         .encryptDB(true)
         .build()
 
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private lateinit var dataSetSettingCall: SettingsAppInfoCall
 
     @Before
     fun setUp() {
-        whenever(service.info()) doReturn settingAppInfoSingle
-        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-            Single.just(settingsAppInfo)
+        service.stub {
+            onBlocking { info() } doReturn settingAppInfoCall
+        }
+        coroutineAPICallExecutor.stub {
+            onBlocking { wrap { settingAppInfoCall }.getOrThrow() } doReturn
+                    settingsAppInfo
+        }
 
-        whenever(service.generalSettings(SettingsAppDataStoreVersion.V1_1)) doReturn generalSettingsSingle
-        whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
-            Single.just(generalSettings)
 
-        dataSetSettingCall = SettingsAppInfoCall(service, apiCallExecutor)
+        service.stub {
+            onBlocking { generalSettings(SettingsAppDataStoreVersion.V1_1) } doReturn generalSettingsCall
+        }
+
+        coroutineAPICallExecutor.stub {
+            onBlocking { wrap { generalSettingsCall }.getOrThrow() } doReturn generalSettings
+        }
+
+
+        dataSetSettingCall = SettingsAppInfoCall(service, coroutineAPICallExecutor)
     }
 
     @Test
-    fun default_to_version_2_if_info_found() {
-        when (val version = dataSetSettingCall.fetch(false).blockingGet()) {
+    fun default_to_version_2_if_info_found() = runTest {
+        when (val version = dataSetSettingCall.fetch(false)) {
             is SettingsAppVersion.Valid -> {
                 assertThat(version.dataStore).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V2_0)
                 assertThat(version.app).isNotEmpty()
             }
+
             else -> fail("Unexpected version")
         }
     }
 
     @Test
-    fun default_to_version_1_if_info_not_found() {
-        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_version_1_if_info_not_found() = runTest {
+        coroutineAPICallExecutor.stub {
+            onBlocking {
+                wrap { settingAppInfoCall }.getOrThrow()
+            } doThrow D2ErrorSamples.notFound()
+        }
 
-        when (val version = dataSetSettingCall.fetch(false).blockingGet()) {
+
+        when (val version = dataSetSettingCall.fetch(false)) {
             is SettingsAppVersion.Valid -> {
                 assertThat(version.dataStore).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V1_1)
                 assertThat(version.app).isNotEmpty()
             }
+
             else -> fail("Unexpected version")
         }
     }
 
     @Test
-    fun return_data_store_empty_if_cannot_found_anything() {
-        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
-        whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun return_data_store_empty_if_cannot_found_anything() = runTest {
+        coroutineAPICallExecutor.stub {
+            onBlocking {
+                wrap { settingAppInfoCall }.getOrThrow()
+            } doThrow D2ErrorSamples.notFound()
+        }
+        coroutineAPICallExecutor.stub {
+            onBlocking {
+                wrap { generalSettingsCall }.getOrThrow()
+            } doThrow D2ErrorSamples.notFound()
+        }
 
-        val version = dataSetSettingCall.fetch(false).blockingGet()
+        val version = dataSetSettingCall.fetch(false)
 
         assertThat(version is SettingsAppVersion.DataStoreEmpty).isTrue()
     }
 
     @Test
-    fun throws_D2_exception_if_other_error_than_not_found_in_general_settings() {
-        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
-        whenever(apiCallExecutor.wrapSingle(generalSettingsSingle, false)) doReturn
-            Single.error(D2ErrorSamples.get())
+    fun throws_D2_exception_if_other_error_than_not_found_in_general_settings() = runTest {
+
+        coroutineAPICallExecutor.stub {
+            onBlocking {
+                wrap { settingAppInfoCall }.getOrThrow()
+            } doThrow D2ErrorSamples.notFound()
+        }
+
+        coroutineAPICallExecutor.stub {
+            onBlocking {
+                wrap { generalSettingsCall }.getOrThrow()
+            } doThrow D2ErrorSamples.get()
+        }
 
         val exception = assertThrows(RuntimeException::class.java) {
-            dataSetSettingCall.fetch(false).blockingGet()
+            runBlocking {
+                dataSetSettingCall.fetch(false)
+            }
         }
 
         assertThat(exception.cause).isInstanceOf(D2Error::class.java)
     }
 
     @Test
-    fun throws_D2_exception_if_other_error_than_not_found_in_info() {
-        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
-            Single.error(D2ErrorSamples.get())
+    fun throws_D2_exception_if_other_error_than_not_found_in_info() = runTest {
+        coroutineAPICallExecutor.stub {
+            onBlocking {
+                wrap { settingAppInfoCall }.getOrThrow()
+            } doThrow D2ErrorSamples.get()
+        }
 
         val exception = assertThrows(RuntimeException::class.java) {
-            dataSetSettingCall.fetch(false).blockingGet()
+            runBlocking {
+                dataSetSettingCall.fetch(false)
+            }
         }
 
         assertThat(exception.cause).isInstanceOf(D2Error::class.java)

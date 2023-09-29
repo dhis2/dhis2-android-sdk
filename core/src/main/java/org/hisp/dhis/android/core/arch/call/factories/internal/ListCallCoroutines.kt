@@ -25,28 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import javax.inject.Inject
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-@Reusable
-internal class StockUseCaseCall @Inject constructor(
-    private val stockUseCaseHandler: StockUseCaseHandler,
-    private val stockUseCaseService: StockUseCaseService,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : BaseSettingCall<List<InternalStockUseCase>>(coroutineAPICallExecutor) {
+import io.reactivex.Single
 
-    override suspend fun fetch(storeError: Boolean): List<InternalStockUseCase> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) { stockUseCaseService.stockUseCases() }
-            .getOrThrow()
-    }
-
-    override fun process(item: List<InternalStockUseCase>?) {
-        val stockUseCases = item ?: emptyList()
-        stockUseCaseHandler.handleMany(stockUseCases)
-    }
+fun interface ListCallCoroutines<P> {
+    suspend fun download(): List<P>
 }

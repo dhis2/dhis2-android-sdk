@@ -29,36 +29,28 @@ package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import java.net.HttpURLConnection
 
-internal abstract class BaseSettingCall<T> : CompletableProvider {
-
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
-    }
-
-    fun download(storeError: Boolean): Single<T> {
-        return fetch(storeError)
-            .doOnSuccess { process(it) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && isExpectedError(throwable)) {
-                    process(null)
-                }
-            }
+internal abstract class BaseSettingCall<T> internal constructor(
+    val coroutineAPICallExecutor: CoroutineAPICallExecutor
+) {
+    suspend fun download(storeError: Boolean): T {
+        return coroutineAPICallExecutor.wrap {
+            fetch(storeError)
+        }.getOrThrow()
     }
 
     private fun isExpectedError(throwable: D2Error): Boolean {
         return throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
-            throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED ||
-            throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
+                throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED ||
+                throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
     }
 
-    abstract fun fetch(storeError: Boolean): Single<T>
+    abstract suspend fun fetch(storeError: Boolean): T
 
     abstract fun process(item: T?)
 }

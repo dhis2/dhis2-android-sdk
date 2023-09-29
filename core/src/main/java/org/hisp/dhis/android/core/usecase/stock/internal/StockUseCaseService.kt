@@ -34,5 +34,5 @@ import retrofit2.http.GET
 internal interface StockUseCaseService {
 
     @GET("dataStore/USE_CASES/stockUseCases")
-    fun stockUseCases(): Single<List<InternalStockUseCase>>
+    suspend fun stockUseCases(): List<InternalStockUseCase>
 }

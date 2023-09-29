@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import io.reactivex.Single
 
 internal interface SettingsAppInfoManager {
-    fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion>
-    fun getAppVersion(): Single<String>
-    fun updateAppVersion(): Single<SettingsAppVersion>
+    suspend fun getDataStoreVersion(): SettingsAppDataStoreVersion
+    suspend fun getAppVersion(): String
+    suspend fun updateAppVersion(): SettingsAppVersion
 }

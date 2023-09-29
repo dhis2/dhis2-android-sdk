@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import java.net.HttpURLConnection
 import javax.inject.Inject
@@ -38,50 +37,58 @@ import javax.inject.Inject
 @Reusable
 internal class SettingsAppInfoCall @Inject constructor(
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     companion object {
         const val unknown = "unknown"
     }
 
-    fun fetch(storeError: Boolean): Single<SettingsAppVersion> {
+    suspend fun fetch(storeError: Boolean): SettingsAppVersion {
         return fetchAppVersion(storeError)
     }
 
-    private fun fetchAppVersion(storeError: Boolean): Single<SettingsAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.info(), storeError)
-            .map<SettingsAppVersion> {
-                SettingsAppVersion.Valid(it.dataStoreVersion(), it.androidSettingsVersion() ?: unknown)
+    private suspend fun fetchAppVersion(storeError: Boolean): SettingsAppVersion {
+
+        return try {
+
+            val info = coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.info() }
+                .getOrThrow()
+
+            SettingsAppVersion.Valid(info.dataStoreVersion(), info.androidSettingsVersion() ?: unknown)
+
+        } catch (exception: D2Error) {
+            when {
+                exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
+                    fetchV1GeneralSettings(storeError)
+
+                exception.originalException() is InvalidFormatException ->
+                    SettingsAppVersion.DataStoreEmpty
+
+                else ->
+                    throw exception
             }
-            .onErrorResumeNext { throwable: Throwable ->
-                return@onErrorResumeNext when {
-                    throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        fetchV1GeneralSettings(storeError)
-                    throwable is D2Error && throwable.originalException() is InvalidFormatException ->
-                        Single.just(SettingsAppVersion.DataStoreEmpty)
-                    else ->
-                        Single.error(throwable)
-                }
-            }
+        }
     }
 
-    private fun fetchV1GeneralSettings(storeError: Boolean): Single<SettingsAppVersion> {
-        return apiCallExecutor.wrapSingle(
-            settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1),
-            storeError,
-        )
-            .map<SettingsAppVersion> {
-                SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)
+    private suspend fun fetchV1GeneralSettings(storeError: Boolean): SettingsAppVersion {
+        return try {
+            coroutineAPICallExecutor.wrap(storeError = storeError) {
+                settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1)
+            }.getOrThrow()
+            SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)
+
+        } catch (exception: D2Error) {
+            when {
+                exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
+                    SettingsAppVersion.DataStoreEmpty
+
+                exception.originalException() is InvalidFormatException ->
+                    SettingsAppVersion.DataStoreEmpty
+
+                else ->
+                    throw exception
             }
-            .onErrorResumeNext { throwable: Throwable ->
-                return@onErrorResumeNext when {
-                    throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(SettingsAppVersion.DataStoreEmpty)
-                    throwable is D2Error && throwable.originalException() is InvalidFormatException ->
-                        Single.just(SettingsAppVersion.DataStoreEmpty)
-                    else ->
-                        Single.error(throwable)
-                }
-            }
+        }
     }
+
 }

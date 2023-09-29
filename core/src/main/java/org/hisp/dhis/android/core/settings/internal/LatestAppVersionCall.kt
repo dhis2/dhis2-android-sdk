@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import io.reactivex.Completable
+import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 import javax.inject.Inject
 
@@ -38,15 +40,20 @@ import javax.inject.Inject
 internal class LatestAppVersionCall @Inject constructor(
     private val latestAppVersionHandler: LatestAppVersionHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
-) : BaseSettingCall<LatestAppVersion>() {
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : BaseSettingCall<LatestAppVersion>(coroutineAPICallExecutor), CompletableProvider {
 
-    override fun fetch(storeError: Boolean): Single<LatestAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.latestAppVersion(), storeError)
+    override suspend fun fetch(storeError: Boolean): LatestAppVersion {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.latestAppVersion() }
+            .getOrThrow()
     }
 
     override fun process(item: LatestAppVersion?) {
         val appVersionList = listOfNotNull(item)
         latestAppVersionHandler.handleMany(appVersionList)
+    }
+
+    override fun getCompletable(storeError: Boolean): Completable {
+        return rxCompletable { fetch(storeError) }
     }
 }

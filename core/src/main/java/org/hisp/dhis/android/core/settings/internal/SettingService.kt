@@ -39,35 +39,35 @@ import retrofit2.http.Url
 internal interface SettingService {
 
     @GET("systemSettings")
-    fun getSystemSettingsSingle(@Query("key") @Which fields: Fields<SystemSettings>): Single<SystemSettings>
+    suspend fun getSystemSettingsSingle(@Query("key") @Which fields: Fields<SystemSettings>): SystemSettings
 
     @GET("systemSettings")
     suspend fun getSystemSettings(@Query("key") @Which fields: Fields<SystemSettings>): SystemSettings
 
     @GET("userSettings")
-    fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>
+    suspend fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): UserSettings
 
     @GET
-    fun settingsAppInfo(@Url url: String): Single<SettingsAppInfo>
+    suspend fun settingsAppInfo(@Url url: String): SettingsAppInfo
 
     @GET
-    fun generalSettings(@Url url: String): Single<GeneralSettings>
+    suspend fun generalSettings(@Url url: String): GeneralSettings
 
     @GET
-    fun dataSetSettings(@Url url: String): Single<DataSetSettings>
+    suspend fun dataSetSettings(@Url url: String): DataSetSettings
 
     @GET
-    fun programSettings(@Url url: String): Single<ProgramSettings>
+    suspend fun programSettings(@Url url: String): ProgramSettings
 
     @GET
-    fun synchronizationSettings(@Url url: String): Single<SynchronizationSettings>
+    suspend fun synchronizationSettings(@Url url: String): SynchronizationSettings
 
     @GET
-    fun appearanceSettings(@Url url: String): Single<AppearanceSettings>
+    suspend fun appearanceSettings(@Url url: String): AppearanceSettings
 
     @GET
-    fun analyticsSettings(@Url url: String): Single<AnalyticsSettings>
+    suspend fun analyticsSettings(@Url url: String): AnalyticsSettings
 
     @GET
-    fun latestAppVersion(@Url url: String): Single<LatestAppVersion>
+    suspend fun latestAppVersion(@Url url: String): LatestAppVersion
 }

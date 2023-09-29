@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.await
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import javax.inject.Inject
 
@@ -38,21 +36,15 @@ import javax.inject.Inject
 internal class GeneralSettingCall @Inject constructor(
     private val generalSettingHandler: GeneralSettingHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
-) : BaseSettingCall<GeneralSettings>() {
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : BaseSettingCall<GeneralSettings>(coroutineAPICallExecutor) {
 
     private var cachedValue: GeneralSettings? = null
 
-    override fun fetch(storeError: Boolean): Single<GeneralSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = storeError)
-        }
-    }
-
-    fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
+    suspend fun fetch(storeError: Boolean, acceptCache: Boolean = false): GeneralSettings {
         return when {
-            cachedValue != null && acceptCache -> Single.just(cachedValue)
+            cachedValue != null && acceptCache -> cachedValue!!
             else -> fetch(storeError)
         }
     }
@@ -65,11 +57,15 @@ internal class GeneralSettingCall @Inject constructor(
 
     suspend fun isDatabaseEncrypted(): Boolean {
         // TODO Should we decrypt the database if the settings app is uninstalled?
-        return appVersionManager.updateAppVersion()
-            .flatMap { appVersionManager.getDataStoreVersion() }
-            .flatMap { version ->
-                apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = false)
-            }
-            .map { obj: GeneralSettings -> obj.encryptDB() }.await()
+        appVersionManager.updateAppVersion()
+        return coroutineAPICallExecutor.wrap(storeError = false) {
+            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
+        }.getOrThrow().encryptDB()
+    }
+
+    override suspend fun fetch(storeError: Boolean): GeneralSettings {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
+        }.getOrThrow()
     }
 }

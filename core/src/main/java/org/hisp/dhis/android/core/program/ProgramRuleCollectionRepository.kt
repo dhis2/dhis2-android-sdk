@@ -25,54 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleFields;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramRuleFields
+import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramRuleCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRule, ProgramRuleCollectionRepository> {
-
-    @Inject
-    ProgramRuleCollectionRepository(final ProgramRuleStore store,
-                                    final Map<String, ChildrenAppender<ProgramRule>> childrenAppenders,
-                                    final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramRuleCollectionRepository(store, childrenAppenders, s)));
+class ProgramRuleCollectionRepository @Inject internal constructor(
+    store: ProgramRuleStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRule>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRule, ProgramRuleCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramRuleCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byPriority(): IntegerFilterConnector<ProgramRuleCollectionRepository> {
+        return cf.integer(ProgramRuleTableInfo.Columns.PRIORITY)
     }
 
-
-    public IntegerFilterConnector<ProgramRuleCollectionRepository> byPriority() {
-        return cf.integer(Columns.PRIORITY);
+    fun byCondition(): StringFilterConnector<ProgramRuleCollectionRepository> {
+        return cf.string(ProgramRuleTableInfo.Columns.CONDITION)
     }
 
-    public StringFilterConnector<ProgramRuleCollectionRepository> byCondition() {
-        return cf.string(Columns.CONDITION);
+    fun byProgramUid(): StringFilterConnector<ProgramRuleCollectionRepository> {
+        return cf.string(ProgramRuleTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<ProgramRuleCollectionRepository> byProgramUid() {
-        return cf.string(Columns.PROGRAM);
+    fun byProgramStageUid(): StringFilterConnector<ProgramRuleCollectionRepository> {
+        return cf.string(ProgramRuleTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<ProgramRuleCollectionRepository> byProgramStageUid() {
-        return cf.string(Columns.PROGRAM_STAGE);
-    }
-
-    public ProgramRuleCollectionRepository withProgramRuleActions() {
-        return cf.withChild(ProgramRuleFields.PROGRAM_RULE_ACTIONS);
+    fun withProgramRuleActions(): ProgramRuleCollectionRepository {
+        return cf.withChild(ProgramRuleFields.PROGRAM_RULE_ACTIONS)
     }
 }

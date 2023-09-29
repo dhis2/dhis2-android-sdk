@@ -25,82 +25,82 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramRuleActionCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleAction, ProgramRuleActionCollectionRepository> {
-
-    @Inject
-    ProgramRuleActionCollectionRepository(final ProgramRuleActionStore store,
-                                          final Map<String, ChildrenAppender<ProgramRuleAction>> childrenAppenders,
-                                          final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramRuleActionCollectionRepository(store, childrenAppenders, s)));
+class ProgramRuleActionCollectionRepository @Inject internal constructor(
+    store: ProgramRuleActionStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRuleAction>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleAction, ProgramRuleActionCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramRuleActionCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byData(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.DATA)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byData() {
-        return cf.string(Columns.DATA);
+    fun byContent(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.CONTENT)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byContent() {
-        return cf.string(Columns.CONTENT);
+    fun byLocation(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.LOCATION)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byLocation() {
-        return cf.string(Columns.LOCATION);
+    fun byTrackedEntityAttributeUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byTrackedEntityAttributeUid() {
-        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
+    fun byProgramIndicatorUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.PROGRAM_INDICATOR)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramIndicatorUid() {
-        return cf.string(Columns.PROGRAM_INDICATOR);
+    fun byProgramStageSectionUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.PROGRAM_STAGE_SECTION)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramStageSectionUid() {
-        return cf.string(Columns.PROGRAM_STAGE_SECTION);
+    fun byProgramRuleActionType(): EnumFilterConnector<ProgramRuleActionCollectionRepository, ProgramRuleActionType> {
+        return cf.enumC(ProgramRuleActionTableInfo.Columns.PROGRAM_RULE_ACTION_TYPE)
     }
 
-    public EnumFilterConnector<ProgramRuleActionCollectionRepository,
-            ProgramRuleActionType> byProgramRuleActionType() {
-
-        return cf.enumC(Columns.PROGRAM_RULE_ACTION_TYPE);
+    fun byProgramStageUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramStageUid() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun byDataElementUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.DATA_ELEMENT)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byDataElementUid() {
-        return cf.string(Columns.DATA_ELEMENT);
+    fun byProgramRuleUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.PROGRAM_RULE)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramRuleUid() {
-        return cf.string(Columns.PROGRAM_RULE);
+    fun byOptionUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.OPTION)
     }
 
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byOptionUid() {
-        return cf.string(Columns.OPTION);
-    }
-
-    public StringFilterConnector<ProgramRuleActionCollectionRepository> byOptionGroupUid() {
-        return cf.string(Columns.OPTION_GROUP);
+    fun byOptionGroupUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.OPTION_GROUP)
     }
 }

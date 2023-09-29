@@ -25,60 +25,62 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
-        <ProgramRuleVariable, ProgramRuleVariableCollectionRepository> {
-
-    @Inject
-    ProgramRuleVariableCollectionRepository(final ProgramRuleVariableStore store,
-                                            final Map<String, ChildrenAppender<ProgramRuleVariable>> childrenAppenders,
-                                            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, s)));
+class ProgramRuleVariableCollectionRepository @Inject internal constructor(
+    store: ProgramRuleVariableStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRuleVariable>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleVariable, ProgramRuleVariableCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramRuleVariableCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byUseCodeForOptionSet(): BooleanFilterConnector<ProgramRuleVariableCollectionRepository> {
+        return cf.bool(ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET)
     }
 
-
-    public BooleanFilterConnector<ProgramRuleVariableCollectionRepository> byUseCodeForOptionSet() {
-        return cf.bool(Columns.USE_CODE_FOR_OPTION_SET);
+    fun byProgramUid(): StringFilterConnector<ProgramRuleVariableCollectionRepository> {
+        return cf.string(ProgramRuleVariableTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byProgramUid() {
-        return cf.string(Columns.PROGRAM);
+    fun byProgramStageUid(): StringFilterConnector<ProgramRuleVariableCollectionRepository> {
+        return cf.string(ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byProgramStageUid() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun byDataElementUid(): StringFilterConnector<ProgramRuleVariableCollectionRepository> {
+        return cf.string(ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT)
     }
 
-    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byDataElementUid() {
-        return cf.string(Columns.DATA_ELEMENT);
+    fun byTrackedEntityAttributeUid(): StringFilterConnector<ProgramRuleVariableCollectionRepository> {
+        return cf.string(ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE)
     }
 
-    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byTrackedEntityAttributeUid() {
-        return cf.string(Columns.TRACKED_ENTITY_ATTRIBUTE);
-    }
-
-    public EnumFilterConnector<ProgramRuleVariableCollectionRepository,
-            ProgramRuleVariableSourceType> byProgramRuleVariableSourceType() {
-
-        return cf.enumC(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
+    fun byProgramRuleVariableSourceType(): EnumFilterConnector<
+        ProgramRuleVariableCollectionRepository,
+        ProgramRuleVariableSourceType,
+        > {
+        return cf.enumC(ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
     }
 }

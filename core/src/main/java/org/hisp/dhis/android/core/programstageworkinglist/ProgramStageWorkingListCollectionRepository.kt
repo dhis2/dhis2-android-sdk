@@ -25,88 +25,88 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.programstageworkinglist
 
-package org.hisp.dhis.android.core.programstageworkinglist;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields;
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore;
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramStageWorkingListCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageWorkingList,
-        ProgramStageWorkingListCollectionRepository> {
-
-    @Inject
-    ProgramStageWorkingListCollectionRepository(
-            final ProgramStageWorkingListStore store,
-            final Map<String, ChildrenAppender<ProgramStageWorkingList>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramStageWorkingListCollectionRepository(store, childrenAppenders, s)));
+class ProgramStageWorkingListCollectionRepository @Inject internal constructor(
+    store: ProgramStageWorkingListStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageWorkingList>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageWorkingList, ProgramStageWorkingListCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramStageWorkingListCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byProgram(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<ProgramStageWorkingListCollectionRepository> byProgram() {
-        return cf.string(Columns.PROGRAM);
+    fun byProgramStage(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<ProgramStageWorkingListCollectionRepository> byProgramStage() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun byDescription(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.DESCRIPTION)
     }
 
-    public StringFilterConnector<ProgramStageWorkingListCollectionRepository> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
+    fun byEventStatus(): EnumFilterConnector<ProgramStageWorkingListCollectionRepository, EventStatus> {
+        return cf.enumC(ProgramStageWorkingListTableInfo.Columns.EVENT_STATUS)
     }
 
-    public EnumFilterConnector<ProgramStageWorkingListCollectionRepository, EventStatus> byEventStatus() {
-        return cf.enumC(Columns.EVENT_STATUS);
+    fun byEnrollmentStatus(): EnumFilterConnector<ProgramStageWorkingListCollectionRepository, EnrollmentStatus> {
+        return cf.enumC(ProgramStageWorkingListTableInfo.Columns.ENROLLMENT_STATUS)
     }
 
-    public EnumFilterConnector<ProgramStageWorkingListCollectionRepository, EnrollmentStatus> byEnrollmentStatus() {
-        return cf.enumC(Columns.ENROLLMENT_STATUS);
+    fun byOrder(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.ORDER)
     }
 
-    public StringFilterConnector<ProgramStageWorkingListCollectionRepository> byOrder() {
-        return cf.string(Columns.ORDER);
+    fun byDisplayColumnOrder(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.DISPLAY_COLUMN_ORDER)
     }
 
-    public StringFilterConnector<ProgramStageWorkingListCollectionRepository> byDisplayColumnOrder() {
-        return cf.string(Columns.DISPLAY_COLUMN_ORDER);
+    fun byOrganisationUnit(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.ORG_UNIT)
     }
 
-    public StringFilterConnector<ProgramStageWorkingListCollectionRepository> byOrganisationUnit() {
-        return cf.string(Columns.ORG_UNIT);
+    fun byOuMode(): EnumFilterConnector<ProgramStageWorkingListCollectionRepository, OrganisationUnitMode> {
+        return cf.enumC(ProgramStageWorkingListTableInfo.Columns.OU_MODE)
     }
 
-    public EnumFilterConnector<ProgramStageWorkingListCollectionRepository, OrganisationUnitMode> byOuMode() {
-        return cf.enumC(Columns.OU_MODE);
+    fun byAssignedUserMode(): EnumFilterConnector<ProgramStageWorkingListCollectionRepository, AssignedUserMode> {
+        return cf.enumC(ProgramStageWorkingListTableInfo.Columns.ASSIGNED_USER_MODE)
     }
 
-    public EnumFilterConnector<ProgramStageWorkingListCollectionRepository, AssignedUserMode> byAssignedUserMode() {
-        return cf.enumC(Columns.ASSIGNED_USER_MODE);
+    fun withDataFilters(): ProgramStageWorkingListCollectionRepository {
+        return cf.withChild(ProgramStageQueryCriteriaFields.DATA_FILTERS)
     }
 
-    public ProgramStageWorkingListCollectionRepository withDataFilters() {
-        return cf.withChild(ProgramStageQueryCriteriaFields.DATA_FILTERS);
-    }
-
-    public ProgramStageWorkingListCollectionRepository withAttributeValueFilters() {
-        return cf.withChild(ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER);
+    fun withAttributeValueFilters(): ProgramStageWorkingListCollectionRepository {
+        return cf.withChild(ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER)
     }
 }

@@ -25,70 +25,71 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports
 
-package org.hisp.dhis.android.core.imports;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
+import javax.inject.Inject
 
 @Reusable
-public final class TrackerImportConflictCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<TrackerImportConflict, TrackerImportConflictCollectionRepository> {
-
-    @Inject
-    TrackerImportConflictCollectionRepository(
-            final TrackerImportConflictStore store,
-            final Map<String, ChildrenAppender<TrackerImportConflict>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackerImportConflictCollectionRepository(store, childrenAppenders, s)));
+class TrackerImportConflictCollectionRepository @Inject internal constructor(
+    store: TrackerImportConflictStore,
+    childrenAppenders: Map<String, ChildrenAppender<TrackerImportConflict>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<TrackerImportConflict, TrackerImportConflictCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackerImportConflictCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byConflict(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.CONFLICT)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byConflict() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.CONFLICT);
+    fun byValue(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.VALUE)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byValue() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.VALUE);
+    fun byTrackedEntityInstanceUid(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byTrackedEntityInstanceUid() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
+    fun byEnrollmentUid(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.ENROLLMENT)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byEnrollmentUid() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.ENROLLMENT);
+    fun byEventUid(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.EVENT)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byEventUid() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.EVENT);
+    fun byTableReference(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byTableReference() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE);
+    fun byErrorCode(): StringFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.string(TrackerImportConflictTableInfo.Columns.ERROR_CODE)
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byErrorCode() {
-        return cf.string(TrackerImportConflictTableInfo.Columns.ERROR_CODE);
+    fun byStatus(): EnumFilterConnector<TrackerImportConflictCollectionRepository, ImportStatus> {
+        return cf.enumC(TrackerImportConflictTableInfo.Columns.STATUS)
     }
 
-    public EnumFilterConnector<TrackerImportConflictCollectionRepository, ImportStatus> byStatus() {
-        return cf.enumC(TrackerImportConflictTableInfo.Columns.STATUS);
-    }
-
-    public DateFilterConnector<TrackerImportConflictCollectionRepository> byCreated() {
-        return cf.date(TrackerImportConflictTableInfo.Columns.CREATED);
+    fun byCreated(): DateFilterConnector<TrackerImportConflictCollectionRepository> {
+        return cf.date(TrackerImportConflictTableInfo.Columns.CREATED)
     }
 }

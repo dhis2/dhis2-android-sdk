@@ -25,93 +25,91 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorFields;
-import org.hisp.dhis.android.core.indicator.internal.IndicatorStore;
-
-import java.util.Collections;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns
+import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
+import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import javax.inject.Inject
 
 @Reusable
-public final class IndicatorCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<Indicator, IndicatorCollectionRepository> {
-
-    @Inject
-    IndicatorCollectionRepository(final IndicatorStore store,
-                                  final Map<String, ChildrenAppender<Indicator>> childrenAppenders,
-                                  final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new IndicatorCollectionRepository(store, childrenAppenders, s)));
+class IndicatorCollectionRepository @Inject internal constructor(
+    store: IndicatorStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Indicator>>,
+    scope: RepositoryScope
+) : ReadOnlyNameableCollectionRepositoryImpl<Indicator, IndicatorCollectionRepository>(
+    store, childrenAppenders, scope, FilterConnectorFactory(
+        scope
+    ) { s: RepositoryScope ->
+        IndicatorCollectionRepository(
+            store,
+            childrenAppenders,
+            s
+        )
+    }
+) {
+    fun byAnnualized(): BooleanFilterConnector<IndicatorCollectionRepository> {
+        return cf.bool(IndicatorTableInfo.Columns.ANNUALIZED)
     }
 
-    public BooleanFilterConnector<IndicatorCollectionRepository> byAnnualized() {
-        return cf.bool(Columns.ANNUALIZED);
+    fun byIndicatorTypeUid(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(IndicatorTableInfo.Columns.INDICATOR_TYPE)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byIndicatorTypeUid() {
-        return cf.string(Columns.INDICATOR_TYPE);
+    fun byNumerator(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(IndicatorTableInfo.Columns.NUMERATOR)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byNumerator() {
-        return cf.string(Columns.NUMERATOR);
+    fun byNumeratorDescription(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(IndicatorTableInfo.Columns.NUMERATOR_DESCRIPTION)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byNumeratorDescription() {
-        return cf.string(Columns.NUMERATOR_DESCRIPTION);
+    fun byDenominator(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(IndicatorTableInfo.Columns.DENOMINATOR)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byDenominator() {
-        return cf.string(Columns.DENOMINATOR);
+    fun byDenominatorDescription(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(IndicatorTableInfo.Columns.DENOMINATOR_DESCRIPTION)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byDenominatorDescription() {
-        return cf.string(Columns.DENOMINATOR_DESCRIPTION);
+    fun byUrl(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(IndicatorTableInfo.Columns.URL)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byUrl() {
-        return cf.string(Columns.URL);
+    fun byColor(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(NameableWithStyleColumns.COLOR)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<IndicatorCollectionRepository> {
+        return cf.string(NameableWithStyleColumns.ICON)
     }
 
-    public StringFilterConnector<IndicatorCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
+    fun withLegendSets(): IndicatorCollectionRepository {
+        return cf.withChild(IndicatorFields.LEGEND_SETS)
     }
 
-    public IndicatorCollectionRepository withLegendSets() {
-        return cf.withChild(IndicatorFields.LEGEND_SETS);
+    fun byDataSetUid(dataSetUid: String): IndicatorCollectionRepository {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+            DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
+            DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
+            DataSetIndicatorLinkTableInfo.Columns.DATA_SET, listOf(dataSetUid)
+        )
     }
 
-    public IndicatorCollectionRepository byDataSetUid(String dataSetUid) {
-        return cf.subQuery(Columns.UID).inLinkTable(
-                DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
-                DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
-                DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
-                Collections.singletonList(dataSetUid)
-        );
-    }
-
-    public IndicatorCollectionRepository bySectionUid(String dataSetUid) {
-        return cf.subQuery(Columns.UID).inLinkTable(
-                SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
-                SectionIndicatorLinkTableInfo.Columns.INDICATOR,
-                SectionIndicatorLinkTableInfo.Columns.SECTION,
-                Collections.singletonList(dataSetUid)
-        );
+    fun bySectionUid(dataSetUid: String): IndicatorCollectionRepository {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+            SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
+            SectionIndicatorLinkTableInfo.Columns.INDICATOR,
+            SectionIndicatorLinkTableInfo.Columns.SECTION, listOf(dataSetUid)
+        )
     }
 }

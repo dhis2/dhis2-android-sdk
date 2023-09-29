@@ -45,7 +45,10 @@ class ProgramTrackedEntityAttributeCollectionRepository @Inject internal constru
     store: ProgramTrackedEntityAttributeStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<ProgramTrackedEntityAttribute>>,
     scope: RepositoryScope,
-) : ReadOnlyNameableCollectionRepositoryImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeCollectionRepository>(
+) : ReadOnlyNameableCollectionRepositoryImpl<
+    ProgramTrackedEntityAttribute,
+    ProgramTrackedEntityAttributeCollectionRepository,
+    >(
     store,
     childrenAppenders,
     scope,

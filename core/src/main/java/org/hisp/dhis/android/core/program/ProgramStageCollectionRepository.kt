@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class ProgramStageCollectionRepository @Inject internal constructor(
     store: ProgramStageStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStage>>,

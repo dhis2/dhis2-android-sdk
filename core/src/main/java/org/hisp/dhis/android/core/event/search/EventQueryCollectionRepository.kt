@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class EventQueryCollectionRepository @Inject internal constructor(
     private val eventCollectionRepositoryAdapter: EventCollectionRepositoryAdapter,
     eventFilterRepository: EventFilterCollectionRepository,

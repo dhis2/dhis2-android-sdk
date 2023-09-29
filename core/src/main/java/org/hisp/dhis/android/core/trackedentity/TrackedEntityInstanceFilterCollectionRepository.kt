@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class TrackedEntityInstanceFilterCollectionRepository @Inject internal constructor(
     store: TrackedEntityInstanceFilterStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstanceFilter>>,

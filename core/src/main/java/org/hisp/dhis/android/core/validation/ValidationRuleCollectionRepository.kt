@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class ValidationRuleCollectionRepository @Inject internal constructor(
     store: ValidationRuleStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<ValidationRule>>,

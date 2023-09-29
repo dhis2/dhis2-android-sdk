@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class VisualizationCollectionRepository @Inject internal constructor(
     store: VisualizationStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<Visualization>>,

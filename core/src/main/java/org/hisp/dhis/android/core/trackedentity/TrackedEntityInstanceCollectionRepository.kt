@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstance>>,
@@ -91,6 +92,7 @@ class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
         trackerDataManager.propagateTrackedEntityUpdate(m, action!!)
     }
 
+    @Suppress("SpreadOperator")
     override fun upload(): Observable<D2Progress> {
         return Observable.concat(
             jobQueryCall.queryPendingJobs(),

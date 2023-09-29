@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class ProgramRuleActionCollectionRepository @Inject internal constructor(
     store: ProgramRuleActionStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRuleAction>>,

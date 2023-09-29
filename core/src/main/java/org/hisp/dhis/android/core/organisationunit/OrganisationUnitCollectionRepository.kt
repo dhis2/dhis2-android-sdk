@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class OrganisationUnitCollectionRepository @Inject internal constructor(
     store: OrganisationUnitStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<OrganisationUnit>>,

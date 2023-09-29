@@ -54,6 +54,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class RelationshipCollectionRepository @Inject internal constructor(
     private val relationshipStore: RelationshipStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<Relationship>>,

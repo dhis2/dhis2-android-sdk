@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageW
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class ProgramStageWorkingListCollectionRepository @Inject internal constructor(
     store: ProgramStageWorkingListStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageWorkingList>>,

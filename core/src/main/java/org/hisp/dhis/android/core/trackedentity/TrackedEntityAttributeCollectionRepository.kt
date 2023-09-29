@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
     store: TrackedEntityAttributeStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityAttribute>>,

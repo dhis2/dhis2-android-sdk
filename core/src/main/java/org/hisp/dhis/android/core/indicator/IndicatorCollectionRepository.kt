@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class IndicatorCollectionRepository @Inject internal constructor(
     store: IndicatorStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<Indicator>>,

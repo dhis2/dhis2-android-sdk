@@ -25,72 +25,73 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields;
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields
+import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramStageDataElementCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
-        <ProgramStageDataElement, ProgramStageDataElementCollectionRepository> {
-
-    @Inject
-    ProgramStageDataElementCollectionRepository(final ProgramStageDataElementStore store,
-                                                final Map<String, ChildrenAppender<ProgramStageDataElement>>
-                                                        childrenAppenders,
-                                                final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramStageDataElementCollectionRepository(store, childrenAppenders, s)));
+class ProgramStageDataElementCollectionRepository @Inject internal constructor(
+    store: ProgramStageDataElementStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageDataElement>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageDataElement, ProgramStageDataElementCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramStageDataElementCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byDisplayInReports(): BooleanFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.bool(ProgramStageDataElementTableInfo.Columns.DISPLAY_IN_REPORTS)
     }
 
-    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byDisplayInReports() {
-        return cf.bool(Columns.DISPLAY_IN_REPORTS);
+    fun byCompulsory(): BooleanFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.bool(ProgramStageDataElementTableInfo.Columns.COMPULSORY)
     }
 
-    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byCompulsory() {
-        return cf.bool(Columns.COMPULSORY);
+    fun byAllowProvidedElsewhere(): BooleanFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.bool(ProgramStageDataElementTableInfo.Columns.ALLOW_PROVIDED_ELSEWHERE)
     }
 
-    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byAllowProvidedElsewhere() {
-        return cf.bool(Columns.ALLOW_PROVIDED_ELSEWHERE);
+    fun bySortOrder(): IntegerFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.integer(ProgramStageDataElementTableInfo.Columns.SORT_ORDER)
     }
 
-    public IntegerFilterConnector<ProgramStageDataElementCollectionRepository> bySortOrder() {
-        return cf.integer(Columns.SORT_ORDER);
+    fun byAllowFutureDate(): BooleanFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.bool(ProgramStageDataElementTableInfo.Columns.ALLOW_FUTURE_DATE)
     }
 
-    public BooleanFilterConnector<ProgramStageDataElementCollectionRepository> byAllowFutureDate() {
-        return cf.bool(Columns.ALLOW_FUTURE_DATE);
+    fun byDataElement(): StringFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.string(ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT)
     }
 
-    public StringFilterConnector<ProgramStageDataElementCollectionRepository> byDataElement() {
-        return cf.string(Columns.DATA_ELEMENT);
+    fun byProgramStage(): StringFilterConnector<ProgramStageDataElementCollectionRepository> {
+        return cf.string(ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE)
     }
 
-    public StringFilterConnector<ProgramStageDataElementCollectionRepository> byProgramStage() {
-        return cf.string(Columns.PROGRAM_STAGE);
+    fun withRenderType(): ProgramStageDataElementCollectionRepository {
+        return cf.withChild(ProgramStageDataElementFields.RENDER_TYPE)
     }
 
-    public ProgramStageDataElementCollectionRepository withRenderType() {
-        return cf.withChild(ProgramStageDataElementFields.RENDER_TYPE);
-    }
-
-    public ProgramStageDataElementCollectionRepository orderBySortOrder(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderBy(Columns.SORT_ORDER, direction);
+    fun orderBySortOrder(direction: OrderByDirection?): ProgramStageDataElementCollectionRepository {
+        return cf.withOrderBy(ProgramStageDataElementTableInfo.Columns.SORT_ORDER, direction)
     }
 }

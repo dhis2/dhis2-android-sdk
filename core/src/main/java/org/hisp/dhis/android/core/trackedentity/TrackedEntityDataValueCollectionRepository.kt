@@ -25,81 +25,83 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DeletedFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DeletedFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityDataValueCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository> {
-
-    private final TrackedEntityDataValueStore store;
-    private final DataStatePropagator dataStatePropagator;
-
-    @Inject
-    TrackedEntityDataValueCollectionRepository(
-            final TrackedEntityDataValueStore store,
-            final Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders,
-            final RepositoryScope scope,
-            final DataStatePropagator dataStatePropagator) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityDataValueCollectionRepository(store, childrenAppenders, s, dataStatePropagator)));
-        this.store = store;
-        this.dataStatePropagator = dataStatePropagator;
+class TrackedEntityDataValueCollectionRepository @Inject internal constructor(
+    private val store: TrackedEntityDataValueStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityDataValue>>,
+    scope: RepositoryScope,
+    private val dataStatePropagator: DataStatePropagator,
+) : ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackedEntityDataValueCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+            dataStatePropagator,
+        )
+    },
+) {
+    fun value(event: String, dataElement: String): TrackedEntityDataValueObjectRepository {
+        val updatedScope = byEvent().eq(event).byDataElement().eq(dataElement).scope
+        return TrackedEntityDataValueObjectRepository(
+            store,
+            childrenAppenders,
+            updatedScope,
+            dataStatePropagator,
+            event,
+            dataElement,
+        )
     }
 
-    public TrackedEntityDataValueObjectRepository value(String event, String dataElement) {
-        RepositoryScope updatedScope = byEvent().eq(event).byDataElement().eq(dataElement).scope;
-        return new TrackedEntityDataValueObjectRepository(
-                store, childrenAppenders, updatedScope, dataStatePropagator, event, dataElement);
+    fun byEvent(): StringFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.string(TrackedEntityDataValueTableInfo.Columns.EVENT)
     }
 
-    public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byEvent() {
-        return cf.string(Columns.EVENT);
+    fun byCreated(): DateFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.date(TrackedEntityDataValueTableInfo.Columns.CREATED)
     }
 
-    public DateFilterConnector<TrackedEntityDataValueCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
+    fun byLastUpdated(): DateFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.date(TrackedEntityDataValueTableInfo.Columns.LAST_UPDATED)
     }
 
-    public DateFilterConnector<TrackedEntityDataValueCollectionRepository> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    fun byDataElement(): StringFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.string(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)
     }
 
-    public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byDataElement() {
-        return cf.string(Columns.DATA_ELEMENT);
+    fun byStoredBy(): StringFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.string(TrackedEntityDataValueTableInfo.Columns.STORED_BY)
     }
 
-    public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byStoredBy() {
-        return cf.string(Columns.STORED_BY);
+    fun byValue(): StringFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.string(TrackedEntityDataValueTableInfo.Columns.VALUE)
     }
 
-    public StringFilterConnector<TrackedEntityDataValueCollectionRepository> byValue() {
-        return cf.string(Columns.VALUE);
+    fun byProvidedElsewhere(): BooleanFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.bool(TrackedEntityDataValueTableInfo.Columns.PROVIDED_ELSEWHERE)
     }
 
-    public BooleanFilterConnector<TrackedEntityDataValueCollectionRepository> byProvidedElsewhere() {
-        return cf.bool(Columns.PROVIDED_ELSEWHERE);
-    }
-
-    public DeletedFilterConnector<TrackedEntityDataValueCollectionRepository> byDeleted() {
-        return cf.deleted(Columns.VALUE);
+    fun byDeleted(): DeletedFilterConnector<TrackedEntityDataValueCollectionRepository> {
+        return cf.deleted(TrackedEntityDataValueTableInfo.Columns.VALUE)
     }
 }

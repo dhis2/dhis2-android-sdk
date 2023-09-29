@@ -25,48 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore
 
-package org.hisp.dhis.android.core.datastore;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
+import javax.inject.Inject
 
 @Reusable
-public final class LocalDataStoreCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository> {
+class LocalDataStoreCollectionRepository @Inject internal constructor(
+    private val store: LocalDataStoreStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<KeyValuePair>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        LocalDataStoreCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
 
-    private final ObjectWithoutUidStore<KeyValuePair> store;
-
-    @Inject
-    LocalDataStoreCollectionRepository(final LocalDataStoreStore store,
-                                       final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
-                                       final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new LocalDataStoreCollectionRepository(store, childrenAppenders, s)));
-        this.store = store;
+    fun value(key: String): LocalDataStoreObjectRepository {
+        val updatedScope = byKey().eq(key).scope
+        return LocalDataStoreObjectRepository(store, childrenAppenders, updatedScope, key)
     }
 
-    public LocalDataStoreObjectRepository value(String key) {
-        RepositoryScope updatedScope = byKey().eq(key).scope;
-        return new LocalDataStoreObjectRepository(store, childrenAppenders, updatedScope, key);
+    fun byKey(): StringFilterConnector<LocalDataStoreCollectionRepository> {
+        return cf.string(LocalDataStoreTableInfo.Columns.KEY)
     }
 
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byKey() {
-        return cf.string(LocalDataStoreTableInfo.Columns.KEY);
-    }
-
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byValue() {
-        return cf.string(LocalDataStoreTableInfo.Columns.VALUE);
+    fun byValue(): StringFilterConnector<LocalDataStoreCollectionRepository> {
+        return cf.string(LocalDataStoreTableInfo.Columns.VALUE)
     }
 }

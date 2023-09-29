@@ -148,7 +148,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.eventModule().events().uid(newEventUid).setEventDate(Date())
 
         val newValueUid = d2.fileResourceModule().fileResources().blockingAdd(file)
-        d2.trackedEntityModule().trackedEntityDataValues().value(newEventUid, existingValue.dataElement())
+        d2.trackedEntityModule().trackedEntityDataValues().value(newEventUid, existingValue.dataElement()!!)
             .blockingSet(newValueUid)
 
         d2.eventModule().events().blockingUpload()

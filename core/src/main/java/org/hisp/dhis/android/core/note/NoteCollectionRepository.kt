@@ -25,90 +25,89 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note
 
-package org.hisp.dhis.android.core.note;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
-import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
-import org.hisp.dhis.android.core.note.internal.NoteProjectionTransformer;
-import org.hisp.dhis.android.core.note.internal.NoteStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.note.Note.NoteType
+import org.hisp.dhis.android.core.note.internal.NoteProjectionTransformer
+import org.hisp.dhis.android.core.note.internal.NoteStore
+import javax.inject.Inject
 
 @Reusable
-public final class NoteCollectionRepository
-        extends ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository> {
-
-    private final DataStatePropagator dataStatePropagator;
-
-    @Inject
-    NoteCollectionRepository(final NoteStore store,
-                             final Map<String, ChildrenAppender<Note>> childrenAppenders,
-                             final RepositoryScope scope,
-                             final NoteProjectionTransformer transformer,
-                             final DataStatePropagator dataStatePropagator) {
-        super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope,
-                s -> new NoteCollectionRepository(store, childrenAppenders, s, transformer, dataStatePropagator)));
-        this.dataStatePropagator = dataStatePropagator;
+class NoteCollectionRepository @Inject internal constructor(
+    store: NoteStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Note>>,
+    scope: RepositoryScope,
+    transformer: NoteProjectionTransformer,
+    private val dataStatePropagator: DataStatePropagator,
+) : ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    transformer,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        NoteCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+            transformer,
+            dataStatePropagator,
+        )
+    },
+) {
+    fun byUid(): StringFilterConnector<NoteCollectionRepository> {
+        return cf.string(IdentifiableColumns.UID)
     }
 
-    public StringFilterConnector<NoteCollectionRepository> byUid() {
-        return cf.string(IdentifiableColumns.UID);
+    fun byNoteType(): EnumFilterConnector<NoteCollectionRepository, NoteType> {
+        return cf.enumC(NoteTableInfo.Columns.NOTE_TYPE)
     }
 
-
-    public EnumFilterConnector<NoteCollectionRepository, Note.NoteType> byNoteType() {
-        return cf.enumC(Columns.NOTE_TYPE);
+    fun byEventUid(): StringFilterConnector<NoteCollectionRepository> {
+        return cf.string(NoteTableInfo.Columns.EVENT)
     }
 
-    public StringFilterConnector<NoteCollectionRepository> byEventUid() {
-        return cf.string(Columns.EVENT);
+    fun byEnrollmentUid(): StringFilterConnector<NoteCollectionRepository> {
+        return cf.string(NoteTableInfo.Columns.ENROLLMENT)
     }
 
-    public StringFilterConnector<NoteCollectionRepository> byEnrollmentUid() {
-        return cf.string(Columns.ENROLLMENT);
+    fun byValue(): StringFilterConnector<NoteCollectionRepository> {
+        return cf.string(NoteTableInfo.Columns.VALUE)
     }
 
-    public StringFilterConnector<NoteCollectionRepository> byValue() {
-        return cf.string(Columns.VALUE);
+    fun byStoredBy(): StringFilterConnector<NoteCollectionRepository> {
+        return cf.string(NoteTableInfo.Columns.STORED_BY)
     }
 
-    public StringFilterConnector<NoteCollectionRepository> byStoredBy() {
-        return cf.string(Columns.STORED_BY);
+    fun byStoredDate(): StringFilterConnector<NoteCollectionRepository> {
+        return cf.string(NoteTableInfo.Columns.STORED_DATE)
     }
 
-    public StringFilterConnector<NoteCollectionRepository> byStoredDate() {
-        return cf.string(Columns.STORED_DATE);
+    fun bySyncState(): EnumFilterConnector<NoteCollectionRepository, State> {
+        return cf.enumC(NoteTableInfo.Columns.SYNC_STATE)
     }
 
-    public EnumFilterConnector<NoteCollectionRepository, State> bySyncState() {
-        return cf.enumC(Columns.SYNC_STATE);
+    override fun uid(uid: String?): ReadOnlyObjectRepository<Note> {
+        val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
     }
 
-    @Override
-    public ReadOnlyObjectRepository<Note> uid(String uid) {
-        RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
-    }
-
-    @Override
-    protected void propagateState(Note note, HandleAction action) {
-        dataStatePropagator.propagateNoteCreation(note);
+    override fun propagateState(m: Note, action: HandleAction?) {
+        dataStatePropagator.propagateNoteCreation(m)
     }
 }

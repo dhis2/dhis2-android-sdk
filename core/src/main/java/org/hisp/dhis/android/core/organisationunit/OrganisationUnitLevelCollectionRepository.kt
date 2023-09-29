@@ -25,36 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo.Columns;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import javax.inject.Inject
 
 @Reusable
-public final class OrganisationUnitLevelCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
-        OrganisationUnitLevel, OrganisationUnitLevelCollectionRepository> {
-
-    @Inject
-    OrganisationUnitLevelCollectionRepository(
-            final OrganisationUnitLevelStore store,
-            final Map<String, ChildrenAppender<OrganisationUnitLevel>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new OrganisationUnitLevelCollectionRepository(store, childrenAppenders, s)));
-    }
-
-    public IntegerFilterConnector<OrganisationUnitLevelCollectionRepository> byLevel() {
-        return cf.integer(Columns.LEVEL);
+class OrganisationUnitLevelCollectionRepository @Inject internal constructor(
+    store: OrganisationUnitLevelStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<OrganisationUnitLevel>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnitLevel, OrganisationUnitLevelCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        OrganisationUnitLevelCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byLevel(): IntegerFilterConnector<OrganisationUnitLevelCollectionRepository> {
+        return cf.integer(OrganisationUnitLevelTableInfo.Columns.LEVEL)
     }
 }

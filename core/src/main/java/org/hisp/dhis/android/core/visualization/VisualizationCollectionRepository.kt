@@ -25,154 +25,156 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo.Columns;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationFields;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
+import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
+import javax.inject.Inject
 
 @Reusable
-public final class VisualizationCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Visualization, VisualizationCollectionRepository> {
-
-    @Inject
-    VisualizationCollectionRepository(final VisualizationStore store,
-                                      final Map<String, ChildrenAppender<Visualization>> childrenAppenders,
-                                      final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new VisualizationCollectionRepository(store, childrenAppenders, s)));
+class VisualizationCollectionRepository @Inject internal constructor(
+    store: VisualizationStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Visualization>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Visualization, VisualizationCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        VisualizationCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byDescription(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.DESCRIPTION)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
+    fun byDisplayDescription(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.DISPLAY_DESCRIPTION)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byDisplayDescription() {
-        return cf.string(Columns.DISPLAY_DESCRIPTION);
+    fun byDisplayFormName(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.DISPLAY_FORM_NAME)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byDisplayFormName() {
-        return cf.string(Columns.DISPLAY_FORM_NAME);
+    fun byTitle(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.TITLE)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byTitle() {
-        return cf.string(Columns.TITLE);
+    fun byDisplayTitle(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.DISPLAY_TITLE)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byDisplayTitle() {
-        return cf.string(Columns.DISPLAY_TITLE);
+    fun bySubtitle(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.SUBTITLE)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> bySubtitle() {
-        return cf.string(Columns.SUBTITLE);
+    fun byLegendShowKey(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.LEGEND_SHOW_KEY)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byLegendShowKey() {
-        return cf.bool(Columns.LEGEND_SHOW_KEY);
+    fun byLegendStrategy(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.LEGEND_STRATEGY)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byLegendStrategy() {
-        return cf.string(Columns.LEGEND_STRATEGY);
+    fun byLegendStyle(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.LEGEND_STYLE)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byLegendStyle() {
-        return cf.string(Columns.LEGEND_STYLE);
+    fun byLegendUid(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.LEGEND_SET_ID)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byLegendUid() {
-        return cf.string(Columns.LEGEND_SET_ID);
+    fun byDisplaySubtitle(): StringFilterConnector<VisualizationCollectionRepository> {
+        return cf.string(VisualizationTableInfo.Columns.DISPLAY_SUBTITLE)
     }
 
-    public StringFilterConnector<VisualizationCollectionRepository> byDisplaySubtitle() {
-        return cf.string(Columns.DISPLAY_SUBTITLE);
+    fun byType(): EnumFilterConnector<VisualizationCollectionRepository, VisualizationType> {
+        return cf.enumC(VisualizationTableInfo.Columns.TYPE)
     }
 
-    public EnumFilterConnector<VisualizationCollectionRepository, VisualizationType> byType() {
-        return cf.enumC(Columns.TYPE);
+    fun byHideTitle(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.HIDE_TITLE)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byHideTitle() {
-        return cf.bool(Columns.HIDE_TITLE);
+    fun byHideSubtitle(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.HIDE_SUBTITLE)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byHideSubtitle() {
-        return cf.bool(Columns.HIDE_SUBTITLE);
+    fun byHideEmptyColumns(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.HIDE_EMPTY_COLUMNS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byHideEmptyColumns() {
-        return cf.bool(Columns.HIDE_EMPTY_COLUMNS);
+    fun byHideEmptyRows(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.HIDE_EMPTY_ROWS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byHideEmptyRows() {
-        return cf.bool(Columns.HIDE_EMPTY_ROWS);
+    fun byHideEmptyRowItems(): EnumFilterConnector<VisualizationCollectionRepository, HideEmptyItemStrategy> {
+        return cf.enumC(VisualizationTableInfo.Columns.HIDE_EMPTY_ROW_ITEMS)
     }
 
-    public EnumFilterConnector<VisualizationCollectionRepository, HideEmptyItemStrategy> byHideEmptyRowItems() {
-        return cf.enumC(Columns.HIDE_EMPTY_ROW_ITEMS);
+    fun byHideLegend(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.HIDE_LEGEND)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byHideLegend() {
-        return cf.bool(Columns.HIDE_LEGEND);
+    fun byShowHierarchy(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.SHOW_HIERARCHY)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byShowHierarchy() {
-        return cf.bool(Columns.SHOW_HIERARCHY);
+    fun byRowTotals(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.ROW_TOTALS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byRowTotals() {
-        return cf.bool(Columns.ROW_TOTALS);
+    fun byRowSubTotals(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.ROW_SUB_TOTALS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byRowSubTotals() {
-        return cf.bool(Columns.ROW_SUB_TOTALS);
+    fun byColTotals(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.COL_TOTALS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byColTotals() {
-        return cf.bool(Columns.COL_TOTALS);
+    fun byColSubTotals(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.COL_SUB_TOTALS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byColSubTotals() {
-        return cf.bool(Columns.COL_SUB_TOTALS);
+    fun byShowDimensionLabels(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.SHOW_DIMENSION_LABELS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byShowDimensionLabels() {
-        return cf.bool(Columns.SHOW_DIMENSION_LABELS);
+    fun byPercentStackedValues(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.PERCENT_STACKED_VALUES)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byPercentStackedValues() {
-        return cf.bool(Columns.PERCENT_STACKED_VALUES);
+    fun byNoSpaceBetweenColumns(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.NO_SPACE_BETWEEN_COLUMNS)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> byNoSpaceBetweenColumns() {
-        return cf.bool(Columns.NO_SPACE_BETWEEN_COLUMNS);
+    fun bySkipRounding(): BooleanFilterConnector<VisualizationCollectionRepository> {
+        return cf.bool(VisualizationTableInfo.Columns.SKIP_ROUNDING)
     }
 
-    public BooleanFilterConnector<VisualizationCollectionRepository> bySkipRounding() {
-        return cf.bool(Columns.SKIP_ROUNDING);
+    fun byDisplayDensity(): EnumFilterConnector<VisualizationCollectionRepository, DisplayDensity> {
+        return cf.enumC(VisualizationTableInfo.Columns.DISPLAY_DENSITY)
     }
 
-    public EnumFilterConnector<VisualizationCollectionRepository, DisplayDensity> byDisplayDensity() {
-        return cf.enumC(Columns.DISPLAY_DENSITY);
+    fun byDigitGroupSeparator(): EnumFilterConnector<VisualizationCollectionRepository, DigitGroupSeparator> {
+        return cf.enumC(VisualizationTableInfo.Columns.DIGIT_GROUP_SEPARATOR)
     }
 
-    public EnumFilterConnector<VisualizationCollectionRepository, DigitGroupSeparator> byDigitGroupSeparator() {
-        return cf.enumC(Columns.DIGIT_GROUP_SEPARATOR);
-    }
-
-    public VisualizationCollectionRepository withColumnsRowsAndFilters() {
-        return cf.withChild(VisualizationFields.ITEMS);
+    fun withColumnsRowsAndFilters(): VisualizationCollectionRepository {
+        return cf.withChild(VisualizationFields.ITEMS)
     }
 }

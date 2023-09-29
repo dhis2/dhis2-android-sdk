@@ -25,49 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period
 
-package org.hisp.dhis.android.core.period;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.period.internal.PeriodStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.period.internal.PeriodStore
+import javax.inject.Inject
 
 @Reusable
-public final class PeriodCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<Period, PeriodCollectionRepository> {
-
-    @Inject
-    PeriodCollectionRepository(final PeriodStore store,
-                               final Map<String, ChildrenAppender<Period>> childrenAppenders,
-                               final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new PeriodCollectionRepository(store, childrenAppenders, s)));
+class PeriodCollectionRepository @Inject internal constructor(
+    store: PeriodStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Period>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<Period, PeriodCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        PeriodCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byPeriodId(): StringFilterConnector<PeriodCollectionRepository> {
+        return cf.string(PeriodTableInfo.Columns.PERIOD_ID)
     }
 
-    public StringFilterConnector<PeriodCollectionRepository> byPeriodId() {
-        return cf.string(PeriodTableInfo.Columns.PERIOD_ID);
+    fun byPeriodType(): EnumFilterConnector<PeriodCollectionRepository, PeriodType> {
+        return cf.enumC(PeriodTableInfo.Columns.PERIOD_TYPE)
     }
 
-    public EnumFilterConnector<PeriodCollectionRepository, PeriodType> byPeriodType() {
-        return cf.enumC(PeriodTableInfo.Columns.PERIOD_TYPE);
+    fun byStartDate(): DateFilterConnector<PeriodCollectionRepository> {
+        return cf.date(PeriodTableInfo.Columns.START_DATE)
     }
 
-    public DateFilterConnector<PeriodCollectionRepository> byStartDate() {
-        return cf.date(PeriodTableInfo.Columns.START_DATE);
-    }
-
-    public DateFilterConnector<PeriodCollectionRepository> byEndDate() {
-        return cf.date(PeriodTableInfo.Columns.END_DATE);
+    fun byEndDate(): DateFilterConnector<PeriodCollectionRepository> {
+        return cf.date(PeriodTableInfo.Columns.END_DATE)
     }
 }

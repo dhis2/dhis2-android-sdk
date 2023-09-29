@@ -25,40 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns;
-import org.hisp.dhis.android.core.option.internal.OptionGroupFields;
-import org.hisp.dhis.android.core.option.internal.OptionGroupStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.option.internal.OptionGroupFields
+import org.hisp.dhis.android.core.option.internal.OptionGroupStore
+import javax.inject.Inject
 
 @Reusable
-public final class OptionGroupCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<OptionGroup, OptionGroupCollectionRepository> {
-
-    @Inject
-    OptionGroupCollectionRepository(final OptionGroupStore store,
-                                    final Map<String, ChildrenAppender<OptionGroup>> childrenAppenders,
-                                    final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new OptionGroupCollectionRepository(store, childrenAppenders, s)));
+class OptionGroupCollectionRepository @Inject internal constructor(
+    store: OptionGroupStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<OptionGroup>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<OptionGroup, OptionGroupCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        OptionGroupCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byOptionSetUid(): StringFilterConnector<OptionGroupCollectionRepository> {
+        return cf.string(OptionGroupTableInfo.Columns.OPTION_SET)
     }
 
-    public StringFilterConnector<OptionGroupCollectionRepository> byOptionSetUid() {
-        return cf.string(Columns.OPTION_SET);
-    }
-
-    public OptionGroupCollectionRepository withOptions() {
-        return cf.withChild(OptionGroupFields.OPTIONS);
+    fun withOptions(): OptionGroupCollectionRepository {
+        return cf.withChild(OptionGroupFields.OPTIONS)
     }
 }

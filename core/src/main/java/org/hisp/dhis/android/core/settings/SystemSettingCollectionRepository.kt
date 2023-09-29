@@ -25,50 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.settings.internal.SystemSettingStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
+import org.hisp.dhis.android.core.settings.internal.SystemSettingStore
+import javax.inject.Inject
 
 @Reusable
-public final class SystemSettingCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<SystemSetting, SystemSettingCollectionRepository> {
-
-    @Inject
-    SystemSettingCollectionRepository(final SystemSettingStore store,
-                                      final Map<String, ChildrenAppender<SystemSetting>> childrenAppenders,
-                                      final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new SystemSettingCollectionRepository(store, childrenAppenders, s)));
+class SystemSettingCollectionRepository @Inject internal constructor(
+    store: SystemSettingStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<SystemSetting>>,
+    scope: RepositoryScope,
+) : ReadOnlyCollectionRepositoryImpl<SystemSetting, SystemSettingCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        SystemSettingCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byKey(): EnumFilterConnector<SystemSettingCollectionRepository, SystemSettingKey> {
+        return cf.enumC(SystemSettingTableInfo.Columns.KEY)
     }
 
-    public EnumFilterConnector<SystemSettingCollectionRepository, SystemSetting.SystemSettingKey> byKey() {
-        return cf.enumC(SystemSettingTableInfo.Columns.KEY);
+    fun byValue(): StringFilterConnector<SystemSettingCollectionRepository> {
+        return cf.string(SystemSettingTableInfo.Columns.VALUE)
     }
 
-    public StringFilterConnector<SystemSettingCollectionRepository> byValue() {
-        return cf.string(SystemSettingTableInfo.Columns.VALUE);
+    fun flag(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.FLAG).one()
     }
 
-    public ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> flag() {
-        return byKey().eq(SystemSetting.SystemSettingKey.FLAG).one();
-
-    }
-
-    public ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> style() {
-        return byKey().eq(SystemSetting.SystemSettingKey.STYLE).one();
+    fun style(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.STYLE).one()
     }
 }

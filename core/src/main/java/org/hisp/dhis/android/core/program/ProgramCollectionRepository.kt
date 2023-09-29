@@ -25,174 +25,175 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository> {
-
-    @Inject
-    ProgramCollectionRepository(final ProgramStore store,
-                                final Map<String, ChildrenAppender<Program>> childrenAppenders,
-                                final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramCollectionRepository(store, childrenAppenders, s)));
+class ProgramCollectionRepository @Inject internal constructor(
+    store: ProgramStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<Program>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byVersion(): IntegerFilterConnector<ProgramCollectionRepository> {
+        return cf.integer(ProgramTableInfo.Columns.VERSION)
     }
 
-    public IntegerFilterConnector<ProgramCollectionRepository> byVersion() {
-        return cf.integer(Columns.VERSION);
+    fun byOnlyEnrollOnce(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.ONLY_ENROLL_ONCE)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byOnlyEnrollOnce() {
-        return cf.bool(Columns.ONLY_ENROLL_ONCE);
+    fun byEnrollmentDateLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.ENROLLMENT_DATE_LABEL)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byEnrollmentDateLabel() {
-        return cf.string(Columns.ENROLLMENT_DATE_LABEL);
+    fun byDisplayIncidentDate(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.DISPLAY_INCIDENT_DATE)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byDisplayIncidentDate() {
-        return cf.bool(Columns.DISPLAY_INCIDENT_DATE);
+    fun byIncidentDateLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.INCIDENT_DATE_LABEL)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byIncidentDateLabel() {
-        return cf.string(Columns.INCIDENT_DATE_LABEL);
+    fun byRegistration(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.REGISTRATION)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byRegistration() {
-        return cf.bool(Columns.REGISTRATION);
+    fun bySelectEnrollmentDatesInFuture(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> bySelectEnrollmentDatesInFuture() {
-        return cf.bool(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE);
+    fun byDataEntryMethod(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.DATA_ENTRY_METHOD)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byDataEntryMethod() {
-        return cf.bool(Columns.DATA_ENTRY_METHOD);
+    fun byIgnoreOverdueEvents(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.IGNORE_OVERDUE_EVENTS)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byIgnoreOverdueEvents() {
-        return cf.bool(Columns.IGNORE_OVERDUE_EVENTS);
+    fun bySelectIncidentDatesInFuture(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.SELECT_INCIDENT_DATES_IN_FUTURE)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> bySelectIncidentDatesInFuture() {
-        return cf.bool(Columns.SELECT_INCIDENT_DATES_IN_FUTURE);
+    fun byUseFirstStageDuringRegistration(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.USE_FIRST_STAGE_DURING_REGISTRATION)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byUseFirstStageDuringRegistration() {
-        return cf.bool(Columns.USE_FIRST_STAGE_DURING_REGISTRATION);
+    fun byDisplayFrontPageList(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.DISPLAY_FRONT_PAGE_LIST)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byDisplayFrontPageList() {
-        return cf.bool(Columns.DISPLAY_FRONT_PAGE_LIST);
+    fun byProgramType(): EnumFilterConnector<ProgramCollectionRepository, ProgramType> {
+        return cf.enumC(ProgramTableInfo.Columns.PROGRAM_TYPE)
     }
 
-    public EnumFilterConnector<ProgramCollectionRepository, ProgramType> byProgramType() {
-        return cf.enumC(Columns.PROGRAM_TYPE);
+    fun byRelatedProgramUid(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.RELATED_PROGRAM)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byRelatedProgramUid() {
-        return cf.string(Columns.RELATED_PROGRAM);
+    fun byTrackedEntityTypeUid(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byTrackedEntityTypeUid() {
-        return cf.string(Columns.TRACKED_ENTITY_TYPE);
+    fun byCategoryComboUid(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.CATEGORY_COMBO)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byCategoryComboUid() {
-        return cf.string(Columns.CATEGORY_COMBO);
+    fun byAccessDataWrite(): BooleanFilterConnector<ProgramCollectionRepository> {
+        return cf.bool(ProgramTableInfo.Columns.ACCESS_DATA_WRITE)
     }
 
-    public BooleanFilterConnector<ProgramCollectionRepository> byAccessDataWrite() {
-        return cf.bool(ProgramTableInfo.Columns.ACCESS_DATA_WRITE);
+    fun byExpiryDays(): IntegerFilterConnector<ProgramCollectionRepository> {
+        return cf.integer(ProgramTableInfo.Columns.EXPIRY_DAYS)
     }
 
-    public IntegerFilterConnector<ProgramCollectionRepository> byExpiryDays() {
-        return cf.integer(Columns.EXPIRY_DAYS);
+    fun byCompleteEventsExpiryDays(): IntegerFilterConnector<ProgramCollectionRepository> {
+        return cf.integer(ProgramTableInfo.Columns.COMPLETE_EVENTS_EXPIRY_DAYS)
     }
 
-    public IntegerFilterConnector<ProgramCollectionRepository> byCompleteEventsExpiryDays() {
-        return cf.integer(Columns.COMPLETE_EVENTS_EXPIRY_DAYS);
+    fun byExpiryPeriodType(): EnumFilterConnector<ProgramCollectionRepository, PeriodType> {
+        return cf.enumC(ProgramTableInfo.Columns.EXPIRY_PERIOD_TYPE)
     }
 
-    public EnumFilterConnector<ProgramCollectionRepository, PeriodType> byExpiryPeriodType() {
-        return cf.enumC(Columns.EXPIRY_PERIOD_TYPE);
+    fun byMinAttributesRequiredToSearch(): IntegerFilterConnector<ProgramCollectionRepository> {
+        return cf.integer(ProgramTableInfo.Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH)
     }
 
-    public IntegerFilterConnector<ProgramCollectionRepository> byMinAttributesRequiredToSearch() {
-        return cf.integer(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+    fun byMaxTeiCountToReturn(): IntegerFilterConnector<ProgramCollectionRepository> {
+        return cf.integer(ProgramTableInfo.Columns.MAX_TEI_COUNT_TO_RETURN)
     }
 
-    public IntegerFilterConnector<ProgramCollectionRepository> byMaxTeiCountToReturn() {
-        return cf.integer(Columns.MAX_TEI_COUNT_TO_RETURN);
+    fun byFeatureType(): EnumFilterConnector<ProgramCollectionRepository, FeatureType> {
+        return cf.enumC(ProgramTableInfo.Columns.FEATURE_TYPE)
     }
 
-    public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
-        return cf.enumC(Columns.FEATURE_TYPE);
+    fun byAccessLevel(): EnumFilterConnector<ProgramCollectionRepository, AccessLevel> {
+        return cf.enumC(ProgramTableInfo.Columns.ACCESS_LEVEL)
     }
 
-    public EnumFilterConnector<ProgramCollectionRepository, AccessLevel> byAccessLevel() {
-        return cf.enumC(Columns.ACCESS_LEVEL);
+    fun byColor(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<ProgramCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
+    fun byOrganisationUnitUid(uid: String): ProgramCollectionRepository {
+        return byOrganisationUnitList(listOf(uid))
     }
 
-    public ProgramCollectionRepository byOrganisationUnitUid(String uid) {
-        return byOrganisationUnitList(Collections.singletonList(uid));
-    }
-
-    public ProgramCollectionRepository byOrganisationUnitList(List<String> uids) {
+    fun byOrganisationUnitList(uids: List<String>): ProgramCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
-                OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
-                uids);
+            OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+            OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+            uids,
+        )
     }
 
-    public ProgramCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
+    fun byOrganisationUnitScope(scope: OrganisationUnit.Scope): ProgramCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inTwoLinkTable(
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
-                OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
-                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
-                Collections.singletonList(scope.name())
-        );
+            OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+            OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            listOf(scope.name),
+        )
     }
 
-    public ProgramCollectionRepository withTrackedEntityType() {
-        return cf.withChild(Columns.TRACKED_ENTITY_TYPE);
+    fun withTrackedEntityType(): ProgramCollectionRepository {
+        return cf.withChild(ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE)
     }
 }

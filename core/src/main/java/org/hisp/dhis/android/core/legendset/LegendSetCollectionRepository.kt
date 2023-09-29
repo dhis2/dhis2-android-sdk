@@ -25,40 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
+import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
+import javax.inject.Inject
 
 @Reusable
-public final class LegendSetCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<LegendSet, LegendSetCollectionRepository> {
-
-    @Inject
-    LegendSetCollectionRepository(final LegendSetStore store,
-                                  final Map<String, ChildrenAppender<LegendSet>> childrenAppenders,
-                                  final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new LegendSetCollectionRepository(store, childrenAppenders, s)));
+class LegendSetCollectionRepository @Inject internal constructor(
+    store: LegendSetStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<LegendSet>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<LegendSet, LegendSetCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        LegendSetCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun bySymbolizer(): StringFilterConnector<LegendSetCollectionRepository> {
+        return cf.string(LegendSetTableInfo.Columns.SYMBOLIZER)
     }
 
-    public StringFilterConnector<LegendSetCollectionRepository> bySymbolizer() {
-        return cf.string(Columns.SYMBOLIZER);
-    }
-
-    public LegendSetCollectionRepository withLegends() {
-        return cf.withChild(LegendSetFields.LEGENDS);
+    fun withLegends(): LegendSetCollectionRepository {
+        return cf.withChild(LegendSetFields.LEGENDS)
     }
 }

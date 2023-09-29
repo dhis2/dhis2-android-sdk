@@ -25,79 +25,78 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.AnalyticsType;
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields;
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import javax.inject.Inject
 
 @Reusable
-public final class ProgramIndicatorCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramIndicator, ProgramIndicatorCollectionRepository> {
-
-    @Inject
-    ProgramIndicatorCollectionRepository(
-        final ProgramIndicatorStore store,
-        final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
-        final RepositoryScope scope
-    ) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, s)));
+class ProgramIndicatorCollectionRepository @Inject internal constructor(
+    store: ProgramIndicatorStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramIndicator>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramIndicator, ProgramIndicatorCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        ProgramIndicatorCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byDisplayInForm(): BooleanFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.bool(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM)
     }
 
-
-    public BooleanFilterConnector<ProgramIndicatorCollectionRepository> byDisplayInForm() {
-        return cf.bool(Columns.DISPLAY_IN_FORM);
+    fun byExpression(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.EXPRESSION)
     }
 
-    public StringFilterConnector<ProgramIndicatorCollectionRepository> byExpression() {
-        return cf.string(Columns.EXPRESSION);
+    fun byDimensionItem(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.DIMENSION_ITEM)
     }
 
-    public StringFilterConnector<ProgramIndicatorCollectionRepository> byDimensionItem() {
-        return cf.string(Columns.DIMENSION_ITEM);
+    fun byFilter(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.FILTER)
     }
 
-    public StringFilterConnector<ProgramIndicatorCollectionRepository> byFilter() {
-        return cf.string(Columns.FILTER);
+    fun byDecimals(): IntegerFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.integer(ProgramIndicatorTableInfo.Columns.DECIMALS)
     }
 
-    public IntegerFilterConnector<ProgramIndicatorCollectionRepository> byDecimals() {
-        return cf.integer(Columns.DECIMALS);
+    fun byAggregationType(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.AGGREGATION_TYPE)
     }
 
-    public StringFilterConnector<ProgramIndicatorCollectionRepository> byAggregationType() {
-        return cf.string(Columns.AGGREGATION_TYPE);
+    fun byAnalyticsType(): EnumFilterConnector<ProgramIndicatorCollectionRepository, AnalyticsType> {
+        return cf.enumC(ProgramIndicatorTableInfo.Columns.ANALYTICS_TYPE)
     }
 
-    public EnumFilterConnector<ProgramIndicatorCollectionRepository, AnalyticsType> byAnalyticsType() {
-        return cf.enumC(Columns.ANALYTICS_TYPE);
+    fun byProgramUid(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.PROGRAM)
     }
 
-    public StringFilterConnector<ProgramIndicatorCollectionRepository> byProgramUid() {
-        return cf.string(Columns.PROGRAM);
+    fun withLegendSets(): ProgramIndicatorCollectionRepository {
+        return cf.withChild(ProgramIndicatorFields.LEGEND_SETS)
     }
 
-    public ProgramIndicatorCollectionRepository withLegendSets() {
-        return cf.withChild(ProgramIndicatorFields.LEGEND_SETS);
-    }
-
-    public ProgramIndicatorCollectionRepository withAnalyticsPeriodBoundaries() {
-        return cf.withChild(ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES);
+    fun withAnalyticsPeriodBoundaries(): ProgramIndicatorCollectionRepository {
+        return cf.withChild(ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES)
     }
 }

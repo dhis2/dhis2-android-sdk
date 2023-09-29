@@ -25,41 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
-import org.hisp.dhis.android.core.option.internal.OptionSetStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.option.internal.OptionSetStore
+import javax.inject.Inject
 
 @Reusable
-public final class OptionSetCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<OptionSet, OptionSetCollectionRepository> {
-
-    @Inject
-    OptionSetCollectionRepository(final OptionSetStore store,
-                                  final Map<String, ChildrenAppender<OptionSet>> childrenAppenders,
-                                  final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new OptionSetCollectionRepository(store, childrenAppenders, s)));
+class OptionSetCollectionRepository @Inject internal constructor(
+    store: OptionSetStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<OptionSet>>,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<OptionSet, OptionSetCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        OptionSetCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byVersion(): IntegerFilterConnector<OptionSetCollectionRepository> {
+        return cf.integer(OptionSetTableInfo.Columns.VERSION)
     }
 
-    public IntegerFilterConnector<OptionSetCollectionRepository> byVersion() {
-        return cf.integer(Columns.VERSION);
-    }
-
-    public EnumFilterConnector<OptionSetCollectionRepository, ValueType> byValueType() {
-        return cf.enumC(Columns.VALUE_TYPE);
+    fun byValueType(): EnumFilterConnector<OptionSetCollectionRepository, ValueType> {
+        return cf.enumC(OptionSetTableInfo.Columns.VALUE_TYPE)
     }
 }

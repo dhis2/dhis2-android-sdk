@@ -25,38 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.expressiondimensionitem
 
-package org.hisp.dhis.android.core.expressiondimensionitem;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns;
-import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
+import javax.inject.Inject
 
 @Reusable
-public final class ExpressionDimensionItemCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ExpressionDimensionItem,
-        ExpressionDimensionItemCollectionRepository> {
-
-    @Inject
-    ExpressionDimensionItemCollectionRepository(
-            final ExpressionDimensionItemStore store,
-            final Map<String, ChildrenAppender<ExpressionDimensionItem>> childrenAppenders,
-            final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new ExpressionDimensionItemCollectionRepository(store, childrenAppenders, s)));
+class ExpressionDimensionItemCollectionRepository @Inject internal constructor(
+    store: ExpressionDimensionItemStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<ExpressionDimensionItem>>,
+    scope: RepositoryScope
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<ExpressionDimensionItem, ExpressionDimensionItemCollectionRepository>(
+    store, childrenAppenders, scope, FilterConnectorFactory(
+        scope
+    ) { s: RepositoryScope ->
+        ExpressionDimensionItemCollectionRepository(
+            store,
+            childrenAppenders,
+            s
+        )
     }
-
-    public StringFilterConnector<ExpressionDimensionItemCollectionRepository> byExpression() {
-        return cf.string(Columns.EXPRESSION);
+) {
+    fun byExpression(): StringFilterConnector<ExpressionDimensionItemCollectionRepository> {
+        return cf.string(ExpressionDimensionItemTableInfo.Columns.EXPRESSION)
     }
 }

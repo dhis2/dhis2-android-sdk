@@ -40,17 +40,20 @@ import javax.inject.Inject
 class ExpressionDimensionItemCollectionRepository @Inject internal constructor(
     store: ExpressionDimensionItemStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<ExpressionDimensionItem>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ExpressionDimensionItem, ExpressionDimensionItemCollectionRepository>(
-    store, childrenAppenders, scope, FilterConnectorFactory(
-        scope
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
     ) { s: RepositoryScope ->
         ExpressionDimensionItemCollectionRepository(
             store,
             childrenAppenders,
-            s
+            s,
         )
-    }
+    },
 ) {
     fun byExpression(): StringFilterConnector<ExpressionDimensionItemCollectionRepository> {
         return cf.string(ExpressionDimensionItemTableInfo.Columns.EXPRESSION)

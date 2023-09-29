@@ -41,17 +41,20 @@ import javax.inject.Inject
 class LegendCollectionRepository @Inject internal constructor(
     store: LegendStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<Legend>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Legend, LegendCollectionRepository>(
-    store, childrenAppenders, scope, FilterConnectorFactory(
-        scope
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
     ) { s: RepositoryScope ->
         LegendCollectionRepository(
             store,
             childrenAppenders,
-            s
+            s,
         )
-    }
+    },
 ) {
     fun byStartValue(): DoubleFilterConnector<LegendCollectionRepository> {
         return cf.doubleC(LegendTableInfo.Columns.START_VALUE)

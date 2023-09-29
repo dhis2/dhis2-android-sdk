@@ -45,17 +45,20 @@ import javax.inject.Inject
 class IndicatorCollectionRepository @Inject internal constructor(
     store: IndicatorStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<Indicator>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<Indicator, IndicatorCollectionRepository>(
-    store, childrenAppenders, scope, FilterConnectorFactory(
-        scope
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
     ) { s: RepositoryScope ->
         IndicatorCollectionRepository(
             store,
             childrenAppenders,
-            s
+            s,
         )
-    }
+    },
 ) {
     fun byAnnualized(): BooleanFilterConnector<IndicatorCollectionRepository> {
         return cf.bool(IndicatorTableInfo.Columns.ANNUALIZED)
@@ -101,7 +104,8 @@ class IndicatorCollectionRepository @Inject internal constructor(
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
             DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
             DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
-            DataSetIndicatorLinkTableInfo.Columns.DATA_SET, listOf(dataSetUid)
+            DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
+            listOf(dataSetUid),
         )
     }
 
@@ -109,7 +113,8 @@ class IndicatorCollectionRepository @Inject internal constructor(
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
             SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
             SectionIndicatorLinkTableInfo.Columns.INDICATOR,
-            SectionIndicatorLinkTableInfo.Columns.SECTION, listOf(dataSetUid)
+            SectionIndicatorLinkTableInfo.Columns.SECTION,
+            listOf(dataSetUid),
         )
     }
 }

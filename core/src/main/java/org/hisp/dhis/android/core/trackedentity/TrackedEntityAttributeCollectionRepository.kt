@@ -25,114 +25,114 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import javax.inject.Inject
 
 @Reusable
-public final class TrackedEntityAttributeCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityAttribute,
-        TrackedEntityAttributeCollectionRepository> {
-
-    @Inject
-    TrackedEntityAttributeCollectionRepository(final TrackedEntityAttributeStore store,
-                                               final Map<String, ChildrenAppender<TrackedEntityAttribute>>
-                                                       childrenAppenders,
-                                               final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new TrackedEntityAttributeCollectionRepository(store, childrenAppenders, s)));
+class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
+    store: TrackedEntityAttributeStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityAttribute>>,
+    scope: RepositoryScope,
+) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityAttribute, TrackedEntityAttributeCollectionRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        TrackedEntityAttributeCollectionRepository(
+            store,
+            childrenAppenders,
+            s,
+        )
+    },
+) {
+    fun byPattern(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.PATTERN)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byPattern() {
-        return cf.string(Columns.PATTERN);
+    fun bySortOrderInListNoProgram(): IntegerFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.integer(TrackedEntityAttributeTableInfo.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM)
     }
 
-    public IntegerFilterConnector<TrackedEntityAttributeCollectionRepository> bySortOrderInListNoProgram() {
-        return cf.integer(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM);
+    fun byOptionSetUid(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.OPTION_SET)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byOptionSetUid() {
-        return cf.string(Columns.OPTION_SET);
+    fun byValueType(): EnumFilterConnector<TrackedEntityAttributeCollectionRepository, ValueType> {
+        return cf.enumC(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE)
     }
 
-    public EnumFilterConnector<TrackedEntityAttributeCollectionRepository, ValueType> byValueType() {
-        return cf.enumC(Columns.VALUE_TYPE);
+    fun byExpression(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.EXPRESSION)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byExpression() {
-        return cf.string(Columns.EXPRESSION);
+    fun byProgramScope(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.PROGRAM_SCOPE)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byProgramScope() {
-        return cf.bool(Columns.PROGRAM_SCOPE);
+    fun byDisplayInListNoProgram(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST_NO_PROGRAM)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byDisplayInListNoProgram() {
-        return cf.bool(Columns.DISPLAY_IN_LIST_NO_PROGRAM);
+    fun byGenerated(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.GENERATED)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byGenerated() {
-        return cf.bool(Columns.GENERATED);
+    fun byDisplayOnVisitSchedule(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.DISPLAY_ON_VISIT_SCHEDULE)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byDisplayOnVisitSchedule() {
-        return cf.bool(Columns.DISPLAY_ON_VISIT_SCHEDULE);
+    fun byConfidential(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.CONFIDENTIAL)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byConfidential() {
-        return cf.bool(Columns.CONFIDENTIAL);
+    fun byOrgUnitScope(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byOrgUnitScope() {
-        return cf.bool(TrackedEntityAttributeFields.ORG_UNIT_SCOPE);
+    fun byUnique(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.UNIQUE)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byUnique() {
-        return cf.bool(TrackedEntityAttributeTableInfo.Columns.UNIQUE);
+    fun byInherit(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.INHERIT)
     }
 
-    public BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> byInherit() {
-        return cf.bool(Columns.INHERIT);
+    fun byFieldMask(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.FIELD_MASK)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFieldMask() {
-        return cf.string(Columns.FIELD_MASK);
+    fun byFormName(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.FORM_NAME)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFormName() {
-        return cf.string(Columns.FORM_NAME);
+    fun byDisplayFormName(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.DISPLAY_FORM_NAME)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byDisplayFormName() {
-        return cf.string(Columns.DISPLAY_FORM_NAME);
+    fun byColor(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.COLOR)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byColor() {
-        return cf.string(Columns.COLOR);
+    fun byIcon(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.ICON)
     }
 
-    public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byIcon() {
-        return cf.string(Columns.ICON);
-    }
-
-    public TrackedEntityAttributeCollectionRepository withLegendSets() {
-        return cf.withChild(TrackedEntityAttributeFields.LEGEND_SETS);
+    fun withLegendSets(): TrackedEntityAttributeCollectionRepository {
+        return cf.withChild(TrackedEntityAttributeFields.LEGEND_SETS)
     }
 }

@@ -61,7 +61,7 @@ import javax.inject.Inject
 class EventQueryCollectionRepository @Inject internal constructor(
     private val eventCollectionRepositoryAdapter: EventCollectionRepositoryAdapter,
     private val eventFilterRepository: EventFilterCollectionRepository,
-    val scope: EventQueryRepositoryScope,
+    @JvmField val scope: EventQueryRepositoryScope,
 ) : ReadOnlyWithUidCollectionRepository<Event> {
 
     private val connectorFactory: ScopedFilterConnectorFactory<

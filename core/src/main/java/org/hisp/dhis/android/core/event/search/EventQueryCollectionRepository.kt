@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.event.search
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.PagedList
-import androidx.paging.PagingData
 import dagger.Reusable
 import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EventDataFilterConnector
@@ -272,10 +270,6 @@ class EventQueryCollectionRepository @Inject internal constructor(
 
     override fun getPaged(pageSize: Int): LiveData<PagedList<Event>> {
         return eventCollectionRepository.getPaged(pageSize)
-    }
-
-    override fun getPagingData(pageSize: Int): Flow<PagingData<Event>> {
-        return eventCollectionRepository.getPagingData(pageSize)
     }
 
     val dataSource: DataSource<Event, Event>

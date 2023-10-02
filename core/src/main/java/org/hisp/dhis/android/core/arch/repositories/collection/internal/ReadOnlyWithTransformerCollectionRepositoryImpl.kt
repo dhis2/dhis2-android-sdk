@@ -31,12 +31,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -48,7 +43,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSourceWithTransformer
-import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingSourceWithTransformer
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
@@ -123,19 +117,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         return LivePagedListBuilder(factory, pageSize).build()
     }
 
-    override fun getPagingData(pageSize: Int): Flow<PagingData<T>> {
-        return Pager(
-            config = PagingConfig(pageSize = pageSize),
-        ) {
-            pagingSource
-        }.flow
-    }
-
     val dataSource: DataSource<M, T>
         get() = RepositoryDataSourceWithTransformer(store, scope, childrenAppenders, transformer)
-
-    private val pagingSource: PagingSource<M, T>
-        get() = RepositoryPagingSourceWithTransformer(store, scope, childrenAppenders, transformer)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

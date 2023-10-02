@@ -60,26 +60,19 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class EventQueryCollectionRepository @Inject internal constructor(
     private val eventCollectionRepositoryAdapter: EventCollectionRepositoryAdapter,
-    eventFilterRepository: EventFilterCollectionRepository,
-    scope: EventQueryRepositoryScope,
+    private val eventFilterRepository: EventFilterCollectionRepository,
+    private val scope: EventQueryRepositoryScope,
 ) : ReadOnlyWithUidCollectionRepository<Event> {
+
     private val connectorFactory: ScopedFilterConnectorFactory<
         EventQueryCollectionRepository,
         EventQueryRepositoryScope,
-        >
-    private val eventFilterRepository: EventFilterCollectionRepository
-
-    @JvmField
-    val scope: EventQueryRepositoryScope
-
-    init {
-        this.eventFilterRepository = eventFilterRepository
-        this.scope = scope
-        connectorFactory = ScopedFilterConnectorFactory { s: EventQueryRepositoryScope ->
-            EventQueryCollectionRepository(
-                eventCollectionRepositoryAdapter, eventFilterRepository, s,
-            )
-        }
+        > = ScopedFilterConnectorFactory { s: EventQueryRepositoryScope ->
+        EventQueryCollectionRepository(
+            eventCollectionRepositoryAdapter,
+            eventFilterRepository,
+            s,
+        )
     }
 
     fun byUid(): ListFilterConnector<EventQueryCollectionRepository, String> {
@@ -285,9 +278,8 @@ class EventQueryCollectionRepository @Inject internal constructor(
         return eventCollectionRepository.getPagingData(pageSize)
     }
 
-    fun getDataSource(): DataSource<Event, Event> {
-        return eventCollectionRepository.dataSource
-    }
+    val dataSource: DataSource<Event, Event>
+        get() = eventCollectionRepository.dataSource
 
     override fun count(): Single<Int> {
         return eventCollectionRepository.count()

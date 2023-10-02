@@ -194,7 +194,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
             .one().blockingGet()!!
             .uid()
         programUid = d2.programModule().programs()
-            .byOrganisationUnitUid(orgUnitUid)
+            .byOrganisationUnitUid(orgUnitUid!!)
             .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
             .one().blockingGet()!!
             .uid()

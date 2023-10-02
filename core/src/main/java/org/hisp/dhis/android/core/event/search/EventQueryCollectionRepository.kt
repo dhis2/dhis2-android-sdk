@@ -61,7 +61,7 @@ import javax.inject.Inject
 class EventQueryCollectionRepository @Inject internal constructor(
     private val eventCollectionRepositoryAdapter: EventCollectionRepositoryAdapter,
     private val eventFilterRepository: EventFilterCollectionRepository,
-    private val scope: EventQueryRepositoryScope,
+    val scope: EventQueryRepositoryScope,
 ) : ReadOnlyWithUidCollectionRepository<Event> {
 
     private val connectorFactory: ScopedFilterConnectorFactory<
@@ -301,7 +301,7 @@ class EventQueryCollectionRepository @Inject internal constructor(
     }
 
     private val eventCollectionRepository: EventCollectionRepository
-        private get() = eventCollectionRepositoryAdapter
+        get() = eventCollectionRepositoryAdapter
             .getCollectionRepository(scope)
             .withTrackedEntityDataValues()
 }

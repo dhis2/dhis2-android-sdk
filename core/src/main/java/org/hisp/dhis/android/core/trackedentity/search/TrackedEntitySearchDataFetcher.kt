@@ -29,13 +29,16 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
+import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import java.util.concurrent.TimeUnit
 
 internal class TrackedEntitySearchDataFetcher(
     store: TrackedEntityInstanceStore,
@@ -45,7 +48,7 @@ internal class TrackedEntitySearchDataFetcher(
     onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
-    private val trackerHeaderEngine: TrackerHeaderEngine,
+    private val helper: TrackedEntitySearchDataFetcherHelper,
 ) {
 
     private val instanceFetcher = TrackedEntityInstanceQueryDataFetcher(
@@ -58,8 +61,16 @@ internal class TrackedEntitySearchDataFetcher(
         localQueryHelper,
     )
 
-    private val sampleHeaderExpression =
-        "d2:concatenate(A{w75KJ2mc4zz}, ' ', A{zDhUuAYrxNC}, ', ', d2:substring(A{cejWyOfXge6}, 0, 1))"
+    private val attributes by lazy {
+        helper.getScopeAttributes(scope.program(), scope.trackedEntityType())
+    }
+
+    private val headerExpression by lazy {
+        helper.getHeaderExpression(scope.program())
+    }
+
+    @Suppress("MagicNumber")
+    private val teTypeCache = ExpirableCache<String, TrackedEntityType>(TimeUnit.SECONDS.toMillis(30))
 
     fun refresh() {
         instanceFetcher.refresh()
@@ -84,20 +95,43 @@ internal class TrackedEntitySearchDataFetcher(
     private fun transform(
         list: List<Result<TrackedEntityInstance, D2Error>>,
     ): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return list.map { item ->
-            item.map { instance ->
-                val searchItem = TrackedEntitySearchItemHelper.from(instance)
-                appendHeader(searchItem)
+        return list.map { itemResult ->
+            itemResult.flatMap { instance ->
+                val teType = getTrackedEntityType(instance.trackedEntityType())
+
+                if (teType != null) {
+                    Result.Success(
+                        TrackedEntitySearchItemHelper
+                            .from(instance, attributes, teType)
+                            .copy(
+                                header = evaluateHeader(instance),
+                            ),
+                    )
+                } else {
+                    Result.Failure(
+                        D2Error.builder()
+                            .errorCode(D2ErrorCode.UNEXPECTED)
+                            .errorDescription("Tracked Entity type ${instance.trackedEntityType()} not found")
+                            .build(),
+                    )
+                }
             }
         }
     }
 
-    private fun appendHeader(item: TrackedEntitySearchItem): TrackedEntitySearchItem {
-        val header = trackerHeaderEngine.getTrackedEntityHeader(
-            expression = sampleHeaderExpression,
-            attributeValues = item.trackedEntityAttributeValues ?: emptyList(),
-        )
+    private fun getTrackedEntityType(uid: String?): TrackedEntityType? {
+        return if (uid != null) {
+            teTypeCache[uid]
+                ?: helper.getTeType(uid)
+                    .also { it?.let { teTypeCache[uid] = it } }
+        } else {
+            null
+        }
+    }
 
-        return item.copy(header = header)
+    private fun evaluateHeader(item: TrackedEntityInstance): String? {
+        return headerExpression?.let {
+            helper.evaluateHeaderExpression(it, item)
+        }
     }
 }

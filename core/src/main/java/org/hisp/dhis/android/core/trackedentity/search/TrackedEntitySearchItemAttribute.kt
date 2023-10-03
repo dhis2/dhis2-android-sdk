@@ -28,29 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.common.Geometry
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.common.ValueType
 import java.util.Date
 
-data class TrackedEntitySearchItem(
-    val uid: String,
+data class TrackedEntitySearchItemAttribute(
+    val attribute: String,
+    val displayName: String,
+    val displayFormName: String,
+    val value: String?,
     val created: Date?,
     val lastUpdated: Date?,
-    val createdAtClient: Date?,
-    val lastUpdatedAtClient: Date?,
-    val organisationUnit: String?,
-    val geometry: Geometry?,
-    val syncState: State?,
-    val aggregatedSyncState: State?,
-    val deleted: Boolean,
-
-    val isOnline: Boolean = false,
-    val type: TrackedEntityType,
-    val header: String? = null,
-    val attributeValues: List<TrackedEntitySearchItemAttribute>? = emptyList(),
-
-) : ObjectWithUidInterface {
-    override fun uid(): String = uid
-}
+    val valueType: ValueType,
+    val displayInList: Boolean,
+    val optionSet: String?,
+)

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
@@ -76,13 +77,9 @@ internal class TrackedEntitySearchDataFetcherHelper @Inject constructor(
             programAttributes.mapNotNull { programAttribute ->
                 val attributeUid = programAttribute.trackedEntityAttribute()!!.uid()
                 attributes.find { it.uid() == attributeUid }?.let { attribute ->
-                    SimpleTrackedEntityAttribute(
-                        attribute = attributeUid,
-                        displayName = attribute.displayName() ?: attribute.name() ?: attributeUid,
-                        displayFormName = attribute.displayFormName(),
-                        displayInList = programAttribute.displayInList() ?: false,
-                        valueType = attribute.valueType()!!,
-                        optionSet = attribute.optionSet()?.uid(),
+                    getSimpleTrackedEntityAttribute(
+                        attribute = attribute,
+                        displayInList = programAttribute.displayInList(),
                     )
                 }
             }
@@ -98,20 +95,37 @@ internal class TrackedEntitySearchDataFetcherHelper @Inject constructor(
             typeAttributes.mapNotNull { typeAttribute ->
                 val attributeUid = typeAttribute.trackedEntityAttribute()!!.uid()
                 attributes.find { it.uid() == attributeUid }?.let { attribute ->
-                    SimpleTrackedEntityAttribute(
-                        attribute = attributeUid,
-                        displayName = attribute.displayName() ?: attribute.name() ?: attributeUid,
-                        displayFormName = attribute.displayFormName(),
-                        displayInList = typeAttribute.displayInList() ?: false,
-                        valueType = attribute.valueType()!!,
-                        optionSet = attribute.optionSet()?.uid(),
+                    getSimpleTrackedEntityAttribute(
+                        attribute = attribute,
+                        displayInList = typeAttribute.displayInList(),
                     )
                 }
             }
         } else {
-            // TODO
-            emptyList()
+            val attributes = trackedEntityAttributeCollectionRepository
+                .blockingGet()
+
+            attributes.map { attribute ->
+                getSimpleTrackedEntityAttribute(
+                    attribute = attribute,
+                    displayInList = attribute.displayInListNoProgram(),
+                )
+            }
         }
+    }
+
+    private fun getSimpleTrackedEntityAttribute(
+        attribute: TrackedEntityAttribute,
+        displayInList: Boolean?,
+    ): SimpleTrackedEntityAttribute {
+        return SimpleTrackedEntityAttribute(
+            attribute = attribute.uid(),
+            displayName = attribute.displayName() ?: attribute.name() ?: attribute.uid(),
+            displayFormName = attribute.displayFormName(),
+            displayInList = displayInList ?: false,
+            valueType = attribute.valueType()!!,
+            optionSet = attribute.optionSet()?.uid(),
+        )
     }
 
     fun getTeType(uid: String): TrackedEntityType? {

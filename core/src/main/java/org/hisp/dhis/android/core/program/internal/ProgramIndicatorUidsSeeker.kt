@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
 import org.hisp.dhis.android.core.visualization.DimensionItemType
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 import javax.inject.Inject
@@ -41,11 +42,16 @@ internal class ProgramIndicatorUidsSeeker @Inject constructor(
 ) : BaseUidsSeeker(databaseAdapter) {
 
     fun seekUids(): Set<String> {
-        val query = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
+        val visualizationQuery = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
             "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
             "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +
             "'${DimensionItemType.PROGRAM_INDICATOR.name}'"
 
-        return readSingleColumnResults(query)
+        val itemHeaderQuery = "SELECT ${ProgramConfigurationSettingTableInfo.Columns.ITEM_HEADER_PROGRAM_INDICATOR} " +
+            "FROM ${ProgramConfigurationSettingTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${ProgramConfigurationSettingTableInfo.Columns.ITEM_HEADER_PROGRAM_INDICATOR} IS NOT NULL"
+
+        return readSingleColumnResults(visualizationQuery) +
+            readSingleColumnResults(itemHeaderQuery)
     }
 }

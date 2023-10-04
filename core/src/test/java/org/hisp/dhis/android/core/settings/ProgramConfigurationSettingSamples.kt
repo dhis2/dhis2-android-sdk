@@ -40,7 +40,7 @@ object ProgramConfigurationSettingSamples {
             .itemHeader(
                 ProgramItemHeader.builder()
                     .programIndicator("programIndicator")
-                    .build()
+                    .build(),
             )
             .build()
     }

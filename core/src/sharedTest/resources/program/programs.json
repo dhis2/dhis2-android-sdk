@@ -89,125 +89,8 @@
         }
       ],
       "programTrackedEntityAttributes": [
-        {
-          "lastUpdated": "2016-10-11T10:41:40.401",
-          "id": "YhqgQ6Iy4c4",
-          "created": "2016-10-11T10:41:40.401",
-          "name": "Child Programme Gender",
-          "shortName": "Child Programme Gender",
-          "displayName": "Child Programme Gender",
-          "mandatory": true,
-          "displayShortName": "Child Programme Gender",
-          "externalAccess": false,
-          "valueType": "TEXT",
-          "allowFutureDate": true,
-          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
-          "displayInList": true,
-          "sortOrder": 1,
-          "dimensionItemType": "PROGRAM_ATTRIBUTE",
-          "searchable": false,
-          "program": {
-            "id": "lxAQ7Zs9VYR"
-          },
-          "trackedEntityAttribute": {
-            "id": "cejWyOfXge6"
-          },
-          "renderType": {
-            "DESKTOP": {
-              "type": "VERTICAL_RADIOBUTTONS",
-              "min": 0,
-              "max": 10,
-              "step": 1,
-              "decimalPoints": 0
-            },
-            "MOBILE": {
-              "type": "SHARED_HEADER_RADIOBUTTONS",
-              "min": 3,
-              "max": 15,
-              "step": 2,
-              "decimalPoints": 1
-            }
-          }
-        },
-        {
-          "lastUpdated": "2016-10-11T10:41:40.401",
-          "id": "QhqgQ6Iy4c4",
-          "created": "2016-10-11T10:41:40.401",
-          "name": "Child Programme Age",
-          "shortName": "Child Programme Age",
-          "displayName": "Child Programme Age",
-          "mandatory": false,
-          "displayShortName": "Child Programme Age",
-          "externalAccess": false,
-          "valueType": "TEXT",
-          "allowFutureDate": false,
-          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
-          "displayInList": false,
-          "sortOrder": 2,
-          "dimensionItemType": "PROGRAM_ATTRIBUTE",
-          "searchable": true,
-          "program": {
-            "id": "lxAQ7Zs9VYR"
-          },
-          "trackedEntityAttribute": {
-            "id": "aejWyOfXge6"
-          }
-        }
       ],
       "programSections": [
-        {
-          "code": "Code",
-          "lastUpdated": "2018-05-15T08:14:06.767",
-          "id": "Nc8OxbNuVH3",
-          "created": "2018-05-15T08:14:06.767",
-          "name": "My Program Section",
-          "displayName": "My Program Section",
-          "description": "Description",
-          "externalAccess": false,
-          "formName": "formName",
-          "sortOrder": 1,
-          "favorite": false,
-          "program": {
-            "id": "lxAQ7Zs9VYR"
-          },
-          "style": {
-            "color": "#555",
-            "icon": "section-icon"
-          },
-          "programTrackedEntityAttribute": [
-            {
-              "id": "cejWyOfXge6"
-            }
-          ],
-          "renderType": {
-            "DESKTOP": {
-              "type": "LISTING"
-            },
-            "MOBILE": {
-              "type": "LISTING"
-            }
-          }
-        },
-        {
-          "code": "Exp",
-          "lastUpdated": "2017-05-15T08:14:06.767",
-          "id": "Nc8OxbNuVHC",
-          "created": "2017-05-15T08:14:06.767",
-          "name": "My Program Section 2",
-          "displayName": "My Program Section 2",
-          "description": "Description 2",
-          "externalAccess": true,
-          "formName": "formName 2",
-          "sortOrder": 2,
-          "favorite": true,
-          "program": {
-            "id": "lxAQ7Zs9VYR"
-          },
-          "style": {
-            "color": "#556",
-            "icon": "section-icon-2"
-          }
-        }
       ]
     },
     {
@@ -257,8 +140,125 @@
       "programRuleVariables": [
       ],
       "programTrackedEntityAttributes": [
+        {
+          "lastUpdated": "2016-10-11T10:41:40.401",
+          "id": "YhqgQ6Iy4c4",
+          "created": "2016-10-11T10:41:40.401",
+          "name": "Child Programme Gender",
+          "shortName": "Child Programme Gender",
+          "displayName": "Child Programme Gender",
+          "mandatory": true,
+          "displayShortName": "Child Programme Gender",
+          "externalAccess": false,
+          "valueType": "TEXT",
+          "allowFutureDate": true,
+          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
+          "displayInList": true,
+          "sortOrder": 1,
+          "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "searchable": false,
+          "program": {
+            "id": "IpHINAT79UW"
+          },
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6"
+          },
+          "renderType": {
+            "DESKTOP": {
+              "type": "VERTICAL_RADIOBUTTONS",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "decimalPoints": 0
+            },
+            "MOBILE": {
+              "type": "SHARED_HEADER_RADIOBUTTONS",
+              "min": 3,
+              "max": 15,
+              "step": 2,
+              "decimalPoints": 1
+            }
+          }
+        },
+        {
+          "lastUpdated": "2016-10-11T10:41:40.401",
+          "id": "QhqgQ6Iy4c4",
+          "created": "2016-10-11T10:41:40.401",
+          "name": "Child Programme Age",
+          "shortName": "Child Programme Age",
+          "displayName": "Child Programme Age",
+          "mandatory": false,
+          "displayShortName": "Child Programme Age",
+          "externalAccess": false,
+          "valueType": "TEXT",
+          "allowFutureDate": false,
+          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
+          "displayInList": false,
+          "sortOrder": 2,
+          "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "searchable": true,
+          "program": {
+            "id": "IpHINAT79UW"
+          },
+          "trackedEntityAttribute": {
+            "id": "aejWyOfXge6"
+          }
+        }
       ],
       "programSections": [
+        {
+          "code": "Code",
+          "lastUpdated": "2018-05-15T08:14:06.767",
+          "id": "Nc8OxbNuVH3",
+          "created": "2018-05-15T08:14:06.767",
+          "name": "My Program Section",
+          "displayName": "My Program Section",
+          "description": "Description",
+          "externalAccess": false,
+          "formName": "formName",
+          "sortOrder": 1,
+          "favorite": false,
+          "program": {
+            "id": "IpHINAT79UW"
+          },
+          "style": {
+            "color": "#555",
+            "icon": "section-icon"
+          },
+          "programTrackedEntityAttribute": [
+            {
+              "id": "cejWyOfXge6"
+            }
+          ],
+          "renderType": {
+            "DESKTOP": {
+              "type": "LISTING"
+            },
+            "MOBILE": {
+              "type": "LISTING"
+            }
+          }
+        },
+        {
+          "code": "Exp",
+          "lastUpdated": "2017-05-15T08:14:06.767",
+          "id": "Nc8OxbNuVHC",
+          "created": "2017-05-15T08:14:06.767",
+          "name": "My Program Section 2",
+          "displayName": "My Program Section 2",
+          "description": "Description 2",
+          "externalAccess": true,
+          "formName": "formName 2",
+          "sortOrder": 2,
+          "favorite": true,
+          "program": {
+            "id": "IpHINAT79UW"
+          },
+          "style": {
+            "color": "#556",
+            "icon": "section-icon-2"
+          }
+        }
       ],
       "attributeValues": [
         {

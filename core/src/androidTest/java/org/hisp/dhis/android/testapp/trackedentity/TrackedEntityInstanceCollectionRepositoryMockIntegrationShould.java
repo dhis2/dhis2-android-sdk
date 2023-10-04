@@ -84,7 +84,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         assertThat(tei.programOwners().size()).isEqualTo(1);
 
 
-        assertThat(tei.programOwners().get(0).program()).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(tei.programOwners().get(0).program()).isEqualTo("IpHINAT79UW");
         assertThat(tei.programOwners().get(0).trackedEntityInstance()).isEqualTo("nWrB0TfWlvD");
         assertThat(tei.programOwners().get(0).ownerOrgUnit()).isEqualTo("DiszpKrYNg8");
     }

@@ -65,10 +65,20 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould : BaseMockInt
     @Test
     fun find_by_data_value() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntitySearch()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byDataValue("g9eOBujte1U").eq("false")
             .blockingGet()
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)
+    }
+
+    @Test
+    fun should_return_header() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntitySearch()
+            .byProgram().eq("IpHINAT79UW")
+            .blockingGet()
+
+        assertThat(trackedEntityInstances[0].header).isEqualTo("4081507, befryEfXge5")
+        assertThat(trackedEntityInstances[1].header).isEqualTo("654321, 0.0")
     }
 }

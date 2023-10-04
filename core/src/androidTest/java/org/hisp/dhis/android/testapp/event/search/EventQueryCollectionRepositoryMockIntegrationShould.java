@@ -52,7 +52,7 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(events.size()).isEqualTo(4);
+        assertThat(events.size()).isEqualTo(2);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGetUids();
 
-        assertThat(eventUids.size()).isEqualTo(4);
+        assertThat(eventUids.size()).isEqualTo(2);
     }
 
     @Test

@@ -76,7 +76,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
         List<ProgramSection> programSections =
                 d2.programModule().programSections()
                         .byProgramUid()
-                        .eq("lxAQ7Zs9VYR")
+                        .eq("IpHINAT79UW")
                         .blockingGet();
 
         assertThat(programSections.size()).isEqualTo(2);

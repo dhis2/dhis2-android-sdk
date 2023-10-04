@@ -80,7 +80,7 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(specificProgramConfiguration.optionalSearch()).isEqualTo(true)
         assertThat(specificProgramConfiguration.disableReferrals()).isEqualTo(true)
         assertThat(specificProgramConfiguration.disableCollapsibleSections()).isEqualTo(false)
-        assertThat(specificProgramConfiguration.itemHeader()!!.programIndicator()).isEqualTo("GpkfmoQyXEb")
+        assertThat(specificProgramConfiguration.itemHeader()!!.programIndicator()).isEqualTo("kALwOyvVvdT")
 
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()

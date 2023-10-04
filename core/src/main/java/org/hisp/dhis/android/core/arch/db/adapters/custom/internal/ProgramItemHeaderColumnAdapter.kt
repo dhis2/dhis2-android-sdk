@@ -25,40 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
+import org.hisp.dhis.android.core.settings.ProgramItemHeader
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
+class ProgramItemHeaderColumnAdapter : ColumnTypeAdapter<ProgramItemHeader> {
+    override fun fromCursor(cursor: Cursor, columnName: String): ProgramItemHeader {
+        val programIndicatorIndex = cursor.getColumnIndex(PROGRAM_INDICATOR)
+        val programIndicator = cursor.getString(programIndicatorIndex)
+        return ProgramItemHeader.builder()
+            .programIndicator(programIndicator)
+            .build()
     }
 
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
+    override fun toContentValues(values: ContentValues, columnName: String, value: ProgramItemHeader) {
+        values.put(PROGRAM_INDICATOR, value.programIndicator())
     }
 
     companion object {
-        const val VERSION = 151
+        const val PROGRAM_INDICATOR = ProgramConfigurationSettingTableInfo.Columns.ITEM_HEADER_PROGRAM_INDICATOR
     }
 }

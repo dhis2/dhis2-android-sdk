@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.AppearanceSettings
@@ -45,20 +46,22 @@ internal class AppearanceSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<AppearanceSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): AppearanceSettings {
+    override suspend fun fetch(storeError: Boolean): Result<AppearanceSettings, D2Error> {
         return when (val version = appVersionManager.getDataStoreVersion()) {
             SettingsAppDataStoreVersion.V1_1 -> {
-                throw D2Error.builder()
-                    .errorDescription("Appearance settings not found")
-                    .errorCode(D2ErrorCode.URL_NOT_FOUND)
-                    .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                    .build()
+                Result.Failure(
+                    D2Error.builder()
+                        .errorDescription("Appearance settings not found")
+                        .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                        .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                        .build()
+                )
             }
 
             SettingsAppDataStoreVersion.V2_0 -> {
                 coroutineAPICallExecutor.wrap(storeError = storeError) {
                     settingAppService.appearanceSettings(version)
-                }.getOrThrow()
+                }
             }
         }
     }

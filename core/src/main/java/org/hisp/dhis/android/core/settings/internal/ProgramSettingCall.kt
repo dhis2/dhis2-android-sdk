@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import javax.inject.Inject
 
@@ -40,12 +42,12 @@ internal class ProgramSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<ProgramSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): ProgramSettings {
+    override suspend fun fetch(storeError: Boolean): Result<ProgramSettings, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.programSettings(
                 appVersionManager.getDataStoreVersion()
             )
-        }.getOrThrow()
+        }
 
     }
 

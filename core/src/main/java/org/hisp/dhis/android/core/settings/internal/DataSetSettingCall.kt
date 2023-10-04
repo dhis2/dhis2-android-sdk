@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import javax.inject.Inject
 
@@ -40,10 +42,10 @@ internal class DataSetSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<DataSetSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): DataSetSettings {
+    override suspend fun fetch(storeError: Boolean): Result<DataSetSettings, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.dataSetSettings(appVersionManager.getDataStoreVersion())
-        }.getOrThrow()
+        }
 
     }
 

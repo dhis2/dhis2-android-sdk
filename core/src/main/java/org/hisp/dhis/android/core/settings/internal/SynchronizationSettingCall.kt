@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import dagger.Reusable
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
@@ -47,7 +48,7 @@ internal class SynchronizationSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<SynchronizationSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): SynchronizationSettings {
+    override suspend fun fetch(storeError: Boolean): Result<SynchronizationSettings, D2Error> {
         return when (val version = appVersionManager.getDataStoreVersion()) {
             SettingsAppDataStoreVersion.V1_1 -> {
                 val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
@@ -55,20 +56,25 @@ internal class SynchronizationSettingCall @Inject constructor(
                 val programSettings = tryOrNull(programSettingCall.fetch(storeError))
 
                 if (generalSettings == null && dataSetSettings == null && programSettings == null) {
-                    throw D2Error.builder()
-                        .errorDescription("Synchronization settings not found")
-                        .errorCode(D2ErrorCode.URL_NOT_FOUND)
-                        .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                        .build()
+                    Result.Failure(
+                        D2Error.builder()
+                            .errorDescription("Synchronization settings not found")
+                            .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                            .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                            .build()
+                    )
 
                 } else {
+                    val generalSettingsData = generalSettings?.getOrThrow()
+                    Result.Success(
+                        SynchronizationSettings.builder()
+                            .dataSync(generalSettingsData!!.dataSync())
+                            .metadataSync(generalSettingsData.metadataSync())
+                            .dataSetSettings(dataSetSettings?.getOrThrow())
+                            .programSettings(programSettings?.getOrThrow())
+                            .build()
+                    )
 
-                    SynchronizationSettings.builder()
-                        .dataSync(generalSettings?.dataSync())
-                        .metadataSync(generalSettings?.metadataSync())
-                        .dataSetSettings(dataSetSettings)
-                        .programSettings(programSettings)
-                        .build()
                 }
             }
 
@@ -77,7 +83,7 @@ internal class SynchronizationSettingCall @Inject constructor(
                     settingAppService.synchronizationSettings(
                         version
                     )
-                }.getOrThrow()
+                }
             }
         }
     }

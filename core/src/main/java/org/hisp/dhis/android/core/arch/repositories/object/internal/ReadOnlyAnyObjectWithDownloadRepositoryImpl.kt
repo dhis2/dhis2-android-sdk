@@ -29,10 +29,11 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 
-abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M>(
-    private val downloadCompletableProvider: CompletableProvider,
+abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> internal constructor(
+    private val downloadProvider: DownloadProvider,
 ) {
     fun get(): Single<M?> {
         return Single.fromCallable { blockingGet() }
@@ -49,7 +50,7 @@ abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M>(
     }
 
     fun download(): Completable {
-        return downloadCompletableProvider.getCompletable(false)
+        return rxCompletable { downloadProvider.download(false) }
     }
 
     fun blockingDownload() {

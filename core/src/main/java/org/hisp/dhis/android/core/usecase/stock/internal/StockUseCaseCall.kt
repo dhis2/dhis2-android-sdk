@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.usecase.stock.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import javax.inject.Inject
@@ -40,9 +42,8 @@ internal class StockUseCaseCall @Inject constructor(
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<List<InternalStockUseCase>>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): List<InternalStockUseCase> {
+    override suspend fun fetch(storeError: Boolean): Result<List<InternalStockUseCase>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) { stockUseCaseService.stockUseCases() }
-            .getOrThrow()
     }
 
     override fun process(item: List<InternalStockUseCase>?) {

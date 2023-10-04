@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import javax.inject.Inject
 
@@ -42,9 +44,9 @@ internal class GeneralSettingCall @Inject constructor(
 
     private var cachedValue: GeneralSettings? = null
 
-    suspend fun fetch(storeError: Boolean, acceptCache: Boolean = false): GeneralSettings {
+    suspend fun fetch(storeError: Boolean, acceptCache: Boolean = false): Result<GeneralSettings, D2Error> {
         return when {
-            cachedValue != null && acceptCache -> cachedValue!!
+            cachedValue != null && acceptCache -> Result.Success(cachedValue!!)
             else -> fetch(storeError)
         }
     }
@@ -63,9 +65,9 @@ internal class GeneralSettingCall @Inject constructor(
         }.getOrThrow().encryptDB()
     }
 
-    override suspend fun fetch(storeError: Boolean): GeneralSettings {
+    override suspend fun fetch(storeError: Boolean): Result<GeneralSettings, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
-        }.getOrThrow()
+        }
     }
 }

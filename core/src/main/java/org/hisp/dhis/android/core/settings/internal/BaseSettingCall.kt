@@ -27,22 +27,27 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Completable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import java.net.HttpURLConnection
 
 internal abstract class BaseSettingCall<T> internal constructor(
     val coroutineAPICallExecutor: CoroutineAPICallExecutor
-) {
-    suspend fun download(storeError: Boolean): T {
-        return coroutineAPICallExecutor.wrap {
-            fetch(storeError)
-        }.getOrThrow()
+) : DownloadProvider {
+
+    override suspend fun download(storeError: Boolean) {
+        fetch(storeError).fold(
+            { process(it) },
+            { throwable ->
+                if (isExpectedError(throwable)) {
+                    process(null)
+                }
+            })
     }
+
 
     private fun isExpectedError(throwable: D2Error): Boolean {
         return throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
@@ -50,7 +55,7 @@ internal abstract class BaseSettingCall<T> internal constructor(
                 throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
     }
 
-    abstract suspend fun fetch(storeError: Boolean): T
+    abstract suspend fun fetch(storeError: Boolean): Result<T, D2Error>
 
     abstract fun process(item: T?)
 }

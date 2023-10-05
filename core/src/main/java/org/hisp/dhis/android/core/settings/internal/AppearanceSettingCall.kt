@@ -54,7 +54,7 @@ internal class AppearanceSettingCall @Inject constructor(
                         .errorDescription("Appearance settings not found")
                         .errorCode(D2ErrorCode.URL_NOT_FOUND)
                         .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                        .build()
+                        .build(),
                 )
             }
 

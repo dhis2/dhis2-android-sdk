@@ -28,39 +28,48 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class GeneralSettingCallShould {
     private val handler: GeneralSettingHandler = mock()
     private val service: SettingAppService = mock()
-    private val generalSettingSingle: Single<GeneralSettings> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val generalSetting: GeneralSettings = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val appVersionManager: SettingsAppInfoManager = mock()
 
     private lateinit var generalSettingCall: GeneralSettingCall
 
     @Before
     fun setUp() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
-        whenever(service.generalSettings(any())) doReturn generalSettingSingle
-        generalSettingCall = GeneralSettingCall(handler, service, apiCallExecutor, appVersionManager)
+        appVersionManager.stub {
+            onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V1_1
+        }
+        whenAPICall { generalSetting }
+        generalSettingCall = GeneralSettingCall(handler, service, appVersionManager, coroutineAPICallExecutor)
+    }
+
+    private fun whenAPICall(answer: Answer<GeneralSettings>) {
+        service.stub {
+            onBlocking { generalSettings(any()) }.doAnswer(answer)
+        }
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(generalSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        whenever(service.generalSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
 
-        generalSettingCall.getCompletable(false).blockingAwait()
-
+        generalSettingCall.download(false)
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)
     }

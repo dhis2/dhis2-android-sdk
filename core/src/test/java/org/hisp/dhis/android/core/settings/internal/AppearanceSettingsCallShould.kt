@@ -29,68 +29,77 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class AppearanceSettingsCallShould {
 
     private val filterSettingHandler: FilterSettingHandler = mock()
     private val programConfigurationHandler: ProgramConfigurationSettingHandler = mock()
     private val service: SettingAppService = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
 
     private val appearanceSettings: AppearanceSettings = mock()
-    private val appearanceSettingsSingle: Single<AppearanceSettings> = Single.just(appearanceSettings)
 
     private lateinit var appearanceSettingsCall: AppearanceSettingCall
 
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
+
     @Before
     fun setUp() {
-        whenever(service.appearanceSettings(any())) doReturn appearanceSettingsSingle
-
+        whenAPICall { appearanceSettings }
         appearanceSettingsCall = AppearanceSettingCall(
             filterSettingHandler,
             programConfigurationHandler,
             service,
-            apiCallExecutor,
+            coroutineAPICallExecutor,
             appVersionManager,
         )
     }
 
-    @Test
-    fun call_appearances_endpoint_if_version_1() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
+    private fun whenAPICall(answer: Answer<AppearanceSettings>) {
+        service.stub {
+            onBlocking { appearanceSettings(any()) }.doAnswer(answer)
+        }
+    }
 
-        appearanceSettingsCall.getCompletable(false).blockingAwait()
+    @Test
+    fun call_appearances_endpoint_if_version_1() = runTest {
+        whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V1_1
+
+        appearanceSettingsCall.download(false)
 
         verify(service, never()).appearanceSettings(any())
     }
 
     @Test
-    fun call_appearances_endpoint_if_version_2() {
-        whenever(apiCallExecutor.wrapSingle(appearanceSettingsSingle, false)) doReturn appearanceSettingsSingle
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V2_0)
+    fun call_appearances_endpoint_if_version_2() = runTest {
+        whenever(service.appearanceSettings(any())) doAnswer { appearanceSettings }
 
-        appearanceSettingsCall.getCompletable(false).blockingAwait()
+        whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
+
+        appearanceSettingsCall.download(false)
 
         verify(service).appearanceSettings(any())
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V2_0)
-        whenever(apiCallExecutor.wrapSingle(appearanceSettingsSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        whenever(service.appearanceSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
 
-        appearanceSettingsCall.getCompletable(false).blockingAwait()
+        whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
+
+        appearanceSettingsCall.download(false)
 
         verify(filterSettingHandler).handleMany(emptyList())
         verifyNoMoreInteractions(filterSettingHandler)

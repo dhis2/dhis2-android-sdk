@@ -54,7 +54,7 @@ internal class AnalyticsSettingCall @Inject constructor(
                         .errorDescription("Analytics settings not found")
                         .errorCode(D2ErrorCode.URL_NOT_FOUND)
                         .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                        .build()
+                        .build(),
                 )
             }
 

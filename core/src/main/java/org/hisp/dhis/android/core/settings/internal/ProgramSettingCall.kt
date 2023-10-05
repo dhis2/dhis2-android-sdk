@@ -45,10 +45,9 @@ internal class ProgramSettingCall @Inject constructor(
     override suspend fun fetch(storeError: Boolean): Result<ProgramSettings, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.programSettings(
-                appVersionManager.getDataStoreVersion()
+                appVersionManager.getDataStoreVersion(),
             )
         }
-
     }
 
     override fun process(item: ProgramSettings?) {

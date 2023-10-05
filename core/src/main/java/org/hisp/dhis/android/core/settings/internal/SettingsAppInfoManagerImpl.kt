@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import javax.inject.Inject
@@ -50,7 +49,6 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
             is SettingsAppVersion.Valid -> getOrUpdateAppVersion.dataStore
             is SettingsAppVersion.DataStoreEmpty -> throw dataStoreEmpty
         }
-
     }
 
     override suspend fun getAppVersion(): String {
@@ -58,7 +56,6 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
             is SettingsAppVersion.Valid -> getOrUpdateAppVersion.app
             is SettingsAppVersion.DataStoreEmpty -> throw dataStoreEmpty
         }
-
     }
 
     override suspend fun updateAppVersion(): SettingsAppVersion {
@@ -67,7 +64,6 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
         } catch (exception: D2Error) {
             SettingsAppVersion.DataStoreEmpty
         }
-
     }
 
     private suspend fun getOrUpdateAppVersion(): SettingsAppVersion {

@@ -46,7 +46,6 @@ internal class DataSetSettingCall @Inject constructor(
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.dataSetSettings(appVersionManager.getDataStoreVersion())
         }
-
     }
 
     override fun process(item: DataSetSettings?) {

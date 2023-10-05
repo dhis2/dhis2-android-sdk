@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Single
-
 internal interface SettingsAppInfoManager {
     suspend fun getDataStoreVersion(): SettingsAppDataStoreVersion
     suspend fun getAppVersion(): String

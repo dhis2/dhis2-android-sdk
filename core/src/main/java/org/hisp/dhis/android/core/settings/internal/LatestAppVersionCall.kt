@@ -29,10 +29,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.LatestAppVersion
@@ -45,15 +42,12 @@ internal class LatestAppVersionCall @Inject constructor(
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<LatestAppVersion>(coroutineAPICallExecutor) {
 
-
     override suspend fun fetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.latestAppVersion() }
-
     }
 
     override fun process(item: LatestAppVersion?) {
         val appVersionList = listOfNotNull(item)
         latestAppVersionHandler.handleMany(appVersionList)
     }
-
 }

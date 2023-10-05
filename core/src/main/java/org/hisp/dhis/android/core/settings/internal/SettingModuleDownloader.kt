@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import javax.inject.Inject
 
@@ -48,7 +47,6 @@ internal class SettingModuleDownloader @Inject constructor(
         userSettingsCall.download()
         systemSettingCall.download()
         latestAppVersionCall.download(false)
-
     }
 
     private suspend fun downloadFromSettingsApp() {
@@ -57,5 +55,4 @@ internal class SettingModuleDownloader @Inject constructor(
         appearanceSettingCall.download(false)
         analyticsSettingCall.download(false)
     }
-
 }

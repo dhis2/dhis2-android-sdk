@@ -44,6 +44,12 @@ internal class GeneralSettingCall @Inject constructor(
 
     private var cachedValue: GeneralSettings? = null
 
+    override suspend fun fetch(storeError: Boolean): Result<GeneralSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
+        }
+    }
+
     suspend fun fetch(storeError: Boolean, acceptCache: Boolean = false): Result<GeneralSettings, D2Error> {
         return when {
             cachedValue != null && acceptCache -> Result.Success(cachedValue!!)
@@ -63,11 +69,5 @@ internal class GeneralSettingCall @Inject constructor(
         return coroutineAPICallExecutor.wrap(storeError = false) {
             settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
         }.getOrThrow().encryptDB()
-    }
-
-    override suspend fun fetch(storeError: Boolean): Result<GeneralSettings, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) {
-            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
-        }
     }
 }

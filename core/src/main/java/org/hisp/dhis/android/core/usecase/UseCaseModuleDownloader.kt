@@ -42,7 +42,6 @@ internal class UseCaseModuleDownloader @Inject constructor(
     override fun downloadMetadata(): Completable {
         return rxCompletable {
             stockUseCaseCall.download(false)
-
         }
     }
 }

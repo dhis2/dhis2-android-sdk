@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import retrofit2.http.GET
 

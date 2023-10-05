@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import java.net.HttpURLConnection
 
 internal abstract class BaseSettingCall<T> internal constructor(
-    val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {
 
     override suspend fun download(storeError: Boolean) {
@@ -45,14 +45,14 @@ internal abstract class BaseSettingCall<T> internal constructor(
                 if (isExpectedError(throwable)) {
                     process(null)
                 }
-            })
+            },
+        )
     }
-
 
     private fun isExpectedError(throwable: D2Error): Boolean {
         return throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
-                throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED ||
-                throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
+            throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED ||
+            throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
     }
 
     abstract suspend fun fetch(storeError: Boolean): Result<T, D2Error>

@@ -32,6 +32,7 @@ import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.call.BaseD2Progress
@@ -97,16 +98,21 @@ class MetadataCallShould : BaseCallShould() {
     // object to test
     private lateinit var metadataCall: MetadataCall
 
+    @SuppressWarnings("LongMethod")
     @Before
     @Throws(Exception::class)
     override fun setUp() {
         super.setUp()
-
         // Calls
         systemInfoDownloader.stub {
             onBlocking { downloadWithProgressManager(any()) }.doReturn(BaseD2Progress.empty(10))
         }
-        whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        systemInfoDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+        useCaseModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Completable.complete())
+        }
         whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         userDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(user)
@@ -133,11 +139,9 @@ class MetadataCallShould : BaseCallShould() {
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
-
         generalSettingCall.stub {
             onBlocking { isDatabaseEncrypted() }.doReturn(false)
         }
-
         // Metadata call
         metadataCall = MetadataCall(
             coroutineAPICallExecutor,
@@ -177,8 +181,9 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_system_setting_call_fail() {
-        whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
+    fun fail_when_system_setting_call_fail() = runTest {
+        whenever(systemSettingDownloader.downloadMetadata()).doAnswer { throw networkError }
+
         downloadAndAssertError()
     }
 

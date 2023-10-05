@@ -61,9 +61,8 @@ internal class SynchronizationSettingCall @Inject constructor(
                             .errorDescription("Synchronization settings not found")
                             .errorCode(D2ErrorCode.URL_NOT_FOUND)
                             .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                            .build()
+                            .build(),
                     )
-
                 } else {
                     val generalSettingsData = generalSettings?.getOrThrow()
                     Result.Success(
@@ -72,22 +71,20 @@ internal class SynchronizationSettingCall @Inject constructor(
                             .metadataSync(generalSettingsData.metadataSync())
                             .dataSetSettings(dataSetSettings?.getOrThrow())
                             .programSettings(programSettings?.getOrThrow())
-                            .build()
+                            .build(),
                     )
-
                 }
             }
 
             SettingsAppDataStoreVersion.V2_0 -> {
                 coroutineAPICallExecutor.wrap(storeError = storeError) {
                     settingAppService.synchronizationSettings(
-                        version
+                        version,
                     )
                 }
             }
         }
     }
-
 
     override fun process(item: SynchronizationSettings?) {
         val syncSettingsList = listOfNotNull(item)
@@ -98,6 +95,5 @@ internal class SynchronizationSettingCall @Inject constructor(
         return runBlocking {
             coroutineAPICallExecutor.wrap { call }.getOrNull()
         }
-
     }
 }

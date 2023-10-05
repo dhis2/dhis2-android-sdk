@@ -48,14 +48,11 @@ internal class SettingsAppInfoCall @Inject constructor(
     }
 
     private suspend fun fetchAppVersion(storeError: Boolean): SettingsAppVersion {
-
         return try {
-
             val info = coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.info() }
                 .getOrThrow()
 
             SettingsAppVersion.Valid(info.dataStoreVersion(), info.androidSettingsVersion() ?: unknown)
-
         } catch (exception: D2Error) {
             when {
                 exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
@@ -76,7 +73,6 @@ internal class SettingsAppInfoCall @Inject constructor(
                 settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1)
             }.getOrThrow()
             SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)
-
         } catch (exception: D2Error) {
             when {
                 exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
@@ -90,5 +86,4 @@ internal class SettingsAppInfoCall @Inject constructor(
             }
         }
     }
-
 }

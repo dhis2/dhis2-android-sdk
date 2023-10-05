@@ -85,9 +85,9 @@ class SynchronizationSettingCallShould {
 
         synchronizationSettingCall.download(false)
 
-        verify(generalSettingCall.fetch(any(), any()))
-        verify(dataSetSettingCall.fetch(any()))
-        verify(programSettingCall.fetch(any()))
+        verify(generalSettingCall).fetch(any(), any())
+        verify(dataSetSettingCall).fetch(any())
+        verify(programSettingCall).fetch(any())
         verify(service, never()).synchronizationSettings(any())
     }
 
@@ -99,11 +99,11 @@ class SynchronizationSettingCallShould {
 
         synchronizationSettingCall.download(false)
 
-        verify(generalSettingCall.fetch(any(), any()), never())
+        verify(generalSettingCall, never()).fetch(any(), any())
 
-        verify(dataSetSettingCall.fetch(any()), never())
+        verify(dataSetSettingCall, never()).fetch(any())
 
-        verify(programSettingCall.fetch(any()), never())
+        verify(programSettingCall, never()).fetch(any())
 
         verify(service).synchronizationSettings(any())
     }

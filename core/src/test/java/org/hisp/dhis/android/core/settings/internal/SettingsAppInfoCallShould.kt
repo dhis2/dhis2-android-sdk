@@ -117,25 +117,21 @@ class SettingsAppInfoCallShould {
         whenever(service.info()) doAnswer { throw D2ErrorSamples.notFound() }
         whenever(service.generalSettings(any())) doAnswer { throw D2ErrorSamples.get() }
 
-        val exception = assertThrows(RuntimeException::class.java) {
+        assertThrows(D2Error::class.java) {
             runBlocking {
                 dataSetSettingCall.fetch(false)
             }
         }
-
-        assertThat(exception.cause).isInstanceOf(D2Error::class.java)
     }
 
     @Test
     fun throws_D2_exception_if_other_error_than_not_found_in_info() = runTest {
-        whenever(service.generalSettings(any())) doAnswer { throw D2ErrorSamples.get() }
+        whenever(service.info()) doAnswer { throw D2ErrorSamples.get() }
 
-        val exception = assertThrows(RuntimeException::class.java) {
+        assertThrows(D2Error::class.java) {
             runBlocking {
                 dataSetSettingCall.fetch(false)
             }
         }
-
-        assertThat(exception.cause).isInstanceOf(D2Error::class.java)
     }
 }

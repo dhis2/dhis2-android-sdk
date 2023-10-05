@@ -111,9 +111,8 @@ class MetadataCallShould : BaseCallShould() {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
         useCaseModuleDownloader.stub {
-            onBlocking { downloadMetadata() }.doReturn(Completable.complete())
+            onBlocking { downloadMetadata() }.doReturn(Unit)
         }
-        whenever(useCaseModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
         userDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(user)
         }

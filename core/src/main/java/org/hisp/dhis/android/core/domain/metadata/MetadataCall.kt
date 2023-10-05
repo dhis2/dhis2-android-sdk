@@ -128,7 +128,7 @@ internal class MetadataCall @Inject constructor(
         systemSettingDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(SystemSetting::class.java, false))
 
-        useCaseDownloader.downloadMetadata().blockingAwait()
+        useCaseDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(StockUseCase::class.java, false))
 
         constantModuleDownloader.downloadMetadata()

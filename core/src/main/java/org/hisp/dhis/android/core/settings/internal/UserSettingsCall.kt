@@ -28,20 +28,21 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
 import org.hisp.dhis.android.core.settings.UserSettings
 import javax.inject.Inject
 
 @Reusable
-class UserSettingsCall @Inject internal constructor(
+internal class UserSettingsCall @Inject internal constructor(
     private val handler: UserSettingsHandler,
     private val service: SettingService,
     private val apiDownloader: APIDownloader,
 ) : ObjectCall<UserSettings> {
 
-    override fun download(): Single<UserSettings> {
-        return apiDownloader.downloadObject(handler, service.getUserSettings(UserSettingsFields.allFields))
+    override suspend fun download(): UserSettings {
+        return apiDownloader.downloadObjectAsCoroutine(handler) {
+            service.getUserSettings(UserSettingsFields.allFields)
+        }
     }
 }

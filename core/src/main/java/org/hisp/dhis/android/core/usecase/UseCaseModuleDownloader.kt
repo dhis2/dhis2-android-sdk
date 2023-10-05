@@ -28,19 +28,16 @@
 package org.hisp.dhis.android.core.usecase
 
 import dagger.Reusable
-import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
 import javax.inject.Inject
 
 @Reusable
 internal class UseCaseModuleDownloader @Inject constructor(
     private val stockUseCaseCall: StockUseCaseCall,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            stockUseCaseCall.getCompletable(false).blockingAwait()
-        }
+    override suspend fun downloadMetadata() {
+        return stockUseCaseCall.download(false)
     }
 }

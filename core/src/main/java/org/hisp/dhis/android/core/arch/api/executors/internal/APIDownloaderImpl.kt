@@ -190,6 +190,11 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
             .doOnSuccess { o: P -> handler.handle(o) }
     }
 
+    override suspend fun <P> downloadObjectAsCoroutine(handler: Handler<P>, downloader: suspend () -> P): P {
+        return downloader.invoke()
+            .also { handler.handle(it) }
+    }
+
     override fun <P> downloadPagedPayload(
         pageSize: Int,
         downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>,

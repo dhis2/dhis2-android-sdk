@@ -25,10 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.arch.modules.internal
 
-internal interface SettingsAppInfoManager {
-    suspend fun getDataStoreVersion(): SettingsAppDataStoreVersion
-    suspend fun getAppVersion(): String
-    suspend fun updateAppVersion(): SettingsAppVersion
+import io.reactivex.Completable
+
+fun interface UntypedModuleDownloader {
+    fun downloadMetadata(): Completable
 }

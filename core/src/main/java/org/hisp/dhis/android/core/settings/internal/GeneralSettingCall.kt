@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.await
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import javax.inject.Inject
 
@@ -38,21 +38,21 @@ import javax.inject.Inject
 internal class GeneralSettingCall @Inject constructor(
     private val generalSettingHandler: GeneralSettingHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
-) : BaseSettingCall<GeneralSettings>() {
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : BaseSettingCall<GeneralSettings>(coroutineAPICallExecutor) {
 
     private var cachedValue: GeneralSettings? = null
 
-    override fun fetch(storeError: Boolean): Single<GeneralSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = storeError)
+    override suspend fun tryFetch(storeError: Boolean): Result<GeneralSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
         }
     }
 
-    fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
+    suspend fun fetch(storeError: Boolean, acceptCache: Boolean = false): Result<GeneralSettings, D2Error> {
         return when {
-            cachedValue != null && acceptCache -> Single.just(cachedValue)
+            cachedValue != null && acceptCache -> Result.Success(cachedValue!!)
             else -> fetch(storeError)
         }
     }
@@ -65,11 +65,9 @@ internal class GeneralSettingCall @Inject constructor(
 
     suspend fun isDatabaseEncrypted(): Boolean {
         // TODO Should we decrypt the database if the settings app is uninstalled?
-        return appVersionManager.updateAppVersion()
-            .flatMap { appVersionManager.getDataStoreVersion() }
-            .flatMap { version ->
-                apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = false)
-            }
-            .map { obj: GeneralSettings -> obj.encryptDB() }.await()
+        appVersionManager.updateAppVersion()
+        return coroutineAPICallExecutor.wrap(storeError = false) {
+            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
+        }.getOrThrow().encryptDB()
     }
 }

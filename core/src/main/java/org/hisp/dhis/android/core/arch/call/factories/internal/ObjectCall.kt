@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import io.reactivex.Single
-
 internal fun interface ObjectCall<P> {
-    fun download(): Single<P>
+    suspend fun download(): P
 }

@@ -125,10 +125,10 @@ internal class MetadataCall @Inject constructor(
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
         databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
 
-        systemSettingDownloader.downloadMetadata().blockingAwait()
+        systemSettingDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(SystemSetting::class.java, false))
 
-        useCaseDownloader.downloadMetadata().blockingAwait()
+        useCaseDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(StockUseCase::class.java, false))
 
         constantModuleDownloader.downloadMetadata()

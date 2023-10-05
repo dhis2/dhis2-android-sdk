@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
@@ -40,42 +41,46 @@ import javax.inject.Inject
 internal class SynchronizationSettingCall @Inject constructor(
     private val synchronizationSettingHandler: SynchronizationSettingHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val generalSettingCall: GeneralSettingCall,
     private val dataSetSettingCall: DataSetSettingCall,
     private val programSettingCall: ProgramSettingCall,
     private val appVersionManager: SettingsAppInfoManager,
-) : BaseSettingCall<SynchronizationSettings>() {
+) : BaseSettingCall<SynchronizationSettings>(coroutineAPICallExecutor) {
 
-    override fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            when (version) {
-                SettingsAppDataStoreVersion.V1_1 -> {
-                    val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
-                    val dataSetSettings = tryOrNull(dataSetSettingCall.fetch(storeError))
-                    val programSettings = tryOrNull(programSettingCall.fetch(storeError))
+    override suspend fun tryFetch(storeError: Boolean): Result<SynchronizationSettings, D2Error> {
+        return when (val version = appVersionManager.getDataStoreVersion()) {
+            SettingsAppDataStoreVersion.V1_1 -> {
+                val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
+                val dataSetSettings = tryOrNull(dataSetSettingCall.fetch(storeError))
+                val programSettings = tryOrNull(programSettingCall.fetch(storeError))
 
-                    if (generalSettings == null && dataSetSettings == null && programSettings == null) {
-                        Single.error(
-                            D2Error.builder()
-                                .errorDescription("Synchronization settings not found")
-                                .errorCode(D2ErrorCode.URL_NOT_FOUND)
-                                .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                                .build(),
-                        )
-                    } else {
-                        Single.just(
-                            SynchronizationSettings.builder()
-                                .dataSync(generalSettings?.dataSync())
-                                .metadataSync(generalSettings?.metadataSync())
-                                .dataSetSettings(dataSetSettings)
-                                .programSettings(programSettings)
-                                .build(),
-                        )
-                    }
+                if (generalSettings == null && dataSetSettings == null && programSettings == null) {
+                    Result.Failure(
+                        D2Error.builder()
+                            .errorDescription("Synchronization settings not found")
+                            .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                            .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                            .build(),
+                    )
+                } else {
+                    val generalSettingsData = generalSettings?.getOrThrow()
+                    Result.Success(
+                        SynchronizationSettings.builder()
+                            .dataSync(generalSettingsData!!.dataSync())
+                            .metadataSync(generalSettingsData.metadataSync())
+                            .dataSetSettings(dataSetSettings?.getOrThrow())
+                            .programSettings(programSettings?.getOrThrow())
+                            .build(),
+                    )
                 }
-                SettingsAppDataStoreVersion.V2_0 -> {
-                    apiCallExecutor.wrapSingle(settingAppService.synchronizationSettings(version), storeError)
+            }
+
+            SettingsAppDataStoreVersion.V2_0 -> {
+                coroutineAPICallExecutor.wrap(storeError = storeError) {
+                    settingAppService.synchronizationSettings(
+                        version,
+                    )
                 }
             }
         }
@@ -86,7 +91,9 @@ internal class SynchronizationSettingCall @Inject constructor(
         synchronizationSettingHandler.handleMany(syncSettingsList)
     }
 
-    private fun <T> tryOrNull(single: Single<T>): T? {
-        return try { single.blockingGet() } catch (e: java.lang.Exception) { null }
+    private fun <T> tryOrNull(call: T): T? {
+        return runBlocking {
+            coroutineAPICallExecutor.wrap { call }.getOrNull()
+        }
     }
 }

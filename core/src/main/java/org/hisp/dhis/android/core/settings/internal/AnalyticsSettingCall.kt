@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
@@ -42,24 +42,25 @@ internal class AnalyticsSettingCall @Inject constructor(
     private val analyticsTeiSettingHandler: AnalyticsTeiSettingHandler,
     private val analyticsDhisVisualizationsSettingHandler: AnalyticsDhisVisualizationSettingHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
-) : BaseSettingCall<AnalyticsSettings>() {
+) : BaseSettingCall<AnalyticsSettings>(coroutineAPICallExecutor) {
 
-    override fun fetch(storeError: Boolean): Single<AnalyticsSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            when (version) {
-                SettingsAppDataStoreVersion.V1_1 -> {
-                    Single.error(
-                        D2Error.builder()
-                            .errorDescription("Analytics settings not found")
-                            .errorCode(D2ErrorCode.URL_NOT_FOUND)
-                            .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                            .build(),
-                    )
-                }
-                else -> {
-                    apiCallExecutor.wrapSingle(settingAppService.analyticsSettings(version), storeError)
+    override suspend fun tryFetch(storeError: Boolean): Result<AnalyticsSettings, D2Error> {
+        return when (val version = appVersionManager.getDataStoreVersion()) {
+            SettingsAppDataStoreVersion.V1_1 -> {
+                Result.Failure(
+                    D2Error.builder()
+                        .errorDescription("Analytics settings not found")
+                        .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                        .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                        .build(),
+                )
+            }
+
+            else -> {
+                coroutineAPICallExecutor.wrap(storeError = storeError) {
+                    settingAppService.analyticsSettings(version)
                 }
             }
         }
@@ -69,7 +70,7 @@ internal class AnalyticsSettingCall @Inject constructor(
         val analyticsTeiSettingList = item?.tei() ?: emptyList()
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
 
-        val analyticsDhisVisualizations: List<AnalyticsDhisVisualization> = item?. let {
+        val analyticsDhisVisualizations: List<AnalyticsDhisVisualization> = item?.let {
             SettingsAppHelper.getAnalyticsDhisVisualizations(it)
         } ?: emptyList()
 

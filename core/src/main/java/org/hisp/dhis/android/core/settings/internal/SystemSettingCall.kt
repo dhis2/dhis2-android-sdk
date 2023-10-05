@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields.allFields
 import javax.inject.Inject
@@ -41,12 +40,13 @@ internal class SystemSettingCall @Inject constructor(
     private val handler: SystemSettingHandler,
     private val service: SettingService,
     private val settingsSplitter: SystemSettingsSplitter,
-) : ListCall<SystemSetting> {
+) : ListCallCoroutines<SystemSetting> {
 
-    override fun download(): Single<List<SystemSetting>> {
-        return apiDownloader.downloadList(
+    override suspend fun download(): List<SystemSetting> {
+        return apiDownloader.downloadListAsCoroutine(
             handler = handler,
-            downloader = service.getSystemSettingsSingle(allFields).map(settingsSplitter::splitSettings),
-        )
+        ) {
+            settingsSplitter.splitSettings(service.getSystemSettingsSingle(allFields))
+        }
     }
 }

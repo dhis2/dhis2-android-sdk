@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import javax.inject.Inject
 
@@ -37,13 +38,13 @@ import javax.inject.Inject
 internal class DataSetSettingCall @Inject constructor(
     private val dataSetSettingHandler: DataSetSettingHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
-) : BaseSettingCall<DataSetSettings>() {
+) : BaseSettingCall<DataSetSettings>(coroutineAPICallExecutor) {
 
-    override fun fetch(storeError: Boolean): Single<DataSetSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError = storeError)
+    override suspend fun tryFetch(storeError: Boolean): Result<DataSetSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            settingAppService.dataSetSettings(appVersionManager.getDataStoreVersion())
         }
     }
 

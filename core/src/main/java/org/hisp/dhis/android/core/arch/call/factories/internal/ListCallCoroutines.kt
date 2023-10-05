@@ -25,10 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-internal interface SettingsAppInfoManager {
-    suspend fun getDataStoreVersion(): SettingsAppDataStoreVersion
-    suspend fun getAppVersion(): String
-    suspend fun updateAppVersion(): SettingsAppVersion
+package org.hisp.dhis.android.core.arch.call.factories.internal
+
+fun interface ListCallCoroutines<P> {
+    suspend fun download(): List<P>
 }

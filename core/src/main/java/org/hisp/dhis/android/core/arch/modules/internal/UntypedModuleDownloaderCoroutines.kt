@@ -26,10 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.modules.internal;
+package org.hisp.dhis.android.core.arch.modules.internal
 
-import io.reactivex.Completable;
-
-public interface UntypedModuleDownloader {
-   Completable downloadMetadata();
+internal fun interface UntypedModuleDownloaderCoroutines {
+    suspend fun downloadMetadata()
 }

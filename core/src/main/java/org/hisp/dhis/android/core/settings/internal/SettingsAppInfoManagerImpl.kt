@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import javax.inject.Inject
@@ -45,34 +44,30 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
         .errorDescription("The dataStore is empty")
         .build()
 
-    override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
-        return getOrUpdateAppVersion().flatMap {
-            when (it) {
-                is SettingsAppVersion.Valid -> Single.just(it.dataStore)
-                is SettingsAppVersion.DataStoreEmpty -> Single.error(dataStoreEmpty)
-            }
+    override suspend fun getDataStoreVersion(): SettingsAppDataStoreVersion {
+        return when (val getOrUpdateAppVersion = getOrUpdateAppVersion()) {
+            is SettingsAppVersion.Valid -> getOrUpdateAppVersion.dataStore
+            is SettingsAppVersion.DataStoreEmpty -> throw dataStoreEmpty
         }
     }
 
-    override fun getAppVersion(): Single<String> {
-        return getOrUpdateAppVersion().flatMap {
-            when (it) {
-                is SettingsAppVersion.Valid -> Single.just(it.app)
-                is SettingsAppVersion.DataStoreEmpty -> Single.error(dataStoreEmpty)
-            }
+    override suspend fun getAppVersion(): String {
+        return when (val getOrUpdateAppVersion = getOrUpdateAppVersion()) {
+            is SettingsAppVersion.Valid -> getOrUpdateAppVersion.app
+            is SettingsAppVersion.DataStoreEmpty -> throw dataStoreEmpty
         }
     }
 
-    override fun updateAppVersion(): Single<SettingsAppVersion> {
-        return settingsAppInfoCall.fetch(false)
-            .doOnSuccess {
-                settingsAppVersion = it
-            }
+    override suspend fun updateAppVersion(): SettingsAppVersion {
+        return try {
+            settingsAppInfoCall.fetch(false).also { settingsAppVersion = it }
+        } catch (exception: D2Error) {
+            SettingsAppVersion.DataStoreEmpty
+        }
     }
 
-    private fun getOrUpdateAppVersion(): Single<SettingsAppVersion> {
+    private suspend fun getOrUpdateAppVersion(): SettingsAppVersion {
         return settingsAppVersion
-            ?.let { Single.just(it) }
             ?: updateAppVersion()
     }
 }

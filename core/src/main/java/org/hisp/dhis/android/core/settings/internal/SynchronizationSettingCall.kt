@@ -48,7 +48,7 @@ internal class SynchronizationSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<SynchronizationSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<SynchronizationSettings, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<SynchronizationSettings, D2Error> {
         return when (val version = appVersionManager.getDataStoreVersion()) {
             SettingsAppDataStoreVersion.V1_1 -> {
                 val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))

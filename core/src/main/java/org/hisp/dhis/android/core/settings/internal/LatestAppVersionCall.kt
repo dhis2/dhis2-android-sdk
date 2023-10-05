@@ -42,7 +42,7 @@ internal class LatestAppVersionCall @Inject constructor(
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<LatestAppVersion>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.latestAppVersion() }
     }
 

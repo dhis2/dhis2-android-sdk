@@ -46,7 +46,7 @@ internal class AnalyticsSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<AnalyticsSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<AnalyticsSettings, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<AnalyticsSettings, D2Error> {
         return when (val version = appVersionManager.getDataStoreVersion()) {
             SettingsAppDataStoreVersion.V1_1 -> {
                 Result.Failure(

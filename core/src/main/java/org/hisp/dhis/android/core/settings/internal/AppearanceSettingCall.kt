@@ -46,7 +46,7 @@ internal class AppearanceSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<AppearanceSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<AppearanceSettings, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<AppearanceSettings, D2Error> {
         return when (val version = appVersionManager.getDataStoreVersion()) {
             SettingsAppDataStoreVersion.V1_1 -> {
                 Result.Failure(

@@ -42,7 +42,7 @@ internal class ProgramSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<ProgramSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<ProgramSettings, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<ProgramSettings, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.programSettings(
                 appVersionManager.getDataStoreVersion(),

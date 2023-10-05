@@ -42,7 +42,7 @@ internal class StockUseCaseCall @Inject constructor(
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<List<InternalStockUseCase>>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<List<InternalStockUseCase>, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<List<InternalStockUseCase>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) { stockUseCaseService.stockUseCases() }
     }
 

@@ -42,7 +42,7 @@ internal class DataSetSettingCall @Inject constructor(
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<DataSetSettings>(coroutineAPICallExecutor) {
 
-    override suspend fun fetch(storeError: Boolean): Result<DataSetSettings, D2Error> {
+    override suspend fun tryFetch(storeError: Boolean): Result<DataSetSettings, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             settingAppService.dataSetSettings(appVersionManager.getDataStoreVersion())
         }

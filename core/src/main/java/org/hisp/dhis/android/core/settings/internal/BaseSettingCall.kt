@@ -49,13 +49,21 @@ internal abstract class BaseSettingCall<T> internal constructor(
         )
     }
 
+    suspend fun fetch(storeError: Boolean): Result<T, D2Error> {
+        return try {
+            tryFetch(storeError)
+        } catch (d2Error: D2Error) {
+            Result.Failure(d2Error)
+        }
+    }
+
     private fun isExpectedError(throwable: D2Error): Boolean {
         return throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
             throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED ||
             throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
     }
 
-    abstract suspend fun fetch(storeError: Boolean): Result<T, D2Error>
+    protected abstract suspend fun tryFetch(storeError: Boolean): Result<T, D2Error>
 
-    abstract fun process(item: T?)
+    protected abstract fun process(item: T?)
 }

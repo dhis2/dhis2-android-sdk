@@ -73,7 +73,7 @@ object TrackedEntitySearchItemHelper {
 
     private fun fromAttributes(
         attributes: List<SimpleTrackedEntityAttribute>,
-        attributeValues: List<TrackedEntityAttributeValue>?
+        attributeValues: List<TrackedEntityAttributeValue>?,
     ): List<TrackedEntitySearchItemAttribute> {
         return attributes.mapNotNull { attribute ->
             from(attribute, attributeValues)

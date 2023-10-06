@@ -64,4 +64,11 @@ internal data class TrackedEntityInstanceQueryOnline(
     val lastUpdatedStartDate: Date? = null,
     val lastUpdatedEndDate: Date? = null,
     val order: String? = null,
-)
+) {
+    fun shouldCallEventFirst(): Boolean {
+        return dataValueFilter.isNotEmpty() ||
+            dueStartDate != null ||
+            dueEndDate != null ||
+            eventStatus != null
+    }
+}

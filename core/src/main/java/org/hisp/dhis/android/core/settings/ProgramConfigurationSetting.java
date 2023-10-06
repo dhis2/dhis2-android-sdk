@@ -34,8 +34,10 @@ import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramItemHeaderColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -50,13 +52,17 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     public abstract Boolean completionSpinner();
 
     @Nullable
-    public abstract  Boolean optionalSearch();
+    public abstract Boolean optionalSearch();
 
     @Nullable
-    public abstract  Boolean disableReferrals();
+    public abstract Boolean disableReferrals();
 
     @Nullable
-    public abstract  Boolean disableCollapsibleSections();
+    public abstract Boolean disableCollapsibleSections();
+
+    @Nullable
+    @ColumnAdapter(ProgramItemHeaderColumnAdapter.class)
+    public abstract ProgramItemHeader itemHeader();
 
     public static ProgramConfigurationSetting create(Cursor cursor) {
         return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
@@ -83,6 +89,8 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
         public abstract Builder disableReferrals(Boolean disableReferrals);
 
         public abstract Builder disableCollapsibleSections(Boolean disableCollapsibleSections);
+
+        public abstract Builder itemHeader(ProgramItemHeader itemHeader);
 
         public abstract ProgramConfigurationSetting build();
     }

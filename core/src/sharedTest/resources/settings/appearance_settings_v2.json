@@ -138,7 +138,10 @@
         "completionSpinner": "true",
         "optionalSearch": "true",
         "disableReferrals": "true",
-        "disableCollapsibleSections": "false"
+        "disableCollapsibleSections": "false",
+        "itemHeader": {
+          "programIndicator": "kALwOyvVvdT"
+        }
       },
       "IpHINAT79UQ": {
         "completionSpinner": "true",

@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.program.trackerheaderengine.internal.TrackerHeaderEngine
+import org.hisp.dhis.android.core.settings.AppearanceSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -48,11 +50,22 @@ internal class TrackedEntitySearchDataFetcherHelper @Inject constructor(
     private val programTrackedEntityAttributeCollectionRepository: ProgramTrackedEntityAttributeCollectionRepository,
     private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
     private val trackedEntityTypeCollectionRepository: TrackedEntityTypeCollectionRepository,
+    private val appearanceSettingsObjectRepository: AppearanceSettingsObjectRepository,
+    private val programIndicatorCollectionRepository: ProgramIndicatorCollectionRepository,
 ) {
     fun getHeaderExpression(program: String?): String? {
         return program?.let {
-            // https://dhis2.atlassian.net/browse/ANDROSDK-1728
-            null
+            val itemHeader = appearanceSettingsObjectRepository.getProgramConfigurationByUid(program)?.itemHeader()
+            val programIndicatorHeader = itemHeader?.programIndicator()
+
+            if (programIndicatorHeader != null) {
+                programIndicatorCollectionRepository
+                    .uid(programIndicatorHeader)
+                    .blockingGet()
+                    ?.expression()
+            } else {
+                null
+            }
         }
     }
 

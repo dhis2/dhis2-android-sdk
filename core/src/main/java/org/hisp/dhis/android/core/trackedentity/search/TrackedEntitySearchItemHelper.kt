@@ -46,7 +46,7 @@ object TrackedEntitySearchItemHelper {
             lastUpdatedAtClient = i.lastUpdatedAtClient(),
             organisationUnit = i.organisationUnit(),
             geometry = i.geometry(),
-            attributeValues = i.trackedEntityAttributeValues()?.mapNotNull { from(it, attributes) },
+            attributeValues = fromAttributes(attributes, i.trackedEntityAttributeValues()),
             syncState = i.syncState(),
             aggregatedSyncState = i.aggregatedSyncState(),
             deleted = i.deleted() ?: false,
@@ -71,18 +71,27 @@ object TrackedEntitySearchItemHelper {
             .build()
     }
 
-    private fun from(
-        a: TrackedEntityAttributeValue,
+    private fun fromAttributes(
         attributes: List<SimpleTrackedEntityAttribute>,
+        attributeValues: List<TrackedEntityAttributeValue>?,
+    ): List<TrackedEntitySearchItemAttribute> {
+        return attributes.mapNotNull { attribute ->
+            from(attribute, attributeValues)
+        }
+    }
+
+    private fun from(
+        attribute: SimpleTrackedEntityAttribute,
+        attributeValues: List<TrackedEntityAttributeValue>?,
     ): TrackedEntitySearchItemAttribute? {
-        return attributes.find { it.attribute == a.trackedEntityAttribute() }?.let { attribute ->
+        return attributeValues?.find { it.trackedEntityAttribute() == attribute.attribute }?.let { value ->
             TrackedEntitySearchItemAttribute(
-                attribute = a.trackedEntityAttribute()!!,
+                attribute = attribute.attribute,
                 displayName = attribute.displayName,
                 displayFormName = attribute.displayFormName ?: attribute.displayName,
-                value = a.value(),
-                created = a.created(),
-                lastUpdated = a.lastUpdated(),
+                value = value.value(),
+                created = value.created(),
+                lastUpdated = value.lastUpdated(),
                 valueType = attribute.valueType,
                 displayInList = attribute.displayInList,
                 optionSet = attribute.optionSet,

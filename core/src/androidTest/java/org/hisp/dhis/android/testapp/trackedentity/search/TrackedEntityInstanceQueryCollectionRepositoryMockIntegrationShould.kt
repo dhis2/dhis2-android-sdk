@@ -66,7 +66,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     @Test
     fun find_by_data_value() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byDataValue("g9eOBujte1U").eq("false")
             .blockingGet()
 
@@ -76,7 +76,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     @Test
     fun find_by_program() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .blockingGet()
 
         assertThat(trackedEntityInstances.size).isEqualTo(2)
@@ -85,7 +85,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     @Test
     fun find_uids_by_program() {
         val trackedEntityInstanceUids = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .blockingGetUids()
 
         assertThat(trackedEntityInstanceUids.size).isEqualTo(2)
@@ -95,7 +95,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     fun find_by_enrollment_date() {
         val refDate = DateUtils.DATE_FORMAT.parse("2018-01-10T00:00:00.000")
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byProgramDate().afterOrEqual(refDate)
             .byProgramDate().beforeOrEqual(refDate)
             .blockingGet()
@@ -107,7 +107,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     fun find_by_incident_date() {
         val refDate = DateUtils.DATE_FORMAT.parse("2018-01-10T00:00:00.000")
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byIncidentDate().afterOrEqual(refDate)
             .byIncidentDate().beforeOrEqual(refDate)
             .blockingGet()
@@ -119,7 +119,7 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     fun find_by_event_date() {
         val refDate = DateUtils.DATE_FORMAT.parse("2015-05-01T00:00:00.000")
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byEventDate().afterOrEqual(refDate)
             .byEventDate().beforeOrEqual(refDate)
             .blockingGet()
@@ -156,11 +156,11 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     fun find_by_transferred_orgunit() {
         val originalOu = d2.trackedEntityModule()
             .trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byOrgUnits().eq("DiszpKrYNg8")
         val transferredOu = d2.trackedEntityModule()
             .trackedEntityInstanceQuery()
-            .byProgram().eq("lxAQ7Zs9VYR")
+            .byProgram().eq("IpHINAT79UW")
             .byOrgUnits().eq("g8upMTyEZGZ")
 
         assertThat(originalOu.blockingCount()).isEqualTo(2)
@@ -168,11 +168,11 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
 
         // Transfer ownership
         val teiUid = originalOu.blockingGet()[0].uid()
-        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "lxAQ7Zs9VYR", "g8upMTyEZGZ")
+        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "IpHINAT79UW", "g8upMTyEZGZ")
         assertThat(originalOu.blockingCount()).isEqualTo(1)
         assertThat(transferredOu.blockingCount()).isEqualTo(1)
 
         // Undo change
-        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "lxAQ7Zs9VYR", "DiszpKrYNg8")
+        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "IpHINAT79UW", "DiszpKrYNg8")
     }
 }

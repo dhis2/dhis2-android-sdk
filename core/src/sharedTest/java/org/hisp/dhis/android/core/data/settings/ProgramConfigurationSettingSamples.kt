@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.settings
 
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import org.hisp.dhis.android.core.settings.ProgramItemHeader
 
 object ProgramConfigurationSettingSamples {
     fun get(): ProgramConfigurationSetting {
@@ -38,6 +39,11 @@ object ProgramConfigurationSettingSamples {
             .optionalSearch(true)
             .disableReferrals(true)
             .disableCollapsibleSections(true)
+            .itemHeader(
+                ProgramItemHeader.builder()
+                    .programIndicator("programIndicator")
+                    .build(),
+            )
             .build()
     }
 }

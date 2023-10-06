@@ -37,6 +37,11 @@ object ProgramConfigurationSettingSamples {
             .optionalSearch(true)
             .disableReferrals(true)
             .disableCollapsibleSections(true)
+            .itemHeader(
+                ProgramItemHeader.builder()
+                    .programIndicator("programIndicator")
+                    .build(),
+            )
             .build()
     }
 }

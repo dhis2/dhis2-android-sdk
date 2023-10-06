@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core
 import android.util.Log
 import io.reactivex.schedulers.Schedulers
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.user.User
 
 class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
@@ -59,12 +58,9 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun response_successful_on_sync_meta_data_once() {
-        d2.userModule().logIn(username, password, url)
-            .flatMapObservable { log -> d2.metadataModule().download() }
-            .subscribeOn(Schedulers.io())
-            .subscribe()
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-        Thread.sleep(60000)
+        d2.metadataModule().blockingDownload()
 
         // TODO: add additional sync + break point.
         // when debugger stops at the new break point manually change metadata online & resume.

@@ -81,4 +81,15 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould : BaseMockInt
         assertThat(trackedEntityInstances[0].header).isEqualTo("4081507, befryEfXge5")
         assertThat(trackedEntityInstances[1].header).isEqualTo("654321, 0.0")
     }
+
+    @Test
+    fun should_return_ordered_attributes() {
+        val trackedEntity = d2.trackedEntityModule().trackedEntitySearch()
+            .uid("nWrB0TfWlvh")
+            .blockingGet()
+
+        assertThat(trackedEntity).isNotNull()
+        assertThat(trackedEntity!!.attributeValues!![0].attribute).isEqualTo("cejWyOfXge6")
+        assertThat(trackedEntity.attributeValues!![1].attribute).isEqualTo("aejWyOfXge6")
+    }
 }

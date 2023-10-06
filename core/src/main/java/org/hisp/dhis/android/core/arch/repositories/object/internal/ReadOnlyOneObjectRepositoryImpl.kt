@@ -27,19 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 
 open class ReadOnlyOneObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadOnlyObjectRepositoryImpl<M, R>(childrenAppenders, scope, repositoryFactory) {
+) : ReadOnlyObjectRepositoryImpl<M, R>(databaseAdapter, childrenAppenders, scope, repositoryFactory) {
 
     override fun blockingGetWithoutChildren(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())

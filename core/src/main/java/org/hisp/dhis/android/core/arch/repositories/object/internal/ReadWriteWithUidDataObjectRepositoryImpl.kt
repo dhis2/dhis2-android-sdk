@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
 import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -45,10 +46,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     store: IdentifiableDeletableDataObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadWriteWithUidObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
+) : ReadWriteWithUidObjectRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> where M : CoreObject, M : ObjectWithUidInterface, M : DeletableDataObject {
     /**
      * Removes the object in scope in an asynchronous way. Field [DataObject.syncState] is marked as

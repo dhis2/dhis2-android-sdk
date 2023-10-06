@@ -28,14 +28,16 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
 abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
-    private val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    private val databaseAdapter: DatabaseAdapter,
+    private val childrenAppenderGetter: ChildrenAppenderGetter<M>,
     protected val scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyObjectRepository<M> {
@@ -59,7 +61,8 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
     override fun blockingGet(): M? {
         return ChildrenAppenderExecutor.appendInObject(
             blockingGetWithoutChildren(),
-            childrenAppenders,
+            databaseAdapter,
+            childrenAppenderGetter,
             scope.children(),
         )
     }

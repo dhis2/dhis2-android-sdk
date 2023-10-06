@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -48,11 +49,19 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
     R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: IdentifiableObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
     override val transformer: TwoWayTransformer<M, T>,
-) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(store, childrenAppenders, scope, cf, transformer),
+) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(
+    store,
+    databaseAdapter,
+    childrenAppenders,
+    scope,
+    cf,
+    transformer
+),
     ReadOnlyWithUidCollectionRepository<T>
     where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
     /**
@@ -88,6 +97,12 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
      */
     override fun uid(uid: String?): ReadOnlyObjectRepository<T> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
-        return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, updatedScope, transformer)
+        return ReadOnlyWithTransformerObjectRepositoryImpl(
+            store,
+            databaseAdapter,
+            childrenAppenders,
+            updatedScope,
+            transformer
+        )
     }
 }

@@ -25,51 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.repositories.children.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.common.CoreObject
 
-internal object ChildrenAppenderExecutor {
-    @JvmStatic
-    fun <M> appendInObject(
-        m: M?,
-        databaseAdapter: DatabaseAdapter,
-        childrenAppenders: ChildrenAppenderGetter<M>,
-        childrenSelection: ChildrenSelection,
-    ): M? {
-        return m?.let {
-            val selectedAppenders = getSelectedChildrenAppenders(databaseAdapter, childrenAppenders, childrenSelection)
-            selectedAppenders.fold(m) { nWithChildren: M, appender ->
-                appender.prepareChildren(setOf(nWithChildren))
-                appender.appendChildren(nWithChildren)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun <M : CoreObject?> appendInObjectCollection(
-        list: List<M>,
-        databaseAdapter: DatabaseAdapter,
-        childrenAppenders: ChildrenAppenderGetter<M>,
-        childrenSelection: ChildrenSelection,
-    ): List<M> {
-        val selectedAppenders = getSelectedChildrenAppenders(databaseAdapter, childrenAppenders, childrenSelection)
-
-        selectedAppenders.forEach { it.prepareChildren(list) }
-
-        return list.map { item ->
-            selectedAppenders.fold(item) { itemWithChildren: M, appender ->
-                appender.appendChildren(itemWithChildren)
-            }
-        }
-    }
-
-    private fun <M> getSelectedChildrenAppenders(
-        databaseAdapter: DatabaseAdapter,
-        appendersMap: ChildrenAppenderGetter<M>,
-        childrenSelection: ChildrenSelection,
-    ): Collection<ChildrenAppender<M>> {
-        return childrenSelection.children.mapNotNull { key -> appendersMap[key]?.invoke(databaseAdapter) }
-    }
-}
+internal typealias ChildrenAppenderGetter<M> = Map<String, (DatabaseAdapter) -> ChildrenAppender<M>>

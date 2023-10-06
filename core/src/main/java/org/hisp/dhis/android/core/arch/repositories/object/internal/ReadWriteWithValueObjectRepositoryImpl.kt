@@ -29,8 +29,9 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
 import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -42,10 +43,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 open class ReadWriteWithValueObjectRepositoryImpl<M : CoreObject, R : ReadOnlyObjectRepository<M>>
 internal constructor(
     private val store: ObjectWithoutUidStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
+) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> {
 
     /**

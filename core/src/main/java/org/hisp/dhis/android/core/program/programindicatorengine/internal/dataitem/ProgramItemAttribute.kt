@@ -50,7 +50,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
         val attribute = getAttribute(visitor, attributeUid)
 
         val value = attributeValue?.value()
-        val handledValue = visitor.handleNulls(value)
+        val handledValue = visitor.handleNulls(value, attribute.valueType())
         val strValue = handledValue?.toString()
 
         return formatValue(strValue, attribute.valueType())

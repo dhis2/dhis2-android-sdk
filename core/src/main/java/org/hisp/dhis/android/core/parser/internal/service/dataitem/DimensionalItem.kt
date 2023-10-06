@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
+import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
@@ -49,7 +50,7 @@ internal abstract class DimensionalItem : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val value = visitor.itemValueMap[getId(ctx)]
-        return visitor.handleNulls(value)!!
+        return visitor.handleNulls(value, ValueType.NUMBER)!!
     }
 
     override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

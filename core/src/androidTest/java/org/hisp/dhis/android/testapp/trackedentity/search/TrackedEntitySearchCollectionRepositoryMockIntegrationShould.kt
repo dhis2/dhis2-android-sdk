@@ -79,7 +79,7 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould : BaseMockInt
             .blockingGet()
 
         assertThat(trackedEntityInstances[0].header).isEqualTo("4081507, befryEfXge5")
-        assertThat(trackedEntityInstances[1].header).isEqualTo("654321, 0.0")
+        assertThat(trackedEntityInstances[1].header).isEqualTo("654321, ")
     }
 
     @Test

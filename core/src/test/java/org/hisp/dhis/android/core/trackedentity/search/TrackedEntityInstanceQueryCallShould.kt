@@ -95,7 +95,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             programEndDate = Date(),
             enrollmentStatus = EnrollmentStatus.ACTIVE,
             followUp = true,
-            eventStatus = EventStatus.OVERDUE,
             incidentStartDate = Date(),
             incidentEndDate = Date(),
             trackedEntityType = "teiTypeStr",
@@ -187,7 +186,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
         callFactory.getCall(activeQuery)
 
-        verifyService(activeQuery, EventStatus.ACTIVE)
+        verifyEventService(activeQuery, EventStatus.ACTIVE)
     }
 
     @Test
@@ -197,12 +196,12 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
         callFactory.getCall(activeQuery)
 
-        verifyService(activeQuery, EventStatus.VISITED)
+        verifyEventService(activeQuery, EventStatus.VISITED)
 
         val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
         callFactory.getCall(nonActiveQuery)
 
-        verifyService(activeQuery, EventStatus.SCHEDULE)
+        verifyEventService(activeQuery, EventStatus.SCHEDULE)
     }
 
     @Test
@@ -283,7 +282,10 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
     }
 
-    private fun verifyEventService(query: TrackedEntityInstanceQueryOnline) {
+    private fun verifyEventService(
+        query: TrackedEntityInstanceQueryOnline,
+        expectedStatus: EventStatus? = query.eventStatus,
+    ) {
         if (query.orgUnits.size <= 1) {
             verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())
         } else {

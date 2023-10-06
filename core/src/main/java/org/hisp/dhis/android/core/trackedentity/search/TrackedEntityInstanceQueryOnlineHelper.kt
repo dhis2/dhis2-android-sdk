@@ -40,6 +40,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 
+    @Suppress("ComplexMethod")
     fun fromScope(scope: TrackedEntityInstanceQueryRepositoryScope): List<TrackedEntityInstanceQueryOnline> {
         val queries = if (scope.eventFilters().isEmpty()) {
             listOf(getBaseQuery(scope))

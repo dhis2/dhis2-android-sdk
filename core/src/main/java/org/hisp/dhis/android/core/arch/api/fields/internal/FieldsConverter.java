@@ -77,10 +77,9 @@ class FieldsConverter implements Converter<Fields, String> {
 
                     // close property array
                     builder.append(']');
-
-                    if (propertyIterator.hasNext()) {
-                        builder.append(',');
-                    }
+                }
+                if (propertyIterator.hasNext()) {
+                    builder.append(',');
                 }
             } else {
                 throw new IllegalArgumentException("Unsupported type of Property: " +

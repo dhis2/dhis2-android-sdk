@@ -180,31 +180,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     @Test
-    fun should_not_map_active_event_status_if_greater_than_2_33() = runTest {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
-        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-
-        callFactory.getCall(activeQuery)
-
-        verifyEventService(activeQuery, EventStatus.ACTIVE)
-    }
-
-    @Test
-    fun should_map_active_event_status_if_not_greater_than_2_33() = runTest {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(false)
-
-        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-        callFactory.getCall(activeQuery)
-
-        verifyEventService(activeQuery, EventStatus.VISITED)
-
-        val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
-        callFactory.getCall(nonActiveQuery)
-
-        verifyEventService(activeQuery, EventStatus.SCHEDULE)
-    }
-
-    @Test
     fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
@@ -284,7 +259,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     private fun verifyEventService(
         query: TrackedEntityInstanceQueryOnline,
-        expectedStatus: EventStatus? = query.eventStatus,
     ) {
         if (query.orgUnits.size <= 1) {
             verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())

@@ -25,28 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-
-import javax.inject.Inject;
-
-import io.reactivex.Single;
-
-final class IsUserLoggedInCallableFactory {
-
-    @NonNull
-    private final CredentialsSecureStore credentialsSecureStore;
-
-    @Inject
-    IsUserLoggedInCallableFactory(@NonNull CredentialsSecureStore credentialsSecureStore) {
-        this.credentialsSecureStore = credentialsSecureStore;
-    }
-
-    Single<Boolean> isLogged() {
-        return Single.fromCallable(() -> credentialsSecureStore.get() != null);
-    }
+internal class IsUserLoggedInCallableFactory @Inject constructor(
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val authenticatedUserStore: AuthenticatedUserStore,
+) {
+    val isLogged: Single<Boolean>
+        get() = Single.fromCallable {
+            credentialsSecureStore.get() != null && authenticatedUserStore.isReady
+        }
 }

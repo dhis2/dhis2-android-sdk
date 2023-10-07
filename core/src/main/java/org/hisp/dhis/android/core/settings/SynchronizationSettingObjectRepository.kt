@@ -25,40 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.DATA_SET
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingCall
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
+import javax.inject.Inject
 
-fun generateGroups(
-    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>,
-): AnalyticsDhisVisualizationsSetting {
-    val visualizationsByScope: Map<AnalyticsDhisVisualizationScope, List<AnalyticsDhisVisualization>> =
-        analyticsDhisVisualizations
-            .filter { it.scope() != null }
-            .groupBy { it.scope()!! }
+@Reusable
+class SynchronizationSettingObjectRepository @Inject internal constructor(
+    private val syncStore: SynchronizationSettingStore,
+    private val dataSetSettingsRepository: DataSetSettingsObjectRepository,
+    private val programSettingsRepository: ProgramSettingsObjectRepository,
+    synchronizationSettingCall: SynchronizationSettingCall
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<SynchronizationSettings>(synchronizationSettingCall),
+    ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
+    override fun blockingGet(): SynchronizationSettings? {
+        val syncSettings = syncStore.selectAll()
+        val dataSetSettings = dataSetSettingsRepository.blockingGet()
+        val programSettings = programSettingsRepository.blockingGet()
 
-    return AnalyticsDhisVisualizationsSetting
-        .builder()
-        .home(generateGroupList(visualizationsByScope[HOME]))
-        .program(generateScopeGroups(visualizationsByScope[PROGRAM]))
-        .dataSet(generateScopeGroups(visualizationsByScope[DATA_SET]))
-        .build()
+        return if (syncSettings.isEmpty() && dataSetSettings == null && programSettings == null) {
+            null
+        } else {
+            val builder = if (syncSettings.isEmpty()) SynchronizationSettings.builder() else syncSettings[0].toBuilder()
+            builder
+                .dataSetSettings(dataSetSettings)
+                .programSettings(programSettings)
+                .build()
+        }
+    }
 }
-
-private fun generateGroupList(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.groupUid() }?.map {
-        AnalyticsDhisVisualizationsGroup
-            .builder()
-            .id(it.key)
-            .name(it.value.first().groupName())
-            .visualizations(it.value)
-            .build()
-    } ?: emptyList()
-
-private fun generateScopeGroups(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.scopeUid() }?.mapValues {
-        generateGroupList(it.value)
-    } ?: emptyMap()

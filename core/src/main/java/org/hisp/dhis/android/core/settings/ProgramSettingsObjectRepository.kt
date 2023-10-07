@@ -25,40 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
-import org.hisp.dhis.android.core.settings.internal.UserSettingsStore;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.settings.internal.ProgramSettingCall
+import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore
+import javax.inject.Inject
 
 @Reusable
-public class UserSettingsObjectRepository extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>
-        implements ReadOnlyWithDownloadObjectRepository<UserSettings> {
-
-    private final UserSettingsStore store;
-
-    @Inject
-    UserSettingsObjectRepository(UserSettingsStore store,
-                                 GeneralSettingCall generalSettingCall) {
-        super(generalSettingCall);
-        this.store = store;
-    }
-
-    @Override
-    public UserSettings blockingGet() {
-        List<UserSettings> settings = store.selectAll();
-
-        if (settings.isEmpty()) {
-            return null;
+class ProgramSettingsObjectRepository @Inject internal constructor(
+    private val store: ProgramSettingStore,
+    programSettingCall: ProgramSettingCall
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>(programSettingCall),
+    ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
+    override fun blockingGet(): ProgramSettings? {
+        val settings = store.selectAll()
+        return if (settings.isEmpty()) {
+            null
         } else {
-            return settings.get(0);
+            val specifics = settings
+                .filter { it.uid() != null }
+                .associateBy { it.uid()!! }
+
+            ProgramSettings.builder()
+                .globalSettings(settings.find { it.uid() == null })
+                .specificSettings(specifics)
+                .build()
         }
     }
 }

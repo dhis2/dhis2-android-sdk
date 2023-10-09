@@ -95,7 +95,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             programEndDate = Date(),
             enrollmentStatus = EnrollmentStatus.ACTIVE,
             followUp = true,
-            eventStatus = EventStatus.OVERDUE,
             incidentStartDate = Date(),
             incidentEndDate = Date(),
             trackedEntityType = "teiTypeStr",
@@ -181,31 +180,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     @Test
-    fun should_not_map_active_event_status_if_greater_than_2_33() = runTest {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
-        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-
-        callFactory.getCall(activeQuery)
-
-        verifyService(activeQuery, EventStatus.ACTIVE)
-    }
-
-    @Test
-    fun should_map_active_event_status_if_not_greater_than_2_33() = runTest {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(false)
-
-        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-        callFactory.getCall(activeQuery)
-
-        verifyService(activeQuery, EventStatus.VISITED)
-
-        val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
-        callFactory.getCall(nonActiveQuery)
-
-        verifyService(activeQuery, EventStatus.SCHEDULE)
-    }
-
-    @Test
     fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
@@ -283,7 +257,9 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
     }
 
-    private fun verifyEventService(query: TrackedEntityInstanceQueryOnline) {
+    private fun verifyEventService(
+        query: TrackedEntityInstanceQueryOnline,
+    ) {
         if (query.orgUnits.size <= 1) {
             verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())
         } else {

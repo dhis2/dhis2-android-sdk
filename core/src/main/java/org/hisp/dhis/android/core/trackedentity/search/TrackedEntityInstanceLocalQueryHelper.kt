@@ -201,7 +201,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
     private fun hasEvent(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
         return scope.eventFilters().isNotEmpty() || scope.dataValue().isNotEmpty() || scope.programStage() != null ||
             scope.eventDate() != null || scope.dueDate() != null || scope.eventCreatedDate() != null ||
-            scope.assignedUserMode() != null
+            scope.assignedUserMode() != null || !scope.eventStatus().isNullOrEmpty()
     }
 
     @Suppress("LongMethod")
@@ -438,25 +438,23 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             appendEventDates(where, eventDate, EventTableInfo.Columns.EVENT_DATE)
             appendEventDates(where, dueDate, EventTableInfo.Columns.DUE_DATE)
             appendEventDates(where, eventCreatedDate, EventTableInfo.Columns.CREATED)
-        } else if (eventStatusList.isNotEmpty() && eventDate != null) {
+        } else if (eventStatusList.isNotEmpty()) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
             for (eventStatus in eventStatusList) {
                 val statusWhere = WhereClauseBuilder()
                 when (eventStatus) {
                     EventStatus.ACTIVE -> {
-                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
+                        statusWhere.appendIsNotNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
                             listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE),
                         )
                     }
                     EventStatus.COMPLETED, EventStatus.VISITED -> {
-                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                     }
                     EventStatus.SCHEDULE -> {
-                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
@@ -468,7 +466,6 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         )
                     }
                     EventStatus.OVERDUE -> {
-                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
                             dot(eventAlias, EventTableInfo.Columns.STATUS),
@@ -481,9 +478,13 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     }
                     EventStatus.SKIPPED -> {
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
-                        appendEventDates(statusWhere, eventDate, EventTableInfo.Columns.DUE_DATE)
                     }
                 }
+                val eventDateComparisonColum = when (eventStatus) {
+                    EventStatus.ACTIVE, EventStatus.COMPLETED -> EventTableInfo.Columns.EVENT_DATE
+                    else -> EventTableInfo.Columns.DUE_DATE
+                }
+                appendEventDates(statusWhere, eventDate, eventDateComparisonColum)
                 appendEventDates(statusWhere, dueDate, EventTableInfo.Columns.DUE_DATE)
                 appendEventDates(statusWhere, eventCreatedDate, EventTableInfo.Columns.CREATED)
                 statusListWhere.appendOrComplexQuery(statusWhere.build())

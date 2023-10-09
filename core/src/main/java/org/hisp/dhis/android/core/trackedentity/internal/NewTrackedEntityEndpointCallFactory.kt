@@ -96,10 +96,7 @@ internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
     }
 
     override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
-        val shouldCallEventsFirst = query.dataValueFilter.isNotEmpty() ||
-            query.dueStartDate != null || query.dueEndDate != null
-
-        return if (shouldCallEventsFirst) {
+        return if (query.shouldCallEventFirst()) {
             val events = getEventQuery(query)
             if (events.isEmpty()) {
                 TrackerQueryResult(

@@ -170,19 +170,7 @@ class TrackedEntityInstanceLocalQueryHelperShould {
     }
 
     @Test
-    fun build_sql_query_with_event_status_only_if_event_dates_defined() {
-        val eventFilterWithoutDates = TrackedEntityInstanceQueryEventFilter.builder()
-            .eventStatus(listOf(EventStatus.ACTIVE)).build()
-
-        val scopeWithoutDates = queryBuilder
-            .program(programUid)
-            .eventFilters(listOf(eventFilterWithoutDates))
-            .build()
-
-        val query1 = localQueryHelper.getSqlQuery(scopeWithoutDates, emptySet(), 50)
-
-        assertThat(query1).doesNotContain("ACTIVE")
-
+    fun build_sql_query_with_event_dates() {
         val eventFilterWithDates = TrackedEntityInstanceQueryEventFilter.builder()
             .eventDate(
                 DateFilterPeriod.builder()
@@ -198,10 +186,10 @@ class TrackedEntityInstanceLocalQueryHelperShould {
             .eventFilters(listOf(eventFilterWithDates))
             .build()
 
-        val query2 = localQueryHelper.getSqlQuery(scopeWithDates, emptySet(), 50)
+        val query = localQueryHelper.getSqlQuery(scopeWithDates, emptySet(), 50)
 
-        assertThat(query2).contains("ACTIVE")
-        assertThat(query2).contains("eventDate")
+        assertThat(query).contains("ACTIVE")
+        assertThat(query).contains("eventDate")
     }
 
     @Test

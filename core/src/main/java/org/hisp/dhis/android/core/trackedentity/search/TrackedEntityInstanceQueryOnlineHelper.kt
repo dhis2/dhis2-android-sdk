@@ -27,32 +27,29 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
-import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import java.util.Date
 import javax.inject.Inject
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 
+    @Suppress("ComplexMethod")
     fun fromScope(scope: TrackedEntityInstanceQueryRepositoryScope): List<TrackedEntityInstanceQueryOnline> {
-        return if (scope.eventFilters().isEmpty()) {
+        val queries = if (scope.eventFilters().isEmpty()) {
             listOf(getBaseQuery(scope))
         } else {
             scope.eventFilters().map { eventFilter ->
                 getBaseQuery(scope)
                     .run {
                         eventFilter.eventStatus()
-                            ?.let { copy(eventStatus = getEventStatus(it, eventFilter.eventDate())) } ?: this
+                            ?.let { copy(eventStatus = getEventStatus(it)) } ?: this
                     }
                     .run {
                         eventFilter.assignedUserMode()?.let { copy(assignedUserMode = it) } ?: this
@@ -70,28 +67,13 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                     }
             }
         }
-    }
 
-    @Throws(D2Error::class, Exception::class)
-    fun queryOnlineBlocking(
-        trackerParentCallFactory: TrackerParentCallFactory,
-        scope: TrackedEntityInstanceQueryRepositoryScope,
-    ): List<TrackedEntityInstance> {
-        return fromScope(scope).foldRight(emptyList()) { queryOnline, acc ->
-            val noPagingQuery = queryOnline.copy(paging = false)
-            val pageInstances = runBlocking {
-                trackerParentCallFactory.getTrackedEntityCall()
-                    .getQueryCall(noPagingQuery)
+        return queries.map { query ->
+            if (query.eventStatus == EventStatus.SCHEDULE && query.dueStartDate == null) {
+                query.copy(dueStartDate = Date())
+            } else {
+                query
             }
-
-            val validInstances = pageInstances.trackedEntities.filter { tei ->
-                val isExcluded = scope.excludedUids()?.contains(tei.uid()) ?: false
-                val isAlreadyReturned = acc.any { it.uid() == tei.uid() }
-
-                !isExcluded && !isAlreadyReturned
-            }
-
-            acc + validInstances
         }
     }
 
@@ -128,7 +110,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                     programEndDate = scope.programDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
                     incidentStartDate = scope.incidentDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
                     incidentEndDate = scope.incidentDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
-                    eventStatus = scope.eventStatus()?.let { getEventStatus(it, scope.eventDate()) },
+                    eventStatus = scope.eventStatus()?.let { getEventStatus(it) },
                     assignedUserMode = assignedUserMode,
                     programStage = scope.programStage(),
                     eventStartDate = scope.eventDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
@@ -140,15 +122,9 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         }
     }
 
-    private fun getEventStatus(eventStatus: List<EventStatus>, eventDate: DateFilterPeriod?): EventStatus? {
+    private fun getEventStatus(eventStatus: List<EventStatus>): EventStatus? {
         // EventStatus does not accepts a list of status but a single value in web API.
-        // Additionally, it requires that eventStartDate and eventEndDate are defined.
-        val hasEventDate = eventDate?.startDate() != null && eventDate.endDate() != null
-        return if (eventStatus.isNotEmpty() && hasEventDate) {
-            eventStatus[0]
-        } else {
-            null
-        }
+        return eventStatus.firstOrNull()
     }
 
     private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {

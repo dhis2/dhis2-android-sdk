@@ -29,6 +29,7 @@ package org.hisp.dhis.android.testapp.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -174,5 +175,15 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
 
         // Undo change
         d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "IpHINAT79UW", "DiszpKrYNg8")
+    }
+
+    @Test
+    fun find_by_event_status() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .byProgram().eq("IpHINAT79UW")
+            .byEventStatus().eq(EventStatus.COMPLETED)
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(1)
     }
 }

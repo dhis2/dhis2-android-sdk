@@ -46,7 +46,7 @@ class EnrollmentObjectRepository internal constructor(
     uid: String?,
     childrenAppenders: Map<String, ChildrenAppender<Enrollment>>,
     scope: RepositoryScope,
-    private val trackerDataManager: TrackerDataManager
+    private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>(
     store,
     childrenAppenders,
@@ -57,9 +57,10 @@ class EnrollmentObjectRepository internal constructor(
             uid,
             childrenAppenders,
             s,
-            trackerDataManager
+            trackerDataManager,
         )
-    }) {
+    },
+) {
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {

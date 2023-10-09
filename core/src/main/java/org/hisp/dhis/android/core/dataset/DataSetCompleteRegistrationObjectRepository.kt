@@ -50,15 +50,25 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val period: String,
     private val organisationUnit: String,
     private val dataSet: String,
-    private val attributeOptionCombo: String
+    private val attributeOptionCombo: String,
 ) : ReadOnlyOneObjectRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationObjectRepository>(
-    dataSetCompleteRegistrationStore, childrenAppenders, scope,
+    dataSetCompleteRegistrationStore,
+    childrenAppenders,
+    scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataSetCompleteRegistrationObjectRepository(
-            dataSetCompleteRegistrationStore, credentialsRepository, childrenAppenders, s,
-            period, organisationUnit, dataSet, attributeOptionCombo
+            dataSetCompleteRegistrationStore,
+            credentialsRepository,
+            childrenAppenders,
+            s,
+            period,
+            organisationUnit,
+            dataSet,
+            attributeOptionCombo,
         )
-    }), ReadWriteObjectRepository<DataSetCompleteRegistration> {
+    },
+),
+    ReadWriteObjectRepository<DataSetCompleteRegistration> {
     fun set(): Completable {
         return Completable.fromAction { blockingSet() }
     }
@@ -77,12 +87,15 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
                     .storedBy(username)
                     .syncState(State.TO_POST)
                     .deleted(false)
-                    .build()
+                    .build(),
             )
         } else {
             val syncState =
-                if (dataSetCompleteRegistration.syncState() === State.TO_POST) State.TO_POST
-                else State.TO_UPDATE
+                if (dataSetCompleteRegistration.syncState() === State.TO_POST) {
+                    State.TO_POST
+                } else {
+                    State.TO_UPDATE
+                }
 
             val newRecord = dataSetCompleteRegistration.toBuilder()
                 .deleted(false)
@@ -106,7 +119,7 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
                 .errorComponent(D2ErrorComponent.SDK)
                 .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
                 .errorDescription(
-                    "DataSetCompleteRegistration can't be deleted because no longer exists"
+                    "DataSetCompleteRegistration can't be deleted because no longer exists",
                 )
                 .build()
         } else {

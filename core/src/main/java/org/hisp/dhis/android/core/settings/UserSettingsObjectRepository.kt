@@ -37,7 +37,7 @@ import javax.inject.Inject
 @Reusable
 class UserSettingsObjectRepository @Inject internal constructor(
     private val store: UserSettingsStore,
-    generalSettingCall: GeneralSettingCall
+    generalSettingCall: GeneralSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>(generalSettingCall),
     ReadOnlyWithDownloadObjectRepository<UserSettings> {
     override fun blockingGet(): UserSettings? {

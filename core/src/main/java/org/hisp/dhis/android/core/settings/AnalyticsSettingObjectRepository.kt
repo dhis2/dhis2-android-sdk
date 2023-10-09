@@ -37,7 +37,7 @@ import javax.inject.Inject
 class AnalyticsSettingObjectRepository @Inject internal constructor(
     private val analyticsTeiSettingRepository: AnalyticsTeiSettingCollectionRepository,
     analyticsSettingCall: AnalyticsSettingCall,
-    private val analyticsDhisVisualizationsSettingObjectRepository: AnalyticsDhisVisualizationsSettingObjectRepository
+    private val analyticsDhisVisualizationsSettingObjectRepository: AnalyticsDhisVisualizationsSettingObjectRepository,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsSettings>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsSettings> {
     override fun blockingGet(): AnalyticsSettings? {

@@ -38,7 +38,7 @@ import javax.inject.Inject
 @Reusable
 class AnalyticsDhisVisualizationsSettingObjectRepository @Inject internal constructor(
     private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
-    analyticsSettingCall: AnalyticsSettingCall
+    analyticsSettingCall: AnalyticsSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsDhisVisualizationsSetting> {
     fun getByProgram(program: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {

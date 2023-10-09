@@ -37,7 +37,7 @@ class FileResourceObjectRepository internal constructor(
     store: FileResourceStore,
     uid: String?,
     childrenAppenders: Map<String, ChildrenAppender<FileResource>>,
-    scope: RepositoryScope
+    scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository>(
     store,
     childrenAppenders,
@@ -47,6 +47,7 @@ class FileResourceObjectRepository internal constructor(
             store,
             uid,
             childrenAppenders,
-            s
+            s,
         )
-    })
+    },
+)

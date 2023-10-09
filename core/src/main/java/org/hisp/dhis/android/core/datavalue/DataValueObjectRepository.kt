@@ -46,17 +46,25 @@ class DataValueObjectRepository internal constructor(
     private val organisationUnit: String,
     private val dataElement: String,
     private val categoryOptionCombo: String,
-    private val attributeOptionCombo: String
+    private val attributeOptionCombo: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>(
     store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataValueObjectRepository(
-            store, childrenAppenders, s,
-            period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo
+            store,
+            childrenAppenders,
+            s,
+            period,
+            organisationUnit,
+            dataElement,
+            categoryOptionCombo,
+            attributeOptionCombo,
         )
-    }), ReadWriteValueObjectRepository<DataValue> {
+    },
+),
+    ReadWriteValueObjectRepository<DataValue> {
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }
     }

@@ -40,7 +40,7 @@ internal class RelationshipObjectRepository(
     uid: String?,
     childrenAppenders: Map<String, ChildrenAppender<Relationship>>,
     scope: RepositoryScope,
-    private val trackerDataManager: TrackerDataManager
+    private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository>(
     store,
     childrenAppenders,
@@ -51,9 +51,10 @@ internal class RelationshipObjectRepository(
             uid,
             childrenAppenders,
             s,
-            trackerDataManager
+            trackerDataManager,
         )
-    }) {
+    },
+) {
     override fun propagateState(m: Relationship, action: HandleAction) {
         trackerDataManager.propagateRelationshipUpdate(m, action)
     }

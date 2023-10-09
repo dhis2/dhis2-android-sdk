@@ -39,7 +39,7 @@ class SynchronizationSettingObjectRepository @Inject internal constructor(
     private val syncStore: SynchronizationSettingStore,
     private val dataSetSettingsRepository: DataSetSettingsObjectRepository,
     private val programSettingsRepository: ProgramSettingsObjectRepository,
-    synchronizationSettingCall: SynchronizationSettingCall
+    synchronizationSettingCall: SynchronizationSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<SynchronizationSettings>(synchronizationSettingCall),
     ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
     override fun blockingGet(): SynchronizationSettings? {

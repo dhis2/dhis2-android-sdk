@@ -39,9 +39,9 @@ import javax.inject.Inject
 @Reusable
 class SystemInfoObjectRepository @Inject internal constructor(
     store: SystemInfoStore,
-    childrenAppenders: Map<String, ChildrenAppender<SystemInfo>>,
+    childrenAppenders: MutableMap<String, ChildrenAppender<SystemInfo>>,
     scope: RepositoryScope,
-    systemInfoCall: SystemInfoCall
+    systemInfoCall: SystemInfoCall,
 ) : ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository>(
     store,
     childrenAppenders,
@@ -52,6 +52,7 @@ class SystemInfoObjectRepository @Inject internal constructor(
             store,
             childrenAppenders,
             cs,
-            systemInfoCall
+            systemInfoCall,
         )
-    })
+    },
+)

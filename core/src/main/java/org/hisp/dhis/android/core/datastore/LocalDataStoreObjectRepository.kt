@@ -40,7 +40,7 @@ class LocalDataStoreObjectRepository internal constructor(
     store: LocalDataStoreStore,
     childrenAppenders: Map<String, ChildrenAppender<KeyValuePair>>,
     scope: RepositoryScope,
-    private val key: String
+    private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>(
     store,
     childrenAppenders,
@@ -50,9 +50,10 @@ class LocalDataStoreObjectRepository internal constructor(
             store,
             childrenAppenders,
             s,
-            key
+            key,
         )
-    }),
+    },
+),
     ReadWriteValueObjectRepository<KeyValuePair> {
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }

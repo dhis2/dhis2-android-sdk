@@ -40,10 +40,11 @@ import org.hisp.dhis.android.core.settings.internal.ProgramConfigurationSettingS
 import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 class AppearanceSettingsObjectRepository @Inject internal constructor(
     private val filterSettingStore: FilterSettingStore,
     private val programConfigurationSettingStore: ProgramConfigurationSettingStore,
-    appearanceSettingCall: AppearanceSettingCall
+    appearanceSettingCall: AppearanceSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AppearanceSettings>(appearanceSettingCall),
     ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
     override fun blockingGet(): AppearanceSettings? {
@@ -53,14 +54,14 @@ class AppearanceSettingsObjectRepository @Inject internal constructor(
         return if (filters.isEmpty() && programConfigurationSettingList.isEmpty()) {
             null
         } else {
-            //FilterSorting
+            // FilterSorting
             val filterSorting = FilterSorting.builder()
                 .home(getHomeFilters(filters))
                 .dataSetSettings(getDataSetFilters(filters))
                 .programSettings(getProgramFilters(filters))
                 .build()
 
-            //ProgramConfigurationSettings
+            // ProgramConfigurationSettings
             val programConfigurationSettings = ProgramConfigurationSettings.builder()
                 .globalSettings(getGlobal(programConfigurationSettingList))
                 .specificSettings(getSpecifics(programConfigurationSettingList))
@@ -151,6 +152,7 @@ class AppearanceSettingsObjectRepository @Inject internal constructor(
         val programSettingList = programConfigurationSettingStore.selectAll()
         return getGlobal(programSettingList)
     }
+
     @Deprecated("")
     fun getGlobalCompletionSpinner(): CompletionSpinner? {
         val setting = getGlobalProgramConfigurationSetting()

@@ -37,7 +37,7 @@ import javax.inject.Inject
 @Reusable
 class ProgramSettingsObjectRepository @Inject internal constructor(
     private val store: ProgramSettingStore,
-    programSettingCall: ProgramSettingCall
+    programSettingCall: ProgramSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>(programSettingCall),
     ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
     override fun blockingGet(): ProgramSettings? {

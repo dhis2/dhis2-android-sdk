@@ -68,7 +68,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun should_return_global_program_configuration_setting() {
-                val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
+        val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.uid()).isNull()
         assertThat(setting?.completionSpinner()).isEqualTo(true)
         assertThat(setting?.optionalSearch()).isNull()

@@ -37,7 +37,7 @@ import javax.inject.Inject
 @Reusable
 class DataSetSettingsObjectRepository @Inject internal constructor(
     private val store: DataSetSettingStore,
-    dataSetSettingCall: DataSetSettingCall
+    dataSetSettingCall: DataSetSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>(dataSetSettingCall),
     ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
     override fun blockingGet(): DataSetSettings? {

@@ -40,15 +40,19 @@ import javax.inject.Inject
 class UserObjectRepository @Inject internal constructor(
     store: UserStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<User>>,
-    scope: RepositoryScope
-) : ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository>(store, childrenAppenders, scope,
+    scope: RepositoryScope,
+) : ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
     ObjectRepositoryFactory<UserObjectRepository> { s: RepositoryScope ->
         UserObjectRepository(
             store,
             childrenAppenders,
-            s
+            s,
         )
-    }) {
+    },
+) {
     fun withUserRoles(): UserObjectRepository {
         return cf.withChild(UserFields.USER_ROLES)
     }

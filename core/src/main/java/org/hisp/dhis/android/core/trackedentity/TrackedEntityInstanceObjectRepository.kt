@@ -48,7 +48,7 @@ class TrackedEntityInstanceObjectRepository internal constructor(
     uid: String?,
     childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
     scope: RepositoryScope,
-    private val trackerDataManager: TrackerDataManager
+    private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>(
     store,
     childrenAppenders,
@@ -59,9 +59,10 @@ class TrackedEntityInstanceObjectRepository internal constructor(
             uid,
             childrenAppenders,
             s,
-            trackerDataManager
+            trackerDataManager,
         )
-    }) {
+    },
+) {
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {

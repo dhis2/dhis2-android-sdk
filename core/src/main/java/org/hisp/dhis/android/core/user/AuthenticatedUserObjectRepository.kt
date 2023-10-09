@@ -39,14 +39,16 @@ import javax.inject.Inject
 class AuthenticatedUserObjectRepository @Inject internal constructor(
     store: AuthenticatedUserStore,
     childrenAppenders: MutableMap<String, ChildrenAppender<AuthenticatedUser>>,
-    scope: RepositoryScope
-) : ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository>(store,
+    scope: RepositoryScope,
+) : ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository>(
+    store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { updatedScope: RepositoryScope ->
         AuthenticatedUserObjectRepository(
             store,
             childrenAppenders,
-            updatedScope
+            updatedScope,
         )
-    })
+    },
+)

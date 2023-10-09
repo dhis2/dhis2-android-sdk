@@ -43,14 +43,18 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 class EventObjectRepository internal constructor(
     store: EventStore,
     private val userStore: IdentifiableObjectStore<User>,
     uid: String?,
     childrenAppenders: Map<String, ChildrenAppender<Event>>,
     scope: RepositoryScope,
-    private val trackerDataManager: TrackerDataManager
-) : ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>(store, childrenAppenders, scope,
+    private val trackerDataManager: TrackerDataManager,
+) : ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         EventObjectRepository(
             store,
@@ -58,9 +62,10 @@ class EventObjectRepository internal constructor(
             uid,
             childrenAppenders,
             s,
-            trackerDataManager
+            trackerDataManager,
         )
-    }) {
+    },
+) {
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
@@ -77,7 +82,7 @@ class EventObjectRepository internal constructor(
         val completedDate = if (eventStatus == EventStatus.COMPLETED) Date() else null
         val completedBy = if (eventStatus == EventStatus.COMPLETED) userStore.selectFirst()!!.username() else null
         return updateObject(
-            updateBuilder().status(eventStatus).completedDate(completedDate).completedBy(completedBy).build()
+            updateBuilder().status(eventStatus).completedDate(completedDate).completedBy(completedBy).build(),
         )
     }
 

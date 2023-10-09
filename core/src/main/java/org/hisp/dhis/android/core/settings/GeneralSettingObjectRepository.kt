@@ -39,7 +39,7 @@ import javax.inject.Inject
 class GeneralSettingObjectRepository @Inject internal constructor(
     private val store: GeneralSettingStore,
     private val syncStore: SynchronizationSettingStore,
-    generalSettingCall: GeneralSettingCall
+    generalSettingCall: GeneralSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>(generalSettingCall),
     ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
     override fun blockingGet(): GeneralSettings? {
@@ -49,11 +49,17 @@ class GeneralSettingObjectRepository @Inject internal constructor(
             null
         } else {
             val generalSetting =
-                if (generalSettings.isEmpty()) GeneralSettings.builder().build()
-                else generalSettings[0]
+                if (generalSettings.isEmpty()) {
+                    GeneralSettings.builder().build()
+                } else {
+                    generalSettings[0]
+                }
             val syncSetting =
-                if (syncSettings.isEmpty()) SynchronizationSettings.builder().build()
-                else syncSettings[0]
+                if (syncSettings.isEmpty()) {
+                    SynchronizationSettings.builder().build()
+                } else {
+                    syncSettings[0]
+                }
 
             generalSetting.toBuilder()
                 .dataSync(syncSetting.dataSync())

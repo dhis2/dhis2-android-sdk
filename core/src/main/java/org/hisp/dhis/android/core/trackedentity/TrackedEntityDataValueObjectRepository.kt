@@ -44,16 +44,22 @@ class TrackedEntityDataValueObjectRepository internal constructor(
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
     private val event: String,
-    private val dataElement: String
+    private val dataElement: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueObjectRepository>(
     store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         TrackedEntityDataValueObjectRepository(
-            store, childrenAppenders, s, dataStatePropagator, event, dataElement
+            store,
+            childrenAppenders,
+            s,
+            dataStatePropagator,
+            event,
+            dataElement,
         )
-    }),
+    },
+),
     ReadWriteValueObjectRepository<TrackedEntityDataValue> {
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }

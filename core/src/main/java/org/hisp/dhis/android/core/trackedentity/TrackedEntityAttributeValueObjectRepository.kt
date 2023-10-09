@@ -44,16 +44,22 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
     private val trackedEntityAttribute: String,
-    private val trackedEntityInstance: String
+    private val trackedEntityInstance: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueObjectRepository>(
     store,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         TrackedEntityAttributeValueObjectRepository(
-            store, childrenAppenders, s, dataStatePropagator, trackedEntityAttribute, trackedEntityInstance
+            store,
+            childrenAppenders,
+            s,
+            dataStatePropagator,
+            trackedEntityAttribute,
+            trackedEntityInstance,
         )
-    }),
+    },
+),
     ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }

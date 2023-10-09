@@ -47,6 +47,7 @@ import kotlin.math.roundToInt
 
 internal object ParserUtils {
     const val DOUBLE_VALUE_IF_NULL = 0.0
+    const val TEXT_VALUE_IF_NULL = ""
     private const val NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$"
     private val NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP)
     private const val DEFAULT_DATE_FORMAT = "yyyy-MM-dd"

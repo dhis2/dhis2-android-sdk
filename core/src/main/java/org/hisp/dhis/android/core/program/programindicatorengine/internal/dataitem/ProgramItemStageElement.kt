@@ -59,7 +59,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
         }
 
         val dataElement = getDataElement(visitor, dataElementId)
-        val handledValue = visitor.handleNulls(value)
+        val handledValue = visitor.handleNulls(value, dataElement.valueType())
         val strValue = handledValue?.toString()
 
         return formatValue(strValue, dataElement.valueType())

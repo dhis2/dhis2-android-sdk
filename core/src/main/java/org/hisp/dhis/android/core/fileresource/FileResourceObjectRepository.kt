@@ -25,40 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource
 
-package org.hisp.dhis.android.core.settings
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.DATA_SET
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
-
-fun generateGroups(
-    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>,
-): AnalyticsDhisVisualizationsSetting {
-    val visualizationsByScope: Map<AnalyticsDhisVisualizationScope, List<AnalyticsDhisVisualization>> =
-        analyticsDhisVisualizations
-            .filter { it.scope() != null }
-            .groupBy { it.scope()!! }
-
-    return AnalyticsDhisVisualizationsSetting
-        .builder()
-        .home(generateGroupList(visualizationsByScope[HOME]))
-        .program(generateScopeGroups(visualizationsByScope[PROGRAM]))
-        .dataSet(generateScopeGroups(visualizationsByScope[DATA_SET]))
-        .build()
-}
-
-private fun generateGroupList(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.groupUid() }?.map {
-        AnalyticsDhisVisualizationsGroup
-            .builder()
-            .id(it.key)
-            .name(it.value.first().groupName())
-            .visualizations(it.value)
-            .build()
-    } ?: emptyList()
-
-private fun generateScopeGroups(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.scopeUid() }?.mapValues {
-        generateGroupList(it.value)
-    } ?: emptyMap()
+class FileResourceObjectRepository internal constructor(
+    store: FileResourceStore,
+    uid: String?,
+    childrenAppenders: Map<String, ChildrenAppender<FileResource>>,
+    scope: RepositoryScope,
+) : ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    ObjectRepositoryFactory { s: RepositoryScope ->
+        FileResourceObjectRepository(
+            store,
+            uid,
+            childrenAppenders,
+            s,
+        )
+    },
+)

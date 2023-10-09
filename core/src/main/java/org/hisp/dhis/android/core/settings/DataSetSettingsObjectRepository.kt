@@ -25,30 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall
+import org.hisp.dhis.android.core.settings.internal.DataSetSettingStore
+import javax.inject.Inject
 
 @Reusable
-public final class SystemInfoObjectRepository
-        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
+class DataSetSettingsObjectRepository @Inject internal constructor(
+    private val store: DataSetSettingStore,
+    dataSetSettingCall: DataSetSettingCall,
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>(dataSetSettingCall),
+    ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
+    override fun blockingGet(): DataSetSettings? {
+        val settings = store.selectAll()
+        return if (settings.isEmpty()) {
+            null
+        } else {
+            val specifics = settings
+                .filter { it.uid() != null }
+                .associateBy { it.uid()!! }
 
-    @Inject
-    SystemInfoObjectRepository(SystemInfoStore store,
-                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
-                               RepositoryScope scope,
-                               SystemInfoCall systemInfoCall) {
-        super(store, childrenAppenders, scope, systemInfoCall,
-                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
+            DataSetSettings.builder()
+                .globalSettings(settings.find { it.uid() == null })
+                .specificSettings(specifics)
+                .build()
+        }
     }
 }

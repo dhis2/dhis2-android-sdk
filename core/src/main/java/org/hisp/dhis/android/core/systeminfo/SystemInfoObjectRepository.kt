@@ -25,33 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.user;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.user.internal.UserFields;
-import org.hisp.dhis.android.core.user.internal.UserStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
+import javax.inject.Inject
 
 @Reusable
-public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository> {
-
-    @Inject
-    UserObjectRepository(UserStore store,
-                         Map<String, ChildrenAppender<User>> childrenAppenders,
-                         RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new UserObjectRepository(store, childrenAppenders, s));
-    }
-
-    public UserObjectRepository withUserRoles() {
-        return cf.withChild(UserFields.USER_ROLES);
-    }
-}
+class SystemInfoObjectRepository @Inject internal constructor(
+    store: SystemInfoStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<SystemInfo>>,
+    scope: RepositoryScope,
+    systemInfoCall: SystemInfoCall,
+) : ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    systemInfoCall,
+    ObjectRepositoryFactory { cs: RepositoryScope ->
+        SystemInfoObjectRepository(
+            store,
+            childrenAppenders,
+            cs,
+            systemInfoCall,
+        )
+    },
+)

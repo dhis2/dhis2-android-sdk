@@ -25,40 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
-import org.hisp.dhis.android.core.settings.internal.UserSettingsStore;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
+import javax.inject.Inject
 
 @Reusable
-public class UserSettingsObjectRepository extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>
-        implements ReadOnlyWithDownloadObjectRepository<UserSettings> {
-
-    private final UserSettingsStore store;
-
-    @Inject
-    UserSettingsObjectRepository(UserSettingsStore store,
-                                 GeneralSettingCall generalSettingCall) {
-        super(generalSettingCall);
-        this.store = store;
-    }
-
-    @Override
-    public UserSettings blockingGet() {
-        List<UserSettings> settings = store.selectAll();
-
-        if (settings.isEmpty()) {
-            return null;
-        } else {
-            return settings.get(0);
-        }
-    }
-}
+class AuthenticatedUserObjectRepository @Inject internal constructor(
+    store: AuthenticatedUserStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<AuthenticatedUser>>,
+    scope: RepositoryScope,
+) : ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    ObjectRepositoryFactory { updatedScope: RepositoryScope ->
+        AuthenticatedUserObjectRepository(
+            store,
+            childrenAppenders,
+            updatedScope,
+        )
+    },
+)

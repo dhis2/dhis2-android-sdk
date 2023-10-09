@@ -25,40 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.DATA_SET
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.settings.internal.ProgramSettingCall
+import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore
+import javax.inject.Inject
 
-fun generateGroups(
-    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>,
-): AnalyticsDhisVisualizationsSetting {
-    val visualizationsByScope: Map<AnalyticsDhisVisualizationScope, List<AnalyticsDhisVisualization>> =
-        analyticsDhisVisualizations
-            .filter { it.scope() != null }
-            .groupBy { it.scope()!! }
+@Reusable
+class ProgramSettingsObjectRepository @Inject internal constructor(
+    private val store: ProgramSettingStore,
+    programSettingCall: ProgramSettingCall,
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>(programSettingCall),
+    ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
+    override fun blockingGet(): ProgramSettings? {
+        val settings = store.selectAll()
+        return if (settings.isEmpty()) {
+            null
+        } else {
+            val specifics = settings
+                .filter { it.uid() != null }
+                .associateBy { it.uid()!! }
 
-    return AnalyticsDhisVisualizationsSetting
-        .builder()
-        .home(generateGroupList(visualizationsByScope[HOME]))
-        .program(generateScopeGroups(visualizationsByScope[PROGRAM]))
-        .dataSet(generateScopeGroups(visualizationsByScope[DATA_SET]))
-        .build()
+            ProgramSettings.builder()
+                .globalSettings(settings.find { it.uid() == null })
+                .specificSettings(specifics)
+                .build()
+        }
+    }
 }
-
-private fun generateGroupList(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.groupUid() }?.map {
-        AnalyticsDhisVisualizationsGroup
-            .builder()
-            .id(it.key)
-            .name(it.value.first().groupName())
-            .visualizations(it.value)
-            .build()
-    } ?: emptyList()
-
-private fun generateScopeGroups(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.scopeUid() }?.mapValues {
-        generateGroupList(it.value)
-    } ?: emptyMap()

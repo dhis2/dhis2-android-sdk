@@ -25,43 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.datastore;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+@Reusable
+class AnalyticsSettingObjectRepository @Inject internal constructor(
+    private val analyticsTeiSettingRepository: AnalyticsTeiSettingCollectionRepository,
+    analyticsSettingCall: AnalyticsSettingCall,
+    private val analyticsDhisVisualizationsSettingObjectRepository: AnalyticsDhisVisualizationsSettingObjectRepository,
+) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsSettings>(analyticsSettingCall),
+    ReadOnlyWithDownloadObjectRepository<AnalyticsSettings> {
+    override fun blockingGet(): AnalyticsSettings? {
+        val analyticsTeiSettings = analyticsTeiSettingRepository.blockingGet()
+        val analyticsDhisVisualizationsSetting = analyticsDhisVisualizationsSettingObjectRepository.blockingGet()
 
-import java.util.Map;
-
-import io.reactivex.Completable;
-
-public final class LocalDataStoreObjectRepository
-        extends ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>
-        implements ReadWriteValueObjectRepository<KeyValuePair> {
-
-    private final String key;
-
-    LocalDataStoreObjectRepository(
-            final ObjectWithoutUidStore<KeyValuePair> store,
-            final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
-            final RepositoryScope scope,
-            final String key) {
-        super(store, childrenAppenders, scope, s ->
-                new LocalDataStoreObjectRepository(store, childrenAppenders, s, key));
-        this.key = key;
+        return AnalyticsSettings.builder()
+            .tei(analyticsTeiSettings)
+            .dhisVisualizations(analyticsDhisVisualizationsSetting)
+            .build()
     }
 
-    @Override
-    public Completable set(String value) {
-        return Completable.fromAction(() -> blockingSet(value));
+    fun teis(): AnalyticsTeiSettingCollectionRepository {
+        return analyticsTeiSettingRepository
     }
 
-    public void blockingSet(String value) throws D2Error {
-        KeyValuePair pair = KeyValuePair.builder().key(key).value(value).build();
-        setObject(pair);
+    fun visualizationsSettings(): AnalyticsDhisVisualizationsSettingObjectRepository {
+        return analyticsDhisVisualizationsSettingObjectRepository
     }
 }

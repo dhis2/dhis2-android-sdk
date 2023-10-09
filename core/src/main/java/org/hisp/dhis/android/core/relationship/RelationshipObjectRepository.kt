@@ -25,24 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.fileresource;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithUidDataObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.internal.TrackerDataManager
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+internal class RelationshipObjectRepository(
+    store: RelationshipStore,
+    uid: String?,
+    childrenAppenders: Map<String, ChildrenAppender<Relationship>>,
+    scope: RepositoryScope,
+    private val trackerDataManager: TrackerDataManager,
+) : ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    ObjectRepositoryFactory { s: RepositoryScope ->
+        RelationshipObjectRepository(
+            store,
+            uid,
+            childrenAppenders,
+            s,
+            trackerDataManager,
+        )
+    },
+) {
+    override fun propagateState(m: Relationship, action: HandleAction) {
+        trackerDataManager.propagateRelationshipUpdate(m, action)
+    }
 
-import java.util.Map;
-
-public final class FileResourceObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository> {
-
-    FileResourceObjectRepository(final IdentifiableDataObjectStore<FileResource> store,
-                                 final String uid,
-                                 final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
-                                 final RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new FileResourceObjectRepository(store, uid, childrenAppenders, s));
+    override fun deleteObject(m: Relationship) {
+        trackerDataManager.deleteRelationship(m)
     }
 }

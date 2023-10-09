@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
@@ -35,8 +36,9 @@ import javax.inject.Inject
 
 @Reusable
 internal class RelationshipItemChildrenAppender @Inject constructor(
-    private val store: RelationshipItemStore,
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<Relationship>() {
+    private val store = RelationshipItemStoreImpl(databaseAdapter)
 
     override fun appendChildren(relationship: Relationship): Relationship {
         val fromItem = store.getForRelationshipUidAndConstraintType(

@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.dataset
 
 import android.util.Log
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
@@ -44,8 +45,9 @@ import java.util.Date
 
 class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
+    databaseAdapter: DatabaseAdapter,
     private val credentialsRepository: UserCredentialsObjectRepository,
-    childrenAppenders: Map<String, ChildrenAppender<DataSetCompleteRegistration>>,
+    childrenAppenders: ChildrenAppenderGetter<DataSetCompleteRegistration>,
     scope: RepositoryScope,
     private val period: String,
     private val organisationUnit: String,
@@ -53,11 +55,13 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val attributeOptionCombo: String,
 ) : ReadOnlyOneObjectRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationObjectRepository>(
     dataSetCompleteRegistrationStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataSetCompleteRegistrationObjectRepository(
             dataSetCompleteRegistrationStore,
+            databaseAdapter,
             credentialsRepository,
             childrenAppenders,
             s,

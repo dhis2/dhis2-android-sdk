@@ -28,24 +28,29 @@
 package org.hisp.dhis.android.core.dataset
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.dataset.internal.SectionDataElementChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionFields
+import org.hisp.dhis.android.core.dataset.internal.SectionGreyedFieldsChildrenAppender
+import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionStore
 import javax.inject.Inject
 
 @Reusable
 class SectionCollectionRepository @Inject internal constructor(
     store: SectionStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Section>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Section, SectionCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +58,7 @@ class SectionCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         SectionCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -88,5 +93,13 @@ class SectionCollectionRepository @Inject internal constructor(
 
     fun withIndicators(): SectionCollectionRepository {
         return cf.withChild(SectionFields.INDICATORS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Section> = mapOf(
+            SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender::create,
+            SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender::create,
+            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender::create
+        )
     }
 }

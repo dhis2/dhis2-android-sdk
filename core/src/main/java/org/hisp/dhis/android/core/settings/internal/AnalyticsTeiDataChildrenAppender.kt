@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
@@ -39,11 +40,12 @@ import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
-    private val analyticsTeiDataElementStore: AnalyticsTeiDataElementStore,
-    private val analyticsTeiIndicatorStore: AnalyticsTeiIndicatorStore,
-    private val analyticsTeiAttributeStore: AnalyticsTeiAttributeStore,
-    private val analyticsTeiWHONutritionDataStore: AnalyticsTeiWHONutritionDataStore,
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<AnalyticsTeiSetting>() {
+    private val analyticsTeiDataElementStore = AnalyticsTeiDataElementStoreImpl(databaseAdapter)
+    private val analyticsTeiIndicatorStore = AnalyticsTeiIndicatorStoreImpl(databaseAdapter)
+    private val analyticsTeiAttributeStore = AnalyticsTeiAttributeStoreImpl(databaseAdapter)
+    private val analyticsTeiWHONutritionDataStore = AnalyticsTeiWHONutritionDataStoreImpl(databaseAdapter)
 
     companion object {
         const val KEY = "DATA"

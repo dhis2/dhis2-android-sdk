@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.enrollment
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -46,25 +47,27 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
 import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
 class EnrollmentCollectionRepository @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Enrollment>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: EnrollmentProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository>(
     enrollmentStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         EnrollmentCollectionRepository(
             enrollmentStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
             transformer,
             trackerDataManager,
@@ -77,7 +80,8 @@ class EnrollmentCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): EnrollmentObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return EnrollmentObjectRepository(enrollmentStore, uid, childrenAppenders, updatedScope, trackerDataManager)
+        return EnrollmentObjectRepository(enrollmentStore, uid, databaseAdapter, childrenAppenders,
+            updatedScope, trackerDataManager)
     }
 
     fun byUid(): StringFilterConnector<EnrollmentCollectionRepository> {
@@ -182,5 +186,11 @@ class EnrollmentCollectionRepository @Inject internal constructor(
 
     fun withNotes(): EnrollmentCollectionRepository {
         return cf.withChild(EnrollmentFields.NOTES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Enrollment> = mapOf(
+            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender::create
+        )
     }
 }

@@ -28,12 +28,14 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramRuleActionChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramRuleFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
 import javax.inject.Inject
@@ -41,10 +43,11 @@ import javax.inject.Inject
 @Reusable
 class ProgramRuleCollectionRepository @Inject internal constructor(
     store: ProgramRuleStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRule>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRule, ProgramRuleCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +55,7 @@ class ProgramRuleCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramRuleCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -75,5 +78,11 @@ class ProgramRuleCollectionRepository @Inject internal constructor(
 
     fun withProgramRuleActions(): ProgramRuleCollectionRepository {
         return cf.withChild(ProgramRuleFields.PROGRAM_RULE_ACTIONS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramRule> = mapOf(
+            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender::create
+        )
     }
 }

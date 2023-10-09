@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.legendset
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,10 +41,11 @@ import javax.inject.Inject
 @Reusable
 class LegendCollectionRepository @Inject internal constructor(
     store: LegendStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Legend>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Legend, LegendCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +53,7 @@ class LegendCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         LegendCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -70,5 +72,9 @@ class LegendCollectionRepository @Inject internal constructor(
 
     fun byColor(): StringFilterConnector<LegendCollectionRepository> {
         return cf.string(LegendTableInfo.Columns.COLOR)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Legend> = mapOf()
     }
 }

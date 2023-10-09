@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.settings
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -42,10 +43,11 @@ import javax.inject.Inject
 @Reusable
 class SystemSettingCollectionRepository @Inject internal constructor(
     store: SystemSettingStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<SystemSetting>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<SystemSetting, SystemSettingCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +55,7 @@ class SystemSettingCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         SystemSettingCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -72,5 +74,9 @@ class SystemSettingCollectionRepository @Inject internal constructor(
 
     fun style(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
         return byKey().eq(SystemSettingKey.STYLE).one()
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<SystemSetting> = mapOf()
     }
 }

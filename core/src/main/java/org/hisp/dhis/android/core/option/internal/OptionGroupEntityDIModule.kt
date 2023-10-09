@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.option.OptionGroup
 
 @Module
 internal class OptionGroupEntityDIModule {
@@ -53,14 +51,6 @@ internal class OptionGroupEntityDIModule {
             optionStore,
             optionGroupOptionLinkHandler,
             collectionCleaner,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<OptionGroup>> {
-        return mapOf(
-            OptionGroupFields.OPTIONS to OptionGroupOptionChildrenAppender.create(databaseAdapter),
         )
     }
 }

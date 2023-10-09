@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.validation
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -44,10 +45,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class ValidationRuleCollectionRepository @Inject internal constructor(
     store: ValidationRuleStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ValidationRule>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<ValidationRule, ValidationRuleCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -55,7 +57,7 @@ class ValidationRuleCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ValidationRuleCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -121,5 +123,9 @@ class ValidationRuleCollectionRepository @Inject internal constructor(
             DataSetValidationRuleLinkTableInfo.Columns.DATA_SET,
             dataSetUids,
         )
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ValidationRule> = emptyMap()
     }
 }

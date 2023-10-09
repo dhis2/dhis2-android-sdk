@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -42,6 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import javax.inject.Inject
 
@@ -49,10 +51,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class ProgramCollectionRepository @Inject internal constructor(
     store: ProgramStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Program>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -60,7 +63,7 @@ class ProgramCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -196,5 +199,11 @@ class ProgramCollectionRepository @Inject internal constructor(
 
     fun withTrackedEntityType(): ProgramCollectionRepository {
         return cf.withChild(ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Program> = mapOf(
+            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to ::ProgramTrackedEntityTypeChildrenAppender,
+        )
     }
 }

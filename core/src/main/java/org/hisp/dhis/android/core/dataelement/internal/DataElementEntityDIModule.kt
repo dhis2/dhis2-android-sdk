@@ -31,12 +31,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
-import java.util.Collections
 
 @Module
 internal class DataElementEntityDIModule {
@@ -59,15 +56,6 @@ internal class DataElementEntityDIModule {
             attributeHandler,
             dataElementAttributeLinkHandler,
             dataElementLegendSetLinkHandler,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<DataElement>> {
-        return Collections.singletonMap(
-            DataElementFields.LEGEND_SETS,
-            DataElementLegendSetChildrenAppender.create(databaseAdapter),
         )
     }
 }

@@ -28,22 +28,25 @@
 package org.hisp.dhis.android.core.option
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.option.internal.OptionGroupFields
+import org.hisp.dhis.android.core.option.internal.OptionGroupOptionChildrenAppender
 import org.hisp.dhis.android.core.option.internal.OptionGroupStore
 import javax.inject.Inject
 
 @Reusable
 class OptionGroupCollectionRepository @Inject internal constructor(
     store: OptionGroupStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<OptionGroup>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OptionGroup, OptionGroupCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +54,7 @@ class OptionGroupCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         OptionGroupCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -62,5 +65,11 @@ class OptionGroupCollectionRepository @Inject internal constructor(
 
     fun withOptions(): OptionGroupCollectionRepository {
         return cf.withChild(OptionGroupFields.OPTIONS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<OptionGroup> = mapOf(
+            OptionGroupFields.OPTIONS to OptionGroupOptionChildrenAppender::create,
+        )
     }
 }

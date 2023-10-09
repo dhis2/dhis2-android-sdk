@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.indicator
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,10 +41,11 @@ import javax.inject.Inject
 @Reusable
 class IndicatorTypeCollectionRepository @Inject internal constructor(
     store: IndicatorTypeStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<IndicatorType>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +53,7 @@ class IndicatorTypeCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         IndicatorTypeCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -62,5 +64,9 @@ class IndicatorTypeCollectionRepository @Inject internal constructor(
 
     fun byFactor(): IntegerFilterConnector<IndicatorTypeCollectionRepository> {
         return cf.integer(IndicatorTypeTableInfo.Columns.FACTOR)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<IndicatorType> = mapOf()
     }
 }

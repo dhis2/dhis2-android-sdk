@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.validation.ValidationRule
 
 @Module
 internal class ValidationRuleEntityDIModule {
@@ -40,11 +38,5 @@ internal class ValidationRuleEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ValidationRuleStore {
         return ValidationRuleStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<ValidationRule>> {
-        return emptyMap()
     }
 }

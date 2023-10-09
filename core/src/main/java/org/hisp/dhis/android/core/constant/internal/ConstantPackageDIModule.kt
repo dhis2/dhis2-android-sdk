@@ -32,7 +32,6 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantModule
 import retrofit2.Retrofit
@@ -64,12 +63,6 @@ internal class ConstantPackageDIModule {
     @Reusable
     fun service(retrofit: Retrofit): ConstantService {
         return retrofit.create(ConstantService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<Constant>> {
-        return emptyMap()
     }
 
     @Provides

@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryFields
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import javax.inject.Inject
@@ -40,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class CategoryCollectionRepository @Inject internal constructor(
     store: CategoryStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Category>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +54,7 @@ class CategoryCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         CategoryCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -62,5 +65,11 @@ class CategoryCollectionRepository @Inject internal constructor(
 
     fun withCategoryOptions(): CategoryCollectionRepository {
         return cf.withChild(CategoryFields.CATEGORY_OPTIONS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Category> = mapOf(
+            CategoryFields.CATEGORY_OPTIONS to CategoryCategoryOptionChildrenAppender::create
+        )
     }
 }

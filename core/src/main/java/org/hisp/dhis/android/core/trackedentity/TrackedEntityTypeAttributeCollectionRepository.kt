@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class TrackedEntityTypeAttributeCollectionRepository @Inject internal constructor(
     store: TrackedEntityTypeAttributeStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityTypeAttribute>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttributeCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class TrackedEntityTypeAttributeCollectionRepository @Inject internal constructo
     ) { s: RepositoryScope ->
         TrackedEntityTypeAttributeCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -79,5 +81,9 @@ class TrackedEntityTypeAttributeCollectionRepository @Inject internal constructo
 
     fun bySortOrder(): IntegerFilterConnector<TrackedEntityTypeAttributeCollectionRepository> {
         return cf.integer(TrackedEntityTypeAttributeTableInfo.Columns.SORT_ORDER)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackedEntityTypeAttribute> = emptyMap()
     }
 }

@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.imports
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class TrackerImportConflictCollectionRepository @Inject internal constructor(
     store: TrackerImportConflictStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackerImportConflict>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<TrackerImportConflict, TrackerImportConflictCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class TrackerImportConflictCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         TrackerImportConflictCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -91,5 +93,9 @@ class TrackerImportConflictCollectionRepository @Inject internal constructor(
 
     fun byCreated(): DateFilterConnector<TrackerImportConflictCollectionRepository> {
         return cf.date(TrackerImportConflictTableInfo.Columns.CREATED)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackerImportConflict> = mapOf()
     }
 }

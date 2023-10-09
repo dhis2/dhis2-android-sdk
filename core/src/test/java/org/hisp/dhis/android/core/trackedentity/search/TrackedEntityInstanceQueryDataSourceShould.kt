@@ -34,7 +34,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
@@ -59,6 +61,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private lateinit var multipleEventFilterScope: TrackedEntityInstanceQueryRepositoryScope
 
     private val store: TrackedEntityInstanceStore = mock()
+    private val databaseAdapter: DatabaseAdapter = mock()
     private val trackerParentCallFactory: TrackerParentCallFactory = mock()
     private val onlineCallFactory: TrackedEntityEndpointCallFactory = mock()
     private val trackedEntity: TrackedEntityInstance = mock()
@@ -69,7 +72,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
     var captureInstances: KArgumentCaptor<List<TrackedEntityInstance>> = argumentCaptor()
 
-    private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>> = mock()
+    private val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance> = mock()
 
     private val initialCallback: ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> = mock()
     private val calendarProvider = CalendarProviderFactory.calendarProvider
@@ -122,7 +125,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
                 .doReturn(TrackerQueryResult(emptyList(), true))
         }
 
-        whenever(childrenAppenders[anyString()]).doReturn(identityAppender())
+        whenever(childrenAppenders[anyString()]).doReturn { d -> identityAppender(d) }
     }
 
     @Test
@@ -266,6 +269,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     ): TrackedEntityInstanceQueryDataFetcher {
         return TrackedEntityInstanceQueryDataFetcher(
             store,
+            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -275,7 +279,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
         )
     }
 
-    private fun identityAppender(): ChildrenAppender<TrackedEntityInstance> {
+    private fun identityAppender(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstance> {
         return object : ChildrenAppender<TrackedEntityInstance>() {
             override fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
                 return m

@@ -32,8 +32,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.datavalue.DataValueConflict
 
 @Module
 internal class DataValueConflictEntityDIModule {
@@ -42,11 +40,5 @@ internal class DataValueConflictEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): DataValueConflictStore {
         return DataValueConflictStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<DataValueConflict>> {
-        return emptyMap()
     }
 }

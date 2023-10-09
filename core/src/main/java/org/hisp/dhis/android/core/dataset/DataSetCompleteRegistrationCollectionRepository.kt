@@ -33,7 +33,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -54,13 +55,14 @@ import javax.inject.Inject
 @Suppress("SpreadOperator", "TooManyFunctions")
 class DataSetCompleteRegistrationCollectionRepository @Inject internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataSetCompleteRegistration>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     handler: DataSetCompleteRegistrationHandler,
     private val postCall: DataSetCompleteRegistrationPostCall,
     private val credentialsRepository: UserCredentialsObjectRepository,
 ) : ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationCollectionRepository>(
     dataSetCompleteRegistrationStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -68,7 +70,7 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
     ) { s: RepositoryScope ->
         DataSetCompleteRegistrationCollectionRepository(
             dataSetCompleteRegistrationStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
             handler,
             postCall,
@@ -89,6 +91,7 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataSetCompleteRegistrationObjectRepository(
             dataSetCompleteRegistrationStore,
+            databaseAdapter,
             credentialsRepository,
             childrenAppenders,
             updatedScope,
@@ -147,6 +150,10 @@ class DataSetCompleteRegistrationCollectionRepository @Inject internal construct
     }
 
     fun bySyncState(): EnumFilterConnector<DataSetCompleteRegistrationCollectionRepository, State> {
-        return cf.enumC<State>(DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE)
+        return cf.enumC(DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<DataSetCompleteRegistration> = emptyMap()
     }
 }

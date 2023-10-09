@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.dataset
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -37,8 +38,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodChildrenAppender
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompulsoryDataElementOperandChildrenAppender
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetStore
+import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
@@ -48,10 +53,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class DataSetCollectionRepository @Inject internal constructor(
     store: DataSetStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataSet>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -59,7 +65,7 @@ class DataSetCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         DataSetCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -175,5 +181,15 @@ class DataSetCollectionRepository @Inject internal constructor(
 
     fun withIndicators(): DataSetCollectionRepository {
         return cf.withChild(DataSetFields.INDICATORS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<DataSet> = mapOf(
+            DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS to
+                DataSetCompulsoryDataElementOperandChildrenAppender::create,
+            DataSetFields.DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender::create,
+            DataSetFields.DATA_SET_ELEMENTS to DataSetElementChildrenAppender::create,
+            DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender::create,
+        )
     }
 }

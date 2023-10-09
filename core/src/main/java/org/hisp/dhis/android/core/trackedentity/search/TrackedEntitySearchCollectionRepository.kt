@@ -35,10 +35,10 @@ import androidx.paging.PagedList
 import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMod
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
@@ -57,7 +57,7 @@ import javax.inject.Inject
 class TrackedEntitySearchCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
-    private val childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstance>>,
+    private val databaseAdapter: DatabaseAdapter,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
     versionManager: DHISVersionManager,
@@ -83,7 +83,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
             > =
         ScopedFilterConnectorFactory { s: TrackedEntityInstanceQueryRepositoryScope ->
             TrackedEntitySearchCollectionRepository(
-                store, trackerParentCallFactory, childrenAppenders,
+                store, trackerParentCallFactory, databaseAdapter,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
                 onlineHelper, localQueryHelper, searchDataFetcherHelper,
             )
@@ -157,6 +157,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
     private fun getDataFetcher(): TrackedEntitySearchDataFetcher {
         return TrackedEntitySearchDataFetcher(
             store,
+            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -210,5 +211,9 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
                 return blockingGet() != null
             }
         }
+    }
+
+    internal companion object {
+        val childrenAppenders = TrackedEntityInstanceCollectionRepository.childrenAppenders
     }
 }

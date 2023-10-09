@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataset.Section
 
 @Module
 internal class SectionEntityDIModule {
@@ -40,15 +38,5 @@ internal class SectionEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): SectionStore {
         return SectionStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Section>> {
-        return mapOf(
-            SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
-            SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender.create(databaseAdapter),
-            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender.create(databaseAdapter),
-        )
     }
 }

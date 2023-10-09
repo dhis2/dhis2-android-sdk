@@ -32,8 +32,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 @Module
 internal class TrackedEntityAttributeLegendSetDIModule {
@@ -41,14 +39,5 @@ internal class TrackedEntityAttributeLegendSetDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): TrackedEntityAttributeLegendSetLinkStore {
         return TrackedEntityAttributeLegendSetLinkStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<TrackedEntityAttribute>> {
-        return mapOf(
-            TrackedEntityAttributeFields.LEGEND_SETS to
-                TrackedEntityAttributeLegendSetChildrenAppender.create(databaseAdapter),
-        )
     }
 }

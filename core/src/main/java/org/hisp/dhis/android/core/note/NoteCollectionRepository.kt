@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.note
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -49,12 +50,13 @@ import javax.inject.Inject
 @Reusable
 class NoteCollectionRepository @Inject internal constructor(
     store: NoteStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Note>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: NoteProjectionTransformer,
     private val dataStatePropagator: DataStatePropagator,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -63,7 +65,7 @@ class NoteCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         NoteCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
             transformer,
             dataStatePropagator,
@@ -104,10 +106,14 @@ class NoteCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): ReadOnlyObjectRepository<Note> {
         val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, updatedScope)
     }
 
     override fun propagateState(m: Note, action: HandleAction?) {
         dataStatePropagator.propagateNoteCreation(m)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Note> = emptyMap()
     }
 }

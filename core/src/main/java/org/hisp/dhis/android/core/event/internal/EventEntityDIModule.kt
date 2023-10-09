@@ -31,16 +31,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
-import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
 import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler
 
 @Module
@@ -73,15 +69,6 @@ internal class EventEntityDIModule {
             noteVersionManager,
             noteUniquenessManager,
             relationshipOrphanCleaner,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Event>> {
-        return mapOf(
-            EventFields.TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender.create(databaseAdapter),
-            EventFields.NOTES to NoteForEventChildrenAppender.create(databaseAdapter),
         )
     }
 }

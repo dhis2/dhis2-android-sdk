@@ -50,13 +50,4 @@ internal class CategoryOptionComboEntityDIModule {
     ): CategoryOptionComboHandler {
         return CategoryOptionComboHandler(store, categoryOptionComboCategoryOptionLinkHandler)
     }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOptionCombo>> {
-        return mapOf(
-            CategoryOptionComboFields.CATEGORY_OPTIONS to
-                CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter),
-        )
-    }
 }

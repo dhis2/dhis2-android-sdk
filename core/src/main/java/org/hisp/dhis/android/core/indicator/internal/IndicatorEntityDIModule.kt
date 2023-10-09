@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.indicator.Indicator
 
 @Module
 internal class IndicatorEntityDIModule {
@@ -40,13 +38,5 @@ internal class IndicatorEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): IndicatorStore {
         return IndicatorStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Indicator>> {
-        return mapOf(
-            IndicatorFields.LEGEND_SETS to IndicatorLegendSetChildrenAppender.create(databaseAdapter),
-        )
     }
 }

@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.program.ProgramRuleVariable
 
 @Module
 internal class ProgramRuleVariableEntityDIModule {
@@ -46,11 +44,5 @@ internal class ProgramRuleVariableEntityDIModule {
     @Reusable
     fun handler(store: ProgramRuleVariableStore): ProgramRuleVariableHandler {
         return ProgramRuleVariableHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<ProgramRuleVariable>> {
-        return emptyMap()
     }
 }

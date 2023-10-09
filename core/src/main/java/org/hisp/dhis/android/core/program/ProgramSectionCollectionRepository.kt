@@ -28,12 +28,14 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramSectionAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
 import org.hisp.dhis.android.core.program.internal.ProgramSectionStore
 import javax.inject.Inject
@@ -41,10 +43,11 @@ import javax.inject.Inject
 @Reusable
 class ProgramSectionCollectionRepository @Inject internal constructor(
     store: ProgramSectionStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramSection>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramSection, ProgramSectionCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +55,7 @@ class ProgramSectionCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramSectionCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -90,6 +93,12 @@ class ProgramSectionCollectionRepository @Inject internal constructor(
     }
 
     fun withAttributes(): ProgramSectionCollectionRepository {
-        return cf.withChild(ProgramSectionFields.ATTRIBUTES)
+        return cf.withChild(ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramSection> = mapOf(
+            ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES to ProgramSectionAttributeChildrenAppender::create
+        )
     }
 }

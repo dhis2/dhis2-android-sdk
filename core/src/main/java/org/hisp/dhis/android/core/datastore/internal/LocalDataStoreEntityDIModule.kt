@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.datastore.KeyValuePair
 import retrofit2.Retrofit
 
 @Module
@@ -48,11 +46,5 @@ internal class LocalDataStoreEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): LocalDataStoreStore {
         return LocalDataStoreStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<KeyValuePair>> {
-        return emptyMap()
     }
 }

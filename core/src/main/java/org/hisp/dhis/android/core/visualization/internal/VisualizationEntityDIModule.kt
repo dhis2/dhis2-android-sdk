@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.visualization.Visualization
 
 @Module
 internal class VisualizationEntityDIModule {
@@ -41,13 +39,5 @@ internal class VisualizationEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): VisualizationStore {
         return VisualizationStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
-        return mapOf(
-            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender.create(databaseAdapter),
-        )
     }
 }

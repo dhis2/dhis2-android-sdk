@@ -59,6 +59,6 @@ open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepo
      */
     override fun uid(uid: String?): ReadOnlyOneObjectRepositoryFinalImpl<M> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, scope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, updatedScope)
     }
 }

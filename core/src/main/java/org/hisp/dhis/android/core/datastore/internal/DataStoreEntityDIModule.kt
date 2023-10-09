@@ -51,12 +51,6 @@ internal class DataStoreEntityDIModule {
 
     @Provides
     @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<DataStoreEntry>> {
-        return emptyMap()
-    }
-
-    @Provides
-    @Reusable
     fun downloaderParams(): DataStoreDownloadParams {
         return DataStoreDownloadParams()
     }

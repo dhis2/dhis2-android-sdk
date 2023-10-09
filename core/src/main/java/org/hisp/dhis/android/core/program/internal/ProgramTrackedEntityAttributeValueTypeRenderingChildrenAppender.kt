@@ -28,14 +28,17 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import javax.inject.Inject
 
 @Reusable
 internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender @Inject constructor(
-    store: ValueTypeDeviceRenderingStore,
-) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(store) {
+    databaseAdapter: DatabaseAdapter,
+) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(
+    ValueTypeDeviceRenderingStoreImpl(databaseAdapter)
+) {
     override fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
         val valueTypeRendering = getValueTypeDeviceRendering(m)
         return m.toBuilder().renderType(valueTypeRendering).build()

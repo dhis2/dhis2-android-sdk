@@ -28,28 +28,31 @@
 package org.hisp.dhis.android.core.map.layer
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImagerProviderChildrenAppender
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
 import javax.inject.Inject
 
 @Reusable
 class MapLayerCollectionRepository @Inject internal constructor(
     store: MapLayerStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<MapLayer>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyWithUidCollectionRepositoryImpl<MapLayer, MapLayerCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
         scope,
-    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, childrenAppenders, s) },
+    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, databaseAdapter, s) },
 ) {
 
     fun byUid(): StringFilterConnector<MapLayerCollectionRepository> {
@@ -82,5 +85,11 @@ class MapLayerCollectionRepository @Inject internal constructor(
 
     fun withImageryProviders(): MapLayerCollectionRepository {
         return cf.withChild(MapLayer.IMAGERY_PROVIDERS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<MapLayer> = mapOf(
+            MapLayer.IMAGERY_PROVIDERS to ::MapLayerImagerProviderChildrenAppender,
+        )
     }
 }

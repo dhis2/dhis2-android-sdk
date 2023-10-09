@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.user.UserRole
 
 @Module
 internal class UserRoleEntityDIModule {
@@ -40,11 +38,5 @@ internal class UserRoleEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): UserRoleStore {
         return UserRoleStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<UserRole>> {
-        return emptyMap()
     }
 }

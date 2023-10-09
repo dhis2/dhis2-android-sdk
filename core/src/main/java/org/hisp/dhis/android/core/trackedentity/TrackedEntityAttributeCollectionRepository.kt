@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -38,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import javax.inject.Inject
 
@@ -45,10 +47,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
     store: TrackedEntityAttributeStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityAttribute>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityAttribute, TrackedEntityAttributeCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -56,7 +59,7 @@ class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityAttributeCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -135,5 +138,11 @@ class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
 
     fun withLegendSets(): TrackedEntityAttributeCollectionRepository {
         return cf.withChild(TrackedEntityAttributeFields.LEGEND_SETS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackedEntityAttribute> = mapOf(
+            TrackedEntityAttributeFields.LEGEND_SETS to TrackedEntityAttributeLegendSetChildrenAppender::create
+        )
     }
 }

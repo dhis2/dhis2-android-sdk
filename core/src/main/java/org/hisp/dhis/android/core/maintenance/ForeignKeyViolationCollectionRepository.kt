@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.maintenance
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,10 +41,11 @@ import javax.inject.Inject
 @Reusable
 class ForeignKeyViolationCollectionRepository @Inject internal constructor(
     store: ForeignKeyViolationStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ForeignKeyViolation>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +53,7 @@ class ForeignKeyViolationCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ForeignKeyViolationCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -86,5 +88,9 @@ class ForeignKeyViolationCollectionRepository @Inject internal constructor(
 
     fun byCreated(): DateFilterConnector<ForeignKeyViolationCollectionRepository> {
         return cf.date(ForeignKeyViolationTableInfo.Columns.CREATED)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ForeignKeyViolation> = emptyMap()
     }
 }

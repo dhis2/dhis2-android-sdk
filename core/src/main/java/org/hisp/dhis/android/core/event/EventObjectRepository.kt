@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithUidDataObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -40,19 +40,21 @@ import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.UserStore
 import java.util.Date
 
 @Suppress("TooManyFunctions")
 class EventObjectRepository internal constructor(
     store: EventStore,
-    private val userStore: IdentifiableObjectStore<User>,
+    private val userStore: UserStore,
     uid: String?,
-    childrenAppenders: Map<String, ChildrenAppender<Event>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<Event>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
@@ -60,6 +62,7 @@ class EventObjectRepository internal constructor(
             store,
             userStore,
             uid,
+            databaseAdapter,
             childrenAppenders,
             s,
             trackerDataManager,

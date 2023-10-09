@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
 @Module
 internal class StockUseCaseEntityDIModule {
@@ -40,14 +38,5 @@ internal class StockUseCaseEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): StockUseCaseStore {
         return StockUseCaseStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(linkStore: StockUseCaseTransactionLinkStore):
-        Map<String, ChildrenAppender<InternalStockUseCase>> {
-        val childrenAppender: ChildrenAppender<InternalStockUseCase> =
-            StockUseCaseTransactionChildrenAppender(linkStore)
-        return mapOf(Pair(InternalStockUseCase.TRANSACTIONS, childrenAppender))
     }
 }

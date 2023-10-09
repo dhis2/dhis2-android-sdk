@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -39,20 +40,25 @@ import javax.inject.Inject
 @Reusable
 class SystemInfoObjectRepository @Inject internal constructor(
     store: SystemInfoStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<SystemInfo>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     systemInfoCall: SystemInfoCall,
 ) : ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     systemInfoCall,
     ObjectRepositoryFactory { cs: RepositoryScope ->
         SystemInfoObjectRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             cs,
             systemInfoCall,
         )
     },
-)
+) {
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<SystemInfo> = emptyMap()
+    }
+}

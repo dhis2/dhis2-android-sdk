@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.fileresource.FileResource
 
 @Module
 internal class FileResourceEntityDIModule {
@@ -47,12 +45,6 @@ internal class FileResourceEntityDIModule {
     @Reusable
     fun handler(store: FileResourceStore): FileResourceHandler {
         return FileResourceHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<FileResource>> {
-        return emptyMap()
     }
 
     @Provides

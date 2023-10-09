@@ -64,7 +64,7 @@ class UserCredentialsObjectRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
-            UserCredentialsFields.USER_ROLES to { d -> UserRoleChildrenAppender(d) }
+            UserCredentialsFields.USER_ROLES to ::UserRoleChildrenAppender
         )
     }
 }

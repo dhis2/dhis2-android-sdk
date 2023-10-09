@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.indicator
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -38,6 +39,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
+import org.hisp.dhis.android.core.indicator.internal.IndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import javax.inject.Inject
 
@@ -45,10 +47,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class IndicatorCollectionRepository @Inject internal constructor(
     store: IndicatorStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Indicator>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<Indicator, IndicatorCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -56,7 +59,7 @@ class IndicatorCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         IndicatorCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -116,6 +119,12 @@ class IndicatorCollectionRepository @Inject internal constructor(
             SectionIndicatorLinkTableInfo.Columns.INDICATOR,
             SectionIndicatorLinkTableInfo.Columns.SECTION,
             listOf(dataSetUid),
+        )
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Indicator> = mapOf(
+            IndicatorFields.LEGEND_SETS to IndicatorLegendSetChildrenAppender::create,
         )
     }
 }

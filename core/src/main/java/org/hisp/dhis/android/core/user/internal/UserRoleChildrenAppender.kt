@@ -28,14 +28,17 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.User
 import javax.inject.Inject
 
 @Reusable
 internal class UserRoleChildrenAppender @Inject constructor(
-    private val store: UserRoleStore,
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<User>() {
+    private val store = UserRoleStoreImpl(databaseAdapter)
+
     override fun appendChildren(user: User): User {
         val builder = user.toBuilder()
         builder.userRoles(store.selectAll())

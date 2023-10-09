@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import retrofit2.Retrofit
 
 @Module
@@ -48,18 +46,5 @@ internal class ProgramStageWorkingListEntityDIModule {
     @Provides
     fun service(retrofit: Retrofit): ProgramStageWorkingListService {
         return retrofit.create(ProgramStageWorkingListService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        databaseAdapter: DatabaseAdapter,
-    ): Map<String, ChildrenAppender<ProgramStageWorkingList>> {
-        return mapOf(
-            ProgramStageQueryCriteriaFields.DATA_FILTERS to
-                ProgramStageWorkingListDataFilterChildrenAppender.create(databaseAdapter),
-            ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                ProgramStageWorkingListAttributeValueFilterChildrenAppender.create(databaseAdapter),
-        )
     }
 }

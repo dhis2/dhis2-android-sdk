@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import retrofit2.Retrofit
 
 @Module
@@ -53,11 +51,5 @@ internal class OrganisationUnitLevelEntityDIModule {
     @Reusable
     fun organisationUnitLevelService(retrofit: Retrofit): OrganisationUnitLevelService {
         return retrofit.create(OrganisationUnitLevelService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<OrganisationUnitLevel>> {
-        return emptyMap()
     }
 }

@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.program.ProgramIndicator
 
 @Module
 internal class ProgramIndicatorEntityDIModule {
@@ -40,15 +38,5 @@ internal class ProgramIndicatorEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ProgramIndicatorStore {
         return ProgramIndicatorStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<ProgramIndicator>> {
-        return mapOf(
-            ProgramIndicatorFields.LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter),
-            ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES to
-                ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender.create(databaseAdapter),
-        )
     }
 }

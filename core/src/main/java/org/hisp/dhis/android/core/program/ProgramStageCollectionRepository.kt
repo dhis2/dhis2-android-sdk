@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -48,10 +49,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class ProgramStageCollectionRepository @Inject internal constructor(
     store: ProgramStageStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStage>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStage, ProgramStageCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -59,7 +61,7 @@ class ProgramStageCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -174,5 +176,9 @@ class ProgramStageCollectionRepository @Inject internal constructor(
 
     fun orderBySortOrder(direction: OrderByDirection?): ProgramStageCollectionRepository {
         return cf.withOrderBy(ProgramStageTableInfo.Columns.SORT_ORDER, direction)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramStage> = emptyMap()
     }
 }

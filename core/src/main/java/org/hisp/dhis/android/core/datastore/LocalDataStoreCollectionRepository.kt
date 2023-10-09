@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
@@ -39,10 +40,11 @@ import javax.inject.Inject
 @Reusable
 class LocalDataStoreCollectionRepository @Inject internal constructor(
     private val store: LocalDataStoreStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<KeyValuePair>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,7 +52,7 @@ class LocalDataStoreCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         LocalDataStoreCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -58,7 +60,7 @@ class LocalDataStoreCollectionRepository @Inject internal constructor(
 
     fun value(key: String): LocalDataStoreObjectRepository {
         val updatedScope = byKey().eq(key).scope
-        return LocalDataStoreObjectRepository(store, childrenAppenders, updatedScope, key)
+        return LocalDataStoreObjectRepository(store, databaseAdapter, childrenAppenders, updatedScope, key)
     }
 
     fun byKey(): StringFilterConnector<LocalDataStoreCollectionRepository> {
@@ -68,4 +70,9 @@ class LocalDataStoreCollectionRepository @Inject internal constructor(
     fun byValue(): StringFilterConnector<LocalDataStoreCollectionRepository> {
         return cf.string(LocalDataStoreTableInfo.Columns.VALUE)
     }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<KeyValuePair> = mapOf()
+    }
+
 }

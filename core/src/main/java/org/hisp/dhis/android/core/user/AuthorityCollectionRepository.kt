@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.user
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
@@ -39,10 +40,11 @@ import javax.inject.Inject
 @Reusable
 class AuthorityCollectionRepository @Inject internal constructor(
     store: AuthorityStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Authority>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<Authority, AuthorityCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,12 +52,16 @@ class AuthorityCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         AuthorityCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
 ) {
     fun byName(): StringFilterConnector<AuthorityCollectionRepository> {
         return cf.string(AuthorityTableInfo.Columns.NAME)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Authority> = emptyMap()
     }
 }

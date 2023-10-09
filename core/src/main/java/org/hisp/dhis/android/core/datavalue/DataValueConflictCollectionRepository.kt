@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.datavalue
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -47,10 +48,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class DataValueConflictCollectionRepository @Inject internal constructor(
     store: DataValueConflictStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataValueConflict>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataValueConflict, DataValueConflictCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -58,7 +60,7 @@ class DataValueConflictCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         DataValueConflictCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -115,5 +117,9 @@ class DataValueConflictCollectionRepository @Inject internal constructor(
 
     fun byCreated(): DateFilterConnector<DataValueConflictCollectionRepository> {
         return cf.date(DataValueConflictTableInfo.Columns.CREATED)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<DataValueConflict> = emptyMap()
     }
 }

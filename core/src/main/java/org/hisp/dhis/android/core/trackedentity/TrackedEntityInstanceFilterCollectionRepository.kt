@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -41,6 +42,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEvenFilterChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore
 import javax.inject.Inject
@@ -49,13 +52,14 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class TrackedEntityInstanceFilterCollectionRepository @Inject internal constructor(
     store: TrackedEntityInstanceFilterStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstanceFilter>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<
     TrackedEntityInstanceFilter,
     TrackedEntityInstanceFilterCollectionRepository,
     >(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -63,7 +67,7 @@ class TrackedEntityInstanceFilterCollectionRepository @Inject internal construct
     ) { s: RepositoryScope ->
         TrackedEntityInstanceFilterCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -150,5 +154,14 @@ class TrackedEntityInstanceFilterCollectionRepository @Inject internal construct
 
     fun withAttributeValueFilters(): TrackedEntityInstanceFilterCollectionRepository {
         return cf.withChild(EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstanceFilter> = mapOf(
+            TrackedEntityInstanceFilterFields.EVENT_FILTERS to
+                TrackedEntityInstanceFilterEvenFilterChildrenAppender::create,
+            EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
+                TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender::create,
+        )
     }
 }

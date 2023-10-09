@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
 @Module
 internal class TrackedEntityDataValueEntityDIModule {
@@ -40,11 +38,5 @@ internal class TrackedEntityDataValueEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): TrackedEntityDataValueStore {
         return TrackedEntityDataValueStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<TrackedEntityDataValue>> {
-        return emptyMap()
     }
 }

@@ -31,9 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramTableInfo
 
 @Module
 internal class ProgramEntityDIModule {
@@ -41,15 +38,5 @@ internal class ProgramEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ProgramStore {
         return ProgramStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        trackedEntityTypeChildrenAppender: ProgramTrackedEntityTypeChildrenAppender,
-    ): Map<String, ChildrenAppender<Program>> {
-        return mapOf(
-            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to trackedEntityTypeChildrenAppender,
-        )
     }
 }

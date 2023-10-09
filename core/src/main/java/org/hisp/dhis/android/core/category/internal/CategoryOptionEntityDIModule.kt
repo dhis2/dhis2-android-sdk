@@ -31,9 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.category.CategoryOption
-import java.util.Collections
 
 @Module
 internal class CategoryOptionEntityDIModule {
@@ -48,14 +45,5 @@ internal class CategoryOptionEntityDIModule {
     @Reusable
     fun handler(store: CategoryOptionStore): CategoryOptionHandler {
         return CategoryOptionHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOption>> {
-        return Collections.singletonMap(
-            CategoryOptionFields.ORGANISATION_UNITS,
-            CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter),
-        )
     }
 }

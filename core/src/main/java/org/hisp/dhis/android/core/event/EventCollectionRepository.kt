@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.event
 import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -53,8 +54,10 @@ import org.hisp.dhis.android.core.event.internal.EventFields
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall
 import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
 import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.user.internal.UserStore
 import javax.inject.Inject
@@ -64,7 +67,7 @@ import javax.inject.Inject
 class EventCollectionRepository @Inject internal constructor(
     private val eventStore: EventStore,
     private val userStore: UserStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Event>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val postCall: EventPostParentCall,
     transformer: EventProjectionTransformer,
@@ -72,6 +75,7 @@ class EventCollectionRepository @Inject internal constructor(
     private val jobQueryCall: JobQueryCall,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>(
     eventStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -79,7 +83,7 @@ class EventCollectionRepository @Inject internal constructor(
         EventCollectionRepository(
             eventStore,
             userStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
             postCall,
             transformer,
@@ -113,7 +117,8 @@ class EventCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): EventObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return EventObjectRepository(eventStore, userStore, uid, childrenAppenders, updatedScope, trackerDataManager)
+        return EventObjectRepository(eventStore, userStore, uid, databaseAdapter,childrenAppenders,
+            updatedScope, trackerDataManager)
     }
 
     fun byUid(): StringFilterConnector<EventCollectionRepository> {
@@ -309,5 +314,12 @@ class EventCollectionRepository @Inject internal constructor(
 
     fun countTrackedEntityInstances(): Int {
         return eventStore.countTeisWhereEvents(whereClause)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Event> = mapOf(
+            EventFields.TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender::create,
+            EventFields.NOTES to NoteForEventChildrenAppender::create,
+        )
     }
 }

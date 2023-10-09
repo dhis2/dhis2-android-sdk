@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.event.EventFilter
 
 @Module
 internal class EventFilterEntityDIModule {
@@ -51,14 +49,6 @@ internal class EventFilterEntityDIModule {
         return EventFilterHandler(
             eventFilterStore,
             eventDataFilterHandler,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<EventFilter>> {
-        return mapOf(
-            EventQueryCriteriaFields.DATA_FILTERS to EventFilterEventDataFilterChildrenAppender.create(databaseAdapter),
         )
     }
 }

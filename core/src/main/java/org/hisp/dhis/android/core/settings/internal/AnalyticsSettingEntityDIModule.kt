@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 
 @Module
 internal class AnalyticsSettingEntityDIModule {
@@ -71,12 +69,5 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun analyticsTeiWHONutritionDataStore(databaseAdapter: DatabaseAdapter): AnalyticsTeiWHONutritionDataStore {
         return AnalyticsTeiWHONutritionDataStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun teiChildrenAppenders(dataChildrenAppender: AnalyticsTeiDataChildrenAppender):
-        Map<String, ChildrenAppender<AnalyticsTeiSetting>> {
-        return mapOf(AnalyticsTeiDataChildrenAppender.KEY to dataChildrenAppender)
     }
 }

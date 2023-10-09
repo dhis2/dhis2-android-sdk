@@ -25,24 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore
 
-package org.hisp.dhis.android.core.fileresource;
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+class LocalDataStoreObjectRepository internal constructor(
+    store: LocalDataStoreStore,
+    childrenAppenders: Map<String, ChildrenAppender<KeyValuePair>>,
+    scope: RepositoryScope,
+    private val key: String
+) : ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    ObjectRepositoryFactory { s: RepositoryScope ->
+        LocalDataStoreObjectRepository(
+            store,
+            childrenAppenders,
+            s,
+            key
+        )
+    }),
+    ReadWriteValueObjectRepository<KeyValuePair> {
+    override fun set(value: String?): Completable {
+        return Completable.fromAction { blockingSet(value) }
+    }
 
-import java.util.Map;
-
-public final class FileResourceObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository> {
-
-    FileResourceObjectRepository(final IdentifiableDataObjectStore<FileResource> store,
-                                 final String uid,
-                                 final Map<String, ChildrenAppender<FileResource>> childrenAppenders,
-                                 final RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                s -> new FileResourceObjectRepository(store, uid, childrenAppenders, s));
+    @Throws(D2Error::class)
+    override fun blockingSet(value: String?) {
+        val pair = KeyValuePair.builder()
+            .key(key)
+            .value(value)
+            .build()
+        setObject(pair)
     }
 }

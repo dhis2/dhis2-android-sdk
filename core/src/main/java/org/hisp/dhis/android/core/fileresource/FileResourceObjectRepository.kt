@@ -25,30 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.fileresource
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class SystemInfoObjectRepository
-        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
-
-    @Inject
-    SystemInfoObjectRepository(SystemInfoStore store,
-                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
-                               RepositoryScope scope,
-                               SystemInfoCall systemInfoCall) {
-        super(store, childrenAppenders, scope, systemInfoCall,
-                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
-    }
-}
+class FileResourceObjectRepository internal constructor(
+    store: FileResourceStore,
+    uid: String?,
+    childrenAppenders: Map<String, ChildrenAppender<FileResource>>,
+    scope: RepositoryScope
+) : ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    ObjectRepositoryFactory { s: RepositoryScope ->
+        FileResourceObjectRepository(
+            store,
+            uid,
+            childrenAppenders,
+            s
+        )
+    })

@@ -25,43 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.datastore;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.Map;
-
-import io.reactivex.Completable;
-
-public final class LocalDataStoreObjectRepository
-        extends ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>
-        implements ReadWriteValueObjectRepository<KeyValuePair> {
-
-    private final String key;
-
-    LocalDataStoreObjectRepository(
-            final ObjectWithoutUidStore<KeyValuePair> store,
-            final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
-            final RepositoryScope scope,
-            final String key) {
-        super(store, childrenAppenders, scope, s ->
-                new LocalDataStoreObjectRepository(store, childrenAppenders, s, key));
-        this.key = key;
-    }
-
-    @Override
-    public Completable set(String value) {
-        return Completable.fromAction(() -> blockingSet(value));
-    }
-
-    public void blockingSet(String value) throws D2Error {
-        KeyValuePair pair = KeyValuePair.builder().key(key).value(value).build();
-        setObject(pair);
-    }
-}
+@Reusable
+class SystemInfoObjectRepository @Inject internal constructor(
+    store: SystemInfoStore,
+    childrenAppenders: Map<String, ChildrenAppender<SystemInfo>>,
+    scope: RepositoryScope,
+    systemInfoCall: SystemInfoCall
+) : ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository>(
+    store,
+    childrenAppenders,
+    scope,
+    systemInfoCall,
+    ObjectRepositoryFactory { cs: RepositoryScope ->
+        SystemInfoObjectRepository(
+            store,
+            childrenAppenders,
+            cs,
+            systemInfoCall
+        )
+    })

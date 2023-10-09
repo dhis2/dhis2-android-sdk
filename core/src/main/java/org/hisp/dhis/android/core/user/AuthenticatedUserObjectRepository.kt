@@ -25,28 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
+import javax.inject.Inject
 
 @Reusable
-public final class AuthenticatedUserObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository> {
-
-    @Inject
-    AuthenticatedUserObjectRepository(AuthenticatedUserStore store,
-                                      Map<String, ChildrenAppender<AuthenticatedUser>> childrenAppenders,
-                                      RepositoryScope scope) {
-        super(store, childrenAppenders, scope,
-                updatedScope -> new AuthenticatedUserObjectRepository(store, childrenAppenders, updatedScope));
-    }
-}
+class AuthenticatedUserObjectRepository @Inject internal constructor(
+    store: AuthenticatedUserStore,
+    childrenAppenders: MutableMap<String, ChildrenAppender<AuthenticatedUser>>,
+    scope: RepositoryScope
+) : ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository>(store,
+    childrenAppenders,
+    scope,
+    ObjectRepositoryFactory { updatedScope: RepositoryScope ->
+        AuthenticatedUserObjectRepository(
+            store,
+            childrenAppenders,
+            updatedScope
+        )
+    })

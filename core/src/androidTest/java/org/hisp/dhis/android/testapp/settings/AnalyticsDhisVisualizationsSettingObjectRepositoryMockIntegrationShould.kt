@@ -43,7 +43,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .settingModule()
             .analyticsSetting()
             .visualizationsSettings()
-            .blockingGet()!!
+            .blockingGet()
 
         assertThat(analyticsDhisVisualizationsSetting.home().size).isEqualTo(2)
         assertThat(analyticsDhisVisualizationsSetting.home().first().visualizations().first().name()).isNotEmpty()
@@ -60,9 +60,9 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .visualizationsSettings()
             .blockingGetByProgram("IpHINAT79UW")
 
-        assertThat(programSettings.size).isEqualTo(1)
-        assertThat(programSettings.first().visualizations().size).isEqualTo(2)
-        assertThat(programSettings.first().visualizations().first().uid()).isEqualTo("PYBH8ZaAQnC")
+        assertThat(programSettings?.size).isEqualTo(1)
+        assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(2)
+        assertThat(programSettings?.first()?.visualizations()?.first()?.uid()).isEqualTo("PYBH8ZaAQnC")
     }
 
     @Test
@@ -73,8 +73,8 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .visualizationsSettings()
             .blockingByDataSet("BfMAe6Itzgt")
 
-        assertThat(programSettings.size).isEqualTo(1)
-        assertThat(programSettings.first().visualizations().size).isEqualTo(1)
-        assertThat(programSettings.first().visualizations().first().uid()).isEqualTo("FAFa11yFeFe")
+        assertThat(programSettings?.size).isEqualTo(1)
+        assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(1)
+        assertThat(programSettings?.first()?.visualizations()?.first()?.uid()).isEqualTo("FAFa11yFeFe")
     }
 }

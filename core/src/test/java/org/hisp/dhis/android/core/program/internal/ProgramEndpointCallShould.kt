@@ -25,94 +25,93 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.google.common.truth.Truth
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.same
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.verify
+import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import net.bytebuddy.asm.Advice
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.common.BaseCallShould
+import org.hisp.dhis.android.core.program.Program
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.internal.util.collections.Sets
+import kotlin.jvm.functions.Function1
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.program.Program;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.internal.util.collections.Sets;
+@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(JUnit4::class)
+class ProgramEndpointCallShould : BaseCallShould() {
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import io.reactivex.Single;
-
-@RunWith(JUnit4.class)
-public class ProgramEndpointCallShould extends BaseCallShould {
-
-    @Mock
-    private ProgramService programService;
-
-    @Mock
-    private ProgramHandler programHandler;
+    private val programService: ProgramService = mock()
+    private val programHandler: ProgramHandler = mock()
 
     @Captor
-    private ArgumentCaptor<Fields<Program>> fieldsCaptor;
+    private val fieldsCaptor: ArgumentCaptor<Fields<Program>>? = null
 
     @Captor
-    private ArgumentCaptor<Filter<Program, String>> filterCaptor;
+    private val filterCaptor: ArgumentCaptor<Filter<Program, String>>? = null
 
     @Captor
-    private ArgumentCaptor<String> accessDataReadFilter;
+    private val accessDataReadFilter: ArgumentCaptor<String>? = null
+    private val apiCall = Single.just(Payload.emptyPayload<Program>())
 
-    private Single<Payload<Program>> apiCall = Single.just(Payload.emptyPayload());
-
-    @Mock
-    private APIDownloader mockedApiDownloader;
-
-    private Single<List<Program>> programCallResult = Single.just(Collections.emptyList());
-
-    private Set<String> programUids = Sets.newSet("programUid");
+    private val mockedApiDownloader: APIDownloader = mock()
+    private val programCallResult = Single.just(emptyList<Program>())
+    private val programUids = Sets.newSet("programUid")
 
     @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        super.setUp();
+    @Throws(Exception::class)
+    override fun setUp() {
+        super.setUp()
 
-        when(mockedApiDownloader.downloadPartitioned(same(programUids), anyInt(), any(Handler.class), any())).thenReturn(programCallResult);
-        when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(),
-                anyBoolean())).thenReturn(apiCall);
+        mockedApiDownloader.stub {
+            onBlocking {  }
+        }
+
     }
 
     @Test
-    public void call_api_downloader() {
-        new ProgramCall(programService, programHandler, mockedApiDownloader).download(programUids).blockingGet();
+    fun call_api_downloader() = runTest{
+        ProgramCall(programService, programHandler, mockedApiDownloader).download(programUids)
 
-        verify(mockedApiDownloader).downloadPartitioned(same(programUids), anyInt(), any(Handler.class), any());
+       verify(mockedApiDownloader).downloadPartitionedCoroutines(same(programUids), any(),any<Handler::class>(), any())
     }
 
     @Test
-    public void call_service_for_real_api_downloader() {
-        when(programService.getPrograms(
-                fieldsCaptor.capture(), filterCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
-        ).thenReturn(apiCall);
-
-        new ProgramCall(programService, programHandler, new APIDownloaderImpl(resourceHandler)).download(programUids).blockingGet();
-
-        assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
-        assertThat(filterCaptor.getValue().values().iterator().next()).isEqualTo("programUid");
-        assertThat(accessDataReadFilter.getValue()).isEqualTo("access.data.read:eq:true");
+    fun call_service_for_real_api_downloader() = runTest {
+        Mockito.`when`(
+            programService.getPrograms(
+                fieldsCaptor!!.capture(),
+                filterCaptor!!.capture(),
+                accessDataReadFilter!!.capture(),
+                ArgumentMatchers.anyBoolean()
+            )
+        ).thenReturn(apiCall)
+        ProgramCall(programService, programHandler, APIDownloaderImpl(resourceHandler)).download(
+            programUids
+        )
+        Truth.assertThat(fieldsCaptor.value).isEqualTo(ProgramFields.allFields)
+        Truth.assertThat(filterCaptor.value.values().iterator().next()).isEqualTo("programUid")
+        Truth.assertThat(accessDataReadFilter.value).isEqualTo("access.data.read:eq:true")
     }
 }

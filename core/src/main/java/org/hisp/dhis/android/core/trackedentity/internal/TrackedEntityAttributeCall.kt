@@ -31,6 +31,7 @@ import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import javax.inject.Inject
 
@@ -39,9 +40,9 @@ internal class TrackedEntityAttributeCall @Inject internal constructor(
     private val service: TrackedEntityAttributeService,
     private val handler: TrackedEntityAttributeHandler,
     private val apiDownloader: APIDownloader,
-) : UidsCall<TrackedEntityAttribute> {
-    override fun download(uids: Set<String>): Single<List<TrackedEntityAttribute>> {
-        return apiDownloader.downloadPartitioned(
+) : UidsCallCoroutines<TrackedEntityAttribute> {
+    override suspend fun download(uids: Set<String>): List<TrackedEntityAttribute> {
+        return apiDownloader.downloadPartitionedCoroutines(
             uids,
             MAX_UID_LIST_SIZE,
             handler,

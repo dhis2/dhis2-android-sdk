@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.domain.metadata
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -66,6 +67,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class MetadataCallShould : BaseCallShould() {
     private val user: User = mock()
@@ -116,9 +118,10 @@ class MetadataCallShould : BaseCallShould() {
         userDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(user)
         }
-        whenever(programDownloader.downloadMetadata()).thenReturn(
-            Completable.complete(),
-        )
+        programDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+
         whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
             Completable.complete(),
         )
@@ -209,8 +212,8 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_program_call_fail() {
-        whenever(programDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
+    fun fail_when_program_call_fail() = runTest {
+        whenever(programDownloader.downloadMetadata()) doAnswer { throw networkError }
         downloadAndAssertError()
     }
 

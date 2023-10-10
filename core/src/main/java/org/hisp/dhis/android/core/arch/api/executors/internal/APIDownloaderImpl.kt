@@ -31,6 +31,8 @@ import androidx.annotation.VisibleForTesting
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -51,6 +53,22 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<P>>,
     ): Single<List<P>> {
+        return rxSingle {
+            downloadPartitionedCoroutines(
+                uids,
+                pageSize,
+                handler,
+                pageDownloader,
+            ) { it }
+        }
+    }
+
+    override suspend fun <P> downloadPartitionedCoroutines(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+    ): List<P> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
@@ -66,6 +84,25 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
         transform: (O) -> P,
     ): Single<List<P>> {
+        return rxSingle {
+            downloadPartitionedCoroutines(
+                uids,
+                pageSize,
+                handler,
+                pageDownloader,
+                transform,
+            )
+        }
+
+    }
+
+    override suspend fun <P, O> downloadPartitionedCoroutines(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P
+    ): List<P> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
@@ -88,6 +125,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         )
     }
 
+
     private fun <P, O> downloadPartitionedWithoutHandling(
         uids: Set<String>,
         pageSize: Int,
@@ -95,6 +133,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         transform: (O) -> P,
     ): Single<List<P>> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
+
         return Observable.fromIterable(partitions)
             .flatMapSingle(pageDownloader)
             .map { obj: Payload<O> -> obj.items() }
@@ -106,20 +145,25 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
             }
     }
 
-    private fun <P, O> downloadPartitionedWithCustomHandling(
+    // TODO : remove the Single making sure it is not needed by the callers
+    private suspend fun <P, O> downloadPartitionedWithCustomHandling(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
         transform: (O) -> P,
-    ): Single<List<P>> {
-        return downloadPartitionedWithoutHandling(
-            uids = uids,
-            pageSize = pageSize,
-            pageDownloader = pageDownloader,
-            transform = transform,
-        ).doOnSuccess { oCollection: List<P> ->
+    ): List<P> {
+        return try {
+            val oCollection = downloadPartitionedWithoutHandling(
+                uids = uids,
+                pageSize = pageSize,
+                pageDownloader = pageDownloader,
+                transform = transform,
+            ).await()
             handler.handleMany(oCollection)
+            oCollection
+        } catch (ignored: Exception) {
+            emptyList()
         }
     }
 

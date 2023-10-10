@@ -90,7 +90,7 @@ class AnalyticsTeiSettingCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<AnalyticsTeiSetting> = mapOf(
-            AnalyticsTeiDataChildrenAppender.KEY to ::AnalyticsTeiDataChildrenAppender
+            AnalyticsTeiDataChildrenAppender.KEY to ::AnalyticsTeiDataChildrenAppender,
         )
     }
 }

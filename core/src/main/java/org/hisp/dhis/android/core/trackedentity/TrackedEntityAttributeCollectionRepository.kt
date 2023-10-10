@@ -142,7 +142,7 @@ class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityAttribute> = mapOf(
-            TrackedEntityAttributeFields.LEGEND_SETS to TrackedEntityAttributeLegendSetChildrenAppender::create
+            TrackedEntityAttributeFields.LEGEND_SETS to TrackedEntityAttributeLegendSetChildrenAppender::create,
         )
     }
 }

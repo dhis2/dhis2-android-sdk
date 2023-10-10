@@ -99,7 +99,7 @@ class SectionCollectionRepository @Inject internal constructor(
         val childrenAppenders: ChildrenAppenderGetter<Section> = mapOf(
             SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender::create,
             SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender::create,
-            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender::create
+            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender::create,
         )
     }
 }

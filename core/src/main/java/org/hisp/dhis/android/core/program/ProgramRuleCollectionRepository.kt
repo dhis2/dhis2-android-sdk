@@ -82,7 +82,7 @@ class ProgramRuleCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<ProgramRule> = mapOf(
-            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender::create
+            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender::create,
         )
     }
 }

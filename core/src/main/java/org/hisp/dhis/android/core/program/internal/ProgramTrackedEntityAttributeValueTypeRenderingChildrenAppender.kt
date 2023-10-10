@@ -37,7 +37,7 @@ import javax.inject.Inject
 internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender @Inject constructor(
     databaseAdapter: DatabaseAdapter,
 ) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(
-    ValueTypeDeviceRenderingStoreImpl(databaseAdapter)
+    ValueTypeDeviceRenderingStoreImpl(databaseAdapter),
 ) {
     override fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
         val valueTypeRendering = getValueTypeDeviceRendering(m)

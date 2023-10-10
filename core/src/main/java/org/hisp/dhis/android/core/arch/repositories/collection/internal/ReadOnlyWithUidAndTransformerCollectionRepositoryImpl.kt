@@ -60,7 +60,7 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
     childrenAppenders,
     scope,
     cf,
-    transformer
+    transformer,
 ),
     ReadOnlyWithUidCollectionRepository<T>
     where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
@@ -102,7 +102,7 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
             databaseAdapter,
             childrenAppenders,
             updatedScope,
-            transformer
+            transformer,
         )
     }
 }

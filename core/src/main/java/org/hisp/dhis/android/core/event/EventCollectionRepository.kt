@@ -117,8 +117,15 @@ class EventCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): EventObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return EventObjectRepository(eventStore, userStore, uid, databaseAdapter,childrenAppenders,
-            updatedScope, trackerDataManager)
+        return EventObjectRepository(
+            eventStore,
+            userStore,
+            uid,
+            databaseAdapter,
+            childrenAppenders,
+            updatedScope,
+            trackerDataManager,
+        )
     }
 
     fun byUid(): StringFilterConnector<EventCollectionRepository> {

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipType
 
 internal class RelationshipConstraintChildrenAppender(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<RelationshipType>() {
     private val constraintStore = RelationshipConstraintStoreImpl(databaseAdapter)
 

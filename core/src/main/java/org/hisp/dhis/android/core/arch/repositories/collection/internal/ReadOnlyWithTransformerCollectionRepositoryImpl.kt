@@ -82,7 +82,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
             databaseAdapter,
             childrenAppenders,
             scope,
-            transformer
+            transformer,
         )
     }
 

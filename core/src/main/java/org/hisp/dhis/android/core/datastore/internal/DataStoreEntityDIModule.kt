@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.datastore.DataStoreEntry
 
 @Module
 internal class DataStoreEntityDIModule {

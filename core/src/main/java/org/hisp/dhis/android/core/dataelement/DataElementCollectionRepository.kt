@@ -113,7 +113,7 @@ class DataElementCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<DataElement> = mapOf(
-            DataElementFields.LEGEND_SETS to DataElementLegendSetChildrenAppender::create
+            DataElementFields.LEGEND_SETS to DataElementLegendSetChildrenAppender::create,
         )
     }
 }

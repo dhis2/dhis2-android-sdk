@@ -80,8 +80,14 @@ class EnrollmentCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): EnrollmentObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return EnrollmentObjectRepository(enrollmentStore, uid, databaseAdapter, childrenAppenders,
-            updatedScope, trackerDataManager)
+        return EnrollmentObjectRepository(
+            enrollmentStore,
+            uid,
+            databaseAdapter,
+            childrenAppenders,
+            updatedScope,
+            trackerDataManager,
+        )
     }
 
     fun byUid(): StringFilterConnector<EnrollmentCollectionRepository> {
@@ -190,7 +196,7 @@ class EnrollmentCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<Enrollment> = mapOf(
-            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender::create
+            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender::create,
         )
     }
 }

@@ -125,7 +125,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
                 .doReturn(TrackerQueryResult(emptyList(), true))
         }
 
-        whenever(childrenAppenders[anyString()]).doReturn { d -> identityAppender(d) }
+        whenever(childrenAppenders[anyString()]).doReturn { _ -> identityAppender() }
     }
 
     @Test
@@ -279,7 +279,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
         )
     }
 
-    private fun identityAppender(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstance> {
+    private fun identityAppender(): ChildrenAppender<TrackedEntityInstance> {
         return object : ChildrenAppender<TrackedEntityInstance>() {
             override fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
                 return m

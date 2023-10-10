@@ -25,17 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.his.dhis.android.core.arch.repositories.collection
+package org.hisp.dhis.android.core.arch.repositories.collection
 
 import android.content.ContentValues
 import androidx.paging.ItemKeyedDataSource
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingConfig
@@ -50,10 +50,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
 class RepositoryPagingShould {
@@ -79,98 +75,122 @@ class RepositoryPagingShould {
     fun get_initial_page_objects_without_order_by() {
         val dataSource: RepositoryDataSource<CategoryOption> =
             RepositoryDataSource(store, databaseAdapter, emptyScope, childrenAppenders)
+
         dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback)
-        Mockito.verify(store).selectWhere("1", "_id ASC", 3)
-        Mockito.verify(initialCallback).onResult(objects)
+        verify(store).selectWhere("1", "_id ASC", 3)
+        verify(initialCallback).onResult(objects)
     }
 
     @Test
     fun get_initial_page_objects_with_order_by() {
         val updatedScope = withOrderBy(
             emptyScope,
-            RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.DESC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column("name")
+                .direction(RepositoryScope.OrderByDirection.DESC)
+                .build(),
         )
-        val dataSource: RepositoryDataSource<CategoryOption?> =
-            RepositoryDataSource<M?>(store, updatedScope, childrenAppenders)
-        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback!!)
-        Mockito.verify(store).selectWhere("1", "name DESC, _id ASC", 3)
-        Mockito.verify(initialCallback).onResult(objects)
+        val dataSource: RepositoryDataSource<CategoryOption> =
+            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
+
+        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback)
+        verify(store).selectWhere("1", "name DESC, _id ASC", 3)
+        verify(initialCallback).onResult(objects)
     }
 
     @Test
     fun get_initial_page_objects_with_forced_order_by_paging_key_asc() {
         val updatedScope = withOrderBy(
             emptyScope,
-            RepositoryScopeOrderByItem.builder().column(RepositoryPagingConfig.PAGING_KEY)
-                .direction(RepositoryScope.OrderByDirection.ASC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column(RepositoryPagingConfig.PAGING_KEY)
+                .direction(RepositoryScope.OrderByDirection.ASC)
+                .build(),
         )
-        val dataSource: RepositoryDataSource<CategoryOption?> =
-            RepositoryDataSource<M?>(store, updatedScope, childrenAppenders)
-        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback!!)
-        Mockito.verify(store).selectWhere("1", "_id ASC", 3)
-        Mockito.verify(initialCallback).onResult(objects)
+        val dataSource: RepositoryDataSource<CategoryOption> =
+            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
+
+        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback)
+        verify(store).selectWhere("1", "_id ASC", 3)
+        verify(initialCallback).onResult(objects)
     }
 
     @Test
     fun get_initial_page_objects_with_forced_order_by_paging_key_desc() {
         val updatedScope = withOrderBy(
             emptyScope,
-            RepositoryScopeOrderByItem.builder().column(RepositoryPagingConfig.PAGING_KEY)
-                .direction(RepositoryScope.OrderByDirection.DESC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column(RepositoryPagingConfig.PAGING_KEY)
+                .direction(RepositoryScope.OrderByDirection.DESC)
+                .build(),
         )
-        val dataSource: RepositoryDataSource<CategoryOption?> =
-            RepositoryDataSource<M?>(store, updatedScope, childrenAppenders)
-        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback!!)
-        Mockito.verify(store).selectWhere("1", "_id DESC", 3)
-        Mockito.verify(initialCallback).onResult(objects)
+        val dataSource: RepositoryDataSource<CategoryOption> =
+            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
+
+        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback)
+        verify(store).selectWhere("1", "_id DESC", 3)
+        verify(initialCallback).onResult(objects)
     }
 
     @Test
     fun get_initial_page_objects_with_two_order_by() {
         val updatedScope = withOrderBy(
             emptyScope,
-            RepositoryScopeOrderByItem.builder().column("c1").direction(RepositoryScope.OrderByDirection.DESC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column("c1")
+                .direction(RepositoryScope.OrderByDirection.DESC)
+                .build(),
         )
         val updatedScope2 = withOrderBy(
             updatedScope,
-            RepositoryScopeOrderByItem.builder().column("c2").direction(RepositoryScope.OrderByDirection.ASC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column("c2")
+                .direction(RepositoryScope.OrderByDirection.ASC)
+                .build(),
         )
-        val dataSource: RepositoryDataSource<CategoryOption?> =
-            RepositoryDataSource<M?>(store, updatedScope2, childrenAppenders)
-        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback!!)
-        Mockito.verify(store).selectWhere("1", "c1 DESC, c2 ASC, _id ASC", 3)
-        Mockito.verify(initialCallback).onResult(objects)
+        val dataSource: RepositoryDataSource<CategoryOption> =
+            RepositoryDataSource(store, databaseAdapter, updatedScope2, childrenAppenders)
+
+        dataSource.loadInitial(ItemKeyedDataSource.LoadInitialParams(null, 3, false), initialCallback)
+        verify(store).selectWhere("1", "c1 DESC, c2 ASC, _id ASC", 3)
+        verify(initialCallback).onResult(objects)
     }
 
     @Test
     fun get_after_page_objects_with_order_by_and_filter() {
-        Mockito.`when`(key!!.toContentValues()).thenReturn(keyContentValues)
-        Mockito.`when`(keyContentValues!!.getAsString("_id")).thenReturn("5")
-        Mockito.`when`(keyContentValues.getAsString("code")).thenReturn("key-code")
-        Mockito.`when`(keyContentValues.getAsString("name")).thenReturn("key-name")
+        whenever(key.toContentValues()).doReturn(keyContentValues)
+        whenever(keyContentValues.getAsString("_id")).doReturn("5")
+        whenever(keyContentValues.getAsString("code")).doReturn("key-code")
+        whenever(keyContentValues.getAsString("name")).doReturn("key-name")
         val filterScope = withFilterItem(
             emptyScope,
-            RepositoryScopeFilterItem.builder().key("program").operator(FilterItemOperator.EQ).value("'uid'").build()
+            RepositoryScopeFilterItem.builder()
+                .key("program").operator(FilterItemOperator.EQ).value("'uid'")
+                .build(),
         )
         val updatedScope = withOrderBy(
             filterScope,
-            RepositoryScopeOrderByItem.builder().column("code").direction(RepositoryScope.OrderByDirection.DESC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column("code").direction(RepositoryScope.OrderByDirection.DESC)
+                .build(),
         )
         val updatedScope2 = withOrderBy(
             updatedScope,
-            RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.ASC).build()
+            RepositoryScopeOrderByItem.builder()
+                .column("name").direction(RepositoryScope.OrderByDirection.ASC)
+                .build(),
         )
-        val dataSource: RepositoryDataSource<CategoryOption?> =
-            RepositoryDataSource<M?>(store, updatedScope2, childrenAppenders)
-        dataSource.loadAfter(ItemKeyedDataSource.LoadParams(key, 3), initialCallback!!)
-        Mockito.verify(store).selectWhere(
+        val dataSource: RepositoryDataSource<CategoryOption> =
+            RepositoryDataSource(store, databaseAdapter, updatedScope2, childrenAppenders)
+        dataSource.loadAfter(ItemKeyedDataSource.LoadParams(key, 3), initialCallback)
+        verify(store).selectWhere(
             "((code = 'key-code' AND name = 'key-name' AND _id > '5') OR " +
                 "(code = 'key-code' AND name > 'key-name') OR " +
                 "(code < 'key-code')) " +
                 "AND program = 'uid'",
             "code DESC, name ASC, _id ASC",
-            3
+            3,
         )
-        Mockito.verify(initialCallback).onResult(objects)
+        verify(initialCallback).onResult(objects)
     }
 }

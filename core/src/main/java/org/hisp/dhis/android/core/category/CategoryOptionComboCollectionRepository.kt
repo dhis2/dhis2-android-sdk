@@ -79,7 +79,7 @@ class CategoryOptionComboCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<CategoryOptionCombo> = mapOf(
-            CategoryOptionComboFields.CATEGORY_OPTIONS to CategoryOptionComboCategoryOptionChildrenAppender::create
+            CategoryOptionComboFields.CATEGORY_OPTIONS to CategoryOptionComboCategoryOptionChildrenAppender::create,
         )
     }
 }

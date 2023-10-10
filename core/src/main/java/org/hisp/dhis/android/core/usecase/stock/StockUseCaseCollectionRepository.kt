@@ -67,7 +67,7 @@ ReadOnlyWithUidAndTransformerCollectionRepositoryImpl(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<InternalStockUseCase> = mapOf(
-            InternalStockUseCase.TRANSACTIONS to ::StockUseCaseTransactionChildrenAppender
+            InternalStockUseCase.TRANSACTIONS to ::StockUseCaseTransactionChildrenAppender,
         )
     }
 }

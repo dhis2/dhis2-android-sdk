@@ -101,7 +101,7 @@ class CategoryOptionCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<CategoryOption> = mapOf(
-            CategoryOptionFields.ORGANISATION_UNITS to CategoryOptionOrganisationUnitChildrenAppender::create
+            CategoryOptionFields.ORGANISATION_UNITS to CategoryOptionOrganisationUnitChildrenAppender::create,
         )
     }
 }

@@ -98,7 +98,7 @@ class ProgramSectionCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<ProgramSection> = mapOf(
-            ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES to ProgramSectionAttributeChildrenAppender::create
+            ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES to ProgramSectionAttributeChildrenAppender::create,
         )
     }
 }

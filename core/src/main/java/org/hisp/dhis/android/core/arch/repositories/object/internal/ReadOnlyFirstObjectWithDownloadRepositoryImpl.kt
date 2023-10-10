@@ -32,7 +32,6 @@ import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository

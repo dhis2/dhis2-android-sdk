@@ -100,7 +100,7 @@ class ProgramStageDataElementCollectionRepository @Inject internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<ProgramStageDataElement> = mapOf(
-            ProgramStageDataElementFields.RENDER_TYPE to ::DataElementValueTypeRenderingChildrenAppender
+            ProgramStageDataElementFields.RENDER_TYPE to ::DataElementValueTypeRenderingChildrenAppender,
         )
     }
 }

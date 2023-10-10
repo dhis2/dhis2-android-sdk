@@ -141,8 +141,14 @@ class RelationshipCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): ReadWriteObjectRepository<Relationship> {
         val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
-        return RelationshipObjectRepository(relationshipStore, uid, databaseAdapter, childrenAppenders,
-            updatedScope, trackerDataManager)
+        return RelationshipObjectRepository(
+            relationshipStore,
+            uid,
+            databaseAdapter,
+            childrenAppenders,
+            updatedScope,
+            trackerDataManager,
+        )
     }
 
     private fun isUpdatableState(state: State?): Boolean {

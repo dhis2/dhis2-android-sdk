@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
@@ -46,11 +45,11 @@ import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
 @SuppressWarnings("LongParameterList")
-@Reusable
-internal class FileResourceDownloadCall @Inject constructor(
+@Singleton
+internal class FileResourceDownloadCall(
     private val fileResourceStore: FileResourceStore,
     private val helper: FileResourceDownloadCallHelper,
     private val fileResourceService: FileResourceService,

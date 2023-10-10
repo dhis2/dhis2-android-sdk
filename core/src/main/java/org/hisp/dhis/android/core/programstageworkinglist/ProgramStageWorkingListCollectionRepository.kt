@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -44,11 +43,11 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageW
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListDataFilterChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class ProgramStageWorkingListCollectionRepository @Inject internal constructor(
+class ProgramStageWorkingListCollectionRepository internal constructor(
     store: ProgramStageWorkingListStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

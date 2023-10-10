@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationCollectionCleaner @Inject constructor(
+@Singleton
+internal class VisualizationCollectionCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : CollectionCleanerImpl<Visualization>(
     tableName = VisualizationTableInfo.TABLE_INFO.name(),

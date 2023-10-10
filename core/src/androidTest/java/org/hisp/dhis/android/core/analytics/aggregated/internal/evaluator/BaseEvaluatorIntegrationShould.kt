@@ -209,7 +209,6 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @Before
     fun setUpBase() {
-        println("AAAA setUpBase")
         organisationUnitLevelStore.insert(level1)
         organisationUnitLevelStore.insert(level2)
 
@@ -262,7 +261,6 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @After
     fun tearDown() {
-        println("AAAA tearDown")
         organisationUnitLevelStore.delete()
         organisationUnitStore.delete()
         organisationUnitGroupStore.delete()

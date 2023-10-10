@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionHandler constructor(
-    categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
+    categoryOptionStore: CategoryOptionStore,
 ) : IdentifiableHandlerImpl<CategoryOption>(categoryOptionStore)

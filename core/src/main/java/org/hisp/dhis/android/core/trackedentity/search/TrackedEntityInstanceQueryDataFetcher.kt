@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
@@ -49,7 +48,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
-    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
+    private val onlineCache: TrackedEntityInstanceOnlineCache,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
 ) {

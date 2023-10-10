@@ -27,12 +27,10 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
-@Reusable
 internal abstract class EventEndpointCallFactory {
 
     abstract suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>

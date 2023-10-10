@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
 import org.hisp.dhis.android.core.settings.WHONutritionComponent
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsTeiWHONutritionDataHandler @Inject constructor(
+@Singleton
+internal class AnalyticsTeiWHONutritionDataHandler(
     store: AnalyticsTeiWHONutritionDataStore,
     private val teiDataElementHandler: AnalyticsTeiDataElementHandler,
     private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,

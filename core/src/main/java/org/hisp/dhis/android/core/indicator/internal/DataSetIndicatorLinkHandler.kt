@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.Indicator
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetIndicatorLinkHandler @Inject constructor(
+@Singleton
+internal class DataSetIndicatorLinkHandler(
     store: DataSetIndicatorLinkStore,
 ) : LinkHandlerImpl<Indicator, DataSetIndicatorLink>(store)

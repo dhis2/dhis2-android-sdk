@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
@@ -38,11 +37,11 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.koin.core.annotation.Singleton
 import retrofit2.Call
-import javax.inject.Inject
 
-@Reusable
-internal class IndicatorTypeEndpointCallFactory @Inject constructor(
+@Singleton
+internal class IndicatorTypeEndpointCallFactory(
     data: GenericCallData,
     apiCallExecutor: APICallExecutor,
     private val service: IndicatorTypeService,

@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryCategoryComboLinkHandler(
-    store: LinkStore<CategoryCategoryComboLink>,
+    store: CategoryCategoryComboLinkStore,
 ) : OrderedLinkHandlerImpl<Category, CategoryCategoryComboLink>(store)

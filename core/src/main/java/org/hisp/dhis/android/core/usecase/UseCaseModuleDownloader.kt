@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.usecase
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UseCaseModuleDownloader @Inject constructor(
+@Singleton
+internal class UseCaseModuleDownloader(
     private val stockUseCaseCall: StockUseCaseCall,
 ) : UntypedModuleDownloaderCoroutines {
 

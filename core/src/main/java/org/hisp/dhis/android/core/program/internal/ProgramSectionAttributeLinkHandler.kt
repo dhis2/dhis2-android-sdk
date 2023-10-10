@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramSectionAttributeLinkHandler(
     store: ProgramSectionAttributeLinkStore,
 ) : OrderedLinkHandlerImpl<TrackedEntityAttribute, ProgramSectionAttributeLink>(store)

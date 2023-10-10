@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramOwnerPostCall @Inject constructor(
+@Singleton
+internal class ProgramOwnerPostCall(
     private val ownershipService: OwnershipService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val programOwnerStore: ProgramOwnerStore,

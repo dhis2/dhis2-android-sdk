@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataValueFileResourcePostCall @Inject constructor(
+@Singleton
+internal class DataValueFileResourcePostCall(
     private val fileResourceHelper: FileResourceHelper,
     private val fileResourcePostCall: FileResourcePostCall,
 ) {

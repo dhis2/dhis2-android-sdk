@@ -29,21 +29,23 @@ package org.hisp.dhis.android.core.dataelement.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
+import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementHandler constructor(
     dataElementStore: DataElementStore,
     private val attributeHandler: AttributeHandler,
-    private val dataElementAttributeLinkHandler: LinkHandler<Attribute, DataElementAttributeValueLink>,
-    private val dataElementLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, DataElementLegendSetLink>,
+    private val dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
+    private val dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<DataElement>(dataElementStore) {
 
     override fun afterObjectHandled(o: DataElement, action: HandleAction) {

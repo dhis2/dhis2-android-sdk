@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.note
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -45,10 +44,10 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.note.Note.NoteType
 import org.hisp.dhis.android.core.note.internal.NoteProjectionTransformer
 import org.hisp.dhis.android.core.note.internal.NoteStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class NoteCollectionRepository @Inject internal constructor(
+@Singleton
+class NoteCollectionRepository internal constructor(
     store: NoteStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

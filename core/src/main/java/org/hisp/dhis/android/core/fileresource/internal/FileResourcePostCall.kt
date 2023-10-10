@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import android.webkit.MimeTypeMap
-import dagger.Reusable
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -47,12 +46,12 @@ import org.hisp.dhis.android.core.systeminfo.internal.PingCall
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.koin.core.annotation.Singleton
 import java.io.File
 import java.io.IOException
-import javax.inject.Inject
 
-@Reusable
-internal class FileResourcePostCall @Inject constructor(
+@Singleton
+internal class FileResourcePostCall(
     private val fileResourceService: FileResourceService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataValueStore: DataValueStore,

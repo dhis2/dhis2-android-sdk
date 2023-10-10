@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SectionHandler @Inject constructor(
+@Singleton
+internal class SectionHandler(
     sectionStore: SectionStore,
     private val sectionDataElementLinkHandler: SectionDataElementLinkHandler,
     private val greyedFieldsHandler: DataElementOperandHandler,

@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class TableWiper @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
+@Singleton
+class TableWiper(private val databaseAdapter: DatabaseAdapter) {
     fun wipeTable(tableInfo: TableInfo) {
         databaseAdapter.delete(tableInfo.name())
     }

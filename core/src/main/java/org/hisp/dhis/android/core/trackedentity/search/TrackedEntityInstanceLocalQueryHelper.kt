@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -51,12 +50,12 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
+internal class TrackedEntityInstanceLocalQueryHelper(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
     private val teiAlias = "tei"

@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
 import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramStageDataElementHandler @Inject constructor(
+@Singleton
+internal class ProgramStageDataElementHandler(
     programStageDataElementStore: ProgramStageDataElementStore,
     private val dataElementHandler: DataElementHandler,
     private val valueTypeRenderingHandler: ValueTypeRenderingHandler,

@@ -43,10 +43,11 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal class EventLineListServiceImpl @Inject constructor(
+internal class EventLineListServiceImpl(
     private val eventRepository: EventCollectionRepository,
     private val dataValueRepository: TrackedEntityDataValueCollectionRepository,
     private val dataElementRepository: DataElementCollectionRepository,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -46,11 +45,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEvenFilterChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class TrackedEntityInstanceFilterCollectionRepository @Inject internal constructor(
+class TrackedEntityInstanceFilterCollectionRepository internal constructor(
     store: TrackedEntityInstanceFilterStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

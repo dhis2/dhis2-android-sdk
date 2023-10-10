@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.LatestAppVersionCall
 import org.hisp.dhis.android.core.settings.internal.LatestAppVersionStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class LatestAppVersionObjectRepository @Inject internal constructor(
+@Singleton(binds = [LatestAppVersionObjectRepository::class])
+class LatestAppVersionObjectRepository internal constructor(
     private val store: LatestAppVersionStore,
     latestAppVersionCall: LatestAppVersionCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<LatestAppVersion>(latestAppVersionCall),

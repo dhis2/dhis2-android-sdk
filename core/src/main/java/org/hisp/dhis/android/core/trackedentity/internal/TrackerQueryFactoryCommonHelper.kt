@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -40,12 +39,12 @@ import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
-@Reusable
-internal class TrackerQueryFactoryCommonHelper @Inject constructor(
+@Singleton
+internal class TrackerQueryFactoryCommonHelper(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore,
 ) {

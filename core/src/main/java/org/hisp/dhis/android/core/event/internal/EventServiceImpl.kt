@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
@@ -38,11 +37,11 @@ import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList", "TooManyFunctions")
-internal class EventServiceImpl @Inject constructor(
+internal class EventServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
     private val eventRepository: EventCollectionRepository,
     private val programRepository: ProgramCollectionRepository,

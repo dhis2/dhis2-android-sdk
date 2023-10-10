@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramRuleVariableHandler(
     store: ProgramRuleVariableStore,
 ) : IdentifiableHandlerImpl<ProgramRuleVariable>(store)

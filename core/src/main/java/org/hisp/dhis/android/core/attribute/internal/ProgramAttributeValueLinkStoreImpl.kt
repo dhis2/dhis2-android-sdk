@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramAttributeValueLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ProgramAttributeValueLinkStore,

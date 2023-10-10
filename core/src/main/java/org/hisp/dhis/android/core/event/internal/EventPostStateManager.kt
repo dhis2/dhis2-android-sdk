@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.DataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventPostStateManager @Inject internal constructor(
+@Singleton
+internal class EventPostStateManager internal constructor(
     private val eventStore: EventStore,
 ) {
 

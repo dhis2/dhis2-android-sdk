@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import java.util.ArrayList
 
 internal open class InvalidDataElementTypeConflict(
     private val dataElementStore: IdentifiableObjectStore<DataElement>,

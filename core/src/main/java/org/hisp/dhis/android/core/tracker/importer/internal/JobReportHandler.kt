@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.common.internal.DataStateUidHolder
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.*
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class JobReportHandler @Inject internal constructor(
+@Singleton
+internal class JobReportHandler internal constructor(
     private val eventHandler: JobReportEventHandler,
     private val enrollmentHandler: JobReportEnrollmentHandler,
     private val trackedEntityHandler: JobReportTrackedEntityHandler,

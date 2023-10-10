@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -45,10 +44,10 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.util.simpleDateFormat
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class NewTrackedEntityEndpointCallFactory @Inject constructor(
+@Singleton
+internal class NewTrackedEntityEndpointCallFactory(
     private val trackedExporterService: TrackerExporterService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : TrackedEntityEndpointCallFactory() {

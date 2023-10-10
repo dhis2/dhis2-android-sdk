@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class StockUseCaseCall @Inject constructor(
+@Singleton
+internal class StockUseCaseCall(
     private val stockUseCaseHandler: StockUseCaseHandler,
     private val stockUseCaseService: StockUseCaseService,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -38,10 +37,10 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRe
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 import org.hisp.dhis.android.core.settings.internal.SystemSettingStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SystemSettingCollectionRepository @Inject internal constructor(
+@Singleton
+class SystemSettingCollectionRepository internal constructor(
     store: SystemSettingStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

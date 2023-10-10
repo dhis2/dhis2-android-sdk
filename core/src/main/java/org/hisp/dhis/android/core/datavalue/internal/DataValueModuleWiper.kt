@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class DataValueModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
+@Singleton
+class DataValueModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
     override fun wipeMetadata() {
         // No metadata to wipe
     }

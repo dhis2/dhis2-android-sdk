@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipTypeCall @Inject internal constructor(
+@Singleton
+internal class RelationshipTypeCall(
     private val service: RelationshipTypeService,
     private val handler: RelationshipTypeHandler,
     private val apiDownloader: APIDownloader,

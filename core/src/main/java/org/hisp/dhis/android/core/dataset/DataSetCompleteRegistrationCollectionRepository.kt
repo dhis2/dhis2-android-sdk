@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -49,11 +48,11 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationHa
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("SpreadOperator", "TooManyFunctions")
-class DataSetCompleteRegistrationCollectionRepository @Inject internal constructor(
+class DataSetCompleteRegistrationCollectionRepository internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

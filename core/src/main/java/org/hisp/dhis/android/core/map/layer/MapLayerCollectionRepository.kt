@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.map.layer
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
@@ -38,10 +37,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImagerProviderChildrenAppender
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class MapLayerCollectionRepository @Inject internal constructor(
+@Singleton
+class MapLayerCollectionRepository internal constructor(
     store: MapLayerStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

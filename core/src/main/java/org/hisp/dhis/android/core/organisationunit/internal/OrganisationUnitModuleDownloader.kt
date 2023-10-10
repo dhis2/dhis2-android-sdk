@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkCl
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OrganisationUnitModuleDownloader @Inject constructor(
+@Singleton
+internal class OrganisationUnitModuleDownloader(
     private val organisationUnitCall: OrganisationUnitCall,
     private val userCall: UserCall,
     private val organisationUnitLevelEndpointCall: OrganisationUnitLevelEndpointCall,

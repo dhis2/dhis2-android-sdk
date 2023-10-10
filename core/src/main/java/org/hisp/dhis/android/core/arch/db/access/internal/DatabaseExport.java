@@ -40,23 +40,17 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPassw
 
 import java.io.File;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.functions.Action;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-@Reusable
 public class DatabaseExport {
 
     private final Context context;
     private final DatabaseEncryptionPasswordManager passwordManager;
     private final DatabaseConfigurationHelper configurationHelper;
 
-
-    @Inject
-    DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager,
-                   DatabaseConfigurationHelper configurationHelper) {
+    public DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager,
+                          DatabaseConfigurationHelper configurationHelper) {
         this.context = context;
         this.passwordManager = passwordManager;
         this.configurationHelper = configurationHelper;

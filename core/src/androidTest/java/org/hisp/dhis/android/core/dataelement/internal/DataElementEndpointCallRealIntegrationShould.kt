@@ -51,7 +51,7 @@ class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             "P3jJH5Tu5VC",
             "FQ2o8UBlcrS",
         )
-        return getD2DIComponent(d2).dataElementCallFactory().create(uids)
+        return getD2DIComponent(d2).dataElementCallFactory.create(uids)
     }
 
     // @Test

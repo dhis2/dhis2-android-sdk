@@ -35,7 +35,7 @@ class OpenIdConnectRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test(expected = D2Error::class)
     fun throw_error_when_not_passing_token() {
-        val logInCall = getD2DIComponent(d2).internalModules().user.logInCall
+        val logInCall = getD2DIComponent(d2).internalModules.user.logInCall
         runBlocking {
             logInCall.blockingLogInOpenIDConnect(url, AuthState())
         }

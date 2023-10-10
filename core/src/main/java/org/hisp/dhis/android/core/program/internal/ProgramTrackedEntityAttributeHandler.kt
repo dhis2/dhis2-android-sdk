@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramTrackedEntityAttributeHandler @Inject constructor(
+@Singleton
+internal class ProgramTrackedEntityAttributeHandler(
     store: ProgramTrackedEntityAttributeStore,
     private val renderTypeHandler: ValueTypeRenderingHandler,
 ) : IdentifiableHandlerImpl<ProgramTrackedEntityAttribute>(store) {

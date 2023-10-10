@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationCall @Inject constructor(
+@Singleton
+internal class VisualizationCall(
     private val handler: VisualizationHandler,
     private val service: VisualizationService,
     private val dhis2VersionManager: DHISVersionManager,

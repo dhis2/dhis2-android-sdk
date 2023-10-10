@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationDimensionItemHandler @Inject constructor(
+@Singleton
+internal class VisualizationDimensionItemHandler(
     store: VisualizationDimensionItemStore,
 ) : LinkHandlerImpl<VisualizationDimensionItem, VisualizationDimensionItem>(store)

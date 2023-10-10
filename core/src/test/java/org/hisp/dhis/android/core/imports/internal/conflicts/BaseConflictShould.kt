@@ -30,17 +30,18 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.junit.Before
 
 internal open class BaseConflictShould {
 
     protected val context: TrackerImportConflictItemContext = mock()
 
-    protected val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
-    protected val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+    protected val attributeStore: TrackedEntityAttributeStore = mock()
+    protected val dataElementStore: DataElementStore = mock()
 
     protected val attribute: TrackedEntityAttribute = mock()
     protected val dataElement: DataElement = mock()

@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.user
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class AuthenticatedUserObjectRepository @Inject internal constructor(
+@Singleton(binds = [AuthenticatedUserObjectRepository::class])
+class AuthenticatedUserObjectRepository internal constructor(
     store: AuthenticatedUserStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

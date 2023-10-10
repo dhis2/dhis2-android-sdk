@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
@@ -42,10 +41,10 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.AttributeValu
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject constructor(
+@Singleton
+internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 

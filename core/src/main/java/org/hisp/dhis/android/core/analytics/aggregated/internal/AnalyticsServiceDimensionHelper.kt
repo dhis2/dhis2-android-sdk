@@ -33,9 +33,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsServiceDimensionHelper @Inject constructor(
+@Singleton
+internal class AnalyticsServiceDimensionHelper(
     private val periodGenerator: ParentPeriodGenerator,
     private val periodHelper: PeriodHelper,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,

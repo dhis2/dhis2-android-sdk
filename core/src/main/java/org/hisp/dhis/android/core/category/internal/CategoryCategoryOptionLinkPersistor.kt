@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOption
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryCategoryOptionLinkPersistor @Inject constructor(
+@Singleton
+internal class CategoryCategoryOptionLinkPersistor(
     private val categoryCategoryOptionLinkHandler: CategoryCategoryOptionLinkHandler,
 ) {
 

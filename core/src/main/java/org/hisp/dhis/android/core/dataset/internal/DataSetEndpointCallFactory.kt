@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
@@ -40,11 +39,11 @@ import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.resource.internal.Resource
+import org.koin.core.annotation.Singleton
 import retrofit2.Call
-import javax.inject.Inject
 
-@Reusable
-internal class DataSetEndpointCallFactory @Inject constructor(
+@Singleton
+internal class DataSetEndpointCallFactory(
     data: GenericCallData,
     apiCallExecutor: APICallExecutor,
     private val dataSetService: DataSetService,

@@ -31,7 +31,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventFilterHandler constructor(
     eventFilterStore: EventFilterStore,
     private val eventDataFilterHandler: EventDataFilterHandler,

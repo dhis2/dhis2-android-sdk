@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.content.Context
-import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
@@ -45,11 +44,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class AccountManagerImpl @Inject constructor(
+internal class AccountManagerImpl constructor(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseAdapterFactory: DatabaseAdapterFactory,

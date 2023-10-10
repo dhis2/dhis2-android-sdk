@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramStageSubCollectionCleaner @Inject constructor(
+@Singleton
+internal class ProgramStageSubCollectionCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : SubCollectionCleanerImpl<ProgramStage>(
     tableName = ProgramStageTableInfo.TABLE_INFO.name(),

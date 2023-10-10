@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.option.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OptionGroupOptionLinkHandler(
     store: OptionGroupOptionLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, OptionGroupOptionLink>(store)

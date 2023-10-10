@@ -47,7 +47,7 @@ class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun createCall(): List<Program> = runBlocking {
-        return@runBlocking getD2DIComponent(d2).programCall().download(setOf("lxAQ7Zs9VYR", "AwNmMxxakEo"))
+        return@runBlocking getD2DIComponent(d2).programCall.download(setOf("lxAQ7Zs9VYR", "AwNmMxxakEo"))
     }
 
     // @Test

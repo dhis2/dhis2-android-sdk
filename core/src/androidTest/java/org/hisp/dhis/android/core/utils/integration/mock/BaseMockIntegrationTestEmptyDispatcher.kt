@@ -37,13 +37,13 @@ abstract class BaseMockIntegrationTestEmptyDispatcher : BaseMockIntegrationTest(
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.EmptyDispatcher)
             if (isNewInstance) {
-                objects.dhis2MockServer.setRequestDispatcher()
-                objects.d2.userModule().blockingLogIn(
-                    RealServerMother.username,
-                    RealServerMother.password,
-                    objects.dhis2MockServer.baseEndpoint,
-                )
+                dhis2MockServer.setRequestDispatcher()
             }
+            freshLogin(
+                RealServerMother.username,
+                RealServerMother.password,
+                dhis2MockServer.baseEndpoint,
+            )
         }
     }
 }

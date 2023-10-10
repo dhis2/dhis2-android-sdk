@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -53,11 +52,11 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
 import org.hisp.dhis.android.core.relationship.internal.RelationshipManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class RelationshipCollectionRepository @Inject internal constructor(
+class RelationshipCollectionRepository internal constructor(
     private val relationshipStore: RelationshipStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

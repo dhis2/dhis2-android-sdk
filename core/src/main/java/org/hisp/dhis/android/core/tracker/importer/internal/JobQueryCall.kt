@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +41,7 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 
 internal const val ATTEMPTS_AFTER_UPLOAD = 90
@@ -50,8 +49,8 @@ internal const val ATTEMPTS_WHEN_QUERYING = 1
 internal val ATTEMPTS_INITIAL_DELAY = 1.seconds
 internal val ATTEMPTS_INTERVAL = 2.seconds
 
-@Reusable
-internal class JobQueryCall @Inject internal constructor(
+@Singleton
+internal class JobQueryCall internal constructor(
     private val service: TrackerImporterService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val trackerJobObjectStore: TrackerJobObjectStore,

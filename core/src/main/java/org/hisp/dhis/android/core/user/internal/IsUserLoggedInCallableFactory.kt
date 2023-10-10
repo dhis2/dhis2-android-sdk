@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class IsUserLoggedInCallableFactory @Inject constructor(
+@Singleton
+internal class IsUserLoggedInCallableFactory constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val authenticatedUserStore: AuthenticatedUserStore,
 ) {

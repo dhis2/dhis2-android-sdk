@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class StockUseCaseHandler @Inject constructor(
+@Singleton
+internal class StockUseCaseHandler(
     store: StockUseCaseStore,
     private val transactionLinkHandler: StockUseCaseTransactionLinkHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {

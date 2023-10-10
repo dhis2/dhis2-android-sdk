@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.legendset
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.legendset.internal.LegendChildrenAppender
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class LegendSetCollectionRepository @Inject internal constructor(
+@Singleton
+class LegendSetCollectionRepository internal constructor(
     store: LegendSetStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

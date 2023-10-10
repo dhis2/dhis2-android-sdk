@@ -29,11 +29,10 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class SettingsAppInfoManagerImpl @Inject constructor(
+internal class SettingsAppInfoManagerImpl(
     private val settingsAppInfoCall: SettingsAppInfoCall,
 ) : SettingsAppInfoManager {
 

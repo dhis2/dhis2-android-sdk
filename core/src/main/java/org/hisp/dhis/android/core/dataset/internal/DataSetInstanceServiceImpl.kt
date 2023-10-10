@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
@@ -43,12 +42,12 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class DataSetInstanceServiceImpl @Inject constructor(
+internal class DataSetInstanceServiceImpl(
     private val dataSetCollectionRepository: DataSetCollectionRepository,
     private val categoryOptionRepository: CategoryOptionCollectionRepository,
     private val organisationUnitService: OrganisationUnitService,

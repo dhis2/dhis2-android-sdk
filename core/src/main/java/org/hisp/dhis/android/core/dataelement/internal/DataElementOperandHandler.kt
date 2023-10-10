@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementOperandHandler constructor(
-    store: IdentifiableObjectStore<DataElementOperand>,
+    store: DataElementOperandStore,
 ) : IdentifiableHandlerImpl<DataElementOperand>(store)

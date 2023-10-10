@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -40,11 +39,11 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
+import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection.*
-import javax.inject.Inject
 
-@Reusable
-internal class RelationshipPostCall @Inject internal constructor(
+@Singleton
+internal class RelationshipPostCall internal constructor(
     private val relationshipService: RelationshipService,
     private val relationshipStore: RelationshipStore,
     private val relationshipImportHandler: RelationshipImportHandler,

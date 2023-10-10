@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationModuleDownloader @Inject internal constructor(
+@Singleton
+internal class VisualizationModuleDownloader internal constructor(
     private val visualizationCall: VisualizationCall,
     private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
 ) :

@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetCompleteRegistrationCall @Inject constructor(
+@Singleton
+internal class DataSetCompleteRegistrationCall(
     private val service: DataSetCompleteRegistrationService,
     private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
     private val processor: DataSetCompleteRegistrationCallProcessor,

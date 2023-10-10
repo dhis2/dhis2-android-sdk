@@ -51,9 +51,9 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         @JvmStatic
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher)
+            dhis2MockServer.setRequestDispatcher()
+            freshLogin("android", "Android123", dhis2MockServer.baseEndpoint)
             if (isNewInstance) {
-                dhis2MockServer.setRequestDispatcher()
-                freshLogin()
                 downloadMetadata()
                 downloadTrackedEntityInstances()
                 downloadEvents()
@@ -70,16 +70,6 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         @JvmStatic
         fun tearDownClass() {
             dhis2MockServer.shutdown()
-        }
-
-        private fun freshLogin() {
-            try {
-                d2.userModule().logOut().blockingAwait()
-            } catch (e: RuntimeException) {
-                // Do nothing
-            } finally {
-                d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
-            }
         }
 
         private fun downloadMetadata() {

@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.constant.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.constant.Constant
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class ConstantHandler constructor(
     optionStore: ConstantStore,

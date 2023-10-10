@@ -53,7 +53,7 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
         dhis2MockServer.enqueueMockResponse("visualization/visualizations_2.json")
         d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
 
-        var visualizations = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
+        var visualizations = objects.d2DIComponent.internalModules.visualization.visualizationCall.download(
             HashSet(
                 Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe"),
             ),

@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementOperandStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataElementOperandStore,

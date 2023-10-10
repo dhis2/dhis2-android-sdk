@@ -27,18 +27,17 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.*
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions", "LongParameterList")
-internal class UserModuleImpl @Inject constructor(
+internal class UserModuleImpl(
     private val isUserLoggedInCallFactory: IsUserLoggedInCallableFactory,
     private val logoutCallCallFactory: LogOutCall,
     private val logInCall: LogInCall,

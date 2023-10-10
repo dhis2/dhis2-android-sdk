@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OrganisationUnitProgramLinkHandler(
     store: OrganisationUnitProgramLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, OrganisationUnitProgramLink>(store)

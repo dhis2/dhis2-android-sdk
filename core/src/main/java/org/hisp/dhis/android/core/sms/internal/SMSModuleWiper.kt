@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.sms.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SMSModuleWiper @Inject internal constructor(
+@Singleton
+class SMSModuleWiper internal constructor(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
 

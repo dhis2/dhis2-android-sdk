@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.getGlobal
@@ -37,11 +36,11 @@ import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.toCompletion
 import org.hisp.dhis.android.core.settings.internal.AppearanceSettingCall
 import org.hisp.dhis.android.core.settings.internal.FilterSettingStore
 import org.hisp.dhis.android.core.settings.internal.ProgramConfigurationSettingStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton(binds = [AppearanceSettingsObjectRepository::class])
 @Suppress("TooManyFunctions")
-class AppearanceSettingsObjectRepository @Inject internal constructor(
+class AppearanceSettingsObjectRepository internal constructor(
     private val filterSettingStore: FilterSettingStore,
     private val programConfigurationSettingStore: ProgramConfigurationSettingStore,
     appearanceSettingCall: AppearanceSettingCall,

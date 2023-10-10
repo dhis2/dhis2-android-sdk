@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OldEventEndpointCallFactory @Inject constructor(
+@Singleton
+internal class OldEventEndpointCallFactory(
     private val service: EventService,
 ) : EventEndpointCallFactory() {
 

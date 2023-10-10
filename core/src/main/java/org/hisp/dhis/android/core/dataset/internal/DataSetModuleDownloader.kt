@@ -27,27 +27,23 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFactory
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCallCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Suppress("LongParameterList")
-@Reusable
-internal class DataSetModuleDownloader @Inject internal constructor(
-    private val dataSetCallFactory: UidsCallFactory<DataSet>,
-    private val dataElementCallFactory: UidsCallFactory<DataElement>,
+@Singleton
+internal class DataSetModuleDownloader internal constructor(
+    private val dataSetCallFactory: DataSetEndpointCallFactory,
+    private val dataElementCallFactory: DataElementEndpointCallFactory,
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,
     private val validationRuleCall: ValidationRuleCall,

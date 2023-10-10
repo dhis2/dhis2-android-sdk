@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.domain.metadata
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
@@ -70,11 +69,11 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
-@Reusable
-internal class MetadataCall @Inject constructor(
+@Singleton
+internal class MetadataCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,

@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.dataset.*
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
 internal class DataSetHandler constructor(
     dataSetStore: DataSetStore,

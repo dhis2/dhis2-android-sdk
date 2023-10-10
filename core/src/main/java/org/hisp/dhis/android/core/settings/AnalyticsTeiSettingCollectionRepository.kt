@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -38,10 +37,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class AnalyticsTeiSettingCollectionRepository @Inject internal constructor(
+@Singleton
+class AnalyticsTeiSettingCollectionRepository internal constructor(
     store: AnalyticsTeiSettingStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

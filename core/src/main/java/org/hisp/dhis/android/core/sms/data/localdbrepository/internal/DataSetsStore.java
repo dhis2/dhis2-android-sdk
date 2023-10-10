@@ -40,22 +40,19 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
-class DataSetsStore {
+public class DataSetsStore {
     private final DataValueModule dataValueModule;
     private final DataValueStore dataValueStore;
     private final DataSetCompleteRegistrationStore dataSetStore;
     private final DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository;
 
-    @Inject
-    DataSetsStore(DataValueModule dataValueModule,
-                  DataValueStore dataValueStore,
-                  DataSetCompleteRegistrationStore dataSetStore,
-                  DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository) {
+    public DataSetsStore(DataValueModule dataValueModule,
+                         DataValueStore dataValueStore,
+                         DataSetCompleteRegistrationStore dataSetStore,
+                         DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository) {
         this.dataValueModule = dataValueModule;
         this.dataValueStore = dataValueStore;
         this.dataSetStore = dataSetStore;

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.internal
 
 import android.util.Log
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
@@ -47,10 +46,10 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventHandler @Inject constructor(
+@Singleton
+internal class EventHandler(
     relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     eventStore: EventStore,

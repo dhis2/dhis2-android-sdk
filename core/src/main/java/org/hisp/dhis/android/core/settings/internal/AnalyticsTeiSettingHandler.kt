@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsTeiSettingHandler @Inject constructor(
+@Singleton
+internal class AnalyticsTeiSettingHandler(
     store: AnalyticsTeiSettingStore,
     private val teiDataElementHandler: AnalyticsTeiDataElementHandler,
     private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,

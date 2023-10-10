@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.user.User
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserModuleDownloader @Inject internal constructor(
+@Singleton
+internal class UserModuleDownloader(
     private val userCall: UserCall,
     private val authorityCallFactory: AuthorityEndpointCallFactory,
 ) : TypedModuleDownloader<User> {

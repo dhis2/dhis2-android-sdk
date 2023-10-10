@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.OptionTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OptionSubCollectionCleaner @Inject constructor(
+@Singleton
+internal class OptionSubCollectionCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : SubCollectionCleanerImpl<Option>(
     tableName = OptionTableInfo.TABLE_INFO.name(),

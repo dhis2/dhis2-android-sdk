@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.constant.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
 import org.hisp.dhis.android.core.constant.Constant
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ConstantModuleDownloader @Inject internal constructor(
+@Singleton
+internal class ConstantModuleDownloader(
     private val constantCallFactory: ConstantCoroutineCallFactory,
 ) :
     TypedModuleDownloader<List<Constant>> {

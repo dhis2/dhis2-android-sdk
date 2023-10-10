@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkHandler
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class IndicatorHandler @Inject constructor(
+@Singleton
+internal class IndicatorHandler(
     indicatorStore: IndicatorStore,
     private val indicatorLegendSetLinkHandler: IndicatorLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {

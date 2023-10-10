@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.legendset.LegendSet
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LegendSetCall @Inject constructor(
+@Singleton
+internal class LegendSetCall(
     private val service: LegendSetService,
     private val handler: LegendSetHandler,
     private val apiDownloader: APIDownloader,

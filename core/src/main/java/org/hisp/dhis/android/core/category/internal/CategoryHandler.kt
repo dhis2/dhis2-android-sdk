@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.Category
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryHandler(
     store: CategoryStore,
 ) : IdentifiableHandlerImpl<Category>(store)

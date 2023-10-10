@@ -46,9 +46,10 @@ import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
 import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 import org.hisp.dhis.android.core.validation.engine.ValidationResult
 import org.hisp.dhis.android.core.validation.engine.ValidationResult.ValidationResultStatus
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class ValidationEngineImpl @Inject constructor(
+@Singleton
+internal class ValidationEngineImpl(
     private val validationExecutor: ValidationExecutor,
     private val validationRuleRepository: ValidationRuleCollectionRepository,
     private val dataValueRepository: DataValueCollectionRepository,

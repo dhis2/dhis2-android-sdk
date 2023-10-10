@@ -31,7 +31,9 @@ import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl
 import org.hisp.dhis.android.core.dataset.DataSetInstanceSummary
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetInstanceSummaryStoreImpl constructor(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetInstanceSummaryStore,

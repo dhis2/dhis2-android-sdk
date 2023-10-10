@@ -31,12 +31,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 import java.security.SecureRandom;
 import java.util.Random;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class DatabaseEncryptionPasswordGenerator {
+public class DatabaseEncryptionPasswordGenerator {
     private final Random random = new SecureRandom();
 
     private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
@@ -52,7 +47,6 @@ class DatabaseEncryptionPasswordGenerator {
         return new String(randomChars);
     }
 
-    @Inject
-    DatabaseEncryptionPasswordGenerator() {
+    public DatabaseEncryptionPasswordGenerator() {
     }
 }

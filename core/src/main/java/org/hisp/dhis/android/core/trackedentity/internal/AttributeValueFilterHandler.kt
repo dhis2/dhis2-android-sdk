@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AttributeValueFilterHandler @Inject constructor(
+@Singleton
+internal class AttributeValueFilterHandler(
     store: AttributeValueFilterStore,
 ) : ObjectWithoutUidHandlerImpl<AttributeValueFilter>(store)

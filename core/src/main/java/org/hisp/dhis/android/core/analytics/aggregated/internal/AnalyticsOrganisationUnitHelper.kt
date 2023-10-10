@@ -38,9 +38,10 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLeve
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsOrganisationUnitHelper @Inject constructor(
+@Singleton
+internal class AnalyticsOrganisationUnitHelper(
     private val userOrganisationUnitStore: UserOrganisationUnitLinkStore,
     private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,

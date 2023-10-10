@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramRuleActionOrphanCleaner @Inject constructor(
+@Singleton
+internal class ProgramRuleActionOrphanCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(
     tableName = ProgramRuleActionTableInfo.TABLE_INFO.name(),

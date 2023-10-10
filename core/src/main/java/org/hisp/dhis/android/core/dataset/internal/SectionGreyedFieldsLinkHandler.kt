@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SectionGreyedFieldsLinkHandler(
     store: SectionGreyedFieldsLinkStore,
 ) : LinkHandlerImpl<DataElementOperand, SectionGreyedFieldsLink>(store)

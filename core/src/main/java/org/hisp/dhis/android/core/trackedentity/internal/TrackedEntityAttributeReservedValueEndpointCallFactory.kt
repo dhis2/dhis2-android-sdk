@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCoroutineCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.ListNoResourceWith
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityAttributeReservedValueEndpointCallFactory @Inject internal constructor(
+@Singleton
+internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal constructor(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: TrackedEntityAttributeReservedValueService,

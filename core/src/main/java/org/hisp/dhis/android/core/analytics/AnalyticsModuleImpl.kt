@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.analytics
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsModuleImpl @Inject constructor(
+@Singleton
+internal class AnalyticsModuleImpl(
     private val eventLineListRepository: EventLineListRepository,
     private val analyticsRepository: AnalyticsRepository,
     private val analyticsVisualizationsRepository: AnalyticsVisualizationsRepository,

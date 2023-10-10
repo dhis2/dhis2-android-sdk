@@ -37,11 +37,10 @@ import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.validation.engine.ValidationResultSideEvaluation
 import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ValidationExecutor @Inject constructor(private val expressionService: ExpressionService) {
+internal class ValidationExecutor(private val expressionService: ExpressionService) {
     fun evaluateRule(
         rule: ValidationRule,
         organisationUnit: OrganisationUnit?,

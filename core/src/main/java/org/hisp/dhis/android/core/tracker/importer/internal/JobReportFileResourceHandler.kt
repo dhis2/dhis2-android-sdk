@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class JobReportFileResourceHandler @Inject internal constructor(
+@Singleton
+internal class JobReportFileResourceHandler internal constructor(
     private val fileResourceHelper: FileResourceHelper,
 ) {
     fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {

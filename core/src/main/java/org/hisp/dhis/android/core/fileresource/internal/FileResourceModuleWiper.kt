@@ -28,15 +28,14 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class FileResourceModuleWiper @Inject constructor(
+@Singleton
+internal class FileResourceModuleWiper(
     private val tableWiper: TableWiper,
     private val context: Context,
 ) : ModuleWiper {

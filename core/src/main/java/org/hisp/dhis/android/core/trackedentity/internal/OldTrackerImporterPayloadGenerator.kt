@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -49,11 +48,11 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions", "LongParameterList")
-internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
+internal class OldTrackerImporterPayloadGenerator internal constructor(
     private val versionManager: DHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,

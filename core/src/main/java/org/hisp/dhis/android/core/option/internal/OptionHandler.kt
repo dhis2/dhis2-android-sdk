@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.option.Option
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OptionHandler constructor(
     optionStore: OptionStore,
     private val optionCleaner: OptionSubCollectionCleaner,

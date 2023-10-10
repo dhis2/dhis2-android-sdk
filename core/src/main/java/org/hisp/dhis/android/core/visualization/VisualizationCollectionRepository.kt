@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.visualization
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -39,11 +38,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.VisualizationColumnsRowsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class VisualizationCollectionRepository @Inject internal constructor(
+class VisualizationCollectionRepository internal constructor(
     store: VisualizationStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

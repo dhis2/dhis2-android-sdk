@@ -38,8 +38,10 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
+import org.koin.core.annotation.Singleton
 import java.util.*
 
+@Singleton
 internal class RelationshipItemStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : RelationshipItemStore,

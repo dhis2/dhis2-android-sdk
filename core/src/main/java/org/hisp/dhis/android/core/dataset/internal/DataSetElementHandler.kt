@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetElementHandler(
     store: DataSetElementStore,
 ) : LinkHandlerImpl<DataSetElement, DataSetElement>(store)

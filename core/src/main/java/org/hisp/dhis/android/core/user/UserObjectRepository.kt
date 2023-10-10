@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -36,10 +35,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.UserFields
 import org.hisp.dhis.android.core.user.internal.UserRoleChildrenAppender
 import org.hisp.dhis.android.core.user.internal.UserStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class UserObjectRepository @Inject internal constructor(
+@Singleton(binds = [UserObjectRepository::class])
+class UserObjectRepository internal constructor(
     store: UserStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

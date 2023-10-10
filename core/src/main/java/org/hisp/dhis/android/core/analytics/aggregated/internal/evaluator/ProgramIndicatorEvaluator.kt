@@ -42,9 +42,10 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class ProgramIndicatorEvaluator @Inject constructor(
+@Singleton
+internal class ProgramIndicatorEvaluator(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val programIndicatorEngine: ProgramIndicatorEngine,

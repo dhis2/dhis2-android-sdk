@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class ProgramIndicatorSQLEvaluator @Inject constructor(
+@Singleton
+internal class ProgramIndicatorSQLEvaluator(
     private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor,
 ) : AnalyticsEvaluator {
 

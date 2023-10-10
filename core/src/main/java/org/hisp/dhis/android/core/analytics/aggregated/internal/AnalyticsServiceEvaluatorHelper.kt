@@ -40,9 +40,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventD
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ExpressionDimensionItemEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
+@Singleton
+internal class AnalyticsServiceEvaluatorHelper(
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val indicatorEvaluator: IndicatorEvaluator,

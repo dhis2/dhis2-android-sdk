@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ForeignKeyViolationStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ForeignKeyViolationStore,

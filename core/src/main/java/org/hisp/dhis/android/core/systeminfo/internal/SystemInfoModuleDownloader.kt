@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SystemInfoModuleDownloader @Inject internal constructor(
+@Singleton
+internal class SystemInfoModuleDownloader internal constructor(
     private val systemInfoCall: SystemInfoCall,
 ) : UntypedSuspendModuleDownloader {
 

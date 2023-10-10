@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityInstanceLastUpdatedManager @Inject constructor(
+@Singleton
+internal class TrackedEntityInstanceLastUpdatedManager(
     store: TrackedEntityInstanceSyncStore,
     private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {

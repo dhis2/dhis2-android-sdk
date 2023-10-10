@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingCall
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SynchronizationSettingObjectRepository @Inject internal constructor(
+@Singleton(binds = [SynchronizationSettingObjectRepository::class])
+class SynchronizationSettingObjectRepository internal constructor(
     private val syncStore: SynchronizationSettingStore,
     private val dataSetSettingsRepository: DataSetSettingsObjectRepository,
     private val programSettingsRepository: ProgramSettingsObjectRepository,

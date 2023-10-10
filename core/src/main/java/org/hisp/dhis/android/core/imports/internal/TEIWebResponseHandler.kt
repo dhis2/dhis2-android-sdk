@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TEIWebResponseHandler @Inject constructor(
+@Singleton
+internal class TEIWebResponseHandler(
     private val trackedEntityInstanceImportHandler: TrackedEntityInstanceImportHandler,
 ) {
 

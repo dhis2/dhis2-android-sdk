@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramOrphanCleaner @Inject constructor(
+@Singleton
+internal class ProgramOrphanCleaner(
     private val programRuleVariableCleaner: ProgramRuleVariableOrphanCleaner,
     private val programTrackedEntityAttributeCleaner: ProgramTrackedEntityAttributeOrphanCleaner,
     private val programSectionCleaner: ProgramSectionOrphanCleaner,

@@ -27,18 +27,17 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
+import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-internal class FileResourceProjectionTransformer @Inject constructor() : Transformer<File, FileResource> {
+@Singleton
+internal class FileResourceProjectionTransformer : Transformer<File, FileResource> {
     override fun transform(o: File): FileResource {
         val creationDate = Date()
         return FileResource.builder()

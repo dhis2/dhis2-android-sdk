@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.koin.core.annotation.Singleton
 import java.lang.Boolean
-import javax.inject.Inject
 
-@Reusable
-internal class OrganisationUnitLevelEndpointCall @Inject constructor(
+@Singleton
+internal class OrganisationUnitLevelEndpointCall(
     private val service: OrganisationUnitLevelService,
     private val handler: OrganisationUnitLevelHandler,
     private val apiDownloader: APIDownloader,

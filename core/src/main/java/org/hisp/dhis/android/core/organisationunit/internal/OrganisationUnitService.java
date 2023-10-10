@@ -38,7 +38,7 @@ import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-interface OrganisationUnitService {
+public interface OrganisationUnitService {
     String ORGANISATION_UNITS = "organisationUnits";
 
     String FIELDS = "fields";

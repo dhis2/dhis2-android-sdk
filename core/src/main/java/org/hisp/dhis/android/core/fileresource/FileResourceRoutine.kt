@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.fileresource
 
-import dagger.Reusable
 import io.reactivex.Completable
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -42,13 +41,13 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Calendar
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-internal class FileResourceRoutine @Inject constructor(
+@Singleton
+internal class FileResourceRoutine(
     private val dataValueCollectionRepository: DataValueCollectionRepository,
     private val dataElementCollectionRepository: DataElementCollectionRepository,
     private val fileResourceCollectionRepository: FileResourceCollectionRepository,

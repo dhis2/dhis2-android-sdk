@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventPostParentCall @Inject internal constructor(
+@Singleton
+internal class EventPostParentCall internal constructor(
     private val oldTrackerImporterCall: OldTrackerImporterPostCall,
     private val trackerImporterCall: TrackerImporterPostCall,
     private val trackerParentCallHelper: TrackerPostParentCallHelper,

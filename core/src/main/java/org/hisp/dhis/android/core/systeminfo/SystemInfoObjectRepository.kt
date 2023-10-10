@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyFi
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SystemInfoObjectRepository @Inject internal constructor(
+@Singleton(binds = [SystemInfoObjectRepository::class])
+class SystemInfoObjectRepository internal constructor(
     store: SystemInfoStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

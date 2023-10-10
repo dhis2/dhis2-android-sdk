@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
@@ -43,11 +42,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.koin.core.annotation.Singleton
 import java.text.ParseException
-import javax.inject.Inject
 
-@Reusable
-internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
+@Singleton
+internal class TrackedEntityInstanceQueryCallFactory(
     private val trackedEntityService: TrackedEntityInstanceService,
     private val eventService: EventService,
     private val mapper: SearchGridMapper,

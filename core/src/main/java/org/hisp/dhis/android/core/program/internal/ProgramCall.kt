@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.program.Program
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramCall @Inject internal constructor(
+@Singleton
+internal class ProgramCall internal constructor(
     private val service: ProgramService,
     val handler: ProgramHandler,
     val apiDownloader: APIDownloader,

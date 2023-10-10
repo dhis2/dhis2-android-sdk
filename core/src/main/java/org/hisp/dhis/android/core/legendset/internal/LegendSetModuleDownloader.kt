@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LegendSetModuleDownloader @Inject internal constructor(
+@Singleton
+internal class LegendSetModuleDownloader internal constructor(
     private val legendSetUidsSeeker: LegendSetUidsSeeker,
     private val legendSetCall: LegendSetCall,
 ) : UntypedModuleDownloaderCoroutines {

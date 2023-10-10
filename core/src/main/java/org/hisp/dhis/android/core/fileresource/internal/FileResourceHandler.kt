@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class FileResourceHandler(
     store: FileResourceStore,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<FileResource>(store)

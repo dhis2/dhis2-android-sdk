@@ -31,7 +31,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingHandler
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ValueTypeRenderingHandler(
     private val valueTypeDeviceRenderingHandler: ValueTypeDeviceRenderingHandler,
 ) : DictionaryTableHandler<ValueTypeRendering> {

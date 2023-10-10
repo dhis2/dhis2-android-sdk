@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -41,10 +40,10 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataStoreDownloadCall @Inject constructor(
+@Singleton
+internal class DataStoreDownloadCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreService,
     private val dataStoreEntryHandler: DataStoreHandler,

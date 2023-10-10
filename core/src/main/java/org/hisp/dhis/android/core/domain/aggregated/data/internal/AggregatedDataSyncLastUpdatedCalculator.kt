@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-@Reusable
-internal class AggregatedDataSyncLastUpdatedCalculator @Inject constructor(
+@Singleton
+internal class AggregatedDataSyncLastUpdatedCalculator(
     private val hashHelper: AggregatedDataSyncHashHelper,
 ) {
 

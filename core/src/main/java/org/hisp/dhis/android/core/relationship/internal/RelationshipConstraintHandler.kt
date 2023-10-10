@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class RelationshipConstraintHandler(
     store: RelationshipConstraintStore,
 ) : ObjectWithoutUidHandlerImpl<RelationshipConstraint>(store)

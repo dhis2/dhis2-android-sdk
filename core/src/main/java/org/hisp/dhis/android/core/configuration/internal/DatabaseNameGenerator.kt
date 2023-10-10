@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DatabaseNameGenerator @Inject constructor() {
+@Singleton
+internal class DatabaseNameGenerator {
     fun getDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
         val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
         return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + DbSuffix

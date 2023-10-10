@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -43,11 +42,11 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
-import javax.inject.Inject
 
-@Reusable
-internal class DataValuePostCall @Inject constructor(
+@Singleton
+internal class DataValuePostCall(
     private val dataValueService: DataValueService,
     private val dataValueImportHandler: DataValueImportHandler,
     private val fileResourcePostCall: DataValueFileResourcePostCall,

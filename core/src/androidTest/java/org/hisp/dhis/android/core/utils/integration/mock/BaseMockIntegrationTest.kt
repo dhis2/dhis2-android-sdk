@@ -68,6 +68,24 @@ abstract class BaseMockIntegrationTest {
             return tuple.isNewInstance
         }
 
+        fun freshLogin(username: String, password: String, url: String) {
+            try {
+                d2.userModule().logOut().blockingAwait()
+            } catch (e: RuntimeException) {
+                // Do nothing
+            } finally {
+                d2.userModule().blockingLogIn(username, password, url)
+            }
+        }
+
+        fun tryLogout() {
+            try {
+                d2.userModule().logOut().blockingAwait()
+            } catch (e: RuntimeException) {
+                // Do nothing
+            }
+        }
+
         @JvmStatic
         fun removeObjects(content: MockIntegrationTestDatabaseContent) {
             MockIntegrationTestObjectsFactory.removeObjects(content)

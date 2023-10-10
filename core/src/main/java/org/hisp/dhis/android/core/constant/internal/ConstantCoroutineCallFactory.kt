@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.constant.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
 import org.hisp.dhis.android.core.constant.Constant
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ConstantCoroutineCallFactory @Inject constructor(
+@Singleton
+internal class ConstantCoroutineCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: ConstantService,

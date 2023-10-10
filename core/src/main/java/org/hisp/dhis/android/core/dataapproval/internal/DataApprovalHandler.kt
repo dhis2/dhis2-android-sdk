@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.dataapproval.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataApprovalHandler(
     dataApprovalStore: DataApprovalStore,
 ) : ObjectWithoutUidHandlerImpl<DataApproval>(dataApprovalStore)

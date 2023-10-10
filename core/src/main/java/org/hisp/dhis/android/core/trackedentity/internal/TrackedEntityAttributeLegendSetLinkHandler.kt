@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityAttributeLegendSetLinkHandler @Inject constructor(
+@Singleton
+internal class TrackedEntityAttributeLegendSetLinkHandler(
     store: TrackedEntityAttributeLegendSetLinkStore,
 ) : OrderedLinkHandlerImpl<ObjectWithUid, TrackedEntityAttributeLegendSetLink>(store)

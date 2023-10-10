@@ -44,9 +44,10 @@ import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
+@Singleton
+internal class AnalyticsVisualizationsServiceDimensionHelper(
     private val categoryStore: CategoryStore,
     private val categoryOptionLinkStore: CategoryCategoryOptionLinkStore,
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,

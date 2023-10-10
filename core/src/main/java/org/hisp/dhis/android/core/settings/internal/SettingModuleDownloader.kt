@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SettingModuleDownloader @Inject constructor(
+@Singleton
+internal class SettingModuleDownloader(
     private val systemSettingCall: SystemSettingCall,
     private val generalSettingCall: GeneralSettingCall,
     private val synchronizationSettingCall: SynchronizationSettingCall,

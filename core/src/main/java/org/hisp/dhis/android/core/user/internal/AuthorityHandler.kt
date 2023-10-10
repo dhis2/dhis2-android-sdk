@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.user.Authority
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AuthorityHandler @Inject constructor(
+@Singleton
+internal class AuthorityHandler(
     store: AuthorityStore,
 ) : ObjectWithoutUidHandlerImpl<Authority>(store)

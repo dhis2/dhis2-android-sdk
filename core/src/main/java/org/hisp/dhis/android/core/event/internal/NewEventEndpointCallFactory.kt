@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
@@ -36,10 +35,10 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class NewEventEndpointCallFactory @Inject constructor(
+@Singleton
+internal class NewEventEndpointCallFactory(
     private val service: TrackerExporterService,
 ) : EventEndpointCallFactory() {
 

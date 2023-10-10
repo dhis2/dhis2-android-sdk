@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetOrganisationUnitLinkHandler(
     store: DataSetOrganisationUnitLinkStore,
 ) : LinkHandlerImpl<ObjectWithUid, DataSetOrganisationUnitLink>(store)

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -41,10 +40,10 @@ import org.hisp.dhis.android.core.dataset.internal.SectionFields
 import org.hisp.dhis.android.core.dataset.internal.SectionGreyedFieldsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SectionCollectionRepository @Inject internal constructor(
+@Singleton
+class SectionCollectionRepository internal constructor(
     store: SectionStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

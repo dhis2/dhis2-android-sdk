@@ -27,18 +27,14 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class IndicatorModuleDownloader @Inject internal constructor(
-    private val indicatorCallFactory: UidsCallFactory<Indicator>,
-    private val indicatorTypeCallFactory: UidsCallFactory<IndicatorType>,
+@Singleton
+class IndicatorModuleDownloader internal constructor(
+    private val indicatorCallFactory: IndicatorEndpointCallFactory,
+    private val indicatorTypeCallFactory: IndicatorTypeEndpointCallFactory,
     private val indicatorUidsSeeker: IndicatorUidsSeeker,
 ) : UntypedModuleDownloader {
 

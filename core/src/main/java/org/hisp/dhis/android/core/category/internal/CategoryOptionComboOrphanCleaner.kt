@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryOptionComboOrphanCleaner @Inject constructor(
+@Singleton
+internal class CategoryOptionComboOrphanCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : OrphanCleanerImpl<CategoryCombo, CategoryOptionCombo>(
     tableName = CategoryOptionComboTableInfo.TABLE_INFO.name(),

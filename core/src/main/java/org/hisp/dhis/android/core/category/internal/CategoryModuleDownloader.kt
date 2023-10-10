@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class CategoryModuleDownloader @Inject internal constructor(
+@Singleton
+class CategoryModuleDownloader internal constructor(
     private val categoryCall: CategoryCall,
     private val categoryComboCall: CategoryComboCall,
     private val categoryOptionCall: CategoryOptionCall,

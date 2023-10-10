@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.visualization.DimensionItemType
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class IndicatorUidsSeeker @Inject constructor(
+@Singleton
+internal class IndicatorUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 

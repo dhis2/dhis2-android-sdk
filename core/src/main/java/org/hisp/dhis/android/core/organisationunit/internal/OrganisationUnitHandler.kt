@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import android.util.Log
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
@@ -39,11 +38,14 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationU
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OrganisationUnitHandler constructor(
     organisationUnitStore: OrganisationUnitStore,
-    private val userOrganisationUnitLinkHandler: LinkHandler<OrganisationUnit, UserOrganisationUnitLink>,
+    private val userOrganisationUnitLinkHandler: UserOrganisationUnitLinkHandler,
     private val organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler,
     private val dataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler,
     private val organisationUnitGroupHandler: OrganisationUnitGroupHandler,

@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityAttributeCall @Inject internal constructor(
+@Singleton
+internal class TrackedEntityAttributeCall(
     private val service: TrackedEntityAttributeService,
     private val handler: TrackedEntityAttributeHandler,
     private val apiDownloader: APIDownloader,

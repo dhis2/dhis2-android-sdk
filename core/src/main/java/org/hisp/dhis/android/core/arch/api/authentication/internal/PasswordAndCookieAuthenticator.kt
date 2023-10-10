@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import dagger.Reusable
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class PasswordAndCookieAuthenticator @Inject constructor(
+@Singleton
+internal class PasswordAndCookieAuthenticator(
     private val userIdHelper: UserIdAuthenticatorHelper,
     private val cookieHelper: CookieAuthenticatorHelper,
 ) {

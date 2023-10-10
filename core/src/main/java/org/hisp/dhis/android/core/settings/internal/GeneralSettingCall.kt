@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class GeneralSettingCall @Inject constructor(
+@Singleton
+internal class GeneralSettingCall(
     private val generalSettingHandler: GeneralSettingHandler,
     private val settingAppService: SettingAppService,
     private val appVersionManager: SettingsAppInfoManager,

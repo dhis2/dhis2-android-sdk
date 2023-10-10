@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsDhisVisualizationSettingHandler @Inject constructor(
+@Singleton
+internal class AnalyticsDhisVisualizationSettingHandler(
     store: AnalyticsDhisVisualizationStore,
 ) : ObjectWithoutUidHandlerImpl<AnalyticsDhisVisualization>(store) {
 

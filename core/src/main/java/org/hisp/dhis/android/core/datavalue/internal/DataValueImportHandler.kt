@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.ERROR
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataValueImportHandler @Inject constructor(
+@Singleton
+internal class DataValueImportHandler(
     private val dataValueStore: DataValueStore,
     private val dataValueConflictParser: DataValueConflictParser,
     private val dataValueConflictStore: DataValueConflictStore,

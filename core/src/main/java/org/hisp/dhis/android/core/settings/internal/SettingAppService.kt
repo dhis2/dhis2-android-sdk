@@ -35,9 +35,10 @@ import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class SettingAppService @Inject constructor(
+@Singleton
+internal class SettingAppService(
     private val settingService: SettingService,
 ) {
 

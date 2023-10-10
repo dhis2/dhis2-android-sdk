@@ -43,10 +43,11 @@ import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicato
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-internal class ProgramIndicatorEngineImpl @Inject constructor(
+@Singleton
+internal class ProgramIndicatorEngineImpl(
     private val programIndicatorStore: ProgramIndicatorStore,
     private val dataElementStore: DataElementStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,

@@ -40,7 +40,7 @@ class CategoryEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
     fun download_category_successfully() = runTest {
         dhis2MockServer.enqueueMockResponse("category/categories.json")
 
-        val categoriesSingle = objects.d2DIComponent.internalModules().category.categoryCall.download(
+        val categoriesSingle = objects.d2DIComponent.internalModules.category.categoryCall.download(
             setOf("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk"),
         )
 

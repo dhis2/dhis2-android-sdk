@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LegendSetUidsSeeker @Inject constructor(
+@Singleton
+internal class LegendSetUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 

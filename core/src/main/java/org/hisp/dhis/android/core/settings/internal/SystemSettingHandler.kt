@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.SystemSetting
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SystemSettingHandler @Inject constructor(
+@Singleton
+internal class SystemSettingHandler(
     store: SystemSettingStore,
 ) : ObjectWithoutUidHandlerImpl<SystemSetting>(store)

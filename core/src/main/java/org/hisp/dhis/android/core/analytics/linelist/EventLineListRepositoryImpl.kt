@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventLineListRepositoryImpl @Inject constructor(
+@Singleton
+internal class EventLineListRepositoryImpl(
     private val eventLineListService: EventLineListService,
     private val eventLineListParams: EventLineListParams,
 ) : EventLineListRepository {

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.category.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryCategoryOptionLinkHandler(
     store: CategoryCategoryOptionLinkStore,
 ) : OrderedLinkHandlerImpl<CategoryOption, CategoryCategoryOptionLink>(store)

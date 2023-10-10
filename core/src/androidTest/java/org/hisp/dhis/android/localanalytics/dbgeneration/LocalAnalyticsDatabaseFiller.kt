@@ -91,7 +91,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val trackerDataElements = generator.getDataElementsTracker(defaultCategoryCombo)
         DataElementStoreImpl(da).insert(aggregatedDataElements + trackerDataElements)
 
-        d2DIComponent.periodHandler().generateAndPersist()
+        d2DIComponent.periodHandler.generateAndPersist()
 
         val programs = generator.getPrograms(defaultCategoryCombo)
         ProgramStoreImpl(da).insert(programs)

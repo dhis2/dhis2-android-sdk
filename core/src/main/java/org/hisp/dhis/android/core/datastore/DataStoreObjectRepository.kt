@@ -28,21 +28,18 @@
 
 package org.hisp.dhis.android.core.datastore
 
-import dagger.Reusable
 import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
-import javax.inject.Inject
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 
-@Reusable
-class DataStoreObjectRepository @Inject internal constructor(
-    store: ObjectWithoutUidStore<DataStoreEntry>,
+class DataStoreObjectRepository internal constructor(
+    store: DataStoreEntryStore,
     databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<DataStoreEntry>,
     scope: RepositoryScope,

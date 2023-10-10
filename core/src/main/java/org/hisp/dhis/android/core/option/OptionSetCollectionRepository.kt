@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.option
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.option.internal.OptionSetStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class OptionSetCollectionRepository @Inject internal constructor(
+@Singleton
+class OptionSetCollectionRepository internal constructor(
     store: OptionSetStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

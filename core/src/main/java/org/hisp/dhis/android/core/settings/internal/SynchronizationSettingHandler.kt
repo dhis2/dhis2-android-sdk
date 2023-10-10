@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SynchronizationSettingHandler @Inject constructor(
+@Singleton
+internal class SynchronizationSettingHandler(
     store: SynchronizationSettingStore,
     private val dataSetSettingHandler: DataSetSettingHandler,
     private val programSettingHandler: ProgramSettingHandler,

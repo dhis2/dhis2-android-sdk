@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class IndicatorTypeHandler @Inject constructor(
+@Singleton
+internal class IndicatorTypeHandler(
     store: IndicatorTypeStore,
 ) : IdentifiableHandlerImpl<IndicatorType>(store)

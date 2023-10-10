@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSQLStatementBuilder
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceStore
 import org.hisp.dhis.android.core.period.PeriodType
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class DataSetInstanceCollectionRepository @Inject internal constructor(
+@Singleton
+class DataSetInstanceCollectionRepository internal constructor(
     store: DataSetInstanceStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

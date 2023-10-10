@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramStageSectionHandler @Inject constructor(
+@Singleton
+internal class ProgramStageSectionHandler(
     programStageSectionStore: ProgramStageSectionStore,
     private val programStageSectionProgramIndicatorLinkHandler: ProgramStageSectionProgramIndicatorLinkHandler,
     private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler,

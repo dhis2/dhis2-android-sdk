@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetOrganisationUnitLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetOrganisationUnitLinkStore,

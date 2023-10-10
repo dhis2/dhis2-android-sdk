@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.search
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
@@ -37,12 +36,12 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
-@Reusable
-internal class EventCollectionRepositoryAdapter @Inject constructor(
+@Singleton
+internal class EventCollectionRepositoryAdapter(
     private val eventCollectionRepository: EventCollectionRepository,
     private val organisationUnitCollectionRepository: OrganisationUnitCollectionRepository,
     private val userRepository: AuthenticatedUserObjectRepository,

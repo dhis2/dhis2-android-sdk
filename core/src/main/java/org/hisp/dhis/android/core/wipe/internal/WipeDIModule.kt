@@ -27,20 +27,9 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
 @Module
-internal class WipeDIModule {
-
-    @Provides
-    @Reusable
-    fun wipeModule(
-        d2CallExecutor: D2CallExecutor,
-        moduleWipers: D2ModuleWipers,
-    ): WipeModule {
-        return WipeModuleImpl(d2CallExecutor, moduleWipers.wipers)
-    }
-}
+@ComponentScan
+internal class WipeDIModule

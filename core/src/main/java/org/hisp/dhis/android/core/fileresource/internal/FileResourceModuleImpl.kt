@@ -27,14 +27,17 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.fileresource.*
-import javax.inject.Inject
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDownloader
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import org.hisp.dhis.android.core.fileresource.FileResourceValueType
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class FileResourceModuleImpl @Inject internal constructor(
+@Singleton
+internal class FileResourceModuleImpl(
     private val fileResources: FileResourceCollectionRepository,
     private val fileResourceDownloader: FileResourceDownloader,
 ) : FileResourceModule {

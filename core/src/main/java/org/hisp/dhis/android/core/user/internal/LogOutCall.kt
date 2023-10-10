@@ -35,9 +35,10 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-class LogOutCall @Inject internal constructor(
+@Singleton
+class LogOutCall internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,

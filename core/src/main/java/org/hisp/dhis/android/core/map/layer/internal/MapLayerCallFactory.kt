@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingCallFactory
 import org.hisp.dhis.android.core.map.layer.internal.osm.OSMCallFactory
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class MapLayerCallFactory @Inject constructor(
+@Singleton
+internal class MapLayerCallFactory(
     private val osmCallFactory: OSMCallFactory,
     private val bingCallFactory: BingCallFactory,
 ) {

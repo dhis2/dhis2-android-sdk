@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OrganisationUnitCollectionCleaner @Inject constructor(
+@Singleton
+internal class OrganisationUnitCollectionCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : CollectionCleanerImpl<OrganisationUnit>(
     tableName = OrganisationUnitTableInfo.TABLE_INFO.name(),

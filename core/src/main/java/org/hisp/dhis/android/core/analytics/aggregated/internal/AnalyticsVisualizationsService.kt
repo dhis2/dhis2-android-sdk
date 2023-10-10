@@ -35,9 +35,10 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.visualization.LegendStrategy
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsVisualizationsService @Inject constructor(
+@Singleton
+internal class AnalyticsVisualizationsService(
     private val analyticsRepository: AnalyticsRepository,
     private val visualizationCollectionRepository: VisualizationCollectionRepository,
     private val dimensionHelper: AnalyticsVisualizationsServiceDimensionHelper,

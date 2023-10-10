@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class NewEnrollmentEndpointCallFactory @Inject constructor(
+@Singleton
+internal class NewEnrollmentEndpointCallFactory(
     private val service: TrackerExporterService,
 ) : EnrollmentEndpointCallFactory {
     override suspend fun getRelationshipEntityCall(uid: String): Enrollment {

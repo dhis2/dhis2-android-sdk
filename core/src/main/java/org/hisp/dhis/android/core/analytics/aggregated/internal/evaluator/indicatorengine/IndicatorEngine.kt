@@ -35,9 +35,10 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class IndicatorEngine @Inject constructor(
+@Singleton
+internal class IndicatorEngine(
     private val indicatorTypeStore: IndicatorTypeStore,
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
     private val expressionService: ExpressionService,

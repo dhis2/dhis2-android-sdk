@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EnrollmentPersistenceCallFactory @Inject constructor(
+@Singleton
+internal class EnrollmentPersistenceCallFactory(
     private val enrollmentHandler: EnrollmentHandler,
 ) {
     fun persistAsRelationships(enrollments: List<Enrollment>): Completable {

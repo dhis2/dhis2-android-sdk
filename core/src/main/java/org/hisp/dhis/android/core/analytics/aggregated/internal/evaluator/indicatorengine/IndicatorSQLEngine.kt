@@ -35,9 +35,10 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class IndicatorSQLEngine @Inject constructor(
+@Singleton
+internal class IndicatorSQLEngine(
     private val indicatorTypeStore: IndicatorTypeStore,
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
     private val databaseAdapter: DatabaseAdapter,

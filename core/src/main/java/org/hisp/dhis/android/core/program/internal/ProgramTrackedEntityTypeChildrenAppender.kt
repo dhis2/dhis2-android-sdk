@@ -27,15 +27,12 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
-import javax.inject.Inject
 
-@Reusable
-internal class ProgramTrackedEntityTypeChildrenAppender @Inject constructor(
+internal class ProgramTrackedEntityTypeChildrenAppender(
     databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<Program>() {
     private val store = TrackedEntityTypeStoreImpl(databaseAdapter)

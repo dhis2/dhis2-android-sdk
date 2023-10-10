@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ResourceStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ResourceStore,

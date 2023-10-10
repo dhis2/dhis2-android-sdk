@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramSectionHandler @Inject constructor(
+@Singleton
+internal class ProgramSectionHandler(
     programSectionStore: ProgramSectionStore,
     private val programSectionAttributeLinkHandler: ProgramSectionAttributeLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramSection>(programSectionStore) {

@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class OptionCall @Inject internal constructor(
+@Singleton
+class OptionCall internal constructor(
     private val service: OptionService,
     private val handler: OptionHandler,
     private val apiDownloader: APIDownloader,

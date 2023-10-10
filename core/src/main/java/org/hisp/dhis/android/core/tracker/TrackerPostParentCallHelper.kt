@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.tracker
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class TrackerPostParentCallHelper @Inject constructor(
+@Singleton
+internal class TrackerPostParentCallHelper(
     private val dhisVersionManager: DHISVersionManager,
     private val synchronizationSettingStore: SynchronizationSettingStore,
 ) {

@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserOrganisationUnitLinkHandler @Inject constructor(
+@Singleton
+internal class UserOrganisationUnitLinkHandler(
     store: UserOrganisationUnitLinkStore,
 ) : LinkHandlerImpl<OrganisationUnit, UserOrganisationUnitLink>(store)

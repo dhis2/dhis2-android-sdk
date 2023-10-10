@@ -31,7 +31,6 @@ import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
@@ -43,14 +42,15 @@ import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserTableInfo
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
+import org.hisp.dhis.android.core.user.internal.UserStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
@@ -60,7 +60,6 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
 
     @Before
-    @Throws(IOException::class)
     fun setUp() {
         dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json")
         val orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build()
@@ -71,10 +70,10 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         // Create a user with the root as assigned organisation unit (for the test):
         val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
-            .uid("user_uid").build()
+            .uid(userId).build()
         databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues())
         val userContentValues = ContentValues()
-        userContentValues.put(IdentifiableColumns.UID, "user_uid")
+        userContentValues.put(IdentifiableColumns.UID, userId)
         databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues)
 
         // inserting programs for creating OrgUnitProgramLinks
@@ -85,7 +84,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         insertDataSet()
         val organisationUnitHandler = OrganisationUnitHandler(
             OrganisationUnitStoreImpl(databaseAdapter),
-            LinkHandlerImpl(UserOrganisationUnitLinkStoreImpl(databaseAdapter)),
+            UserOrganisationUnitLinkHandler(UserOrganisationUnitLinkStoreImpl(databaseAdapter)),
             OrganisationUnitProgramLinkHandler(OrganisationUnitProgramLinkStoreImpl(databaseAdapter)),
             DataSetOrganisationUnitLinkHandler(DataSetOrganisationUnitLinkStoreImpl(databaseAdapter)),
             OrganisationUnitGroupHandler(OrganisationUnitGroupStoreImpl(databaseAdapter)),
@@ -149,12 +148,15 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     }
 
     companion object {
+        private const val userId = "user_uid"
+
         @AfterClass
         @JvmStatic
-        fun tearDown() {
+        fun tearDownClass() {
             d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())
+            UserStoreImpl(d2.databaseAdapter()).delete(userId)
         }
     }
 }

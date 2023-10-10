@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
@@ -38,10 +37,10 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class TrackedEntityInstanceDownloader @Inject internal constructor(
+@Singleton
+class TrackedEntityInstanceDownloader internal constructor(
     scope: RepositoryScope,
     private val downloadCall: TrackedEntityInstanceDownloadCall,
 ) : BaseRepositoryImpl<TrackedEntityInstanceDownloader>(

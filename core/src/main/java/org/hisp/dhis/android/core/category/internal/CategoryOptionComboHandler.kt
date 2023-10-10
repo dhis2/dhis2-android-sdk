@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionComboHandler constructor(
     store: CategoryOptionComboStore,
     private val categoryOptionComboCategoryOptionLinkHandler: CategoryOptionComboCategoryOptionHandler,

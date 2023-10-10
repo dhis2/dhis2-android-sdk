@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LogInDatabaseManager @Inject internal constructor(
+@Singleton
+internal class LogInDatabaseManager(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val generalSettingCall: GeneralSettingCall,
 ) {

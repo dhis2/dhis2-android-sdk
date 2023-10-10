@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -43,11 +42,11 @@ import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList")
-internal class LogInCall @Inject internal constructor(
+internal class LogInCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
     private val credentialsSecureStore: CredentialsSecureStore,

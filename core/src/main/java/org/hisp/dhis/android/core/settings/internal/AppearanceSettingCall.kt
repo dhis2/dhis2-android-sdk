@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
-import javax.inject.Inject
 
-@Reusable
-internal class AppearanceSettingCall @Inject constructor(
+@Singleton
+internal class AppearanceSettingCall(
     private val filterSettingHandler: FilterSettingHandler,
     private val programConfigurationSettingHandler: ProgramConfigurationSettingHandler,
     private val settingAppService: SettingAppService,

@@ -57,7 +57,7 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Before
     fun setUp() {
-        store = objects.d2DIComponent.categoryOptionStore()
+        store = objects.d2DIComponent.categoryOptionStore
         allValues = store.selectWhere("1", orderByClause, 8)
     }
 

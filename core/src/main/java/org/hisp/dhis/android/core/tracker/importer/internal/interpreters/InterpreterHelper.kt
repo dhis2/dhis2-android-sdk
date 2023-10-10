@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class InterpreterHelper @Inject internal constructor(
+@Singleton
+internal class InterpreterHelper internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val eventStore: EventStore,
     private val programStore: ProgramStore,

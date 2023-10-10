@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.usecase.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.usecase.UseCaseModule
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UseCaseModuleImpl @Inject internal constructor(
+@Singleton
+internal class UseCaseModuleImpl(
     private val stockUseCases: StockUseCaseCollectionRepository,
 ) : UseCaseModule {
     override fun stockUseCases(): StockUseCaseCollectionRepository {

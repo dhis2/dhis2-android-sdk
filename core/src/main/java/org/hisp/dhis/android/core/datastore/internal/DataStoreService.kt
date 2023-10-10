@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.koin.core.annotation.Singleton
+import retrofit2.Retrofit
 import retrofit2.http.*
 
 internal interface DataStoreService {
@@ -79,3 +81,6 @@ internal interface DataStoreService {
         private const val KEY = "key"
     }
 }
+
+@Singleton
+internal fun service(retrofit: Retrofit): DataStoreService = retrofit.create(DataStoreService::class.java)

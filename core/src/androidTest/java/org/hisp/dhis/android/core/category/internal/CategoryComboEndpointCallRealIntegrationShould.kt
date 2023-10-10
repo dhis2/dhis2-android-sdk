@@ -45,7 +45,7 @@ class CategoryComboEndpointCallRealIntegrationShould : BaseRealIntegrationTest()
         assertNotCombosInDB()
         assertThat(categoryCategoryComboLinks.isEmpty()).isTrue()
 
-        val categoryComboEndpointCall = getD2DIComponent(d2).internalModules().category.categoryComboCall.download(
+        val categoryComboEndpointCall = getD2DIComponent(d2).internalModules.category.categoryComboCall.download(
             setOf("bjDvmb4bfuf"),
         )
         val categoryCombos = categoryComboEndpointCall
@@ -63,7 +63,7 @@ class CategoryComboEndpointCallRealIntegrationShould : BaseRealIntegrationTest()
     }
 
     private fun downloadCategories() = runTest {
-        getD2DIComponent(d2).internalModules().category.categoryCall.download(
+        getD2DIComponent(d2).internalModules.category.categoryCall.download(
             setOf("GLevLNI9wkl"),
         )
     }

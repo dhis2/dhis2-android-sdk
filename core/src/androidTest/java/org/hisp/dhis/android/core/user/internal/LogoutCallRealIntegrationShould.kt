@@ -60,7 +60,7 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         val authenticatedUser = authenticatedUserStore!!.selectFirst()
         assertThat(authenticatedUser).isNotNull()
-        assertThat(getD2DIComponent(d2).credentialsSecureStore().get()).isNull()
+        assertThat(getD2DIComponent(d2).credentialsSecureStore.get()).isNull()
     }
 
     // @Test
@@ -74,12 +74,12 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         var authenticatedUser = authenticatedUserStore!!.selectFirst()
         assertThat(authenticatedUser).isNotNull()
-        assertThat(getD2DIComponent(d2).credentialsSecureStore().get()).isNull()
+        assertThat(getD2DIComponent(d2).credentialsSecureStore.get()).isNull()
 
         d2.userModule().logIn(username, password, url).blockingGet()
         authenticatedUser = authenticatedUserStore!!.selectFirst()
         assertThat(authenticatedUser).isNotNull()
-        assertThat(getD2DIComponent(d2).credentialsSecureStore().get()).isNull()
+        assertThat(getD2DIComponent(d2).credentialsSecureStore.get()).isNull()
     }
 
     // @Test

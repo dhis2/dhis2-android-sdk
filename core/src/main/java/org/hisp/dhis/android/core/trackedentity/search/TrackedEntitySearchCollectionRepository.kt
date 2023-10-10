@@ -32,9 +32,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import dagger.Reusable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -50,11 +48,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionR
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions", "LongParameterList")
-class TrackedEntitySearchCollectionRepository @Inject internal constructor(
+class TrackedEntitySearchCollectionRepository internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val databaseAdapter: DatabaseAdapter,
@@ -63,7 +61,7 @@ class TrackedEntitySearchCollectionRepository @Inject internal constructor(
     versionManager: DHISVersionManager,
     filtersRepository: TrackedEntityInstanceFilterCollectionRepository,
     workingListRepository: ProgramStageWorkingListCollectionRepository,
-    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
+    private val onlineCache: TrackedEntityInstanceOnlineCache,
     private val onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
     private val searchDataFetcherHelper: TrackedEntitySearchDataFetcherHelper,

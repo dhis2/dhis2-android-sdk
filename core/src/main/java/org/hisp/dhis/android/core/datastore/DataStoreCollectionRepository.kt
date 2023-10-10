@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore
 
-import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -45,10 +44,10 @@ import org.hisp.dhis.android.core.common.DeletableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.core.datastore.internal.DataStorePostCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class DataStoreCollectionRepository @Inject internal constructor(
+@Singleton
+class DataStoreCollectionRepository internal constructor(
     private val store: DataStoreEntryStore,
     private val call: DataStorePostCall,
     databaseAdapter: DatabaseAdapter,

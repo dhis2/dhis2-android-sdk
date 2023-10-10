@@ -28,14 +28,13 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
-import javax.inject.Inject
 
-@Reusable
-internal class SettingsAppInfoCall @Inject constructor(
+@Singleton
+internal class SettingsAppInfoCall(
     private val settingAppService: SettingAppService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {

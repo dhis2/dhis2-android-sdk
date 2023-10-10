@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.legendset.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementLegendSetLinkHandler(
     store: DataElementLegendSetLinkStore,
 ) : OrderedLinkHandlerImpl<ObjectWithUid, DataElementLegendSetLink>(store)

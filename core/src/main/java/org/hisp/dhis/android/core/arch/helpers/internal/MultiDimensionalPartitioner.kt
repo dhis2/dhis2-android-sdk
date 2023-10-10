@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.helpers.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class MultiDimensionalPartitioner @Inject constructor() {
+@Singleton
+internal class MultiDimensionalPartitioner {
 
     fun partitionForSize(size: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
         return partitionInternal(

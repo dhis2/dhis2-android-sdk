@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
 import org.hisp.dhis.android.core.settings.UserSettings
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserSettingsCall @Inject internal constructor(
+@Singleton
+internal class UserSettingsCall internal constructor(
     private val handler: UserSettingsHandler,
     private val service: SettingService,
     private val apiDownloader: APIDownloader,

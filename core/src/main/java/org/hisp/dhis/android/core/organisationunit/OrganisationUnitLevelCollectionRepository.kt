@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class OrganisationUnitLevelCollectionRepository @Inject internal constructor(
+@Singleton
+class OrganisationUnitLevelCollectionRepository internal constructor(
     store: OrganisationUnitLevelStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

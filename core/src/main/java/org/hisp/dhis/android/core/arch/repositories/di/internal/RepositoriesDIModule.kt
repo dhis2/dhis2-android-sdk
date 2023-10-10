@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.di.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
 @Module
-class RepositoriesDIModule {
-    @Provides
-    @Reusable
+internal class RepositoriesDIModule {
+
+    @Singleton
     fun emptyScope(): RepositoryScope {
         return RepositoryScope.empty()
     }

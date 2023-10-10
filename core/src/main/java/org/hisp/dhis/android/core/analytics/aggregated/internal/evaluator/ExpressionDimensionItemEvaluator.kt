@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.expressiondimensionitemengine.ExpressionDimensionItemEngine
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class ExpressionDimensionItemEvaluator @Inject constructor(
+@Singleton
+internal class ExpressionDimensionItemEvaluator(
     private val expressionDimensionItemEngine: ExpressionDimensionItemEngine,
 ) : AnalyticsEvaluator {
 

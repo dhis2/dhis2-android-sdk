@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
@@ -39,11 +38,11 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoR
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.koin.core.annotation.Singleton
 import retrofit2.Call
-import javax.inject.Inject
 
-@Reusable
-internal class DataElementEndpointCallFactory @Inject constructor(
+@Singleton
+internal class DataElementEndpointCallFactory(
     data: GenericCallData,
     apiCallExecutor: APICallExecutor,
     private val service: DataElementService,

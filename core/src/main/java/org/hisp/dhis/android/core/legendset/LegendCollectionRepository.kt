@@ -75,6 +75,6 @@ class LegendCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<Legend> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<Legend> = emptyMap()
     }
 }

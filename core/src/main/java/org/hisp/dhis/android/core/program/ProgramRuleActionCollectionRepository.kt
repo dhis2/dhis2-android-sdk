@@ -108,6 +108,6 @@ class ProgramRuleActionCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<ProgramRuleAction> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<ProgramRuleAction> = emptyMap()
     }
 }

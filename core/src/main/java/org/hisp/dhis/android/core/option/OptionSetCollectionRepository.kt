@@ -68,6 +68,6 @@ class OptionSetCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<OptionSet> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<OptionSet> = emptyMap()
     }
 }

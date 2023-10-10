@@ -66,6 +66,6 @@ class OrganisationUnitGroupCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<OrganisationUnitGroup> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<OrganisationUnitGroup> = emptyMap()
     }
 }

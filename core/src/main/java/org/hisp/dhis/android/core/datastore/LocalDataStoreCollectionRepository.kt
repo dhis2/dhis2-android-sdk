@@ -72,6 +72,6 @@ class LocalDataStoreCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<KeyValuePair> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<KeyValuePair> = emptyMap()
     }
 }

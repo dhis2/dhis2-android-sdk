@@ -67,6 +67,6 @@ class IndicatorTypeCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<IndicatorType> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<IndicatorType> = emptyMap()
     }
 }

@@ -62,6 +62,6 @@ class ConstantCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<Constant> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<Constant> = emptyMap()
     }
 }

@@ -62,6 +62,6 @@ class ExpressionDimensionItemCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<ExpressionDimensionItem> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<ExpressionDimensionItem> = emptyMap()
     }
 }

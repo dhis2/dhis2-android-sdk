@@ -171,6 +171,6 @@ class FileResourceCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<FileResource> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<FileResource> = emptyMap()
     }
 }

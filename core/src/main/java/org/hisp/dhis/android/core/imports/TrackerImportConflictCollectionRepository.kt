@@ -96,6 +96,6 @@ class TrackerImportConflictCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<TrackerImportConflict> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<TrackerImportConflict> = emptyMap()
     }
 }

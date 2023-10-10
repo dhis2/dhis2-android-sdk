@@ -85,6 +85,6 @@ class D2ErrorCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<D2Error> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<D2Error> = emptyMap()
     }
 }

@@ -154,8 +154,7 @@ import javax.inject.Singleton
     ],
 )
 @Suppress("TooManyFunctions")
-internal interface
-D2DIComponent {
+internal interface D2DIComponent {
     fun modules(): D2Modules
     fun metadataModule(): MetadataModuleImpl
     fun aggregatedModule(): AggregatedModuleImpl

@@ -87,6 +87,6 @@ class ProgramRuleVariableCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<ProgramRuleVariable> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<ProgramRuleVariable> = emptyMap()
     }
 }

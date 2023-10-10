@@ -77,6 +77,6 @@ class SystemSettingCollectionRepository @Inject internal constructor(
     }
 
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<SystemSetting> = mapOf()
+        val childrenAppenders: ChildrenAppenderGetter<SystemSetting> = emptyMap()
     }
 }

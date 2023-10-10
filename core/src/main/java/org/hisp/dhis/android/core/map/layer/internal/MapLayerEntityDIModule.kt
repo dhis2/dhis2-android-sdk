@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.map.layer.MapLayer
 
 @Module
 internal class MapLayerEntityDIModule {
@@ -50,15 +48,5 @@ internal class MapLayerEntityDIModule {
         imageryProviderHandler: MapLayerImageryProviderHandler,
     ): MapLayerHandler {
         return MapLayerHandler(store, imageryProviderHandler)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        store: MapLayerImageryProviderStore,
-    ): Map<String, ChildrenAppender<MapLayer>> {
-        return mapOf(
-            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender(store),
-        )
     }
 }

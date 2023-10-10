@@ -28,14 +28,15 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import javax.inject.Inject
 
 @Reusable
 internal class DataElementValueTypeRenderingChildrenAppender @Inject constructor(
-    store: ValueTypeDeviceRenderingStore,
-) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(store) {
+    databaseAdapter: DatabaseAdapter,
+) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(ValueTypeDeviceRenderingStoreImpl(databaseAdapter)) {
     override fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
         val valueTypeRendering = getValueTypeDeviceRendering(m)
         return m.toBuilder().renderType(valueTypeRendering).build()

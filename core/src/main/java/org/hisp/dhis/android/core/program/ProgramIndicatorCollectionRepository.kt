@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -37,17 +38,20 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import javax.inject.Inject
 
 @Reusable
 class ProgramIndicatorCollectionRepository @Inject internal constructor(
     store: ProgramIndicatorStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramIndicator>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramIndicator, ProgramIndicatorCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -55,7 +59,7 @@ class ProgramIndicatorCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramIndicatorCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -98,5 +102,13 @@ class ProgramIndicatorCollectionRepository @Inject internal constructor(
 
     fun withAnalyticsPeriodBoundaries(): ProgramIndicatorCollectionRepository {
         return cf.withChild(ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramIndicator> = mapOf(
+            ProgramIndicatorFields.LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender::create,
+            ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES to
+                ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender::create,
+        )
     }
 }

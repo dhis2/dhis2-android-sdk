@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.legendset
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.legendset.internal.LegendChildrenAppender
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
 import javax.inject.Inject
@@ -40,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class LegendSetCollectionRepository @Inject internal constructor(
     store: LegendSetStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<LegendSet>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<LegendSet, LegendSetCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +54,7 @@ class LegendSetCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         LegendSetCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -62,5 +65,11 @@ class LegendSetCollectionRepository @Inject internal constructor(
 
     fun withLegends(): LegendSetCollectionRepository {
         return cf.withChild(LegendSetFields.LEGENDS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<LegendSet> = mapOf(
+            LegendSetFields.LEGENDS to LegendChildrenAppender::create,
+        )
     }
 }

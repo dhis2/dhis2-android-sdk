@@ -28,13 +28,15 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import javax.inject.Inject
@@ -42,10 +44,11 @@ import javax.inject.Inject
 @Reusable
 class TrackedEntityTypeCollectionRepository @Inject internal constructor(
     store: TrackedEntityTypeStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityType>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypeCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +56,7 @@ class TrackedEntityTypeCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityTypeCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -72,5 +75,12 @@ class TrackedEntityTypeCollectionRepository @Inject internal constructor(
 
     fun withTrackedEntityTypeAttributes(): TrackedEntityTypeCollectionRepository {
         return cf.withChild(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackedEntityType> = mapOf(
+            TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES to
+                TrackedEntityTypeAttributeChildrenAppender::create,
+        )
     }
 }

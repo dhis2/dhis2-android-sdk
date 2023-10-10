@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -36,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.program.internal.DataElementValueTypeRenderingChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore
 import javax.inject.Inject
@@ -43,10 +45,11 @@ import javax.inject.Inject
 @Reusable
 class ProgramStageDataElementCollectionRepository @Inject internal constructor(
     store: ProgramStageDataElementStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageDataElement>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageDataElement, ProgramStageDataElementCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +57,7 @@ class ProgramStageDataElementCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageDataElementCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -93,5 +96,11 @@ class ProgramStageDataElementCollectionRepository @Inject internal constructor(
 
     fun orderBySortOrder(direction: OrderByDirection?): ProgramStageDataElementCollectionRepository {
         return cf.withOrderBy(ProgramStageDataElementTableInfo.Columns.SORT_ORDER, direction)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramStageDataElement> = mapOf(
+            ProgramStageDataElementFields.RENDER_TYPE to ::DataElementValueTypeRenderingChildrenAppender,
+        )
     }
 }

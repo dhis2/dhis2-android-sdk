@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.relationship.RelationshipType
 
 @Module
 internal class RelationshipTypeEntityDIModule {
@@ -52,16 +50,6 @@ internal class RelationshipTypeEntityDIModule {
         return RelationshipTypeHandler(
             relationshipTypeStore,
             relationshipConstraintHandler,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        constraintStore: RelationshipConstraintStore,
-    ): Map<String, ChildrenAppender<RelationshipType>> {
-        return mapOf(
-            RelationshipTypeFields.CONSTRAINTS to RelationshipConstraintChildrenAppender(constraintStore),
         )
     }
 }

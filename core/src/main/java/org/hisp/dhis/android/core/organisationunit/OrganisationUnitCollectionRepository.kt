@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -39,7 +40,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitDataSetChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupProgramChildrenAppender
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import javax.inject.Inject
@@ -48,10 +52,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class OrganisationUnitCollectionRepository @Inject internal constructor(
     store: OrganisationUnitStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<OrganisationUnit>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnit, OrganisationUnitCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -59,7 +64,7 @@ class OrganisationUnitCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         OrganisationUnitCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -138,5 +143,14 @@ class OrganisationUnitCollectionRepository @Inject internal constructor(
 
     fun withOrganisationUnitGroups(): OrganisationUnitCollectionRepository {
         return cf.withChild(OrganisationUnitFields.ORGANISATION_UNIT_GROUPS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<OrganisationUnit> = mapOf(
+            OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender::create,
+            OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender::create,
+            OrganisationUnitFields.ORGANISATION_UNIT_GROUPS to
+                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender::create,
+        )
     }
 }

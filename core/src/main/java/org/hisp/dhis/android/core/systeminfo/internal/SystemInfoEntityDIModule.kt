@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 
 @Module
 internal class SystemInfoEntityDIModule {
@@ -40,11 +38,5 @@ internal class SystemInfoEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): SystemInfoStore {
         return SystemInfoStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<SystemInfo>> {
-        return emptyMap()
     }
 }

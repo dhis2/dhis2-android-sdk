@@ -33,7 +33,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.*
@@ -50,15 +51,16 @@ import javax.inject.Inject
 @Reusable
 class DataValueCollectionRepository @Inject internal constructor(
     private val store: DataValueStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataValue>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val postCall: DataValuePostCall,
 ) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        DataValueCollectionRepository(store, childrenAppenders, s, postCall)
+        DataValueCollectionRepository(store, databaseAdapter, s, postCall)
     },
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
@@ -87,6 +89,7 @@ class DataValueCollectionRepository @Inject internal constructor(
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataValueObjectRepository(
             store,
+            databaseAdapter,
             childrenAppenders,
             updatedScope,
             period,
@@ -163,5 +166,9 @@ class DataValueCollectionRepository @Inject internal constructor(
 
     fun byDeleted(): BooleanFilterConnector<DataValueCollectionRepository> {
         return cf.bool(DataValueTableInfo.Columns.DELETED)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<DataValue> = emptyMap()
     }
 }

@@ -32,8 +32,9 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -58,20 +59,21 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class FileResourceCollectionRepository @Inject internal constructor(
     private val fileResourceStore: FileResourceStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<FileResource>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         FileResourceCollectionRepository(
             fileResourceStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
             transformer,
             dataStatePropagator,
@@ -125,7 +127,7 @@ class FileResourceCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): FileResourceObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return FileResourceObjectRepository(fileResourceStore, uid, childrenAppenders, updatedScope)
+        return FileResourceObjectRepository(fileResourceStore, uid, databaseAdapter, childrenAppenders, updatedScope)
     }
 
     fun byUid(): StringFilterConnector<FileResourceCollectionRepository> {
@@ -166,5 +168,9 @@ class FileResourceCollectionRepository @Inject internal constructor(
 
     fun bySyncState(): EnumFilterConnector<FileResourceCollectionRepository, State> {
         return cf.enumC(FileResourceTableInfo.Columns.SYNC_STATE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<FileResource> = emptyMap()
     }
 }

@@ -28,20 +28,22 @@
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.ItemKeyedDataSource
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
 internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,
+    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
-    private val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val transformer: TwoWayTransformer<M, T>,
 ) : ItemKeyedDataSource<M, T>() {
 
@@ -88,6 +90,7 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
     private fun appendChildren(withoutChildren: List<M>): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
+            databaseAdapter,
             childrenAppenders,
             scope.children(),
         ).map { transformer.transform(it) }

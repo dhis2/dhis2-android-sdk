@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 import io.reactivex.Completable
 import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -40,11 +41,12 @@ import org.hisp.dhis.android.core.common.CoreObject
 open class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M : CoreObject, R : ReadOnlyObjectRepository<M>>
 internal constructor(
     store: ObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     private val downloadProvider: DownloadProvider,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
+) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, repositoryFactory),
     ReadOnlyWithDownloadObjectRepository<M> {
 
     /**

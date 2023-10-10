@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
 @Module
 internal class DataSetCompleteRegistrationEntityDIModule {
@@ -46,11 +44,5 @@ internal class DataSetCompleteRegistrationEntityDIModule {
     @Reusable
     fun handler(store: DataSetCompleteRegistrationStore): DataSetCompleteRegistrationHandler {
         return DataSetCompleteRegistrationHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<DataSetCompleteRegistration>> {
-        return emptyMap()
     }
 }

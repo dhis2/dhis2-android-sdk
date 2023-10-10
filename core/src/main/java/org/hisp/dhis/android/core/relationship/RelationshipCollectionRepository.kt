@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.relationship
 
 import dagger.Reusable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildrenAppender
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
 import org.hisp.dhis.android.core.relationship.internal.RelationshipManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
@@ -57,7 +59,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class RelationshipCollectionRepository @Inject internal constructor(
     private val relationshipStore: RelationshipStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Relationship>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val relationshipHandler: RelationshipHandler,
     private val storeSelector: RelationshipItemElementStoreSelector,
@@ -65,6 +67,7 @@ class RelationshipCollectionRepository @Inject internal constructor(
     private val trackerDataManager: TrackerDataManager,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>(
     relationshipStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -72,7 +75,7 @@ class RelationshipCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         RelationshipCollectionRepository(
             relationshipStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
             relationshipHandler,
             storeSelector,
@@ -138,7 +141,14 @@ class RelationshipCollectionRepository @Inject internal constructor(
 
     override fun uid(uid: String?): ReadWriteObjectRepository<Relationship> {
         val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
-        return RelationshipObjectRepository(relationshipStore, uid, childrenAppenders, updatedScope, trackerDataManager)
+        return RelationshipObjectRepository(
+            relationshipStore,
+            uid,
+            databaseAdapter,
+            childrenAppenders,
+            updatedScope,
+            trackerDataManager,
+        )
     }
 
     private fun isUpdatableState(state: State?): Boolean {
@@ -208,5 +218,11 @@ class RelationshipCollectionRepository @Inject internal constructor(
 
     fun withItems(): RelationshipCollectionRepository {
         return cf.withChild(RelationshipFields.ITEMS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Relationship> = mapOf(
+            RelationshipFields.ITEMS to ::RelationshipItemChildrenAppender,
+        )
     }
 }

@@ -28,23 +28,27 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionDataElementChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionProgramIndicatorChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
 import javax.inject.Inject
 
 @Reusable
 class ProgramStageSectionsCollectionRepository @Inject internal constructor(
     store: ProgramStageSectionStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageSection>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageSection, ProgramStageSectionsCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +56,7 @@ class ProgramStageSectionsCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageSectionsCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -87,5 +91,12 @@ class ProgramStageSectionsCollectionRepository @Inject internal constructor(
 
     fun withDataElements(): ProgramStageSectionsCollectionRepository {
         return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramStageSection> = mapOf(
+            ProgramStageSectionFields.PROGRAM_INDICATORS to ProgramStageSectionProgramIndicatorChildrenAppender::create,
+            ProgramStageSectionFields.DATA_ELEMENTS to ProgramStageSectionDataElementChildrenAppender::create,
+        )
     }
 }

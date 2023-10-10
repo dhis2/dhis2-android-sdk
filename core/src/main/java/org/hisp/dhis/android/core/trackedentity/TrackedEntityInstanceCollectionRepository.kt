@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.trackedentity
 import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -47,6 +48,8 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.ProgramOwnerChildrenAppender
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer
@@ -58,7 +61,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityInstance>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: TrackedEntityInstanceProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
@@ -70,6 +73,7 @@ class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
     TrackedEntityInstanceCollectionRepository,
     >(
     trackedEntityInstanceStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -78,7 +82,7 @@ class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityInstanceCollectionRepository(
             trackedEntityInstanceStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
             transformer,
             trackerDataManager,
@@ -116,6 +120,7 @@ class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
         return TrackedEntityInstanceObjectRepository(
             trackedEntityInstanceStore,
             uid,
+            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -213,5 +218,14 @@ class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
 
     fun withProgramOwners(): TrackedEntityInstanceCollectionRepository {
         return cf.withChild(TrackedEntityInstanceFields.PROGRAM_OWNERS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance> = mapOf(
+            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES to
+                TrackedEntityAttributeValueChildrenAppender::create,
+            TrackedEntityInstanceFields.PROGRAM_OWNERS to
+                ::ProgramOwnerChildrenAppender,
+        )
     }
 }

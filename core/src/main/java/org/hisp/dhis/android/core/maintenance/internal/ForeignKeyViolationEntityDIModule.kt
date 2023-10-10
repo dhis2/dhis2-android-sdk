@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 
 @Module
 internal class ForeignKeyViolationEntityDIModule {
@@ -40,11 +38,5 @@ internal class ForeignKeyViolationEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ForeignKeyViolationStore {
         return ForeignKeyViolationStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<ForeignKeyViolation>> {
-        return emptyMap()
     }
 }

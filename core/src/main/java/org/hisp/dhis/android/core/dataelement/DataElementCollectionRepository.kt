@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.dataelement
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
+import org.hisp.dhis.android.core.dataelement.internal.DataElementLegendSetChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import javax.inject.Inject
 
@@ -44,10 +46,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class DataElementCollectionRepository @Inject internal constructor(
     store: DataElementStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataElement>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -55,7 +58,7 @@ class DataElementCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         DataElementCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -106,5 +109,11 @@ class DataElementCollectionRepository @Inject internal constructor(
 
     fun withLegendSets(): DataElementCollectionRepository {
         return cf.withChild(DataElementFields.LEGEND_SETS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<DataElement> = mapOf(
+            DataElementFields.LEGEND_SETS to DataElementLegendSetChildrenAppender::create,
+        )
     }
 }

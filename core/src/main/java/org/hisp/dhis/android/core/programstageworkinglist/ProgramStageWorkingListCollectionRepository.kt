@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.programstageworkinglist
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -39,6 +40,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterChildrenAppender
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListDataFilterChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo
 import javax.inject.Inject
@@ -47,10 +50,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class ProgramStageWorkingListCollectionRepository @Inject internal constructor(
     store: ProgramStageWorkingListStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramStageWorkingList>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageWorkingList, ProgramStageWorkingListCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -58,7 +62,7 @@ class ProgramStageWorkingListCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageWorkingListCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -109,5 +113,14 @@ class ProgramStageWorkingListCollectionRepository @Inject internal constructor(
 
     fun withAttributeValueFilters(): ProgramStageWorkingListCollectionRepository {
         return cf.withChild(ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramStageWorkingList> = mapOf(
+            ProgramStageQueryCriteriaFields.DATA_FILTERS to
+                ProgramStageWorkingListDataFilterChildrenAppender::create,
+            ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
+                ProgramStageWorkingListAttributeValueFilterChildrenAppender::create,
+        )
     }
 }

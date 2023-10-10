@@ -32,12 +32,13 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -53,7 +54,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: ReadableStore<M>,
-    val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    internal val databaseAdapter: DatabaseAdapter,
+    internal val childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
     open val transformer: TwoWayTransformer<M, T>,
@@ -75,7 +77,13 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return Object repository
      */
     override fun one(): ReadOnlyObjectRepository<T> {
-        return ReadOnlyWithTransformerObjectRepositoryImpl(store, childrenAppenders, scope, transformer)
+        return ReadOnlyWithTransformerObjectRepositoryImpl(
+            store,
+            databaseAdapter,
+            childrenAppenders,
+            scope,
+            transformer,
+        )
     }
 
     /**
@@ -87,6 +95,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     override fun blockingGet(): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             blockingGetWithoutChildren(),
+            databaseAdapter,
             childrenAppenders,
             scope.children(),
         ).map { transformer.transform(it) }
@@ -118,7 +127,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     }
 
     val dataSource: DataSource<M, T>
-        get() = RepositoryDataSourceWithTransformer(store, scope, childrenAppenders, transformer)
+        get() = RepositoryDataSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

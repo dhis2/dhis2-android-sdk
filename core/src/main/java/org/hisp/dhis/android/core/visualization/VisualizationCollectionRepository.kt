@@ -28,13 +28,15 @@
 package org.hisp.dhis.android.core.visualization
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.visualization.internal.VisualizationColumnsRowsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
 import javax.inject.Inject
@@ -43,10 +45,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class VisualizationCollectionRepository @Inject internal constructor(
     store: VisualizationStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Visualization>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Visualization, VisualizationCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +57,7 @@ class VisualizationCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         VisualizationCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -177,5 +180,11 @@ class VisualizationCollectionRepository @Inject internal constructor(
 
     fun withColumnsRowsAndFilters(): VisualizationCollectionRepository {
         return cf.withChild(VisualizationFields.ITEMS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Visualization> = mapOf(
+            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender::create,
+        )
     }
 }

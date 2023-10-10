@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.category.CategoryCombo
 
 @Module
 internal class CategoryComboEntityDIModule {
@@ -51,11 +49,5 @@ internal class CategoryComboEntityDIModule {
         categoryOptionCleaner: CategoryOptionComboOrphanCleaner,
     ): CategoryComboHandler {
         return CategoryComboHandler(store, optionComboHandler, categoryCategoryComboLinkHandler, categoryOptionCleaner)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryCombo>> {
-        return mapOf(CategoryComboFields.CATEGORIES to CategoryCategoryComboChildrenAppender.create(databaseAdapter))
     }
 }

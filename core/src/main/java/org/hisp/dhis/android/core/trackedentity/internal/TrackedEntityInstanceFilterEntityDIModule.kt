@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 @Module
 internal class TrackedEntityInstanceFilterEntityDIModule {
@@ -41,18 +39,5 @@ internal class TrackedEntityInstanceFilterEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): TrackedEntityInstanceFilterStore {
         return TrackedEntityInstanceFilterStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        databaseAdapter: DatabaseAdapter,
-    ): Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> {
-        return mapOf(
-            TrackedEntityInstanceFilterFields.EVENT_FILTERS to
-                TrackedEntityInstanceFilterEvenFilterChildrenAppender.create(databaseAdapter),
-            EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender.create(databaseAdapter),
-        )
     }
 }

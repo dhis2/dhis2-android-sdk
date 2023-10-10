@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.option.OptionSet
 
 @Module
 internal class OptionSetEntityDIModule {
@@ -46,11 +44,5 @@ internal class OptionSetEntityDIModule {
     @Reusable
     fun handler(store: OptionSetStore): OptionSetHandler {
         return OptionSetHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<OptionSet>> {
-        return emptyMap()
     }
 }

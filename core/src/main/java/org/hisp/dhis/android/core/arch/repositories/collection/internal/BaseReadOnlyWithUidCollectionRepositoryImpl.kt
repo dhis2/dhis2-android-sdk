@@ -28,9 +28,10 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,10 +41,11 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     @JvmField internal val store: IdentifiableObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
-) : ReadOnlyCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
+) : ReadOnlyCollectionRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, cf),
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
 
     /**

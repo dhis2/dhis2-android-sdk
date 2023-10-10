@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.expressiondimensionitem
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
@@ -39,10 +40,11 @@ import javax.inject.Inject
 @Reusable
 class ExpressionDimensionItemCollectionRepository @Inject internal constructor(
     store: ExpressionDimensionItemStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ExpressionDimensionItem>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ExpressionDimensionItem, ExpressionDimensionItemCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,12 +52,16 @@ class ExpressionDimensionItemCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ExpressionDimensionItemCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
 ) {
     fun byExpression(): StringFilterConnector<ExpressionDimensionItemCollectionRepository> {
         return cf.string(ExpressionDimensionItemTableInfo.Columns.EXPRESSION)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ExpressionDimensionItem> = emptyMap()
     }
 }

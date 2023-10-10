@@ -31,9 +31,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 
 @Module
@@ -69,16 +67,5 @@ internal class OrganisationUnitEntityDIModule {
     @Reusable
     fun pathTransformer(): OrganisationUnitDisplayPathTransformer {
         return OrganisationUnitDisplayPathTransformer()
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<OrganisationUnit>> {
-        return mapOf(
-            OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender.create(databaseAdapter),
-            OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender.create(databaseAdapter),
-            OrganisationUnitFields.ORGANISATION_UNIT_GROUPS to
-                OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter),
-        )
     }
 }

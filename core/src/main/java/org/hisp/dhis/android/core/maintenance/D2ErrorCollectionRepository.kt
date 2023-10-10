@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.maintenance
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -42,10 +43,11 @@ import javax.inject.Inject
 @Reusable
 class D2ErrorCollectionRepository @Inject internal constructor(
     store: D2ErrorStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<D2Error>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<D2Error, D2ErrorCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +55,7 @@ class D2ErrorCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         D2ErrorCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -80,5 +82,9 @@ class D2ErrorCollectionRepository @Inject internal constructor(
 
     fun byCreated(): DateFilterConnector<D2ErrorCollectionRepository> {
         return cf.date(D2ErrorTableInfo.Columns.CREATED)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<D2Error> = emptyMap()
     }
 }

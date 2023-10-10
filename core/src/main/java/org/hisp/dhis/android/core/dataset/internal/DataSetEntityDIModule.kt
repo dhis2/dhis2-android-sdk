@@ -31,10 +31,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
-import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler
 
 @Module
@@ -71,19 +68,6 @@ internal class DataSetEntityDIModule {
             dataSetIndicatorLinkHandler,
             collectionCleaner,
             linkCleaner,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<DataSet>> {
-        return mapOf(
-            DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS to
-                DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-
-            DataSetFields.DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender.create(databaseAdapter),
-            DataSetFields.DATA_SET_ELEMENTS to DataSetElementChildrenAppender.create(databaseAdapter),
-            DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender.create(databaseAdapter),
         )
     }
 }

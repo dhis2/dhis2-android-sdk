@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -38,18 +39,20 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
 import javax.inject.Inject
 
 @Reusable
 class ProgramTrackedEntityAttributeCollectionRepository @Inject internal constructor(
     store: ProgramTrackedEntityAttributeStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramTrackedEntityAttribute>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<
     ProgramTrackedEntityAttribute,
     ProgramTrackedEntityAttributeCollectionRepository,
     >(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +60,7 @@ class ProgramTrackedEntityAttributeCollectionRepository @Inject internal constru
     ) { s: RepositoryScope ->
         ProgramTrackedEntityAttributeCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -98,5 +101,12 @@ class ProgramTrackedEntityAttributeCollectionRepository @Inject internal constru
         direction: OrderByDirection?,
     ): ProgramTrackedEntityAttributeCollectionRepository {
         return cf.withOrderBy(ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER, direction)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramTrackedEntityAttribute> = mapOf(
+            ProgramTrackedEntityAttributeFields.RENDER_TYPE to
+                ::ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender,
+        )
     }
 }

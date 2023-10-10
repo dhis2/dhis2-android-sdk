@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.user.AuthenticatedUser
 
 @Module
 internal class AuthenticatedUserEntityDIModule {
@@ -40,11 +38,5 @@ internal class AuthenticatedUserEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): AuthenticatedUserStore {
         return AuthenticatedUserStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<AuthenticatedUser>> {
-        return emptyMap()
     }
 }

@@ -25,37 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+package org.hisp.dhis.android.core.arch.repositories.children.internal
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
-import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
 
-@Module
-internal class DataElementEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): DataElementStore {
-        return DataElementStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun handler(
-        dataElementStore: DataElementStore,
-        attributeHandler: AttributeHandler,
-        dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
-        dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler,
-    ): DataElementHandler {
-        return DataElementHandler(
-            dataElementStore,
-            attributeHandler,
-            dataElementAttributeLinkHandler,
-            dataElementLegendSetLinkHandler,
-        )
-    }
-}
+internal typealias ChildrenAppenderGetter<M> = Map<String, (DatabaseAdapter) -> ChildrenAppender<M>>

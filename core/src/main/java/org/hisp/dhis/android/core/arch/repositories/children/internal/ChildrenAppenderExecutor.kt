@@ -27,17 +27,19 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.children.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.CoreObject
 
 internal object ChildrenAppenderExecutor {
     @JvmStatic
     fun <M> appendInObject(
         m: M?,
-        childrenAppenders: Map<String, ChildrenAppender<M>>,
+        databaseAdapter: DatabaseAdapter,
+        childrenAppenders: ChildrenAppenderGetter<M>,
         childrenSelection: ChildrenSelection,
     ): M? {
         return m?.let {
-            val selectedAppenders = getSelectedChildrenAppenders(childrenAppenders, childrenSelection)
+            val selectedAppenders = getSelectedChildrenAppenders(databaseAdapter, childrenAppenders, childrenSelection)
             selectedAppenders.fold(m) { nWithChildren: M, appender ->
                 appender.prepareChildren(setOf(nWithChildren))
                 appender.appendChildren(nWithChildren)
@@ -48,10 +50,11 @@ internal object ChildrenAppenderExecutor {
     @JvmStatic
     fun <M : CoreObject?> appendInObjectCollection(
         list: List<M>,
-        childrenAppenders: Map<String, ChildrenAppender<M>>,
+        databaseAdapter: DatabaseAdapter,
+        childrenAppenders: ChildrenAppenderGetter<M>,
         childrenSelection: ChildrenSelection,
     ): List<M> {
-        val selectedAppenders = getSelectedChildrenAppenders(childrenAppenders, childrenSelection)
+        val selectedAppenders = getSelectedChildrenAppenders(databaseAdapter, childrenAppenders, childrenSelection)
 
         selectedAppenders.forEach { it.prepareChildren(list) }
 
@@ -63,9 +66,10 @@ internal object ChildrenAppenderExecutor {
     }
 
     private fun <M> getSelectedChildrenAppenders(
-        appendersMap: Map<String, ChildrenAppender<M>>,
+        databaseAdapter: DatabaseAdapter,
+        appendersMap: ChildrenAppenderGetter<M>,
         childrenSelection: ChildrenSelection,
     ): Collection<ChildrenAppender<M>> {
-        return childrenSelection.children.mapNotNull { key -> appendersMap[key] }
+        return childrenSelection.children.mapNotNull { key -> appendersMap[key]?.invoke(databaseAdapter) }
     }
 }

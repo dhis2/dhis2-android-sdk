@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.relationship
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -38,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintChildrenAppender
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
@@ -52,10 +54,11 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<RelationshipType>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
@@ -64,7 +67,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
             teiStore,
             enrollmentStore,
             eventStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -159,5 +162,11 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
             RelationshipEntityType.PROGRAM_STAGE_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE
         }
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<RelationshipType> = mapOf(
+            RelationshipTypeFields.CONSTRAINTS to ::RelationshipConstraintChildrenAppender,
+        )
     }
 }

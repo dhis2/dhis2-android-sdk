@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 
 @Module
 internal class OrganisationUnitGroupEntityDIModule {
@@ -46,11 +44,5 @@ internal class OrganisationUnitGroupEntityDIModule {
     @Reusable
     fun handler(store: OrganisationUnitGroupStore): OrganisationUnitGroupHandler {
         return OrganisationUnitGroupHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<OrganisationUnitGroup>> {
-        return emptyMap()
     }
 }

@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryComboFields
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import javax.inject.Inject
@@ -40,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class CategoryComboCollectionRepository @Inject internal constructor(
     store: CategoryComboStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<CategoryCombo>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +54,7 @@ class CategoryComboCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         CategoryComboCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -62,5 +65,11 @@ class CategoryComboCollectionRepository @Inject internal constructor(
 
     fun withCategories(): CategoryComboCollectionRepository {
         return cf.withChild(CategoryComboFields.CATEGORIES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<CategoryCombo> = mapOf(
+            CategoryComboFields.CATEGORIES to CategoryCategoryComboChildrenAppender::create,
+        )
     }
 }

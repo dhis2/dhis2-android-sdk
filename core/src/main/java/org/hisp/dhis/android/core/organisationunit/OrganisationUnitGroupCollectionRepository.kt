@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
@@ -39,10 +40,11 @@ import javax.inject.Inject
 @Reusable
 class OrganisationUnitGroupCollectionRepository @Inject internal constructor(
     store: OrganisationUnitGroupStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<OrganisationUnitGroup>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnitGroup, OrganisationUnitGroupCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,7 +52,7 @@ class OrganisationUnitGroupCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         OrganisationUnitGroupCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -61,5 +63,9 @@ class OrganisationUnitGroupCollectionRepository @Inject internal constructor(
 
     fun byDisplayShortName(): StringFilterConnector<OrganisationUnitGroupCollectionRepository> {
         return cf.string(OrganisationUnitGroupTableInfo.Columns.DISPLAY_SHORT_NAME)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<OrganisationUnitGroup> = emptyMap()
     }
 }

@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.maintenance.D2Error
 
 @Module
 internal class D2ErrorEntityDIModule {
@@ -40,11 +38,5 @@ internal class D2ErrorEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): D2ErrorStore {
         return D2ErrorStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<D2Error>> {
-        return emptyMap()
     }
 }

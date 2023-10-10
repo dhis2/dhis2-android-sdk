@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.datavalue.DataValue
 
 @Module
 internal class DataValueEntityDIModule {
@@ -46,11 +44,5 @@ internal class DataValueEntityDIModule {
     @Reusable
     fun handler(dataValueStore: DataValueStore): DataValueHandler {
         return DataValueHandler(dataValueStore)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<DataValue>> {
-        return emptyMap()
     }
 }

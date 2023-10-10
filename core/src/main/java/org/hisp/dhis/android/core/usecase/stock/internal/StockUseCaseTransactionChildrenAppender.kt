@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
 internal class StockUseCaseTransactionChildrenAppender(
-    private val transactionLinkStore: StockUseCaseTransactionLinkStore,
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<InternalStockUseCase>() {
+    private val transactionLinkStore = StockUseCaseTransactionLinkStoreImpl(databaseAdapter)
 
     override fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
         return internalStockUseCase.toBuilder()

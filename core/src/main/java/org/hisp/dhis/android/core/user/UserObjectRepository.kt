@@ -28,32 +28,41 @@
 package org.hisp.dhis.android.core.user
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.UserFields
+import org.hisp.dhis.android.core.user.internal.UserRoleChildrenAppender
 import org.hisp.dhis.android.core.user.internal.UserStore
 import javax.inject.Inject
 
 @Reusable
 class UserObjectRepository @Inject internal constructor(
     store: UserStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<User>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
-    ObjectRepositoryFactory<UserObjectRepository> { s: RepositoryScope ->
+    ObjectRepositoryFactory { s: RepositoryScope ->
         UserObjectRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
 ) {
     fun withUserRoles(): UserObjectRepository {
         return cf.withChild(UserFields.USER_ROLES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
+            UserFields.USER_ROLES to ::UserRoleChildrenAppender,
+        )
     }
 }

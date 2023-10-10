@@ -31,11 +31,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.internal.EventHandler
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
-import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
 import org.hisp.dhis.android.core.relationship.internal.EnrollmentRelationshipOrphanCleaner
@@ -74,14 +71,6 @@ internal class EnrollmentEntityDIModule {
             noteHandler,
             noteUniquenessManager,
             relationshipOrphanCleaner,
-        )
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Enrollment>> {
-        return mapOf(
-            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender.create(databaseAdapter),
         )
     }
 }

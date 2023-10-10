@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.note.Note
 
 @Module
 internal class NoteEntityDIModule {
@@ -46,11 +44,5 @@ internal class NoteEntityDIModule {
     @Reusable
     fun handler(store: NoteStore): NoteHandler {
         return NoteHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<Note>> {
-        return emptyMap()
     }
 }

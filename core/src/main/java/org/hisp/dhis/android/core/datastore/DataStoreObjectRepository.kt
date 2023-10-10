@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.datastore
 
 import dagger.Reusable
 import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
@@ -42,16 +43,18 @@ import javax.inject.Inject
 @Reusable
 class DataStoreObjectRepository @Inject internal constructor(
     store: ObjectWithoutUidStore<DataStoreEntry>,
-    childrenAppenders: Map<String, ChildrenAppender<DataStoreEntry>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<DataStoreEntry>,
     scope: RepositoryScope,
     private val namespace: String,
     private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataStoreEntry, DataStoreObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s ->
-        DataStoreObjectRepository(store, childrenAppenders, s, namespace, key)
+        DataStoreObjectRepository(store, databaseAdapter, childrenAppenders, s, namespace, key)
     },
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {

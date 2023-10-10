@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
@@ -39,10 +40,11 @@ import javax.inject.Inject
 @Reusable
 class OrganisationUnitLevelCollectionRepository @Inject internal constructor(
     store: OrganisationUnitLevelStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<OrganisationUnitLevel>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnitLevel, OrganisationUnitLevelCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,12 +52,16 @@ class OrganisationUnitLevelCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         OrganisationUnitLevelCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
 ) {
     fun byLevel(): IntegerFilterConnector<OrganisationUnitLevelCollectionRepository> {
         return cf.integer(OrganisationUnitLevelTableInfo.Columns.LEVEL)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<OrganisationUnitLevel> = emptyMap()
     }
 }

@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.settings
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -42,10 +43,11 @@ import javax.inject.Inject
 @Reusable
 class AnalyticsTeiSettingCollectionRepository @Inject internal constructor(
     store: AnalyticsTeiSettingStore,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
-    childrenAppenders: MutableMap<String, ChildrenAppender<AnalyticsTeiSetting>>,
 ) : ReadOnlyCollectionRepositoryImpl<AnalyticsTeiSetting, AnalyticsTeiSettingCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope.toBuilder().children(scope.children().withChild(AnalyticsTeiDataChildrenAppender.KEY)).build(),
     FilterConnectorFactory(
@@ -53,8 +55,8 @@ class AnalyticsTeiSettingCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         AnalyticsTeiSettingCollectionRepository(
             store,
+            databaseAdapter,
             s,
-            childrenAppenders,
         )
     },
 ) {
@@ -84,5 +86,11 @@ class AnalyticsTeiSettingCollectionRepository @Inject internal constructor(
 
     fun byType(): EnumFilterConnector<AnalyticsTeiSettingCollectionRepository, ChartType> {
         return cf.enumC(AnalyticsTeiSettingTableInfo.Columns.TYPE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<AnalyticsTeiSetting> = mapOf(
+            AnalyticsTeiDataChildrenAppender.KEY to ::AnalyticsTeiDataChildrenAppender,
+        )
     }
 }

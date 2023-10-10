@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.option
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class OptionCollectionRepository @Inject internal constructor(
     store: OptionStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Option>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Option, OptionCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class OptionCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         OptionCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -75,5 +77,9 @@ class OptionCollectionRepository @Inject internal constructor(
 
     fun orderBySortOrder(direction: OrderByDirection?): OptionCollectionRepository {
         return cf.withOrderBy(OptionTableInfo.Columns.SORT_ORDER, direction)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Option> = emptyMap()
     }
 }

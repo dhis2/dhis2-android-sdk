@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.user
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -38,17 +39,22 @@ import javax.inject.Inject
 @Reusable
 class AuthenticatedUserObjectRepository @Inject internal constructor(
     store: AuthenticatedUserStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<AuthenticatedUser>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { updatedScope: RepositoryScope ->
         AuthenticatedUserObjectRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             updatedScope,
         )
     },
-)
+) {
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<AuthenticatedUser> = emptyMap()
+    }
+}

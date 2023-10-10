@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -41,10 +43,11 @@ import javax.inject.Inject
 @Reusable
 class CategoryOptionComboCollectionRepository @Inject internal constructor(
     store: CategoryOptionComboStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<CategoryOptionCombo>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryOptionCombo, CategoryOptionComboCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +55,7 @@ class CategoryOptionComboCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         CategoryOptionComboCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -72,5 +75,11 @@ class CategoryOptionComboCollectionRepository @Inject internal constructor(
 
     fun withCategoryOptions(): CategoryOptionComboCollectionRepository {
         return cf.withChild(CategoryOptionComboFields.CATEGORY_OPTIONS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<CategoryOptionCombo> = mapOf(
+            CategoryOptionComboFields.CATEGORY_OPTIONS to CategoryOptionComboCategoryOptionChildrenAppender::create,
+        )
     }
 }

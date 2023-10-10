@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -36,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.event.internal.EventFilterEventDataFilterChildrenAppender
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -45,10 +47,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class EventFilterCollectionRepository @Inject internal constructor(
     store: EventFilterStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<EventFilter>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<EventFilter, EventFilterCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -56,7 +59,7 @@ class EventFilterCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         EventFilterCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -123,5 +126,11 @@ class EventFilterCollectionRepository @Inject internal constructor(
 
     fun withEventDataFilters(): EventFilterCollectionRepository {
         return cf.withChild(EventQueryCriteriaFields.DATA_FILTERS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<EventFilter> = mapOf(
+            EventQueryCriteriaFields.DATA_FILTERS to EventFilterEventDataFilterChildrenAppender::create,
+        )
     }
 }

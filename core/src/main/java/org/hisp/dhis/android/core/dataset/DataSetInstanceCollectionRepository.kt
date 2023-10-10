@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -43,9 +44,11 @@ import javax.inject.Inject
 @Reusable
 class DataSetInstanceCollectionRepository @Inject internal constructor(
     store: DataSetInstanceStore,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataSetInstance, DataSetInstanceCollectionRepository>(
     store,
+    databaseAdapter,
     emptyMap(),
     scope,
     FilterConnectorFactory(
@@ -53,6 +56,7 @@ class DataSetInstanceCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         DataSetInstanceCollectionRepository(
             store,
+            databaseAdapter,
             s,
         )
     },

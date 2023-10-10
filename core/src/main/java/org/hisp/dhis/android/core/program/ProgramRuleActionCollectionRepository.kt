@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class ProgramRuleActionCollectionRepository @Inject internal constructor(
     store: ProgramRuleActionStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRuleAction>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleAction, ProgramRuleActionCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class ProgramRuleActionCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramRuleActionCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -103,5 +105,9 @@ class ProgramRuleActionCollectionRepository @Inject internal constructor(
 
     fun byOptionGroupUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
         return cf.string(ProgramRuleActionTableInfo.Columns.OPTION_GROUP)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramRuleAction> = emptyMap()
     }
 }

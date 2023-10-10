@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -40,14 +41,14 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import kotlin.collections.HashSet
 
 @Suppress("TooManyFunctions")
 internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val store: TrackedEntityInstanceStore,
+    private val databaseAdapter: DatabaseAdapter,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
-    private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
+    private val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
     private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
@@ -216,6 +217,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
+            databaseAdapter,
             childrenAppenders,
             ChildrenSelection(
                 setOf(

@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.program.ProgramStageDataElement
 
 @Module
 internal class ProgramStageDataElementEntityDIModule {
@@ -40,15 +38,5 @@ internal class ProgramStageDataElementEntityDIModule {
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ProgramStageDataElementStore {
         return ProgramStageDataElementStoreImpl(databaseAdapter)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(
-        valueTypeRenderingChildrenAppender: DataElementValueTypeRenderingChildrenAppender,
-    ): Map<String, ChildrenAppender<ProgramStageDataElement>> {
-        return mapOf(
-            ProgramStageDataElementFields.RENDER_TYPE to valueTypeRenderingChildrenAppender,
-        )
     }
 }

@@ -28,13 +28,15 @@
 package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryOptionFields
+import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import javax.inject.Inject
@@ -42,10 +44,11 @@ import javax.inject.Inject
 @Reusable
 class CategoryOptionCollectionRepository @Inject internal constructor(
     store: CategoryOptionStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<CategoryOption>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +56,7 @@ class CategoryOptionCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         CategoryOptionCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -94,5 +97,11 @@ class CategoryOptionCollectionRepository @Inject internal constructor(
      */
     fun withOrganisationUnits(): CategoryOptionCollectionRepository {
         return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<CategoryOption> = mapOf(
+            CategoryOptionFields.ORGANISATION_UNITS to CategoryOptionOrganisationUnitChildrenAppender::create,
+        )
     }
 }

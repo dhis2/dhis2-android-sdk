@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.program
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class ProgramRuleVariableCollectionRepository @Inject internal constructor(
     store: ProgramRuleVariableStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<ProgramRuleVariable>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleVariable, ProgramRuleVariableCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class ProgramRuleVariableCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ProgramRuleVariableCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -82,5 +84,9 @@ class ProgramRuleVariableCollectionRepository @Inject internal constructor(
         ProgramRuleVariableSourceType,
         > {
         return cf.enumC(ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<ProgramRuleVariable> = emptyMap()
     }
 }

@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -44,12 +45,14 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollectionRepository<M>>internal constructor(
     store: IdentifiableObjectStore<M>,
-    childrenAppenders: Map<String, ChildrenAppender<M>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     @JvmField protected val transformer: Transformer<P, M>,
     cf: FilterConnectorFactory<R>,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     cf,

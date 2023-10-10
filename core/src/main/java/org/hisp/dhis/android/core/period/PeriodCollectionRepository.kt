@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.period
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class PeriodCollectionRepository @Inject internal constructor(
     store: PeriodStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Period>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<Period, PeriodCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class PeriodCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         PeriodCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -71,5 +73,9 @@ class PeriodCollectionRepository @Inject internal constructor(
 
     fun byEndDate(): DateFilterConnector<PeriodCollectionRepository> {
         return cf.date(PeriodTableInfo.Columns.END_DATE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Period> = emptyMap()
     }
 }

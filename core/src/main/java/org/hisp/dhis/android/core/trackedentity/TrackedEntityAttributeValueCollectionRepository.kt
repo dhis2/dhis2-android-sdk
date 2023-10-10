@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DeletedFilterConnector
@@ -42,11 +43,12 @@ import javax.inject.Inject
 @Reusable
 class TrackedEntityAttributeValueCollectionRepository @Inject internal constructor(
     private val store: TrackedEntityAttributeValueStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<TrackedEntityAttributeValue>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
 ) : ReadOnlyCollectionRepositoryImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +56,7 @@ class TrackedEntityAttributeValueCollectionRepository @Inject internal construct
     ) { s: RepositoryScope ->
         TrackedEntityAttributeValueCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
             dataStatePropagator,
         )
@@ -68,6 +70,7 @@ class TrackedEntityAttributeValueCollectionRepository @Inject internal construct
             .byTrackedEntityInstance().eq(trackedEntityInstance).scope
         return TrackedEntityAttributeValueObjectRepository(
             store,
+            databaseAdapter,
             childrenAppenders,
             updatedScope,
             dataStatePropagator,
@@ -98,5 +101,9 @@ class TrackedEntityAttributeValueCollectionRepository @Inject internal construct
 
     fun byDeleted(): DeletedFilterConnector<TrackedEntityAttributeValueCollectionRepository> {
         return cf.deleted(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<TrackedEntityAttributeValue> = emptyMap()
     }
 }

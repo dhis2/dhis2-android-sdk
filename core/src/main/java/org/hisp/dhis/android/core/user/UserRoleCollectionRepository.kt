@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.user
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -38,10 +39,11 @@ import javax.inject.Inject
 @Reusable
 class UserRoleCollectionRepository @Inject internal constructor(
     store: UserRoleStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<UserRole>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -49,8 +51,12 @@ class UserRoleCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         UserRoleCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
-)
+) {
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<UserRole> = emptyMap()
+    }
+}

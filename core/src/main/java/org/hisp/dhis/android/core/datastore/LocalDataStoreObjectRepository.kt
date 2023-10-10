@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.datastore
 
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
@@ -38,16 +39,19 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 class LocalDataStoreObjectRepository internal constructor(
     store: LocalDataStoreStore,
-    childrenAppenders: Map<String, ChildrenAppender<KeyValuePair>>,
+    databaseAdapter: DatabaseAdapter,
+    childrenAppenders: ChildrenAppenderGetter<KeyValuePair>,
     scope: RepositoryScope,
     private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         LocalDataStoreObjectRepository(
             store,
+            databaseAdapter,
             childrenAppenders,
             s,
             key,

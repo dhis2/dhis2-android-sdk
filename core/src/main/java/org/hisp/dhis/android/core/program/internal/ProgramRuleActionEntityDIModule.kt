@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.program.ProgramRuleAction
 
 @Module
 internal class ProgramRuleActionEntityDIModule {
@@ -46,11 +44,5 @@ internal class ProgramRuleActionEntityDIModule {
     @Reusable
     fun handler(store: ProgramRuleActionStore): ProgramRuleActionHandler {
         return ProgramRuleActionHandler(store)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<ProgramRuleAction>> {
-        return emptyMap()
     }
 }

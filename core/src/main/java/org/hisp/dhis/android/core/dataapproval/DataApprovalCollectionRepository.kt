@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataapproval
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,18 +40,19 @@ import javax.inject.Inject
 @Reusable
 class DataApprovalCollectionRepository @Inject internal constructor(
     dataApprovalStore: DataApprovalStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataApproval>>,
+    databaseAdapter: DatabaseAdapter,
     repositoryScope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataApproval, DataApprovalCollectionRepository>(
     dataApprovalStore,
-    childrenAppenders,
+    databaseAdapter,
+    emptyMap(),
     repositoryScope,
     FilterConnectorFactory(
         repositoryScope,
     ) { s: RepositoryScope ->
         DataApprovalCollectionRepository(
             dataApprovalStore,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },

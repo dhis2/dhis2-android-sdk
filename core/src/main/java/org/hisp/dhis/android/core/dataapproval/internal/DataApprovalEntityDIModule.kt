@@ -31,8 +31,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataapproval.DataApproval
 
 @Module
 internal class DataApprovalEntityDIModule {
@@ -46,11 +44,5 @@ internal class DataApprovalEntityDIModule {
     @Reusable
     fun handler(dataApprovalStore: DataApprovalStore): DataApprovalHandler {
         return DataApprovalHandler(dataApprovalStore)
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(): Map<String, ChildrenAppender<DataApproval>> {
-        return emptyMap()
     }
 }

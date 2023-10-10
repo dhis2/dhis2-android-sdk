@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.constant
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -39,10 +40,11 @@ import javax.inject.Inject
 @Reusable
 class ConstantCollectionRepository @Inject internal constructor(
     store: ConstantStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<Constant>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Constant, ConstantCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,12 +52,16 @@ class ConstantCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         ConstantCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
 ) {
     fun byValue(): DoubleFilterConnector<ConstantCollectionRepository> {
         return cf.doubleC(ConstantTableInfo.Columns.VALUE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Constant> = emptyMap()
     }
 }

@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.option
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -41,10 +42,11 @@ import javax.inject.Inject
 @Reusable
 class OptionSetCollectionRepository @Inject internal constructor(
     store: OptionSetStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<OptionSet>>,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OptionSet, OptionSetCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +54,7 @@ class OptionSetCollectionRepository @Inject internal constructor(
     ) { s: RepositoryScope ->
         OptionSetCollectionRepository(
             store,
-            childrenAppenders,
+            databaseAdapter,
             s,
         )
     },
@@ -63,5 +65,9 @@ class OptionSetCollectionRepository @Inject internal constructor(
 
     fun byValueType(): EnumFilterConnector<OptionSetCollectionRepository, ValueType> {
         return cf.enumC(OptionSetTableInfo.Columns.VALUE_TYPE)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<OptionSet> = emptyMap()
     }
 }

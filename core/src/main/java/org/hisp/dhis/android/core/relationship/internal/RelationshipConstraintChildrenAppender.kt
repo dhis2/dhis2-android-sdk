@@ -27,14 +27,19 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipType
 
-internal class RelationshipConstraintChildrenAppender(private val constraintStore: RelationshipConstraintStore) :
-    ChildrenAppender<RelationshipType>() {
+internal class RelationshipConstraintChildrenAppender(
+    databaseAdapter: DatabaseAdapter,
+) : ChildrenAppender<RelationshipType>() {
+    private val constraintStore = RelationshipConstraintStoreImpl(databaseAdapter)
+
     private var constraints: List<RelationshipConstraint>? = null
+
     override fun prepareChildren(collection: Collection<RelationshipType>) {
         constraints = constraintStore.selectAll()
     }

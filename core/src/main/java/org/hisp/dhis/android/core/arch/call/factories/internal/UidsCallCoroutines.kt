@@ -25,45 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import org.hisp.dhis.android.core.program.Program
-import javax.inject.Inject
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-@Reusable
-internal class ProgramCall @Inject internal constructor(
-    private val service: ProgramService,
-    val handler: ProgramHandler,
-    val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Program> {
-
-    override suspend fun download(uids: Set<String>): List<Program> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        return apiDownloader.downloadPartitionedCoroutines(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            service.getPrograms(
-                ProgramFields.allFields,
-                ProgramFields.uid.`in`(partitionUids),
-                accessDataReadFilter,
-                false,
-            )
-        }
-    }
-
-    // TODO : remove this fun and refactor ProgramEndpointCallShould to Kotlin
-    fun coroutineEncapsulationForJavaTest(uids: Set<String>): List<Program> = runBlocking {
-        download(uids)
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 50
-    }
+internal fun interface UidsCallCoroutines<P> {
+    suspend fun download(uids: Set<String>): List<P>
 }

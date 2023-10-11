@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import com.google.common.collect.Lists
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -44,12 +42,12 @@ internal class EventFilterCall @Inject internal constructor(
     val handler: EventFilterHandler,
     val apiDownloader: APIDownloader,
     val versionManager: DHISVersionManager,
-) : UidsCall<EventFilter> {
+) : UidsCallCoroutines<EventFilter> {
 
-    override fun download(programUids: Set<String>): Single<List<EventFilter>> {
+    override suspend fun download(programUids: Set<String>): List<EventFilter> {
         return if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
             val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
-            apiDownloader.downloadPartitioned(
+            apiDownloader.downloadPartitionedCoroutines(
                 programUids,
                 MAX_UID_LIST_SIZE,
                 handler,
@@ -62,7 +60,7 @@ internal class EventFilterCall @Inject internal constructor(
                 )
             }
         } else {
-            Single.just(Lists.newArrayList())
+            arrayListOf()
         }
     }
 

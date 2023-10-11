@@ -145,7 +145,7 @@ internal class MetadataCall @Inject constructor(
         organisationUnitModuleDownloader.downloadMetadata(user).blockingAwait()
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
 
-        programDownloader.downloadMetadata().blockingAwait()
+        programDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Program::class.java, false))
 
         dataSetDownloader.downloadMetadata().blockingAwait()

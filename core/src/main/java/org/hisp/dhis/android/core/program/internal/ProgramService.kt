@@ -25,23 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.program.Program;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.program.Program
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface ProgramService {
+internal interface ProgramService {
     @GET("programs")
-    Single<Payload<Program>> getPrograms(@Query("fields") @Which Fields<Program> fields,
-                                         @Query("filter") @Where Filter<Program, String> uids,
-                                         @Query("filter") String accessDataReadFilter,
-                                         @Query("paging") Boolean paging);
+    fun getPrograms(
+        @Query("fields") @Which fields: Fields<Program>,
+        @Query("filter") @Where uids: Filter<Program, String>,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("paging") paging: Boolean,
+    ): Single<Payload<Program>>
 }

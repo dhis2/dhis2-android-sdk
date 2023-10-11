@@ -59,6 +59,8 @@ import java.util.Set;
 
 import io.reactivex.Single;
 
+// TODO : remove this class
+
 @RunWith(JUnit4.class)
 public class ProgramEndpointCallShould extends BaseCallShould {
 
@@ -82,7 +84,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Mock
     private APIDownloader mockedApiDownloader;
 
-    private Single<List<Program>> programCallResult = Single.just(Collections.emptyList());
+    private List<Program> programCallResult = Collections.emptyList();
 
     private Set<String> programUids = Sets.newSet("programUid");
 
@@ -91,16 +93,16 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        when(mockedApiDownloader.downloadPartitioned(same(programUids), anyInt(), any(Handler.class), any())).thenReturn(programCallResult);
+        when(mockedApiDownloader.downloadPartitionedCoroutinesJavaCompatible(same(programUids), anyInt(), any(Handler.class), any())).thenReturn(programCallResult);
         when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(),
                 anyBoolean())).thenReturn(apiCall);
     }
 
     @Test
     public void call_api_downloader() {
-        new ProgramCall(programService, programHandler, mockedApiDownloader).download(programUids).blockingGet();
+        new ProgramCall(programService, programHandler, mockedApiDownloader).coroutineEncapsulationForJavaTest(programUids);
 
-        verify(mockedApiDownloader).downloadPartitioned(same(programUids), anyInt(), any(Handler.class), any());
+        verify(mockedApiDownloader).downloadPartitionedCoroutinesJavaCompatible(same(programUids), anyInt(), any(Handler.class), any());
     }
 
     @Test
@@ -109,7 +111,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
                 fieldsCaptor.capture(), filterCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
         ).thenReturn(apiCall);
 
-        new ProgramCall(programService, programHandler, new APIDownloaderImpl(resourceHandler)).download(programUids).blockingGet();
+        new ProgramCall(programService, programHandler, new APIDownloaderImpl(resourceHandler)).coroutineEncapsulationForJavaTest(programUids);
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
         assertThat(filterCaptor.getValue().values().iterator().next()).isEqualTo("programUid");

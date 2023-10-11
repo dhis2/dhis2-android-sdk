@@ -27,13 +27,17 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
 import org.hisp.dhis.android.core.option.internal.OptionCall
@@ -56,6 +60,7 @@ import org.mockito.ArgumentMatchers
 import retrofit2.Response
 import javax.net.ssl.HttpsURLConnection
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class ProgramModuleDownloaderShould : BaseCallShould() {
     private val program: Program = mock()
@@ -96,11 +101,11 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         returnEmptyList(optionSetCall)
         returnEmptyList(optionCall)
         returnEmptyList(optionGroupCall)
-        returnEmptyList(trackedEntityInstanceFilterCall)
-        returnEmptyList(eventFilterCall)
-        returnEmptyList(programStageWorkingListCall)
+        returnEmptyListCoroutines(trackedEntityInstanceFilterCall)
+        returnEmptyListCoroutines(eventFilterCall)
+        returnEmptyListCoroutines(programStageWorkingListCall)
         returnEmptyList(programRuleCall)
-        returnEmptyList(programStageCall)
+        returnEmptyListCoroutines(programStageCall)
         programModuleDownloader = ProgramModuleDownloader(
             programCall,
             programStageCall,
@@ -122,76 +127,85 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(Single.just(emptyList()))
     }
 
-    private fun <O> returnSingletonList(call: UidsCall<O>?, o: O) {
-        whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(Single.just(listOf(o)))
+    private fun returnEmptyListCoroutines(call: UidsCallCoroutines<*>?) = runTest {
+        whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(emptyList())
+    }
+
+    private fun <O> returnSingletonList(call: UidsCallCoroutines<O>?, o: O) = runTest {
+        whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(listOf(o))
     }
 
     private fun returnError(call: UidsCall<*>?) {
         whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(Single.error(RuntimeException()))
     }
 
+    @Suppress("TooGenericExceptionThrown")
+    private fun returnErrorCoroutines(call: UidsCallCoroutines<*>?) = runTest {
+        whenever(call!!.download(ArgumentMatchers.anySet())).doAnswer { throw RuntimeException() }
+    }
+
     @Test
-    fun succeed_when_endpoint_calls_succeed() {
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun succeed_when_endpoint_calls_succeed() = runTest {
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_program_call_fails() {
-        returnError(programCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_program_call_fails() = runTest {
+        returnErrorCoroutines(programCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_program_stage_call_fails() {
-        returnError(programStageCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_program_stage_call_fails() = runTest {
+        returnErrorCoroutines(programStageCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_program_rule_call_fails() {
+    fun fail_when_program_rule_call_fails() = runTest {
         returnError(programRuleCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_tracked_entity_types_call_fails() {
-        returnError(trackedEntityTypeCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_tracked_entity_types_call_fails() = runTest {
+        returnErrorCoroutines(trackedEntityTypeCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_tracked_entity_attributes_call_fails() {
-        returnError(trackedEntityAttributeCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_tracked_entity_attributes_call_fails() = runTest {
+        returnErrorCoroutines(trackedEntityAttributeCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_tracked_entity_instance_filters_call_fails() {
-        returnError(trackedEntityInstanceFilterCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_tracked_entity_instance_filters_call_fails() = runTest {
+        returnErrorCoroutines(trackedEntityInstanceFilterCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_event_filters_call_fails() {
-        returnError(eventFilterCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_event_filters_call_fails() = runTest {
+        returnErrorCoroutines(eventFilterCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_program_stage_working_list_call_fails() {
-        returnError(programStageWorkingListCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+    fun fail_when_program_stage_working_list_call_fails() = runTest {
+        returnErrorCoroutines(programStageWorkingListCall)
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_relationship_type_call_fails() {
+    fun fail_when_relationship_type_call_fails() = runTest {
         whenever(relationshipTypeCall.download()).thenReturn(Single.error(RuntimeException()))
-        programModuleDownloader.downloadMetadata().blockingAwait()
+        programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
-    fun fail_when_option_call_fails() {
+    fun fail_when_option_call_fails() = runTest {
         returnError(optionCall)
-        programModuleDownloader.downloadMetadata().blockingAwait()
+        programModuleDownloader.downloadMetadata()
     }
 }

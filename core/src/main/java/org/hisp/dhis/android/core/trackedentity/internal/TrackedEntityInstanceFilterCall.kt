@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -43,12 +42,12 @@ class TrackedEntityInstanceFilterCall @Inject internal constructor(
     private val handler: TrackedEntityInstanceFilterHandler,
     private val apiDownloader: APIDownloader,
     private val versionManager: DHISVersionManager,
-) : UidsCall<TrackedEntityInstanceFilter> {
-    override fun download(uids: Set<String>): Single<List<TrackedEntityInstanceFilter>> {
+) : UidsCallCoroutines<TrackedEntityInstanceFilter> {
+    override suspend fun download(uids: Set<String>): List<TrackedEntityInstanceFilter> {
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
 
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            apiDownloader.downloadPartitioned(
+            apiDownloader.downloadPartitionedCoroutines(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,
@@ -61,7 +60,7 @@ class TrackedEntityInstanceFilterCall @Inject internal constructor(
                 )
             }
         } else {
-            apiDownloader.downloadPartitioned(
+            apiDownloader.downloadPartitionedCoroutines(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,

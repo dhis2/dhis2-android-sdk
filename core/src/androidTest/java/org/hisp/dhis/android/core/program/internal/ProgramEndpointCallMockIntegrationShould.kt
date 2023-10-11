@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
@@ -116,9 +117,9 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
                 val programStage = CreateProgramStageUtils.create(1L, "dBwrot7S420", programUid)
                 databaseAdapter.insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage)
                 dhis2MockServer.enqueueMockResponse("program/programs.json")
-                val programCall = objects.d2DIComponent.programCall().download(Sets.newSet(programUid))
-
-                programCall.blockingGet()
+                runBlocking {
+                    objects.d2DIComponent.programCall().download(Sets.newSet(programUid))
+                }
 
                 Unit()
             }

@@ -36,12 +36,27 @@ import org.hisp.dhis.android.core.resource.internal.Resource
 
 @Suppress("TooManyFunctions")
 internal interface APIDownloader {
+
     fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
         pageDownloader: (Set<String>) -> Single<Payload<P>>,
     ): Single<List<P>>
+
+    suspend fun <P> downloadPartitionedCoroutines(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+    ): List<P>
+
+    fun <P> downloadPartitionedCoroutinesJavaCompatible(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<P>>,
+    ): List<P>
 
     fun <P, O> downloadPartitioned(
         uids: Set<String>,
@@ -50,6 +65,14 @@ internal interface APIDownloader {
         pageDownloader: (Set<String>) -> Single<Payload<O>>,
         transform: (O) -> P,
     ): Single<List<P>>
+
+    suspend fun <P, O> downloadPartitionedCoroutines(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        transform: (O) -> P,
+    ): List<P>
 
     fun <P> downloadPartitioned(
         uids: Set<String>,

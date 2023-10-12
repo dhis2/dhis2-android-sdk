@@ -29,10 +29,15 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,15 +52,18 @@ public class TrackedEntityInstanceService {
     private final TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository;
     private final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository;
     private final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository;
+    private final FileResourceCollectionRepository fileResourceCollectionRepository;
 
     @Inject
     TrackedEntityInstanceService(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
                                  TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository,
                                  ProgramTrackedEntityAttributeCollectionRepository
-                                         programTrackedEntityAttributeRepository) {
+                                         programTrackedEntityAttributeRepository,
+                                 FileResourceCollectionRepository fileResourceCollectionRepository) {
         this.trackedEntityAttributeRepository = trackedEntityAttributeRepository;
         this.trackedEntityAttributeValueRepository = trackedEntityAttributeValueRepository;
         this.programTrackedEntityAttributeRepository = programTrackedEntityAttributeRepository;
+        this.fileResourceCollectionRepository = fileResourceCollectionRepository;
     }
 
     /**
@@ -93,9 +101,24 @@ public class TrackedEntityInstanceService {
 
             if (!fromTeiAttributes.isEmpty()) {
                 for (TrackedEntityAttributeValue attributeValue : fromTeiAttributes) {
-                    trackedEntityAttributeValueRepository
-                            .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                            .blockingSet(attributeValue.value());
+
+                    TrackedEntityAttribute attribute = trackedEntityAttributeRepository.uid(
+                            attributeValue.trackedEntityAttribute()).blockingGet();
+
+                    if (attribute.valueType() == ValueType.IMAGE || attribute.valueType() == ValueType.FILE_RESOURCE) {
+                        File file = new File(fileResourceCollectionRepository.uid(attributeValue.value())
+                                .blockingGet().path());
+
+                        String newFileResourceId = fileResourceCollectionRepository.blockingAdd(file);
+
+                        trackedEntityAttributeValueRepository
+                                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                                .blockingSet(newFileResourceId);
+                    } else {
+                        trackedEntityAttributeValueRepository
+                                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                                .blockingSet(attributeValue.value());
+                    }
                 }
             }
         }

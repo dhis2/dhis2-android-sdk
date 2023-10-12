@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.utils.integration.mock
+package org.hisp.dhis.android.core.arch.helpers
 
-import org.hisp.dhis.android.core.MockIntegrationTestObjects
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-internal object MockIntegrationTestObjectsFactory {
-    private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
+@RunWith(JUnit4::class)
+class UserHelperShould {
+    @Test
+    fun md5_evaluate_same_string() {
+        val md5s1 = UserHelper.md5("user1", "password1")
+        val md5s2 = UserHelper.md5("user1", "password1")
 
-    fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
-        val instance = instances[content]
-        return if (instance != null) {
-            IntegrationTestObjectsWithIsNewInstance(instance, false)
-        } else {
-            val newInstance = MockIntegrationTestObjects(content)
-            instances[content] = newInstance
-            IntegrationTestObjectsWithIsNewInstance(newInstance, true)
-        }
+        assertThat(md5s1.length).isEqualTo(32)
+        assertThat(md5s2.length).isEqualTo(32)
+        assertThat(md5s1 == md5s2).isTrue()
     }
 
-    fun removeObjects(content: MockIntegrationTestDatabaseContent) {
-        val instance = instances[content]
-        if (instance != null) {
-            instance.tearDown()
-            instances.remove(content)
-        }
+    @Test
+    fun md5_evaluate_different_string() {
+        val md5s1 = UserHelper.md5("user2", "password2")
+        val md5s2 = UserHelper.md5("user3", "password3")
+
+        assertThat(md5s1.length).isEqualTo(32)
+        assertThat(md5s2.length).isEqualTo(32)
+        assertThat(md5s1 == md5s2).isFalse()
     }
 
-    @JvmStatic
-    fun tearDown() {
-        if (instances.isNotEmpty()) {
-            for (objects in instances.values) {
-                objects.tearDown()
-            }
-            instances.clear()
-        }
+    @Test
+    fun md5_evaluate_special_chars() {
+        val md5s1 = UserHelper.md5("user1", "pässword")
+        val md5s2 = UserHelper.md5("user1", "password")
+
+        assertThat(md5s1.length).isEqualTo(32)
+        assertThat(md5s2.length).isEqualTo(32)
+        assertThat(md5s1 == md5s2).isFalse()
     }
 
-    internal class IntegrationTestObjectsWithIsNewInstance(
-        val objects: MockIntegrationTestObjects,
-        val isNewInstance: Boolean
-    )
+    @Test
+    fun base64_encode_credentials() {
+        val base64 = UserHelper.base64("user", "password")
+        assertThat(base64).isEqualTo("dXNlcjpwYXNzd29yZA==")
+    }
+
+    @Test
+    fun base64_encode_special_chars() {
+        val base64 = UserHelper.base64("user", "pässword")
+        assertThat(base64).isEqualTo("dXNlcjpww6Rzc3dvcmQ=")
+    }
 }

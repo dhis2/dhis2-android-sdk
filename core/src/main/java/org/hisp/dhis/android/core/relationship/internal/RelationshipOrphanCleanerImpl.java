@@ -84,7 +84,8 @@ abstract class RelationshipOrphanCleanerImpl<O extends ObjectWithUidInterface, R
     private boolean isInRelationshipList(Relationship target,
                                          Collection<Relationship> list) {
         for (Relationship relationship : list) {
-            if (target.from() == null || target.to() == null || relationship.from() == null || target.to() == null) {
+            if (target.from() == null || target.to() == null ||
+                    relationship.from() == null || relationship.to() == null) {
                 continue;
             }
             if (areItemsEqual(target.from(), relationship.from()) &&

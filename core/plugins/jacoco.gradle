@@ -101,7 +101,8 @@ task jacocoReport(type: JacocoReport) {
     ]))
 
     reports {
-        csv.enabled false // change if needed
+        //eyeseetea comment to avoid compile errors
+       // csv.enabled false // change if needed
         xml {
             enabled true
             destination file("${buildDir}/coverage-report/jacocoTestReport.xml")

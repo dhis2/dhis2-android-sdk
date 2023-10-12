@@ -64,5 +64,10 @@ abstract class BaseMockIntegrationTest {
             }
             return tuple.isNewInstance
         }
+
+        @JvmStatic
+        fun removeObjects(content: MockIntegrationTestDatabaseContent) {
+            MockIntegrationTestObjectsFactory.removeObjects(content)
+        }
     }
 }

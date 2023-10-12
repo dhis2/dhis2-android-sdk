@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -51,6 +52,11 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     @Before
     @Throws(IOException::class)
     open fun setUp() {
+        store.delete()
+    }
+
+    @After
+    open fun tearDown() {
         store.delete()
     }
 

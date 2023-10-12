@@ -27,42 +27,18 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
-import org.hisp.dhis.android.core.MockIntegrationTestObjects
+import org.junit.After
+import org.junit.Before
 
-internal object MockIntegrationTestObjectsFactory {
-    private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
+abstract class BaseMockIntegrationTestMethodScopedEmptyEnqueable : BaseMockIntegrationTest() {
 
-    fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
-        val instance = instances[content]
-        return if (instance != null) {
-            IntegrationTestObjectsWithIsNewInstance(instance, false)
-        } else {
-            val newInstance = MockIntegrationTestObjects(content)
-            instances[content] = newInstance
-            IntegrationTestObjectsWithIsNewInstance(newInstance, true)
-        }
+    @Before
+    fun setup() {
+        setUpClass(MockIntegrationTestDatabaseContent.MethodScopedEmptyEnqueable)
     }
 
-    fun removeObjects(content: MockIntegrationTestDatabaseContent) {
-        val instance = instances[content]
-        if (instance != null) {
-            instance.tearDown()
-            instances.remove(content)
-        }
-    }
-
-    @JvmStatic
+    @After
     fun tearDown() {
-        if (instances.isNotEmpty()) {
-            for (objects in instances.values) {
-                objects.tearDown()
-            }
-            instances.clear()
-        }
+        removeObjects(MockIntegrationTestDatabaseContent.MethodScopedEmptyEnqueable)
     }
-
-    internal class IntegrationTestObjectsWithIsNewInstance(
-        val objects: MockIntegrationTestObjects,
-        val isNewInstance: Boolean
-    )
 }

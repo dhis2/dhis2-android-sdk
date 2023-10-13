@@ -56,7 +56,7 @@ import org.junit.runners.JUnit4
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 
-class ProgramEndpointCallShouldKotlin : BaseCallShould() {
+class ProgramEndpointCallShould : BaseCallShould() {
 
     private val programService: ProgramService = mock()
     private val programHandler: ProgramHandler = mock()
@@ -78,19 +78,7 @@ class ProgramEndpointCallShouldKotlin : BaseCallShould() {
         mockedApiDownloader.stub {
             onBlocking {
                 downloadPartitionedCoroutines(same(programUids), any(), any<Handler<Program>>(), any())
-            }
-            doReturn(programCallResult)
-        }
-
-        programService.stub {
-            onBlocking {
-                getPrograms(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                )
-            } doReturn apiCall
+            } doReturn programCallResult
         }
     }
 
@@ -127,9 +115,9 @@ class ProgramEndpointCallShouldKotlin : BaseCallShould() {
             APIDownloaderImpl(resourceHandler),
         ).download(programUids)
 
-        assertThat(fieldsCaptor.firstValue.fields()).isEqualTo(ProgramFields.allFields)
+        assertThat(fieldsCaptor.firstValue).isEqualTo(ProgramFields.allFields)
         assertThat(filterCaptor.firstValue.values().iterator().next()).isEqualTo("programUid")
-        assertThat(accesDataReadFilter).isEqualTo("access.data.read:eq:true")
+        assertThat(accesDataReadFilter.firstValue).isEqualTo("access.data.read:eq:true")
 
     }
 

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
+import kotlinx.coroutines.rx2.await
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -81,11 +82,11 @@ internal class ProgramModuleDownloader @Inject constructor(
             attributes,
             programStages,
         )
-        programRuleCall.download(programUids)
-        relationshipTypeCall.download()
-        optionSetCall.download(optionSetUids)
-        optionCall.download(optionSetUids)
-        optionGroupCall.download(optionSetUids)
+        programRuleCall.download(programUids).blockingGet()
+        relationshipTypeCall.download().blockingGet()
+        optionSetCall.download(optionSetUids).blockingGet()
+        optionCall.download(optionSetUids).blockingGet()
+        optionGroupCall.download(optionSetUids).blockingGet()
 
         downloadFiltersAndWorkingLists(programUids)
     }

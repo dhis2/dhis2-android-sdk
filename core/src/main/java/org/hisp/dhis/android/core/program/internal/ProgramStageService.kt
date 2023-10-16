@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.program.ProgramStage
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface ProgramStageService {
+internal fun interface ProgramStageService {
     @GET("programStages")
-    Single<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
-                                                   @Query("filter") String programUidsFilterString,
-                                                   @Query("filter") String accessDataReadFilter,
-                                                   @Query("paging") Boolean paging);
+    suspend fun getProgramStages(
+        @Query("fields") @Which fields: Fields<ProgramStage?>?,
+        @Query("filter") programUidsFilterString: String?,
+        @Query("filter") accessDataReadFilter: String?,
+        @Query("paging") paging: Boolean?,
+    ): Payload<ProgramStage>
 }

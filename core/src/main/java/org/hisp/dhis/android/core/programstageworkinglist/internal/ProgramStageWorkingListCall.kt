@@ -47,7 +47,7 @@ internal class ProgramStageWorkingListCall @Inject internal constructor(
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
 
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
-            apiDownloader.downloadPartitionedCoroutines(
+            apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,

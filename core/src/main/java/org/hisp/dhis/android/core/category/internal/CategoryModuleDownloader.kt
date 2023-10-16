@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import javax.inject.Inject
 
 @Reusable
@@ -42,22 +40,21 @@ class CategoryModuleDownloader @Inject internal constructor(
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,
     private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
-            .flatMap { categoryComboCall.download(it) }
-            .flatMap { comboUids ->
-                val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
-                categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(categoryUids)
-                        .flatMap { categoryOptions ->
+    override suspend fun downloadMetadata() {
+        categoryComboUidsSeeker.seekUids().let { uids ->
+            categoryComboCall.download(uids).let { comboUids ->
+                CategoryParentUidsHelper.getCategoryUids(comboUids).let { categoryUids ->
+                    categoryCall.download(categoryUids).let { categories ->
+                        categoryOptionCall.download(categoryUids).also { categoryOptions ->
                             categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
                             categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
+                            categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos()
                         }
+                    }
                 }
             }
-            .map { categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos() }
-            .ignoreElement()
+        }
     }
 }

@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import javax.inject.Inject
@@ -42,13 +41,13 @@ internal class ProgramIndicatorCall @Inject constructor(
     private val handler: ProgramIndicatorHandler,
     private val apiDownloader: APIDownloader,
     private val programStore: ProgramStore,
-) : UidsCall<ProgramIndicator> {
+) : UidsCallCoroutines<ProgramIndicator> {
 
     companion object {
         const val MAX_UID_LIST_SIZE = 50
     }
 
-    override fun download(uids: Set<String>): Single<List<ProgramIndicator>> {
+    override suspend fun download(uids: Set<String>): List<ProgramIndicator> {
         val programUids = programStore.selectUids()
         val firstPayload = apiDownloader.downloadPartitioned(
             uids = programUids.toSet(),
@@ -80,11 +79,8 @@ internal class ProgramIndicatorCall @Inject constructor(
             },
         )
 
-        return Single.merge(firstPayload, secondPayload).reduce { t1, t2 ->
-            val data = t1 + t2
-            data.distinctBy { it.uid() }
-        }.doOnSuccess {
-            handler.handleMany(it)
-        }.toSingle()
+        val mergedData = (firstPayload + secondPayload).distinctBy { it.uid() }
+        handler.handleMany(mergedData)
+        return mergedData
     }
 }

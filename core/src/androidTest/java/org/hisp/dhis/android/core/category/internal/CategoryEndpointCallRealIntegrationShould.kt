@@ -28,17 +28,18 @@
 package org.hisp.dhis.android.core.category.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 
 class CategoryEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
-    fun call_categories_endpoint() {
+    fun call_categories_endpoint() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         val categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCall.download(
             setOf("cX5k9anHEHd"),
         )
-        val categories = categoryEndpointCall.blockingGet()
+        val categories = categoryEndpointCall
         assertThat(categories.isEmpty()).isFalse()
     }
 }

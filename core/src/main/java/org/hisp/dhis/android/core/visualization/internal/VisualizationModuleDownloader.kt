@@ -42,6 +42,6 @@ internal class VisualizationModuleDownloader @Inject internal constructor(
 
     override suspend fun downloadMetadata(): List<Visualization> {
         val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
-        return visualizationCall.download(visualizations).blockingGet()
+        return visualizationCall.download(visualizations)
     }
 }

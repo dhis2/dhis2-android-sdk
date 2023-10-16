@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.validation.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import java.lang.Boolean
@@ -41,8 +40,8 @@ class ValidationRuleCall @Inject internal constructor(
     private val service: ValidationRuleService,
     private val handler: ValidationRuleHandler,
     private val apiDownloader: APIDownloader,
-) : UidsCall<ValidationRule> {
-    override fun download(validationRuleUids: Set<String>): Single<List<ValidationRule>> {
+) : UidsCallCoroutines<ValidationRule> {
+    override suspend fun download(validationRuleUids: Set<String>): List<ValidationRule> {
         return apiDownloader.downloadPartitioned(
             validationRuleUids,
             MAX_UID_LIST_SIZE,

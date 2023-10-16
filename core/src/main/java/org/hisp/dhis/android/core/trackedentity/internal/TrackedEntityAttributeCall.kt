@@ -40,7 +40,7 @@ internal class TrackedEntityAttributeCall @Inject internal constructor(
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<TrackedEntityAttribute> {
     override suspend fun download(uids: Set<String>): List<TrackedEntityAttribute> {
-        return apiDownloader.downloadPartitionedCoroutines(
+        return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,
             handler,

@@ -25,87 +25,78 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option
 
-package org.hisp.dhis.android.core.option;
+import androidx.test.runner.AndroidJUnit4
+import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import androidx.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import io.reactivex.Single;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(AndroidJUnit4.class)
-public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
-
-    private Single<List<OptionSet>> optionSetCall;
-    private D2CallExecutor d2CallExecutor;
+@RunWith(AndroidJUnit4::class)
+class OptionSetCallShould : BaseMockIntegrationTestEmptyEnqueable() {
+    private var optionSetCall: List<OptionSet>? = null
+    private var d2CallExecutor: D2CallExecutor? = null
 
     @Before
-    public void setUp() throws D2Error {
-        dhis2MockServer.enqueueMockResponse("option/option_sets.json");
-        Set<String> uids = new HashSet<>();
-        uids.add("POc7DkGU3QU");
-
-        optionSetCall = objects.d2DIComponent.optionSetCall().download(uids);
-
-        d2CallExecutor = D2CallExecutor.create(databaseAdapter);
+    @Throws(D2Error::class)
+    fun setUp() {
+        dhis2MockServer.enqueueMockResponse("option/option_sets.json")
+        val uids: MutableSet<String> = HashSet()
+        uids.add("POc7DkGU3QU")
+        runBlocking {
+            optionSetCall = objects.d2DIComponent.optionSetCall().download(uids)
+        }
+        d2CallExecutor = D2CallExecutor.create(databaseAdapter)
     }
 
     @Test
-    public void persist_option_sets_in_data_base_when_call() throws Exception {
-        executeOptionSetCall();
-
-        OptionSetCollectionRepository optionSets = d2.optionModule().optionSets();
-        assertThat(optionSets.blockingCount()).isEqualTo(2);
-        assertThat(optionSets.uid("VQ2lai3OfVG").blockingExists()).isTrue();
-        assertThat(optionSets.uid("TQ2lai3OfVG").blockingExists()).isTrue();
+    @Throws(Exception::class)
+    fun persist_option_sets_in_data_base_when_call() {
+        executeOptionSetCall()
+        val optionSets = d2.optionModule().optionSets()
+        Truth.assertThat(optionSets.blockingCount()).isEqualTo(2)
+        Truth.assertThat(optionSets.uid("VQ2lai3OfVG").blockingExists()).isTrue()
+        Truth.assertThat(optionSets.uid("TQ2lai3OfVG").blockingExists()).isTrue()
     }
 
     @Test
-    public void return_option_set_after_call() throws Exception {
-        List<OptionSet> optionSetList = executeOptionSetCall();
-
-        assertThat(optionSetList.size()).isEqualTo(2);
-
-        OptionSet optionSet = optionSetList.get(0);
-
-        assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG");
-        assertThat(optionSet.code()).isNull();
-        assertThat(optionSet.name()).isEqualTo("Age category");
-        assertThat(optionSet.displayName()).isEqualTo("Age category");
-        assertThat(optionSet.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-06-22T10:59:26.564"));
-        assertThat(optionSet.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"));
-        assertThat(optionSet.version()).isEqualTo(1);
-        assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
+    @Throws(Exception::class)
+    fun return_option_set_after_call() {
+        val optionSetList = executeOptionSetCall()
+        Truth.assertThat(optionSetList!!.size).isEqualTo(2)
+        val optionSet = optionSetList[0]
+        Truth.assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG")
+        Truth.assertThat(optionSet.code()).isNull()
+        Truth.assertThat(optionSet.name()).isEqualTo("Age category")
+        Truth.assertThat(optionSet.displayName()).isEqualTo("Age category")
+        Truth.assertThat(optionSet.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2014-06-22T10:59:26.564"),
+        )
+        Truth.assertThat(optionSet.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"),
+        )
+        Truth.assertThat(optionSet.version()).isEqualTo(1)
+        Truth.assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT)
     }
 
-    private List<OptionSet> executeOptionSetCall() throws Exception{
-
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            List<OptionSet> optionSets = null;
+    @Throws(Exception::class)
+    private fun executeOptionSetCall(): List<OptionSet>? {
+        return d2CallExecutor!!.executeD2CallTransactionally {
+            var optionSets: List<OptionSet>? = null
             try {
-                optionSets = optionSetCall.blockingGet();
-            } catch (Exception ignored) {
+                optionSets = optionSetCall!!
+            } catch (ignored: Exception) {
             }
-
-            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors();
-            return optionSets;
-        });
+            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
+            optionSets
+        }
     }
 }

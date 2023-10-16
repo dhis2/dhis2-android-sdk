@@ -44,7 +44,7 @@ internal class ProgramCall @Inject internal constructor(
 
     override suspend fun download(uids: Set<String>): List<Program> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        return apiDownloader.downloadPartitionedCoroutines(
+        return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,
             handler,

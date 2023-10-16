@@ -25,28 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.validation.internal;
+package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.option.OptionGroup
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-interface ValidationRuleService {
-    @GET("validationRules")
-    Single<Payload<ValidationRule>> getValidationRules(
-            @Query("fields") @Which Fields<ValidationRule> fields,
-            @Query("filter") String uidsFilterString,
-            @Query("paging") Boolean paging);
-
-    @GET("validationRules")
-    Single<Payload<ObjectWithUid>> getDataSetValidationRuleUids(
-            @Query("dataSet") String dataSetUid,
-            @Query("fields") String id,
-            @Query("paging") Boolean paging);
+internal fun interface OptionGroupService {
+    @GET("optionGroups")
+    suspend fun optionGroups(
+        @Query("fields") @Which fields: Fields<OptionGroup>,
+        @Query("filter") dataSetUidsFilter: String,
+        @Query("paging") paging: Boolean,
+    ): Payload<OptionGroup>
 }

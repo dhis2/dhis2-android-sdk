@@ -25,26 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.validation.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.validation.ValidationRule
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+internal interface ValidationRuleService {
+    @GET("validationRules")
+    suspend fun getValidationRules(
+        @Query("fields") @Which fields: Fields<ValidationRule>,
+        @Query("filter") uidsFilterString: String,
+        @Query("paging") paging: Boolean?,
+    ): Payload<ValidationRule>
 
-interface RelationshipTypeService {
-
-    @GET("relationshipTypes")
-    Single<Payload<RelationshipType>> getRelationshipTypes(
-            @Query("fields") @Which Fields<RelationshipType> fields,
-            @Query("filter") @Where Filter<RelationshipType, String> lastUpdated,
-            @Query("filter") String accessDataReadFilter,
-            @Query("paging") Boolean paging
-    );
+    @GET("validationRules")
+    suspend fun getDataSetValidationRuleUids(
+        @Query("dataSet") dataSetUid: String,
+        @Query("fields") id: String,
+        @Query("paging") paging: Boolean,
+    ): Payload<ObjectWithUid>
 }

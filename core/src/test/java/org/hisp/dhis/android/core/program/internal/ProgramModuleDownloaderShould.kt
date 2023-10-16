@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -97,14 +98,16 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         returnSingletonList(trackedEntityTypeCall, trackedEntityType)
         returnSingletonList(trackedEntityAttributeCall, trackedEntityAttribute)
         returnSingletonList(programCall, program)
-        whenever(relationshipTypeCall.download()).doReturn(Single.just(emptyList()))
-        returnEmptyList(optionSetCall)
-        returnEmptyList(optionCall)
-        returnEmptyList(optionGroupCall)
+        relationshipTypeCall.stub {
+            onBlocking { download() } doReturn emptyList()
+        }
+        returnEmptyListCoroutines(optionSetCall)
+        returnEmptyListCoroutines(optionCall)
+        returnEmptyListCoroutines(optionGroupCall)
         returnEmptyListCoroutines(trackedEntityInstanceFilterCall)
         returnEmptyListCoroutines(eventFilterCall)
         returnEmptyListCoroutines(programStageWorkingListCall)
-        returnEmptyList(programRuleCall)
+        returnEmptyListCoroutines(programRuleCall)
         returnEmptyListCoroutines(programStageCall)
         programModuleDownloader = ProgramModuleDownloader(
             programCall,
@@ -163,7 +166,7 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
 
     @Test(expected = Exception::class)
     fun fail_when_program_rule_call_fails() = runTest {
-        returnError(programRuleCall)
+        returnErrorCoroutines(programRuleCall)
         programModuleDownloader.downloadMetadata()
     }
 
@@ -197,15 +200,16 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         programModuleDownloader.downloadMetadata()
     }
 
+    @Suppress("TooGenericExceptionThrown")
     @Test(expected = Exception::class)
     fun fail_when_relationship_type_call_fails() = runTest {
-        whenever(relationshipTypeCall.download()).thenReturn(Single.error(RuntimeException()))
+        whenever(relationshipTypeCall.download()).doAnswer { throw RuntimeException() }
         programModuleDownloader.downloadMetadata()
     }
 
     @Test(expected = Exception::class)
     fun fail_when_option_call_fails() = runTest {
-        returnError(optionCall)
+        returnErrorCoroutines(optionCall)
         programModuleDownloader.downloadMetadata()
     }
 }

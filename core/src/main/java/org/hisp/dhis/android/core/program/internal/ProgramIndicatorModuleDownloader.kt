@@ -29,20 +29,17 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorModuleDownloader @Inject constructor(
     private val programIndicatorCall: ProgramIndicatorCall,
     private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { programIndicatorUidsSeeker.seekUids() }
-            .flatMap { programIndicatorCall.download(it) }
-            .ignoreElement()
+    override suspend fun downloadMetadata() {
+        val uids = programIndicatorUidsSeeker.seekUids()
+        programIndicatorCall.download(uids)
     }
 }

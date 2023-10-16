@@ -25,45 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+package org.hisp.dhis.android.core.validation.internal
+
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
-import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import javax.inject.Inject
 
-@Reusable
-internal class CategoryOptionCall @Inject constructor(
-    private val handler: CategoryOptionHandler,
-    private val service: CategoryOptionService,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<CategoryOption> {
-
-    companion object {
-        private const val QUERY_WITHOUT_UIDS_LENGTH = (
-            "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
-                "displayShortName,description,displayDescription,startDate,endDate,access[data[read,write]]" +
-                "&filter=categories.id:in:[]&filter=access.data.read:eq:true&paging=false"
-            ).length
-    }
-
-    override suspend fun download(uids: Set<String>): List<CategoryOption> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        return apiDownloader.downloadPartitioned(
-            uids,
-            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
-            handler,
-        ) { partitionUids: Set<String> ->
-            service.getCategoryOptions(
-                CategoryOptionFields.allFields,
-                "categories." + ObjectWithUid.uid.`in`(partitionUids).generateString(),
-                accessDataReadFilter,
-                paging = false,
-            )
-        }
-    }
-}
+/**
+ * TODO: Remove [ValidationRuleUidsCall]
+ */
+internal fun interface ValidationRuleUidsCallCoroutines : UidsCallCoroutines<ObjectWithUid>

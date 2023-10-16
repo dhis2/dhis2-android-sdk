@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where
@@ -38,11 +37,11 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface LegendSetService {
+internal fun interface LegendSetService {
     @GET("legendSets")
-    fun getLegendSets(
+    suspend fun getLegendSets(
         @Query("fields") @Which fields: Fields<LegendSet>,
         @Query("filter") @Where uids: Filter<LegendSet, String>,
         @Query("paging") paging: Boolean,
-    ): Single<Payload<LegendSet>>
+    ): Payload<LegendSet>
 }

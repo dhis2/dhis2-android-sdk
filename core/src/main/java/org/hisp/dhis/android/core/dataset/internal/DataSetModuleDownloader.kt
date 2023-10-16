@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
@@ -39,9 +40,10 @@ import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
-import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCall
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCallCoroutines
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 @Reusable
 internal class DataSetModuleDownloader @Inject internal constructor(
     private val dataSetCallFactory: UidsCallFactory<DataSet>,
@@ -49,7 +51,7 @@ internal class DataSetModuleDownloader @Inject internal constructor(
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,
     private val validationRuleCall: ValidationRuleCall,
-    private val validationRuleUidsCall: ValidationRuleUidsCall,
+    private val validationRuleUidsCall: ValidationRuleUidsCallCoroutines,
     private val periodHandler: PeriodHandler,
     private val dataSetOrganisationUnitLinkStore: DataSetOrganisationUnitLinkStore,
 ) : UntypedModuleDownloader {
@@ -65,11 +67,15 @@ internal class DataSetModuleDownloader @Inject internal constructor(
             ).call()
 
             val optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements)
-            optionSetCall.download(optionSetUids).blockingGet()
-            optionCall.download(optionSetUids).blockingGet()
+            runBlocking {
+                optionSetCall.download(optionSetUids)
+                optionCall.download(optionSetUids)
+            }
 
-            val validationRuleUids = validationRuleUidsCall.download(getUids(dataSets)).blockingGet()
-            validationRuleCall.download(getUids(validationRuleUids)).blockingGet()
+            runBlocking {
+                val validationRuleUids = validationRuleUidsCall.download(getUids(dataSets))
+                validationRuleCall.download(getUids(validationRuleUids))
+            }
             periodHandler.generateAndPersist()
         }
     }

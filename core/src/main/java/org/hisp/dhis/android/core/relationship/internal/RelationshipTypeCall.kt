@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
@@ -41,9 +40,9 @@ internal class RelationshipTypeCall @Inject internal constructor(
     private val service: RelationshipTypeService,
     private val handler: RelationshipTypeHandler,
     private val apiDownloader: APIDownloader,
-) : ListCall<RelationshipType> {
+) : ListCallCoroutines<RelationshipType> {
     private val resourceType = Resource.Type.RELATIONSHIP_TYPE
-    override fun download(): Single<List<RelationshipType>> {
+    override suspend fun download(): List<RelationshipType> {
         return apiDownloader.downloadWithLastUpdated(
             handler,
             resourceType,

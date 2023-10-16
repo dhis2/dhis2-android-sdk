@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.validation.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -42,29 +40,25 @@ internal class ValidationRuleUidsCallImpl @Inject constructor(
     private val service: ValidationRuleService,
     private val linkHandler: DataSetValidationRuleLinkHandler,
     private val apiDownloader: APIDownloader,
-) : ValidationRuleUidsCall {
+) : ValidationRuleUidsCallCoroutines {
 
-    override fun download(uids: Set<String>): Single<List<ObjectWithUid>> {
-        return Observable.fromIterable(uids)
-            .flatMapSingle { dataSetUid: String ->
-                apiDownloader.downloadLink(
-                    dataSetUid,
-                    linkHandler,
-                    { _: String ->
-                        service.getDataSetValidationRuleUids(
-                            dataSetUid,
-                            BaseIdentifiableObject.UID,
-                            Boolean.FALSE,
-                        )
-                    },
-                ) { validationRule: ObjectWithUid ->
-                    DataSetValidationRuleLink.builder()
-                        .dataSet(dataSetUid)
-                        .validationRule(validationRule.uid()).build()
-                }
+    override suspend fun download(uids: Set<String>): List<ObjectWithUid> {
+        return uids.flatMap {
+            apiDownloader.downloadLink(
+                it,
+                linkHandler,
+                {
+                    service.getDataSetValidationRuleUids(
+                        it,
+                        BaseIdentifiableObject.UID,
+                        Boolean.FALSE,
+                    )
+                },
+            ) { validationRule: ObjectWithUid ->
+                DataSetValidationRuleLink.builder()
+                    .dataSet(it)
+                    .validationRule(validationRule.uid()).build()
             }
-            .reduce(ArrayList()) { items1: List<ObjectWithUid>, items2: List<ObjectWithUid> ->
-                items1 + items2 // Use the + operator to concatenate lists
-            }
+        }
     }
 }

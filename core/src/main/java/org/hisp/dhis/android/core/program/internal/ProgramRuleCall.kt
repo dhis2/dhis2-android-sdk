@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRule
 import javax.inject.Inject
@@ -40,8 +39,8 @@ internal class ProgramRuleCall @Inject constructor(
     private val service: ProgramRuleService,
     private val handler: ProgramRuleHandler,
     private val apiDownloader: APIDownloader,
-) : UidsCall<ProgramRule> {
-    override fun download(programUids: Set<String>): Single<List<ProgramRule>> {
+) : UidsCallCoroutines<ProgramRule> {
+    override suspend fun download(programUids: Set<String>): List<ProgramRule> {
         return apiDownloader.downloadPartitioned(
             programUids,
             MAX_UID_LIST_SIZE,

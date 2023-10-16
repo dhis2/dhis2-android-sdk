@@ -43,7 +43,7 @@ internal class TrackedEntityTypeCall @Inject internal constructor(
 ) : UidsCallCoroutines<TrackedEntityType> {
     override suspend fun download(optionSetUids: Set<String>): List<TrackedEntityType> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        return apiDownloader.downloadPartitionedCoroutines(
+        return apiDownloader.downloadPartitioned(
             optionSetUids,
             MAX_UID_LIST_SIZE,
             handler,

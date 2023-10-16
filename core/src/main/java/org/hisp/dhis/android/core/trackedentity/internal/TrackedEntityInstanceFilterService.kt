@@ -25,32 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterAPI37;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterAPI37
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface TrackedEntityInstanceFilterService {
+internal interface TrackedEntityInstanceFilterService {
     @GET("trackedEntityInstanceFilters")
-    Single<Payload<TrackedEntityInstanceFilterAPI37>> getTrackedEntityInstanceFiltersAPI37(
-            @Query("filter") @Where Filter<TrackedEntityInstanceFilter, String> uids,
-            @Query("filter") String accessDataReadFilter,
-            @Query("fields") @Which Fields<TrackedEntityInstanceFilter> fields,
-            @Query("paging") Boolean paging);
+    suspend fun getTrackedEntityInstanceFiltersAPI37(
+        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter, String>,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("fields") @Which fields: Fields<TrackedEntityInstanceFilter>,
+        @Query("paging") paging: Boolean,
+    ): Payload<TrackedEntityInstanceFilterAPI37>
 
     @GET("trackedEntityInstanceFilters")
-    Single<Payload<TrackedEntityInstanceFilter>> getTrackedEntityInstanceFilters(
-            @Query("filter") @Where Filter<TrackedEntityInstanceFilter, String> uids,
-            @Query("filter") String accessDataReadFilter,
-            @Query("fields") @Which Fields<TrackedEntityInstanceFilter> fields,
-            @Query("paging") Boolean paging);
+    suspend fun getTrackedEntityInstanceFilters(
+        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter, String>,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("fields") @Which fields: Fields<TrackedEntityInstanceFilter>,
+        @Query("paging") paging: Boolean,
+    ): Payload<TrackedEntityInstanceFilter>
 }

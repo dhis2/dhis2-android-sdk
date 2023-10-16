@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -41,18 +41,21 @@ import org.junit.runner.RunWith
 class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     companion object {
-        private lateinit var visualizationsSingle: Single<List<Visualization>>
+        private lateinit var visualizationsSingle: List<Visualization>
 
         @BeforeClass
         @JvmStatic
         @Throws(Exception::class)
         internal fun setUpClass() {
             BaseMockIntegrationTestEmptyEnqueable.setUpClass()
-            visualizationsSingle = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
-                HashSet(
-                    Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe"),
-                ),
-            )
+
+            runBlocking {
+                visualizationsSingle = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
+                    HashSet(
+                        Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe"),
+                    ),
+                )
+            }
         }
     }
 
@@ -69,7 +72,7 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
         dhis2MockServer.enqueueMockResponse("visualization/visualizations_2.json")
         d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
 
-        var visualizations = visualizationsSingle.blockingGet()
+        var visualizations = visualizationsSingle
         Truth.assertThat(visualizations.isEmpty()).isFalse()
         visualizations = d2.visualizationModule().visualizations().blockingGet()
         Truth.assertThat(visualizations.isEmpty()).isFalse()

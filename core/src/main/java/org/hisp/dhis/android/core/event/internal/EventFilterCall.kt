@@ -47,7 +47,7 @@ internal class EventFilterCall @Inject internal constructor(
     override suspend fun download(programUids: Set<String>): List<EventFilter> {
         return if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
             val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
-            apiDownloader.downloadPartitionedCoroutines(
+            apiDownloader.downloadPartitioned(
                 programUids,
                 MAX_UID_LIST_SIZE,
                 handler,

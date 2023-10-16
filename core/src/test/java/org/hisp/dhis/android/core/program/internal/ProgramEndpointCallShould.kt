@@ -37,7 +37,6 @@ import com.nhaarman.mockitokotlin2.same
 import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Single
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
@@ -55,7 +54,6 @@ import org.junit.runners.JUnit4
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
-
 class ProgramEndpointCallShould : BaseCallShould() {
 
     private val programService: ProgramService = mock()
@@ -64,7 +62,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
     private val filterCaptor = argumentCaptor<Filter<Program, String>>()
     private val accesDataReadFilter = argumentCaptor<String>()
 
-    private val apiCall: Single<Payload<Program>> = Single.just(Payload.emptyPayload())
+    private val apiCall: Payload<Program> = Payload.emptyPayload()
 
     private val mockedApiDownloader: APIDownloader = mock()
 
@@ -77,7 +75,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
         super.setUp()
         mockedApiDownloader.stub {
             onBlocking {
-                downloadPartitionedCoroutines(same(programUids), any(), any<Handler<Program>>(), any())
+                downloadPartitioned(same(programUids), any(), any<Handler<Program>>(), any())
             } doReturn programCallResult
         }
     }
@@ -90,7 +88,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
             mockedApiDownloader,
         ).download(programUids)
 
-        verify(mockedApiDownloader).downloadPartitionedCoroutines(
+        verify(mockedApiDownloader).downloadPartitioned(
             same(programUids),
             any(),
             any<Handler<Program>>(),
@@ -106,7 +104,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
                 filterCaptor.capture(),
                 accesDataReadFilter.capture(),
                 any(),
-            )
+            ),
         ).doReturn(apiCall)
 
         ProgramCall(
@@ -118,7 +116,5 @@ class ProgramEndpointCallShould : BaseCallShould() {
         assertThat(fieldsCaptor.firstValue).isEqualTo(ProgramFields.allFields)
         assertThat(filterCaptor.firstValue.values().iterator().next()).isEqualTo("programUid")
         assertThat(accesDataReadFilter.firstValue).isEqualTo("access.data.read:eq:true")
-
     }
-
 }

@@ -128,17 +128,25 @@ class MetadataCallShould : BaseCallShould() {
         whenever(dataSetDownloader.downloadMetadata()).thenReturn(
             Completable.complete(),
         )
-        whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        programIndicatorModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         visualizationDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
-        whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(expressionDimensIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        legendSetModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+        expressionDimensIndicatorModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         constantDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
         whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        categoryDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
         generalSettingCall.stub {
@@ -198,8 +206,8 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_category_download_call_fail() {
-        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
+    fun fail_when_category_download_call_fail() = runTest {
+        whenever(categoryDownloader.downloadMetadata()).doAnswer { throw networkError }
         downloadAndAssertError()
     }
 

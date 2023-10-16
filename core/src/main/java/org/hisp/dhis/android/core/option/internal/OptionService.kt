@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -35,13 +34,13 @@ import org.hisp.dhis.android.core.option.Option
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface OptionService {
+internal fun interface OptionService {
     @GET("options")
-    fun getOptions(
+    suspend fun getOptions(
         @Query("fields") @Which fields: Fields<Option>,
         @Query("filter") optionSetUidsFilterString: String,
         @Query("paging") paging: Boolean,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int,
-    ): Single<Payload<Option>>
+    ): Payload<Option>
 }

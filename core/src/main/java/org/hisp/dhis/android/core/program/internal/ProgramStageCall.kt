@@ -44,7 +44,7 @@ internal class ProgramStageCall @Inject internal constructor(
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<ProgramStage> {
     override suspend fun download(uids: Set<String>): List<ProgramStage> {
-        return apiDownloader.downloadPartitionedCoroutines(
+        return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,
             handler,

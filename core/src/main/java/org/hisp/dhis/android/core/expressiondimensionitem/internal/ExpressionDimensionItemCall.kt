@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import javax.inject.Inject
 
@@ -39,8 +38,8 @@ internal class ExpressionDimensionItemCall @Inject constructor(
     private val service: ExpressionDimensionItemService,
     private val handler: ExpressionDimensionItemHandler,
     private val apiDownloader: APIDownloader,
-) : UidsCall<ExpressionDimensionItem> {
-    override fun download(uids: Set<String>): Single<List<ExpressionDimensionItem>> {
+) : UidsCallCoroutines<ExpressionDimensionItem> {
+    override suspend fun download(uids: Set<String>): List<ExpressionDimensionItem> {
         return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where
@@ -37,12 +36,12 @@ import org.hisp.dhis.android.core.program.Program
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface ProgramService {
+internal fun interface ProgramService {
     @GET("programs")
-    fun getPrograms(
+    suspend fun getPrograms(
         @Query("fields") @Which fields: Fields<Program>,
         @Query("filter") @Where uids: Filter<Program, String>,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
-    ): Single<Payload<Program>>
+    ): Payload<Program>
 }

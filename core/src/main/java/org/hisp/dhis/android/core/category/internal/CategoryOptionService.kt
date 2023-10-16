@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -39,15 +38,15 @@ import retrofit2.http.Query
 internal interface CategoryOptionService {
 
     @GET("categoryOptions")
-    fun getCategoryOptions(
+    suspend fun getCategoryOptions(
         @Query("fields") @Which fields: Fields<CategoryOption>,
         @Query("filter") categoryUidsFilterString: String,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
-    ): Single<Payload<CategoryOption>>
+    ): Payload<CategoryOption>
 
     @GET("categoryOptions/orgUnits")
     fun getCategoryOptionOrgUnits(
         @Query("categoryOptions") categoryOptions: String,
-    ): Single<CategoryOptionOrganisationUnits>
+    ): CategoryOptionOrganisationUnits
 }

@@ -28,18 +28,21 @@
 package org.hisp.dhis.android.core.category.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CategoryEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
     fun download_category_successfully() = runTest {
+        dhis2MockServer.enqueueMockResponse("category/categories.json")
+
         val categoriesSingle = objects.d2DIComponent.internalModules().category.categoryCall.download(
             setOf("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk"),
         )
-        dhis2MockServer.enqueueMockResponse("category/categories.json")
 
         val categories = categoriesSingle
         assertThat(categories.isEmpty()).isFalse()

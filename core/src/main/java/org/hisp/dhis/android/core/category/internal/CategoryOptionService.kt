@@ -46,7 +46,7 @@ internal interface CategoryOptionService {
     ): Payload<CategoryOption>
 
     @GET("categoryOptions/orgUnits")
-    fun getCategoryOptionOrgUnits(
+    suspend fun getCategoryOptionOrgUnits(
         @Query("categoryOptions") categoryOptions: String,
     ): CategoryOptionOrganisationUnits
 }

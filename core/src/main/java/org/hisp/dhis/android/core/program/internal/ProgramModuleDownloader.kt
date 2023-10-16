@@ -81,6 +81,7 @@ internal class ProgramModuleDownloader @Inject constructor(
             attributes,
             programStages,
         )
+
         programRuleCall.download(programUids)
         relationshipTypeCall.download()
         optionSetCall.download(optionSetUids)

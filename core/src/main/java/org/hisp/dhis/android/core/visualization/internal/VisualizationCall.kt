@@ -68,7 +68,7 @@ internal class VisualizationCall @Inject constructor(
                             paging = false,
                         )
                         Payload(listOf(visualization))
-                    } catch (e: Exception) {
+                    } catch (ignored: Exception) {
                         Payload()
                     }
                 }
@@ -86,7 +86,7 @@ internal class VisualizationCall @Inject constructor(
                             paging = false,
                         )
                         Payload(listOf(visualization36.toVisualization()))
-                    } catch (e: Exception) {
+                    } catch (ignored: Exception) {
                         Payload()
                     }
                 }

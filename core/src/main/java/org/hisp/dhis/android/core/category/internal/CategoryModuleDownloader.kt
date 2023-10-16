@@ -43,18 +43,13 @@ class CategoryModuleDownloader @Inject internal constructor(
 ) : UntypedModuleDownloaderCoroutines {
 
     override suspend fun downloadMetadata() {
-        categoryComboUidsSeeker.seekUids().let { uids ->
-            categoryComboCall.download(uids).let { comboUids ->
-                CategoryParentUidsHelper.getCategoryUids(comboUids).let { categoryUids ->
-                    categoryCall.download(categoryUids).let { categories ->
-                        categoryOptionCall.download(categoryUids).also { categoryOptions ->
-                            categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
-                            categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
-                            categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos()
-                        }
-                    }
-                }
-            }
-        }
+        val uids = categoryComboUidsSeeker.seekUids()
+        val comboUids = categoryComboCall.download(uids)
+        val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
+        val categories = categoryCall.download(categoryUids)
+        val categoryOptions = categoryOptionCall.download(categoryUids)
+        categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
+        categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
+        categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos()
     }
 }

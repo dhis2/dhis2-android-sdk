@@ -32,12 +32,10 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Single
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -126,20 +124,12 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
         )
     }
 
-    private fun returnEmptyList(call: UidsCall<*>?) {
-        whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(Single.just(emptyList()))
-    }
-
     private fun returnEmptyListCoroutines(call: UidsCallCoroutines<*>?) = runTest {
         whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(emptyList())
     }
 
     private fun <O> returnSingletonList(call: UidsCallCoroutines<O>?, o: O) = runTest {
         whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(listOf(o))
-    }
-
-    private fun returnError(call: UidsCall<*>?) {
-        whenever(call!!.download(ArgumentMatchers.anySet())).doReturn(Single.error(RuntimeException()))
     }
 
     @Suppress("TooGenericExceptionThrown")

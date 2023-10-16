@@ -31,7 +31,4 @@ package org.hisp.dhis.android.core.validation.internal
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
-/**
- * TODO: Remove [ValidationRuleUidsCall]
- */
 internal fun interface ValidationRuleUidsCallCoroutines : UidsCallCoroutines<ObjectWithUid>

@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.relationship.RelationshipType
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface RelationshipTypeService {
+internal fun interface RelationshipTypeService {
     @GET("relationshipTypes")
     suspend fun getRelationshipTypes(
         @Query("fields") @Which fields: Fields<RelationshipType>,
-        @Query("filter") @Where lastUpdated: Filter<RelationshipType, String>,
+        @Query("filter") @Where lastUpdated: Filter<RelationshipType, String>?,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
     ): Payload<RelationshipType>

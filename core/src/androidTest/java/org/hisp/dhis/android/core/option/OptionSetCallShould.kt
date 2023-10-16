@@ -29,8 +29,9 @@ package org.hisp.dhis.android.core.option
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -40,10 +41,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class OptionSetCallShould : BaseMockIntegrationTestEmptyEnqueable() {
-    private var optionSetCall: List<OptionSet>? = null
-    private var d2CallExecutor: D2CallExecutor? = null
+    private lateinit var optionSetCall: suspend () -> List<OptionSet>
+    private lateinit var coroutineAPICallExecutor: CoroutineAPICallExecutor
 
     @Before
     @Throws(D2Error::class)
@@ -51,15 +53,15 @@ class OptionSetCallShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueMockResponse("option/option_sets.json")
         val uids: MutableSet<String> = HashSet()
         uids.add("POc7DkGU3QU")
-        runBlocking {
-            optionSetCall = objects.d2DIComponent.optionSetCall().download(uids)
-        }
-        d2CallExecutor = D2CallExecutor.create(databaseAdapter)
+
+        optionSetCall = { objects.d2DIComponent.optionSetCall().download(uids) }
+
+        coroutineAPICallExecutor = objects.d2DIComponent.coroutineApiCallExecutor()
     }
 
     @Test
     @Throws(Exception::class)
-    fun persist_option_sets_in_data_base_when_call() {
+    fun persist_option_sets_in_data_base_when_call() = runTest {
         executeOptionSetCall()
         val optionSets = d2.optionModule().optionSets()
         Truth.assertThat(optionSets.blockingCount()).isEqualTo(2)
@@ -69,7 +71,7 @@ class OptionSetCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
     @Throws(Exception::class)
-    fun return_option_set_after_call() {
+    fun return_option_set_after_call() = runTest {
         val optionSetList = executeOptionSetCall()
         Truth.assertThat(optionSetList!!.size).isEqualTo(2)
         val optionSet = optionSetList[0]
@@ -88,11 +90,11 @@ class OptionSetCallShould : BaseMockIntegrationTestEmptyEnqueable() {
     }
 
     @Throws(Exception::class)
-    private fun executeOptionSetCall(): List<OptionSet>? {
-        return d2CallExecutor!!.executeD2CallTransactionally {
+    private suspend fun executeOptionSetCall(): List<OptionSet>? {
+        return coroutineAPICallExecutor.wrapTransactionally {
             var optionSets: List<OptionSet>? = null
             try {
-                optionSets = optionSetCall!!
+                optionSets = optionSetCall.invoke()
             } catch (ignored: Exception) {
             }
             ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()

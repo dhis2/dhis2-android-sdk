@@ -99,30 +99,33 @@ public class TrackedEntityInstanceService {
 
             if (!fromTeiAttributes.isEmpty()) {
                 for (TrackedEntityAttributeValue attributeValue : fromTeiAttributes) {
-
-                    TrackedEntityAttribute attribute = trackedEntityAttributeRepository.uid(
-                            attributeValue.trackedEntityAttribute()).blockingGet();
-
-                    if (attribute.valueType() == ValueType.IMAGE || attribute.valueType() == ValueType.FILE_RESOURCE) {
-
-                        File file = new File(fileResourceCollectionRepository.uid(attributeValue.value())
-                                .blockingGet().path());
-
-                        String newFileResourceId = fileResourceCollectionRepository.blockingAdd(file);
-
-                        trackedEntityAttributeValueRepository
-                                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                                .blockingSet(newFileResourceId);
-                    } else {
-                        trackedEntityAttributeValueRepository
-                                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                                .blockingSet(attributeValue.value());
-                    }
+                    inheritAttribute(attributeValue, toTeiUid);
                 }
             }
         }
 
         return new Unit();
+    }
+
+    private void inheritAttribute(TrackedEntityAttributeValue attributeValue, String toTeiUid) throws D2Error {
+        TrackedEntityAttribute attribute = trackedEntityAttributeRepository.uid(
+                attributeValue.trackedEntityAttribute()).blockingGet();
+
+        if (attribute.valueType() == ValueType.IMAGE || attribute.valueType() == ValueType.FILE_RESOURCE) {
+
+            File file = new File(fileResourceCollectionRepository.uid(attributeValue.value())
+                    .blockingGet().path());
+
+            String newFileResourceId = fileResourceCollectionRepository.blockingAdd(file);
+
+            trackedEntityAttributeValueRepository
+                    .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                    .blockingSet(newFileResourceId);
+        } else {
+            trackedEntityAttributeValueRepository
+                    .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                    .blockingSet(attributeValue.value());
+        }
     }
 
     /**

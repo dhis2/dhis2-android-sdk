@@ -37,9 +37,9 @@ import retrofit2.http.Query
 internal fun interface ProgramStageService {
     @GET("programStages")
     suspend fun getProgramStages(
-        @Query("fields") @Which fields: Fields<ProgramStage?>?,
-        @Query("filter") programUidsFilterString: String?,
-        @Query("filter") accessDataReadFilter: String?,
-        @Query("paging") paging: Boolean?,
+        @Query("fields") @Which fields: Fields<ProgramStage>,
+        @Query("filter") programUidsFilterString: String,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("paging") paging: Boolean,
     ): Payload<ProgramStage>
 }

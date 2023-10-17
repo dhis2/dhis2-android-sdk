@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
-import java.lang.Boolean
 import javax.inject.Inject
 
 @Reusable
@@ -51,7 +50,7 @@ internal class ValidationRuleUidsCallImpl @Inject constructor(
                     service.getDataSetValidationRuleUids(
                         it,
                         BaseIdentifiableObject.UID,
-                        Boolean.FALSE,
+                        false,
                     )
                 },
             ) { validationRule: ObjectWithUid ->

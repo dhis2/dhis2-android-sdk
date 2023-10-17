@@ -105,7 +105,6 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         return results
     }
 
-    // TODO : remove the Single making sure it is not needed by the callers
     private suspend fun <P, O> downloadPartitionedWithCustomHandling(
         uids: Set<String>,
         pageSize: Int,

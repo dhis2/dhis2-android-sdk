@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
@@ -56,11 +55,6 @@ internal class ProgramCall @Inject internal constructor(
                 false,
             )
         }
-    }
-
-    // TODO : remove this fun and refactor ProgramEndpointCallShould to Kotlin
-    fun coroutineEncapsulationForJavaTest(uids: Set<String>): List<Program> = runBlocking {
-        download(uids)
     }
 
     companion object {

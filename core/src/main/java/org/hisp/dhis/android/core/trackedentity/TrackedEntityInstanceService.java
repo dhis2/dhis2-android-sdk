@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository;
@@ -74,7 +72,7 @@ public class TrackedEntityInstanceService {
      * {@link #inheritAttributes(String, String, String)}.
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
-     * @param toTeiUid TrackedEntityInstance that receive the inherited values.
+     * @param toTeiUid   TrackedEntityInstance that receive the inherited values.
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
@@ -106,6 +104,7 @@ public class TrackedEntityInstanceService {
                             attributeValue.trackedEntityAttribute()).blockingGet();
 
                     if (attribute.valueType() == ValueType.IMAGE || attribute.valueType() == ValueType.FILE_RESOURCE) {
+
                         File file = new File(fileResourceCollectionRepository.uid(attributeValue.value())
                                 .blockingGet().path());
 
@@ -132,7 +131,7 @@ public class TrackedEntityInstanceService {
      * relationships. Inherited values are persisted in database.
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
-     * @param toTeiUid TrackedEntityInstance that receive the inherited values.
+     * @param toTeiUid   TrackedEntityInstance that receive the inherited values.
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */

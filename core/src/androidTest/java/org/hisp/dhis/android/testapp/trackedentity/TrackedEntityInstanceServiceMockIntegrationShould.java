@@ -30,8 +30,16 @@ package org.hisp.dhis.android.testapp.trackedentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory;
+import static org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.writeInputStream;
+
+import android.content.Context;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -39,42 +47,64 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+import java.io.InputStream;
+
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceServiceMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
     public void inherit_attributes() throws D2Error {
-        String fromTeiUid = "nWrB0TfWlvh";
+        File file = storeFile("to_inherit_file");
 
-        String newTeiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
+        String fromTeiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
+                TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp")
+        );
+
+        d2.enrollmentModule().enrollments().blockingAdd(
+                EnrollmentCreateProjection.create("DiszpKrYNg8", "IpHINAT79UW", fromTeiUid)
+        );
+
+        d2.trackedEntityModule().trackedEntityAttributeValues().value("cejWyOfXge6", fromTeiUid)
+                .blockingSet("value1");
+
+        String fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file);
+
+        d2.trackedEntityModule().trackedEntityAttributeValues().value("aejWyOfXge6", fromTeiUid)
+                .blockingSet(fileResourceUid);
+
+
+        String toTeiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp")
         );
 
         d2.trackedEntityModule().trackedEntityInstanceService()
-                .blockingInheritAttributes(fromTeiUid, newTeiUid,"IpHINAT79UW");
+                .blockingInheritAttributes(fromTeiUid, toTeiUid,"IpHINAT79UW");
 
-        TrackedEntityInstance fromTEI = d2.trackedEntityModule().trackedEntityInstances().withTrackedEntityAttributeValues()
+        TrackedEntityInstance fromTEI = d2.trackedEntityModule().trackedEntityInstances()
+                .withTrackedEntityAttributeValues()
                 .uid(fromTeiUid).blockingGet();
 
-        TrackedEntityInstance newTEI = d2.trackedEntityModule().trackedEntityInstances().withTrackedEntityAttributeValues()
-                .uid(newTeiUid).blockingGet();
+        TrackedEntityInstance newTEI = d2.trackedEntityModule().trackedEntityInstances()
+                .withTrackedEntityAttributeValues()
+                .uid(toTeiUid).blockingGet();
 
-        // Not equal because is an attribute with IMAGE value type
+        // NOT equal because is an attribute with IMAGE value type
         assertThat(fromTEI.trackedEntityAttributeValues().get(0).value())
                 .isNotEqualTo(newTEI.trackedEntityAttributeValues().get(0).value());
+
         // Equal because is not FILE or IMAGE value type
         assertThat(fromTEI.trackedEntityAttributeValues().get(1).value())
                 .isEqualTo(newTEI.trackedEntityAttributeValues().get(1).value());
 
+        d2.trackedEntityModule().trackedEntityInstances().uid(fromTeiUid).blockingDeleteIfExist();
+        d2.trackedEntityModule().trackedEntityInstances().uid(toTeiUid).blockingDeleteIfExist();
+    }
 
-        // Remove TEI and attribute values
-        for (TrackedEntityAttributeValue teaValue : d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byTrackedEntityInstance().eq(newTeiUid).blockingGet()) {
-            d2.trackedEntityModule().trackedEntityAttributeValues()
-                    .value(teaValue.trackedEntityAttribute(), teaValue.trackedEntityInstance())
-                    .blockingDeleteIfExist();
-        }
-
-        d2.trackedEntityModule().trackedEntityInstances().uid(newTeiUid).blockingDeleteIfExist();
+    private File storeFile(String fileName) {
+        InputStream inputStream  = new RandomGeneratedInputStream(1024);
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        File destinationFile = new File(getFileResourceDirectory(context), fileName + ".png");
+        return writeInputStream(inputStream, destinationFile, 1024);
     }
 }

@@ -25,24 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.option.OptionGroup
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface EventFilterService {
-    @GET("eventFilters")
-    Single<Payload<EventFilter>> getEventFilters(
-            @Query("filter") @Where Filter<EventFilter, String> uids,
-            @Query("filter") String accessDataReadFilter,
-            @Query("fields") @Which Fields<EventFilter> fields,
-            @Query("paging") Boolean paging);
+internal fun interface OptionGroupService {
+    @GET("optionGroups")
+    suspend fun optionGroups(
+        @Query("fields") @Which fields: Fields<OptionGroup>,
+        @Query("filter") dataSetUidsFilter: String,
+        @Query("paging") paging: Boolean,
+    ): Payload<OptionGroup>
 }

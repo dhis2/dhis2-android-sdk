@@ -36,46 +36,47 @@ import org.hisp.dhis.android.core.resource.internal.Resource
 
 @Suppress("TooManyFunctions")
 internal interface APIDownloader {
-    fun <P> downloadPartitioned(
-        uids: Set<String>,
-        pageSize: Int,
-        handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-    ): Single<List<P>>
 
-    fun <P, O> downloadPartitioned(
+    suspend fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        pageDownloader: suspend (Set<String>) -> Payload<P>,
+    ): List<P>
+
+    suspend fun <P, O> downloadPartitioned(
+        uids: Set<String>,
+        pageSize: Int,
+        handler: Handler<P>,
+        pageDownloader: suspend(Set<String>) -> Payload<O>,
         transform: (O) -> P,
-    ): Single<List<P>>
+    ): List<P>
 
-    fun <P> downloadPartitioned(
+    suspend fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-    ): Single<List<P>>
+        pageDownloader: suspend(Set<String>) -> Payload<P>,
+    ): List<P>
 
-    fun <K, V> downloadPartitionedMap(
+    suspend fun <K, V> downloadPartitionedMap(
         uids: Set<String>,
         pageSize: Int,
         handler: (Map<K, V>) -> Any,
-        pageDownloader: (Set<String>) -> Single<out Map<K, V>>,
-    ): Single<Map<K, V>>
+        pageDownloader: suspend(Set<String>) -> Map<K, V>,
+    ): Map<K, V>
 
-    fun <P, O : CoreObject> downloadLink(
+    suspend fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,
-        downloader: (String) -> Single<Payload<P>>,
+        downloader: suspend(String) -> Payload<P>,
         transform: ((P) -> O),
-    ): Single<List<P>>
+    ): List<P>
 
-    fun <P> downloadWithLastUpdated(
+    suspend fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
-        downloader: (String?) -> Single<Payload<P>>,
-    ): Single<List<P>>
+        downloader: suspend(String?) -> Payload<P>,
+    ): List<P>
 
     fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>>
     fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>>
@@ -86,8 +87,8 @@ internal interface APIDownloader {
 
     suspend fun <P> downloadObjectAsCoroutine(handler: Handler<P>, downloader: suspend () -> P): P
 
-    fun <P> downloadPagedPayload(
+    suspend fun <P> downloadPagedPayload(
         pageSize: Int,
-        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>,
-    ): Single<Payload<P>>
+        downloader: suspend(page: Int, pageSize: Int) -> Payload<P>,
+    ): Payload<P>
 }

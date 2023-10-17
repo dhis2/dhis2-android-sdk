@@ -28,10 +28,8 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionGroupCall
@@ -61,53 +59,41 @@ internal class ProgramModuleDownloader @Inject constructor(
     private val optionCall: OptionCall,
     private val optionGroupCall: OptionGroupCall,
     private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.defer {
-            val orgUnitProgramUids = programOrganisationUnitLinkStore
-                .selectDistinctSlaves(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM)
+    override suspend fun downloadMetadata() {
+        val orgUnitProgramUids = programOrganisationUnitLinkStore
+            .selectDistinctSlaves(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM)
 
-            programCall.download(orgUnitProgramUids)
-                .flatMapCompletable { programs ->
-                    val programUids = getUids(programs)
-                    programStageCall.download(programUids).flatMapCompletable { programStages ->
-                        val trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs)
-                        trackedEntityTypeCall.download(trackedEntityUids)
-                            .flatMap { trackedEntityTypes ->
-                                trackedEntityAttributeCall.download(
-                                    ProgramParentUidsHelper
-                                        .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes),
-                                )
-                            }
-                            .flatMapCompletable { attributes ->
-                                val optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
-                                    attributes,
-                                    programStages,
-                                )
-                                Single.merge(
-                                    listOf(
-                                        programRuleCall.download(programUids),
-                                        relationshipTypeCall.download(),
-                                        optionSetCall.download(optionSetUids),
-                                        optionCall.download(optionSetUids),
-                                        optionGroupCall.download(optionSetUids),
-                                    ),
-                                ).ignoreElements()
-                            }
-                            .concatWith(downloadFiltersAndWorkingLists(programUids))
-                    }
-                }
-        }
+        val programs = programCall.download(orgUnitProgramUids)
+
+        val programUids = getUids(programs)
+        val programStages = programStageCall.download(programUids)
+        val trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs)
+        val trackedEntityTypes = trackedEntityTypeCall.download(trackedEntityUids)
+
+        val attributes = trackedEntityAttributeCall.download(
+            ProgramParentUidsHelper
+                .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes),
+        )
+
+        val optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
+            attributes,
+            programStages,
+        )
+
+        programRuleCall.download(programUids)
+        relationshipTypeCall.download()
+        optionSetCall.download(optionSetUids)
+        optionCall.download(optionSetUids)
+        optionGroupCall.download(optionSetUids)
+
+        downloadFiltersAndWorkingLists(programUids)
     }
 
-    private fun downloadFiltersAndWorkingLists(programUids: Set<String>): Completable {
-        return Single.merge(
-            listOf(
-                trackedEntityInstanceFilterCall.download(programUids),
-                eventFilterCall.download(programUids),
-                programStageWorkingListCall.download(programUids),
-            ),
-        ).ignoreElements()
+    private suspend fun downloadFiltersAndWorkingLists(programUids: Set<String>) {
+        trackedEntityInstanceFilterCall.download(programUids)
+        eventFilterCall.download(programUids)
+        programStageWorkingListCall.download(programUids)
     }
 }

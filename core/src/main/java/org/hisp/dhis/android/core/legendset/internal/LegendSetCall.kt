@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core.legendset.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.legendset.LegendSet
 import javax.inject.Inject
 
@@ -40,8 +39,8 @@ internal class LegendSetCall @Inject constructor(
     private val service: LegendSetService,
     private val handler: LegendSetHandler,
     private val apiDownloader: APIDownloader,
-) : UidsCall<LegendSet> {
-    override fun download(uids: Set<String>): Single<List<LegendSet>> {
+) : UidsCallCoroutines<LegendSet> {
+    override suspend fun download(uids: Set<String>): List<LegendSet> {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
             service.getLegendSets(LegendSetFields.allFields, LegendSetFields.uid.`in`(partitionUids), false)
         }

@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -43,8 +42,8 @@ internal class ProgramStageCall @Inject internal constructor(
     private val service: ProgramStageService,
     private val handler: ProgramStageHandler,
     private val apiDownloader: APIDownloader,
-) : UidsCall<ProgramStage> {
-    override fun download(uids: Set<String>): Single<List<ProgramStage>> {
+) : UidsCallCoroutines<ProgramStage> {
+    override suspend fun download(uids: Set<String>): List<ProgramStage> {
         return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,

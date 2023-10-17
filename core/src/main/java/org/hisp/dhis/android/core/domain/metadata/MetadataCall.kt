@@ -145,28 +145,28 @@ internal class MetadataCall @Inject constructor(
         organisationUnitModuleDownloader.downloadMetadata(user).blockingAwait()
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
 
-        programDownloader.downloadMetadata().blockingAwait()
+        programDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Program::class.java, false))
 
         dataSetDownloader.downloadMetadata().blockingAwait()
         emit(progressManager.increaseProgress(DataSet::class.java, false))
 
-        categoryDownloader.downloadMetadata().blockingAwait()
+        categoryDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Category::class.java, false))
 
         visualizationDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Visualization::class.java, false))
 
-        programIndicatorModuleDownloader.downloadMetadata().blockingAwait()
+        programIndicatorModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(ProgramIndicator::class.java, false))
 
         indicatorModuleDownloader.downloadMetadata().blockingAwait()
         emit(progressManager.increaseProgress(Indicator::class.java, false))
 
-        legendSetModuleDownloader.downloadMetadata().blockingAwait()
+        legendSetModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(LegendSet::class.java, false))
 
-        expressionDimensionItemModuleDownloader.downloadMetadata().blockingAwait()
+        expressionDimensionItemModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(ExpressionDimensionItem::class.java, true))
     }
 

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.domain.metadata
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -66,6 +67,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class MetadataCallShould : BaseCallShould() {
     private val user: User = mock()
@@ -116,26 +118,35 @@ class MetadataCallShould : BaseCallShould() {
         userDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(user)
         }
-        whenever(programDownloader.downloadMetadata()).thenReturn(
-            Completable.complete(),
-        )
+        programDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+
         whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
             Completable.complete(),
         )
         whenever(dataSetDownloader.downloadMetadata()).thenReturn(
             Completable.complete(),
         )
-        whenever(programIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        programIndicatorModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         visualizationDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
-        whenever(legendSetModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(expressionDimensIndicatorModuleDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        legendSetModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+        expressionDimensIndicatorModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         constantDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
         whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
-        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        categoryDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
         generalSettingCall.stub {
@@ -195,8 +206,8 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_category_download_call_fail() {
-        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
+    fun fail_when_category_download_call_fail() = runTest {
+        whenever(categoryDownloader.downloadMetadata()).doAnswer { throw networkError }
         downloadAndAssertError()
     }
 
@@ -209,8 +220,8 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_program_call_fail() {
-        whenever(programDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
+    fun fail_when_program_call_fail() = runTest {
+        whenever(programDownloader.downloadMetadata()) doAnswer { throw networkError }
         downloadAndAssertError()
     }
 

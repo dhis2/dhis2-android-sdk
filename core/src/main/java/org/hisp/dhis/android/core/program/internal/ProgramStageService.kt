@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.core.program.internal
 
-import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.program.ProgramStage
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-class CategoryEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
-
-    // @Test
-    fun call_categories_endpoint() = runTest {
-        d2.userModule().logIn(username, password, url).blockingGet()
-        val categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCall.download(
-            setOf("cX5k9anHEHd"),
-        )
-        val categories = categoryEndpointCall
-        assertThat(categories.isEmpty()).isFalse()
-    }
+internal fun interface ProgramStageService {
+    @GET("programStages")
+    suspend fun getProgramStages(
+        @Query("fields") @Which fields: Fields<ProgramStage>,
+        @Query("filter") programUidsFilterString: String,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("paging") paging: Boolean,
+    ): Payload<ProgramStage>
 }

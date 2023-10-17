@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -43,8 +42,8 @@ internal class ProgramStageWorkingListCall @Inject internal constructor(
     private val handler: ProgramStageWorkingListHandler,
     private val apiDownloader: APIDownloader,
     private val versionManager: DHISVersionManager,
-) : UidsCall<ProgramStageWorkingList> {
-    override fun download(uids: Set<String>): Single<List<ProgramStageWorkingList>> {
+) : UidsCallCoroutines<ProgramStageWorkingList> {
+    override suspend fun download(uids: Set<String>): List<ProgramStageWorkingList> {
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
 
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
@@ -61,7 +60,7 @@ internal class ProgramStageWorkingListCall @Inject internal constructor(
                 )
             }
         } else {
-            Single.just(emptyList())
+            emptyList()
         }
     }
 

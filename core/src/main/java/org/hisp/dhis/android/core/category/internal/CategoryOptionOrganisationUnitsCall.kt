@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
@@ -48,7 +47,7 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
         private const val QUERY_WITHOUT_UIDS_LENGTH = ("categoryOptions/orgUnits?categoryOptions=").length
     }
 
-    fun download(uids: Set<String>): Single<Map<String, List<String>>> {
+    suspend fun download(uids: Set<String>): Map<String, List<String>> {
         return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
             apiDownloader.downloadPartitionedMap(
                 uids = uids,
@@ -62,7 +61,7 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
                 },
             )
         } else {
-            Single.just(emptyMap())
+            emptyMap()
         }
     }
 

@@ -44,7 +44,7 @@ import retrofit2.Retrofit
 internal class ValidationPackageDIModule {
     @Provides
     @Reusable
-    fun validationRuleUidsCall(impl: ValidationRuleUidsCallImpl): ValidationRuleUidsCall {
+    fun validationRuleUidsCall(impl: ValidationRuleUidsCallImpl): ValidationRuleUidsCallCoroutines {
         return impl
     }
 

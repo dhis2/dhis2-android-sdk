@@ -29,19 +29,16 @@
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import javax.inject.Inject
 
 @Reusable
 internal class ExpressionDimensionItemModuleDownloader @Inject internal constructor(
     private val expressionDimensionItemUidsSeeker: ExpressionDimensionItemUidsSeeker,
     private val expressionDimensionItemCall: ExpressionDimensionItemCall,
-) : UntypedModuleDownloader {
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { expressionDimensionItemUidsSeeker.seekUids() }
-            .flatMap { expressionDimensionItemCall.download(it) }
-            .ignoreElement()
+) : UntypedModuleDownloaderCoroutines {
+    override suspend fun downloadMetadata() {
+        val uids = expressionDimensionItemUidsSeeker.seekUids()
+        expressionDimensionItemCall.download(uids)
     }
 }

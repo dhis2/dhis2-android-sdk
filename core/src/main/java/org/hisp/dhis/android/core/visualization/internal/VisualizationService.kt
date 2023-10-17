@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -39,20 +38,20 @@ import retrofit2.http.Query
 internal interface VisualizationService {
 
     @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
-    fun getSingleVisualization(
+    suspend fun getSingleVisualization(
         @Path(VISUALIZATION_UID) uid: String,
         @Query("fields") @Which fields: Fields<Visualization>,
         @Query("filter") accessFilter: String,
         @Query("paging") paging: Boolean,
-    ): Single<Visualization>
+    ): Visualization
 
     @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
-    fun getSingleVisualizations36(
+    suspend fun getSingleVisualizations36(
         @Path(VISUALIZATION_UID) uid: String,
         @Query("fields") @Which fields: Fields<Visualization>,
         @Query("filter") accessFilter: String,
         @Query("paging") paging: Boolean,
-    ): Single<VisualizationAPI36>
+    ): VisualizationAPI36
 
     companion object {
         const val VISUALIZATIONS = "visualizations"

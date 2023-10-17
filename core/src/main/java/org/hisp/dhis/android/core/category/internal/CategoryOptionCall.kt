@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -42,7 +41,7 @@ internal class CategoryOptionCall @Inject constructor(
     private val handler: CategoryOptionHandler,
     private val service: CategoryOptionService,
     private val apiDownloader: APIDownloader,
-) : UidsCall<CategoryOption> {
+) : UidsCallCoroutines<CategoryOption> {
 
     companion object {
         private const val QUERY_WITHOUT_UIDS_LENGTH = (
@@ -52,7 +51,7 @@ internal class CategoryOptionCall @Inject constructor(
             ).length
     }
 
-    override fun download(uids: Set<String>): Single<List<CategoryOption>> {
+    override suspend fun download(uids: Set<String>): List<CategoryOption> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
         return apiDownloader.downloadPartitioned(
             uids,

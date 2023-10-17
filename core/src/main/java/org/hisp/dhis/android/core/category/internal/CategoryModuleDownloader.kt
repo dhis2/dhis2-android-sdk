@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import javax.inject.Inject
 
 @Reusable
@@ -42,22 +40,16 @@ class CategoryModuleDownloader @Inject internal constructor(
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,
     private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
-            .flatMap { categoryComboCall.download(it) }
-            .flatMap { comboUids ->
-                val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
-                categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(categoryUids)
-                        .flatMap { categoryOptions ->
-                            categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
-                            categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
-                        }
-                }
-            }
-            .map { categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos() }
-            .ignoreElement()
+    override suspend fun downloadMetadata() {
+        val uids = categoryComboUidsSeeker.seekUids()
+        val comboUids = categoryComboCall.download(uids)
+        val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
+        val categories = categoryCall.download(categoryUids)
+        val categoryOptions = categoryOptionCall.download(categoryUids)
+        categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
+        categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
+        categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos()
     }
 }

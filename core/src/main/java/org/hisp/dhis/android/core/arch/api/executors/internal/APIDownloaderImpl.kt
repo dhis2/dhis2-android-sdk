@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import androidx.annotation.VisibleForTesting
 import dagger.Reusable
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -45,12 +44,12 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 internal class APIDownloaderImpl @Inject constructor(private val resourceHandler: ResourceHandler) : APIDownloader {
 
-    override fun <P> downloadPartitioned(
+    override suspend fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-    ): Single<List<P>> {
+        pageDownloader: suspend(Set<String>) -> Payload<P>,
+    ): List<P> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
@@ -59,13 +58,13 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         ) { it }
     }
 
-    override fun <P, O> downloadPartitioned(
+    override suspend fun <P, O> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        pageDownloader: suspend(Set<String>) -> Payload<O>,
         transform: (O) -> P,
-    ): Single<List<P>> {
+    ): List<P> {
         return downloadPartitionedWithCustomHandling(
             uids,
             pageSize,
@@ -75,11 +74,11 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         )
     }
 
-    override fun <P> downloadPartitioned(
+    override suspend fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: (Set<String>) -> Single<Payload<P>>,
-    ): Single<List<P>> {
+        pageDownloader: suspend(Set<String>) -> Payload<P>,
+    ): List<P> {
         return downloadPartitionedWithoutHandling(
             uids = uids,
             pageSize = pageSize,
@@ -88,85 +87,83 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         )
     }
 
-    private fun <P, O> downloadPartitionedWithoutHandling(
+    private suspend fun <P, O> downloadPartitionedWithoutHandling(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        pageDownloader: suspend(Set<String>) -> Payload<O>,
         transform: (O) -> P,
-    ): Single<List<P>> {
+    ): List<P> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
-        return Observable.fromIterable(partitions)
-            .flatMapSingle(pageDownloader)
-            .map { obj: Payload<O> -> obj.items() }
-            .reduce(emptyList()) { items: List<O>, items2: List<O> ->
-                items + items2
-            }
-            .map { items: List<O> ->
-                items.map { transform(it) }
-            }
+
+        val results = mutableListOf<P>()
+
+        partitions.forEach { partition ->
+            val transformedItems = pageDownloader(partition).items().map { transform(it) }
+            results.addAll(transformedItems)
+        }
+
+        return results
     }
 
-    private fun <P, O> downloadPartitionedWithCustomHandling(
+    private suspend fun <P, O> downloadPartitionedWithCustomHandling(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: (Set<String>) -> Single<Payload<O>>,
+        pageDownloader: suspend(Set<String>) -> Payload<O>,
         transform: (O) -> P,
-    ): Single<List<P>> {
-        return downloadPartitionedWithoutHandling(
+    ): List<P> {
+        val oCollection = downloadPartitionedWithoutHandling(
             uids = uids,
             pageSize = pageSize,
             pageDownloader = pageDownloader,
             transform = transform,
-        ).doOnSuccess { oCollection: List<P> ->
-            handler.handleMany(oCollection)
-        }
+        )
+        handler.handleMany(oCollection)
+        return oCollection
     }
 
-    override fun <K, V> downloadPartitionedMap(
+    override suspend fun <K, V> downloadPartitionedMap(
         uids: Set<String>,
         pageSize: Int,
         handler: (Map<K, V>) -> Any,
-        pageDownloader: (Set<String>) -> Single<out Map<K, V>>,
-    ): Single<Map<K, V>> {
+        pageDownloader: suspend(Set<String>) -> Map<K, V>,
+    ): Map<K, V> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
-        return Observable.fromIterable(partitions)
-            .flatMapSingle(pageDownloader)
-            .reduce(
-                mapOf(),
-            ) { items: Map<K, V>, items2: Map<K, V> ->
-                items + items2
-            }
-            .doOnSuccess { map: Map<K, V> -> handler(map) }
+
+        val results = partitions.map { partition ->
+            pageDownloader(partition)
+        }
+        val resultsMap = results.fold(mapOf<K, V>()) { acc, map ->
+            acc + map
+        }
+        handler(resultsMap)
+        return resultsMap
     }
 
-    override fun <P, O : CoreObject> downloadLink(
+    override suspend fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,
-        downloader: (String) -> Single<Payload<P>>,
+        downloader: suspend(String) -> Payload<P>,
         transform: (P) -> O,
-    ): Single<List<P>> {
-        return Single.just(masterUid)
-            .flatMap(downloader)
-            .map { obj: Payload<P> -> obj.items() }
-            .doOnSuccess { items: List<P> -> handler.handleMany(masterUid, items, transform) }
+    ): List<P> {
+        val items = downloader.invoke(masterUid).items()
+        handler.handleMany(masterUid, items, transform)
+
+        return items
     }
 
-    override fun <P> downloadWithLastUpdated(
+    override suspend fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
-        downloader: (String?) -> Single<Payload<P>>,
-    ): Single<List<P>> {
-        return Single.defer {
-            downloader(
-                resourceHandler.getLastUpdated(resourceType),
-            )
-        }
-            .map { obj: Payload<P> -> obj.items() }
-            .doOnSuccess { items: List<P> ->
-                handler.handleMany(items)
-                resourceHandler.handleResource(resourceType)
-            }
+        downloader: suspend(String?) -> Payload<P>,
+    ): List<P> {
+        val items = downloader(
+            resourceHandler.getLastUpdated(resourceType),
+        ).items()
+
+        handler.handleMany(items)
+        resourceHandler.handleResource(resourceType)
+        return items
     }
 
     override fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>> {
@@ -195,18 +192,25 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
             .also { handler.handle(it) }
     }
 
-    override fun <P> downloadPagedPayload(
+    override suspend fun <P> downloadPagedPayload(
         pageSize: Int,
-        downloader: (page: Int, pageSize: Int) -> Single<Payload<P>>,
-    ): Single<Payload<P>> {
+        downloader: suspend(page: Int, pageSize: Int) -> Payload<P>,
+    ): Payload<P> {
         var page = 1
-        return Single.defer { downloader(page++, pageSize) }
-            .map { it.items() }
-            .repeat()
-            .takeUntil { list -> list.size < pageSize }
-            .reduce(emptyList()) { items: List<P>, items2: List<P> ->
-                items + items2
+
+        val itemsList = mutableListOf<P>()
+
+        while (true) {
+            val payload = downloader(page++, pageSize)
+            val items = payload.items()
+
+            itemsList.addAll(items)
+
+            if (items.size < pageSize) {
+                break
             }
-            .map { list -> Payload(list) }
+        }
+
+        return Payload(itemsList)
     }
 }

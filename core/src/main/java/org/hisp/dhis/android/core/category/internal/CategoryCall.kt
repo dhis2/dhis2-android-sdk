@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.category.Category
 import javax.inject.Inject
 
@@ -39,13 +38,13 @@ internal class CategoryCall @Inject constructor(
     private val handler: CategoryHandler,
     private val service: CategoryService,
     private val apiDownloader: APIDownloader,
-) : UidsCall<Category> {
+) : UidsCallCoroutines<Category> {
 
     companion object {
         private const val MAX_UID_LIST_SIZE = 90
     }
 
-    override fun download(uids: Set<String>): Single<List<Category>> {
+    override suspend fun download(uids: Set<String>): List<Category> {
         return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,

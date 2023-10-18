@@ -177,7 +177,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byInherit().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size()).isEqualTo(2);
     }
 
     @Test

@@ -29,10 +29,13 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,15 +50,18 @@ public class TrackedEntityInstanceService {
     private final TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository;
     private final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository;
     private final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository;
+    private final FileResourceCollectionRepository fileResourceCollectionRepository;
 
     @Inject
     TrackedEntityInstanceService(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
                                  TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository,
                                  ProgramTrackedEntityAttributeCollectionRepository
-                                         programTrackedEntityAttributeRepository) {
+                                         programTrackedEntityAttributeRepository,
+                                 FileResourceCollectionRepository fileResourceCollectionRepository) {
         this.trackedEntityAttributeRepository = trackedEntityAttributeRepository;
         this.trackedEntityAttributeValueRepository = trackedEntityAttributeValueRepository;
         this.programTrackedEntityAttributeRepository = programTrackedEntityAttributeRepository;
+        this.fileResourceCollectionRepository = fileResourceCollectionRepository;
     }
 
     /**
@@ -66,7 +72,7 @@ public class TrackedEntityInstanceService {
      * {@link #inheritAttributes(String, String, String)}.
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
-     * @param toTeiUid TrackedEntityInstance that receive the inherited values.
+     * @param toTeiUid   TrackedEntityInstance that receive the inherited values.
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
@@ -93,14 +99,33 @@ public class TrackedEntityInstanceService {
 
             if (!fromTeiAttributes.isEmpty()) {
                 for (TrackedEntityAttributeValue attributeValue : fromTeiAttributes) {
-                    trackedEntityAttributeValueRepository
-                            .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                            .blockingSet(attributeValue.value());
+                    inheritAttribute(attributeValue, toTeiUid);
                 }
             }
         }
 
         return new Unit();
+    }
+
+    private void inheritAttribute(TrackedEntityAttributeValue attributeValue, String toTeiUid) throws D2Error {
+        TrackedEntityAttribute attribute = trackedEntityAttributeRepository.uid(
+                attributeValue.trackedEntityAttribute()).blockingGet();
+
+        if (attribute.valueType() == ValueType.IMAGE || attribute.valueType() == ValueType.FILE_RESOURCE) {
+
+            File file = new File(fileResourceCollectionRepository.uid(attributeValue.value())
+                    .blockingGet().path());
+
+            String newFileResourceId = fileResourceCollectionRepository.blockingAdd(file);
+
+            trackedEntityAttributeValueRepository
+                    .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                    .blockingSet(newFileResourceId);
+        } else {
+            trackedEntityAttributeValueRepository
+                    .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                    .blockingSet(attributeValue.value());
+        }
     }
 
     /**
@@ -109,7 +134,7 @@ public class TrackedEntityInstanceService {
      * relationships. Inherited values are persisted in database.
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
-     * @param toTeiUid TrackedEntityInstance that receive the inherited values.
+     * @param toTeiUid   TrackedEntityInstance that receive the inherited values.
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */

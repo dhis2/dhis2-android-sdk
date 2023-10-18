@@ -13,7 +13,7 @@
       "displayName": "TB number",
       "pattern": "RANDOM(XXX######)",
       "unique": false,
-      "inherit": false,
+      "inherit": true,
       "fieldMask": "XXXXX",
       "access": {
         "read": true,

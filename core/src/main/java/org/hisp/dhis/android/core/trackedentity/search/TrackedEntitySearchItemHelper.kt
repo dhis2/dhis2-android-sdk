@@ -75,7 +75,7 @@ object TrackedEntitySearchItemHelper {
         attributes: List<SimpleTrackedEntityAttribute>,
         attributeValues: List<TrackedEntityAttributeValue>?,
     ): List<TrackedEntitySearchItemAttribute> {
-        return attributes.mapNotNull { attribute ->
+        return attributes.map { attribute ->
             from(attribute, attributeValues)
         }
     }
@@ -83,20 +83,19 @@ object TrackedEntitySearchItemHelper {
     private fun from(
         attribute: SimpleTrackedEntityAttribute,
         attributeValues: List<TrackedEntityAttributeValue>?,
-    ): TrackedEntitySearchItemAttribute? {
-        return attributeValues?.find { it.trackedEntityAttribute() == attribute.attribute }?.let { value ->
-            TrackedEntitySearchItemAttribute(
-                attribute = attribute.attribute,
-                displayName = attribute.displayName,
-                displayFormName = attribute.displayFormName ?: attribute.displayName,
-                value = value.value(),
-                created = value.created(),
-                lastUpdated = value.lastUpdated(),
-                valueType = attribute.valueType,
-                displayInList = attribute.displayInList,
-                optionSet = attribute.optionSet,
-            )
-        }
+    ): TrackedEntitySearchItemAttribute {
+        val value = attributeValues?.find { it.trackedEntityAttribute() == attribute.attribute }
+        return TrackedEntitySearchItemAttribute(
+            attribute = attribute.attribute,
+            displayName = attribute.displayName,
+            displayFormName = attribute.displayFormName ?: attribute.displayName,
+            value = value?.value(),
+            created = value?.created(),
+            lastUpdated = value?.lastUpdated(),
+            valueType = attribute.valueType,
+            displayInList = attribute.displayInList,
+            optionSet = attribute.optionSet,
+        )
     }
 
     private fun toTrackedEntityAttributeValue(a: TrackedEntitySearchItemAttribute): TrackedEntityAttributeValue {

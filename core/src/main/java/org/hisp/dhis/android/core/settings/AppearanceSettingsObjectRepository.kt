@@ -86,8 +86,9 @@ class AppearanceSettingsObjectRepository @Inject internal constructor(
             ?: dataSetSettings?.globalSettings()
     }
 
-    val trackedEntityTypeFilters: Map<ProgramFilter, FilterSetting>?
-        get() = blockingGet()?.filterSorting()?.programSettings()?.globalSettings()
+    fun getTrackedEntityTypeFilters(): Map<ProgramFilter, FilterSetting>? {
+        return blockingGet()?.filterSorting()?.programSettings()?.globalSettings()
+    }
 
     fun getProgramFiltersByUid(uid: String?): Map<ProgramFilter, FilterSetting>? {
         val programFilters = blockingGet()?.filterSorting()?.programSettings()

@@ -29,13 +29,12 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +46,7 @@ class OrganisationUnitHandlerShould {
     private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore = mock()
     private val organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler = mock()
     private val dataSetDataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler = mock()
-    private val userOrganisationUnitLinkHandler: LinkHandler<OrganisationUnit, UserOrganisationUnitLink> = mock()
+    private val userOrganisationUnitLinkHandler: UserOrganisationUnitLinkHandler = mock()
     private val organisationUnitGroupHandler: OrganisationUnitGroupHandler = mock()
     private val organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler = mock()
     private val organisationUnitGroup: OrganisationUnitGroup = mock()

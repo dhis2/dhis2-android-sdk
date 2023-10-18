@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutine
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.koin.core.annotation.Singleton
 import java.lang.Boolean
-import kotlin.String
 
 @Singleton
 class OptionGroupCall internal constructor(

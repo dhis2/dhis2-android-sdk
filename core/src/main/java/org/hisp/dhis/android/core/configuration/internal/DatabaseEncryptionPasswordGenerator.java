@@ -46,7 +46,4 @@ public class DatabaseEncryptionPasswordGenerator {
 
         return new String(randomChars);
     }
-
-    public DatabaseEncryptionPasswordGenerator() {
-    }
 }

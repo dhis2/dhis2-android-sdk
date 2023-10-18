@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.koin.core.annotation.Singleton
 import java.lang.Boolean
-import kotlin.String
 
 @Singleton
 class ValidationRuleCall internal constructor(

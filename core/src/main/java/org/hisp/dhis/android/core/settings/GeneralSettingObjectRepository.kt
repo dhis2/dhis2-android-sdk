@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingStore
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class GeneralSettingObjectRepository @Inject internal constructor(
+@Singleton(binds = [GeneralSettingObjectRepository::class])
+class GeneralSettingObjectRepository internal constructor(
     private val store: GeneralSettingStore,
     private val syncStore: SynchronizationSettingStore,
     generalSettingCall: GeneralSettingCall,

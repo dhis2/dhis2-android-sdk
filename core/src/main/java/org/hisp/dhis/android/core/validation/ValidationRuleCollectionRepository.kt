@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.validation
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
@@ -39,11 +38,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class ValidationRuleCollectionRepository @Inject internal constructor(
+class ValidationRuleCollectionRepository internal constructor(
     store: ValidationRuleStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

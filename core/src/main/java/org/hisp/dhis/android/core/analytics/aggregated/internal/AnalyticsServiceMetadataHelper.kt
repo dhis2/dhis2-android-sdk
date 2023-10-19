@@ -48,10 +48,11 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal class AnalyticsServiceMetadataHelper @Inject constructor(
+internal class AnalyticsServiceMetadataHelper(
     private val categoryStore: CategoryStore,
     private val categoryOptionStore: CategoryOptionStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,

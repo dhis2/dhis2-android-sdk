@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.validation.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
+import org.koin.core.annotation.Singleton
 import java.lang.Boolean
-import javax.inject.Inject
 
-@Reusable
-class ValidationRuleCall @Inject internal constructor(
+@Singleton
+class ValidationRuleCall internal constructor(
     private val service: ValidationRuleService,
     private val handler: ValidationRuleHandler,
     private val apiDownloader: APIDownloader,

@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OldEnrollmentEndpointCallFactory @Inject constructor(
+@Singleton
+internal class OldEnrollmentEndpointCallFactory(
     private val service: EnrollmentService,
 ) : EnrollmentEndpointCallFactory {
     override suspend fun getRelationshipEntityCall(uid: String): Enrollment {

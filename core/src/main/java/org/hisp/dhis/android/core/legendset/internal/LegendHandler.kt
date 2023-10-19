@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.legendset.Legend
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LegendHandler(
     store: LegendStore,
 ) : IdentifiableHandlerImpl<Legend>(store)

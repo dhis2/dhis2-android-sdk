@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.resource.internal
 
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
-internal class ResourceHandler @Inject constructor(private val resourceStore: ResourceStore) {
+internal class ResourceHandler(private val resourceStore: ResourceStore) {
     internal var serverDate: Date? = null
 
     fun setServerDate(serverDate: Date) {

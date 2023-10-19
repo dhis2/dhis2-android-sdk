@@ -42,19 +42,16 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Single;
 
-class FileResourceCleaner {
+public class FileResourceCleaner {
     private final DataElementModule dataElementModule;
     private final TrackedEntityModule trackedEntityModule;
     private final FileResourceModule fileResourceModule;
 
-    @Inject
-    FileResourceCleaner(DataElementModule dataElementModule,
-                        TrackedEntityModule trackedEntityModule,
-                        FileResourceModule fileResourceModule) {
+    public FileResourceCleaner(DataElementModule dataElementModule,
+                               TrackedEntityModule trackedEntityModule,
+                               FileResourceModule fileResourceModule) {
         this.dataElementModule = dataElementModule;
         this.trackedEntityModule = trackedEntityModule;
         this.fileResourceModule = fileResourceModule;

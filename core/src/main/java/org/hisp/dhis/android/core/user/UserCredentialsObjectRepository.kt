@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -38,10 +37,10 @@ import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
 import org.hisp.dhis.android.core.user.internal.UserRoleChildrenAppender
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.core.user.internal.UserUserCredentialsTransformer
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class UserCredentialsObjectRepository @Inject internal constructor(
+@Singleton(binds = [UserCredentialsObjectRepository::class])
+class UserCredentialsObjectRepository internal constructor(
     store: UserStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

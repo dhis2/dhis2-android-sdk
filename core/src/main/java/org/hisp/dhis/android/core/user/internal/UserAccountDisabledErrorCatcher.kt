@@ -28,20 +28,19 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.AccountDeletionReason
+import org.koin.core.annotation.Singleton
 import retrofit2.HttpException
 import retrofit2.Response
 import java.net.HttpURLConnection
-import javax.inject.Inject
 
-@Reusable
+@Singleton
 @Suppress("TooGenericExceptionCaught")
-internal class UserAccountDisabledErrorCatcher @Inject constructor(
+internal class UserAccountDisabledErrorCatcher(
     private val objectMapper: ObjectMapper,
     private val accountManager: AccountManagerImpl,
 ) : APICallErrorCatcher {

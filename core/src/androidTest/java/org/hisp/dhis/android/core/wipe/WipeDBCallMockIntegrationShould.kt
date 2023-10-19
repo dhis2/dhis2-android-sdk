@@ -65,7 +65,6 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
     @Test
     fun have_empty_database_when_wipe_db_after_sync_data() {
-        givenAFreshLoginInDatabase()
         activateSMSModule()
         givenAMetadataInDatabase()
         givenDataInDatabase()
@@ -76,16 +75,6 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         d2.wipeModule().wipeEverything()
 
         assertThatDatabase(databaseAdapter).isEmpty
-    }
-
-    private fun givenAFreshLoginInDatabase() {
-        try {
-            d2.userModule().logOut().blockingAwait()
-        } catch (e: RuntimeException) {
-            // Do nothing
-        } finally {
-            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
-        }
     }
 
     private fun activateSMSModule() {

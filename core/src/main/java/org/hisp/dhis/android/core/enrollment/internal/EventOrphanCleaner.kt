@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.DataOrphanCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventOrphanCleaner @Inject constructor(
+@Singleton
+internal class EventOrphanCleaner(
     databaseAdapter: DatabaseAdapter,
 ) : DataOrphanCleaner<Enrollment, Event>(
     tableName = EventTableInfo.TABLE_INFO.name(),

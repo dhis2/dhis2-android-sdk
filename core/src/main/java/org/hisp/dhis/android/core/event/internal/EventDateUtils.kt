@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.koin.core.annotation.Singleton
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-@Reusable
-class EventDateUtils @Inject constructor(
+@Singleton
+class EventDateUtils(
     private val periodHelper: PeriodHelper,
 ) {
 

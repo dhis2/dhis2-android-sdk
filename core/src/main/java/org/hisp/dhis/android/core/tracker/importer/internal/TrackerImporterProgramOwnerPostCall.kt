@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerPostCall
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackerImporterProgramOwnerPostCall @Inject constructor(
+@Singleton
+internal class TrackerImporterProgramOwnerPostCall(
     private val programOwnerPostCall: ProgramOwnerPostCall,
     private val programOwnerStore: ProgramOwnerStore,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,

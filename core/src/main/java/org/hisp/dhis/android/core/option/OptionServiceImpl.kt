@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.option
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class OptionServiceImpl @Inject constructor(
+@Singleton
+class OptionServiceImpl(
     private val optionRepository: OptionCollectionRepository,
 ) : OptionService {
 

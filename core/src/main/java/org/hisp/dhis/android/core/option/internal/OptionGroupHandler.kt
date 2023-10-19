@@ -29,14 +29,15 @@ package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OptionGroupHandler(
     optionStore: OptionGroupStore,
-    private val optionGroupOptionLinkHandler: LinkHandler<ObjectWithUid, OptionGroupOptionLink>,
+    private val optionGroupOptionLinkHandler: OptionGroupOptionLinkHandler,
     private val collectionCleaner: OptionGroupCollectionCleaner,
 ) : IdentifiableHandlerImpl<OptionGroup>(optionStore) {
 

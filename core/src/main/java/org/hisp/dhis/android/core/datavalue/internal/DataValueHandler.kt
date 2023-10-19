@@ -28,17 +28,18 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.koin.core.annotation.Singleton
 import java.util.Arrays
 
+@Singleton
 internal class DataValueHandler(
-    store: ObjectWithoutUidStore<DataValue>,
+    store: DataValueStore,
 ) : ObjectWithoutUidHandlerImpl<DataValue>(store) {
     override fun deleteOrPersist(o: DataValue): HandleAction {
         return if (CollectionsHelper.isDeleted(o)) {

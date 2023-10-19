@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import dagger.Reusable
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -35,12 +34,12 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
 private const val UNAUTHORIZED = 401
 
-@Reusable
-internal class OpenIDConnectAuthenticator @Inject constructor(
+@Singleton
+internal class OpenIDConnectAuthenticator(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val tokenRefresher: OpenIDConnectTokenRefresher,
     private val userIdHelper: UserIdAuthenticatorHelper,

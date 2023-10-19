@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipItemChildrenAppender @Inject constructor(
+@Singleton
+internal class RelationshipItemChildrenAppender(
     databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<Relationship>() {
     private val store = RelationshipItemStoreImpl(databaseAdapter)

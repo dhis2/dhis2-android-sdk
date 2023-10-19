@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -41,10 +40,10 @@ import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatest
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataValueConflictParser @Inject constructor(
+@Singleton
+internal class DataValueConflictParser(
     dataElementStore: DataElementStore,
     dataValueStore: DataValueStore,
     dataSetStore: DataSetStore,

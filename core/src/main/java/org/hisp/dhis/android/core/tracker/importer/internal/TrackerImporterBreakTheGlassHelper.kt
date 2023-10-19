@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
@@ -40,10 +39,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
+@Singleton
+internal class TrackerImporterBreakTheGlassHelper(
     private val conflictStore: TrackerImportConflictStore,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val enrollmentStore: EnrollmentStore,

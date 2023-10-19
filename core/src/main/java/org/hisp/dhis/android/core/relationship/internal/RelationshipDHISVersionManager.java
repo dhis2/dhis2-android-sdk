@@ -42,16 +42,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
 public class RelationshipDHISVersionManager {
 
     private final RelationshipTypeStore relationshipTypeStore;
 
-    @Inject
     public RelationshipDHISVersionManager(RelationshipTypeStore relationshipTypeStore) {
         this.relationshipTypeStore = relationshipTypeStore;
     }

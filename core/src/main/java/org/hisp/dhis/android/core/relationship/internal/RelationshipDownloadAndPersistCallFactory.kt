@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipDownloadAndPersistCallFactory @Inject constructor(
+@Singleton
+internal class RelationshipDownloadAndPersistCallFactory(
     private val relationshipStore: RelationshipStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val teiPersistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,

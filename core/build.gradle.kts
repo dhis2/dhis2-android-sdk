@@ -28,6 +28,7 @@
 
 plugins {
     id("com.android.library")
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
     id("kotlin-android")
     id("kotlin-kapt")
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
@@ -64,7 +65,6 @@ val autoValue = "1.10.2"
 val autoValueCursor = "2.0.1"
 val retrofit = "2.9.0"
 val okHttp = "4.10.0"
-val dagger = "2.47"
 val rxJava = "2.2.21"
 val rxAndroid = "2.1.1"
 val sqlCipher = "4.4.3"
@@ -74,6 +74,8 @@ val expressionParser = "1.0.33"
 // Kotlin
 val kotlinxDatetime = "0.4.0"
 val coroutines = "1.6.4"
+val koin = "3.5.0"
+val koinKsp = "1.3.0"
 
 // test dependencies
 val coreTesting = "2.2.0"
@@ -126,6 +128,9 @@ android {
     }
 
     sourceSets {
+        sourceSets.getByName("main") {
+            java.srcDirs("build/generated/ksp/main/kotlin")
+        }
         sourceSets.getByName("test") {
             resources.srcDirs("src/sharedTest/resources")
         }
@@ -165,9 +170,10 @@ dependencies {
     api("com.google.auto.value:auto-value-annotations:$autoValue")
     kapt("com.google.auto.value:auto-value:$autoValue")
 
-    // Dagger
-    api("com.google.dagger:dagger:$dagger")
-    kapt("com.google.dagger:dagger-compiler:$dagger")
+    // Koin
+    implementation("io.insert-koin:koin-core:$koin")
+    implementation("io.insert-koin:koin-annotations:$koinKsp")
+    ksp("io.insert-koin:koin-ksp-compiler:$koinKsp")
 
     // Jackson
     api("com.fasterxml.jackson.core:jackson-databind:$jackson")

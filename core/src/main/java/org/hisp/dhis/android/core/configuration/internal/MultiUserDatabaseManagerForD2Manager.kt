@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-internal class MultiUserDatabaseManagerForD2Manager @Inject constructor(
+@Singleton
+internal class MultiUserDatabaseManagerForD2Manager(
     private val databaseAdapter: DatabaseAdapter,
     private val migration: DatabaseConfigurationMigration,
     private val databaseAdapterFactory: DatabaseAdapterFactory,

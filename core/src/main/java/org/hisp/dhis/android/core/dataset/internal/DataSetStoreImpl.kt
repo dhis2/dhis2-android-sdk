@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class DataSetStoreImpl(
     databaseAdapter: DatabaseAdapter,

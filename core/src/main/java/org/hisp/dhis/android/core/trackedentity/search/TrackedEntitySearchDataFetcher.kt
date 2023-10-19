@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -47,7 +46,7 @@ internal class TrackedEntitySearchDataFetcher(
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
-    onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
+    onlineCache: TrackedEntityInstanceOnlineCache,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
     private val helper: TrackedEntitySearchDataFetcherHelper,

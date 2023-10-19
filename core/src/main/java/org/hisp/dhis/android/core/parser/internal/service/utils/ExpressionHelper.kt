@@ -35,7 +35,6 @@ import java.lang.NumberFormatException
 
 internal object ExpressionHelper {
 
-    @JvmStatic
     fun getValueMap(dataValues: List<DataValue>): Map<DimensionalItemObject, Double> {
         val valueMap: MutableMap<DimensionalItemObject, Double> = HashMap()
         for (dataValue in dataValues) {

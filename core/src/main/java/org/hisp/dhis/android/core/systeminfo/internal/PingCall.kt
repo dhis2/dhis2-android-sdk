@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class PingCall @Inject internal constructor(
+@Singleton
+class PingCall internal constructor(
     private val pingService: PingService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {

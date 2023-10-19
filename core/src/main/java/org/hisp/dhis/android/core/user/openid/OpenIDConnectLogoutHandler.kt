@@ -28,14 +28,15 @@
 
 package org.hisp.dhis.android.core.user.openid
 
-import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import javax.inject.Inject
+import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OpenIDConnectLogoutHandler @Inject constructor(
+@Singleton
+@Single
+internal class OpenIDConnectLogoutHandler(
     private val credentialsSecureStore: CredentialsSecureStore,
 ) {
 

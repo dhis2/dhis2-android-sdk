@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionGroupTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class OptionGroupStoreImpl(
     databaseAdapter: DatabaseAdapter,

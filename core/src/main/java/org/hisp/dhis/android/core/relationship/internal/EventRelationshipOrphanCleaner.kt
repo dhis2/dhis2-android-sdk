@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventRelationshipOrphanCleaner @Inject internal constructor(
+@Singleton
+internal class EventRelationshipOrphanCleaner internal constructor(
     relationshipStore: RelationshipStore,
     relationshipRepository: RelationshipCollectionRepository,
 ) : RelationshipOrphanCleaner<Event, Relationship>(relationshipStore, relationshipRepository) {

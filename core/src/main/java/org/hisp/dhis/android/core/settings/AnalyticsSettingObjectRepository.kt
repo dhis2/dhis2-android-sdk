@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class AnalyticsSettingObjectRepository @Inject internal constructor(
+@Singleton(binds = [AnalyticsSettingObjectRepository::class])
+class AnalyticsSettingObjectRepository internal constructor(
     private val analyticsTeiSettingRepository: AnalyticsTeiSettingCollectionRepository,
     analyticsSettingCall: AnalyticsSettingCall,
     private val analyticsDhisVisualizationsSettingObjectRepository: AnalyticsDhisVisualizationsSettingObjectRepository,

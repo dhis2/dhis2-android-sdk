@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class VisualizationDimensionItemStoreImpl(
     databaseAdapter: DatabaseAdapter,

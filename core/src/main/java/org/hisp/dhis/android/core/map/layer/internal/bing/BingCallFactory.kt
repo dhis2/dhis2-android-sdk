@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import dagger.Reusable
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
@@ -42,11 +41,11 @@ import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 
-@Reusable
-internal class BingCallFactory @Inject constructor(
+@Singleton
+internal class BingCallFactory(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,

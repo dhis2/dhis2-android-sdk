@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSettingTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ReservedValueSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ReservedValueSettingStore,

@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramStageWorkingListCall @Inject internal constructor(
+@Singleton
+internal class ProgramStageWorkingListCall(
     private val service: ProgramStageWorkingListService,
     private val handler: ProgramStageWorkingListHandler,
     private val apiDownloader: APIDownloader,

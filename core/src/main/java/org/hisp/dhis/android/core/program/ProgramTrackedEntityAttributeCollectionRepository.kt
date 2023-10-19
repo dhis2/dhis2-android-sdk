@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
@@ -40,10 +39,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderB
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class ProgramTrackedEntityAttributeCollectionRepository @Inject internal constructor(
+@Singleton
+class ProgramTrackedEntityAttributeCollectionRepository internal constructor(
     store: ProgramTrackedEntityAttributeStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

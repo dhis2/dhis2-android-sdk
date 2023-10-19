@@ -263,7 +263,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         @Throws(Exception::class)
         fun setUp() {
             setUpClass()
-            oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator()
+            oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator
             teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
             teiDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
             eventStore = EventStoreImpl(databaseAdapter)

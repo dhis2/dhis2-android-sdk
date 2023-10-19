@@ -36,7 +36,7 @@ class CategoryEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
     fun call_categories_endpoint() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
-        val categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCall.download(
+        val categoryEndpointCall = getD2DIComponent(d2).internalModules.category.categoryCall.download(
             setOf("cX5k9anHEHd"),
         )
         val categories = categoryEndpointCall

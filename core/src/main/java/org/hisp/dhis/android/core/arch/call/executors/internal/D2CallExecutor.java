@@ -40,12 +40,7 @@ import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl;
 
 import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
 @SuppressWarnings({"PMD.PreserveStackTrace"})
-@Reusable
 public final class D2CallExecutor {
 
     private final D2Error.Builder exceptionBuilder = D2Error
@@ -55,7 +50,6 @@ public final class D2CallExecutor {
     private final DatabaseAdapter databaseAdapter;
     private final D2ErrorStore errorStore;
 
-    @Inject
     public D2CallExecutor(DatabaseAdapter databaseAdapter, D2ErrorStore errorStore) {
         this.databaseAdapter = databaseAdapter;
         this.errorStore = errorStore;

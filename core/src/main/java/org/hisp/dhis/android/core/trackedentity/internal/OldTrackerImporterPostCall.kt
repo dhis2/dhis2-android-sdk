@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -48,12 +47,12 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterProgramOwnerPostCall
+import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection.HTTP_CONFLICT
-import javax.inject.Inject
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList")
-internal class OldTrackerImporterPostCall @Inject internal constructor(
+internal class OldTrackerImporterPostCall internal constructor(
     private val trackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
     private val trackerStateManager: TrackerPostStateManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,

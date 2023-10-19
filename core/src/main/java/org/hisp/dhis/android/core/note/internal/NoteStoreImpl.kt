@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class NoteStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : NoteStore,

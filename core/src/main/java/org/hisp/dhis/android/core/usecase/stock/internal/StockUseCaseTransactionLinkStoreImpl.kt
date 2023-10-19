@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class StockUseCaseTransactionLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,

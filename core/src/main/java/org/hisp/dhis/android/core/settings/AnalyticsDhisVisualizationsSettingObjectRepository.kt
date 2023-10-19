@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class AnalyticsDhisVisualizationsSettingObjectRepository @Inject internal constructor(
+@Singleton(binds = [AnalyticsDhisVisualizationsSettingObjectRepository::class])
+class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
     private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
     analyticsSettingCall: AnalyticsSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>(analyticsSettingCall),

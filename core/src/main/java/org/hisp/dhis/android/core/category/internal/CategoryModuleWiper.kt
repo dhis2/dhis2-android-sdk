@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.category.*
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryModuleWiper @Inject constructor(
+@Singleton
+internal class CategoryModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
     override fun wipeMetadata() {

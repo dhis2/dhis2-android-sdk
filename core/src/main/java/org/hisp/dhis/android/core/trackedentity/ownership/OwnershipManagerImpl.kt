@@ -40,10 +40,11 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-internal class OwnershipManagerImpl @Inject constructor(
+@Singleton
+internal class OwnershipManagerImpl(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val ownershipService: OwnershipService,
     private val dataStatePropagator: DataStatePropagator,

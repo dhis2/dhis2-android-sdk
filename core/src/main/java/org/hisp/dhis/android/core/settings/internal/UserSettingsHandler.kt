@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.UserSettings
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserSettingsHandler @Inject constructor(
+@Singleton
+internal class UserSettingsHandler(
     store: UserSettingsStore,
 ) : ObjectWithoutUidHandlerImpl<UserSettings>(store) {
 

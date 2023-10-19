@@ -39,7 +39,9 @@ import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class DataStoreEntryStoreImpl(
     databaseAdapter: DatabaseAdapter,

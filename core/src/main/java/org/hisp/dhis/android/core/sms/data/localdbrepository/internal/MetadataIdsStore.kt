@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.smscompression.SMSConsts
 import org.hisp.dhis.smscompression.models.SMSMetadata
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class MetadataIdsStore @Inject constructor(
+@Singleton
+internal class MetadataIdsStore(
     private val smsMetadataIdsStore: SMSMetadataIdStore,
     private val smsConfigStore: SMSConfigStore,
 ) {

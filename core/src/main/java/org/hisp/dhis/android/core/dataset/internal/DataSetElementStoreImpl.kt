@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetElementStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetElementStore,

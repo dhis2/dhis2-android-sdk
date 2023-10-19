@@ -29,16 +29,15 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
 import android.util.Log
 import android.util.Pair
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OngoingSubmissionsStore @Inject constructor(
+@Singleton
+internal class OngoingSubmissionsStore(
     private val smsOngoingSubmissionStore: SMSOngoingSubmissionStore,
     private val smsConfigStore: SMSConfigStore,
 ) {

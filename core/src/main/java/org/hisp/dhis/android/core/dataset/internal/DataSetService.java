@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-interface DataSetService {
+public interface DataSetService {
     @GET("dataSets")
     Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
                                        @Query("filter") @Where Filter<DataSet, String> uids,

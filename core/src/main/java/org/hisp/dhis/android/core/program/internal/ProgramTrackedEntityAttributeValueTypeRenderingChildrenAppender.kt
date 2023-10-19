@@ -27,14 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import javax.inject.Inject
 
-@Reusable
-internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender @Inject constructor(
+internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
     databaseAdapter: DatabaseAdapter,
 ) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(
     ValueTypeDeviceRenderingStoreImpl(databaseAdapter),

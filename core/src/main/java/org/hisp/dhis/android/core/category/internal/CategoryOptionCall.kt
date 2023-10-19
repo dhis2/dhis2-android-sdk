@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryOptionCall @Inject constructor(
+@Singleton
+internal class CategoryOptionCall(
     private val handler: CategoryOptionHandler,
     private val service: CategoryOptionService,
     private val apiDownloader: APIDownloader,

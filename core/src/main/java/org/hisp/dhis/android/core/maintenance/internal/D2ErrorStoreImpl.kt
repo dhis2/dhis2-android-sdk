@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class D2ErrorStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : D2ErrorStore,

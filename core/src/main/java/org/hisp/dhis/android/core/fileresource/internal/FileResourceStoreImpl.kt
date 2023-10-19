@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class FileResourceStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : FileResourceStore,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -46,10 +45,10 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class RelationshipTypeCollectionRepository @Inject internal constructor(
+@Singleton
+class RelationshipTypeCollectionRepository internal constructor(
     store: RelationshipTypeStore,
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,

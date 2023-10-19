@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityAttributeHandler @Inject constructor(
+@Singleton
+internal class TrackedEntityAttributeHandler(
     trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityAttributeLegendSetLinkHandler: TrackedEntityAttributeLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<TrackedEntityAttribute>(trackedEntityAttributeStore) {

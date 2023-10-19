@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageSectionProgramIndicatorLinkHandler(
     store: ProgramStageSectionProgramIndicatorLinkStore,
 ) : LinkHandlerImpl<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>(store)

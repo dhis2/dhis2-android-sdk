@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SectionIndicatorLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : SectionIndicatorLinkStore,

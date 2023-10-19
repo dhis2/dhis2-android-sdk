@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
@@ -41,10 +40,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntitySearchDataFetcherHelper @Inject constructor(
+@Singleton
+internal class TrackedEntitySearchDataFetcherHelper(
     private val trackerHeaderEngine: TrackerHeaderEngine,
     private val trackedEntityTypeAttributeCollectionRepository: TrackedEntityTypeAttributeCollectionRepository,
     private val programTrackedEntityAttributeCollectionRepository: ProgramTrackedEntityAttributeCollectionRepository,

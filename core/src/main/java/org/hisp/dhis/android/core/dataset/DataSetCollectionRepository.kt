@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -47,11 +46,11 @@ import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenApp
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class DataSetCollectionRepository @Inject internal constructor(
+class DataSetCollectionRepository internal constructor(
     store: DataSetStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

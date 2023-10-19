@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.indicator.Indicator
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SectionIndicatorLinkHandler(
     store: SectionIndicatorLinkStore,
 ) : LinkHandlerImpl<Indicator, SectionIndicatorLink>(store)

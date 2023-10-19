@@ -27,17 +27,29 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.MockIntegrationTestObjects
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.setFixed
 
 internal object MockIntegrationTestObjectsFactory {
     private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
+
+    private val d2: D2
+
+    init {
+        setFixed()
+        d2 = D2Factory.forNewDatabase()
+        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
+    }
 
     fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
         val instance = instances[content]
         return if (instance != null) {
             IntegrationTestObjectsWithIsNewInstance(instance, false)
         } else {
-            val newInstance = MockIntegrationTestObjects(content)
+            val newInstance = MockIntegrationTestObjects(d2, content)
             instances[content] = newInstance
             IntegrationTestObjectsWithIsNewInstance(newInstance, true)
         }

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -38,10 +37,10 @@ import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryO
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class CategoryOptionComboCollectionRepository @Inject internal constructor(
+@Singleton
+class CategoryOptionComboCollectionRepository internal constructor(
     store: CategoryOptionComboStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserHandler @Inject constructor(
+@Singleton
+internal class UserHandler(
     userStore: UserStore,
     private val userRoleHandler: UserRoleHandler,
     private val userRoleCollectionCleaner: UserRoleCollectionCleaner,

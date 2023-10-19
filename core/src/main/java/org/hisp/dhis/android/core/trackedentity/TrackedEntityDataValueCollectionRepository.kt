@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class TrackedEntityDataValueCollectionRepository @Inject internal constructor(
+@Singleton
+class TrackedEntityDataValueCollectionRepository internal constructor(
     private val store: TrackedEntityDataValueStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

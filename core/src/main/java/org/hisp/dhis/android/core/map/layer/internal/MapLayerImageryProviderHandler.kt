@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.map.layer.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class MapLayerImageryProviderHandler(
     store: MapLayerImageryProviderStore,
 ) : LinkHandlerImpl<MapLayerImageryProvider, MapLayerImageryProvider>(store)

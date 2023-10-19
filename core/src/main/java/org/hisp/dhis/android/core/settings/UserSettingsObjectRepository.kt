@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.UserSettingsStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class UserSettingsObjectRepository @Inject internal constructor(
+@Singleton(binds = [UserSettingsObjectRepository::class])
+class UserSettingsObjectRepository internal constructor(
     private val store: UserSettingsStore,
     generalSettingCall: GeneralSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>(generalSettingCall),

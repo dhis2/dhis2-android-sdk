@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import java.util.*
 
-internal class ParentPeriodGeneratorImpl(
+internal class ParentPeriodGeneratorImpl constructor(
     private val daily: PeriodGenerator,
     private val weekly: WeeklyPeriodGenerators,
     private val biWeekly: PeriodGenerator,
@@ -103,7 +103,6 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     companion object {
-        @JvmStatic
         fun create(calendarProvider: CalendarProvider): ParentPeriodGeneratorImpl {
             val calendar = calendarProvider.calendar
             return ParentPeriodGeneratorImpl(

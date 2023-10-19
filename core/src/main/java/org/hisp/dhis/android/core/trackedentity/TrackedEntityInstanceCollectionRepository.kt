@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -55,11 +54,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class TrackedEntityInstanceCollectionRepository @Inject internal constructor(
+class TrackedEntityInstanceCollectionRepository internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

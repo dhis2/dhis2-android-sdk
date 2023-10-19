@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class DataValueConflictStoreImpl(
     databaseAdapter: DatabaseAdapter,

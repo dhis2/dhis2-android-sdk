@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.d2.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.analytics.AnalyticsModule
 import org.hisp.dhis.android.core.category.CategoryModule
 import org.hisp.dhis.android.core.constant.ConstantModule
@@ -58,11 +57,11 @@ import org.hisp.dhis.android.core.usecase.UseCaseModule
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.validation.ValidationModule
 import org.hisp.dhis.android.core.visualization.VisualizationModule
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList")
-internal class D2Modules @Inject constructor(
+internal class D2Modules(
     val analytics: AnalyticsModule,
     val category: CategoryModule,
     val constant: ConstantModule,

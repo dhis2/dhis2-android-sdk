@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ExpressionDimensionItemCall @Inject constructor(
+@Singleton
+internal class ExpressionDimensionItemCall(
     private val service: ExpressionDimensionItemService,
     private val handler: ExpressionDimensionItemHandler,
     private val apiDownloader: APIDownloader,

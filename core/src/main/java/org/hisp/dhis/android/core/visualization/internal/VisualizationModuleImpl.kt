@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 import org.hisp.dhis.android.core.visualization.VisualizationModule
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationModuleImpl @Inject internal constructor(
+@Singleton
+internal class VisualizationModuleImpl(
     private val visualizations: VisualizationCollectionRepository,
 ) : VisualizationModule {
 

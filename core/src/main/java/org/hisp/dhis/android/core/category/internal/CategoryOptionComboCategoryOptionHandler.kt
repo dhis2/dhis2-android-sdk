@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.category.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionComboCategoryOptionHandler(
     store: CategoryOptionComboCategoryOptionLinkStore,
 ) : LinkHandlerImpl<CategoryOption, CategoryOptionComboCategoryOptionLink>(store)

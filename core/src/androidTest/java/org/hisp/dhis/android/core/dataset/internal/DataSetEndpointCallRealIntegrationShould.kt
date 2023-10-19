@@ -47,7 +47,7 @@ class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun createCall(): Callable<List<DataSet>> {
-        return getD2DIComponent(d2).dataSetCallFactory().create(setOf("lyLU2wR22tC", "BfMAe6Itzgt"))
+        return getD2DIComponent(d2).dataSetCallFactory.create(setOf("lyLU2wR22tC", "BfMAe6Itzgt"))
     }
 
     // @Test

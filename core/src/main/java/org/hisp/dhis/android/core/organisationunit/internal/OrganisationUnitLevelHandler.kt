@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OrganisationUnitLevelHandler(
     store: OrganisationUnitLevelStore,
 ) : IdentifiableHandlerImpl<OrganisationUnitLevel>(store)

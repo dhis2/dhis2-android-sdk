@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryComboHandler constructor(
     store: CategoryComboStore,
     private val optionComboHandler: CategoryOptionComboHandler,

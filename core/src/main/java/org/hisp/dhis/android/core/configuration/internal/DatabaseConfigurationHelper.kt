@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DatabaseConfigurationHelper @Inject constructor(
+@Singleton
+internal class DatabaseConfigurationHelper(
     private val databaseNameGenerator: DatabaseNameGenerator,
     private val dateProvider: DateProvider,
 ) {

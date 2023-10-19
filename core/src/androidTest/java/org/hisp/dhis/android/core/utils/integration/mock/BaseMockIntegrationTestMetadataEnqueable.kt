@@ -35,15 +35,15 @@ abstract class BaseMockIntegrationTestMetadataEnqueable : BaseMockIntegrationTes
         @JvmStatic
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.MetadataEnqueable)
+            dhis2MockServer.enqueueLoginResponses()
+            freshLogin(
+                "android",
+                "Android123",
+                dhis2MockServer.baseEndpoint,
+            )
             if (isNewInstance) {
-                objects.dhis2MockServer.enqueueLoginResponses()
-                objects.d2.userModule().blockingLogIn(
-                    "android",
-                    "Android123",
-                    objects.dhis2MockServer.baseEndpoint,
-                )
-                objects.dhis2MockServer.enqueueMetadataResponses()
-                objects.d2.metadataModule().blockingDownload()
+                dhis2MockServer.enqueueMetadataResponses()
+                d2.metadataModule().blockingDownload()
             }
         }
     }

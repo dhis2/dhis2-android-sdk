@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
@@ -36,10 +35,10 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
+@Singleton
+internal class AnalyticsTeiDataChildrenAppender(
     databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<AnalyticsTeiSetting>() {
     private val analyticsTeiDataElementStore = AnalyticsTeiDataElementStoreImpl(databaseAdapter)

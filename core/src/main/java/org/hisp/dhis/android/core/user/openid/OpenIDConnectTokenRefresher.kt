@@ -29,15 +29,14 @@
 package org.hisp.dhis.android.core.user.openid
 
 import android.content.Context
-import dagger.Reusable
 import io.reactivex.Single
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OpenIDConnectTokenRefresher @Inject constructor(
+@Singleton
+internal class OpenIDConnectTokenRefresher(
     private val context: Context,
     private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {

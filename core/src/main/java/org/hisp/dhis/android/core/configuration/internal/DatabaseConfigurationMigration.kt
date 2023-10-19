@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
 import android.database.sqlite.SQLiteException
-import dagger.Reusable
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DatabaseConfigurationMigration @Inject constructor(
+@Singleton
+internal class DatabaseConfigurationMigration(
     private val context: Context,
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
     private val credentialsStore: CredentialsSecureStore,

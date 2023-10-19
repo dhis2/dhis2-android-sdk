@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.validation.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.validation.ValidationRule
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ValidationRuleHandler @Inject constructor(
+@Singleton
+internal class ValidationRuleHandler(
     store: ValidationRuleStore,
     private val collectionCleaner: ValidationRuleCollectionCleaner,
 ) : IdentifiableHandlerImpl<ValidationRule>(store) {

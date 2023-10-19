@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.attribute.Attribute
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AttributeHandler(
-    store: IdentifiableObjectStore<Attribute>,
+    store: AttributeStore,
 ) : IdentifiableHandlerImpl<Attribute>(store)

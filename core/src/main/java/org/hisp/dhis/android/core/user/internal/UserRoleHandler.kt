@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.UserRole
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserRoleHandler @Inject constructor(
+@Singleton
+internal class UserRoleHandler(
     store: UserRoleStore,
 ) : IdentifiableHandlerImpl<UserRole>(store)

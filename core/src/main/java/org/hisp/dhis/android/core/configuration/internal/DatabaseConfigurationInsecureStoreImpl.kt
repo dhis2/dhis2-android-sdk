@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DatabaseConfigurationInsecureStoreImpl(
     insecureStore: InsecureStore,
 ) : DatabaseConfigurationInsecureStore,

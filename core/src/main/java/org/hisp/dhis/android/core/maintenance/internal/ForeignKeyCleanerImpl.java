@@ -45,8 +45,8 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
     private final DatabaseAdapter databaseAdapter;
     private final ForeignKeyViolationStore foreignKeyViolationStore;
 
-    ForeignKeyCleanerImpl(DatabaseAdapter databaseAdapter,
-                          ForeignKeyViolationStore foreignKeyViolationStore) {
+    public ForeignKeyCleanerImpl(DatabaseAdapter databaseAdapter,
+                                 ForeignKeyViolationStore foreignKeyViolationStore) {
         this.databaseAdapter = databaseAdapter;
         this.foreignKeyViolationStore = foreignKeyViolationStore;
     }

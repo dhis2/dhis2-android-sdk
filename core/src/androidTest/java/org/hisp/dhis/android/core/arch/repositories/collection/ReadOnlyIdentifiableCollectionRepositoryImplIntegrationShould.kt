@@ -129,8 +129,8 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
         @JvmStatic
         fun setUpTestClass() {
             setUpClass()
-            val rtHandler = objects.d2DIComponent.relationshipTypeHandler()
-            val tetHandler = objects.d2DIComponent.trackedEntityTypeHandler()
+            val rtHandler = objects.d2DIComponent.relationshipTypeHandler
+            val tetHandler = objects.d2DIComponent.trackedEntityTypeHandler
 
             tetHandler.handle(TrackedEntityTypeSamples.get())
             rtHandler.handle(RelationshipTypeSamples.RELATIONSHIP_TYPE_1)

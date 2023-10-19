@@ -58,10 +58,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.hisp.dhis.smscompression.models.SMSMetadata
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @SuppressWarnings("LongParameterList", "TooManyFunctions")
-internal class LocalDbRepositoryImpl @Inject constructor(
+internal class LocalDbRepositoryImpl(
     private val userRepository: AuthenticatedUserObjectRepository,
     private val trackedEntityModule: TrackedEntityModule,
     private val eventModule: EventModule,

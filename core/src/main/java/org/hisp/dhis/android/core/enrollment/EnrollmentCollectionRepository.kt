@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -48,11 +47,11 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class EnrollmentCollectionRepository @Inject internal constructor(
+class EnrollmentCollectionRepository internal constructor(
     private val enrollmentStore: EnrollmentStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

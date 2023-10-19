@@ -149,7 +149,7 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
                 .allowOnlineCache(false);
     }
 
-    static TrackedEntityInstanceQueryRepositoryScope empty() {
+    public static TrackedEntityInstanceQueryRepositoryScope empty() {
         return builder().build();
     }
 

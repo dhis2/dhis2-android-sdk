@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -38,11 +37,11 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.koin.core.annotation.Singleton
 import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 
-@Reusable
-internal class OrganisationUnitCall @Inject constructor(
+@Singleton
+internal class OrganisationUnitCall(
     private val organisationUnitService: OrganisationUnitService,
     private val handler: OrganisationUnitHandler,
     private val pathTransformer: OrganisationUnitDisplayPathTransformer,

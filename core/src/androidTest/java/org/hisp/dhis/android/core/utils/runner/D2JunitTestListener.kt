@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.utils.runner
 
 import android.util.Log
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.setFixed
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.setRegular
 import org.hisp.dhis.android.core.utils.DatabaseRemover
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory.tearDown
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
@@ -40,13 +38,11 @@ import org.junit.runner.notification.RunListener
 class D2JunitTestListener : RunListener() {
     override fun testRunStarted(description: Description) {
         Log.e("D2JunitTestListener", "Test run started")
-        setFixed()
     }
 
     override fun testRunFinished(result: Result) {
         Log.i("D2JunitTestListener", "Test run finished")
         TestDatabaseAdapterFactory.tearDown()
-        setRegular()
         tearDown()
         DatabaseRemover.removeAllDatabases()
     }

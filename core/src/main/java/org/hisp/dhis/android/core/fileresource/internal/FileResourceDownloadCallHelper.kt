@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -44,10 +43,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class FileResourceDownloadCallHelper @Inject constructor(
+@Singleton
+internal class FileResourceDownloadCallHelper(
     private val dataElementStore: DataElementStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,

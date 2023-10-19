@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class MapLayerImageryProviderStoreImpl(
     databaseAdapter: DatabaseAdapter,

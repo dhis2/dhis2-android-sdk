@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -36,10 +35,10 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
+@Singleton
+internal class OldTrackedEntityEndpointCallFactory(
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val queryCallFactory: TrackedEntityInstanceQueryCallFactory,
 ) : TrackedEntityEndpointCallFactory() {

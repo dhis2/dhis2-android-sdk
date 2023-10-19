@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserUserCredentialsTransformer @Inject constructor() : TwoWayTransformer<User, UserCredentials> {
+@Singleton
+internal class UserUserCredentialsTransformer : TwoWayTransformer<User, UserCredentials> {
     override fun transform(o: User): UserCredentials {
         return UserCredentials.builder()
             .name(o.name())

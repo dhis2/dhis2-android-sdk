@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetCompleteRegistrationCallProcessor @Inject internal constructor(
+@Singleton
+internal class DataSetCompleteRegistrationCallProcessor internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     private val handler: DataSetCompleteRegistrationHandler,
 ) {

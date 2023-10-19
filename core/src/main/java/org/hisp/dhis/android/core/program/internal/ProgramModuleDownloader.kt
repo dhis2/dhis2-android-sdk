@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -41,11 +40,11 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList")
-internal class ProgramModuleDownloader @Inject constructor(
+internal class ProgramModuleDownloader(
     private val programCall: ProgramCall,
     private val programStageCall: ProgramStageCall,
     private val programRuleCall: ProgramRuleCall,

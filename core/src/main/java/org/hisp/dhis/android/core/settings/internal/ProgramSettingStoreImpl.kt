@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ProgramSettingStore,

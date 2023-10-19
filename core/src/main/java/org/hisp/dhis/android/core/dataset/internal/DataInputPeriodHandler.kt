@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataInputPeriodHandler(
     store: DataInputPeriodStore,
 ) : LinkHandlerImpl<DataInputPeriod, DataInputPeriod>(store)

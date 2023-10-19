@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -35,10 +34,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class ExpressionDimensionItemCollectionRepository @Inject internal constructor(
+@Singleton
+class ExpressionDimensionItemCollectionRepository internal constructor(
     store: ExpressionDimensionItemStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

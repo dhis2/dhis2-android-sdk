@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetCompleteRegistrationHandler(
     store: DataSetCompleteRegistrationStore,
 ) : ObjectWithoutUidHandlerImpl<DataSetCompleteRegistration>(store)

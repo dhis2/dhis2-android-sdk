@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.common.valuetype.devicerendering.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ValueTypeDeviceRenderingHandler(
     store: ValueTypeDeviceRenderingStore,
 ) : ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering>(store)

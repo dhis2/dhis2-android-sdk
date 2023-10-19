@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class RelationshipTypeHandler constructor(
     relationshipTypeStore: RelationshipTypeStore,
     private val relationshipConstraintHandler: RelationshipConstraintHandler,

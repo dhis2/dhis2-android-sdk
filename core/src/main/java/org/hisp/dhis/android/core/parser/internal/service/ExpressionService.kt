@@ -50,9 +50,10 @@ import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.antlr.ParserException
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class ExpressionService @Inject constructor(
+@Singleton
+internal class ExpressionService(
     private val dataElementStore: DataElementStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val organisationUnitGroupStore: OrganisationUnitGroupStore,

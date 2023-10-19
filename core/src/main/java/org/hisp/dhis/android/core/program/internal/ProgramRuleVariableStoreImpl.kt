@@ -37,7 +37,9 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class ProgramRuleVariableStoreImpl(
     databaseAdapter: DatabaseAdapter,

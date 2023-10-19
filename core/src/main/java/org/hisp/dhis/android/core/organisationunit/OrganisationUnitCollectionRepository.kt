@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -46,11 +45,11 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrga
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class OrganisationUnitCollectionRepository @Inject internal constructor(
+class OrganisationUnitCollectionRepository internal constructor(
     store: OrganisationUnitStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

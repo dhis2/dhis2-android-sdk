@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramIndicatorModuleDownloader @Inject constructor(
+@Singleton
+internal class ProgramIndicatorModuleDownloader(
     private val programIndicatorCall: ProgramIndicatorCall,
     private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker,
 ) : UntypedModuleDownloaderCoroutines {

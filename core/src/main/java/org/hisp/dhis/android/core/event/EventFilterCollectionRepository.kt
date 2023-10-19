@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -41,11 +40,11 @@ import org.hisp.dhis.android.core.event.internal.EventFilterEventDataFilterChild
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class EventFilterCollectionRepository @Inject internal constructor(
+class EventFilterCollectionRepository internal constructor(
     store: EventFilterStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

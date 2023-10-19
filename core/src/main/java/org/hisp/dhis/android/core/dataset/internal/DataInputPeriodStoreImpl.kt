@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataInputPeriodStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataInputPeriodStore,

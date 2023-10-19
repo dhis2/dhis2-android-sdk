@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class AnalyticsTeiSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,

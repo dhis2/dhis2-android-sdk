@@ -36,9 +36,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.AggregationType
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsRepositoryImpl @Inject constructor(
+@Singleton
+internal class AnalyticsRepositoryImpl(
     private val params: AnalyticsRepositoryParams,
     private val analyticsService: AnalyticsService,
 ) : AnalyticsRepository {

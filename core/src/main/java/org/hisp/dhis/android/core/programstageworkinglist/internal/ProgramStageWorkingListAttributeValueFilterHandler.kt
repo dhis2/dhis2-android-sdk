@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageWorkingListAttributeValueFilterHandler(
     store: ProgramStageWorkingListAttributeValueFilterStore,
 ) : ObjectWithoutUidHandlerImpl<ProgramStageWorkingListAttributeValueFilter>(store)

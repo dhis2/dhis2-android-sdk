@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.usecase.stock
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionChildrenAppender
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransformer
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class StockUseCaseCollectionRepository @Inject internal constructor(
+@Singleton
+class StockUseCaseCollectionRepository internal constructor(
     store: StockUseCaseStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

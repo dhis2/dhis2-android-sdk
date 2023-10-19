@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetOrganisationUnitLinkCleaner @Inject constructor(
+@Singleton
+internal class DataSetOrganisationUnitLinkCleaner(
     programStore: DataSetStore,
     databaseAdapter: DatabaseAdapter,
 ) : LinkCleanerImpl<DataSet>(

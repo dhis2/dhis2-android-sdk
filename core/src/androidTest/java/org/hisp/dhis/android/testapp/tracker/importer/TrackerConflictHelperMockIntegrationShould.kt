@@ -44,7 +44,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     fun generate_correct_display_descriptions_if_passing_correct_error_report() {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector(),
+            objects.d2DIComponent.interpreterSelector,
         ).getConflictBuilder(errorReport).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo(
@@ -57,7 +57,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     fun return_default_message_when_passing_wrong_error_report() {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector(),
+            objects.d2DIComponent.interpreterSelector,
         ).getConflictBuilder(wrongCodeErrorReport).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo("Event: `event1`, Enrollment value is NULL.")
@@ -67,7 +67,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     fun generate_correct_display_descriptions_for_E1000_error() {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector(),
+            objects.d2DIComponent.interpreterSelector,
         ).getConflictBuilder(errorReportE1000).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo("You do not have access to Ngelehun CHC")

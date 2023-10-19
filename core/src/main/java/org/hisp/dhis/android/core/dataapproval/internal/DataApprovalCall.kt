@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.dataapproval.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataApprovalCall @Inject constructor(
+@Singleton
+internal class DataApprovalCall(
     private val service: DataApprovalService,
     private val handler: DataApprovalHandler,
     private val apiDownloader: APIDownloader,

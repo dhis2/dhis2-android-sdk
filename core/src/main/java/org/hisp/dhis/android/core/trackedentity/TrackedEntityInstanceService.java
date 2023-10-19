@@ -39,12 +39,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.Single;
 
-@Reusable
 public class TrackedEntityInstanceService {
 
     private final TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository;
@@ -52,12 +48,12 @@ public class TrackedEntityInstanceService {
     private final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository;
     private final FileResourceCollectionRepository fileResourceCollectionRepository;
 
-    @Inject
-    TrackedEntityInstanceService(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
-                                 TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository,
-                                 ProgramTrackedEntityAttributeCollectionRepository
-                                         programTrackedEntityAttributeRepository,
-                                 FileResourceCollectionRepository fileResourceCollectionRepository) {
+    public TrackedEntityInstanceService(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
+                                        TrackedEntityAttributeValueCollectionRepository
+                                                trackedEntityAttributeValueRepository,
+                                        ProgramTrackedEntityAttributeCollectionRepository
+                                                programTrackedEntityAttributeRepository,
+                                        FileResourceCollectionRepository fileResourceCollectionRepository) {
         this.trackedEntityAttributeRepository = trackedEntityAttributeRepository;
         this.trackedEntityAttributeValueRepository = trackedEntityAttributeValueRepository;
         this.programTrackedEntityAttributeRepository = programTrackedEntityAttributeRepository;

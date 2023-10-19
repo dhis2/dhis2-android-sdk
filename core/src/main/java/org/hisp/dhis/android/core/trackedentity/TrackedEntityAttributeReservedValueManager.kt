@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
@@ -40,7 +39,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -60,16 +58,17 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList", "TooManyFunctions")
-@Reusable
-class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
+@Singleton
+class TrackedEntityAttributeReservedValueManager internal constructor(
     private val store: TrackedEntityAttributeReservedValueStore,
     private val organisationUnitStore: OrganisationUnitStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
@@ -78,10 +77,7 @@ class TrackedEntityAttributeReservedValueManager @Inject internal constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val generalSettingObjectRepository: GeneralSettingObjectRepository,
     private val reservedValueSettingStore: ReservedValueSettingStore,
-    private val reservedValueQueryCallFactory: QueryCallFactory<
-        TrackedEntityAttributeReservedValue,
-        TrackedEntityAttributeReservedValueQuery,
-        >,
+    private val reservedValueQueryCallFactory: TrackedEntityAttributeReservedValueEndpointCallFactory,
 ) {
     private val d2ProgressManager = D2ProgressManager(null)
 

@@ -34,11 +34,13 @@ import org.hisp.dhis.android.core.D2ConfigurationValidator.validateAndSetDefault
 import org.hisp.dhis.android.core.NotClosedObjectsDetector.enableNotClosedObjectsDetection
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponentFactory
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
+import org.koin.ksp.generated.*
 
 /**
  * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
@@ -94,7 +96,7 @@ object D2Manager {
             val insecureStore = testingInsecureStore ?: AndroidInsecureStore(context)
 
             val d2Configuration = validateAndSetDefaultValues(d2Config)
-            d2DIComponent = D2DIComponent.create(d2Configuration, secureStore, insecureStore)
+            d2DIComponent = D2DIComponentFactory.create(d2Configuration, secureStore, insecureStore)
 
             if (isTestMode) {
                 enableNotClosedObjectsDetection()
@@ -104,10 +106,10 @@ object D2Manager {
                 SSLContextInitializer.initializeSSLContext()
             }
 
-            val multiUserDatabaseManager = d2DIComponent.multiUserDatabaseManagerForD2Manager()
+            val multiUserDatabaseManager = d2DIComponent.multiUserDatabaseManagerForD2Manager
             multiUserDatabaseManager.applyMigration()
 
-            val credentials = d2DIComponent.credentialsSecureStore().get()
+            val credentials = d2DIComponent.credentialsSecureStore.get()
 
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(
@@ -124,7 +126,7 @@ object D2Manager {
 
             if (credentials != null) {
                 d2!!.userModule().user().blockingGet()?.uid()?.let { uid ->
-                    d2DIComponent.userIdInMemoryStore().set(uid)
+                    d2DIComponent.userIdInMemoryStore.set(uid)
                 }
             }
 
@@ -169,7 +171,7 @@ object D2Manager {
     @VisibleForTesting
     @JvmStatic
     fun removeCredentials() {
-        d2DIComponent.credentialsSecureStore().remove()
+        d2DIComponent.credentialsSecureStore.remove()
     }
 
     @VisibleForTesting
@@ -178,8 +180,8 @@ object D2Manager {
         if (testingServerUrl.isNullOrEmpty()) {
             throw NoSuchFieldException("No testing Server Url")
         }
-        d2DIComponent.credentialsSecureStore().set(Credentials(username, testingServerUrl!!, password, null))
-        d2DIComponent.userIdInMemoryStore().set(username)
+        d2DIComponent.credentialsSecureStore.set(Credentials(username, testingServerUrl!!, password, null))
+        d2DIComponent.userIdInMemoryStore.set(username)
     }
 
     private fun wantToImportDBForExternalTesting(): Boolean {

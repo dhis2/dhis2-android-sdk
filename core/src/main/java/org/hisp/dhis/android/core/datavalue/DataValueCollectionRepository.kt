@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -45,11 +44,11 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operat
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
 @Suppress("TooManyFunctions")
-@Reusable
-class DataValueCollectionRepository @Inject internal constructor(
+@Singleton
+class DataValueCollectionRepository internal constructor(
     private val store: DataValueStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

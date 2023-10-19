@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.fileresource
 
 import android.content.Context
-import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -52,12 +51,12 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.saveFil
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.koin.core.annotation.Singleton
 import java.io.File
-import javax.inject.Inject
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class FileResourceCollectionRepository @Inject internal constructor(
+class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

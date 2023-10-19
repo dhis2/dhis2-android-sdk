@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.relationship
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipServiceImpl @Inject constructor(
+@Singleton
+internal class RelationshipServiceImpl(
     private val programRepository: ProgramCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
     private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository,

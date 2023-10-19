@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -44,11 +43,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStoreImpl
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserStoreImpl
+import org.koin.core.annotation.Singleton
 import java.io.File
-import javax.inject.Inject
 
-@Reusable
-internal class DatabaseImportExportImpl @Inject constructor(
+@Singleton
+internal class DatabaseImportExportImpl(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,

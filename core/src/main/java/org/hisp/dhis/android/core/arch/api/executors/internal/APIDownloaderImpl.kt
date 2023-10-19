@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import androidx.annotation.VisibleForTesting
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -37,12 +36,12 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @VisibleForTesting
 @Suppress("TooManyFunctions")
-internal class APIDownloaderImpl @Inject constructor(private val resourceHandler: ResourceHandler) : APIDownloader {
+internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) : APIDownloader {
 
     override suspend fun <P> downloadPartitioned(
         uids: Set<String>,

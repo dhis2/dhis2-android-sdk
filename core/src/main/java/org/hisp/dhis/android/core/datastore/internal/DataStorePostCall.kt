@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import com.fasterxml.jackson.databind.JsonNode
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -42,11 +41,11 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("MagicNumber")
-internal class DataStorePostCall @Inject constructor(
+internal class DataStorePostCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreService,
     private val dataStoreEntryImportHandler: DataStoreImportHandler,

@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackerJobObjectHandler @Inject constructor(
+@Singleton
+internal class TrackerJobObjectHandler(
     store: TrackerJobObjectStore,
 ) : ObjectWithoutUidHandlerImpl<TrackerJobObject>(store)

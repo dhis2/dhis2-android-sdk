@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LegendSetHandler constructor(
     legendSetStore: LegendSetStore,
     private val legendHandler: LegendHandler,

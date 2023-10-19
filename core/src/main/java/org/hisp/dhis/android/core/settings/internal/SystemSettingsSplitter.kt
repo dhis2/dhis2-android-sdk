@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.SystemSettings
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SystemSettingsSplitter @Inject constructor() {
+@Singleton
+internal class SystemSettingsSplitter {
     fun splitSettings(settings: SystemSettings): List<SystemSetting> {
         val flag = SystemSetting.builder()
             .key(SystemSetting.SystemSettingKey.FLAG)

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.map.layer.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
 import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class MapLayerHandler constructor(
     store: MapLayerStore,
     private val imagerProviderHandler: MapLayerImageryProviderHandler,

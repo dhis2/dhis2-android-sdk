@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -46,11 +45,11 @@ import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-internal class EnrollmentServiceImpl @Inject constructor(
+@Singleton
+internal class EnrollmentServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
     private val programRepository: ProgramCollectionRepository,

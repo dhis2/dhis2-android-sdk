@@ -47,7 +47,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     @Before
     fun setUp() {
         userStore = UserStoreImpl(databaseAdapter)
-        userCall = objects.d2DIComponent.internalModules().user.userCall
+        userCall = objects.d2DIComponent.internalModules.user.userCall
     }
 
     @Test

@@ -27,15 +27,24 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.ProgramCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramModule
+import org.hisp.dhis.android.core.program.ProgramRuleActionCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramRuleCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramRuleVariableCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramSectionCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStageDataElementCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStageSectionsCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList", "TooManyFunctions")
-internal class ProgramModuleImpl @Inject constructor(
+internal class ProgramModuleImpl(
     private val programs: ProgramCollectionRepository,
     private val programIndicators: ProgramIndicatorCollectionRepository,
     private val programRules: ProgramRuleCollectionRepository,

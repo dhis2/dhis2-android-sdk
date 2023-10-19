@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackerImporterFileResourcesPostCall @Inject internal constructor(
+@Singleton
+internal class TrackerImporterFileResourcesPostCall internal constructor(
     private val fileResourcePostCall: FileResourcePostCall,
     private val fileResourceHelper: FileResourceHelper,
 ) {

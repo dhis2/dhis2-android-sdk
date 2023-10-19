@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.allowedVersionsAsStr
 import org.hisp.dhis.android.core.systeminfo.DHISVersion.Companion.isAllowedVersion
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SystemInfoCall @Inject internal constructor(
+@Singleton
+class SystemInfoCall internal constructor(
     private val systemInfoHandler: SystemInfoHandler,
     private val systemInfoService: SystemInfoService,
     private val resourceHandler: ResourceHandler,

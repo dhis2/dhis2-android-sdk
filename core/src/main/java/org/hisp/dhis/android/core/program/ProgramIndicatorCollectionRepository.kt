@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -42,10 +41,10 @@ import org.hisp.dhis.android.core.program.internal.ProgramIndicatorAnalyticsPeri
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class ProgramIndicatorCollectionRepository @Inject internal constructor(
+@Singleton
+class ProgramIndicatorCollectionRepository internal constructor(
     store: ProgramIndicatorStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

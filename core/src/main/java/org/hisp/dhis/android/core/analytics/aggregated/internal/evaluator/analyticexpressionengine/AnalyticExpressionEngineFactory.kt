@@ -44,9 +44,10 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMetho
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticExpressionEngineFactory @Inject constructor(
+@Singleton
+internal class AnalyticExpressionEngineFactory(
     private val dataElementStore: DataElementStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,

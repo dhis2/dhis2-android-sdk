@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionOrganisationUnitLinkHandler(
     store: CategoryOptionOrganisationUnitLinkStore,
 ) : LinkHandlerImpl<CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction, CategoryOptionOrganisationUnitLink>(

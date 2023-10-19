@@ -33,10 +33,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
+@Singleton
+internal class TrackedEntityInstanceQueryOnlineHelper(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 

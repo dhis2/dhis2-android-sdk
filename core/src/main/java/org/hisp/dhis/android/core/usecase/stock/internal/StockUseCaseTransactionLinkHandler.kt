@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class StockUseCaseTransactionLinkHandler @Inject constructor(
+@Singleton
+internal class StockUseCaseTransactionLinkHandler(
     store: StockUseCaseTransactionLinkStore,
 ) : LinkHandlerImpl<InternalStockUseCaseTransaction, InternalStockUseCaseTransaction>(store)

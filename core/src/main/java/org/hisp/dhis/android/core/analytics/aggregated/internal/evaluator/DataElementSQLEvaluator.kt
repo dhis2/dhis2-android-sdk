@@ -39,11 +39,12 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.PeriodTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
-internal class DataElementSQLEvaluator @Inject constructor(
+@Singleton
+internal class DataElementSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 

@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
-import dagger.Reusable
 import io.reactivex.Single
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-@Reusable
-class OrganisationUnitService @Inject constructor(
+@Singleton
+class OrganisationUnitService(
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
 ) {
 

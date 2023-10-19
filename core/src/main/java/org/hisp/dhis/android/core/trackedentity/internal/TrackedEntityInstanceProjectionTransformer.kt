@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-internal class TrackedEntityInstanceProjectionTransformer @Inject constructor() :
+@Singleton
+internal class TrackedEntityInstanceProjectionTransformer :
     Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> {
     override fun transform(o: TrackedEntityInstanceCreateProjection): TrackedEntityInstance {
         val generatedUid = UidGeneratorImpl().generate()

@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramStageWorkingListHandler @Inject constructor(
+@Singleton
+internal class ProgramStageWorkingListHandler(
     store: ProgramStageWorkingListStore,
     private val eventDataFilterHandler: ProgramStageWorkingListEventDataFilterHandler,
     private val attributeValueFilterHandler: ProgramStageWorkingListAttributeValueFilterHandler,

@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SystemInfoModuleImpl @Inject internal constructor(
+@Singleton
+internal class SystemInfoModuleImpl(
     private val versionManager: DHISVersionManager,
     private val systemInfo: SystemInfoObjectRepository,
 ) : SystemInfoModule {

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -46,11 +45,11 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-@Reusable
-internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
+@Singleton
+internal class TrackedEntityInstanceImportHandler internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentImportHandler: EnrollmentImportHandler,
     private val trackerImportConflictStore: TrackerImportConflictStore,

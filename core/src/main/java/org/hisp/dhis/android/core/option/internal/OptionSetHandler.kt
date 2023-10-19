@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.option.OptionSet
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OptionSetHandler(
     store: OptionSetStore,
 ) : IdentifiableHandlerImpl<OptionSet>(store)

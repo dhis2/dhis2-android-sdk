@@ -48,13 +48,11 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatc
         val file = storeFile()
         assertThat(file.exists()).isTrue()
 
-        val fileResources1 = d2.fileResourceModule().fileResources().blockingGet()
-
-        assertThat(fileResources1.size).isEqualTo(0)
+        val initialFileResources = d2.fileResourceModule().fileResources().blockingGet()
 
         val fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file)
-        val fileResources2 = d2.fileResourceModule().fileResources().blockingGet()
-        assertThat(fileResources2.size).isEqualTo(1)
+        val finalFileResources = d2.fileResourceModule().fileResources().blockingGet()
+        assertThat(finalFileResources.size).isEqualTo(initialFileResources.size + 1)
 
         val fileResource = d2.fileResourceModule().fileResources()
             .uid(fileResourceUid)

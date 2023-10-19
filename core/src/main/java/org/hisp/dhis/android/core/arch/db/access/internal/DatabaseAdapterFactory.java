@@ -40,11 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
 public class DatabaseAdapterFactory {
 
     private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
@@ -54,9 +49,8 @@ public class DatabaseAdapterFactory {
     private final Context context;
     private final DatabaseEncryptionPasswordManager passwordManager;
 
-    @Inject
-    DatabaseAdapterFactory(Context context,
-                           DatabaseEncryptionPasswordManager passwordManager) {
+    public DatabaseAdapterFactory(Context context,
+                                  DatabaseEncryptionPasswordManager passwordManager) {
         this.context = context;
         this.passwordManager = passwordManager;
     }

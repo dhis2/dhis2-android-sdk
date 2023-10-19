@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
@@ -41,11 +40,11 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class TrackedEntityAttributeCollectionRepository @Inject internal constructor(
+class TrackedEntityAttributeCollectionRepository internal constructor(
     store: TrackedEntityAttributeStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

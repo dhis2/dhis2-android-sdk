@@ -42,7 +42,9 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
     databaseAdapter: DatabaseAdapter,

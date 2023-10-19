@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -45,11 +44,11 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class ProgramCollectionRepository @Inject internal constructor(
+class ProgramCollectionRepository internal constructor(
     store: ProgramStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
@@ -44,10 +43,10 @@ import org.hisp.dhis.android.core.parser.internal.service.dataobject.Dimensional
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetIndicatorEngineImpl @Inject constructor(
+@Singleton
+internal class DataSetIndicatorEngineImpl(
     private val indicatorRepository: IndicatorCollectionRepository,
     private val indicatorTypeRepository: IndicatorTypeCollectionRepository,
     private val dataValueRepository: DataValueCollectionRepository,

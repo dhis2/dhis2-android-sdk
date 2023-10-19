@@ -34,9 +34,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRe
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
+@Singleton
+internal class AnalyticsVisualizationsRepositoryImpl(
     private val params: AnalyticsVisualizationsRepositoryParams,
     private val service: AnalyticsVisualizationsService,
 ) : AnalyticsVisualizationsRepository {

@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsTeiIndicatorHandler @Inject constructor(
+@Singleton
+internal class AnalyticsTeiIndicatorHandler(
     store: AnalyticsTeiIndicatorStore,
 ) : LinkHandlerImpl<AnalyticsTeiIndicator, AnalyticsTeiIndicator>(store)

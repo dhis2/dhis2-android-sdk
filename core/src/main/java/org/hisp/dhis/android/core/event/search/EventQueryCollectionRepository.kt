@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.search
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.PagedList
-import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
@@ -52,11 +51,11 @@ import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.event.EventObjectRepository
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class EventQueryCollectionRepository @Inject internal constructor(
+class EventQueryCollectionRepository internal constructor(
     private val eventCollectionRepositoryAdapter: EventCollectionRepositoryAdapter,
     private val eventFilterRepository: EventFilterCollectionRepository,
     @JvmField val scope: EventQueryRepositoryScope,

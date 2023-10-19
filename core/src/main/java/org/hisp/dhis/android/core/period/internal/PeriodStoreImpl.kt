@@ -39,8 +39,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
+import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Singleton
 internal class PeriodStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : PeriodStore,

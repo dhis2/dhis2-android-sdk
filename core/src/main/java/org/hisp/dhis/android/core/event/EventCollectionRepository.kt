@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event
 
-import dagger.Reusable
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -60,11 +59,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.user.internal.UserStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class EventCollectionRepository @Inject internal constructor(
+class EventCollectionRepository internal constructor(
     private val eventStore: EventStore,
     private val userStore: UserStore,
     databaseAdapter: DatabaseAdapter,

@@ -39,17 +39,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
 public class NoteUniquenessManager {
 
     private final NoteStore noteStore;
 
-    @Inject
-    NoteUniquenessManager(NoteStore noteStore) {
+    public NoteUniquenessManager(NoteStore noteStore) {
         this.noteStore = noteStore;
     }
 

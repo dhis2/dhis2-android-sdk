@@ -32,7 +32,6 @@ import org.hisp.dhis.antlr.Parser
 
 internal object CommonParser {
 
-    @JvmStatic
     fun visit(expression: String?, visitor: CommonExpressionVisitor): Any? {
         val sdkVersion = Build.VERSION.SDK_INT
 

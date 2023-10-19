@@ -44,18 +44,29 @@ import java.util.*
 
 @RunWith(D2JunitRunner::class)
 class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+
+    private val user1 = "username1"
+    private val pass1 = "password1"
+    private val user2 = "username2"
+    private val pass2 = "password2"
+
     @Test
     fun find_accounts_after_login() {
+        val initialAccountSize = d2.userModule().accountManager().getAccounts().size
+
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
         val accountList = d2.userModule().accountManager().getAccounts()
 
-        assertThat(accountList.size).isEqualTo(1)
-        assertThat(accountList[0].username()).isEqualTo("u1")
+        assertThat(accountList.size).isEqualTo(initialAccountSize + 1)
+        val account = accountList.find { it.username() == user1 }
+        assertThat(account).isNotNull()
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
 
     @Test
@@ -63,7 +74,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.userModule().accountManager().setMaxAccounts(5)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(5)
 
-        val defaultMaxAccounts = MultiUserDatabaseManager.DefaultMaxAccounts
+        val defaultMaxAccounts = MultiUserDatabaseManager.DefaultTestMaxAccounts
         d2.userModule().accountManager().setMaxAccounts(defaultMaxAccounts)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(defaultMaxAccounts)
     }
@@ -73,7 +84,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.userModule().accountManager().setMaxAccounts(null)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isNull()
 
-        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
+        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
     }
 
     @Test
@@ -82,14 +93,17 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
             d2.userModule().blockingLogOut()
         }
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
         try {
             d2.userModule().accountManager().deleteCurrentAccount()
             val accountList = d2.userModule().accountManager().getAccounts()
-            assertThat(accountList.size).isEqualTo(0)
+            val account = accountList.find { it.username() == user1 }
+            assertThat(account).isNull()
         } catch (e: D2Error) {
             Assert.fail("Should not throw a D2Error")
         }
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
 
     @Test
@@ -98,7 +112,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
             d2.userModule().blockingLogOut()
         }
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
         d2.userModule().blockingLogOut()
         try {
             d2.userModule().accountManager().deleteCurrentAccount()
@@ -106,50 +120,50 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER)
             val accountList = d2.userModule().accountManager().getAccounts()
-            assertThat(accountList.size).isEqualTo(1)
+            val account = accountList.find { it.username() == user1 }
+            assertThat(account).isNotNull()
         } catch (e: Exception) {
             Assert.fail("Should throw a D2Error")
         }
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
 
     @Test
     fun evaluate_sync_status() {
+        val initialAccountSize = d2.userModule().accountManager().getAccounts().size
+
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
-        d2.userModule().accountManager().setMaxAccounts(5)
 
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
         val accounts = d2.userModule().accountManager().getAccounts()
-        assertThat(accounts.size).isEqualTo(1)
-        assertThat(accounts.first().syncState()).isEqualTo(State.SYNCED)
+        assertThat(accounts.size).isEqualTo(initialAccountSize + 1)
+        val u1Account = accounts.find { it.username() == user1 }!!
+        assertThat(u1Account.syncState()).isEqualTo(State.SYNCED)
 
         d2.userModule().blockingLogOut()
 
         val server2 = Dhis2MockServer(0)
         server2.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u2", "pass2", server2.baseEndpoint)
+        d2.userModule().blockingLogIn(user2, pass2, server2.baseEndpoint)
         server2.enqueueMetadataResponses()
         d2.metadataModule().blockingDownload()
         addDataValue()
 
         val accounts2 = d2.userModule().accountManager().getAccounts()
-        assertThat(accounts2.size).isEqualTo(2)
+        assertThat(accounts2.size).isEqualTo(initialAccountSize + 2)
 
-        println(accounts2)
+        val account1 = accounts2.find { it.username() == user1 }!!
+        val account2 = accounts2.find { it.username() == user2 }!!
+        assertThat(account1.syncState()).isEqualTo(State.SYNCED)
+        assertThat(account2.syncState()).isEqualTo(State.TO_UPDATE)
 
-        accounts2.forEach { account ->
-            when (account.username()) {
-                "u1" -> assertThat(account.syncState()).isEqualTo(State.SYNCED)
-                "u2" -> assertThat(account.syncState()).isEqualTo(State.TO_UPDATE)
-                else -> Assert.fail("Should not get here")
-            }
-        }
-
-        d2.userModule().accountManager().deleteCurrentAccount()
-        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+        loginAndDeleteAccount(user2, pass2, server2)
     }
 
     private fun addDataValue() {
@@ -161,6 +175,15 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.dataValueModule().dataValues()
             .value(period.periodId()!!, orgunit.uid(), dataElement.uid(), coc.uid(), coc.uid())
             .blockingSet("45")
+    }
+
+    private fun loginAndDeleteAccount(username: String, password: String, server: Dhis2MockServer) {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+        server.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(username, password, server.baseEndpoint)
+        d2.userModule().accountManager().deleteCurrentAccount()
     }
 
     companion object {

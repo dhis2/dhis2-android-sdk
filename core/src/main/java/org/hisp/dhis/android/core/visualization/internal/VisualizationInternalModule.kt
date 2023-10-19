@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import androidx.annotation.VisibleForTesting
-import dagger.Reusable
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationInternalModule @Inject internal constructor(
+@Singleton
+internal class VisualizationInternalModule internal constructor(
     @field:VisibleForTesting val visualizationCall: VisualizationCall,
 )

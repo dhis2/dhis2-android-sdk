@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -50,11 +49,11 @@ import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList")
-internal class AggregatedDataCall @Inject constructor(
+internal class AggregatedDataCall constructor(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val dataValueCall: DataValueCall,
     private val dsCompleteRegistrationCall: DataSetCompleteRegistrationCall,

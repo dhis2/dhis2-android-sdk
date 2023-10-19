@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRule
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramRuleCall @Inject constructor(
+@Singleton
+internal class ProgramRuleCall(
     private val service: ProgramRuleService,
     private val handler: ProgramRuleHandler,
     private val apiDownloader: APIDownloader,

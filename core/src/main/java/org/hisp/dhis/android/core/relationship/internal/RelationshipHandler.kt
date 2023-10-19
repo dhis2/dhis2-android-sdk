@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipHandler @Inject constructor(
+@Singleton
+internal class RelationshipHandler(
     relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
     private val relationshipItemHandler: RelationshipItemHandler,

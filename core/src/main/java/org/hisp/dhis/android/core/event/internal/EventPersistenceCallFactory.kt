@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventPersistenceCallFactory @Inject constructor(
+@Singleton
+internal class EventPersistenceCallFactory(
     private val eventHandler: EventHandler,
     private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader,

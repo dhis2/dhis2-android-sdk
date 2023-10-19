@@ -31,16 +31,15 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indic
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 
 internal data class IndicatorContext(
-    val dataElementStore: IdentifiableObjectStore<DataElement>,
-    val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    val dataElementStore: DataElementStore,
+    val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     val categoryOptionComboStore: CategoryOptionComboStore,
     val programStore: ProgramStore,
     val programIndicatorRepository: ProgramIndicatorCollectionRepository,

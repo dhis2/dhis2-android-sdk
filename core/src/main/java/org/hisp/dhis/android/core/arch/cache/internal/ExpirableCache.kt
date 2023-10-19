@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.cache.internal
 
 import java.util.concurrent.TimeUnit
 
-internal class ExpirableCache<K, V>(
+internal open class ExpirableCache<K, V>(
     private val flushInterval: Long = TimeUnit.MINUTES.toMillis(2),
 ) : D2Cache<K, V> {
 

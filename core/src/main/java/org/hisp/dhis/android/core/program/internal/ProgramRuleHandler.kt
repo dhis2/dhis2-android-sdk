@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ProgramRuleHandler @Inject constructor(
+@Singleton
+internal class ProgramRuleHandler(
     programRuleStore: ProgramRuleStore,
     private val programRuleActionHandler: ProgramRuleActionHandler,
     private val programRuleCleaner: ProgramRuleSubCollectionCleaner,

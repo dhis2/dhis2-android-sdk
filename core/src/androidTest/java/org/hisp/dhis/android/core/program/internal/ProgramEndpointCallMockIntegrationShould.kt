@@ -118,7 +118,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
                 databaseAdapter.insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage)
                 dhis2MockServer.enqueueMockResponse("program/programs.json")
                 runBlocking {
-                    objects.d2DIComponent.programCall().download(Sets.newSet(programUid))
+                    objects.d2DIComponent.programCall.download(Sets.newSet(programUid))
                 }
 
                 Unit()

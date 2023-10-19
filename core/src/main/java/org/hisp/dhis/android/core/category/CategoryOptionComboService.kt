@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.category
 
-import dagger.Reusable
 import io.reactivex.Single
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-class CategoryOptionComboService @Inject constructor(
+@Singleton
+class CategoryOptionComboService(
     private val categoryOptionRepository: CategoryOptionCollectionRepository,
 ) {
 

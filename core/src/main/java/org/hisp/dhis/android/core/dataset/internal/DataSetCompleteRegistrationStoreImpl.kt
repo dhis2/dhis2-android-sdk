@@ -38,7 +38,9 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetCompleteRegistrationStoreImpl constructor(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetCompleteRegistrationStore,

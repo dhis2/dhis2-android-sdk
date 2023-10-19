@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
@@ -41,10 +40,10 @@ import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class JobReportEventHandler @Inject internal constructor(
+@Singleton
+internal class JobReportEventHandler internal constructor(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val noteStore: NoteStore,
     private val conflictStore: TrackerImportConflictStore,

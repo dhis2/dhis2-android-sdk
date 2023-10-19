@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
@@ -42,11 +41,11 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operat
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.imports.ImportStatus
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class DataValueConflictCollectionRepository @Inject internal constructor(
+class DataValueConflictCollectionRepository internal constructor(
     store: DataValueConflictStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

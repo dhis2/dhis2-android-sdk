@@ -34,11 +34,10 @@ import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SMSVersion
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.koin.core.annotation.Singleton
 
 @Singleton
-class DHISVersionManagerImpl @Inject internal constructor(
+internal class DHISVersionManagerImpl internal constructor(
     private val systemInfoStore: SystemInfoStore,
 ) : DHISVersionManager {
     private var version: DHISVersion? = null

@@ -37,7 +37,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
 internal class AttributeValueFilterStoreImpl(
     databaseAdapter: DatabaseAdapter,

@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AggregatedDataDownloaderImpl @Inject constructor(
+@Singleton
+internal class AggregatedDataDownloaderImpl(
     private val dataCall: AggregatedDataCall,
 ) : AggregatedDataDownloader {
 

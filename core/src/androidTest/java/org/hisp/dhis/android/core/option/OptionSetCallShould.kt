@@ -54,9 +54,9 @@ class OptionSetCallShould : BaseMockIntegrationTestEmptyEnqueable() {
         val uids: MutableSet<String> = HashSet()
         uids.add("POc7DkGU3QU")
 
-        optionSetCall = { objects.d2DIComponent.optionSetCall().download(uids) }
+        optionSetCall = { objects.d2DIComponent.optionSetCall.download(uids) }
 
-        coroutineAPICallExecutor = objects.d2DIComponent.coroutineApiCallExecutor()
+        coroutineAPICallExecutor = objects.d2DIComponent.coroutineApiCallExecutor
     }
 
     @Test

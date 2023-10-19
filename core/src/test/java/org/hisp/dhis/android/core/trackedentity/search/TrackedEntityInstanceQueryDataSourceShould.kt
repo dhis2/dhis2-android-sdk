@@ -32,8 +32,6 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
-import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -53,6 +51,7 @@ import org.junit.runners.JUnit4
 import org.mockito.*
 import org.mockito.ArgumentMatchers.anyString
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @RunWith(JUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -79,8 +78,8 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))
     private val onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
-    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult> =
-        ExpirableCache()
+    private val onlineCache: TrackedEntityInstanceOnlineCache =
+        TrackedEntityInstanceOnlineCache(TimeUnit.MINUTES.toMillis(5))
     private val initialLoad = 30
 
     @Before

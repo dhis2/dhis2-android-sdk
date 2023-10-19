@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ExpressionDimensionItemModuleDownloader @Inject internal constructor(
+@Singleton
+internal class ExpressionDimensionItemModuleDownloader internal constructor(
     private val expressionDimensionItemUidsSeeker: ExpressionDimensionItemUidsSeeker,
     private val expressionDimensionItemCall: ExpressionDimensionItemCall,
 ) : UntypedModuleDownloaderCoroutines {

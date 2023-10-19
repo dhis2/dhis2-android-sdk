@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
@@ -41,11 +40,11 @@ import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-class IndicatorCollectionRepository @Inject internal constructor(
+class IndicatorCollectionRepository internal constructor(
     store: IndicatorStore,
     databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,

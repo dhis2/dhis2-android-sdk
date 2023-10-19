@@ -33,10 +33,11 @@ import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("TooGenericExceptionCaught")
-internal class LegendEvaluator @Inject constructor(
+internal class LegendEvaluator(
     private val dataElementRepository: DataElementCollectionRepository,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val indicatorRepository: IndicatorCollectionRepository,

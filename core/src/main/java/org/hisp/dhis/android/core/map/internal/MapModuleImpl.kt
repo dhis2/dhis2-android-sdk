@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.map.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.map.MapModule
 import org.hisp.dhis.android.core.map.layer.MapLayerCollectionRepository
 import org.hisp.dhis.android.core.map.layer.MapLayerDownloader
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class MapModuleImpl @Inject internal constructor(
+@Singleton
+internal class MapModuleImpl(
     private val mapLayerCollectionRepository: MapLayerCollectionRepository,
     private val mapLayerModuleDownloader: MapLayerDownloader,
 ) : MapModule {

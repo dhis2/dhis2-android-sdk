@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.event.EventDataFilter
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventDataFilterHandler(
     store: EventDataFilterStore,
 ) : ObjectWithoutUidHandlerImpl<EventDataFilter>(store)

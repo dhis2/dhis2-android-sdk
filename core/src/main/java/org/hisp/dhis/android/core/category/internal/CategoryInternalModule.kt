@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryInternalModule @Inject constructor(
+@Singleton
+internal class CategoryInternalModule(
     val categoryCall: CategoryCall,
     val categoryComboCall: CategoryComboCall,
 )

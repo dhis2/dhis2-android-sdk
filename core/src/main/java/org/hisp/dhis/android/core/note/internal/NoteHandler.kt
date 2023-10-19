@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.note.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.note.Note
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class NoteHandler(
     store: NoteStore,
 ) : IdentifiableHandlerImpl<Note>(store)

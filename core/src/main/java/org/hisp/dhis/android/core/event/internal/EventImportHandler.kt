@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -42,11 +41,11 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
+import org.koin.core.annotation.Singleton
 import java.util.*
-import javax.inject.Inject
 
-@Reusable
-internal class EventImportHandler @Inject constructor(
+@Singleton
+internal class EventImportHandler constructor(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource
 
-import dagger.Reusable
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -37,10 +36,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class FileResourceDownloader @Inject internal constructor(
+@Singleton
+class FileResourceDownloader internal constructor(
     private val call: FileResourceDownloadCall,
     private val params: FileResourceDownloadParams,
 ) : BaseRepository {

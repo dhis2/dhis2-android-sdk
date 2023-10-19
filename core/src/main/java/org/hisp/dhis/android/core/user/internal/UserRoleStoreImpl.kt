@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.user.UserRoleTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserRoleStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : UserRoleStore,

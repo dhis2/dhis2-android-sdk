@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class TrackedEntityInstanceFilterCall @Inject internal constructor(
+@Singleton
+class TrackedEntityInstanceFilterCall internal constructor(
     private val service: TrackedEntityInstanceFilterService,
     private val handler: TrackedEntityInstanceFilterHandler,
     private val apiDownloader: APIDownloader,

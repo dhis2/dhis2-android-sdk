@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
+@Singleton
+internal class CategoryOptionOrganisationUnitsCall(
     private val handler: CategoryOptionOrganisationUnitLinkHandler,
     private val service: CategoryOptionService,
     private val dhisVersionManager: DHISVersionManager,

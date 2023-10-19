@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.BadAttributePatternConflict
@@ -52,10 +51,10 @@ import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConfli
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackerImportConflictParser @Inject constructor(
+@Singleton
+internal class TrackerImportConflictParser(
     attributeStore: TrackedEntityAttributeStore,
     dataElementStore: DataElementStore,
     private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,

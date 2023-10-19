@@ -27,25 +27,25 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.parser.internal.expression.*
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.antlr.AntlrParserUtils
 import org.hisp.dhis.antlr.ParserException
 
 internal class ProgramIndicatorExecutor constructor(
     private val constantMap: Map<String, Constant>,
     private val programIndicatorContext: ProgramIndicatorContext,
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>,
+    private val dataElementStore: DataElementStore,
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
+    private val programStageStore: ProgramStageStore,
 ) {
     fun getProgramIndicatorValue(programIndicator: ProgramIndicator): String? {
         val visitor = newVisitor(ParserUtils.ITEM_EVALUATE)

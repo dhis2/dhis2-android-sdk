@@ -29,16 +29,15 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
 import android.util.Log
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class MultiUserDatabaseManager @Inject internal constructor(
+@Singleton
+internal class MultiUserDatabaseManager(
     private val context: Context,
     private val databaseAdapter: DatabaseAdapter,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
@@ -188,5 +187,6 @@ internal class MultiUserDatabaseManager @Inject internal constructor(
 
     companion object {
         const val DefaultMaxAccounts = 1
+        internal val DefaultTestMaxAccounts = null
     }
 }

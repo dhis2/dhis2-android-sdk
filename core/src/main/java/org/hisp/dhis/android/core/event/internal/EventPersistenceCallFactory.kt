@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -41,36 +40,32 @@ internal class EventPersistenceCallFactory(
     private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader,
 ) {
-    fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?): Completable {
-        return persistEventsInternal(events, asRelationship = false, relatives)
+    suspend fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?) {
+        persistEventsInternal(events, asRelationship = false, relatives)
     }
 
-    fun persistAsRelationships(events: List<Event>): Completable {
-        return persistEventsInternal(events, asRelationship = true, relatives = null)
+    suspend fun persistAsRelationships(events: List<Event>) {
+        persistEventsInternal(events, asRelationship = true, relatives = null)
     }
 
-    private fun persistEventsInternal(
+    private suspend fun persistEventsInternal(
         events: Collection<Event>,
         asRelationship: Boolean,
         relatives: RelationshipItemRelatives?,
-    ): Completable {
-        return Completable.defer {
-            val params = IdentifiableDataHandlerParams(
-                hasAllAttributes = false,
-                overwrite = false,
-                asRelationship = asRelationship,
-            )
-            eventHandler.handleMany(events, params, relatives)
-            if (hasMissingOrganisationUnitUids(events)) {
-                organisationUnitDownloader.refreshOrganisationUnits()
-            } else {
-                Completable.complete()
-            }
+    ) {
+        val params = IdentifiableDataHandlerParams(
+            hasAllAttributes = false,
+            overwrite = false,
+            asRelationship = asRelationship,
+        )
+        eventHandler.handleMany(events, params, relatives)
+        if (hasMissingOrganisationUnitUids(events)) {
+            organisationUnitDownloader.refreshOrganisationUnits().blockingAwait()
         }
     }
 
     private fun hasMissingOrganisationUnitUids(events: Collection<Event>): Boolean {
         val uids = events.mapNotNull { it.organisationUnit() }.toSet()
-        return (uids - organisationUnitStore.selectUids()).isNotEmpty()
+        return (uids - organisationUnitStore.selectUids().toSet()).isNotEmpty()
     }
 }

@@ -70,12 +70,12 @@ internal class EventDownloadCall internal constructor(
         }
     }
 
-    override fun persistItems(
+    override suspend fun persistItems(
         items: List<Event>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,
     ) {
-        persistenceCallFactory.persistEvents(items, relatives).blockingAwait()
+        persistenceCallFactory.persistEvents(items, relatives)
     }
 
     override fun updateLastUpdated(bundle: EventQueryBundle) {

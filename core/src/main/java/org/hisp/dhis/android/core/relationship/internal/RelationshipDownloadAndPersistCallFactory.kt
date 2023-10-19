@@ -66,7 +66,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
             )
         }
 
-        eventPersistenceCallFactory.persistAsRelationships(events).blockingAwait()
+        eventPersistenceCallFactory.persistAsRelationships(events)
 
         events
             .mapNotNull { it.enrollment() }
@@ -110,7 +110,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
             )
         }
 
-        teiPersistenceCallFactory.persistRelationships(teis).blockingAwait()
+        teiPersistenceCallFactory.persistRelationships(teis)
 
         cleanFailedRelationships(failedTeis, RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }

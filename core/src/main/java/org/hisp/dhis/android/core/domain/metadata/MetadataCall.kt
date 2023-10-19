@@ -147,7 +147,7 @@ internal class MetadataCall(
         programDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Program::class.java, false))
 
-        dataSetDownloader.downloadMetadata().blockingAwait()
+        dataSetDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(DataSet::class.java, false))
 
         categoryDownloader.downloadMetadata()

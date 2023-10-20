@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
@@ -49,47 +46,45 @@ internal class OrganisationUnitCall(
     private val organisationUnitStore: OrganisationUnitStore,
     private val collectionCleaner: OrganisationUnitCollectionCleaner,
 ) {
-    fun download(user: User): Completable {
-        return Completable.defer {
-            handler.resetLinks()
-            val rootSearchOrgUnits =
-                OrganisationUnitTree.findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user))
 
-            downloadSearchOrgUnits(rootSearchOrgUnits, user)
-                .andThen(
-                    Completable.defer {
-                        val searchOrgUnitIds = userOrganisationUnitLinkStore
-                            .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
-                        val searchOrgUnits = organisationUnitStore.selectByUids(searchOrgUnitIds)
-                        downloadDataCaptureOrgUnits(
-                            rootSearchOrgUnits,
-                            searchOrgUnits,
-                            user,
-                        )
-                    },
-                ).doOnComplete {
-                    val assignedOrgunitIds = userOrganisationUnitLinkStore
-                        .selectStringColumnsWhereClause(
-                            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                            "1",
-                        )
-                    collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)
-                }
-        }
+    companion object {
+        private const val PAGE_SIZE = 500
     }
 
-    private fun downloadSearchOrgUnits(
+    suspend fun download(user: User) {
+        handler.resetLinks()
+        val rootSearchOrgUnits =
+            OrganisationUnitTree.findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user))
+
+        downloadSearchOrgUnits(rootSearchOrgUnits, user)
+        val searchOrgUnitIds = userOrganisationUnitLinkStore
+            .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+        val searchOrgUnits = organisationUnitStore.selectByUids(searchOrgUnitIds)
+        downloadDataCaptureOrgUnits(
+            rootSearchOrgUnits,
+            searchOrgUnits,
+            user,
+        )
+        val assignedOrgunitIds = userOrganisationUnitLinkStore
+            .selectStringColumnsWhereClause(
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                "1",
+            )
+        collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)
+    }
+
+    private suspend fun downloadSearchOrgUnits(
         rootSearchOrgUnits: Set<OrganisationUnit>,
         user: User,
-    ): Completable {
+    ) {
         return downloadOrgUnits(getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
     }
 
-    private fun downloadDataCaptureOrgUnits(
+    private suspend fun downloadDataCaptureOrgUnits(
         rootSearchOrgUnits: Set<OrganisationUnit>,
         searchOrgUnits: List<OrganisationUnit>,
         user: User,
-    ): Completable {
+    ) {
         val allRootCaptureOrgUnits = OrganisationUnitTree.findRoots(UserInternalAccessor.accessOrganisationUnits(user))
         val rootCaptureOrgUnitsOutsideSearchScope =
             OrganisationUnitTree.findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits)
@@ -101,24 +96,23 @@ internal class OrganisationUnitCall(
             ),
             user,
         )
-        return downloadOrgUnits(
+        downloadOrgUnits(
             getUids(rootCaptureOrgUnitsOutsideSearchScope),
             user,
             OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
         )
     }
 
-    private fun downloadOrgUnits(
+    private suspend fun downloadOrgUnits(
         orgUnits: Set<String>,
         user: User,
         scope: OrganisationUnit.Scope,
-    ): Completable {
-        return if (orgUnits.isEmpty()) {
-            Completable.complete()
+    ) {
+        if (orgUnits.isEmpty()) {
+            return
         } else {
             handler.setData(user, scope)
-            Flowable.fromIterable(orgUnits)
-                .flatMapCompletable { orgUnit -> downloadOrganisationUnitAndDescendants(orgUnit) }
+            orgUnits.forEach { orgUnit -> downloadOrganisationUnitAndDescendants(orgUnit) }
         }
     }
 
@@ -127,30 +121,30 @@ internal class OrganisationUnitCall(
         handler.addUserOrganisationUnitLinks(orgUnits)
     }
 
-    private fun downloadOrganisationUnitAndDescendants(orgUnit: String): Completable {
+    private suspend fun downloadOrganisationUnitAndDescendants(orgUnit: String) {
         val page = AtomicInteger(1)
-        return downloadPage(orgUnit, page)
-            .repeat()
-            .takeUntil { organisationUnits -> organisationUnits.size < PAGE_SIZE }
-            .ignoreElements()
-    }
 
-    private fun downloadPage(orgUnit: String, page: AtomicInteger): Single<List<OrganisationUnit>> {
-        return Single.defer {
-            organisationUnitService.getOrganisationUnits(
-                OrganisationUnitFields.allFields,
-                OrganisationUnitFields.path.like(orgUnit),
-                OrganisationUnitFields.ASC_ORDER,
-                true,
-                PAGE_SIZE,
-                page.getAndIncrement(),
-            )
-                .map { obj -> obj.items() }
-                .doOnSuccess { items -> handler.handleMany(items, pathTransformer) }
+        while (true) {
+            val organisationUnits = downloadPage(orgUnit, page)
+            if (organisationUnits.size < PAGE_SIZE) {
+                break
+            }
         }
     }
 
-    companion object {
-        private const val PAGE_SIZE = 500
+    private suspend fun downloadPage(orgUnit: String, page: AtomicInteger): List<OrganisationUnit> {
+        val response = organisationUnitService.getOrganisationUnits(
+            OrganisationUnitFields.allFields,
+            OrganisationUnitFields.path.like(orgUnit),
+            OrganisationUnitFields.ASC_ORDER,
+            true,
+            PAGE_SIZE,
+            page.getAndIncrement(),
+        )
+
+        val items = response.items()
+        handler.handleMany(items, pathTransformer)
+
+        return items
     }
 }

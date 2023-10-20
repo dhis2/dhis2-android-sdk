@@ -68,7 +68,7 @@ internal class TrackedEntityInstancePersistenceCallFactory(
             relatives,
         )
         if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
-            organisationUnitDownloader.refreshOrganisationUnits().blockingAwait()
+            organisationUnitDownloader.refreshOrganisationUnits()
         }
     }
 }

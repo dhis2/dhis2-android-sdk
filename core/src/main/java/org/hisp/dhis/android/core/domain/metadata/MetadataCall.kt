@@ -141,7 +141,7 @@ internal class MetadataCall(
         val user = userModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(User::class.java, false))
 
-        organisationUnitModuleDownloader.downloadMetadata(user).blockingAwait()
+        organisationUnitModuleDownloader.downloadMetadata(user)
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
 
         programDownloader.downloadMetadata()

@@ -25,44 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface OrganisationUnitService {
-    String ORGANISATION_UNITS = "organisationUnits";
-
-    String FIELDS = "fields";
-    String FILTER = "filter";
-    String PAGING = "paging";
-    String ORDER = "order";
-    String PAGE = "page";
-    String PAGE_SIZE = "pageSize";
-
-    @GET(ORGANISATION_UNITS)
-    Single<Payload<OrganisationUnit>> getOrganisationUnits(
-            @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
-            @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
-            @Query(ORDER) String order,
-            @Query(PAGING) Boolean paging,
-            @Query(PAGE_SIZE) Integer pageSize,
-            @Query(PAGE) Integer page
-    );
-
-    @GET(ORGANISATION_UNITS)
-    Single<Payload<OrganisationUnit>> getSearchOrganisationUnits(
-            @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
-            @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
-            @Query(ORDER) String order,
-            @Query(PAGING) Boolean paging
-    );
+fun interface OrganisationUnitLevelService {
+    @GET("organisationUnitLevels")
+    suspend fun getOrganisationUnitLevels(
+        @Query("fields") @Which fields: Fields<OrganisationUnitLevel>,
+        @Query("paging") paging: Boolean,
+    ): Payload<OrganisationUnitLevel>
 }

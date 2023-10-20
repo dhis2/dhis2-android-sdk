@@ -27,21 +27,43 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-@Singleton
-internal class OrganisationUnitLevelEndpointCall(
-    private val service: OrganisationUnitLevelService,
-    private val handler: OrganisationUnitLevelHandler,
-    private val apiDownloader: APIDownloader,
-) : ListCallCoroutines<OrganisationUnitLevel> {
-    override suspend fun download(): List<OrganisationUnitLevel> {
-        return apiDownloader.downloadCoroutines(
-            handler,
+internal interface OrganisationUnitService {
 
-        ) { service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, false) }
+    @Suppress("LongParameterList")
+    @GET(ORGANISATION_UNITS)
+    suspend fun getOrganisationUnits(
+        @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,
+        @Query(FILTER) @Where filter: Filter<OrganisationUnit, String>,
+        @Query(ORDER) order: String,
+        @Query(PAGING) paging: Boolean,
+        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE) page: Int,
+    ): Payload<OrganisationUnit>
+
+    @GET(ORGANISATION_UNITS)
+    suspend fun getSearchOrganisationUnits(
+        @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,
+        @Query(FILTER) @Where filter: Filter<OrganisationUnit, String>,
+        @Query(ORDER) order: String,
+        @Query(PAGING) paging: Boolean,
+    ): Payload<OrganisationUnit>
+
+    companion object {
+        const val ORGANISATION_UNITS = "organisationUnits"
+        const val FIELDS = "fields"
+        const val FILTER = "filter"
+        const val PAGING = "paging"
+        const val ORDER = "order"
+        const val PAGE = "page"
+        const val PAGE_SIZE = "pageSize"
     }
 }

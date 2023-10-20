@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Completable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -52,10 +53,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     // The return of the organisationUnitCall to be tested:
-    private lateinit var organisationUnitCall: Completable
+    private lateinit var organisationUnitCall: suspend () -> Unit
     private val expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic()
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
 
@@ -94,15 +96,16 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         )
         val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
         val pathTransformer = OrganisationUnitDisplayPathTransformer()
-        organisationUnitCall = OrganisationUnitCall(
-            organisationUnitService,
-            organisationUnitHandler,
-            pathTransformer,
-            UserOrganisationUnitLinkStoreImpl(databaseAdapter),
-            OrganisationUnitStoreImpl(databaseAdapter),
-            organisationUnitCollectionCleaner,
-        )
-            .download(user)
+        organisationUnitCall = {
+            OrganisationUnitCall(
+                organisationUnitService,
+                organisationUnitHandler,
+                pathTransformer,
+                UserOrganisationUnitLinkStoreImpl(databaseAdapter),
+                OrganisationUnitStoreImpl(databaseAdapter),
+                organisationUnitCollectionCleaner,
+            ).download(user)
+        }
     }
 
     private fun insertObjectWithUid(uid: String, tableInfo: TableInfo) {
@@ -122,8 +125,8 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     }
 
     @Test
-    fun persist_organisation_unit_tree() {
-        organisationUnitCall.blockingAwait()
+    fun persist_organisation_unit_tree() = runTest {
+        organisationUnitCall.invoke()
         val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
         val dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid())
         val dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid())
@@ -133,8 +136,8 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     }
 
     @Test
-    fun persist_organisation_unit_user_links() {
-        organisationUnitCall.blockingAwait()
+    fun persist_organisation_unit_user_links() = runTest {
+        organisationUnitCall.invoke()
         val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl(databaseAdapter)
         val userOrganisationUnitLinks = userOrganisationUnitStore.selectAll()
         val linkOrganisationUnits: MutableSet<String> = HashSet(2)

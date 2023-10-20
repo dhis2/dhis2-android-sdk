@@ -60,7 +60,7 @@ internal class EventPersistenceCallFactory(
         )
         eventHandler.handleMany(events, params, relatives)
         if (hasMissingOrganisationUnitUids(events)) {
-            organisationUnitDownloader.refreshOrganisationUnits().blockingAwait()
+            organisationUnitDownloader.refreshOrganisationUnits()
         }
     }
 

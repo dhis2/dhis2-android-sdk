@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.user.User
@@ -41,29 +39,25 @@ internal class OrganisationUnitModuleDownloader(
     private val organisationUnitCall: OrganisationUnitCall,
     private val userCall: UserCall,
     private val organisationUnitLevelEndpointCall: OrganisationUnitLevelEndpointCall,
-    private val rxCallExecutor: RxAPICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataSetLinkCleaner: DataSetOrganisationUnitLinkCleaner,
     private val programLinkCleaner: ProgramOrganisationUnitLinkCleaner,
 ) {
-    fun downloadMetadata(user: User): Completable {
-        return organisationUnitLevelEndpointCall.download()
-            .flatMapCompletable { organisationUnitCall.download(user) }
+    suspend fun downloadMetadata(user: User) {
+        organisationUnitLevelEndpointCall.download()
+        organisationUnitCall.download(user)
     }
 
-    fun refreshOrganisationUnits(): Completable {
-        return rxCallExecutor.wrapCompletableTransactionally(
-            Single
-                .fromCallable { userCall.call() }
-                .flatMapCompletable { user -> downloadMetadata(user) }
-                .andThen(cleanLinksFromDB()),
-            cleanForeignKeys = true,
-        )
-    }
-
-    private fun cleanLinksFromDB(): Completable {
-        return Completable.fromCallable {
-            dataSetLinkCleaner.deleteNotPresentInDb()
-            programLinkCleaner.deleteNotPresentInDb()
+    suspend fun refreshOrganisationUnits() {
+        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            val user = userCall.call()
+            downloadMetadata(user)
+            cleanLinksFromDB()
         }
+    }
+
+    private fun cleanLinksFromDB() {
+        dataSetLinkCleaner.deleteNotPresentInDb()
+        programLinkCleaner.deleteNotPresentInDb()
     }
 }

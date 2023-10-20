@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import io.reactivex.Completable
-import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLinkCleaner
@@ -50,16 +48,12 @@ internal class OrganisationUnitModuleDownloader(
         organisationUnitCall.download(user)
     }
 
-     fun refreshOrganisationUnits(): Completable {
-        return rxCompletable {
-            coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
-                val user = userCall.call()
-                downloadMetadata(user)
-                cleanLinksFromDB()
-            }
-
-    }
-
+    suspend fun refreshOrganisationUnits() {
+        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            val user = userCall.call()
+            downloadMetadata(user)
+            cleanLinksFromDB()
+        }
     }
 
     private fun cleanLinksFromDB() {

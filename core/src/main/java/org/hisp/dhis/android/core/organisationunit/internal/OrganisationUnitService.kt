@@ -38,6 +38,7 @@ import retrofit2.http.Query
 
 internal interface OrganisationUnitService {
 
+    @Suppress("LongParameterList")
     @GET(ORGANISATION_UNITS)
     suspend fun getOrganisationUnits(
         @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,

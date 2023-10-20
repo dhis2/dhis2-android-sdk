@@ -30,22 +30,21 @@ package org.hisp.dhis.android.core.dataelement.internal
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.junit.Before
-import java.util.concurrent.Callable
 
 class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private var dataElementCall: Callable<List<DataElement>>? = null
+    private lateinit var dataElementCall: suspend () -> List<DataElement>
 
     @Before
     override fun setUp() {
         super.setUp()
-        dataElementCall = createCall()
+        dataElementCall = { createCall() }
     }
 
-    private fun createCall(): Callable<List<DataElement>> {
+    private suspend fun createCall(): List<DataElement> {
         val uids = setOf(
             "FTRrcoaog83",
             "P3jJH5Tu5VC",
@@ -55,7 +54,7 @@ class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // @Test
-    fun download_data_elements() {
+    suspend fun download_data_elements() {
         d2.userModule().logIn(username, password, url).blockingGet()
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and
@@ -63,6 +62,6 @@ class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
-        dataElementCall!!.call()
+        dataElementCall.invoke()
     }
 }

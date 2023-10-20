@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.junit.Before
-import java.util.concurrent.Callable
 
 class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
@@ -38,21 +37,21 @@ class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private var dataSetCall: Callable<List<DataSet>>? = null
+    private lateinit var dataSetCall: suspend () -> List<DataSet>
 
     @Before
     override fun setUp() {
         super.setUp()
-        dataSetCall = createCall()
+        dataSetCall = { createCall() }
     }
 
-    private fun createCall(): Callable<List<DataSet>> {
+    private suspend fun createCall(): List<DataSet> {
         return getD2DIComponent(d2).dataSetCallFactory.create(setOf("lyLU2wR22tC", "BfMAe6Itzgt"))
     }
 
     // @Test
     @Throws(Exception::class)
-    fun download_data_sets() {
+    suspend fun download_data_sets() {
         if (!d2.userModule().isLogged().blockingGet()) {
             d2.userModule().logIn(username, password, url).blockingGet()
         }
@@ -62,6 +61,6 @@ class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
-        dataSetCall!!.call()
+        dataSetCall.invoke()
     }
 }

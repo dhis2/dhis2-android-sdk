@@ -159,7 +159,7 @@ internal class MetadataCall(
         programIndicatorModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(ProgramIndicator::class.java, false))
 
-        indicatorModuleDownloader.downloadMetadata().blockingAwait()
+        indicatorModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Indicator::class.java, false))
 
         legendSetModuleDownloader.downloadMetadata()

@@ -125,9 +125,10 @@ class MetadataCallShould : BaseCallShould() {
         whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
             Completable.complete(),
         )
-        whenever(dataSetDownloader.downloadMetadata()).thenReturn(
-            Completable.complete(),
-        )
+        dataSetDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+
         programIndicatorModuleDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
@@ -143,7 +144,9 @@ class MetadataCallShould : BaseCallShould() {
         constantDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
-        whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        indicatorDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         categoryDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
@@ -232,8 +235,8 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_dataset_parent_call_fail() {
-        whenever(dataSetDownloader.downloadMetadata()).thenReturn(Completable.error(networkError))
+    fun fail_when_dataset_parent_call_fail() = runTest {
+        whenever(dataSetDownloader.downloadMetadata()) doAnswer { throw networkError }
         downloadAndAssertError()
     }
 

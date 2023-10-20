@@ -40,7 +40,7 @@ internal fun interface IndicatorService {
     @GET("indicators")
     suspend fun getIndicators(
         @Query("fields") @Which fields: Fields<Indicator>,
-        @Query("filter") @Where lastUpdated: Filter<Indicator, String>,
+        @Query("filter") @Where lastUpdated: Filter<Indicator, String>?,
         @Query("filter") @Where uids: Filter<Indicator, String>,
         @Query("paging") paging: Boolean,
     ): Payload<Indicator>

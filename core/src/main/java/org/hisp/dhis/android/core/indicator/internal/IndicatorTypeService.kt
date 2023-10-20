@@ -40,7 +40,7 @@ internal fun interface IndicatorTypeService {
     @GET("indicatorTypes")
     suspend fun getIndicatorTypes(
         @Query("fields") @Which fields: Fields<IndicatorType>,
-        @Query("filter") @Where lastUpdated: Filter<IndicatorType, String>,
+        @Query("filter") @Where lastUpdated: Filter<IndicatorType, String>?,
         @Query("filter") @Where uids: Filter<IndicatorType, String>,
         @Query("paging") paging: Boolean,
     ): Payload<IndicatorType>

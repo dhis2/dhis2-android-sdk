@@ -47,7 +47,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: suspend(Set<String>) -> Payload<P>,
+        pageDownloader: suspend (Set<String>) -> Payload<P>,
     ): List<P> {
         return downloadPartitionedWithCustomHandling(
             uids,
@@ -61,7 +61,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: suspend(Set<String>) -> Payload<O>,
+        pageDownloader: suspend (Set<String>) -> Payload<O>,
         transform: (O) -> P,
     ): List<P> {
         return downloadPartitionedWithCustomHandling(
@@ -76,7 +76,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     override suspend fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: suspend(Set<String>) -> Payload<P>,
+        pageDownloader: suspend (Set<String>) -> Payload<P>,
     ): List<P> {
         return downloadPartitionedWithoutHandling(
             uids = uids,
@@ -89,7 +89,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     private suspend fun <P, O> downloadPartitionedWithoutHandling(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: suspend(Set<String>) -> Payload<O>,
+        pageDownloader: suspend (Set<String>) -> Payload<O>,
         transform: (O) -> P,
     ): List<P> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
@@ -108,7 +108,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: suspend(Set<String>) -> Payload<O>,
+        pageDownloader: suspend (Set<String>) -> Payload<O>,
         transform: (O) -> P,
     ): List<P> {
         val oCollection = downloadPartitionedWithoutHandling(
@@ -125,7 +125,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         uids: Set<String>,
         pageSize: Int,
         handler: (Map<K, V>) -> Any,
-        pageDownloader: suspend(Set<String>) -> Map<K, V>,
+        pageDownloader: suspend (Set<String>) -> Map<K, V>,
     ): Map<K, V> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
 
@@ -142,7 +142,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     override suspend fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,
-        downloader: suspend(String) -> Payload<P>,
+        downloader: suspend (String) -> Payload<P>,
         transform: (P) -> O,
     ): List<P> {
         val items = downloader.invoke(masterUid).items()
@@ -154,7 +154,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     override suspend fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
-        downloader: suspend(String?) -> Payload<P>,
+        downloader: suspend (String?) -> Payload<P>,
     ): List<P> {
         val items = downloader(
             resourceHandler.getLastUpdated(resourceType),
@@ -169,6 +169,11 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         return downloader
             .map { obj: Payload<P> -> obj.items() }
             .doOnSuccess { oCollection: List<P> -> handler.handleMany(oCollection) }
+    }
+
+    override suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend () -> Payload<P>): List<P> {
+        return downloader.invoke().items()
+            .also { handler.handleMany(it) }
     }
 
     override fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>> {
@@ -193,7 +198,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
 
     override suspend fun <P> downloadPagedPayload(
         pageSize: Int,
-        downloader: suspend(page: Int, pageSize: Int) -> Payload<P>,
+        downloader: suspend (page: Int, pageSize: Int) -> Payload<P>,
     ): Payload<P> {
         var page = 1
 

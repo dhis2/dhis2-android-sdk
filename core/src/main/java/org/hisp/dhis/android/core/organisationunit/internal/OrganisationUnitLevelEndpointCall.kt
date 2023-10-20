@@ -27,23 +27,21 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.koin.core.annotation.Singleton
-import java.lang.Boolean
 
 @Singleton
 internal class OrganisationUnitLevelEndpointCall(
     private val service: OrganisationUnitLevelService,
     private val handler: OrganisationUnitLevelHandler,
     private val apiDownloader: APIDownloader,
-) : ListCall<OrganisationUnitLevel> {
-    override fun download(): Single<List<OrganisationUnitLevel>> {
-        return apiDownloader.download(
+) : ListCallCoroutines<OrganisationUnitLevel> {
+    override suspend fun download(): List<OrganisationUnitLevel> {
+        return apiDownloader.downloadCoroutines(
             handler,
-            service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, Boolean.FALSE),
-        )
+
+        ) { service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, false) }
     }
 }

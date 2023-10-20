@@ -79,6 +79,8 @@ internal interface APIDownloader {
     ): List<P>
 
     fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>>
+    suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend() -> Payload<P>): List<P>
+
     fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>>
 
     suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P>

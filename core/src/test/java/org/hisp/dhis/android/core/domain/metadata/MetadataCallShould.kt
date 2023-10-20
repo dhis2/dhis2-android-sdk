@@ -121,10 +121,10 @@ class MetadataCallShould : BaseCallShould() {
         programDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
+        organisationUnitDownloader.stub {
+            onBlocking { downloadMetadata(same(user)) }.doReturn(Unit)
+        }
 
-        whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
-            Completable.complete(),
-        )
         whenever(dataSetDownloader.downloadMetadata()).thenReturn(
             Completable.complete(),
         )
@@ -226,8 +226,8 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun fail_when_organisation_unit_call_fail() {
-        whenever(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Completable.error(networkError))
+    fun fail_when_organisation_unit_call_fail() = runTest {
+        whenever(organisationUnitDownloader.downloadMetadata(user)) doAnswer { throw networkError }
         downloadAndAssertError()
     }
 

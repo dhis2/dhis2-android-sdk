@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Completable
-import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -45,6 +45,7 @@ import org.junit.runners.JUnit4
 import java.io.IOException
 import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class OrganisationUnitCallUnitShould {
     private val organisationUnitPayload: Payload<OrganisationUnit> = mock()
@@ -69,7 +70,7 @@ class OrganisationUnitCallUnitShould {
 
     // the call we are testing:
     private lateinit var lastUpdated: Date
-    private lateinit var organisationUnitCall: Completable
+    private lateinit var organisationUnitCall: suspend () -> Unit
 
     @Suppress("LongMethod")
     @Before
@@ -114,35 +115,40 @@ class OrganisationUnitCallUnitShould {
         whenever(user.phoneNumber()).doReturn("user_phone_number")
         whenever(user.nationality()).doReturn("user_nationality")
 
-        organisationUnitCall = OrganisationUnitCall(
-            organisationUnitService,
-            organisationUnitHandler,
-            organisationUnitDisplayPathTransformer,
-            userOrganisationUnitLinkStore,
-            organisationUnitStore,
-            collectionCleaner,
-        )
-            .download(user)
+        organisationUnitCall = {
+            OrganisationUnitCall(
+                organisationUnitService,
+                organisationUnitHandler,
+                organisationUnitDisplayPathTransformer,
+                userOrganisationUnitLinkStore,
+                organisationUnitStore,
+                collectionCleaner,
+            ).download(user)
+        }
 
         // Return only one organisationUnit.
         val organisationUnits = listOf(organisationUnit)
         whenever(UserInternalAccessor.accessOrganisationUnits(user)).doReturn(organisationUnits)
-        whenever(
-            organisationUnitService.getOrganisationUnits(
-                fieldsCaptor.capture(),
-                filtersCaptor.capture(),
-                orderCaptor.capture(),
-                pagingCaptor.capture(),
-                pageSizeCaptor.capture(),
-                pageCaptor.capture(),
-            ),
-        ).doReturn(Single.just(organisationUnitPayload))
+
+        organisationUnitService.stub {
+            onBlocking {
+                organisationUnitService.getOrganisationUnits(
+                    fieldsCaptor.capture(),
+                    filtersCaptor.capture(),
+                    orderCaptor.capture(),
+                    pagingCaptor.capture(),
+                    pageSizeCaptor.capture(),
+                    pageCaptor.capture(),
+                )
+            } doReturn organisationUnitPayload
+        }
+
         whenever(organisationUnitPayload.items()).doReturn(organisationUnits)
     }
 
     @Test
-    fun invoke_server_with_correct_parameters() {
-        organisationUnitCall.blockingGet()
+    fun invoke_server_with_correct_parameters() = runTest {
+        organisationUnitCall.invoke()
 
         assertThat(fieldsCaptor.firstValue).isEqualTo(OrganisationUnitFields.allFields)
         assertThat(filtersCaptor.firstValue.operator()).isEqualTo("like")
@@ -153,16 +159,16 @@ class OrganisationUnitCallUnitShould {
     }
 
     @Test
-    fun invoke_handler_if_request_succeeds() {
-        organisationUnitCall.blockingGet()
+    fun invoke_handler_if_request_succeeds() = runTest {
+        organisationUnitCall.invoke()
 
         verify(organisationUnitHandler, times(1)).handleMany(any(), any())
     }
 
     @Test
-    fun perform_call_twice_on_consecutive_calls() {
-        organisationUnitCall.blockingGet()
-        organisationUnitCall.blockingGet()
+    fun perform_call_twice_on_consecutive_calls() = runTest {
+        organisationUnitCall.invoke()
+        organisationUnitCall.invoke()
 
         verify(organisationUnitHandler, times(2)).handleMany(any(), any())
     }

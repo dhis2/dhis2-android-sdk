@@ -369,7 +369,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected abstract suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<T>, D2Error>
 
-    protected abstract fun persistItems(
+    protected abstract suspend fun persistItems(
         items: List<T>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,

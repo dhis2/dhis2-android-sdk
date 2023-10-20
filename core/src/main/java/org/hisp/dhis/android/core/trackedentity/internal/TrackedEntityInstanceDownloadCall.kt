@@ -68,12 +68,12 @@ internal class TrackedEntityInstanceDownloadCall(
         }
     }
 
-    override fun persistItems(
+    override suspend fun persistItems(
         items: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,
     ) {
-        persistenceCallFactory.persistTEIs(items, params, relatives).blockingAwait()
+        persistenceCallFactory.persistTEIs(items, params, relatives)
     }
 
     override fun updateLastUpdated(bundle: TrackerQueryBundle) {

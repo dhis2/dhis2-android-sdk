@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -40,39 +39,36 @@ internal class TrackedEntityInstancePersistenceCallFactory(
     private val uidsHelper: TrackedEntityInstanceUidHelper,
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader,
 ) {
-    fun persistTEIs(
+    suspend fun persistTEIs(
         trackedEntityInstances: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,
-    ): Completable {
-        return persistTEIsInternal(trackedEntityInstances, params, relatives)
+    ) {
+        persistTEIsInternal(trackedEntityInstances, params, relatives)
     }
 
-    fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>): Completable {
+    suspend fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>) {
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = false,
             overwrite = false,
             asRelationship = true,
         )
-        return persistTEIsInternal(trackedEntityInstances, params, relatives = null)
+
+        persistTEIsInternal(trackedEntityInstances, params, relatives = null)
     }
 
-    private fun persistTEIsInternal(
+    private suspend fun persistTEIsInternal(
         trackedEntityInstances: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
-    ): Completable {
-        return Completable.defer {
-            trackedEntityInstanceHandler.handleMany(
-                trackedEntityInstances,
-                params,
-                relatives,
-            )
-            if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
-                organisationUnitDownloader.refreshOrganisationUnits()
-            } else {
-                Completable.complete()
-            }
+    ) {
+        trackedEntityInstanceHandler.handleMany(
+            trackedEntityInstances,
+            params,
+            relatives,
+        )
+        if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
+            organisationUnitDownloader.refreshOrganisationUnits().blockingAwait()
         }
     }
 }

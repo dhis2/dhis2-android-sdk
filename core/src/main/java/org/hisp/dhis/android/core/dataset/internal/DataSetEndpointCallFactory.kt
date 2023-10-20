@@ -55,10 +55,10 @@ internal class DataSetEndpointCallFactory(
             var accessDataReadFilter =
                 "access.data." + DataAccessFields.read.eq(true).generateString()
 
-            override suspend fun getCall(query: UidsQuery?): Payload<DataSet> {
+            override suspend fun getCall(query: UidsQuery): Payload<DataSet> {
                 return dataSetService.getDataSets(
                     DataSetFields.allFields,
-                    DataSetFields.uid.`in`(query?.uids()),
+                    DataSetFields.uid.`in`(query.uids()),
                     accessDataReadFilter,
                     false,
                 )

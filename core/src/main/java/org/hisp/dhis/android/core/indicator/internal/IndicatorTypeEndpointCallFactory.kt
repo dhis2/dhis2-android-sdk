@@ -50,11 +50,11 @@ internal class IndicatorTypeEndpointCallFactory(
         return object :
             UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
 
-            override suspend fun getCall(query: UidsQuery?): Payload<IndicatorType> {
+            override suspend fun getCall(query: UidsQuery): Payload<IndicatorType> {
                 return service.getIndicatorTypes(
                     IndicatorTypeFields.allFields,
                     IndicatorTypeFields.lastUpdated.gt(null),
-                    IndicatorTypeFields.uid.`in`(query?.uids()),
+                    IndicatorTypeFields.uid.`in`(query.uids()),
                     false,
                 )
             }

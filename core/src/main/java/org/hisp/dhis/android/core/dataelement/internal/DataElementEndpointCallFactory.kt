@@ -50,13 +50,13 @@ internal class DataElementEndpointCallFactory(
     override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<DataElement> {
         return object : UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
             var accessReadFilter = "access." + AccessFields.read.eq(true).generateString()
-            override suspend fun getCall(query: UidsQuery?): Payload<DataElement> {
+            override suspend fun getCall(query: UidsQuery): Payload<DataElement> {
                 return service.getDataElements(
                     DataElementFields.allFields,
-                    DataElementFields.uid.`in`(query?.uids()),
+                    DataElementFields.uid.`in`(query.uids()),
                     DataElementFields.lastUpdated.gt(null),
                     accessReadFilter,
-                    query?.paging() ?: false,
+                    query.paging(),
                 )
             }
         }

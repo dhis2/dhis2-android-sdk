@@ -25,8 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.call.factories.internal
+package org.hisp.dhis.android.core.indicator.internal
 
-internal fun interface UidsCallFactory<P> {
-    suspend fun create(uids: Set<String>): List<P>
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.indicator.IndicatorType
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+internal fun interface IndicatorTypeService {
+    @GET("indicatorTypes")
+    suspend fun getIndicatorTypes(
+        @Query("fields") @Which fields: Fields<IndicatorType>,
+        @Query("filter") @Where lastUpdated: Filter<IndicatorType, String>?,
+        @Query("filter") @Where uids: Filter<IndicatorType, String>,
+        @Query("paging") paging: Boolean,
+    ): Payload<IndicatorType>
 }

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
@@ -39,20 +39,18 @@ import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.koin.core.annotation.Singleton
-import retrofit2.Call
 
 @Singleton
 internal class DataElementEndpointCallFactory(
     data: GenericCallData,
-    apiCallExecutor: APICallExecutor,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: DataElementService,
     private val handler: DataElementHandler,
-) : UidsCallFactoryImpl<DataElement>(data, apiCallExecutor) {
-    override fun fetcher(uids: Set<String>): CallFetcher<DataElement> {
-        return object :
-            UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+) : UidsCallFactoryImpl<DataElement>(data, coroutineAPICallExecutor) {
+    override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<DataElement> {
+        return object : UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
             var accessReadFilter = "access." + AccessFields.read.eq(true).generateString()
-            override fun getCall(query: UidsQuery): Call<Payload<DataElement>> {
+            override suspend fun getCall(query: UidsQuery): Payload<DataElement> {
                 return service.getDataElements(
                     DataElementFields.allFields,
                     DataElementFields.uid.`in`(query.uids()),

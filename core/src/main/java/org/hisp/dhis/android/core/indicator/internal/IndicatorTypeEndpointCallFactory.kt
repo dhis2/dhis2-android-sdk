@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
@@ -38,19 +38,19 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoR
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.koin.core.annotation.Singleton
-import retrofit2.Call
 
 @Singleton
 internal class IndicatorTypeEndpointCallFactory(
     data: GenericCallData,
-    apiCallExecutor: APICallExecutor,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: IndicatorTypeService,
     private val handler: IndicatorTypeHandler,
-) : UidsCallFactoryImpl<IndicatorType>(data, apiCallExecutor) {
-    override fun fetcher(uids: Set<String>): CallFetcher<IndicatorType> {
+) : UidsCallFactoryImpl<IndicatorType>(data, coroutineAPICallExecutor) {
+    override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<IndicatorType> {
         return object :
-            UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-            override fun getCall(query: UidsQuery): Call<Payload<IndicatorType>> {
+            UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
+
+            override suspend fun getCall(query: UidsQuery): Payload<IndicatorType> {
                 return service.getIndicatorTypes(
                     IndicatorTypeFields.allFields,
                     IndicatorTypeFields.lastUpdated.gt(null),

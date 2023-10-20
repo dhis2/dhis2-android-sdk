@@ -27,10 +27,8 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFactory
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.option.internal.OptionCall
@@ -40,8 +38,9 @@ import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCallCoroutines
 import org.koin.core.annotation.Singleton
 
+@Suppress("LongParameterList")
 @Singleton
-internal class DataSetModuleDownloader internal constructor(
+internal class DataSetModuleDownloader(
     private val dataSetCallFactory: DataSetEndpointCallFactory,
     private val dataElementCallFactory: DataElementEndpointCallFactory,
     private val optionSetCall: OptionSetCall,
@@ -50,29 +49,24 @@ internal class DataSetModuleDownloader internal constructor(
     private val validationRuleUidsCall: ValidationRuleUidsCallCoroutines,
     private val periodHandler: PeriodHandler,
     private val dataSetOrganisationUnitLinkStore: DataSetOrganisationUnitLinkStore,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromCallable {
-            val orgUnitDataSetUids = dataSetOrganisationUnitLinkStore
-                .selectDistinctSlaves(DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET)
-            val dataSets = dataSetCallFactory.create(orgUnitDataSetUids).call()
+    override suspend fun downloadMetadata() {
+        val orgUnitDataSetUids = dataSetOrganisationUnitLinkStore
+            .selectDistinctSlaves(DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET)
+        val dataSets = dataSetCallFactory.create(orgUnitDataSetUids)
 
-            val dataElements = dataElementCallFactory.create(
-                DataSetParentUidsHelper.getDataElementUids(dataSets),
-            ).call()
+        val dataElements = dataElementCallFactory.create(
+            DataSetParentUidsHelper.getDataElementUids(dataSets),
+        )
 
-            val optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements)
-            runBlocking {
-                optionSetCall.download(optionSetUids)
-                optionCall.download(optionSetUids)
-            }
+        val optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements)
+        optionSetCall.download(optionSetUids)
+        optionCall.download(optionSetUids)
 
-            runBlocking {
-                val validationRuleUids = validationRuleUidsCall.download(getUids(dataSets))
-                validationRuleCall.download(getUids(validationRuleUids))
-            }
-            periodHandler.generateAndPersist()
-        }
+        val validationRuleUids = validationRuleUidsCall.download(getUids(dataSets))
+        validationRuleCall.download(getUids(validationRuleUids))
+
+        periodHandler.generateAndPersist()
     }
 }

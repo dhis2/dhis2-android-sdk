@@ -25,24 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
+    private val uids: Set<String>,
+    private val limit: Int,
+    private val apiCallExecutor: CoroutineAPICallExecutor,
+) : CoroutineCallFetcher<P> {
+    protected abstract suspend fun getCall(query: UidsQuery): Payload<P>
 
-public interface DataElementService {
-    @GET("dataElements")
-    Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
-                                               @Query("filter") @Where Filter<DataElement, String> uids,
-                                               @Query("filter") @Where Filter<DataElement, String> lastUpdated,
-                                               @Query("filter") String accessReadFilter,
-                                               @Query("paging") Boolean paging);
+    @Throws(D2Error::class)
+    override suspend fun fetch(): List<P> {
+        if (uids.isEmpty()) {
+            return emptyList()
+        }
+        val objects: MutableList<P> = ArrayList()
+        if (uids.isNotEmpty()) {
+            val partitions = CollectionsHelper.setPartition(
+                uids,
+                limit,
+            )
+            for (partitionUids in partitions) {
+                val uidQuery = UidsQuery.create(partitionUids)
+                val callObjects: List<P> = apiCallExecutor.wrap { getCall(uidQuery) }.getOrThrow().items()
+                objects.addAll(transform(callObjects))
+            }
+        }
+        return objects
+    }
+
+    protected fun transform(list: List<P>): List<P> {
+        return list
+    }
 }

@@ -25,24 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.internal;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.indicator.Indicator
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface IndicatorTypeService {
-    @GET("indicatorTypes")
-    Call<Payload<IndicatorType>> getIndicatorTypes(@Query("fields") @Which Fields<IndicatorType> fields,
-                                                   @Query("filter") @Where Filter<IndicatorType, String> lastUpdated,
-                                                   @Query("filter") @Where Filter<IndicatorType, String> uids,
-                                                   @Query("paging") Boolean paging);
-
+internal fun interface IndicatorService {
+    @GET("indicators")
+    suspend fun getIndicators(
+        @Query("fields") @Which fields: Fields<Indicator>,
+        @Query("filter") @Where lastUpdated: Filter<Indicator, String>?,
+        @Query("filter") @Where uids: Filter<Indicator, String>,
+        @Query("paging") paging: Boolean,
+    ): Payload<Indicator>
 }

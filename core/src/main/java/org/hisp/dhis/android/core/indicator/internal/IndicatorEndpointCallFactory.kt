@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
@@ -38,19 +38,19 @@ import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoR
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.koin.core.annotation.Singleton
-import retrofit2.Call
 
 @Singleton
 internal class IndicatorEndpointCallFactory(
     data: GenericCallData,
-    apiCallExecutor: APICallExecutor,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val service: IndicatorService,
     private val handler: IndicatorHandler,
-) : UidsCallFactoryImpl<Indicator>(data, apiCallExecutor) {
-    override fun fetcher(uids: Set<String>): CallFetcher<Indicator> {
+) : UidsCallFactoryImpl<Indicator>(data, coroutineAPICallExecutor) {
+    override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<Indicator> {
         return object :
-            UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-            override fun getCall(query: UidsQuery): Call<Payload<Indicator>> {
+            UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
+
+            override suspend fun getCall(query: UidsQuery): Payload<Indicator> {
                 return service.getIndicators(
                     IndicatorFields.allFields,
                     IndicatorFields.lastUpdated.gt(null),

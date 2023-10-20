@@ -46,7 +46,7 @@ internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
             return emptyList()
         }
         val objects: MutableList<P> = ArrayList()
-        if (!uids.isEmpty()) {
+        if (uids.isNotEmpty()) {
             val partitions = CollectionsHelper.setPartition(
                 uids,
                 limit,

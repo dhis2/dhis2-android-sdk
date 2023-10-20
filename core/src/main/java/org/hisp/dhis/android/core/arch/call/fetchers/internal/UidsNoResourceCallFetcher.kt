@@ -38,7 +38,7 @@ internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
     private val limit: Int,
     private val apiCallExecutor: CoroutineAPICallExecutor,
 ) : CoroutineCallFetcher<P> {
-    protected abstract suspend fun getCall(query: UidsQuery?): Payload<P>
+    protected abstract suspend fun getCall(query: UidsQuery): Payload<P>
 
     @Throws(D2Error::class)
     override suspend fun fetch(): List<P> {

@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import java.util.concurrent.Callable
-
 internal fun interface UidsCallFactory<P> {
-    fun create(uids: Set<String>): Callable<List<P>>
+    suspend fun create(uids: Set<String>): List<P>
 }

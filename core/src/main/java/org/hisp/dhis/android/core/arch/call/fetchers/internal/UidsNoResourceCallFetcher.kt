@@ -25,54 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
-package org.hisp.dhis.android.core.arch.call.fetchers.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
+    private val uids: Set<String>,
+    private val limit: Int,
+    private val apiCallExecutor: CoroutineAPICallExecutor,
+) : CoroutineCallFetcher<P> {
+    protected abstract suspend fun getCall(query: UidsQuery?): Payload<P>
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
-
-    private final Set<String> uids;
-    private final int limit;
-    private final APICallExecutor apiCallExecutor;
-
-    protected UidsNoResourceCallFetcher(Set<String> uids, int limit, APICallExecutor apiCallExecutor) {
-        this.uids = uids;
-        this.limit = limit;
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<Payload<P>> getCall(UidsQuery query);
-
-    @Override
-    public final List<P> fetch() throws D2Error {
+    @Throws(D2Error::class)
+    override suspend fun fetch(): List<P> {
         if (uids.isEmpty()) {
-            return Collections.emptyList();
+            return emptyList()
         }
-
-        List<P> objects = new ArrayList<>();
+        val objects: MutableList<P> = ArrayList()
         if (!uids.isEmpty()) {
-            List<Set<String>> partitions = CollectionsHelper.setPartition(uids, limit);
-
-            for (Set<String> partitionUids : partitions) {
-                UidsQuery uidQuery = UidsQuery.create(partitionUids);
-                List<P> callObjects = apiCallExecutor.executePayloadCall(getCall(uidQuery));
-                objects.addAll(transform(callObjects));
+            val partitions = CollectionsHelper.setPartition(
+                uids,
+                limit,
+            )
+            for (partitionUids in partitions) {
+                val uidQuery = UidsQuery.create(partitionUids)
+                val callObjects: List<P> = apiCallExecutor.wrap { getCall(uidQuery) }.getOrThrow().items()
+                objects.addAll(transform(callObjects))
             }
         }
-        return objects;
+        return objects
     }
 
-    protected List<P> transform(List<P> list) {
-        return list;
+    protected fun transform(list: List<P>): List<P> {
+        return list
     }
 }

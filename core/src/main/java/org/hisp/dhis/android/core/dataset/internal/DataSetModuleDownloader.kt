@@ -27,29 +27,22 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryCoroutines
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFactory
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCallCoroutines
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
-@Reusable
-internal class DataSetModuleDownloader @Inject internal constructor(
-    private val dataSetCallFactory: UidsCallFactoryCoroutines<DataSet>,
-    private val dataElementCallFactory: UidsCallFactoryCoroutines<DataElement>,
+@Singleton
+internal class DataSetModuleDownloader(
+    private val dataSetCallFactory: DataSetEndpointCallFactory,
+    private val dataElementCallFactory: DataElementEndpointCallFactory,
     private val optionSetCall: OptionSetCall,
     private val optionCall: OptionCall,
     private val validationRuleCall: ValidationRuleCall,
@@ -59,7 +52,6 @@ internal class DataSetModuleDownloader @Inject internal constructor(
 ) : UntypedModuleDownloaderCoroutines {
 
     override suspend fun downloadMetadata() {
-
         val orgUnitDataSetUids = dataSetOrganisationUnitLinkStore
             .selectDistinctSlaves(DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET)
         val dataSets = dataSetCallFactory.create(orgUnitDataSetUids)
@@ -72,12 +64,9 @@ internal class DataSetModuleDownloader @Inject internal constructor(
         optionSetCall.download(optionSetUids)
         optionCall.download(optionSetUids)
 
-
         val validationRuleUids = validationRuleUidsCall.download(getUids(dataSets))
         validationRuleCall.download(getUids(validationRuleUids))
 
         periodHandler.generateAndPersist()
-
     }
-
 }

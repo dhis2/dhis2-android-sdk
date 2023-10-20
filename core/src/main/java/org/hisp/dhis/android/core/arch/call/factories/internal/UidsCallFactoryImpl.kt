@@ -27,21 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.EndpointCall
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import java.util.concurrent.Callable
 
-abstract class UidsCallFactoryImpl<P> protected constructor(
+internal abstract class UidsCallFactoryImpl<P> protected constructor(
     @JvmField protected val data: GenericCallData,
-    @JvmField protected val apiCallExecutor: APICallExecutor,
+    @JvmField protected val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : UidsCallFactory<P> {
-    override fun create(uids: Set<String>): Callable<List<P>> {
-        return EndpointCall(fetcher(uids), processor())
+    override suspend fun create(uids: Set<String>): List<P> {
+        val objects: List<P> = fetcher(uids).fetch()
+        processor().process(objects)
+        return objects
     }
 
-    protected abstract fun fetcher(uids: Set<String>): CallFetcher<P>
+    protected abstract suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<P>
     protected abstract fun processor(): CallProcessor<P>
 }

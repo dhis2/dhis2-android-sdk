@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -36,19 +35,17 @@ class IndicatorModuleDownloader internal constructor(
     private val indicatorCallFactory: IndicatorEndpointCallFactory,
     private val indicatorTypeCallFactory: IndicatorTypeEndpointCallFactory,
     private val indicatorUidsSeeker: IndicatorUidsSeeker,
-) : UntypedModuleDownloader {
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromCallable {
-            val indicatorUids = indicatorUidsSeeker.seekUids()
+    override suspend fun downloadMetadata() {
+        val indicatorUids = indicatorUidsSeeker.seekUids()
 
-            if (!indicatorUids.isNullOrEmpty()) {
-                val indicators = indicatorCallFactory.create(indicatorUids).call()
+        if (!indicatorUids.isNullOrEmpty()) {
+            val indicators = indicatorCallFactory.create(indicatorUids)
 
-                val typeUids = indicators.mapNotNull { it.indicatorType()?.uid() }.toSet()
+            val typeUids = indicators.mapNotNull { it.indicatorType()?.uid() }.toSet()
 
-                indicatorTypeCallFactory.create(typeUids).call()
-            }
+            indicatorTypeCallFactory.create(typeUids)
         }
     }
 }

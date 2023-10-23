@@ -35,12 +35,13 @@ import org.junit.Test
 
 class DHISVersionShould {
     @Test
-    fun return_non_null_for_any_version_greater_than_2_32() {
+    fun return_null_for_unsupported_versions() {
+        val supportedVersions = listOf("2.29", "2.41")
         DHISVersion.values()
-            .filter { it > DHISVersion.V2_32 && it.supported }
+            .filter { supportedVersions.contains(it.prefix) }
             .forEach {
-                Truth.assertThat(SMSVersion.getValue(it.prefix + ".0")).isNotNull()
-                Truth.assertThat(SMSVersion.getValue(it.prefix + ".9")).isNotNull()
+                Truth.assertThat(DHISVersion.getValue(it.prefix + ".0")).isNull()
+                Truth.assertThat(DHISVersion.getValue(it.prefix + ".9")).isNull()
             }
     }
 }

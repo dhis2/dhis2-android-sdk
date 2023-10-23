@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo
 
 enum class DHISVersion(internal val prefix: String, internal val supported: Boolean = true) {
-    V2_29("2.29"),
+    V2_29("2.29", false),
     V2_30("2.30"),
     V2_31("2.31"),
     V2_32("2.32"),

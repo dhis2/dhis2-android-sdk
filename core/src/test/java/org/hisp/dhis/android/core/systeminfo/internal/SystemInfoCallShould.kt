@@ -77,7 +77,7 @@ class SystemInfoCallShould {
             coroutineAPICallExecutor,
         )
 
-        whenever(systemInfo.version()).thenReturn("2.29")
+        whenever(systemInfo.version()).thenReturn("2.30")
         whenever(systemInfo.serverDate()).thenReturn(serverDate)
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         systemInfoService.stub {

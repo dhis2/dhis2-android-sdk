@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.SMSVersion
 import org.junit.Test
 
 class DHISVersionShould {

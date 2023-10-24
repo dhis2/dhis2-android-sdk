@@ -63,13 +63,7 @@ internal object RepositoryScopeHelper {
 
     @JvmStatic
     fun withOrderBy(scope: RepositoryScope, item: RepositoryScopeOrderByItem): RepositoryScope {
-        val newItems: MutableList<RepositoryScopeOrderByItem> = ArrayList(scope.orderBy().size + 1)
-        for (i in scope.orderBy()) {
-            if (i.column() != item.column()) {
-                newItems.add(i)
-            }
-        }
-        newItems.add(item)
+        val newItems = scope.orderBy().filter { it.column() != item.column() } + item
         return scope.toBuilder().orderBy(newItems).build()
     }
 }

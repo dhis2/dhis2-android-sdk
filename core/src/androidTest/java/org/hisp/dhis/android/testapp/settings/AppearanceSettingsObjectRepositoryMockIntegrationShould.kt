@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class AppearanceSettingsObjectRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_appearance_settings() {
         val appearanceSettings = d2.settingModule().appearanceSettings().blockingGet()!!
@@ -54,14 +54,16 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun should_return_only_dataSetFilters_for_specific_uid() {
-        val specificFilters = d2.settingModule().appearanceSettings().getDataSetFiltersByUid(program3)
+        val specificFilters =
+            d2.settingModule().appearanceSettings().getDataSetFiltersByUid(program3)
         assertThat(specificFilters?.size).isEqualTo(5)
         assertThat(specificFilters!![DataSetFilter.SYNC_STATUS]!!.uid()).isEqualTo(program3)
     }
 
     @Test
     fun should_return_only_programFilters_for_specific_uid() {
-        val specificFilters = d2.settingModule().appearanceSettings().getProgramFiltersByUid(program1)
+        val specificFilters =
+            d2.settingModule().appearanceSettings().getProgramFiltersByUid(program1)
         assertThat(specificFilters?.size).isEqualTo(7)
         assertThat(specificFilters!![ProgramFilter.ENROLLMENT_STATUS]!!.uid()).isEqualTo(program1)
     }
@@ -91,7 +93,8 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrat
 
     @Test
     fun should_return_completion_spinner_settings_for_specific_uid() {
-        val completionSpinner = d2.settingModule().appearanceSettings().getCompletionSpinnerByUid(program1)
+        val completionSpinner =
+            d2.settingModule().appearanceSettings().getCompletionSpinnerByUid(program1)
         assertThat(completionSpinner?.uid()).isEqualTo(program1)
         assertThat(completionSpinner?.visible()).isEqualTo(true)
     }
@@ -101,10 +104,12 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrat
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.disableReferrals()).isEqualTo(true)
 
-        val program1Setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
         assertThat(program1Setting?.disableReferrals()).isEqualTo(true)
 
-        val program2Setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
         assertThat(program2Setting?.disableReferrals()).isEqualTo(false)
     }
 
@@ -113,10 +118,12 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrat
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.disableCollapsibleSections()).isEqualTo(false)
 
-        val program1Setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
         assertThat(program1Setting?.disableCollapsibleSections()).isEqualTo(false)
 
-        val program2Setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
         assertThat(program2Setting?.disableCollapsibleSections()).isEqualTo(true)
     }
 
@@ -125,10 +132,12 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrat
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.itemHeader()?.programIndicator()).isNull()
 
-        val program1Setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
         assertThat(program1Setting?.itemHeader()?.programIndicator()).isEqualTo("kALwOyvVvdT")
 
-        val program2Setting = d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
         assertThat(program2Setting?.itemHeader()?.programIndicator()).isNull()
     }
 

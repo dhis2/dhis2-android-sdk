@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class ExpressionDimensionItemCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class ExpressionDimensionItemCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
         val items = d2.expressionDimensionItemModule().expressionDimensionItems()

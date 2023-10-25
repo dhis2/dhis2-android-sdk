@@ -43,7 +43,6 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @get:Rule

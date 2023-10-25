@@ -38,7 +38,6 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @get:Rule

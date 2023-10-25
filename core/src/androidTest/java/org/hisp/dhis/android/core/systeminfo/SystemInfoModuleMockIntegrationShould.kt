@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class SystemInfoModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_system_info_user() {

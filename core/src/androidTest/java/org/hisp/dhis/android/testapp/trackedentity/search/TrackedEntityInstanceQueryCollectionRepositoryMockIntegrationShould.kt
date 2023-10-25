@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_query() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
@@ -169,12 +169,14 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
 
         // Transfer ownership
         val teiUid = originalOu.blockingGet()[0].uid()
-        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "IpHINAT79UW", "g8upMTyEZGZ")
+        d2.trackedEntityModule().ownershipManager()
+            .blockingTransfer(teiUid, "IpHINAT79UW", "g8upMTyEZGZ")
         assertThat(originalOu.blockingCount()).isEqualTo(1)
         assertThat(transferredOu.blockingCount()).isEqualTo(1)
 
         // Undo change
-        d2.trackedEntityModule().ownershipManager().blockingTransfer(teiUid, "IpHINAT79UW", "DiszpKrYNg8")
+        d2.trackedEntityModule().ownershipManager()
+            .blockingTransfer(teiUid, "IpHINAT79UW", "DiszpKrYNg8")
     }
 
     @Test

@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class DataSetInstanceCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
         val dataSetInstances = d2.dataSetModule().dataSetInstances()
@@ -75,7 +75,8 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegra
     @Test
     fun filter_by_period_start_date() {
         val dataSetInstances = d2.dataSetModule().dataSetInstances()
-            .byPeriodStartDate().after(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-06-15T00:00:00.000"))
+            .byPeriodStartDate()
+            .after(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-06-15T00:00:00.000"))
             .blockingGet()
 
         assertThat(dataSetInstances.size).isEqualTo(3)

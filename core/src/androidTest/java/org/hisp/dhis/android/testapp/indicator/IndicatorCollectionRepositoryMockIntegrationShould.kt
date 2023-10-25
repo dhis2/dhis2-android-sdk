@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
@@ -75,7 +74,7 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byNumerator()
             .eq(
                 "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}" +
-                    "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
+                        "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
             )
             .blockingGet()
         Truth.assertThat(indicators.size).isEqualTo(1)

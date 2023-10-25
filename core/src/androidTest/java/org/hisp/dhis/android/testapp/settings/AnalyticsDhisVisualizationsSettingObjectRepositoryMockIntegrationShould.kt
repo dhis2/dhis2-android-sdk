@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
     BaseMockIntegrationTestFullDispatcher() {
 
@@ -46,7 +45,9 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .blockingGet()
 
         assertThat(analyticsDhisVisualizationsSetting.home().size).isEqualTo(2)
-        assertThat(analyticsDhisVisualizationsSetting.home().first().visualizations().first().name()).isNotEmpty()
+        assertThat(
+            analyticsDhisVisualizationsSetting.home().first().visualizations().first().name()
+        ).isNotEmpty()
 
         assertThat(analyticsDhisVisualizationsSetting.program().size).isEqualTo(1)
         assertThat(analyticsDhisVisualizationsSetting.dataSet().size).isEqualTo(1)
@@ -62,7 +63,9 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
 
         assertThat(programSettings?.size).isEqualTo(1)
         assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(2)
-        assertThat(programSettings?.first()?.visualizations()?.first()?.uid()).isEqualTo("PYBH8ZaAQnC")
+        assertThat(
+            programSettings?.first()?.visualizations()?.first()?.uid()
+        ).isEqualTo("PYBH8ZaAQnC")
     }
 
     @Test
@@ -75,6 +78,8 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
 
         assertThat(programSettings?.size).isEqualTo(1)
         assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(1)
-        assertThat(programSettings?.first()?.visualizations()?.first()?.uid()).isEqualTo("FAFa11yFeFe")
+        assertThat(
+            programSettings?.first()?.visualizations()?.first()?.uid()
+        ).isEqualTo("FAFa11yFeFe")
     }
 }

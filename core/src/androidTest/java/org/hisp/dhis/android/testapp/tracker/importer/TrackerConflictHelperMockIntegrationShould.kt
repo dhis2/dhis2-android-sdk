@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
@@ -49,7 +48,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo(
                 "The Antenatal care visit - Program rules demo event was not found in the server." +
-                    " (Event: event1)",
+                        " (Event: event1)",
             )
     }
 

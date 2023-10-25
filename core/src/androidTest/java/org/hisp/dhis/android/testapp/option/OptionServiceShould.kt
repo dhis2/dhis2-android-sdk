@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
@@ -59,7 +58,10 @@ class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_option_with_hide_uids() {
         val options = d2.optionModule().optionService()
-            .blockingSearchForOptions(optionSetUid = "VQ2lai3OfVG", optionToHideUids = listOf("Y1ILwhy5VDY"))
+            .blockingSearchForOptions(
+                optionSetUid = "VQ2lai3OfVG",
+                optionToHideUids = listOf("Y1ILwhy5VDY")
+            )
 
         assertThat(options.size).isEqualTo(1)
         assertThat(options[0].uid()).isEqualTo("egT1YqFWsVk")
@@ -68,7 +70,10 @@ class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_option_with_show_uids() {
         val options = d2.optionModule().optionService()
-            .blockingSearchForOptions(optionSetUid = "VQ2lai3OfVG", optionToShowUids = listOf("Y1ILwhy5VDY"))
+            .blockingSearchForOptions(
+                optionSetUid = "VQ2lai3OfVG",
+                optionToShowUids = listOf("Y1ILwhy5VDY")
+            )
 
         assertThat(options.size).isEqualTo(1)
         assertThat(options[0].uid()).isEqualTo("Y1ILwhy5VDY")

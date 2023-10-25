@@ -25,38 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import retrofit2.http.GET
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.user.Authority;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
-
-    private final APICallExecutor apiCallExecutor;
-
-    AuthorityCallFetcher(@NonNull APICallExecutor apiCallExecutor) {
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<List<String>> getCall();
-
-    @Override
-    public List<Authority> fetch() throws D2Error {
-        List<String> authoritiesAsStringList = apiCallExecutor.executeObjectCall(getCall());
-
-        List<Authority> authorities = new ArrayList<>();
-        for (String authority : authoritiesAsStringList) {
-            authorities.add(Authority.builder().name(authority).build());
-        }
-
-        return authorities;
-    }
+internal fun interface AuthorityService {
+    @GET("me/authorization")
+    suspend fun authorities(): List<String>
 }

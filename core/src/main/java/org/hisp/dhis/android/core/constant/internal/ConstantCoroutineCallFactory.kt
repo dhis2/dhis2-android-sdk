@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.constant.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
@@ -42,10 +43,13 @@ internal class ConstantCoroutineCallFactory(
     private val service: ConstantService,
     private val handler: ConstantHandler,
 ) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
-    override suspend fun fetcher(): List<Constant> {
-        return coroutineAPICallExecutor.wrap {
-            service.constants(ConstantFields.allFields, false)
-        }.getOrThrow().items()
+
+    override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
+        return object : ConstantCallFetcher(coroutineAPICallExecutor) {
+            override suspend fun getCall(): List<Constant> {
+                return service.constants(ConstantFields.allFields, false).items()
+            }
+        }
     }
 
     override fun processor(): CallProcessor<Constant> {

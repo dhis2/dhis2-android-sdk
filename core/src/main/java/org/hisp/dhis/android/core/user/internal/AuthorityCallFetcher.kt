@@ -25,16 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.Authority
 
-import java.util.List;
+internal abstract class AuthorityCallFetcher(
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : CoroutineCallFetcher<Authority> {
 
-import retrofit2.Call;
-import retrofit2.http.GET;
+    protected abstract suspend fun getCall(): List<String>
 
-public interface AuthorityService {
+    @Throws(D2Error::class)
+    override suspend fun fetch(): List<Authority> {
+        val authoritiesAsStringList: List<String> = coroutineAPICallExecutor.wrap {
+            getCall()
+        }.getOrThrow()
 
-    @GET("me/authorization")
-    Call<List<String>> getAuthorities();
+        val authorities: MutableList<Authority> = ArrayList()
+        for (authority in authoritiesAsStringList) {
+            authorities.add(Authority.builder().name(authority).build())
+        }
+        return authorities
+    }
 }

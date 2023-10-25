@@ -25,39 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.data.user.UserSamples
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.constant.internal
 
-@OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(D2JunitRunner::class)
-class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-    private lateinit var userStore: IdentifiableObjectStore<User>
-    private lateinit var userCall: suspend() -> User
+internal abstract class ConstantCallFetcher(
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : CoroutineCallFetcher<Constant> {
 
-    @Before
-    fun setUp() {
-        userStore = UserStoreImpl(databaseAdapter)
-        userCall = { objects.d2DIComponent.internalModules.user.userCall.call() }
-    }
+    protected abstract suspend fun getCall(): List<Constant>
 
-    @Test
-    fun persist_user_in_database_when_call() = runTest {
-        dhis2MockServer.enqueueMockResponse("user/user38.json")
-        userCall.invoke()
-
-        assertThat(userStore.count()).isEqualTo(1)
-        assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
+    @Throws(D2Error::class)
+    override suspend fun fetch(): List<Constant> {
+        return coroutineAPICallExecutor.wrap {
+            getCall()
+        }.getOrThrow()
     }
 }

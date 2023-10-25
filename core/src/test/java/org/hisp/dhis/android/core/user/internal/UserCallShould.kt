@@ -44,7 +44,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.stubbing.Answer
-import java.util.concurrent.Callable
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
@@ -55,14 +54,16 @@ class UserCallShould : BaseCallShould() {
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val user: User = mock()
 
-    private lateinit var userSyncCall: Callable<User>
+    private lateinit var userSyncCall: suspend() -> User
 
     @Before
     override fun setUp() {
         super.setUp()
         whenAPICall { userCall }
 
-        userSyncCall = UserCall(genericCallData, coroutineAPICallExecutor, userService, userHandler, dhisVersionManager)
+        userSyncCall = {
+            UserCall(genericCallData, coroutineAPICallExecutor, userService, userHandler, dhisVersionManager).call()
+        }
 
         whenever(dhisVersionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }
@@ -78,7 +79,7 @@ class UserCallShould : BaseCallShould() {
         whenAPICall { throw d2Error }
 
         try {
-            userSyncCall.call()
+            userSyncCall.invoke()
             Assert.fail("Exception was not thrown")
         } catch (ex: Exception) {
             // verify that handlers was not touched
@@ -93,7 +94,7 @@ class UserCallShould : BaseCallShould() {
     fun not_invoke_handler_after_call_failure() = runTest {
         whenAPICall { throw d2Error }
         try {
-            userSyncCall.call()
+            userSyncCall.invoke()
             Assert.fail("Call should't succeed")
         } catch (d2Exception: D2Error) {
             // verify that database was not touched
@@ -107,7 +108,7 @@ class UserCallShould : BaseCallShould() {
     @Test
     fun invoke_handlers_on_success() = runTest {
         whenAPICall { user }
-        userSyncCall.call()
+        userSyncCall.invoke()
         verify(userHandler).handle(eq(user))
     }
 }

@@ -115,7 +115,8 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
     }
 
     fun withOrderBy(column: String, direction: OrderByDirection?): R {
-        val item = RepositoryScopeOrderByItem.builder().column(column).direction(direction).build()
+        val orderDirection = direction ?: OrderByDirection.ASC
+        val item = RepositoryScopeOrderByItem.builder().column(column).direction(orderDirection).build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }
 
@@ -180,8 +181,12 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
                 ifFalseValue,
             )
         }
-        val item =
-            RepositoryScopeOrderByItem.builder().column(column).direction(direction).keyExtractor(extractor).build()
+        val orderDirection = direction ?: OrderByDirection.ASC
+        val item = RepositoryScopeOrderByItem.builder()
+            .column(column)
+            .direction(orderDirection)
+            .keyExtractor(extractor)
+            .build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }
 }

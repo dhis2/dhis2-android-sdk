@@ -53,7 +53,6 @@ internal class UserCall(
                 )
             }.getOrThrow()
 
-
         val transaction = genericCallData.databaseAdapter().beginNewTransaction()
         try {
             userHandler.handle(user)

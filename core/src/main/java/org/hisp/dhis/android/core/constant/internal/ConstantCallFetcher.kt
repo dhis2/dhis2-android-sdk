@@ -32,14 +32,12 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.user.Authority
 
 internal abstract class ConstantCallFetcher(
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : CoroutineCallFetcher<Constant> {
 
     protected abstract suspend fun getCall(): List<Constant>
-
 
     @Throws(D2Error::class)
     override suspend fun fetch(): List<Constant> {

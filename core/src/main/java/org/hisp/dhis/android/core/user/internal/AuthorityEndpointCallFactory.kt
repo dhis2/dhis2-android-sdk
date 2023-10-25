@@ -27,18 +27,14 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.user.Authority
 import org.koin.core.annotation.Singleton
-import retrofit2.Call
 
 @Singleton
 internal class AuthorityEndpointCallFactory constructor(
@@ -54,7 +50,6 @@ internal class AuthorityEndpointCallFactory constructor(
         this.handler = handler
         this.service = service
     }
-
 
     override suspend fun fetcher(): CoroutineCallFetcher<Authority> {
         return object : AuthorityCallFetcher(coroutineAPICallExecutor) {

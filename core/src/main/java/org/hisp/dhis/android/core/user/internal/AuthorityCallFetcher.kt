@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.Authority
 
 internal abstract class AuthorityCallFetcher(
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : CoroutineCallFetcher<Authority> {
 
     protected abstract suspend fun getCall(): List<String>
-
 
     @Throws(D2Error::class)
     override suspend fun fetch(): List<Authority> {

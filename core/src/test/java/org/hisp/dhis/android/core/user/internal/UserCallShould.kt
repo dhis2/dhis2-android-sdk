@@ -44,7 +44,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.stubbing.Answer
-import java.util.concurrent.Callable
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
@@ -63,7 +62,8 @@ class UserCallShould : BaseCallShould() {
         whenAPICall { userCall }
 
         userSyncCall = {
-            UserCall(genericCallData, coroutineAPICallExecutor, userService, userHandler, dhisVersionManager).call() }
+            UserCall(genericCallData, coroutineAPICallExecutor, userService, userHandler, dhisVersionManager).call()
+        }
 
         whenever(dhisVersionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }

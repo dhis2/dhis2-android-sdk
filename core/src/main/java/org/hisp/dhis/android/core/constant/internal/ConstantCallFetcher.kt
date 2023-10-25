@@ -26,37 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.user.Authority;
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.Authority
 
-import java.util.ArrayList;
-import java.util.List;
+internal abstract class ConstantCallFetcher(
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+) : CoroutineCallFetcher<Constant> {
 
-import androidx.annotation.NonNull;
+    protected abstract suspend fun getCall(): List<Constant>
 
-abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
 
-    private final APICallExecutor apiCallExecutor;
-
-    AuthorityCallFetcher(@NonNull APICallExecutor apiCallExecutor) {
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<List<String>> getCall();
-
-    @Override
-    public List<Authority> fetch() throws D2Error {
-        List<String> authoritiesAsStringList = apiCallExecutor.executeObjectCall(getCall());
-
-        List<Authority> authorities = new ArrayList<>();
-        for (String authority : authoritiesAsStringList) {
-            authorities.add(Authority.builder().name(authority).build());
-        }
-
-        return authorities;
+    @Throws(D2Error::class)
+    override suspend fun fetch(): List<Constant> {
+        return coroutineAPICallExecutor.wrap {
+            getCall()
+        }.getOrThrow()
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 
@@ -37,11 +38,11 @@ internal abstract class ListCoroutineCallFactoryImpl<P> protected constructor(
     protected val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : ListCoroutineCallFactory<P> {
     override suspend fun create(): List<P> {
-        val objects: List<P> = fetcher()
+        val objects: List<P> = fetcher().fetch()
         processor().process(objects)
         return objects
     }
 
-    protected abstract suspend fun fetcher(): List<P>
+    protected abstract suspend fun fetcher(): CoroutineCallFetcher<P>
     protected abstract fun processor(): CallProcessor<P>
 }

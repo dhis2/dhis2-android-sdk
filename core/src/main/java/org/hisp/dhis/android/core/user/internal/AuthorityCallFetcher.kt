@@ -25,37 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal
+package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.Authority
 
-@Singleton
-internal class ConstantCoroutineCallFactory(
-    data: GenericCallData,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: ConstantService,
-    private val handler: ConstantHandler,
-) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
+internal abstract class AuthorityCallFetcher(
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor
+) : CoroutineCallFetcher<Authority> {
 
-    override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
-        return object : ConstantCallFetcher(coroutineAPICallExecutor) {
-            override suspend fun getCall(): List<Constant> {
-                return service.constants(ConstantFields.allFields, false).items()
-            }
+    protected abstract suspend fun getCall(): List<String>
+
+
+    @Throws(D2Error::class)
+    override suspend fun fetch(): List<Authority> {
+        val authoritiesAsStringList: List<String> = coroutineAPICallExecutor.wrap {
+            getCall()
+        }.getOrThrow()
+
+        val authorities: MutableList<Authority> = ArrayList()
+        for (authority in authoritiesAsStringList) {
+            authorities.add(Authority.builder().name(authority).build())
         }
-    }
-
-    override fun processor(): CallProcessor<Constant> {
-        return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
-            handler,
-        )
+        return authorities
     }
 }

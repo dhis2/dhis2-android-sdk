@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.user.User
@@ -38,22 +40,23 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.Callable
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     private lateinit var userStore: IdentifiableObjectStore<User>
-    private lateinit var userCall: Callable<User>
+    private lateinit var userCall: suspend() -> User
 
     @Before
     fun setUp() {
         userStore = UserStoreImpl(databaseAdapter)
-        userCall = objects.d2DIComponent.internalModules.user.userCall
+        userCall = { objects.d2DIComponent.internalModules.user.userCall.call() }
     }
 
     @Test
-    fun persist_user_in_database_when_call() {
+    fun persist_user_in_database_when_call() = runTest {
         dhis2MockServer.enqueueMockResponse("user/user38.json")
-        userCall.call()
+        userCall.invoke()
 
         assertThat(userStore.count()).isEqualTo(1)
         assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())

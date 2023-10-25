@@ -28,14 +28,12 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.util.Log
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
 import org.koin.core.annotation.Singleton
-import java.util.concurrent.Callable
 
 @Singleton
 internal class UserCall(
@@ -44,17 +42,17 @@ internal class UserCall(
     private val userService: UserService,
     private val userHandler: UserHandler,
     private val dhisVersionManager: DHISVersionManager,
-) : Callable<User> {
+) {
 
     @Throws(D2Error::class)
-    override fun call(): User {
-        val user = runBlocking {
+    suspend fun call(): User {
+        val user =
             coroutineAPICallExecutor.wrap {
                 userService.getUser(
                     UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
                 )
             }.getOrThrow()
-        }
+
 
         val transaction = genericCallData.databaseAdapter().beginNewTransaction()
         try {

@@ -38,7 +38,7 @@ internal class UserModuleDownloader(
 ) : TypedModuleDownloader<User> {
     override suspend fun downloadMetadata(): User {
         val user = userCall.call()
-        authorityCallFactory.create().call()
+        authorityCallFactory.create()
         return user
     }
 }

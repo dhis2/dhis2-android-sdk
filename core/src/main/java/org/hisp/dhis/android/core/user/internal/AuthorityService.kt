@@ -25,16 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import retrofit2.http.GET
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.http.GET;
-
-public interface AuthorityService {
-
+internal fun interface AuthorityService {
     @GET("me/authorization")
-    Call<List<String>> getAuthorities();
+    suspend fun authorities(): List<String>
 }

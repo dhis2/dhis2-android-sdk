@@ -31,9 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class DataValueConflictCollectionRepositoryMockIntegrationShould :
     BaseMockIntegrationTestFullDispatcher() {

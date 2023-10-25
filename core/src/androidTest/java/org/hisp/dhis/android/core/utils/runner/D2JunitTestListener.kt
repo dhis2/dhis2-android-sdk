@@ -46,6 +46,5 @@ class D2JunitTestListener : RunListener() {
         tearDown()
         DatabaseRemover.removeAllDatabases()
         Log.i("D2JunitTestListener", "Test run database clearing finished")
-
     }
 }

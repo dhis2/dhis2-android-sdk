@@ -32,11 +32,9 @@ import androidx.paging.PagedList
 import com.jraska.livedata.TestObserver
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.junit.runner.RunWith
 
 class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 

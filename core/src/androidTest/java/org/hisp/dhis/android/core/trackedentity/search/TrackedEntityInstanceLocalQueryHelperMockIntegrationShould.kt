@@ -39,9 +39,7 @@ import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 

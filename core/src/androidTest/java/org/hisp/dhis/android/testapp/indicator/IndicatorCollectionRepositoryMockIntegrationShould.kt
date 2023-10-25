@@ -30,9 +30,7 @@ package org.hisp.dhis.android.testapp.indicator
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
@@ -74,7 +72,7 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byNumerator()
             .eq(
                 "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}" +
-                        "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
+                    "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
             )
             .blockingGet()
         Truth.assertThat(indicators.size).isEqualTo(1)

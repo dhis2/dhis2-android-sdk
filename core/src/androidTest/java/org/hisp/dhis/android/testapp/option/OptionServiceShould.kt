@@ -30,9 +30,7 @@ package org.hisp.dhis.android.testapp.option
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
 
@@ -60,7 +58,7 @@ class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
         val options = d2.optionModule().optionService()
             .blockingSearchForOptions(
                 optionSetUid = "VQ2lai3OfVG",
-                optionToHideUids = listOf("Y1ILwhy5VDY")
+                optionToHideUids = listOf("Y1ILwhy5VDY"),
             )
 
         assertThat(options.size).isEqualTo(1)
@@ -72,7 +70,7 @@ class OptionServiceShould : BaseMockIntegrationTestFullDispatcher() {
         val options = d2.optionModule().optionService()
             .blockingSearchForOptions(
                 optionSetUid = "VQ2lai3OfVG",
-                optionToShowUids = listOf("Y1ILwhy5VDY")
+                optionToShowUids = listOf("Y1ILwhy5VDY"),
             )
 
         assertThat(options.size).isEqualTo(1)

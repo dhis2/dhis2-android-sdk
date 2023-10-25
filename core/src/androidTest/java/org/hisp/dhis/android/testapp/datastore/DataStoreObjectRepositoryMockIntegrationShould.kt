@@ -31,9 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 

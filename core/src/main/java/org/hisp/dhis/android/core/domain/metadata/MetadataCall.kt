@@ -133,7 +133,7 @@ internal class MetadataCall(
         constantModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Constant::class.java, false))
 
-        smsModule.configCase().refreshMetadataIdsCallable().blockingAwait()
+        smsModule.configCase().refreshMetadataIdsCallable()
         emit(progressManager.increaseProgress(SmsModule::class.java, false))
     }
 

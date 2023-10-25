@@ -151,7 +151,9 @@ class MetadataCallShould : BaseCallShould() {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
         whenever(smsModule.configCase()).thenReturn(configCase)
-        whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
+        configCase.stub {
+            onBlocking { refreshMetadataIds() }.doReturn(Unit)
+        }
         generalSettingCall.stub {
             onBlocking { isDatabaseEncrypted() }.doReturn(false)
         }

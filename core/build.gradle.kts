@@ -45,7 +45,7 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 }
 
-val _targetSdkVersion = 33
+val _targetSdkVersion = 34
 val _minSdkVersion = 21
 val VERSION_CODE: String by project
 val VERSION_NAME: String by project

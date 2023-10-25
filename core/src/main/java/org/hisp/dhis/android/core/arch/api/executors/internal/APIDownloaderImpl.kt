@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import androidx.annotation.VisibleForTesting
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -165,30 +164,14 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         return items
     }
 
-    override fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>> {
-        return downloader
-            .map { obj: Payload<P> -> obj.items() }
-            .doOnSuccess { oCollection: List<P> -> handler.handleMany(oCollection) }
-    }
-
     override suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend () -> Payload<P>): List<P> {
         return downloader.invoke().items()
             .also { handler.handleMany(it) }
     }
 
-    override fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>> {
-        return downloader
-            .doOnSuccess { oCollection: List<P> -> handler.handleMany(oCollection) }
-    }
-
     override suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P> {
         return downloader.invoke()
             .also { handler.handleMany(it) }
-    }
-
-    override fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P> {
-        return downloader
-            .doOnSuccess { o: P -> handler.handle(o) }
     }
 
     override suspend fun <P> downloadObjectAsCoroutine(handler: Handler<P>, downloader: suspend () -> P): P {

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.d2.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
@@ -55,7 +53,6 @@ internal val javaDIClasses = module {
     single { DatabaseEncryptionPasswordManager(get(), get()) }
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }
-    single<APICallExecutor> { APICallExecutorImpl(get(), get()) }
     single { DatabaseAdapterFactory(get(), get()) }
     single { DatabaseExport(get(), get(), get()) }
     single { D2CallExecutor(get(), get()) }

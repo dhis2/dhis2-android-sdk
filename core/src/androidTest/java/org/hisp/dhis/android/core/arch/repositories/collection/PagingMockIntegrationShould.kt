@@ -36,14 +36,11 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @get:Rule

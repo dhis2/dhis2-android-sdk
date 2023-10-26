@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -78,14 +77,9 @@ internal interface APIDownloader {
         downloader: suspend(String?) -> Payload<P>,
     ): List<P>
 
-    fun <P> download(handler: Handler<P>, downloader: Single<Payload<P>>): Single<List<P>>
     suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend() -> Payload<P>): List<P>
 
-    fun <P> downloadList(handler: Handler<P>, downloader: Single<List<P>>): Single<List<P>>
-
     suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P>
-
-    fun <P> downloadObject(handler: Handler<P>, downloader: Single<P>): Single<P>
 
     suspend fun <P> downloadObjectAsCoroutine(handler: Handler<P>, downloader: suspend () -> P): P
 

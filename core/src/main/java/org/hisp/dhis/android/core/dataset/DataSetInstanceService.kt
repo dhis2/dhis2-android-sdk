@@ -47,4 +47,6 @@ interface DataSetInstanceService {
     ): DataSetEditableStatus
 
     fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
+
+    fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
 }

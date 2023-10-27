@@ -25,17 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository
 
-import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository;
-
-public interface DataSetModule {
-
-    DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations();
-    DataSetCollectionRepository dataSets();
-    SectionCollectionRepository sections();
-    DataApprovalCollectionRepository dataApprovals();
-    DataSetInstanceCollectionRepository dataSetInstances();
-    DataSetInstanceSummaryCollectionRepository dataSetInstanceSummaries();
+interface DataSetModule {
+    fun dataSetCompleteRegistrations(): DataSetCompleteRegistrationCollectionRepository
+    fun dataSets(): DataSetCollectionRepository
+    fun sections(): SectionCollectionRepository
+    fun dataApprovals(): DataApprovalCollectionRepository
+    fun dataSetInstances(): DataSetInstanceCollectionRepository
+    fun dataSetInstanceSummaries(): DataSetInstanceSummaryCollectionRepository
+    fun dataSetInstanceService(): DataSetInstanceService
 }

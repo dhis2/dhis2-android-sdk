@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetInstanceCollectionRepository
+import org.hisp.dhis.android.core.dataset.DataSetInstanceService
 import org.hisp.dhis.android.core.dataset.DataSetInstanceSummaryCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetModule
 import org.hisp.dhis.android.core.dataset.SectionCollectionRepository
@@ -44,6 +45,7 @@ class DataSetModuleImpl(
     private val dataApprovals: DataApprovalCollectionRepository,
     private val dataSetInstances: DataSetInstanceCollectionRepository,
     private val dataSetInstanceSummaries: DataSetInstanceSummaryCollectionRepository,
+    private val dataSetInstanceService: DataSetInstanceService,
 ) : DataSetModule {
     override fun dataSetCompleteRegistrations(): DataSetCompleteRegistrationCollectionRepository {
         return dataSetCompleteRegistrations
@@ -67,5 +69,9 @@ class DataSetModuleImpl(
 
     override fun dataSetInstanceSummaries(): DataSetInstanceSummaryCollectionRepository {
         return dataSetInstanceSummaries
+    }
+
+    override fun dataSetInstanceService(): DataSetInstanceService {
+        return dataSetInstanceService
     }
 }

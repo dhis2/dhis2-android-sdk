@@ -52,7 +52,7 @@ import retrofit2.Retrofit
 
 internal val servicesDIModule = module {
     single { get<Retrofit>().create(ApiService::class.java) }
-    single { get<Retrofit>().create(ApiService::class.java) }
+    single { get<Retrofit>().create(AuthorityService::class.java) }
     single { get<Retrofit>().create(BingService::class.java) }
     single { get<Retrofit>().create(CategoryComboService::class.java) }
     single { get<Retrofit>().create(CategoryOptionService::class.java) }
@@ -60,8 +60,8 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(ConstantService::class.java) }
     single { get<Retrofit>().create(DataApprovalService::class.java) }
     single { get<Retrofit>().create(DataElementService::class.java) }
-    single { get<Retrofit>().create(DataSetService::class.java) }
     single { get<Retrofit>().create(DataSetCompleteRegistrationService::class.java) }
+    single { get<Retrofit>().create(DataSetService::class.java) }
     single { get<Retrofit>().create(DataValueService::class.java) }
     single { get<Retrofit>().create(EnrollmentService::class.java) }
     single { get<Retrofit>().create(EventFilterService::class.java) }
@@ -76,16 +76,17 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(OptionSetService::class.java) }
     single { get<Retrofit>().create(OrganisationUnitLevelService::class.java) }
     single { get<Retrofit>().create(OrganisationUnitService::class.java) }
+    single { get<Retrofit>().create(OwnershipService::class.java) }
+    single { get<Retrofit>().create(PingService::class.java) }
     single { get<Retrofit>().create(ProgramIndicatorService::class.java) }
-    single { get<Retrofit>().create(ProgramService::class.java) }
     single { get<Retrofit>().create(ProgramRuleService::class.java) }
+    single { get<Retrofit>().create(ProgramService::class.java) }
     single { get<Retrofit>().create(ProgramStageService::class.java) }
     single { get<Retrofit>().create(ProgramStageWorkingListService::class.java) }
     single { get<Retrofit>().create(RelationshipService::class.java) }
     single { get<Retrofit>().create(RelationshipTypeService::class.java) }
     single { get<Retrofit>().create(SettingService::class.java) }
-    single { get<Retrofit>().create(OwnershipService::class.java) }
-    single { get<Retrofit>().create(PingService::class.java) }
+    single { get<Retrofit>().create(StockUseCaseService::class.java) }
     single { get<Retrofit>().create(SystemInfoService::class.java) }
     single { get<Retrofit>().create(TrackedEntityAttributeReservedValueService::class.java) }
     single { get<Retrofit>().create(TrackedEntityAttributeService::class.java) }
@@ -94,8 +95,6 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(TrackedEntityTypeService::class.java) }
     single { get<Retrofit>().create(TrackerExporterService::class.java) }
     single { get<Retrofit>().create(TrackerImporterService::class.java) }
-    single { get<Retrofit>().create(StockUseCaseService::class.java) }
-    single { get<Retrofit>().create(AuthorityService::class.java) }
     single { get<Retrofit>().create(UserService::class.java) }
     single { get<Retrofit>().create(ValidationRuleService::class.java) }
     single { get<Retrofit>().create(VisualizationService::class.java) }

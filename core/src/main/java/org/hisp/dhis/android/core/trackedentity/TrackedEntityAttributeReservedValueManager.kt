@@ -297,28 +297,32 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         minNumberOfValuesToHave: Int?,
         storeError: Boolean,
     ) = coroutineScope {
-        // Using local date. It's not worth it to make a system info call
-        store.deleteExpired(Date())
-        val fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute)
-        val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
-        val remainingValues = store.count(
-            attribute,
-            if (isOrgunitDependent(pattern)) getUidOrNull(organisationUnit) else null,
-            pattern,
-        )
-
-        // If number of values is explicitly specified, we use that value as threshold.
-        val minNumberToTryFill = minNumberOfValuesToHave ?: (fillUpTo!! * FACTOR_TO_REFILL).toInt()
-
-        if (remainingValues < minNumberToTryFill) {
-            val numberToReserve = fillUpTo!! - remainingValues
-            downloadValues(
+        try {
+            // Using local date. It's not worth it to make a system info call
+            store.deleteExpired(Date())
+            val fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute)
+            val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
+            val remainingValues = store.count(
                 attribute,
-                organisationUnit,
-                numberToReserve,
+                if (isOrgunitDependent(pattern)) getUidOrNull(organisationUnit) else null,
                 pattern,
-                storeError,
             )
+
+            // If number of values is explicitly specified, we use that value as threshold.
+            val minNumberToTryFill = minNumberOfValuesToHave ?: (fillUpTo!! * FACTOR_TO_REFILL).toInt()
+
+            if (remainingValues < minNumberToTryFill) {
+                val numberToReserve = fillUpTo!! - remainingValues
+                downloadValues(
+                    attribute,
+                    organisationUnit,
+                    numberToReserve,
+                    pattern,
+                    storeError,
+                )
+            }
+        } catch (ignored: Exception) {
+            // Ignored
         }
     }
 

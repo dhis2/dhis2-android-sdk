@@ -321,7 +321,9 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                     storeError,
                 )
             }
-        } catch (ignored: Exception) {}
+        } catch (ignored: Exception) {
+            // Ignored
+        }
     }
 
     private suspend fun downloadValues(

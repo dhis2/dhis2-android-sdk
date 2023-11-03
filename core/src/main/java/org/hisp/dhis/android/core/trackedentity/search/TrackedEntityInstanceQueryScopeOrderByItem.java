@@ -46,8 +46,8 @@ public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
     public abstract RepositoryScope.OrderByDirection direction();
 
     public String toAPIString(TrackerExporterVersion version) {
-        String apiName = column().apiName() != null ? column().apiName().getApiName(version) : null;
-        return apiName != null ? apiName + ":" + direction().getApi() : null;
+        String apiName = column().apiName() == null ? null : column().apiName().getApiName(version);
+        return apiName == null ? null : apiName + ":" + direction().getApi();
     }
 
     static Builder builder() {

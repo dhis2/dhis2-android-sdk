@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
 sealed class TrackedEntityInstanceQueryScopeOrderApiName(
-    private val v1Name: String?, 
-    private val v2Name: String?
+    private val v1Name: String?,
+    private val v2Name: String?,
 ) {
     data object Created : TrackedEntityInstanceQueryScopeOrderApiName("created", "createdAt")
     data object LastUpdated : TrackedEntityInstanceQueryScopeOrderApiName("lastUpdated", "updatedAt")

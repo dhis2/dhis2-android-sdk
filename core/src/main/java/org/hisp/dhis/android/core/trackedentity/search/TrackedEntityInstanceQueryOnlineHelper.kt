@@ -133,7 +133,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
 
         fun toAPIOrderFormat(
             orders: List<TrackedEntityInstanceQueryScopeOrderByItem>,
-            version: TrackerExporterVersion
+            version: TrackerExporterVersion,
         ): String? {
             val apiOrders = orders.mapNotNull { it.toAPIString(version) }
             return if (apiOrders.isNotEmpty()) {

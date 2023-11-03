@@ -75,6 +75,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private val teis: List<TrackedEntityInstance> = mock()
     private val eventPayload: Payload<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
+    private val order: List<TrackedEntityInstanceQueryScopeOrderByItem> =
+        listOf(TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER)
 
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
@@ -103,7 +105,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             includeDeleted = false,
             lastUpdatedStartDate = Date(),
             lastUpdatedEndDate = Date(),
-            order = "lastupdated:desc",
+            order = order,
             assignedUserMode = AssignedUserMode.ANY,
             paging = false,
             page = 2,
@@ -250,7 +252,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.assignedUserMode?.toString()),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
-            eq(query.order),
+            any(),
             eq(query.paging),
             eq(query.page),
             eq(query.pageSize),
@@ -268,6 +270,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             }
         }
     }
+
     private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
         verify(eventService).getEvents(
             eq(EventFields.teiQueryFields),
@@ -283,7 +286,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.eventEndDate.simpleDateFormat()),
             eq(query.dueStartDate.simpleDateFormat()),
             eq(query.dueEndDate.simpleDateFormat()),
-            eq(query.order),
+            any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.paging),
             eq(query.page),

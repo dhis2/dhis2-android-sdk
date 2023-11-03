@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 import java.text.ParseException
@@ -111,7 +113,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
                 endDate = query.eventEndDate.simpleDateFormat(),
                 dueDateStart = query.dueStartDate.simpleDateFormat(),
                 dueDateEnd = query.dueEndDate.simpleDateFormat(),
-                order = query.order,
+                order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
                 pageSize = query.pageSize,
@@ -152,7 +154,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
                     assignedUserMode = query.assignedUserMode?.toString(),
                     lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                     lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-                    order = query.order,
+                    order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
                     paging = query.paging,
                     pageSize = query.pageSize,
                     page = query.page,

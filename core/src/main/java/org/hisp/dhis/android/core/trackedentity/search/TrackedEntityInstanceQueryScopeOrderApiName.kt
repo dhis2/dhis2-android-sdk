@@ -26,41 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
+sealed class TrackedEntityInstanceQueryScopeOrderApiName(
+    private val v1Name: String?, 
+    private val v2Name: String?
+) {
+    data object Created : TrackedEntityInstanceQueryScopeOrderApiName("created", "createdAt")
+    data object LastUpdated : TrackedEntityInstanceQueryScopeOrderApiName("lastUpdated", "updatedAt")
+    data object EnrollmentDate : TrackedEntityInstanceQueryScopeOrderApiName(null, "enrolledAt")
+    class Attribute(attributeId: String) : TrackedEntityInstanceQueryScopeOrderApiName(attributeId, attributeId)
 
-@AutoValue
-public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
-
-    public static TrackedEntityInstanceQueryScopeOrderByItem DEFAULT_TRACKER_ORDER = builder()
-            .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
-            .direction(RepositoryScope.OrderByDirection.DESC)
-            .build();
-
-    public abstract TrackedEntityInstanceQueryScopeOrderColumn column();
-
-    public abstract RepositoryScope.OrderByDirection direction();
-
-    public String toAPIString(TrackerExporterVersion version) {
-        String apiName = column().apiName() != null ? column().apiName().getApiName(version) : null;
-        return apiName != null ? apiName + ":" + direction().getApi() : null;
-    }
-
-    static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryScopeOrderByItem.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder {
-
-        public abstract Builder column(TrackedEntityInstanceQueryScopeOrderColumn column);
-
-        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
-
-        public abstract TrackedEntityInstanceQueryScopeOrderByItem build();
+    fun getApiName(version: TrackerExporterVersion): String? {
+        return when (version) {
+            TrackerExporterVersion.V1 -> v1Name
+            TrackerExporterVersion.V2 -> v2Name
+        }
     }
 }

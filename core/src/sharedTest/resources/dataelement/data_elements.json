@@ -293,8 +293,63 @@
               "manage": true
             }
           }
+        },
+        {
+          "value": "Direct 2",
+          "attribute": {
+            "lastUpdated": "2016-05-25T14:22:29.304",
+            "id": "b0vcadVrn08",
+            "created": "2016-05-25T13:58:15.561",
+            "name": "Data Source",
+            "code": "DataSource",
+            "indicatorAttribute": false,
+            "indicatorGroupAttribute": false,
+            "publicAccess": "r-------",
+            "userGroupAttribute": false,
+            "dataElementAttribute": true,
+            "constantAttribute": false,
+            "valueType": "TEXT",
+            "categoryOptionAttribute": false,
+            "optionSetAttribute": false,
+            "sqlViewAttribute": false,
+            "legendSetAttribute": false,
+            "displayFormName": "Data Source",
+            "trackedEntityAttributeAttribute": false,
+            "organisationUnitAttribute": false,
+            "dataSetAttribute": false,
+            "documentAttribute": false,
+            "unique": false,
+            "validationRuleGroupAttribute": false,
+            "favorite": false,
+            "dataElementGroupAttribute": false,
+            "sectionAttribute": false,
+            "trackedEntityTypeAttribute": false,
+            "userAttribute": false,
+            "displayName": "Data Source",
+            "mandatory": false,
+            "categoryOptionGroupAttribute": false,
+            "externalAccess": false,
+            "programStageAttribute": false,
+            "programAttribute": false,
+            "categoryAttribute": false,
+            "categoryOptionComboAttribute": false,
+            "categoryOptionGroupSetAttribute": false,
+            "validationRuleAttribute": false,
+            "programIndicatorAttribute": false,
+            "organisationUnitGroupAttribute": false,
+            "dataElementGroupSetAttribute": false,
+            "organisationUnitGroupSetAttribute": false,
+            "optionAttribute": false,
+            "access": {
+              "read": true,
+              "update": true,
+              "externalize": true,
+              "delete": true,
+              "write": true,
+              "manage": true
+            }
+          }
         }
-      ]
-    }
+      ]    }
   ]
 }

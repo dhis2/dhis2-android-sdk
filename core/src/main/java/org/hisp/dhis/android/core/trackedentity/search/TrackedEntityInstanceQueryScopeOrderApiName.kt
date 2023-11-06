@@ -26,30 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.trackedentity.search
 
-public class RealServerMother {
-    public static String url2_29 = "https://play.dhis2.org/2.29/";
-    public static String url2_30 = "https://play.dhis2.org/2.30/";
-    public static String url2_31 = "https://play.dhis2.org/2.31/";
-    public static String url2_32 = "https://play.dhis2.org/2.32/";
-    public static String url2_33 = "https://play.dhis2.org/2.33/";
-    public static String url2_34 = "https://play.dhis2.org/2.34/";
-    public static String url2_35 = "https://play.dhis2.org/2.35/";
-    public static String url2_36 = "https://play.dhis2.org/2.36/";
-    public static String url2_37 = "https://play.dhis2.org/2.37/";
-    public static String url2_38 = "https://play.dhis2.org/2.38/";
-    public static String url2_39 = "https://play.dhis2.org/2.39/";
-    public static String url2_40 = "https://play.dhis2.org/40/";
-    public static String url_dev = "https://play.dhis2.org/dev/";
-    public static String android_current = "https://play.dhis2.org/android-current/";
-    public static String android_previous1 = "https://play.dhis2.org/android-previous1/";
-    public static String android_previous2 = "https://play.dhis2.org/android-previous2/";
-    public static String android_dev = "https://play.dhis2.org/android-dev/";
-    public static String android2 = "http://android2.dhis2.org:8080";
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-    public static String url = android_current;
+sealed class TrackedEntityInstanceQueryScopeOrderApiName(
+    private val v1Name: String?,
+    private val v2Name: String?,
+) {
+    data object Created : TrackedEntityInstanceQueryScopeOrderApiName("created", "createdAt")
+    data object LastUpdated : TrackedEntityInstanceQueryScopeOrderApiName("lastUpdated", "updatedAt")
+    data object EnrollmentDate : TrackedEntityInstanceQueryScopeOrderApiName(null, "enrolledAt")
+    class Attribute(attributeId: String) : TrackedEntityInstanceQueryScopeOrderApiName(attributeId, attributeId)
 
-    public static String username = "android";
-    public static String password = "Android123";
+    fun getApiName(version: TrackerExporterVersion): String? {
+        return when (version) {
+            TrackerExporterVersion.V1 -> v1Name
+            TrackerExporterVersion.V2 -> v2Name
+        }
+    }
 }

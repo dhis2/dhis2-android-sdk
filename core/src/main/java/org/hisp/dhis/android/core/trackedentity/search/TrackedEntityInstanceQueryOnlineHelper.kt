@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -103,7 +104,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
             followUp = scope.followUp(),
             includeDeleted = scope.includeDeleted(),
             trackedEntityType = scope.trackedEntityType(),
-            order = toAPIOrderFormat(scope.order()),
+            order = scope.order(),
         ).run {
             scope.program()?.let {
                 copy(
@@ -128,15 +129,19 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
         return eventStatus.firstOrNull()
     }
 
-    private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
-        return if (orders.isNotEmpty()) {
-            orders.mapNotNull { it.toAPIString() }.joinToString(",")
-        } else {
-            null
-        }
-    }
-
     companion object {
+
+        fun toAPIOrderFormat(
+            orders: List<TrackedEntityInstanceQueryScopeOrderByItem>,
+            version: TrackerExporterVersion,
+        ): String? {
+            val apiOrders = orders.mapNotNull { it.toAPIString(version) }
+            return if (apiOrders.isNotEmpty()) {
+                apiOrders.joinToString(",")
+            } else {
+                null
+            }
+        }
 
         fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
             // Compatibility for the new Tracker (old Tracker will ignore this format)

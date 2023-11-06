@@ -39,8 +39,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryErrorCatcher
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.util.simpleDateFormat
@@ -61,7 +63,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
-            order = TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER.toAPIString(),
+            order = DEFAULT_TRACKER_ORDER.toAPIString(TrackerExporterVersion.V2),
             paging = true,
             page = query.page,
             pageSize = query.pageSize,
@@ -153,7 +155,7 @@ internal class NewTrackedEntityEndpointCallFactory(
                 enrollmentEnrolledBefore = query.programEndDate.simpleDateFormat(),
                 enrollmentOccurredAfter = query.incidentStartDate.simpleDateFormat(),
                 enrollmentOccurredBefore = query.incidentEndDate.simpleDateFormat(),
-                order = query.order,
+                order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
                 pageSize = query.pageSize,
@@ -193,7 +195,7 @@ internal class NewTrackedEntityEndpointCallFactory(
                 assignedUserMode = query.assignedUserMode?.toString(),
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-                order = query.order,
+                order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 paging = query.paging,
                 page = query.page,
                 pageSize = query.pageSize,

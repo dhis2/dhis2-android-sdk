@@ -63,7 +63,7 @@ internal data class TrackedEntityInstanceQueryOnline(
     val uids: List<String>? = null,
     val lastUpdatedStartDate: Date? = null,
     val lastUpdatedEndDate: Date? = null,
-    val order: String? = null,
+    val order: List<TrackedEntityInstanceQueryScopeOrderByItem> = emptyList(),
 ) {
     fun shouldCallEventFirst(): Boolean {
         return dataValueFilter.isNotEmpty() ||

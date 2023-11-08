@@ -26,38 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo
+import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLinkTableInfo
+import org.koin.core.annotation.Singleton
 
-import java.util.ArrayList;
-import java.util.List;
+@Singleton
+internal class AttributeUidsSeeker(
+    databaseAdapter: DatabaseAdapter,
+) : BaseUidsSeeker(databaseAdapter) {
 
-public final class AttributeValueUtils {
+    fun seekUids(): Set<String> {
+        val tableNames = listOf(
+            DataElementAttributeValueLinkTableInfo.TABLE_INFO.name(),
+            ProgramAttributeValueLinkTableInfo.TABLE_INFO.name(),
+            ProgramStageAttributeValueLinkTableInfo.TABLE_INFO.name(),
+        )
+        val query = MultipleTableQueryBuilder()
+            .generateQuery(DataElementAttributeValueLinkTableInfo.Columns.ATTRIBUTE, tableNames)
+            .build()
 
-    private AttributeValueUtils() {
-    }
-
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
-
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
-        }
-
-        return attributes;
-    }
-
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
+        return readSingleColumnResults(query)
     }
 }

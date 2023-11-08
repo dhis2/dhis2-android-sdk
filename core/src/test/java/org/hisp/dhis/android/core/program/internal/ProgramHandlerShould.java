@@ -37,14 +37,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler;
 import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
@@ -91,8 +88,6 @@ public class ProgramHandlerShould {
     @Mock
     private ProgramAttributeValueLinkHandler programAttributeValueLinkHandler;
 
-    @Mock
-    private AttributeHandler attributeHandler;
 
     @Mock
     private Program program;
@@ -123,7 +118,7 @@ public class ProgramHandlerShould {
 
     private List<AttributeValue> attributeValues = new ArrayList<>();
 
-    Attribute attribute;
+    ObjectWithUid attributeValue = ObjectWithUid.create("Att_Uid");
 
     // object to test
     private ProgramHandler programHandler;
@@ -140,7 +135,6 @@ public class ProgramHandlerShould {
                 orphanCleaner,
                 collectionCleaner,
                 linkCleaner,
-                attributeHandler,
                 programAttributeValueLinkHandler
         );
 
@@ -181,14 +175,8 @@ public class ProgramHandlerShould {
         when(dataAccess.read()).thenReturn(true);
         when(dataAccess.write()).thenReturn(true);
 
-        attribute = Attribute.builder()
-                .programAttribute(true)
-                .uid("Att_Uid")
-                .name("att")
-                .code("att")
-                .valueType(ValueType.TEXT)
-                .build();
 
+        ObjectWithUid attribute = ObjectWithUid.create("Att_Uid");
         AttributeValue attValue = AttributeValue.builder()
                 .value("5")
                 .attribute(attribute)
@@ -251,7 +239,6 @@ public class ProgramHandlerShould {
     @Test
     public void call_attribute_handlers() {
         programHandler.handleMany(Collections.singletonList(program));
-        verify(attributeHandler).handleMany(eq(Arrays.asList(attribute)));
-        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()), eq(Arrays.asList(attribute)), any());
+        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()), eq(Arrays.asList(attributeValue)), any());
     }
 }

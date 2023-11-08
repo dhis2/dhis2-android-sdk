@@ -26,38 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import org.hisp.dhis.android.core.attribute.Attribute
+import org.koin.core.annotation.Singleton
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class AttributeValueUtils {
-
-    private AttributeValueUtils() {
+@Singleton
+internal class AttributeCall(
+    private val service: AttributeService,
+    private val handler: AttributeHandler,
+    private val apiDownloader: APIDownloader,
+) : UidsCallCoroutines<Attribute> {
+    override suspend fun download(uids: Set<String>): List<Attribute> {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
+            service.getAttributes(AttributeFields.allFields, AttributeFields.uid.`in`(partitionUids), false)
+        }
     }
 
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
-
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
-        }
-
-        return attributes;
-    }
-
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 130
     }
 }

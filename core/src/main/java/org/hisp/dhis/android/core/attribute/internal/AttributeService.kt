@@ -26,38 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.attribute.Attribute
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class AttributeValueUtils {
-
-    private AttributeValueUtils() {
-    }
-
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
-
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
-        }
-
-        return attributes;
-    }
-
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
-    }
+internal fun interface AttributeService {
+    @GET("attributes")
+    suspend fun getAttributes(
+        @Query("fields") @Which fields: Fields<Attribute>,
+        @Query("filter") @Where uids: Filter<Attribute, String>,
+        @Query("paging") paging: Boolean,
+    ): Payload<Attribute>
 }

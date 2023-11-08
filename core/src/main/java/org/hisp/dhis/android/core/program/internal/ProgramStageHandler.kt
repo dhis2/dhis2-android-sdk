@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils
 import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
 import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -48,7 +46,6 @@ internal class ProgramStageHandler(
     private val programStageDataElementCleaner: ProgramStageDataElementOrphanCleaner,
     private val programStageSectionCleaner: ProgramStageSectionOrphanCleaner,
     private val programStageCleaner: ProgramStageSubCollectionCleaner,
-    private val attributeHandler: AttributeHandler,
     private val programStageAttributeValueLinkHandler: ProgramStageAttributeValueLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramStage>(programStageStore) {
 
@@ -77,11 +74,10 @@ internal class ProgramStageHandler(
 
         if (o.attributeValues() != null) {
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
-            attributeHandler.handleMany(attributes)
             programStageAttributeValueLinkHandler.handleMany(
                 o.uid(),
                 attributes,
-            ) { attribute: Attribute ->
+            ) { attribute: ObjectWithUid ->
                 ProgramStageAttributeValueLink.builder()
                     .programStage(o.uid())
                     .attribute(attribute.uid())

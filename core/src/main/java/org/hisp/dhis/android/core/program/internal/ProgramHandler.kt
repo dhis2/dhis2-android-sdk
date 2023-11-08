@@ -29,11 +29,10 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
 import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
@@ -48,7 +47,6 @@ internal class ProgramHandler(
     private val orphanCleaner: ProgramOrphanCleaner,
     private val collectionCleaner: ProgramCollectionCleaner,
     private val linkCleaner: ProgramOrganisationUnitLinkCleaner,
-    private val attributeHandler: AttributeHandler,
     private val programAttributeLinkHandler: ProgramAttributeValueLinkHandler,
 ) : IdentifiableHandlerImpl<Program>(programStore) {
 
@@ -65,11 +63,10 @@ internal class ProgramHandler(
         }
         if (o.attributeValues() != null) {
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
-            attributeHandler.handleMany(attributes)
             programAttributeLinkHandler.handleMany(
                 o.uid(),
                 attributes,
-            ) { attribute: Attribute ->
+            ) { attribute: ObjectWithUid ->
                 ProgramAttributeValueLink.builder()
                     .program(o.uid())
                     .attribute(attribute.uid())

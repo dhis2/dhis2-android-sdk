@@ -167,7 +167,7 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     }
 
     override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
-        return objectRepository(
+        return byTrackedEntities().eq(uid).objectRepository(
             object : Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?> {
                 override fun transform(o: List<TrackedEntitySearchItem>): TrackedEntitySearchItem? {
                     return o.find { uid == it.uid() }

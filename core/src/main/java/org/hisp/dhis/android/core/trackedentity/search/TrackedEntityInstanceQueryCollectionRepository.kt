@@ -199,7 +199,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     }
 
     override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntityInstance> {
-        return objectRepository(
+        return byTrackedEntities().eq(uid).objectRepository(
             object : Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?> {
                 override fun transform(o: List<TrackedEntityInstance>): TrackedEntityInstance? {
                     return o.find { uid == it.uid() }

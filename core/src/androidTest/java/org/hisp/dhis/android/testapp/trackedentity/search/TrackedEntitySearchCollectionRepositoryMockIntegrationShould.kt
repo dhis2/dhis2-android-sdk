@@ -81,6 +81,16 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
     }
 
     @Test
+    fun should_return_header_in_object_repository() {
+        val trackedEntity = d2.trackedEntityModule().trackedEntitySearch()
+            .byProgram().eq("IpHINAT79UW")
+            .uid("nWrB0TfWlvh")
+            .blockingGet()
+
+        assertThat(trackedEntity?.header).isEqualTo("4081507, befryEfXge5")
+    }
+
+    @Test
     fun should_return_ordered_attributes() {
         val trackedEntity = d2.trackedEntityModule().trackedEntitySearch()
             .uid("nWrB0TfWlvh")

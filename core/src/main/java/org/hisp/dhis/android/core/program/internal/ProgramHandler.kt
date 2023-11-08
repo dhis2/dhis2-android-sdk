@@ -63,7 +63,6 @@ internal class ProgramHandler(
         }
         if (o.attributeValues() != null) {
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
-//            attributeHandler.handleMany(attributes)
             programAttributeLinkHandler.handleMany(
                 o.uid(),
                 attributes,

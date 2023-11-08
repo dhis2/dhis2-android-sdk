@@ -85,7 +85,7 @@ public class Dhis2MockServer {
     private static final String VALIDATION_RULE_UIDS_JSON = "validation/validation_rule_uids.json";
     private static final String VALIDATION_RULES_JSON = "validation/validation_rules.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";
-        private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
+    private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
     private static final String ATTRIBUTES_JSON = "attribute/attributes.json";
     private static final String INDICATORS_JSON = "indicators/indicators.json";
     private static final String INDICATOR_TYPES_JSON = "indicators/indicator_types.json";

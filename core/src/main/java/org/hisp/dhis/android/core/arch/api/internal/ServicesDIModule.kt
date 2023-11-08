@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
+import org.hisp.dhis.android.core.attribute.internal.AttributeService
 import org.hisp.dhis.android.core.category.internal.CategoryComboService
 import org.hisp.dhis.android.core.category.internal.CategoryOptionService
 import org.hisp.dhis.android.core.category.internal.CategoryService
@@ -71,6 +72,7 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(IndicatorService::class.java) }
     single { get<Retrofit>().create(IndicatorTypeService::class.java) }
     single { get<Retrofit>().create(LegendSetService::class.java) }
+    single { get<Retrofit>().create(AttributeService::class.java) }
     single { get<Retrofit>().create(OptionGroupService::class.java) }
     single { get<Retrofit>().create(OptionService::class.java) }
     single { get<Retrofit>().create(OptionSetService::class.java) }

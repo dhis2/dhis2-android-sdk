@@ -36,12 +36,9 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHandler
 import org.junit.Before
@@ -54,7 +51,6 @@ import org.mockito.Mockito
 class DataElementHandlerShould {
     private val dataElementStore: DataElementStore = mock()
     private val dataElementAttributeValueLinkHandler: DataElementAttributeValueLinkHandler = mock()
-    private val attributeHandler: AttributeHandler = mock()
     private val dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler = mock()
 
     private val dataElement: DataElement = mock()
@@ -66,13 +62,12 @@ class DataElementHandlerShould {
     private lateinit var legendSets: List<ObjectWithUid>
 
     private val attributeValues: MutableList<AttributeValue> = ArrayList()
-    private var attribute: Attribute? = null
+    private val attributeValue = ObjectWithUid.create("Att_Uid")
 
     @Before
     fun setUp() {
         dataElementHandler = DataElementHandler(
             dataElementStore,
-            attributeHandler,
             dataElementAttributeValueLinkHandler,
             dataElementLegendSetLinkHandler,
         )
@@ -80,13 +75,20 @@ class DataElementHandlerShould {
         legendSets = listOf(legendSet)
 
         whenever(dataElement.uid()).doReturn("test_data_element_uid")
-        attribute = Attribute.builder()
+
+    /*    attribute = Attribute.builder()
             .dataElementAttribute(true)
             .uid("Att_Uid")
             .name("att")
             .code("att")
             .valueType(ValueType.TEXT)
             .build()
+        val attValue = AttributeValue.builder()
+            .value("5")
+            .attribute(attribute)
+            .build()*/
+
+        val attribute = ObjectWithUid.create("Att_Uid")
         val attValue = AttributeValue.builder()
             .value("5")
             .attribute(attribute)
@@ -130,10 +132,9 @@ class DataElementHandlerShould {
     @Test
     fun call_attribute_handlers() {
         dataElementHandler.handleMany(dataElements)
-        verify(attributeHandler).handleMany(eq(listOf(attribute) as Collection<Attribute>))
         Mockito.verify(dataElementAttributeValueLinkHandler).handleMany(
             eq(dataElement.uid()),
-            eq(listOf(attribute) as Collection<Attribute>),
+            eq(listOf(attributeValue) as Collection<ObjectWithUid>),
             any(),
         )
     }

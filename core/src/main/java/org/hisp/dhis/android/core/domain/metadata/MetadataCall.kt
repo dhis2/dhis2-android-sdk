@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -93,6 +95,7 @@ internal class MetadataCall(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
+    private val attributeModuleDownloader: AttributeModuleDownloader,
     private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader,
 ) {
 
@@ -164,6 +167,9 @@ internal class MetadataCall(
 
         legendSetModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(LegendSet::class.java, false))
+
+        attributeModuleDownloader.downloadMetadata()
+        emit(progressManager.increaseProgress(Attribute::class.java, false))
 
         expressionDimensionItemModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(ExpressionDimensionItem::class.java, true))

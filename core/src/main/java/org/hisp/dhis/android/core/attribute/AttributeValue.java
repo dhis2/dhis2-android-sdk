@@ -33,6 +33,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_AttributeValue.Builder.class)
 public abstract class AttributeValue {
@@ -41,7 +43,7 @@ public abstract class AttributeValue {
     public abstract String value();
 
     @JsonProperty()
-    public abstract Attribute attribute();
+    public abstract ObjectWithUid attribute();
 
     public static Builder builder() {
         return new AutoValue_AttributeValue.Builder();
@@ -57,7 +59,7 @@ public abstract class AttributeValue {
         public abstract Builder value(String value);
 
         @JsonProperty()
-        public abstract Builder attribute(Attribute attribute);
+        public abstract Builder attribute(ObjectWithUid attribute);
 
         public abstract AttributeValue build();
     }

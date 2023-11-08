@@ -103,9 +103,6 @@ public class ProgramStageHandlerShould {
     private ProgramStage.Builder programStageBuilder;
 
     @Mock
-    private AttributeHandler attributeHandler;
-
-    @Mock
     private ProgramStageAttributeValueLinkHandler programStageAttributeValueLinkHandler;
 
     // object to test
@@ -122,7 +119,6 @@ public class ProgramStageHandlerShould {
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
                 programStageCleaner,
-                attributeHandler,
                 programStageAttributeValueLinkHandler);
 
         programStageSections = new ArrayList<>();
@@ -156,12 +152,6 @@ public class ProgramStageHandlerShould {
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage);
         verify(programStageSectionHandler).handleMany(eq(programStageSections), any());
-    }
-
-    @Test
-    public void call_attribute_handler() throws Exception {
-        programStageHandler.handle(programStage);
-        verify(attributeHandler).handleMany(anyCollection());
     }
 
     @Test

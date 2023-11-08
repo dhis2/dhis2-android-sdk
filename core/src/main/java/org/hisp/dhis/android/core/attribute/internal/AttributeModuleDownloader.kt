@@ -26,38 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.koin.core.annotation.Singleton
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class AttributeValueUtils {
-
-    private AttributeValueUtils() {
-    }
-
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
-
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
-        }
-
-        return attributes;
-    }
-
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
+@Singleton
+internal class AttributeModuleDownloader internal constructor(
+    private val attributesUidsSeeker: AttributeUidsSeeker,
+    private val attributeCall: AttributeCall,
+) : UntypedModuleDownloaderCoroutines {
+    override suspend fun downloadMetadata() {
+        val uids = attributesUidsSeeker.seekUids()
+        attributeCall.download(uids)
     }
 }

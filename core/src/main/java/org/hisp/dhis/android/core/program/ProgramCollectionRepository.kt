@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.internal.ProgramAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramFields
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
@@ -208,7 +209,7 @@ class ProgramCollectionRepository internal constructor(
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<Program> = mapOf(
             ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to ::ProgramTrackedEntityTypeChildrenAppender,
-//            ProgramFields.ATTRIBUTE_VALUES to ::ProgramAttributeChildrenAppender,
+            ProgramFields.ATTRIBUTE_VALUES to ProgramAttributeChildrenAppender::create,
         )
     }
 }

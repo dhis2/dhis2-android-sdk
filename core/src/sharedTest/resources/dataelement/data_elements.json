@@ -70,6 +70,20 @@
           ]
         }
       ],
+      "attributeValues": [
+        {
+          "value": "Direct",
+          "attribute": {
+            "id": "qXS2NDUEAOS"
+          }
+        },
+        {
+          "value": "Direct 2",
+          "attribute": {
+            "id": "b0vcadVrn08"
+          }
+        }
+      ],
       "legendSet": {
         "id": "TiOkbpGEud4"
       }

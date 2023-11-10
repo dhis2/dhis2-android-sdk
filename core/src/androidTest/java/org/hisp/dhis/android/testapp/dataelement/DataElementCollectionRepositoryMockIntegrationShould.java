@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.testapp.dataelement;
 
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -138,10 +142,30 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
     }
 
     @Test
-    public void filter_by_field_attributes() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .withAttributes()
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(1);
+    public void include_legends_as_children() {
+        DataElement dataElementWithLegendSets = d2.dataElementModule().dataElements()
+                .withLegendSets()
+                .blockingGet()
+                .get(4);
+
+        List<ObjectWithUid> legendSets = dataElementWithLegendSets.legendSets();
+        assertThat(legendSets.size()).isEqualTo(1);
+        assertThat(legendSets.get(0).uid()).isEqualTo("TiOkbpGEud4");
     }
+
+    @Test
+    public void include_attributeValues_as_children() {
+        DataElement dataElementWithAttributeValues = d2.dataElementModule().dataElements()
+                .withAttributes()
+                .blockingGet().get(4);
+
+        List<AttributeValue> attributeValues = dataElementWithAttributeValues.attributeValues();
+        assertThat(attributeValues.size()).isEqualTo(2);
+        assertThat(attributeValues.get(0).attribute().uid()).isEqualTo("b0vcadVrn08");
+        assertThat(attributeValues.get(0).value()).isEqualTo("Direct 2");
+        assertThat(attributeValues.get(1).attribute().uid()).isEqualTo("qXS2NDUEAOS");
+        assertThat(attributeValues.get(1).value()).isEqualTo("Direct");
+
+    }
+
 }

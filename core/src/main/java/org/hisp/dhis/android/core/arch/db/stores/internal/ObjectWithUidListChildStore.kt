@@ -25,34 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-internal class DataElementLegendSetChildrenAppender private constructor(
-    private val linkChildStore: ObjectWithUidChildStore<DataElement>,
-) : ChildrenAppender<DataElement>() {
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-    override fun appendChildren(m: DataElement): DataElement {
-        return m.toBuilder()
-            .legendSets(linkChildStore.getChildren(m))
-            .build()
-    }
-
-    companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
-            return DataElementLegendSetChildrenAppender(
-                objectWithUidChildStore(
-                    databaseAdapter,
-                    DataElementLegendSetLinkTableInfo.TABLE_INFO,
-                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION,
-                ),
-            )
-        }
-    }
+internal interface ObjectWithUidListChildStore<P : ObjectWithUidInterface, C> {
+    fun getChildren(p: P): List<AttributeValue>
 }

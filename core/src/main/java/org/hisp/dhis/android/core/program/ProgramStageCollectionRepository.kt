@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.internal.ProgramStageFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.koin.core.annotation.Singleton
 
@@ -177,7 +178,13 @@ class ProgramStageCollectionRepository internal constructor(
         return cf.withOrderBy(ProgramStageTableInfo.Columns.SORT_ORDER, direction)
     }
 
+    fun withAttributes(): ProgramStageCollectionRepository {
+        return cf.withChild(ProgramStageFields.ATTRIBUTE_VALUES)
+    }
+
     internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<ProgramStage> = emptyMap()
+        val childrenAppenders: ChildrenAppenderGetter<ProgramStage> = mapOf(
+//            ProgramStageFields.ATTRIBUTE_VALUES to ProgramStageAttributeChildrenAppender(),
+        )
     }
 }

@@ -25,40 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.repository
 
-package org.hisp.dhis.android.core.sms.domain.repository;
+import io.reactivex.Single
+import org.hisp.dhis.smscompression.models.SMSMetadata
 
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-
-import io.reactivex.Single;
-
-public interface WebApiRepository {
-
+interface WebApiRepository {
     /**
      * @return Metadata object that contains ids lists needed to properly compress sms data
      */
-    Single<SMSMetadata> getMetadataIds(GetMetadataIdsConfig config);
-
+    suspend fun getMetadataIds(config: GetMetadataIdsConfig): SMSMetadata
     class GetMetadataIdsConfig {
-        public boolean dataElements = true;
-        public boolean categoryOptionCombos = true;
-        public boolean organisationUnits = true;
-        public boolean users = true;
-        public boolean trackedEntityTypes = true;
-        public boolean trackedEntityAttributes = true;
-        public boolean programs = true;
+        var dataElements = true
+        var categoryOptionCombos = true
+        var organisationUnits = true
+        var users = true
+        var trackedEntityTypes = true
+        var trackedEntityAttributes = true
+        var programs = true
     }
 
-    class HttpException extends RuntimeException {
-        private final int code;
-
-        public HttpException(int code) {
-            this.code = code;
-        }
-
-        @Override
-        public String toString() {
-            return "HTTP response: " + " " + code;
+    class HttpException(private val code: Int) : RuntimeException() {
+        override fun toString(): String {
+            return "HTTP response:  $code"
         }
     }
 }

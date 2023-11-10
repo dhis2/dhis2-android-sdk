@@ -28,17 +28,22 @@
 
 package org.hisp.dhis.android.core.sms.mockrepos;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import io.reactivex.Single;
+import kotlin.coroutines.Continuation;
 
 public class MockWebApiRepository implements WebApiRepository {
-    private SMSMetadata metadata = new MockMetadata();
+    private final SMSMetadata metadata = new MockMetadata();
 
+    @Nullable
     @Override
-    public Single<SMSMetadata> getMetadataIds(GetMetadataIdsConfig config) {
-        return Single.fromCallable(() -> metadata);
+    public Object getMetadataIds(@NonNull GetMetadataIdsConfig config, @NonNull Continuation<? super SMSMetadata> $completion) {
+        return metadata;
     }
 }

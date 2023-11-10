@@ -79,17 +79,4 @@ internal object StoreFactory {
             SQLStatementBuilderImpl(linkTableInfo),
         )
     }
-
-    @JvmStatic
-    fun <P : ObjectWithUidInterface, C> objectWithUidListChildStore(
-        databaseAdapter: DatabaseAdapter,
-        linkTableInfo: TableInfo,
-        childProjection: LinkTableChildProjection,
-    ): ObjectWithUidListChildStore<P, C> {
-        return ObjectWithUidListChildStoreImpl(
-            childProjection,
-            databaseAdapter,
-            SQLStatementBuilderImpl(linkTableInfo),
-        )
-    }
 }

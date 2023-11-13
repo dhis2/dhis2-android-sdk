@@ -49,7 +49,7 @@ public final class DataElementFields {
     private final static String STYLE = "style";
     private final static String ACCESS = "access";
     public static final String LEGEND_SETS = "legendSets";
-    private static final String ATTRIBUTE_VALUES = "attributeValues";
+    public static final String ATTRIBUTE_VALUES = "attributeValues";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();
 

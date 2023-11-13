@@ -25,33 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataelement.internal
 
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
 
-internal class DataElementLegendSetChildrenAppender private constructor(
-    private val linkChildStore: ObjectWithUidChildStore<DataElement>,
+internal class DataElementAttributeChildrenAppender private constructor(
+    private val linkChildStore: SingleParentChildStore<DataElement, AttributeValue>,
 ) : ChildrenAppender<DataElement>() {
 
     override fun appendChildren(m: DataElement): DataElement {
-        return m.toBuilder()
-            .legendSets(linkChildStore.getChildren(m))
-            .build()
+        val builder = m.toBuilder()
+        builder.attributeValues(linkChildStore.getChildren(m))
+        return builder.build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
-            return DataElementLegendSetChildrenAppender(
-                objectWithUidChildStore(
+            return DataElementAttributeChildrenAppender(
+                StoreFactory.singleParentChildStore(
                     databaseAdapter,
-                    DataElementLegendSetLinkTableInfo.TABLE_INFO,
-                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION,
-                ),
+                    DataElementAttributeValueLinkTableInfo.CHILD_PROJECTION,
+                ) { cursor: Cursor ->
+                    val linkTable = DataElementAttributeValueLink.create(cursor)
+
+                    AttributeValue.builder()
+                        .attribute(ObjectWithUid.create(linkTable.attribute()))
+                        .value(linkTable.value())
+                        .build()
+                },
             )
         }
     }

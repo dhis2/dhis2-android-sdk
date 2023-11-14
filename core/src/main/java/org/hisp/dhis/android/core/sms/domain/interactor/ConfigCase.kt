@@ -38,9 +38,10 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbReposito
 /**
  * Used to set initial data that is common for all sms sending tasks
  */
+@Suppress("TooManyFunctions")
 class ConfigCase(
     private val webApiRepository: WebApiRepository,
-    private val localDbRepository: LocalDbRepository
+    private val localDbRepository: LocalDbRepository,
 ) {
 
     fun smsModuleConfig(): Single<SmsConfig> {
@@ -49,14 +50,19 @@ class ConfigCase(
             localDbRepository.gatewayNumber,
             localDbRepository.waitingForResultEnabled,
             localDbRepository.confirmationSenderNumber,
-            localDbRepository.waitingResultTimeout
-        ) { moduleEnabled: Boolean, gateway: String?, waitingForResult: Boolean, resultSender: String?, resultWaitingTimeout: Int ->
+            localDbRepository.waitingResultTimeout,
+        ) { moduleEnabled: Boolean,
+            gateway: String?,
+            waitingForResult: Boolean,
+            resultSender: String?,
+            resultWaitingTimeout: Int,
+            ->
             SmsConfig(
                 moduleEnabled,
                 gateway,
                 waitingForResult,
                 resultSender,
-                resultWaitingTimeout
+                resultWaitingTimeout,
             )
         }
     }
@@ -96,7 +102,9 @@ class ConfigCase(
     fun setGatewayNumber(gatewayNumber: String?): Completable {
         return if (gatewayNumber.isNullOrEmpty()) {
             Completable.error(IllegalArgumentException("Gateway number can't be empty"))
-        } else localDbRepository.setGatewayNumber(gatewayNumber)
+        } else {
+            localDbRepository.setGatewayNumber(gatewayNumber)
+        }
     }
 
     /**
@@ -124,7 +132,9 @@ class ConfigCase(
     fun setMetadataDownloadConfig(metadataIdsConfig: GetMetadataIdsConfig?): Completable {
         return if (metadataIdsConfig == null) {
             Completable.error(IllegalArgumentException("Received null config"))
-        } else localDbRepository.setMetadataDownloadConfig(metadataIdsConfig)
+        } else {
+            localDbRepository.setMetadataDownloadConfig(metadataIdsConfig)
+        }
     }
 
     /**
@@ -139,38 +149,9 @@ class ConfigCase(
      * Method to download metadata ids. This is required before using the SMS module.
      */
     fun refreshMetadataIds(): Completable {
-
-        // TODO remove this. This is for debugging purposes
-
-        /*     val refreshTask: Completable = metadataDownloadConfig().onErrorReturn { throwable: Throwable? ->
-                 Log.d(TAG, "Can't read saved SMS metadata download config. Using default.")
-                 defaultMetadataDownloadConfig()
-             }.flatMap { config: GetMetadataIdsConfig? ->
-                 webApiRepository.getMetadataIds(
-                     config
-                 )
-             }.flatMapCompletable { metadata: SMSMetadata? ->
-                 localDbRepository.setMetadataIds(
-                     metadata
-                 )
-             }
-             return localDbRepository.isModuleEnabled.flatMapCompletable { enabled: Boolean ->
-                 if (enabled) {
-                     return@flatMapCompletable refreshTask
-                 } else {
-                     Log.d(
-                         TAG,
-                         "Not refreshing SMS metadata, because sms module is disabled"
-                     )
-                     return@flatMapCompletable Completable.complete()
-                 }
-             }*/
-
         return rxCompletable {
-
             refreshMetadataIdsCoroutines()
         }
-
     }
 
     private suspend fun refreshMetadataIdsCoroutines() {
@@ -179,7 +160,6 @@ class ConfigCase(
         if (enabled) {
             val config = try {
                 metadataDownloadConfig().blockingGet()
-
             } catch (ignored: Exception) {
                 Log.d(TAG, "Can't read saved SMS metadata download config. Using default.")
                 defaultMetadataDownloadConfig()
@@ -187,11 +167,9 @@ class ConfigCase(
 
             val metadata = webApiRepository.getMetadataIds(config)
             localDbRepository.setMetadataIds(metadata).blockingAwait()
-
         } else {
             Log.d(TAG, "Not refreshing SMS metadata, because sms module is disabled")
         }
-
     }
 
     /**
@@ -201,224 +179,26 @@ class ConfigCase(
     internal suspend fun refreshMetadataIdsCallable() {
         try {
             Log.d(TAG, "Started SMS metadata sync.")
-            refreshMetadataIds().blockingAwait()
+            refreshMetadataIdsCoroutines()
             Log.d(TAG, "Completed SMS metadata sync.")
         } catch (ignored: Exception) {
             Log.d(TAG, "Error refreshing SMS metadata ids.")
         }
-
     }
 
     private fun defaultMetadataDownloadConfig(): GetMetadataIdsConfig {
         return GetMetadataIdsConfig()
     }
 
-
     class SmsConfig internal constructor(
         val isModuleEnabled: Boolean,
         val gateway: String?,
         val isWaitingForResult: Boolean,
         val resultSender: String?,
-        val resultWaitingTimeout: Int
+        val resultWaitingTimeout: Int,
     )
 
     companion object {
         private val TAG = ConfigCase::class.java.simpleName
     }
 }
-
-
-/*
-class ConfigCase(private val webApiRepository: WebApiRepository, private val localDbRepository: LocalDbRepository) {
-
-    val smsModuleConfig: Single<SmsConfig>
-        get() = Single.zip(
-            localDbRepository.isModuleEnabled,
-            localDbRepository.gatewayNumber,
-            localDbRepository.waitingForResultEnabled,
-            localDbRepository.confirmationSenderNumber,
-            localDbRepository.waitingResultTimeout,
-            { moduleEnabled: Boolean, gateway: String?, waitingForResult: Boolean, resultSender: String?, resultWaitingTimeout: Int ->
-                SmsConfig(
-                    moduleEnabled,
-                    gateway,
-                    waitingForResult,
-                    resultSender,
-                    resultWaitingTimeout
-                )
-            })
-
-    */
-/**
- * Set if the SDK has to wait for the result or not.
- * @param enabled
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun setWaitingForResultEnabled(enabled: Boolean): Completable {
-        return localDbRepository.setWaitingForResultEnabled(enabled)
-    }
-
-    */
-/**
- * Set the number to receive messages from. Messages from other senders will not be read.
- * @param number The sender number.
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun setConfirmationSenderNumber(number: String?): Completable {
-        return localDbRepository.setConfirmationSenderNumber(number)
-    }
-
-    */
-/**
- * Set the time in seconds to wait for the result.
- * @param timeoutSeconds Time in seconds.
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun setWaitingResultTimeout(timeoutSeconds: Int): Completable {
-        return localDbRepository.setWaitingResultTimeout(timeoutSeconds)
-    }
-
-    */
-/**
- * Set the gateway number to send the SMS. This is a required parameter before sending SMS.
- * @param gatewayNumber The gateway numberf
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun setGatewayNumber(gatewayNumber: String?): Completable {
-        if (gatewayNumber == null || gatewayNumber.isEmpty()) {
-            return Completable.error(java.lang.IllegalArgumentException("Gateway number can't be empty"))
-        }
-        return localDbRepository.setGatewayNumber(gatewayNumber)
-    }
-
-    */
-/**
- * Delete the gateway number to send the SMS.
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun deleteGatewayNumber(): Completable {
-        return localDbRepository.deleteGatewayNumber()
-    }
-
-    */
-/**
- * Set if SMS Module is enabled or not. It is required to enable it before using it.
- * @param enabled If the module is enabled or not
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun setModuleEnabled(enabled: Boolean): Completable {
-        return localDbRepository.setModuleEnabled(enabled)
-    }
-
-    */
-/**
- * Set a new MetadataDownload configuration.
- * @param metadataIdsConfig Configuration with the metadata ids.
- * @return `Completable` that completes when the configuration is changed.
- *//*
-
-    fun setMetadataDownloadConfig(metadataIdsConfig: GetMetadataIdsConfig?): Completable {
-        if (metadataIdsConfig == null) {
-            return Completable.error(java.lang.IllegalArgumentException("Received null config"))
-        }
-        return localDbRepository.setMetadataDownloadConfig(metadataIdsConfig)
-    }
-
-    val metadataDownloadConfig: Single<GetMetadataIdsConfig>
-        */
-/**
- * Get the metadata download configuration.
- * @return `Single with the` metadata download configuration.
- *//*
-
-        get() {
-            return localDbRepository.metadataDownloadConfig
-        }
-
-    */
-/**
- * Method to download metadata ids. This is required before using the SMS module.
- * @return `Completable` that completes when the metadata ids are downloaded.
- *//*
-
-    fun refreshMetadataIds(): Completable {
-        val refreshTask: Completable = metadataDownloadConfig.onErrorReturn({ throwable: Throwable? ->
-            Log.d(
-                TAG,
-                "Can't read saved SMS metadata download config. Using default."
-            )
-            defaultMetadataDownloadConfig
-        }).flatMap({ config: GetMetadataIdsConfig? ->
-            webApiRepository.getMetadataIds(
-                config
-            )
-        }).flatMapCompletable(
-            { metadata: SMSMetadata? ->
-                localDbRepository.setMetadataIds(
-                    metadata
-                )
-            })
-        return localDbRepository.isModuleEnabled.flatMapCompletable({ enabled: Boolean ->
-            if (enabled) {
-                return@flatMapCompletable refreshTask
-            } else {
-                Log.d(
-                    TAG,
-                    "Not refreshing SMS metadata, because sms module is disabled"
-                )
-                return@flatMapCompletable Completable.complete()
-            }
-        })
-    }
-
-    */
-/**
- * Callable that triggers the method [.refreshMetadataIds].
- * @return Callable object to refresh metadata ids.
- *//*
-
-    fun refreshMetadataIdsCallable(): Completable {
-        return refreshMetadataIds()
-            .doOnSubscribe({ d: Disposable? ->
-                Log.d(
-                    TAG,
-                    "Started SMS metadata sync."
-                )
-            })
-            .doOnComplete({
-                Log.d(
-                    TAG,
-                    "Completed SMS metadata sync."
-                )
-            })
-            .doOnError({ e: Throwable ->
-                Log.d(
-                    TAG,
-                    e.javaClass.getSimpleName() + " Error on SMS metadata sync."
-                )
-            })
-    }
-
-    private val defaultMetadataDownloadConfig: GetMetadataIdsConfig
-        private get() {
-            return GetMetadataIdsConfig()
-        }
-
-    class SmsConfig internal constructor(
-        val isModuleEnabled: Boolean,
-        val gateway: String?,
-        val isWaitingForResult: Boolean,
-        val resultSender: String?,
-        val resultWaitingTimeout: Int
-    )
-
-    companion object {
-        private val TAG: String = ConfigCase::class.java.simpleName
-    }
-}*/

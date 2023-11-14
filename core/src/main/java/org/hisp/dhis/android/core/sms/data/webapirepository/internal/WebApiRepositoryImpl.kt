@@ -57,7 +57,6 @@ internal class WebApiRepositoryImpl(
         metadata.trackedEntityAttributes = mapIds(metadataResponse.trackedEntityAttributes())
         metadata.programs = mapIds(metadataResponse.programs())
         return metadata
-
     }
 
     private fun mapIds(ids: List<MetadataId>?): List<SMSMetadata.ID>? {

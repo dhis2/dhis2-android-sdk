@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.sms.domain.repository
 
-import io.reactivex.Single
 import org.hisp.dhis.smscompression.models.SMSMetadata
 
 interface WebApiRepository {

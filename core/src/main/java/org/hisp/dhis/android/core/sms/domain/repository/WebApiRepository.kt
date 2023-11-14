@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.sms.domain.repository
 
 import org.hisp.dhis.smscompression.models.SMSMetadata
 
-interface WebApiRepository {
+fun interface WebApiRepository {
     /**
      * @return Metadata object that contains ids lists needed to properly compress sms data
      */

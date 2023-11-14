@@ -26,25 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-
-public class GeneralSettingsSamples {
-
-    public static GeneralSettings getGeneralSettings() {
-        return GeneralSettings.builder()
-                .id(1L)
-                .encryptDB(true)
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .reservedValues(100)
-                .smsGateway("+34678456123")
-                .smsResultSender("+34654321456")
-                .matomoID(123)
-                .matomoURL("https://www.matomo.org")
-                .allowScreenCapture(true)
-                .messageOfTheDay("Message of the day")
-                .build();
-    }
+enum class ExperimentalFeature(val jsonName: String) {
+    NewFormLayout("newFormLayout"),
 }

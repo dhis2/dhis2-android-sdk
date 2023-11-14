@@ -6,5 +6,8 @@
   "reservedValues": 40,
   "smsResultSender": "+9456498778",
   "allowScreenCapture": true,
-  "messageOfTheDay": "Message of the day"
+  "messageOfTheDay": "Message of the day",
+  "experimentalFeatures": [
+    "newFormLayout"
+  ]
 }

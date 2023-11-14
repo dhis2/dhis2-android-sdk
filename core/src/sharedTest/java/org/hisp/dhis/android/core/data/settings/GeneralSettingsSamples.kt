@@ -25,40 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.settings
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
+import org.hisp.dhis.android.core.settings.GeneralSettings
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
-
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 153
+object GeneralSettingsSamples {
+    fun getGeneralSettings(): GeneralSettings {
+        return GeneralSettings.builder()
+            .id(1L)
+            .encryptDB(true)
+            .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+            .reservedValues(100)
+            .smsGateway("+34678456123")
+            .smsResultSender("+34654321456")
+            .matomoID(123)
+            .matomoURL("https://www.matomo.org")
+            .allowScreenCapture(true)
+            .messageOfTheDay("Message of the day")
+            .experimentalFeatures(listOf("newFormLayout"))
+            .build()
     }
 }

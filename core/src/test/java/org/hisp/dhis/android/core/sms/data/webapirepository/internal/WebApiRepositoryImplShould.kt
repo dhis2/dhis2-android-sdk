@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 
 import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -37,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class WebApiRepositoryImplShould {
 
@@ -52,7 +55,7 @@ class WebApiRepositoryImplShould {
     }
 
     @Test
-    fun `Include users query if version lower than 2_35`() {
+    fun `Include users query if version lower than 2_35`() = runTest {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn false
 
         testWebRepository.metadataCall(defalutMetadataConfig)
@@ -68,7 +71,7 @@ class WebApiRepositoryImplShould {
     }
 
     @Test
-    fun `Exclude users if version greater or equal to 2_35`() {
+    fun `Exclude users if version greater or equal to 2_35`() = runTest {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn true
 
         testWebRepository.metadataCall(defalutMetadataConfig)

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings
 
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -65,5 +66,21 @@ class GeneralSettingObjectRepository internal constructor(
                 .metadataSync(syncSetting.metadataSync())
                 .build()
         }
+    }
+
+    fun blockingHasExperimentalFeature(featureName: String): Boolean {
+        return blockingGet()?.experimentalFeatures()?.contains(featureName) ?: false
+    }
+
+    fun hasExperimentalFeature(featureName: String): Single<Boolean> {
+        return Single.fromCallable { blockingHasExperimentalFeature(featureName) }
+    }
+
+    fun blockingHasExperimentalFeature(feature: ExperimentalFeature): Boolean {
+        return blockingGet()?.experimentalFeatures()?.contains(feature.jsonName) ?: false
+    }
+
+    fun hasExperimentalFeature(feature: ExperimentalFeature): Single<Boolean> {
+        return Single.fromCallable { blockingHasExperimentalFeature(feature) }
     }
 }

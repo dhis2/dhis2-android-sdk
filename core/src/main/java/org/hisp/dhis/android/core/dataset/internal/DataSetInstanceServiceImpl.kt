@@ -94,9 +94,9 @@ internal class DataSetInstanceServiceImpl(
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ATTRIBUTE_OPTION_COMBO_NO_ASSIGN_TO_ORGUNIT)
             !blockingIsPeriodInOrgUnitRange(period, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ORGUNIT_RANGE)
-            dataSet?.let { !blockingIsExpired(dataSet, period) } ?: false ->
+            dataSet?.let { blockingIsExpired(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.EXPIRED)
-            dataSet?.let { !blockingIsClosed(dataSet, period) } ?: false ->
+            dataSet?.let { blockingIsClosed(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)
             else -> DataSetEditableStatus.Editable
         }

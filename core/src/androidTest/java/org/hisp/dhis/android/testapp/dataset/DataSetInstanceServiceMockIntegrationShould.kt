@@ -28,18 +28,20 @@
 
 package org.hisp.dhis.android.testapp.dataset
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.dataset.DataSetEditableStatus
 import org.hisp.dhis.android.core.dataset.DataSetNonEditableReason
+import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
+import java.util.Date
 
 class DataSetInstanceServiceMockIntegrationShould :
     BaseMockIntegrationTestFullDispatcher() {
 
     @Test
     fun do_not_allow_edit_expired_periods() {
-        val dataSetInstances = d2.dataSetModule().dataSetInstanceService()
+        val status = d2.dataSetModule().dataSetInstanceService()
             .blockingGetEditableStatus(
                 "lyLU2wR22tC",
                 "201206",
@@ -47,22 +49,27 @@ class DataSetInstanceServiceMockIntegrationShould :
                 "bRowv6yZOF2",
             )
 
-        Truth.assertThat(dataSetInstances).isInstanceOf(
+        assertThat(status).isInstanceOf(
             DataSetEditableStatus.NonEditable(DataSetNonEditableReason.EXPIRED)::class.java,
         )
     }
 
     @Test
     fun do_not_allow_edit_closed_periods() {
-        val dataSetInstances = d2.dataSetModule().dataSetInstanceService()
+        val fivePeriodsInFuture = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
+            PeriodType.Monthly,
+            Date(),
+            5
+        )
+        val status = d2.dataSetModule().dataSetInstanceService()
             .blockingGetEditableStatus(
                 "lyLU2wR22tC",
-                "202311",
+                fivePeriodsInFuture.periodId()!!,
                 "DiszpKrYNg8",
                 "bRowv6yZOF2",
             )
 
-        Truth.assertThat(dataSetInstances).isInstanceOf(
+        assertThat(status).isInstanceOf(
             DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)::class.java,
         )
     }

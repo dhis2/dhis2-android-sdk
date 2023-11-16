@@ -35,10 +35,10 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceServiceImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.Period
@@ -63,10 +63,10 @@ class DataSetInstanceServiceShould {
 
     private val dataSet: DataSet = mock()
 
-    private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
-    private val thirdJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
-    private val firstFebruary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-02-01T00:00:00.000")
-    private val thirdFebruary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-02-03T00:00:00.000")
+    private val firstJanuary = DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+    private val thirdJanuary = DateUtils.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
+    private val firstFebruary = DateUtils.DATE_FORMAT.parse("2020-02-01T00:00:00.000")
+    private val thirdFebruary = DateUtils.DATE_FORMAT.parse("2020-02-03T00:00:00.000")
 
     private val firstPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val secondPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
@@ -156,7 +156,6 @@ class DataSetInstanceServiceShould {
     @Test
     fun `Should return false if dataSet is not closed`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Monthly
-        whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn secondPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
         assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isFalse()
@@ -165,16 +164,16 @@ class DataSetInstanceServiceShould {
     @Test
     fun `Should return true if dataSet is closed`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Monthly
-        whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn firstPeriod
-        whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
+        whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isTrue()
+        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, secondPeriod)).isTrue()
     }
 
     @Test
     fun `Should return true if dataSet is expired`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(dataSet.openFuturePeriods()) doReturn 20
+        whenever(dataSet.expiryDays()) doReturn 5
         whenever(periodHelper.getPeriodForPeriodId(any()).blockingGet()) doReturn firstPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
@@ -191,6 +190,15 @@ class DataSetInstanceServiceShould {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
 
+        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+    }
+
+    @Test
+    fun `Should return false if expiry days is 0 or negative`() {
+        whenever(dataSet.expiryDays()) doReturn 0
+        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+
+        whenever(dataSet.expiryDays()) doReturn -15
         assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
     }
 }

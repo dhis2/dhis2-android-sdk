@@ -59,7 +59,7 @@ class DataSetInstanceServiceMockIntegrationShould :
         val fivePeriodsInFuture = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
             PeriodType.Monthly,
             Date(),
-            5
+            5,
         )
         val status = d2.dataSetModule().dataSetInstanceService()
             .blockingGetEditableStatus(

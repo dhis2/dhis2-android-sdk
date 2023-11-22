@@ -28,19 +28,18 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import org.hisp.dhis.android.core.category.internal.CategoryComboStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
-import org.hisp.dhis.android.core.option.internal.OptionSetStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.junit.After
 import org.junit.Before
@@ -48,24 +47,23 @@ import org.junit.Before
 internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
     // Data stores
-    protected val eventStore = EventStoreImpl.create(databaseAdapter)
-    protected val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
-    protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
-    protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter)
-    protected val fileResourceStore = FileResourceStoreImpl.create(d2.databaseAdapter())
-    private val optionSetStore = OptionSetStore.create(d2.databaseAdapter())
+    protected val eventStore = EventStoreImpl(databaseAdapter)
+    protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
+    protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+    protected val fileResourceStore = FileResourceStoreImpl(d2.databaseAdapter())
+    private val optionSetStore = OptionSetStoreImpl(d2.databaseAdapter())
 
     // Metadata stores
-    protected val categoryComboStore = CategoryComboStore.create(databaseAdapter)
+    protected val categoryComboStore = CategoryComboStoreImpl(databaseAdapter)
 
-    protected val dataElementStore = DataElementStore.create(databaseAdapter)
-    protected val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
+    protected val dataElementStore = DataElementStoreImpl(databaseAdapter)
+    protected val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
 
-    protected val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
-    protected val trackedEntityAttributeStore = TrackedEntityAttributeStore.create(databaseAdapter)
-    protected val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
-    protected val programStore = ProgramStore.create(databaseAdapter)
-    protected val programStageStore = ProgramStageStore.create(databaseAdapter)
+    protected val trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
+    protected val trackedEntityAttributeStore = TrackedEntityAttributeStoreImpl(databaseAdapter)
+    protected val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+    protected val programStore = ProgramStoreImpl(databaseAdapter)
+    protected val programStageStore = ProgramStageStoreImpl(databaseAdapter)
 
     @Before
     fun setUp() {

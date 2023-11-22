@@ -31,11 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
@@ -43,7 +40,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val dataValues = d2.dataValueModule().dataValues()
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -53,7 +50,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("g9eOBujte1U")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -73,7 +70,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -83,7 +80,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("Gmbgme7z9BF")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -152,7 +149,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byFollowUp().isFalse
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -161,7 +158,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -170,7 +167,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byDeleted().isFalse
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -186,11 +183,14 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     fun return_data_value_object_repository() {
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
-                "2018", "DiszpKrYNg8", "g9eOBujte1U",
-                "Gmbgme7z9BF", "bRowv6yZOF2"
+                "2018",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2",
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()
-        assertThat(objectRepository.blockingGet().value()).isEqualTo("10")
+        assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("10")
     }
 }

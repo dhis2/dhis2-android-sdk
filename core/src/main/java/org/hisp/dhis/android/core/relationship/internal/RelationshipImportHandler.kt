@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -36,18 +34,19 @@ import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getRe
 import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
+import org.koin.core.annotation.Singleton
 
-@Reusable class RelationshipImportHandler @Inject internal constructor(
+@Singleton
+internal class RelationshipImportHandler internal constructor(
     private val relationshipStore: RelationshipStore,
     private val dataStatePropagator: DataStatePropagator,
-    private val relationshipRepository: RelationshipCollectionRepository
+    private val relationshipRepository: RelationshipCollectionRepository,
 ) {
 
     fun handleRelationshipImportSummaries(
         importSummaries: List<RelationshipImportSummary?>?,
-        relationships: List<Relationship>
+        relationships: List<Relationship>,
     ) {
-
         importSummaries?.filterNotNull()?.forEach { importSummary ->
             importSummary.reference()?.let { relationshipUid ->
                 val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
@@ -71,7 +70,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 
     private fun processIgnoredRelationships(
         importSummaries: List<RelationshipImportSummary?>?,
-        relationships: List<Relationship>
+        relationships: List<Relationship>,
     ) {
         val processedRelationships = getReferences(importSummaries)
 

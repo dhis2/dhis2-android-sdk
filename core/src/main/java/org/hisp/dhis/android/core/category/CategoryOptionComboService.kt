@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.category
 
-import dagger.Reusable
 import io.reactivex.Single
+import org.koin.core.annotation.Singleton
 import java.util.Date
-import javax.inject.Inject
 
-@Reusable
-class CategoryOptionComboService @Inject constructor(
-    private val categoryOptionRepository: CategoryOptionCollectionRepository
+@Singleton
+class CategoryOptionComboService(
+    private val categoryOptionRepository: CategoryOptionCollectionRepository,
 ) {
 
     fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
@@ -55,7 +54,7 @@ class CategoryOptionComboService @Inject constructor(
 
     fun blockingIsAssignedToOrgUnit(
         categoryOptionComboUid: String,
-        orgUnitUid: String?
+        orgUnitUid: String?,
     ): Boolean {
         return orgUnitUid?.let {
             val categoryOptions = categoryOptionRepository

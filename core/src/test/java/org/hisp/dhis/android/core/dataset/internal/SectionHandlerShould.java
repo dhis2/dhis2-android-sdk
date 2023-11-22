@@ -27,18 +27,19 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
-import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,34 +50,26 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class SectionHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<Section> sectionStore;
+    private SectionStore sectionStore;
 
     @Mock
-    private OrderedLinkHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
+    private SectionDataElementLinkHandler sectionDataElementLinkHandler;
 
     @Mock
-    private Handler<DataElementOperand> greyedFieldsHandler;
+    private DataElementOperandHandler greyedFieldsHandler;
 
     @Mock
-    private LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
+    private SectionGreyedFieldsLinkHandler sectionGreyedFieldsLinkHandler;
 
     @Mock
-    private LinkHandler<Indicator, SectionIndicatorLink> sectionIndicatorLinkHandler;
+    private SectionIndicatorLinkHandler sectionIndicatorLinkHandler;
 
     @Mock
-    private LinkStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore;
+    private SectionGreyedFieldsLinkStore sectionGreyedFieldsStore;
 
     @Mock
     private Section section;
@@ -87,7 +80,7 @@ public class SectionHandlerShould {
 
     @Before
     public void setUp() throws Exception {
-        
+
         MockitoAnnotations.initMocks(this);
 
         sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler,
@@ -107,7 +100,7 @@ public class SectionHandlerShould {
 
     @Test
     public void passingNullArguments_shouldNotPerformAnyAction() {
-       sectionHandler.handle(null);
+        sectionHandler.handle(null);
 
         verify(sectionStore, never()).delete(anyString());
 

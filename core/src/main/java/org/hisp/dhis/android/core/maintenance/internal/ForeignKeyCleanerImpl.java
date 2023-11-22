@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
@@ -44,10 +43,10 @@ import java.util.List;
 public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
 
     private final DatabaseAdapter databaseAdapter;
-    private final ObjectStore<ForeignKeyViolation> foreignKeyViolationStore;
+    private final ForeignKeyViolationStore foreignKeyViolationStore;
 
-    ForeignKeyCleanerImpl(DatabaseAdapter databaseAdapter,
-                          ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
+    public ForeignKeyCleanerImpl(DatabaseAdapter databaseAdapter,
+                                 ForeignKeyViolationStore foreignKeyViolationStore) {
         this.databaseAdapter = databaseAdapter;
         this.foreignKeyViolationStore = foreignKeyViolationStore;
     }
@@ -214,7 +213,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
     public static ForeignKeyCleaner create(DatabaseAdapter databaseAdapter) {
         return new ForeignKeyCleanerImpl(
                 databaseAdapter,
-                ForeignKeyViolationStore.create(databaseAdapter)
+                new ForeignKeyViolationStoreImpl(databaseAdapter)
         );
     }
 }

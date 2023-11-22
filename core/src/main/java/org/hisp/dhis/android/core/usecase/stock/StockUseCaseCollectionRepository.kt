@@ -27,39 +27,46 @@
  */
 package org.hisp.dhis.android.core.usecase.stock
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionChildrenAppender
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransformer
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class StockUseCaseCollectionRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<InternalStockUseCase>,
-    childrenAppenders: MutableMap<String, ChildrenAppender<InternalStockUseCase>>,
+@Singleton
+class StockUseCaseCollectionRepository internal constructor(
+    store: StockUseCaseStore,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
-    transformer: TwoWayTransformer<InternalStockUseCase, StockUseCase>,
+    transformer: StockUseCaseTransformer,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
-ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<InternalStockUseCase, StockUseCase,
-    StockUseCaseCollectionRepository>(
+ReadOnlyWithUidAndTransformerCollectionRepositoryImpl(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
+        StockUseCaseCollectionRepository(store, databaseAdapter, s, transformer)
     },
-    transformer
+    transformer,
 ) {
     private val cf: FilterConnectorFactory<StockUseCaseCollectionRepository> =
         FilterConnectorFactory(scope) { s: RepositoryScope ->
-            StockUseCaseCollectionRepository(store, childrenAppenders, s, transformer)
+            StockUseCaseCollectionRepository(store, databaseAdapter, s, transformer)
         }
 
     fun withTransactions(): StockUseCaseCollectionRepository {
         return cf.withChild(InternalStockUseCase.TRANSACTIONS)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<InternalStockUseCase> = mapOf(
+            InternalStockUseCase.TRANSACTIONS to ::StockUseCaseTransactionChildrenAppender,
+        )
     }
 }

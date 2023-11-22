@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
-enum class DHISVersion(internal val prefix: String) {
-    V2_29("2.29"),
+enum class DHISVersion(internal val prefix: String, internal val supported: Boolean = true) {
+    V2_29("2.29", false),
     V2_30("2.30"),
     V2_31("2.31"),
     V2_32("2.32"),
@@ -39,12 +39,14 @@ enum class DHISVersion(internal val prefix: String) {
     V2_37("2.37"),
     V2_38("2.38"),
     V2_39("2.39"),
-    V2_40("2.40");
+    V2_40("2.40"),
+    V2_41("2.41", false),
+    ;
 
     companion object {
         @JvmStatic
         fun getValue(versionStr: String): DHISVersion? {
-            return values().find { versionStr.startsWith(it.prefix) }
+            return values().find { versionStr.startsWith(it.prefix).and(it.supported) }
         }
 
         @JvmStatic
@@ -54,7 +56,7 @@ enum class DHISVersion(internal val prefix: String) {
 
         @JvmStatic
         fun allowedVersionsAsStr(): Array<String> {
-            return listOf(V2_30, V2_31, V2_32, V2_33, V2_34, V2_35, V2_36, V2_37, V2_38, V2_39, V2_40)
+            return values().filter { it.supported }
                 .map { it.prefix }
                 .toTypedArray()
         }

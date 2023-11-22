@@ -29,16 +29,17 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
+@Singleton
+internal class AnalyticsVisualizationsRepositoryImpl(
     private val params: AnalyticsVisualizationsRepositoryParams,
-    private val service: AnalyticsVisualizationsService
+    private val service: AnalyticsVisualizationsService,
 ) : AnalyticsVisualizationsRepository {
 
     override fun withVisualization(visualization: String): AnalyticsVisualizationsRepositoryImpl {
@@ -50,7 +51,7 @@ internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
     }
 
     override fun withOrganisationUnits(
-        orgUnits: List<DimensionItem.OrganisationUnitItem>
+        orgUnits: List<DimensionItem.OrganisationUnitItem>,
     ): AnalyticsVisualizationsRepository {
         return updateParams { params -> params.copy(organisationUnits = orgUnits) }
     }
@@ -64,7 +65,7 @@ internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
     }
 
     private fun updateParams(
-        func: (params: AnalyticsVisualizationsRepositoryParams) -> AnalyticsVisualizationsRepositoryParams
+        func: (params: AnalyticsVisualizationsRepositoryParams) -> AnalyticsVisualizationsRepositoryParams,
     ): AnalyticsVisualizationsRepositoryImpl {
         return AnalyticsVisualizationsRepositoryImpl(func(params), service)
     }

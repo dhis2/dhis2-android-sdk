@@ -29,10 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
@@ -44,9 +41,9 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class UserHandlerShould {
-    private val userStore: IdentifiableObjectStore<User> = mock()
-    private val userRoleHandler: Handler<UserRole> = mock()
-    private val userRoleCollectionCleaner: CollectionCleaner<UserRole> = mock()
+    private val userStore: UserStore = mock()
+    private val userRoleHandler: UserRoleHandler = mock()
+    private val userRoleCollectionCleaner: UserRoleCollectionCleaner = mock()
 
     private val userRoles: List<UserRole> = mock()
 

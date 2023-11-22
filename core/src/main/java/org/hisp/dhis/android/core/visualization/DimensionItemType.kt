@@ -39,5 +39,5 @@ enum class DimensionItemType {
     VALIDATION_RULE,
     PERIOD,
     ORGANISATION_UNIT,
-    CATEGORY_OPTION
+    CATEGORY_OPTION,
 }

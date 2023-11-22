@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
 import io.reactivex.Single
-import java.util.Date
-import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
@@ -45,10 +42,12 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.koin.core.annotation.Singleton
+import java.util.Date
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class DataSetInstanceServiceImpl @Inject constructor(
+internal class DataSetInstanceServiceImpl(
     private val dataSetCollectionRepository: DataSetCollectionRepository,
     private val categoryOptionRepository: CategoryOptionCollectionRepository,
     private val organisationUnitService: OrganisationUnitService,
@@ -61,14 +60,14 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<DataSetEditableStatus> {
         return Single.fromCallable {
             blockingGetEditableStatus(
                 dataSetUid = dataSetUid,
                 periodId = periodId,
                 organisationUnitUid = organisationUnitUid,
-                attributeOptionComboUid = attributeOptionComboUid
+                attributeOptionComboUid = attributeOptionComboUid,
             )
         }
     }
@@ -78,7 +77,7 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): DataSetEditableStatus {
         val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet()
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
@@ -95,20 +94,29 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ATTRIBUTE_OPTION_COMBO_NO_ASSIGN_TO_ORGUNIT)
             !blockingIsPeriodInOrgUnitRange(period, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ORGUNIT_RANGE)
-            !blockingIsExpired(dataSet, period) ->
+            dataSet?.let { blockingIsExpired(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.EXPIRED)
-            !blockingIsClosed(dataSet, period) ->
+            dataSet?.let { blockingIsClosed(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)
             else -> DataSetEditableStatus.Editable
         }
     }
 
-    fun blockingIsCategoryOptionHasDataWriteAccess(categoryOptionComboUid: String): Boolean {
+    override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {
+        return Single.just(blockingHasDataWriteAccess(dataSetUid))
+    }
+
+    override fun blockingHasDataWriteAccess(dataSetUid: String): Boolean {
+        val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet() ?: return false
+        return dataSet.access().write() ?: false
+    }
+
+    internal fun blockingIsCategoryOptionHasDataWriteAccess(categoryOptionComboUid: String): Boolean {
         val categoryOptions = getCategoryOptions(categoryOptionComboUid)
         return categoryOptionComboService.blockingHasWriteAccess(categoryOptions)
     }
 
-    fun blockingIsPeriodInCategoryOptionRange(period: Period, categoryOptionComboUid: String): Boolean {
+    internal fun blockingIsPeriodInCategoryOptionRange(period: Period, categoryOptionComboUid: String): Boolean {
         val categoryOptions = getCategoryOptions(categoryOptionComboUid)
         val dates = listOf(period.startDate(), period.endDate())
         return dates.all { date ->
@@ -116,53 +124,49 @@ internal class DataSetInstanceServiceImpl @Inject constructor(
         }
     }
 
-    fun blockingIsOrgUnitInCaptureScope(orgUnitUid: String): Boolean {
+    internal fun blockingIsOrgUnitInCaptureScope(orgUnitUid: String): Boolean {
         return organisationUnitService.blockingIsInCaptureScope(orgUnitUid)
     }
 
-    fun blockingIsAttributeOptionComboAssignToOrgUnit(
+    internal fun blockingIsAttributeOptionComboAssignToOrgUnit(
         categoryOptionComboUid: String,
-        orgUnitUid: String
+        orgUnitUid: String,
     ): Boolean {
         return categoryOptionComboService.blockingIsAssignedToOrgUnit(
             categoryOptionComboUid = categoryOptionComboUid,
-            orgUnitUid = orgUnitUid
+            orgUnitUid = orgUnitUid,
         )
     }
 
-    fun blockingIsExpired(dataSet: DataSet, period: Period): Boolean {
-        val expiryDays = dataSet.expiryDays() ?: return false
-        val generatedPeriod = period.endDate()?.let { endDate ->
-            periodGenerator.generatePeriod(
-                periodType = PeriodType.Daily,
-                date = endDate,
-                offset = expiryDays - 1
-            )
+    internal fun blockingIsExpired(dataSet: DataSet, period: Period): Boolean {
+        val expiryDays = dataSet.expiryDays()
+        return if (expiryDays == null || expiryDays <= 0) {
+            false
+        } else {
+            val expiryDate = period.endDate()?.let { endDate ->
+                periodGenerator.generatePeriod(
+                    periodType = PeriodType.Daily,
+                    date = endDate,
+                    offset = expiryDays - 1,
+                )
+            }?.endDate()
+
+            expiryDate?.let { Date().after(it) } ?: false
         }
-        return Date().after(generatedPeriod?.endDate())
     }
 
-    fun blockingIsClosed(dataSet: DataSet, period: Period): Boolean {
-        val periodType = dataSet.periodType() ?: return true
+    internal fun blockingIsClosed(dataSet: DataSet, period: Period): Boolean {
+        val periodType = dataSet.periodType() ?: return false
         val openFuturePeriods = dataSet.openFuturePeriods() ?: 0
-        val generatedPeriod = periodGenerator.generatePeriod(
+        val latestFuturePeriod = periodGenerator.generatePeriod(
             periodType = periodType,
             date = Date(),
-            offset = openFuturePeriods - 1
+            offset = openFuturePeriods - 1,
         )
-        return period.endDate()?.before(generatedPeriod?.endDate()) ?: true
+        return period.endDate()?.after(latestFuturePeriod?.endDate()) ?: false
     }
 
-    override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {
-        return Single.just(blockingHasDataWriteAccess(dataSetUid))
-    }
-
-    fun blockingHasDataWriteAccess(dataSetUid: String): Boolean {
-        val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet() ?: return false
-        return dataSet.access().write() ?: false
-    }
-
-    fun blockingIsPeriodInOrgUnitRange(period: Period, orgUnitUid: String): Boolean {
+    internal fun blockingIsPeriodInOrgUnitRange(period: Period, orgUnitUid: String): Boolean {
         return listOfNotNull(period.startDate(), period.endDate()).all { date ->
             organisationUnitService.blockingIsDateInOrgunitRange(orgUnitUid, date)
         }

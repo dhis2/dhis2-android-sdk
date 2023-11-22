@@ -41,7 +41,6 @@ import java.util.Locale
 
 class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Date>(vc) {
     @Throws(IOException::class, JsonProcessingException::class)
-
     override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Date {
         val node = jp.codec.readTree<JsonNode>(jp)
         val date = node.textValue()
@@ -63,7 +62,7 @@ class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null
             "yyyy-MM-dd'T'HH:mm:ssZ",
             "yyyy-MM-dd'T'HH:mm",
             "yyyy-MM-dd'T'HH:mmZ",
-            "yyyy-MM-dd"
+            "yyyy-MM-dd",
         )
     }
 }

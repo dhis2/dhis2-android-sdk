@@ -27,17 +27,17 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserRole
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserRoleChildrenAppender @Inject constructor(
-    private val store: IdentifiableObjectStore<UserRole>
+@Singleton
+internal class UserRoleChildrenAppender(
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<User>() {
+    private val store = UserRoleStoreImpl(databaseAdapter)
+
     override fun appendChildren(user: User): User {
         val builder = user.toBuilder()
         builder.userRoles(store.selectAll())

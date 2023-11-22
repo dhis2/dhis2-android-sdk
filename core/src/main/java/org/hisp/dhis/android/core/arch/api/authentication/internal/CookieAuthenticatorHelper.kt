@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import okhttp3.Request
 import okhttp3.Response
+import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CookieAuthenticatorHelper @Inject constructor() {
+internal class CookieAuthenticatorHelper {
 
     companion object {
         private const val COOKIE_KEY = "Cookie"

@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.common.IdentifiableObject
 
-internal interface ParentOrphanCleaner<P : IdentifiableObject> {
+interface ParentOrphanCleaner<P : IdentifiableObject> {
     fun deleteOrphan(parent: P?)
 }

@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
@@ -49,16 +51,9 @@ class TrackerImporterFileResourcesPostCallShould {
 
     private lateinit var fileResourcePostCall: TrackerImporterFileResourcesPostCall
 
-    @Before
-    fun setUp() {
-        fileResourcePostCall = TrackerImporterFileResourcesPostCall(
-            fileResourcesPostCall,
-            fileResourceHelper
-        )
-    }
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `Should create a single post call for repeated attributes`() {
+    fun `Should create a single post call for repeated attributes`() = runTest {
         val resourceId = "resourceId"
         val attributeId = "attributeId"
 
@@ -76,15 +71,15 @@ class TrackerImporterFileResourcesPostCallShould {
                     NewTrackerImporterTrackedEntity.builder()
                         .uid("tei_uid")
                         .trackedEntityAttributeValues(listOf(attributeValue))
-                        .build()
+                        .build(),
                 ),
                 enrollments = mutableListOf(
                     NewTrackerImporterEnrollment.builder()
                         .uid("enrollment_uid")
                         .attributes(listOf(attributeValue))
-                        .build()
-                )
-            )
+                        .build(),
+                ),
+            ),
         )
 
         val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
@@ -93,7 +88,7 @@ class TrackerImporterFileResourcesPostCallShould {
         whenever(fileResourcesPostCall.uploadFileResource(fileResource, fValue))
             .doReturn(Math.random().toString())
 
-        val result = fileResourcePostCall.uploadFileResources(payloadWrapper).blockingGet()
+        val result = fileResourcePostCall.uploadFileResources(payloadWrapper)
 
         verify(fileResourcesPostCall, times(1)).uploadFileResource(fileResource, fValue)
 
@@ -102,5 +97,13 @@ class TrackerImporterFileResourcesPostCallShould {
 
         assertThat(entityValue).isEqualTo(enrollmentValue)
         assertThat(entityValue).isNotEqualTo(resourceId)
+    }
+
+    @Before
+    fun setUp() {
+        fileResourcePostCall = TrackerImporterFileResourcesPostCall(
+            fileResourcesPostCall,
+            fileResourceHelper,
+        )
     }
 }

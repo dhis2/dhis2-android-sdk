@@ -30,22 +30,22 @@ package org.hisp.dhis.android.core.user.openid
 
 import android.content.Context
 import android.content.Intent
-import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.*
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.LogInCall
+import org.koin.core.annotation.Singleton
 
 private const val RC_AUTH = 2021
 
-@Reusable
-internal class OpenIDConnectHandlerImpl @Inject constructor(
+@Singleton
+internal class OpenIDConnectHandlerImpl(
     private val context: Context,
     private val logInCall: LogInCall,
-    private val logoutHandler: OpenIDConnectLogoutHandler
+    private val logoutHandler: OpenIDConnectLogoutHandler,
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
@@ -64,7 +64,7 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
     override fun handleLogInResponse(
         serverUrl: String,
         intent: Intent?,
-        requestCode: Int
+        requestCode: Int,
     ): Single<User> {
         return if (requestCode == RC_AUTH && intent != null) {
             val ex = AuthorizationException.fromIntent(intent)
@@ -75,7 +75,9 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
                 downloadToken(response.createTokenExchangeRequest())
                     .observeOn(Schedulers.io())
                     .map {
-                        logInCall.blockingLogInOpenIDConnect(serverUrl, it)
+                        runBlocking {
+                            logInCall.blockingLogInOpenIDConnect(serverUrl, it)
+                        }
                     }
             }
         } else {
@@ -86,7 +88,7 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
     override fun blockingHandleLogInResponse(
         serverUrl: String,
         intent: Intent?,
-        requestCode: Int
+        requestCode: Int,
     ): User {
         return handleLogInResponse(serverUrl, intent, requestCode).blockingGet()
     }
@@ -99,7 +101,7 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
         return Single.create { emitter ->
             val authService = AuthorizationService(context)
             authService.performTokenRequest(
-                tokenRequest
+                tokenRequest,
             ) { tokenResponse, tokenEx ->
                 authService.dispose()
                 val authState = AuthState()

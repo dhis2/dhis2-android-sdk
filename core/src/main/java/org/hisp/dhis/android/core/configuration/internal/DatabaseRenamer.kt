@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
-import dagger.Reusable
+import org.koin.core.annotation.Singleton
 import java.io.File
-import javax.inject.Inject
 
-@Reusable
-internal class DatabaseRenamer @Inject constructor(private val context: Context) {
+@Singleton
+internal class DatabaseRenamer(private val context: Context) {
 
     fun renameDatabase(from: String, to: String): Boolean {
         val fromFile = context.getDatabasePath(from)

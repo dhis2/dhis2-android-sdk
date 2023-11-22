@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.program.Program
 import org.junit.Before
@@ -38,7 +38,7 @@ class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private var programCall: Single<List<Program>>? = null
+    private var programCall: List<Program>? = null
 
     @Before
     override fun setUp() {
@@ -46,8 +46,8 @@ class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         programCall = createCall()
     }
 
-    private fun createCall(): Single<List<Program>> {
-        return getD2DIComponent(d2).programCall().download(setOf("lxAQ7Zs9VYR", "AwNmMxxakEo"))
+    private fun createCall(): List<Program> = runBlocking {
+        return@runBlocking getD2DIComponent(d2).programCall.download(setOf("lxAQ7Zs9VYR", "AwNmMxxakEo"))
     }
 
     // @Test
@@ -61,6 +61,6 @@ class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
-        programCall!!.blockingGet()
+        programCall!!
     }
 }

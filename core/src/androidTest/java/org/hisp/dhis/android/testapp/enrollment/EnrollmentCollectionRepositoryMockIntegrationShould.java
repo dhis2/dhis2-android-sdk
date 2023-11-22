@@ -57,14 +57,14 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
 
         Enrollment enrollment = enrollments.get(0);
         assertThat(enrollment.uid()).isEqualTo("enroll1");
-        assertThat(enrollment.program()).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(enrollment.program()).isEqualTo("IpHINAT79UW");
     }
 
     @Test
     public void allow_access_to_one_enrollment_without_children() {
         Enrollment enrollment = d2.enrollmentModule().enrollments().uid("enroll1").blockingGet();
         assertThat(enrollment.uid()).isEqualTo("enroll1");
-        assertThat(enrollment.program()).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(enrollment.program()).isEqualTo("IpHINAT79UW");
     }
 
     @Test
@@ -83,7 +83,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .byUid().eq("enroll1")
                 .one().blockingGet();
         assertThat(enrollment.uid()).isEqualTo("enroll1");
-        assertThat(enrollment.program()).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(enrollment.program()).isEqualTo("IpHINAT79UW");
     }
 
     @Test
@@ -131,7 +131,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void filter_by_program() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
-                .byProgram().eq("lxAQ7Zs9VYR")
+                .byProgram().eq("IpHINAT79UW")
                 .blockingGet();
         assertThat(enrollments.size()).isEqualTo(2);
     }

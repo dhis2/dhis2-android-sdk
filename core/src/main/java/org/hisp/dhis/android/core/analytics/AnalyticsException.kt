@@ -53,7 +53,7 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class ProgramIndicatorCustomBoundaries(val programIndicator: ProgramIndicator) :
         AnalyticsException(
             "Custom boundaries are not supported for program indicators: " +
-                "${programIndicator.displayName()} (${programIndicator.uid()})"
+                "${programIndicator.displayName()} (${programIndicator.uid()})",
         )
 
     class SQLException(message: String) : AnalyticsException(message)

@@ -119,7 +119,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     private fun setState(state: State) {
         val entries = d2.dataStoreModule().dataStore().blockingGet()
 
-        val store = DataStoreEntryStoreImpl.create(databaseAdapter)
+        val store = DataStoreEntryStoreImpl(databaseAdapter)
         entries.forEach {
             store.setState(it, state)
         }

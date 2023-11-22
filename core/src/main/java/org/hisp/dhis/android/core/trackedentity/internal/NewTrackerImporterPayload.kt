@@ -40,7 +40,7 @@ internal data class NewTrackerImporterPayload(
     val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf(),
 
     @JsonIgnore
-    val fileResourcesMap: Map<String, List<String>> = mutableMapOf()
+    val fileResourcesMap: Map<String, List<String>> = mutableMapOf(),
 ) {
     @JsonIgnore
     fun isEmpty(): Boolean {

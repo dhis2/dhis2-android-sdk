@@ -36,15 +36,17 @@ interface DataSetInstanceService {
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<DataSetEditableStatus>
 
     fun blockingGetEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): DataSetEditableStatus
 
     fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
+
+    fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
 }

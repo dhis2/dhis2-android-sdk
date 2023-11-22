@@ -28,15 +28,16 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.attribute.Attribute;
-import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.internal.AttributeHandler;
+import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -56,23 +57,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramStageHandlerShould {
     @Mock
-    private IdentifiableObjectStore<ProgramStage> programStageStore;
+    private ProgramStageStore programStageStore;
 
     @Mock
-    private HandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
+    private ProgramStageSectionHandler programStageSectionHandler;
 
     @Mock
-    private Handler<ProgramStageDataElement> programStageDataElementHandler;
+    private ProgramStageDataElementHandler programStageDataElementHandler;
 
     @Mock
     private ProgramStage programStage;
@@ -97,22 +91,22 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageSection> programStageSections;
 
     @Mock
-    private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
+    private ProgramStageDataElementOrphanCleaner programStageDataElementCleaner;
 
     @Mock
-    private OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
+    private ProgramStageSectionOrphanCleaner programStageSectionCleaner;
 
     @Mock
-    private SubCollectionCleaner<ProgramStage> programStageCleaner;
+    private ProgramStageSubCollectionCleaner programStageCleaner;
 
     @Mock
     private ProgramStage.Builder programStageBuilder;
 
     @Mock
-    private Handler<Attribute> attributeHandler;
+    private AttributeHandler attributeHandler;
 
     @Mock
-    private LinkHandler<Attribute, ProgramStageAttributeValueLink> programStageAttributeValueLinkHandler;
+    private ProgramStageAttributeValueLinkHandler programStageAttributeValueLinkHandler;
 
     // object to test
     private ProgramStageHandler programStageHandler;
@@ -148,6 +142,8 @@ public class ProgramStageHandlerShould {
         when(programStage.toBuilder()).thenReturn(programStageBuilder);
         when(programStageBuilder.featureType(any(FeatureType.class))).thenReturn(programStageBuilder);
         when(programStageBuilder.build()).thenReturn(programStage);
+
+        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -165,7 +161,7 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_attribute_handler() throws Exception {
         programStageHandler.handle(programStage);
-        verify(attributeHandler).handleMany( anyCollection());
+        verify(attributeHandler).handleMany(anyCollection());
     }
 
     @Test

@@ -42,16 +42,22 @@ public abstract class TrackedEntityInstanceQueryScopeOrderColumn {
     }
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn CREATED =
-            builder().type(Type.CREATED).apiName("created").build();
+            builder().type(Type.CREATED)
+                    .apiName(TrackedEntityInstanceQueryScopeOrderApiName.Created.INSTANCE)
+                    .build();
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn LAST_UPDATED =
-            builder().type(Type.LAST_UPDATED).apiName("lastupdated").build();
+            builder().type(Type.LAST_UPDATED)
+                    .apiName(TrackedEntityInstanceQueryScopeOrderApiName.LastUpdated.INSTANCE)
+                    .build();
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn ORGUNIT_NAME =
-            builder().type(Type.ORGUNIT_NAME).apiName("ouname").build();
+            builder().type(Type.ORGUNIT_NAME).build();
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn ENROLLMENT_DATE =
-            builder().type(Type.ENROLLMENT_DATE).build();
+            builder().type(Type.ENROLLMENT_DATE)
+                    .apiName(TrackedEntityInstanceQueryScopeOrderApiName.EnrollmentDate.INSTANCE)
+                    .build();
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn INCIDENT_DATE =
             builder().type(Type.INCIDENT_DATE).build();
@@ -66,13 +72,16 @@ public abstract class TrackedEntityInstanceQueryScopeOrderColumn {
             builder().type(Type.ENROLLMENT_STATUS).build();
 
     public static TrackedEntityInstanceQueryScopeOrderColumn attribute(String attributeId) {
-        return builder().type(Type.ATTRIBUTE).apiName(attributeId).value(attributeId).build();
+        return builder().type(Type.ATTRIBUTE)
+                .apiName(new TrackedEntityInstanceQueryScopeOrderApiName.Attribute(attributeId))
+                .value(attributeId)
+                .build();
     }
 
     public abstract Type type();
 
     @Nullable
-    public abstract String apiName();
+    public abstract TrackedEntityInstanceQueryScopeOrderApiName apiName();
 
     @Nullable
     public abstract String value();
@@ -90,7 +99,7 @@ public abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
         abstract Builder type(Type column);
 
-        abstract Builder apiName(String apiName);
+        abstract Builder apiName(TrackedEntityInstanceQueryScopeOrderApiName apiName);
 
         abstract Builder value(String value);
 

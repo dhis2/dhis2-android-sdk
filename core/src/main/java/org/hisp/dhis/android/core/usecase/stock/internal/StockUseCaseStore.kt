@@ -25,32 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
 
-@Suppress("MagicNumber")
-internal object StockUseCaseStore {
-    private val BINDER = StatementBinder { o: InternalStockUseCase, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.itemCode())
-        w.bind(3, o.itemDescription())
-        w.bind(4, o.programType())
-        w.bind(5, o.description())
-        w.bind(6, o.stockOnHand())
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<InternalStockUseCase> {
-        return objectWithUidStore(
-            databaseAdapter, StockUseCaseTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> InternalStockUseCase.create(cursor) }
-    }
-}
+internal interface StockUseCaseStore : IdentifiableObjectStore<InternalStockUseCase>

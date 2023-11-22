@@ -127,7 +127,7 @@ public abstract class DataValue extends BaseDeletableDataObject {
 
         public abstract DataValue.Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
 
-        public abstract DataValue.Builder value(@NonNull String value);
+        public abstract DataValue.Builder value(@Nullable String value);
 
         public abstract DataValue.Builder storedBy(@Nullable String storedBy);
 
@@ -135,10 +135,10 @@ public abstract class DataValue extends BaseDeletableDataObject {
 
         public abstract DataValue.Builder lastUpdated(@NonNull Date lastUpdated);
 
-        public abstract DataValue.Builder comment(@NonNull String comment);
+        public abstract DataValue.Builder comment(@Nullable String comment);
 
         @JsonProperty(DataValueFields.FOLLOW_UP)
-        public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
+        public abstract DataValue.Builder followUp(@Nullable Boolean followUp);
 
         abstract DataValue autoBuild();
 

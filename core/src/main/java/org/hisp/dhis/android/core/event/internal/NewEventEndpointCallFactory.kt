@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
@@ -38,13 +35,14 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class NewEventEndpointCallFactory @Inject constructor(
-    private val service: TrackerExporterService
+@Singleton
+internal class NewEventEndpointCallFactory(
+    private val service: TrackerExporterService,
 ) : EventEndpointCallFactory() {
 
-    override fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         return service.getEvents(
             fields = NewEventFields.allFields,
             orgUnit = eventQuery.orgUnit,
@@ -56,16 +54,16 @@ internal class NewEventEndpointCallFactory @Inject constructor(
             pageSize = eventQuery.pageSize,
             updatedAfter = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = getUidStr(eventQuery)
-        ).map { mapPayload(it) }
+            eventUid = getUidStr(eventQuery),
+        ).let { mapPayload(it) }
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<Event>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {
         return service.getEventSingle(
             eventUid = uid,
             fields = NewEventFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
-        ).map { mapPayload(it) }
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
+        ).let { mapPayload(it) }
     }
 
     private fun mapPayload(payload: NTIPayload<NewTrackerImporterEvent>): Payload<Event> {

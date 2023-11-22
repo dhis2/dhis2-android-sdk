@@ -28,20 +28,16 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LegendSetModuleDownloader @Inject internal constructor(
+@Singleton
+internal class LegendSetModuleDownloader internal constructor(
     private val legendSetUidsSeeker: LegendSetUidsSeeker,
-    private val legendSetCall: LegendSetCall
-) : UntypedModuleDownloader {
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { legendSetUidsSeeker.seekUids() }
-            .flatMap { legendSetCall.download(it) }
-            .ignoreElement()
+    private val legendSetCall: LegendSetCall,
+) : UntypedModuleDownloaderCoroutines {
+    override suspend fun downloadMetadata() {
+        val uids = legendSetUidsSeeker.seekUids()
+        legendSetCall.download(uids)
     }
 }

@@ -34,7 +34,7 @@ class RelationshipServiceShould {
         relationshipService = RelationshipServiceImpl(
             programRepository,
             programStageRepository,
-            trackedEntityTypeRepository
+            trackedEntityTypeRepository,
         )
     }
 
@@ -43,7 +43,7 @@ class RelationshipServiceShould {
         val bidirectionalRelationship = relationshipType(
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-            true
+            true,
         )
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = true)
@@ -55,7 +55,7 @@ class RelationshipServiceShould {
         val bidirectionalRelationship = relationshipType(
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-            true
+            true,
         )
 
         mockTeTypeAccessResponse(fromAccess = false, toAccess = true)
@@ -70,19 +70,19 @@ class RelationshipServiceShould {
         val teTypeRelationship = relationshipType(
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-            true
+            true,
         )
 
         val programRelationship = relationshipType(
             RelationshipEntityType.PROGRAM_INSTANCE,
             RelationshipEntityType.PROGRAM_INSTANCE,
-            true
+            true,
         )
 
         val programStageRelationship = relationshipType(
             RelationshipEntityType.PROGRAM_STAGE_INSTANCE,
             RelationshipEntityType.PROGRAM_STAGE_INSTANCE,
-            true
+            true,
         )
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = true)
@@ -103,7 +103,7 @@ class RelationshipServiceShould {
         val unidirectionalRelationship = relationshipType(
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-            false
+            false,
         )
         mockTeTypeAccessResponse(fromAccess = true, toAccess = false)
 
@@ -115,7 +115,7 @@ class RelationshipServiceShould {
         val unidirectionalRelationship = relationshipType(
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-            false
+            false,
         )
         mockTeTypeAccessResponse(fromAccess = false, toAccess = false)
 
@@ -124,35 +124,35 @@ class RelationshipServiceShould {
 
     private fun mockTeTypeAccessResponse(fromAccess: Boolean, toAccess: Boolean) {
         whenever(
-            trackedEntityTypeRepository.uid(any()).blockingGet()
+            trackedEntityTypeRepository.uid(any()).blockingGet(),
         ) doReturnConsecutively listOf(
             TrackedEntityType.builder().uid("from").access(accessData(fromAccess)).build(),
-            TrackedEntityType.builder().uid("to").access(accessData(toAccess)).build()
+            TrackedEntityType.builder().uid("to").access(accessData(toAccess)).build(),
         )
     }
 
     private fun mockProgramAccessResponse(fromAccess: Boolean, toAccess: Boolean) {
         whenever(
-            programRepository.uid(any()).blockingGet()
+            programRepository.uid(any()).blockingGet(),
         ) doReturnConsecutively listOf(
             Program.builder().uid("from").access(accessData(fromAccess)).build(),
-            Program.builder().uid("to").access(accessData(toAccess)).build()
+            Program.builder().uid("to").access(accessData(toAccess)).build(),
         )
     }
 
     private fun mockProgramStageAccessResponse(fromAccess: Boolean, toAccess: Boolean) {
         whenever(
-            programStageRepository.uid(any()).blockingGet()
+            programStageRepository.uid(any()).blockingGet(),
         ) doReturnConsecutively listOf(
             ProgramStage.builder().uid("from").access(accessData(fromAccess)).build(),
-            ProgramStage.builder().uid("to").access(accessData(toAccess)).build()
+            ProgramStage.builder().uid("to").access(accessData(toAccess)).build(),
         )
     }
 
     private fun relationshipType(
         fromType: RelationshipEntityType,
         toType: RelationshipEntityType,
-        bidirectional: Boolean
+        bidirectional: Boolean,
     ) = RelationshipType.builder()
         .uid("relationshipType")
         .fromToName("from")
@@ -160,21 +160,21 @@ class RelationshipServiceShould {
         .fromConstraint(
             relationshipConstraint(
                 RelationshipConstraintType.FROM,
-                fromType
-            )
+                fromType,
+            ),
         )
         .toConstraint(
             relationshipConstraint(
                 RelationshipConstraintType.TO,
-                toType
-            )
+                toType,
+            ),
         )
         .bidirectional(bidirectional)
         .build()
 
     private fun relationshipConstraint(
         relationshipConstraintType: RelationshipConstraintType,
-        relationshipEntityType: RelationshipEntityType
+        relationshipEntityType: RelationshipEntityType,
     ) = RelationshipConstraint.builder()
         .relationshipType(ObjectWithUid.create("${relationshipConstraintType.name}_relationshipType"))
         .constraintType(relationshipConstraintType)

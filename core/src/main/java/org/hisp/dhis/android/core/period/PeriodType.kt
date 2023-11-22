@@ -36,7 +36,7 @@ enum class PeriodType(
     val defaultStartPeriods: Int,
     val defaultEndPeriods: Int,
     val pattern: String,
-    val sortOrder: Int
+    val sortOrder: Int,
 ) {
     Daily(-59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b", 1),
     Weekly(-12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b", 2),
@@ -55,7 +55,8 @@ enum class PeriodType(
     FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 15),
     FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 16),
     FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 17),
-    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 18);
+    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 18),
+    ;
 
     companion object {
         @JvmStatic

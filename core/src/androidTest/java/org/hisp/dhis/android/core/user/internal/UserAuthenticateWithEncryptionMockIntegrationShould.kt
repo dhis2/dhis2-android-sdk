@@ -28,15 +28,21 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory.clear
-import org.hisp.dhis.android.core.D2Factory.forNewDatabase
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
-import org.junit.AfterClass
-import org.junit.BeforeClass
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
-class UserAuthenticateWithEncryptionMockIntegrationShould {
+@RunWith(D2JunitRunner::class)
+class UserAuthenticateWithEncryptionMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
+
+    @Before
+    fun setUp() {
+        tryLogout()
+    }
+
     @Test
     fun return_false_for_blocking_is_logged_when_not_logged() {
         assertThat(d2.userModule().blockingIsLogged()).isFalse()
@@ -89,29 +95,14 @@ class UserAuthenticateWithEncryptionMockIntegrationShould {
         DatabaseAdapterFactory.setExperimentalEncryption(false);
     }*/
     private fun logIn() {
-        d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.baseEndpoint)
+        freshLogin(
+            RealServerMother.username,
+            RealServerMother.password,
+            dhis2MockServer.baseEndpoint,
+        )
     }
 
     private fun logOut() {
         d2.userModule().blockingLogOut()
-    }
-
-    companion object {
-        private lateinit var d2: D2
-        private lateinit var dhis2MockServer: Dhis2MockServer
-
-        @BeforeClass
-        @JvmStatic
-        fun setUpClass() {
-            d2 = forNewDatabase()
-            dhis2MockServer = Dhis2MockServer(0)
-            dhis2MockServer.setRequestDispatcher()
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun tearDown() {
-            clear()
-        }
     }
 }

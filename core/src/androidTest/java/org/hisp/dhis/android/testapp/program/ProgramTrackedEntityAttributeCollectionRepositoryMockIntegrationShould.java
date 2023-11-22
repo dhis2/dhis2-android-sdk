@@ -102,7 +102,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
                 d2.programModule().programTrackedEntityAttributes()
                         .byProgram()
-                        .eq("lxAQ7Zs9VYR")
+                        .eq("IpHINAT79UW")
                         .blockingGet();
 
         assertThat(programTrackedEntityAttributes.size()).isEqualTo(2);

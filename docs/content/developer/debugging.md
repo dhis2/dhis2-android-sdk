@@ -1,9 +1,14 @@
 # Debugging { #android_sdk_debugging }
 
 ## Android Studio
-You can debug your DHIS2 Android App using Android Studio. Follow the [instructions from the Android Developer Portal](https://developer.android.com/studio/debug) 
+You can debug your DHIS2 Android App using Android Studio. Follow the [instructions from the Android Developer Portal](https://developer.android.com/studio/debug)
 
-## Flipper (recommended)
+## HTTP Toolkit
+Using HTTP Toolkit you can explore and mock the HTTP requests when needed. It is easy to install and use ([HTTP toolkit page](https://httptoolkit.com)).
+
+It can be easily attached to emulators and rooted devices; in the case of non-rooted physical devices, it requires additional steps. 
+
+## Flipper
 Flipper is a platform for debugging mobile apps on iOS and Android developed by Facebook. Flipper provides many features, 
 provided by different plugins.
 

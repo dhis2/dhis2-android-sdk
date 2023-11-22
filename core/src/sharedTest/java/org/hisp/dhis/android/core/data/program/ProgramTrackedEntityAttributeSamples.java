@@ -65,7 +65,7 @@ public class ProgramTrackedEntityAttributeSamples {
                 .displayInList(true)
                 .sortOrder(1)
                 .searchable(false)
-                .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .program(ObjectWithUid.create("IpHINAT79UW"))
                 .trackedEntityAttribute(ObjectWithUid.create("cejWyOfXge6"))
                 .build();
     }

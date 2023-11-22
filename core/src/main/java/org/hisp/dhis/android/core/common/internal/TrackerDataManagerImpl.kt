@@ -27,11 +27,8 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DeletableDataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
@@ -49,18 +46,20 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class TrackerDataManagerImpl @Inject constructor(
+internal class TrackerDataManagerImpl(
     private val trackedEntityStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val relationshipChildrenAppender: RelationshipItemChildrenAppender,
     private val dataStatePropagator: DataStatePropagator,
-    private val programOwner: ObjectWithoutUidStore<ProgramOwner>
+    private val programOwner: ProgramOwnerStore,
 ) : TrackerDataManager {
 
     override fun deleteTrackedEntity(tei: TrackedEntityInstance?) {
@@ -103,7 +102,7 @@ internal class TrackerDataManagerImpl @Inject constructor(
     private fun <O> internalDelete(
         obj: O,
         store: IdentifiableDeletableDataObjectStore<O>,
-        propagateState: (O) -> Any
+        propagateState: (O) -> Any,
     ) where O : ObjectWithUidInterface, O : DeletableDataObject {
         if (obj.syncState() === State.TO_POST) {
             store.delete(obj.uid())
@@ -195,7 +194,7 @@ internal class TrackerDataManagerImpl @Inject constructor(
                             .program(program)
                             .ownerOrgUnit(orgunit)
                             .syncState(State.SYNCED)
-                            .build()
+                            .build(),
                     )
                 }
             }

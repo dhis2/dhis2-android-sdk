@@ -42,10 +42,10 @@ class NewTrackerImporterRelationshipShould : BaseObjectShould("relationship/new_
         assertThat(relationship.uid()).isEqualTo("VdjOfugUb9y")
         assertThat(relationship.relationshipType()).isEqualTo("mxZDvSZYxlw")
         assertThat(relationship.createdAt()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T13:34:46.887")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T13:34:46.887"),
         )
         assertThat(relationship.updatedAt()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T15:34:46.887")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T15:34:46.887"),
         )
         assertThat(relationship.bidirectional()).isTrue()
         assertThat(relationship.from()?.event()?.event()).isEqualTo("mOFppqD2q8d")

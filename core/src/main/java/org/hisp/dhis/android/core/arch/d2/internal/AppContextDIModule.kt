@@ -27,23 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.d2.internal
 
-import android.content.Context
-import dagger.Module
-import dagger.Provides
 import org.hisp.dhis.android.core.D2Configuration
+import org.koin.dsl.module
 
-@Module
-internal class AppContextDIModule(
-    private val d2Configuration: D2Configuration
-) {
-
-    @Provides
-    fun appContext(): Context {
-        return d2Configuration.context().applicationContext
-    }
-
-    @Provides
-    fun d2Configuration(): D2Configuration {
-        return d2Configuration
-    }
+internal fun appContextDIModule(
+    d2Configuration: D2Configuration,
+) = module {
+    single { d2Configuration.context() }
+    single { d2Configuration }
 }

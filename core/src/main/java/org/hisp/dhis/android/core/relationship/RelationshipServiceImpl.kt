@@ -28,20 +28,18 @@
 
 package org.hisp.dhis.android.core.relationship
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCollectionRepository
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipServiceImpl @Inject constructor(
+@Singleton
+internal class RelationshipServiceImpl(
     private val programRepository: ProgramCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
-    private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository
+    private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository,
 ) : RelationshipService {
     override fun hasAccessPermission(relationshipType: RelationshipType): Boolean {
-
         val fromAccess = relationshipType.fromConstraint()?.let { constraintAccess(it) } ?: false
         val toAccess = relationshipType.toConstraint()?.let { constraintAccess(it) } ?: false
 
@@ -55,7 +53,7 @@ internal class RelationshipServiceImpl @Inject constructor(
     }
 
     private fun constraintAccess(
-        constraint: RelationshipConstraint
+        constraint: RelationshipConstraint,
     ): Boolean = when (constraint.relationshipEntity()) {
         RelationshipEntityType.PROGRAM_INSTANCE -> {
             val programUid = constraint.program()?.uid()
@@ -72,7 +70,7 @@ internal class RelationshipServiceImpl @Inject constructor(
         }
         RelationshipEntityType.TRACKED_ENTITY_INSTANCE -> {
             val teTypeUid = constraint.trackedEntityType()?.uid()
-            trackedEntityTypeRepository.uid(teTypeUid).blockingGet().access().data().write()
+            trackedEntityTypeRepository.uid(teTypeUid).blockingGet()!!.access().data().write()!!
         }
         else -> false
     }

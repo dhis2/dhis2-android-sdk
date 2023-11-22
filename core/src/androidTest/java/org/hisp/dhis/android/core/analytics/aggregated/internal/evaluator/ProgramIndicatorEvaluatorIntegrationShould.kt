@@ -59,9 +59,9 @@ import org.junit.runner.RunWith
 internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     private val programIndicatorEvaluator = ProgramIndicatorEvaluator(
-        EventStoreImpl.create(databaseAdapter),
-        EnrollmentStoreImpl.create(databaseAdapter),
-        d2.programModule().programIndicatorEngine()
+        EventStoreImpl(databaseAdapter),
+        EnrollmentStoreImpl(databaseAdapter),
+        d2.programModule().programIndicatorEngine(),
     )
 
     private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
@@ -72,16 +72,16 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         val valueSum = evaluateIndicator(
             setProgramIndicator(
-                expression = de(programStage1.uid(), dataElement1.uid())
-            )
+                expression = de(programStage1.uid(), dataElement1.uid()),
+            ),
         )
         assertThat(valueSum).isEqualTo("30.0")
 
         val valueAvg = evaluateIndicator(
             setProgramIndicator(
                 expression = de(programStage1.uid(), dataElement1.uid()),
-                aggregationType = AggregationType.AVERAGE
-            )
+                aggregationType = AggregationType.AVERAGE,
+            ),
         )
         assertThat(valueAvg).isEqualTo("15.0")
     }
@@ -92,16 +92,16 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         val defaultValue = evaluateIndicator(
             setProgramIndicator(
-                expression = de(programStage1.uid(), dataElement1.uid())
-            )
+                expression = de(programStage1.uid(), dataElement1.uid()),
+            ),
         )
         assertThat(defaultValue).isEqualTo("30.0")
 
         val overrideValue = evaluateIndicator(
             setProgramIndicator(
-                expression = de(programStage1.uid(), dataElement1.uid())
+                expression = de(programStage1.uid(), dataElement1.uid()),
             ),
-            overrideAggregationType = AggregationType.AVERAGE
+            overrideAggregationType = AggregationType.AVERAGE,
         )
         assertThat(overrideValue).isEqualTo("15.0")
     }
@@ -112,8 +112,12 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
         val event1 = generator.generate()
         helper.createTrackerEvent(
-            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191101
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191101,
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
@@ -121,8 +125,12 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         val event2 = generator.generate()
         helper.createTrackerEvent(
-            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = day20191101
+            event2,
+            enrollment2,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191101,
         )
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
@@ -131,22 +139,22 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     private fun evaluateIndicator(
         programIndicator: ProgramIndicator,
-        overrideAggregationType: AggregationType = AggregationType.DEFAULT
+        overrideAggregationType: AggregationType = AggregationType.DEFAULT,
     ): String? {
         val evaluationItemSum = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
+                DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(BaseEvaluatorSamples.orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH)
+                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH),
             ),
-            aggregationType = overrideAggregationType
+            aggregationType = overrideAggregationType,
         )
 
         return programIndicatorEvaluator.evaluate(
             evaluationItemSum,
-            metadata + (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator))
+            metadata + (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator)),
         )
     }
 
@@ -154,7 +162,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType? = AnalyticsType.EVENT,
-        aggregationType: AggregationType? = AggregationType.SUM
+        aggregationType: AggregationType? = AggregationType.SUM,
     ): ProgramIndicator {
         val boundaryTarget = if (analyticsType == AnalyticsType.EVENT) {
             "EVENT_DATE"
@@ -170,7 +178,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             AnalyticsPeriodBoundary.builder()
                 .boundaryTarget(boundaryTarget)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
-                .build()
+                .build(),
         )
 
         val programIndicator = ProgramIndicator.builder()

@@ -64,10 +64,6 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
         this(tableName, columns, updateWhereColumns, false);
     }
 
-    public SQLStatementBuilderImpl(String tableName, CoreColumns columns) {
-        this(tableName, columns.all().clone(), columns.whereUpdate().clone(), false);
-    }
-
     public SQLStatementBuilderImpl(TableInfo tableInfo) {
         this(tableInfo.name(), tableInfo.columns().all().clone(), tableInfo.columns().whereUpdate().clone(),
                 tableInfo.hasSortOrder());

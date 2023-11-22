@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.validation.engine.internal
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
@@ -39,24 +37,29 @@ import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.validation.engine.ValidationResultSideEvaluation
 import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation
+import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ValidationExecutor @Inject constructor(private val expressionService: ExpressionService) {
+internal class ValidationExecutor(private val expressionService: ExpressionService) {
     fun evaluateRule(
         rule: ValidationRule,
         organisationUnit: OrganisationUnit?,
         context: ExpressionServiceContext,
         period: Period,
-        attributeOptionComboId: String?
+        attributeOptionComboId: String?,
     ): ValidationResultViolation? {
         return if (shouldSkipOrgunitLevel(rule, organisationUnit)) {
             null
         } else {
             val leftSideValue = expressionService.getExpressionValue(
-                rule.leftSide().expression(), context, rule.leftSide().missingValueStrategy()
+                rule.leftSide().expression(),
+                context,
+                rule.leftSide().missingValueStrategy(),
             ) as Double?
             val rightSideValue = expressionService.getExpressionValue(
-                rule.rightSide().expression(), context, rule.rightSide().missingValueStrategy()
+                rule.rightSide().expression(),
+                context,
+                rule.rightSide().missingValueStrategy(),
             ) as Double?
 
             if (isViolation(rule, leftSideValue, rightSideValue)) {
@@ -108,7 +111,7 @@ internal class ValidationExecutor @Inject constructor(private val expressionServ
     private fun buildSideResult(
         value: Double?,
         side: ValidationRuleExpression,
-        context: ExpressionServiceContext
+        context: ExpressionServiceContext,
     ): ValidationResultSideEvaluation {
         return ValidationResultSideEvaluation.builder()
             .value(value)
@@ -120,7 +123,7 @@ internal class ValidationExecutor @Inject constructor(private val expressionServ
 
     private fun shouldSkipOrgunitLevel(
         rule: ValidationRule,
-        organisationUnit: OrganisationUnit?
+        organisationUnit: OrganisationUnit?,
     ): Boolean {
         return rule.organisationUnitLevels().isNotEmpty() &&
             organisationUnit != null &&

@@ -28,19 +28,17 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsDhisVisualizationSettingHandler @Inject constructor(
-    store: ObjectWithoutUidStore<AnalyticsDhisVisualization>
+@Singleton
+internal class AnalyticsDhisVisualizationSettingHandler(
+    store: AnalyticsDhisVisualizationStore,
 ) : ObjectWithoutUidHandlerImpl<AnalyticsDhisVisualization>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<AnalyticsDhisVisualization>
+        oCollection: Collection<AnalyticsDhisVisualization>,
     ): Collection<AnalyticsDhisVisualization> {
         store.delete()
         return oCollection

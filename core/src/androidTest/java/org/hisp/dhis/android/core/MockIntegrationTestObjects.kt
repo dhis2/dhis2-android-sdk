@@ -28,24 +28,24 @@
 package org.hisp.dhis.android.core
 
 import android.util.Log
-import java.io.IOException
-import java.util.*
-import kotlin.Throws
 import org.hisp.dhis.android.core.D2Factory.clear
-import org.hisp.dhis.android.core.D2Factory.forNewDatabase
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
+import java.io.IOException
+import java.util.*
 
-class MockIntegrationTestObjects(val content: MockIntegrationTestDatabaseContent) {
-
-    val d2: D2 = forNewDatabase()
+class MockIntegrationTestObjects(
+    val d2: D2,
+    val content: MockIntegrationTestDatabaseContent,
+) {
     val databaseAdapter: DatabaseAdapter = d2.databaseAdapter()
-    var serverDate = Date()
-    var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
+
+    private var serverDate = Date()
+    private var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
 
     @JvmField
     internal val d2DIComponent: D2DIComponent = d2.d2DIComponent

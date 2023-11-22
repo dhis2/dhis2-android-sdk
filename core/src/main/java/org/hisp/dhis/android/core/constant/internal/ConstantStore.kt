@@ -25,33 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.constant.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
 
-@Suppress("MagicNumber")
-internal object ConstantStore {
-    private val BINDER: StatementBinder<Constant> = object : IdentifiableStatementBinder<Constant>() {
-        override fun bindToStatement(o: Constant, w: StatementWrapper) {
-            super.bindToStatement(o, w)
-            w.bind(7, o.value())
-        }
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Constant> {
-        return objectWithUidStore(
-            databaseAdapter,
-            ConstantTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> Constant.create(cursor) }
-    }
-}
+internal interface ConstantStore : IdentifiableObjectStore<Constant>

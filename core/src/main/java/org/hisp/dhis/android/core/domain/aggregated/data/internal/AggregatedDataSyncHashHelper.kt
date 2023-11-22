@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AggregatedDataSyncHashHelper @Inject constructor() {
+@Singleton
+internal class AggregatedDataSyncHashHelper {
     fun getDataSetDataElementsHash(dataSet: DataSet): Int {
         return dataSet.dataSetElements()!!
             .map { it.dataElement().uid() }

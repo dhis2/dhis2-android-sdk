@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("MagicNumber")
-internal class DataStoreImportHandler @Inject constructor(
-    private val store: DataStoreEntryStore
+internal class DataStoreImportHandler(
+    private val store: DataStoreEntryStore,
 ) {
 
     fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {

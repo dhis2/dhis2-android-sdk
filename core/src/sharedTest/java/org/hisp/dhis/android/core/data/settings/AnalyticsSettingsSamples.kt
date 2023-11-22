@@ -95,9 +95,9 @@ object AnalyticsSettingsSamples {
                         AnalyticsTeiWHONutritionGenderValues.builder()
                             .female("female")
                             .male("male")
-                            .build()
+                            .build(),
                     )
-                    .build()
+                    .build(),
             )
             .x(AnalyticsTeiWHONutritionItem.builder().build())
             .y(AnalyticsTeiWHONutritionItem.builder().build())

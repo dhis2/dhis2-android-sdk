@@ -27,38 +27,37 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LogInDatabaseManager @Inject internal constructor(
+@Singleton
+internal class LogInDatabaseManager(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val generalSettingCall: GeneralSettingCall
+    private val generalSettingCall: GeneralSettingCall,
 ) {
 
-    fun loadDatabaseOnline(serverUrl: String, username: String): Completable {
-        return generalSettingCall.isDatabaseEncrypted()
-            .doOnSuccess { encrypt: Boolean ->
-                multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
-                    serverUrl, username, encrypt
-                )
-            }
-            .doOnError {
-                multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
-                    serverUrl, username, false
-                )
-            }
-            .ignoreElement()
-            .onErrorComplete()
+    suspend fun loadDatabaseOnline(serverUrl: String, username: String) {
+        try {
+            val isEncrypted = generalSettingCall.isDatabaseEncrypted()
+            multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                serverUrl,
+                username,
+                isEncrypted,
+            )
+        } catch (ignored: Exception) {
+            multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
+                serverUrl,
+                username,
+                false,
+            )
+        }
     }
 
     fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return multiUserDatabaseManager.loadExistingKeepingEncryption(
             serverUrl,
-            username
+            username,
         )
     }
 }

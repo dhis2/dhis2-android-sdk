@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
 
 internal class SectionIndicatorsChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<Section, Indicator>
+    private val linkChildStore: LinkChildStore<Section, Indicator>,
 ) : ChildrenAppender<Section>() {
 
     override fun appendChildren(section: Section): Section {
@@ -52,15 +52,15 @@ internal class SectionIndicatorsChildrenAppender private constructor(
             val childProjection = LinkTableChildProjection(
                 IndicatorTableInfo.TABLE_INFO,
                 SectionIndicatorLinkTableInfo.Columns.SECTION,
-                SectionIndicatorLinkTableInfo.Columns.INDICATOR
+                SectionIndicatorLinkTableInfo.Columns.INDICATOR,
             )
 
             return SectionIndicatorsChildrenAppender(
                 linkChildStore(
                     databaseAdapter,
                     SectionIndicatorLinkTableInfo.TABLE_INFO,
-                    childProjection
-                ) { Indicator.create(it) }
+                    childProjection,
+                ) { Indicator.create(it) },
             )
         }
     }

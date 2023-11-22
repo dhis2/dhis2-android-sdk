@@ -27,23 +27,22 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class StockUseCaseCall @Inject constructor(
-    private val stockUseCaseHandler: HandlerWithTransformer<InternalStockUseCase>,
+@Singleton
+internal class StockUseCaseCall(
+    private val stockUseCaseHandler: StockUseCaseHandler,
     private val stockUseCaseService: StockUseCaseService,
-    private val apiCallExecutor: RxAPICallExecutor,
-) : BaseSettingCall<List<InternalStockUseCase>>() {
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : BaseSettingCall<List<InternalStockUseCase>>(coroutineAPICallExecutor) {
 
-    override fun fetch(storeError: Boolean): Single<List<InternalStockUseCase>> {
-        return apiCallExecutor.wrapSingle(stockUseCaseService.stockUseCases(), storeError = storeError)
+    override suspend fun tryFetch(storeError: Boolean): Result<List<InternalStockUseCase>, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) { stockUseCaseService.stockUseCases() }
     }
 
     override fun process(item: List<InternalStockUseCase>?) {

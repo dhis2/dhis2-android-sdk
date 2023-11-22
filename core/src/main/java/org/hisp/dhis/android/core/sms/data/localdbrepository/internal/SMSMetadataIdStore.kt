@@ -25,42 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-@Suppress("MagicNumber")
-internal object SMSMetadataIdStore {
-
-    private val BINDER: StatementBinder<SMSMetadataId> = StatementBinder { o, w ->
-        w.bind(1, o.type())
-        w.bind(2, o.uid())
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder<SMSMetadataId> { o: SMSMetadataId, w: StatementWrapper ->
-        w.bind(3, o.type())
-        w.bind(4, o.uid())
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder<SMSMetadataId> { o: SMSMetadataId, w: StatementWrapper ->
-        w.bind(1, o.type())
-        w.bind(2, o.uid())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SMSMetadataId> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            SMSMetadataIdTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> SMSMetadataId.create(cursor) }
-    }
-}
+internal interface SMSMetadataIdStore : ObjectWithoutUidStore<SMSMetadataId>

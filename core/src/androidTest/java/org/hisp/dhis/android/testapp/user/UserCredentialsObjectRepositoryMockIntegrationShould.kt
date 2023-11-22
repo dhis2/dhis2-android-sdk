@@ -29,15 +29,13 @@ package org.hisp.dhis.android.testapp.user
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class UserCredentialsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class UserCredentialsObjectRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_user() {
-        val userCredentials = d2.userModule().userCredentials().blockingGet()
+        val userCredentials = d2.userModule().userCredentials().blockingGet()!!
         assertThat(userCredentials.username()).isEqualTo("android")
         assertThat(userCredentials.name()).isEqualTo("John Barnes")
         assertThat(userCredentials.displayName()).isEqualTo("John Barnes")
@@ -45,7 +43,7 @@ class UserCredentialsObjectRepositoryMockIntegrationShould : BaseMockIntegration
 
     @Test
     fun return_user_roles_as_children() {
-        val userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet()
+        val userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet()!!
         assertThat(userCredentials.userRoles()!!.size).isEqualTo(1)
         assertThat(userCredentials.userRoles()!![0].name()).isEqualTo("Superuser")
     }

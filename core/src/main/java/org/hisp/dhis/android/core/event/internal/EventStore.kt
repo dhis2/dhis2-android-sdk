@@ -41,7 +41,7 @@ internal interface EventStore : IdentifiableDeletableDataObjectStore<Event> {
     fun queryOrderedForEnrollmentAndProgramStage(
         enrollmentUid: String,
         programStageUid: String,
-        includeDeleted: Boolean
+        includeDeleted: Boolean,
     ): List<Event>
 
     fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int

@@ -28,40 +28,49 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class ProgramSettingCallShould {
-    private val handler: Handler<ProgramSetting> = mock()
+    private val handler: ProgramSettingHandler = mock()
     private val service: SettingAppService = mock()
-    private val programSettingSingle: Single<ProgramSettings> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val programSettings: ProgramSettings = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
 
     private lateinit var programSettingCall: ProgramSettingCall
 
     @Before
     fun setUp() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
-        whenever(service.programSettings(any())) doReturn programSettingSingle
-        programSettingCall = ProgramSettingCall(handler, service, apiCallExecutor, appVersionManager)
+        appVersionManager.stub {
+            onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V1_1
+        }
+        whenAPICall { programSettings }
+
+        programSettingCall = ProgramSettingCall(handler, service, coroutineAPICallExecutor, appVersionManager)
+    }
+
+    private fun whenAPICall(answer: Answer<ProgramSettings>) {
+        service.stub {
+            onBlocking { programSettings(any()) }.doAnswer(answer)
+        }
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(programSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        whenever(service.programSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
 
-        programSettingCall.getCompletable(false).blockingAwait()
+        programSettingCall.download(false)
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)

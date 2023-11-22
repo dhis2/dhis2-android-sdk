@@ -27,20 +27,18 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OldEventEndpointCallFactory @Inject constructor(
-    private val service: EventService
+@Singleton
+internal class OldEventEndpointCallFactory(
+    private val service: EventService,
 ) : EventEndpointCallFactory() {
 
-    override fun getCollectionCall(eventQuery: TrackerAPIQuery): Single<Payload<Event>> {
+    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         return service.getEvents(
             fields = EventFields.allFields,
             orgUnit = eventQuery.orgUnit,
@@ -52,15 +50,15 @@ internal class OldEventEndpointCallFactory @Inject constructor(
             pageSize = eventQuery.pageSize,
             lastUpdatedStartDate = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = getUidStr(eventQuery)
+            eventUid = getUidStr(eventQuery),
         )
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<Event>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {
         return service.getEventSingle(
             eventUid = uid,
             fields = EventFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name
+            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         )
     }
 }

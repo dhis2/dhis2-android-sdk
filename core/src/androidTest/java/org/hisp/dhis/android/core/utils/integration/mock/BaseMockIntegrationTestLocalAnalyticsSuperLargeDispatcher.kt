@@ -44,13 +44,12 @@ abstract class BaseMockIntegrationTestLocalAnalyticsSuperLargeDispatcher : BaseM
         @JvmStatic
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.LocalAnalyticsSuperLargeDispatcher)
-            if (isNewInstance) {
-                objects.dhis2MockServer.setRequestDispatcher()
-                objects.d2.userModule().blockingLogIn(
-                    RealServerMother.username, RealServerMother.password,
-                    objects.dhis2MockServer.baseEndpoint!!
-                )
-            }
+            dhis2MockServer.setRequestDispatcher()
+            freshLogin(
+                RealServerMother.username,
+                RealServerMother.password,
+                dhis2MockServer.baseEndpoint!!,
+            )
 
             objects.d2.let {
                 val filler = LocalAnalyticsDatabaseFiller(it)

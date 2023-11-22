@@ -27,23 +27,21 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
+import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class SystemInfoModuleImpl @Inject internal constructor(
+@Singleton
+internal class SystemInfoModuleImpl(
     private val versionManager: DHISVersionManager,
-    private val systemInfo: ReadOnlyWithDownloadObjectRepository<SystemInfo>
+    private val systemInfo: SystemInfoObjectRepository,
 ) : SystemInfoModule {
     override fun versionManager(): DHISVersionManager {
         return versionManager
     }
 
-    override fun systemInfo(): ReadOnlyWithDownloadObjectRepository<SystemInfo> {
+    override fun systemInfo(): SystemInfoObjectRepository {
         return systemInfo
     }
 }

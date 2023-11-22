@@ -27,18 +27,18 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundleKey
 import org.hisp.dhis.android.core.period.PeriodType
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     /**
@@ -46,37 +46,9 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
      * metadataSyncCall. It works against the demo server.
      */
 
-    private fun download(): Single<List<DataValue>> {
-        val dataValueHandler: Handler<DataValue> = ObjectWithoutUidHandlerImpl(
-            DataValueStore.create(d2.databaseAdapter())
-        )
-
-        val key = AggregatedDataCallBundleKey(
-            periodType = PeriodType.Daily,
-            futurePeriods = 0,
-            pastPeriods = 30,
-            lastUpdated = null
-        )
-
-        val bundle = AggregatedDataCallBundle(
-            key = key,
-            dataSets = DataValueUtils.dataSets,
-            periodIds = DataValueUtils.periodIds,
-            rootOrganisationUnitUids = DataValueUtils.orgUnitUids,
-            allOrganisationUnitUidsSet = emptySet()
-        )
-
-        val resourceHandler = getGenericCallData(d2).resourceHandler()
-        val apiDownloader: APIDownloader = APIDownloaderImpl(resourceHandler)
-        val dataValueService = d2.retrofit().create(DataValueService::class.java)
-
-        return DataValueCall(dataValueService, dataValueHandler, apiDownloader)
-            .download(DataValueQuery.create(bundle))
-    }
-
     // @Test
     @Throws(Exception::class)
-    fun download_data_values() {
+    fun download_data_values() = runTest {
         if (!d2.userModule().isLogged().blockingGet()) {
             d2.userModule().logIn(username, password, url).blockingGet()
         }
@@ -85,6 +57,33 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             constraints won't be satisfied.
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
-            uncomment the @Test tag */download().blockingGet()
+            uncomment the @Test tag */
+        download()
+    }
+
+    private suspend fun download(): List<DataValue> {
+        val dataValueHandler = DataValueHandler(DataValueStoreImpl(d2.databaseAdapter()))
+
+        val key = AggregatedDataCallBundleKey(
+            periodType = PeriodType.Daily,
+            futurePeriods = 0,
+            pastPeriods = 30,
+            lastUpdated = null,
+        )
+
+        val bundle = AggregatedDataCallBundle(
+            key = key,
+            dataSets = DataValueUtils.dataSets,
+            periodIds = DataValueUtils.periodIds,
+            rootOrganisationUnitUids = DataValueUtils.orgUnitUids,
+            allOrganisationUnitUidsSet = emptySet(),
+        )
+
+        val resourceHandler = getGenericCallData(d2).resourceHandler()
+        val apiDownloader: APIDownloader = APIDownloaderImpl(resourceHandler)
+        val dataValueService = d2.retrofit().create(DataValueService::class.java)
+
+        return DataValueCall(dataValueService, dataValueHandler, apiDownloader)
+            .download(DataValueQuery(bundle))
     }
 }

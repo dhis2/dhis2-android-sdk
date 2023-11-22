@@ -27,20 +27,26 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.settings.LatestAppVersion
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.koin.core.annotation.Singleton
 
-internal class SettingAppService @Inject constructor(
-    private val settingService: SettingService
+@Singleton
+internal class SettingAppService(
+    private val settingService: SettingService,
 ) {
 
-    fun info(): Single<SettingsAppInfo> {
+    suspend fun info(): SettingsAppInfo {
         return settingService.settingsAppInfo("$ANDROID_APP_NAMESPACE_V2/info")
     }
 
-    fun generalSettings(version: SettingsAppDataStoreVersion): Single<GeneralSettings> {
+    suspend fun generalSettings(version: SettingsAppDataStoreVersion): GeneralSettings {
         val key = when (version) {
             SettingsAppDataStoreVersion.V1_1 -> "general_settings"
             else -> "generalSettings"
@@ -49,27 +55,27 @@ internal class SettingAppService @Inject constructor(
         return settingService.generalSettings("${getNamespace(version)}/$key")
     }
 
-    fun dataSetSettings(version: SettingsAppDataStoreVersion): Single<DataSetSettings> {
+    suspend fun dataSetSettings(version: SettingsAppDataStoreVersion): DataSetSettings {
         return settingService.dataSetSettings("${getNamespace(version)}/dataSet_settings")
     }
 
-    fun programSettings(version: SettingsAppDataStoreVersion): Single<ProgramSettings> {
+    suspend fun programSettings(version: SettingsAppDataStoreVersion): ProgramSettings {
         return settingService.programSettings("${getNamespace(version)}/program_settings")
     }
 
-    fun synchronizationSettings(version: SettingsAppDataStoreVersion): Single<SynchronizationSettings> {
+    suspend fun synchronizationSettings(version: SettingsAppDataStoreVersion): SynchronizationSettings {
         return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
     }
 
-    fun appearanceSettings(version: SettingsAppDataStoreVersion): Single<AppearanceSettings> {
+    suspend fun appearanceSettings(version: SettingsAppDataStoreVersion): AppearanceSettings {
         return settingService.appearanceSettings("${getNamespace(version)}/appearance")
     }
 
-    fun analyticsSettings(version: SettingsAppDataStoreVersion): Single<AnalyticsSettings> {
+    suspend fun analyticsSettings(version: SettingsAppDataStoreVersion): AnalyticsSettings {
         return settingService.analyticsSettings("${getNamespace(version)}/analytics")
     }
 
-    fun latestAppVersion(): Single<LatestAppVersion> {
+    suspend fun latestAppVersion(): LatestAppVersion {
         return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
     }
 

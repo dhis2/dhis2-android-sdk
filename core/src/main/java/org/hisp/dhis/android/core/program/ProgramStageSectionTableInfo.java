@@ -56,6 +56,8 @@ public final class ProgramStageSectionTableInfo {
         public static final String PROGRAM_STAGE = "programStage";
         public static final String DESKTOP_RENDER_TYPE = SectionRenderingColumnAdapter.DESKTOP_RENDER_TYPE;
         public static final String MOBILE_RENDER_TYPE = SectionRenderingColumnAdapter.MOBILE_RENDER_TYPE;
+        public static final String DESCRIPTION = "description";
+        public static final String DISPLAY_DESCRIPTION = "displayDescription";
 
         @Override
         public String[] all() {
@@ -63,7 +65,9 @@ public final class ProgramStageSectionTableInfo {
                     SORT_ORDER,
                     PROGRAM_STAGE,
                     DESKTOP_RENDER_TYPE,
-                    MOBILE_RENDER_TYPE
+                    MOBILE_RENDER_TYPE,
+                    DESCRIPTION,
+                    DISPLAY_DESCRIPTION
             );
         }
     }

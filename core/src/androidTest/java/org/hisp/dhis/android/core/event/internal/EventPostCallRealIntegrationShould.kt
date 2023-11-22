@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
-import java.util.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.junit.Before
+import java.util.*
 
 class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var eventStore: EventStore
@@ -59,8 +59,8 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        eventStore = create(d2.databaseAdapter())
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter())
+        eventStore = EventStoreImpl(d2.databaseAdapter())
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
         val uidGenerator: UidGenerator = UidGeneratorImpl()
         eventUid1 = uidGenerator.generate()
         eventUid2 = uidGenerator.generate()
@@ -85,7 +85,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
                 .program(programUid)
                 .programStage(programStageUid)
                 .attributeOptionCombo(attributeOptionCombo)
-                .build()
+                .build(),
         )
         val repo = d2.eventModule().events().uid(eventUid)
         repo.setEventDate(Date())
@@ -95,7 +95,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     // commented out since it is a flaky test that works against a real server.
     // @Test
     @Throws(Exception::class)
-    fun pull_event_with_correct_category_combo_after_be_pushed() {
+    fun pull_event_with_correct_category_combo_after_be_pushed() = runTest {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         pushDummyEvent()
@@ -111,7 +111,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     fun pull_events_delete_with_repository_and_post() {
         downloadMetadata()
         d2.eventModule().eventDownloader().limit(10).blockingDownload()
-        val uid = d2.eventModule().events().one().blockingGet().uid()
+        val uid = d2.eventModule().events().one().blockingGet()!!.uid()
         d2.eventModule().events().uid(uid).blockingDelete()
         d2.eventModule().events().blockingUpload()
     }
@@ -119,7 +119,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     // commented out since it is a flaky test that works against a real server.
     // @Test
     @Throws(Exception::class)
-    fun pull_two_events_with_correct_category_combo_after_be_pushed() {
+    fun pull_two_events_with_correct_category_combo_after_be_pushed() = runTest {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         createDummyDataToPost(eventUid2)
@@ -137,7 +137,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
                 .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(Date())
                 .completedDate(Date()).dueDate(Date()).syncState(State.TO_POST)
-                .attributeOptionCombo(attributeOptionCombo).build()
+                .attributeOptionCombo(attributeOptionCombo).build(),
         )
         val trackedEntityDataValue = TrackedEntityDataValue.builder()
             .event(eventUid)
@@ -157,11 +157,14 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     @Throws(Exception::class)
-    private fun downloadEvents() {
-        val eventEndpointCall = EventCallFactory.create(
-            d2.retrofit(), orgUnitUid, 50, emptyList()
+    private suspend fun downloadEvents() {
+        val eventPayload = EventCallFactory.create(
+            d2.retrofit(),
+            orgUnitUid,
+            50,
+            emptyList(),
         )
-        val events = eventEndpointCall.blockingGet().items()
+        val events = eventPayload.items()
         for (event in events) {
             eventStore.insert(event)
         }
@@ -188,25 +191,25 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         orgUnitUid = d2.organisationUnitModule().organisationUnits()
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
         programUid = d2.programModule().programs()
-            .byOrganisationUnitUid(orgUnitUid)
+            .byOrganisationUnitUid(orgUnitUid!!)
             .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
 
         // Before running, make sure no data elements are compulsory
         programStageUid = d2.programModule().programStages()
             .byProgramUid().eq(programUid)
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
         dataElementUid = d2.programModule().programStageDataElements()
             .byProgramStage().eq(programStageUid)
-            .one().blockingGet().dataElement()
+            .one().blockingGet()!!.dataElement()
             ?.uid()
         attributeOptionCombo = d2.categoryModule().categoryOptionCombos()
-            .one().blockingGet()
+            .one().blockingGet()!!
             .uid()
     }
 

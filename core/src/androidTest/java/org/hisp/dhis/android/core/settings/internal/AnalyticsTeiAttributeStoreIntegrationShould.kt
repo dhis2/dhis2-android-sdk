@@ -37,9 +37,9 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class AnalyticsTeiAttributeStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AnalyticsTeiAttribute>(
-    AnalyticsTeiAttributeStore.create(TestDatabaseAdapterFactory.get()),
+    AnalyticsTeiAttributeStoreImpl(TestDatabaseAdapterFactory.get()),
     AnalyticsTeiAttributeTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): AnalyticsTeiAttribute {
         return AnalyticsSettingsSamples.analyticsTeiAttribute

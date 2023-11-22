@@ -27,41 +27,28 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class CategoryModuleDownloader @Inject internal constructor(
-    private val categoryCall: UidsCall<Category>,
-    private val categoryComboCall: UidsCall<CategoryCombo>,
-    private val categoryOptionCall: UidsCall<CategoryOption>,
+@Singleton
+class CategoryModuleDownloader internal constructor(
+    private val categoryCall: CategoryCall,
+    private val categoryComboCall: CategoryComboCall,
+    private val categoryOptionCall: CategoryOptionCall,
     private val categoryOptionOrganisationUnitsCall: CategoryOptionOrganisationUnitsCall,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,
-    private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker
-) : UntypedModuleDownloader {
+    private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker,
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
-            .flatMap { categoryComboCall.download(it) }
-            .flatMap { comboUids ->
-                val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
-                categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(categoryUids)
-                        .flatMap { categoryOptions ->
-                            categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
-                            categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
-                        }
-                }
-            }
-            .map { categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos() }
-            .ignoreElement()
+    override suspend fun downloadMetadata() {
+        val uids = categoryComboUidsSeeker.seekUids()
+        val comboUids = categoryComboCall.download(uids)
+        val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
+        val categories = categoryCall.download(categoryUids)
+        val categoryOptions = categoryOptionCall.download(categoryUids)
+        categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
+        categoryOptionOrganisationUnitsCall.download(categoryOptions.map { it.uid() }.toSet())
+        categoryOptionComboIntegrityChecker.removeIncompleteCategoryOptionCombos()
     }
 }

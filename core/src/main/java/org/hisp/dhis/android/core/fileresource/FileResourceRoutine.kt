@@ -28,34 +28,33 @@
 
 package org.hisp.dhis.android.core.fileresource
 
-import dagger.Reusable
 import io.reactivex.Completable
-import java.io.File
-import java.util.Calendar
-import java.util.Date
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import org.koin.core.annotation.Singleton
+import java.io.File
+import java.util.Calendar
+import java.util.Date
 
-@Reusable
-internal class FileResourceRoutine @Inject constructor(
+@Singleton
+internal class FileResourceRoutine(
     private val dataValueCollectionRepository: DataValueCollectionRepository,
     private val dataElementCollectionRepository: DataElementCollectionRepository,
     private val fileResourceCollectionRepository: FileResourceCollectionRepository,
     private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
     private val trackedEntityDataValueCollectionRepository: TrackedEntityDataValueCollectionRepository,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
-    private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository
+    private val fileResourceStore: FileResourceStore,
+    private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository,
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {
         return Completable.fromCallable {
@@ -93,7 +92,7 @@ internal class FileResourceRoutine @Inject constructor(
             add(Calendar.HOUR_OF_DAY, -2)
         }
         val fileResources = fileResourceCollectionRepository
-            .byUid().notIn(fileResourceUids)
+            .byUid().notIn(fileResourceUids.mapNotNull { it })
             .byDomain().eq(FileResourceDomain.DATA_VALUE)
             .byLastUpdated().before(after ?: calendar.time)
             .blockingGet()

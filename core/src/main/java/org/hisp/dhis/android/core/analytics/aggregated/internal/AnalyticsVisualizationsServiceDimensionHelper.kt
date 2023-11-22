@@ -28,30 +28,29 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
+import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
-    private val categoryStore: IdentifiableObjectStore<Category>,
-    private val categoryOptionLinkStore: LinkStore<CategoryCategoryOptionLink>,
-    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>
+@Singleton
+internal class AnalyticsVisualizationsServiceDimensionHelper(
+    private val categoryStore: CategoryStore,
+    private val categoryOptionLinkStore: CategoryCategoryOptionLinkStore,
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
     private val dataDimension = "dx"
     private val orgUnitDimension = "ou"
@@ -87,27 +86,34 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
             when (dataType) {
                 DataDimensionItemType.INDICATOR ->
                     item.dimensionItem()?.let { DimensionItem.DataItem.IndicatorItem(it) }
+
                 DataDimensionItemType.DATA_ELEMENT ->
                     item.dimensionItem()?.let { DimensionItem.DataItem.DataElementItem(it) }
+
                 DataDimensionItemType.DATA_ELEMENT_OPERAND ->
                     item.dimensionItem()?.let {
                         val (dataElement, coc) = composedUidOperandRegex.find(it)!!.destructured
                         DimensionItem.DataItem.DataElementOperandItem(dataElement, coc)
                     }
+
                 DataDimensionItemType.PROGRAM_INDICATOR ->
                     item.dimensionItem()?.let { DimensionItem.DataItem.ProgramIndicatorItem(it) }
+
                 DataDimensionItemType.PROGRAM_DATA_ELEMENT ->
                     item.dimensionItem()?.let {
                         val (program, dataElement) = composedUidOperandRegex.find(it)!!.destructured
                         DimensionItem.DataItem.EventDataItem.DataElement(program, dataElement)
                     }
+
                 DataDimensionItemType.PROGRAM_ATTRIBUTE ->
                     item.dimensionItem()?.let {
                         val (program, attribute) = composedUidOperandRegex.find(it)!!.destructured
                         DimensionItem.DataItem.EventDataItem.Attribute(program, attribute)
                     }
+
                 DataDimensionItemType.EXPRESSION_DIMENSION_ITEM ->
                     item.dimensionItem()?.let { DimensionItem.DataItem.ExpressionDimensionItem(it) }
+
                 else ->
                     null
             }
@@ -128,7 +134,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
                     val level = organisationUnitLevelStore.selectOneWhere(
                         WhereClauseBuilder()
                             .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, levelNumber.toInt())
-                            .build()
+                            .build(),
                     ) ?: throw AnalyticsException.InvalidOrganisationUnitLevel(levelNumber)
                     DimensionItem.OrganisationUnitItem.Level(level.uid())
                 }

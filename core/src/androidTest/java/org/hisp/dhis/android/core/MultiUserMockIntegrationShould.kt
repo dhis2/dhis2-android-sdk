@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
@@ -47,8 +48,9 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
         d2.databaseAdapter().insert(
-            CategoryOptionTableInfo.TABLE_INFO.name(), null,
-            CategoryOptionSamples.getCategoryOption().toContentValues()
+            CategoryOptionTableInfo.TABLE_INFO.name(),
+            null,
+            CategoryOptionSamples.getCategoryOption().toContentValues(),
         )
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
@@ -71,8 +73,9 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
         d2.databaseAdapter().insert(
-            CategoryOptionTableInfo.TABLE_INFO.name(), null,
-            CategoryOptionSamples.getCategoryOption().toContentValues()
+            CategoryOptionTableInfo.TABLE_INFO.name(),
+            null,
+            CategoryOptionSamples.getCategoryOption().toContentValues(),
         )
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
@@ -99,7 +102,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         @AfterClass
         @JvmStatic
         fun tearDownTestClass() {
-            d2.userModule().accountManager().setMaxAccounts(1)
+            d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
         }
     }
 }

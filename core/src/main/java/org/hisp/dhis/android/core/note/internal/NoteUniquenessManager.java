@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.Note;
@@ -40,17 +39,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
 public class NoteUniquenessManager {
 
-    private final IdentifiableObjectStore<Note> noteStore;
+    private final NoteStore noteStore;
 
-    @Inject
-    NoteUniquenessManager(IdentifiableObjectStore<Note> noteStore) {
+    public NoteUniquenessManager(NoteStore noteStore) {
         this.noteStore = noteStore;
     }
 

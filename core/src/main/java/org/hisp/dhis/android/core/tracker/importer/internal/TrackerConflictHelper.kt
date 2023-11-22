@@ -28,17 +28,16 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import android.content.Context
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
+import org.koin.core.annotation.Singleton
+import java.util.*
 
-@Reusable
-internal class TrackerConflictHelper @Inject constructor(
+@Singleton
+internal class TrackerConflictHelper(
     val context: Context,
-    private val interpreterSelector: InterpreterSelector
+    private val interpreterSelector: InterpreterSelector,
 ) {
 
     fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {

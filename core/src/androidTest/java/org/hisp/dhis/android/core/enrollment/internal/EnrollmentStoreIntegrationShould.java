@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
 
     public EnrollmentStoreIntegrationShould() {
-        super(EnrollmentStoreImpl.create(TestDatabaseAdapterFactory.get()),
+        super(new EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()),
                 EnrollmentTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

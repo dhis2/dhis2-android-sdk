@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.LatestAppVersion
+import org.koin.core.annotation.Singleton
 
-internal class LatestAppVersionHandler(store: ObjectWithoutUidStore<LatestAppVersion>) :
+@Singleton
+internal class LatestAppVersionHandler(store: LatestAppVersionStore) :
     ObjectWithoutUidHandlerImpl<LatestAppVersion>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<LatestAppVersion>): Collection<LatestAppVersion> {

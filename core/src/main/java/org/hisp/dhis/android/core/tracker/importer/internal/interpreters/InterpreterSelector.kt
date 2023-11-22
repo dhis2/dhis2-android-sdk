@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.tracker.importer.internal.ImporterError
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class InterpreterSelector @Inject internal constructor(
-    private val interpreterHelper: InterpreterHelper
+@Singleton
+internal class InterpreterSelector internal constructor(
+    private val interpreterHelper: InterpreterHelper,
 ) {
     fun getInterpreter(error: ImporterError): ErrorCodeInterpreter {
         return when (error) {

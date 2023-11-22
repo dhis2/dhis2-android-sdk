@@ -28,30 +28,30 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.util.Log
-import dagger.Reusable
-import java.util.concurrent.Callable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class UserCall @Inject constructor(
+@Singleton
+internal class UserCall(
     private val genericCallData: GenericCallData,
-    private val apiCallExecutor: APICallExecutor,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val userService: UserService,
-    private val userHandler: Handler<User>,
-    private val dhisVersionManager: DHISVersionManager
-) : Callable<User> {
+    private val userHandler: UserHandler,
+    private val dhisVersionManager: DHISVersionManager,
+) {
 
     @Throws(D2Error::class)
-    override fun call(): User {
-        val user = apiCallExecutor.executeObjectCall(
-            userService.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()))
-        )
+    suspend fun call(): User {
+        val user =
+            coroutineAPICallExecutor.wrap {
+                userService.getUser(
+                    UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
+                )
+            }.getOrThrow()
 
         val transaction = genericCallData.databaseAdapter().beginNewTransaction()
         try {

@@ -27,40 +27,30 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
-import retrofit2.Call
 import retrofit2.http.*
 
 @Suppress("LongParameterList")
 internal interface TrackedEntityInstanceService {
     @POST(TRACKED_ENTITY_INSTANCES)
-    fun postTrackedEntityInstances(
+    suspend fun postTrackedEntityInstances(
         @Body trackedEntityInstances: TrackedEntityInstancePayload?,
-        @Query(STRATEGY) strategy: String?
-    ): Call<TEIWebResponse>
+        @Query(STRATEGY) strategy: String?,
+    ): TEIWebResponse
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstance(
+    suspend fun getTrackedEntityInstance(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(OU_MODE) orgUnitMode: String?,
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<Payload<TrackedEntityInstance>>
-
-    @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstanceAsCall(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Call<Payload<TrackedEntityInstance>>
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
+    ): Payload<TrackedEntityInstance>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
@@ -71,11 +61,11 @@ internal interface TrackedEntityInstanceService {
         @Query(PROGRAM_START_DATE) programStartDate: String?,
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): TrackedEntityInstance
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    fun getTrackedEntityInstances(
+    suspend fun getTrackedEntityInstances(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstances: String?,
         @Query(OU) orgUnits: String?,
         @Query(OU_MODE) orgUnitMode: String?,
@@ -89,11 +79,11 @@ internal interface TrackedEntityInstanceService {
         @Query(PAGE_SIZE) pageSize: Int,
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean
-    ): Single<Payload<TrackedEntityInstance>>
+        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
+    ): Payload<TrackedEntityInstance>
 
     @GET("$TRACKED_ENTITY_INSTANCES/query")
-    fun query(
+    suspend fun query(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
         @Query(OU) orgUnit: String?,
         @Query(OU_MODE) orgUnitMode: String?,
@@ -117,8 +107,8 @@ internal interface TrackedEntityInstanceService {
         @Query(ORDER) order: String?,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
-        @Query(PAGE_SIZE) pageSize: Int
-    ): Call<SearchGrid>
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): SearchGrid
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"

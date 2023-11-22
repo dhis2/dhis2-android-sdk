@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import retrofit2.http.GET
 
 internal interface StockUseCaseService {
 
     @GET("dataStore/USE_CASES/stockUseCases")
-    fun stockUseCases(): Single<List<InternalStockUseCase>>
+    suspend fun stockUseCases(): List<InternalStockUseCase>
 }

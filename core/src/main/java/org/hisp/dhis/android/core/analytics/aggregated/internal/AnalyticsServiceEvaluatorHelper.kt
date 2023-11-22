@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
@@ -41,14 +40,16 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventD
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ExpressionDimensionItemEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
+@Singleton
+internal class AnalyticsServiceEvaluatorHelper(
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val indicatorEvaluator: IndicatorEvaluator,
     private val eventDataItemEvaluator: EventDataItemSQLEvaluator,
     private val expressionDimensionItemEvaluator: ExpressionDimensionItemEvaluator,
-    private val legendEvaluator: LegendEvaluator
+    private val legendEvaluator: LegendEvaluator,
 ) {
     fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
@@ -68,7 +69,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         return DimensionalValue(
             dimensions = evaluationItem.dimensionItems.map { (it as DimensionItem).id },
             value = value,
-            legend = legend
+            legend = legend,
         )
     }
 
@@ -98,7 +99,7 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
             else ->
                 throw AnalyticsException.InvalidArguments(
                     "Invalid arguments: Only a single indicator " +
-                        "can be specified as filter."
+                        "can be specified as filter.",
                 )
         }
     }
@@ -123,27 +124,27 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         return when (dimensionDataItem) {
             is DimensionItem.DataItem.DataElementItem -> legendEvaluator.getLegendByDataElement(
                 dimensionDataItem.uid,
-                value
+                value,
             )
             is DimensionItem.DataItem.DataElementOperandItem -> legendEvaluator.getLegendByDataElement(
                 dimensionDataItem.dataElement,
-                value
+                value,
             )
             is DimensionItem.DataItem.ProgramIndicatorItem -> legendEvaluator.getLegendByProgramIndicator(
                 dimensionDataItem.uid,
-                value
+                value,
             )
             is DimensionItem.DataItem.IndicatorItem -> legendEvaluator.getLegendByIndicator(
                 dimensionDataItem.uid,
-                value
+                value,
             )
             is DimensionItem.DataItem.EventDataItem.DataElement -> legendEvaluator.getLegendByDataElement(
                 dimensionDataItem.dataElement,
-                value
+                value,
             )
             is DimensionItem.DataItem.EventDataItem.Attribute -> legendEvaluator.getLegendByTrackedEntityAttribute(
                 dimensionDataItem.attribute,
-                value
+                value,
             )
             is DimensionItem.DataItem.ExpressionDimensionItem -> null
         }

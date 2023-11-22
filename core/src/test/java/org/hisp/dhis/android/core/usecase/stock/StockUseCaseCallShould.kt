@@ -28,38 +28,46 @@
 package org.hisp.dhis.android.core.usecase.stock
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseHandler
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class StockUseCaseCallShould {
-    private val handler: IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase> = mock()
+    private val handler: StockUseCaseHandler = mock()
     private val service: StockUseCaseService = mock()
-    private val stockUseCaseSingle: Single<List<InternalStockUseCase>> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val stockUseCase: List<InternalStockUseCase> = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
 
     private lateinit var stockUseCaseCall: StockUseCaseCall
 
     @Before
     fun setUp() {
-        whenever(service.stockUseCases()) doReturn stockUseCaseSingle
-        stockUseCaseCall = StockUseCaseCall(handler, service, apiCallExecutor)
+        whenAPICall { stockUseCase }
+        stockUseCaseCall = StockUseCaseCall(handler, service, coroutineAPICallExecutor)
+    }
+
+    private fun whenAPICall(answer: Answer<List<InternalStockUseCase>>) {
+        service.stub {
+            onBlocking { stockUseCases() }.doAnswer(answer)
+        }
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(stockUseCaseSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        whenever(service.stockUseCases()) doAnswer { throw D2ErrorSamples.notFound() }
 
-        stockUseCaseCall.getCompletable(false).blockingAwait()
+        stockUseCaseCall.download(false)
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)

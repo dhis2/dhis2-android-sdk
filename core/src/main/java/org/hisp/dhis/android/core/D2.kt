@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.analytics.AnalyticsModule
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -69,23 +70,28 @@ import retrofit2.Retrofit
 
 @Suppress("TooManyFunctions")
 class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
-    private val modules: D2Modules = d2DIComponent.modules()
+    private val modules: D2Modules = d2DIComponent.modules
 
     @VisibleForTesting
     fun retrofit(): Retrofit {
-        return d2DIComponent.retrofit()
+        return d2DIComponent.retrofit
+    }
+
+    @VisibleForTesting
+    internal fun coroutineAPICallExecutor(): CoroutineAPICallExecutor {
+        return d2DIComponent.coroutineApiCallExecutor
     }
 
     fun databaseAdapter(): DatabaseAdapter {
-        return d2DIComponent.databaseAdapter()
+        return d2DIComponent.databaseAdapter
     }
 
     fun metadataModule(): WithProgressDownloader {
-        return d2DIComponent.metadataModule()
+        return d2DIComponent.metadataModule
     }
 
     fun aggregatedModule(): AggregatedModule {
-        return d2DIComponent.aggregatedModule()
+        return d2DIComponent.aggregatedModule
     }
 
     fun analyticsModule(): AnalyticsModule {
@@ -99,8 +105,8 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     @Deprecated(
         "Use settingModule() instead.",
         replaceWith = ReplaceWith(
-            expression = "settingModule()"
-        )
+            expression = "settingModule()",
+        ),
     )
     fun systemSettingModule(): SettingModule {
         return modules.settingModule
@@ -215,7 +221,7 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     }
 
     fun wipeModule(): WipeModule {
-        return d2DIComponent.wipeModule()
+        return d2DIComponent.wipeModule
     }
 
     fun smsModule(): SmsModule {
@@ -223,6 +229,6 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     }
 
     internal fun context(): Context {
-        return d2DIComponent.appContext()
+        return d2DIComponent.appContext
     }
 }

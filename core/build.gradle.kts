@@ -28,15 +28,16 @@
 
 plugins {
     id("com.android.library")
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
     id("kotlin-android")
     id("kotlin-kapt")
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
-    id("org.jetbrains.dokka") version "1.7.20" apply false
+    id("org.jetbrains.dokka") version "1.8.20" apply false
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
 apply(from = project.file("plugins/android-pmd.gradle"))
-apply(from = project.file("plugins/jacoco.gradle"))
+apply(from = project.file("plugins/jacoco.gradle.kts"))
 apply(from = project.file("plugins/gradle-mvn-push.gradle"))
 
 repositories {
@@ -44,7 +45,7 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 }
 
-val _targetSdkVersion = 33
+val _targetSdkVersion = 34
 val _minSdkVersion = 21
 val VERSION_CODE: String by project
 val VERSION_NAME: String by project
@@ -52,19 +53,18 @@ val VERSION_NAME: String by project
 /*
 ** Libraries
 */
-val libraryDesugaring = "1.2.2"
+val libraryDesugaring = "2.0.3"
 
 // android
-val annotation = "1.4.0"
+val annotation = "1.6.0"
 val paging = "2.1.2"
 
 // java
 val jackson = "2.13.4"
-val autoValue = "1.10.1"
+val autoValue = "1.10.2"
 val autoValueCursor = "2.0.1"
 val retrofit = "2.9.0"
-val okHttp = "3.14.9"
-val dagger = "2.44.2"
+val okHttp = "4.10.0"
 val rxJava = "2.2.21"
 val rxAndroid = "2.1.1"
 val sqlCipher = "4.4.3"
@@ -74,6 +74,8 @@ val expressionParser = "1.0.33"
 // Kotlin
 val kotlinxDatetime = "0.4.0"
 val coroutines = "1.6.4"
+val koin = "3.5.0"
+val koinKsp = "1.3.0"
 
 // test dependencies
 val coreTesting = "2.2.0"
@@ -108,11 +110,11 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
 
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += listOf("META-INF/LICENSE", "META-INF/rxjava.properties")
         }
@@ -126,6 +128,9 @@ android {
     }
 
     sourceSets {
+        sourceSets.getByName("main") {
+            java.srcDirs("build/generated/ksp/main/kotlin")
+        }
         sourceSets.getByName("test") {
             resources.srcDirs("src/sharedTest/resources")
         }
@@ -165,9 +170,10 @@ dependencies {
     api("com.google.auto.value:auto-value-annotations:$autoValue")
     kapt("com.google.auto.value:auto-value:$autoValue")
 
-    // Dagger
-    api("com.google.dagger:dagger:$dagger")
-    kapt("com.google.dagger:dagger-compiler:$dagger")
+    // Koin
+    implementation("io.insert-koin:koin-core:$koin")
+    implementation("io.insert-koin:koin-annotations:$koinKsp")
+    ksp("io.insert-koin:koin-ksp-compiler:$koinKsp")
 
     // Jackson
     api("com.fasterxml.jackson.core:jackson-databind:$jackson")
@@ -209,6 +215,7 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifier")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okHttp")
     testImplementation("androidx.test:runner:$testRunner")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
 
     // Android test dependencies
     androidTestImplementation("org.mockito:mockito-core:$mockito")
@@ -220,6 +227,7 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:$truth") {
         exclude(group = "junit") // Android has JUnit built in.
     }
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
 
     debugImplementation("com.facebook.flipper:flipper:$flipper")
     debugImplementation("com.facebook.soloader:soloader:$soloader")

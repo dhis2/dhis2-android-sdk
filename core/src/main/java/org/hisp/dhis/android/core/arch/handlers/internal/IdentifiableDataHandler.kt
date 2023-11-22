@@ -31,11 +31,11 @@ import org.hisp.dhis.android.core.common.DeletableDataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
-internal interface IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
+interface IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
     @JvmSuppressWildcards
     fun handleMany(
         oCollection: Collection<O>?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     )
 }

@@ -30,12 +30,10 @@ package org.hisp.dhis.android.testapp.category
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class CategoryComboCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class CategoryComboCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     private val beforeDate = "2007-12-24T12:24:25.203"
     private val inBetweenDate = "2016-04-16T18:04:34.745"
     private val afterDate = "2017-12-24T12:24:25.203"
@@ -250,7 +248,7 @@ class CategoryComboCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         val categoryCombo = d2.categoryModule().categoryCombos()
             .withCategories()
             .uid("m2jTvAj5kkm")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryCombo.categories()!!.size).isEqualTo(2)
     }

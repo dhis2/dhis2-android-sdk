@@ -50,7 +50,7 @@ internal abstract class BaseTrackerConflictMockIntegrationShould : BaseMockInteg
             errorUid,
             trackerImporterObjectType,
             importerError.name,
-            errorMessage
+            errorMessage,
         )
     }
 
@@ -58,7 +58,7 @@ internal abstract class BaseTrackerConflictMockIntegrationShould : BaseMockInteg
     fun generate_correct_display_descriptions_for_error() {
         val trackerConflictHelper = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector()
+            objects.d2DIComponent.interpreterSelector,
         )
         val trackerImportConflict = trackerConflictHelper.getConflictBuilder(errorReport).build()
         assertThat(trackerImportConflict.displayDescription()).isEqualTo(expectedDescription)

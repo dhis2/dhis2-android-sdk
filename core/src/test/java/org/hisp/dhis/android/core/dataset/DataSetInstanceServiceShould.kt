@@ -33,14 +33,12 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import java.util.*
-import kotlin.time.Duration.Companion.days
 import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceServiceImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.Period
@@ -50,6 +48,8 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import java.util.*
+import kotlin.time.Duration.Companion.days
 
 class DataSetInstanceServiceShould {
 
@@ -63,10 +63,10 @@ class DataSetInstanceServiceShould {
 
     private val dataSet: DataSet = mock()
 
-    private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
-    private val thirdJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
-    private val firstFebruary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-02-01T00:00:00.000")
-    private val thirdFebruary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-02-03T00:00:00.000")
+    private val firstJanuary = DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+    private val thirdJanuary = DateUtils.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
+    private val firstFebruary = DateUtils.DATE_FORMAT.parse("2020-02-01T00:00:00.000")
+    private val thirdFebruary = DateUtils.DATE_FORMAT.parse("2020-02-03T00:00:00.000")
 
     private val firstPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val secondPeriod: Period = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
@@ -89,7 +89,7 @@ class DataSetInstanceServiceShould {
         periodHelper = periodHelper,
         categoryOptionComboService = categoryOptionComboService,
         periodGenerator = periodGenerator,
-        categoryOptionRepository = categoryOptionRepository
+        categoryOptionRepository = categoryOptionRepository,
     )
 
     @Before
@@ -125,7 +125,7 @@ class DataSetInstanceServiceShould {
 
         val isPeriodInOrgUnitRange = dataSetInstanceService.blockingIsPeriodInOrgUnitRange(
             period = firstPeriod,
-            orgUnitUid = orgUnitUid
+            orgUnitUid = orgUnitUid,
         )
         assertThat(isPeriodInOrgUnitRange).isTrue()
     }
@@ -141,7 +141,7 @@ class DataSetInstanceServiceShould {
         whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.startDate())) doReturn true
         whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.endDate())) doReturn true
         assertThat(
-            dataSetInstanceService.blockingIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid)
+            dataSetInstanceService.blockingIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid),
         ).isTrue()
     }
 
@@ -149,14 +149,13 @@ class DataSetInstanceServiceShould {
     fun `Should return true if attributeOptionCombo Assign To OrgUnit`() {
         whenever(categoryOptionComboService.blockingIsAssignedToOrgUnit(attOptionComboUid, orgUnitUid)).doReturn(true)
         assertThat(
-            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid)
+            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid),
         ).isTrue()
     }
 
     @Test
     fun `Should return false if dataSet is not closed`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Monthly
-        whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn secondPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
         assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isFalse()
@@ -165,16 +164,16 @@ class DataSetInstanceServiceShould {
     @Test
     fun `Should return true if dataSet is closed`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Monthly
-        whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn firstPeriod
-        whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
+        whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isTrue()
+        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, secondPeriod)).isTrue()
     }
 
     @Test
     fun `Should return true if dataSet is expired`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(dataSet.openFuturePeriods()) doReturn 20
+        whenever(dataSet.expiryDays()) doReturn 5
         whenever(periodHelper.getPeriodForPeriodId(any()).blockingGet()) doReturn firstPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
@@ -191,6 +190,15 @@ class DataSetInstanceServiceShould {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
 
+        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+    }
+
+    @Test
+    fun `Should return false if expiry days is 0 or negative`() {
+        whenever(dataSet.expiryDays()) doReturn 0
+        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+
+        whenever(dataSet.expiryDays()) doReturn -15
         assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
     }
 }

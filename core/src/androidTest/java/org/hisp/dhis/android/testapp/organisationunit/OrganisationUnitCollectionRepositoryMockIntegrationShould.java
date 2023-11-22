@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.organisationunit;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -75,7 +76,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_closed_date() throws ParseException {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
-                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).blockingGet();
+                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2025-05-22T15:21:48.516")).blockingGet();
         assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
@@ -84,6 +85,20 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byLevel().eq(4).blockingGet();
         assertThat(organisationUnits.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_geometry_type() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byGeometryType().eq(FeatureType.POINT).blockingGet();
+        assertThat(organisationUnits.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_geometry_coordinates() {
+        List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
+                .byGeometryCoordinates().isNotNull().blockingGet();
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test

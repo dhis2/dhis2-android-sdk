@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleWiper
 import org.hisp.dhis.android.core.category.internal.CategoryModuleWiper
 import org.hisp.dhis.android.core.common.internal.CommonModuleWiper
@@ -62,10 +60,11 @@ import org.hisp.dhis.android.core.usecase.internal.UseCaseModuleWiper
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleWiper
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList")
-internal class D2ModuleWipers @Inject constructor(
+internal class D2ModuleWipers(
     attribute: AttributeModuleWiper,
     category: CategoryModuleWiper,
     common: CommonModuleWiper,
@@ -98,7 +97,7 @@ internal class D2ModuleWipers @Inject constructor(
     trackerJob: TrackerJobModuleWiper,
     user: UserModuleWiper,
     validation: ValidationModuleWiper,
-    visualization: VisualizationModuleWiper
+    visualization: VisualizationModuleWiper,
 ) {
     val wipers: List<ModuleWiper>
 
@@ -136,7 +135,7 @@ internal class D2ModuleWipers @Inject constructor(
             trackerJob,
             user,
             validation,
-            visualization
+            visualization,
         )
     }
 }

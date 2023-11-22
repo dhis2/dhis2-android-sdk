@@ -35,5 +35,5 @@ data class OSMBaseMap(
     val imageUrl: String,
     val subdomains: List<String>? = null,
     val subdomainPlaceholder: String? = null,
-    val attribution: String
+    val attribution: String,
 )

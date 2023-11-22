@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransaction
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 internal class StockUseCaseTransformer : TwoWayTransformer<InternalStockUseCase, StockUseCase> {
     override fun transform(o: InternalStockUseCase): StockUseCase {
         return StockUseCase(
@@ -43,7 +43,7 @@ internal class StockUseCaseTransformer : TwoWayTransformer<InternalStockUseCase,
             o.programType(),
             o.description(),
             o.stockOnHand(),
-            o.transactions()?.map { StockUseCaseTransaction.transformFrom(it) } ?: emptyList()
+            o.transactions()?.map { StockUseCaseTransaction.transformFrom(it) } ?: emptyList(),
         )
     }
 

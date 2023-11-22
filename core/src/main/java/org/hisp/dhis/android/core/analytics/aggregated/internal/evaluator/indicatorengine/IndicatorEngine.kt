@@ -27,27 +27,27 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionParserUtils
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
+import org.koin.core.annotation.Singleton
 
-internal class IndicatorEngine @Inject constructor(
-    private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
+@Singleton
+internal class IndicatorEngine(
+    private val indicatorTypeStore: IndicatorTypeStore,
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
-    private val expressionService: ExpressionService
+    private val expressionService: ExpressionService,
 ) {
 
     fun evaluateIndicator(
         indicator: Indicator,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
-        contextMetadata: Map<String, MetadataItem>
+        contextMetadata: Map<String, MetadataItem>,
     ): String? {
         val indicatorType = indicator.indicatorType()?.let {
             indicatorTypeStore.selectByUid(it.uid())
@@ -57,7 +57,7 @@ internal class IndicatorEngine @Inject constructor(
             method = ParserUtils.ITEM_EVALUATE,
             contextEvaluationItem = contextEvaluationItem,
             contextMetadata = contextMetadata,
-            days = AnalyticExpressionParserUtils.getDays(contextEvaluationItem, contextMetadata)
+            days = AnalyticExpressionParserUtils.getDays(contextEvaluationItem, contextMetadata),
         )
 
         val numerator = engine.evaluate(indicator.numerator()!!)

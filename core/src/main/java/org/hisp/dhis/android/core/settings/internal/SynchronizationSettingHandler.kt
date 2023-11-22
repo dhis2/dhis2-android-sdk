@@ -27,22 +27,20 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SynchronizationSettingHandler(
-    store: ObjectWithoutUidStore<SynchronizationSettings>,
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val programSettingHandler: Handler<ProgramSetting>
+    store: SynchronizationSettingStore,
+    private val dataSetSettingHandler: DataSetSettingHandler,
+    private val programSettingHandler: ProgramSettingHandler,
 ) : ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<SynchronizationSettings>
+        oCollection: Collection<SynchronizationSettings>,
     ): Collection<SynchronizationSettings> {
         removeExistingValue()
         return oCollection

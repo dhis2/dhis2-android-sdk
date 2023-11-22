@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,30 +38,38 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintChildrenAppender
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class RelationshipTypeCollectionRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<RelationshipType>,
+@Singleton
+class RelationshipTypeCollectionRepository internal constructor(
+    store: RelationshipTypeStore,
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    childrenAppenders: MutableMap<String, ChildrenAppender<RelationshipType>>,
-    scope: RepositoryScope
+    databaseAdapter: DatabaseAdapter,
+    scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
-    FilterConnectorFactory<RelationshipTypeCollectionRepository>(scope) { s: RepositoryScope ->
+    FilterConnectorFactory(scope) { s: RepositoryScope ->
         RelationshipTypeCollectionRepository(
-            store, teiStore, enrollmentStore, eventStore,
-            childrenAppenders, s
+            store,
+            teiStore,
+            enrollmentStore,
+            eventStore,
+            databaseAdapter,
+            s,
         )
-    }
+    },
 ) {
     fun byBidirectional(): BooleanFilterConnector<RelationshipTypeCollectionRepository> {
         return cf.bool(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL)
@@ -73,7 +79,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     fun byConstraint(
         relationshipEntityType: RelationshipEntityType,
         relationshipEntityUid: String,
-        relationshipConstraintType: RelationshipConstraintType? = null
+        relationshipConstraintType: RelationshipConstraintType? = null,
     ): RelationshipTypeCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
             RelationshipConstraintTableInfo.TABLE_INFO.name(),
@@ -82,10 +88,10 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
                 if (relationshipConstraintType != null) {
                     appendKeyStringValue(
                         RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE,
-                        relationshipConstraintType
+                        relationshipConstraintType,
                     )
                 }
-            }
+            },
         )
     }
 
@@ -98,7 +104,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         val trackedEntityInstance = teiStore.selectByUid(trackedEntityInstanceUid)
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
-            availableForTrackedEntityInstanceRawQuery(trackedEntityInstance)
+            availableForTrackedEntityInstanceRawQuery(trackedEntityInstance),
         )
     }
 
@@ -111,7 +117,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         val enrollment = enrollmentStore.selectByUid(enrollmentUid)
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
-            availableForEnrollmentRawQuery(enrollment)
+            availableForEnrollmentRawQuery(enrollment),
         )
     }
 
@@ -124,7 +130,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         val event = eventStore.selectByUid(eventUid)
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
-            availableForEventRawQuery(event)
+            availableForEventRawQuery(event),
         )
     }
 
@@ -134,11 +140,12 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
 
     private fun constraintClauseBuilder(
         relationshipEntityType: RelationshipEntityType,
-        relationshipEntityUid: String
+        relationshipEntityUid: String,
     ): WhereClauseBuilder {
         return WhereClauseBuilder()
             .appendKeyStringValue(
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY,
+                relationshipEntityType,
             )
             .appendKeyStringValue(getRelationshipEntityColumn(relationshipEntityType), relationshipEntityUid)
     }
@@ -147,10 +154,18 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         return when (relationshipEntityType) {
             RelationshipEntityType.TRACKED_ENTITY_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE
+
             RelationshipEntityType.PROGRAM_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.PROGRAM
+
             RelationshipEntityType.PROGRAM_STAGE_INSTANCE ->
                 RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE
         }
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<RelationshipType> = mapOf(
+            RelationshipTypeFields.CONSTRAINTS to ::RelationshipConstraintChildrenAppender,
+        )
     }
 }

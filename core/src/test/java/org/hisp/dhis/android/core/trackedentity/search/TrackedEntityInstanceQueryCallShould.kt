@@ -29,13 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import java.text.ParseException
-import java.util.*
-import java.util.concurrent.Callable
-import javax.net.ssl.HttpsURLConnection
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -60,29 +57,31 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.stubbing.OngoingStubbing
-import retrofit2.Call
+import org.mockito.invocation.InvocationOnMock
+import java.text.ParseException
+import java.util.*
+import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     private val trackedEntityService: TrackedEntityInstanceService = mock()
     private val eventService: EventService = mock()
-    private val apiCallExecutor: APICallExecutor = mock()
-    private val rxAPICallExecutor: RxAPICallExecutor = mock()
     private val mapper: SearchGridMapper = mock()
+    private val coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val dhisVersionManager: DHISVersionManager = mock()
     private val searchGrid: SearchGrid = mock()
-    private val searchGridCall: Call<SearchGrid> = mock()
-    private val eventCallSingle: Single<Payload<Event>> = mock()
     private val teis: List<TrackedEntityInstance> = mock()
     private val eventPayload: Payload<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
+    private val order: List<TrackedEntityInstanceQueryScopeOrderByItem> =
+        listOf(TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER)
 
     private lateinit var query: TrackedEntityInstanceQueryOnline
 
     // object to test
-    private lateinit var call: Callable<TrackerQueryResult>
+    private lateinit var callFactory: TrackedEntityInstanceQueryCallFactory
 
     @Before
     override fun setUp() {
@@ -98,7 +97,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             programEndDate = Date(),
             enrollmentStatus = EnrollmentStatus.ACTIVE,
             followUp = true,
-            eventStatus = EventStatus.OVERDUE,
             incidentStartDate = Date(),
             incidentEndDate = Date(),
             trackedEntityType = "teiTypeStr",
@@ -107,54 +105,56 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             includeDeleted = false,
             lastUpdatedStartDate = Date(),
             lastUpdatedEndDate = Date(),
-            order = "lastupdated:desc",
+            order = order,
             assignedUserMode = AssignedUserMode.ANY,
             paging = false,
             page = 2,
-            pageSize = 33
+            pageSize = 33,
         )
 
-        whenServiceQuery().thenReturn(searchGridCall)
-        whenEventServiceQuery().thenReturn(eventCallSingle)
-
-        whenever(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).doReturn(searchGrid)
-        whenever(rxAPICallExecutor.wrapSingle(eq(eventCallSingle), any())).doReturn(eventCallSingle)
-        whenever(eventCallSingle.blockingGet()).doReturn(eventPayload)
+        whenServiceQuery { searchGrid }
+        whenEventServiceQuery { eventPayload }
 
         whenever(mapper.transform(any())).doReturn(teis)
         whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
 
         // Metadata call
-        call = getFactory().getCall(query)
+        callFactory = TrackedEntityInstanceQueryCallFactory(
+            trackedEntityService,
+            eventService,
+            mapper,
+            coroutineAPICallExecutor,
+            dhisVersionManager,
+        )
     }
 
     @Test
-    fun succeed_when_endpoint_calls_succeed() {
-        val teisResponse = call.call()
+    fun succeed_when_endpoint_calls_succeed() = runTest {
+        val teisResponse = callFactory.getCall(query)
         assertThat(teisResponse.trackedEntities).isEqualTo(teis)
     }
 
     @Test
-    fun call_mapper_with_search_grid() {
-        call.call()
+    fun call_mapper_with_search_grid() = runTest {
+        callFactory.getCall(query)
         verify(mapper).transform(searchGrid)
         verifyNoMoreInteractions(mapper)
     }
 
     @Test
-    fun call_service_with_query_parameters() {
-        call.call()
+    fun call_service_with_query_parameters() = runTest {
+        callFactory.getCall(query)
         verifyService(query)
         verifyNoMoreInteractions(trackedEntityService)
     }
 
     @Test
-    fun throw_D2CallException_when_service_call_returns_failed_response() {
-        whenever(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).doThrow(d2Error)
+    fun throw_D2CallException_when_service_call_returns_failed_response() = runTest {
+        whenServiceQuery { throw d2Error }
         whenever(d2Error.errorCode()).doReturn(D2ErrorCode.MAX_TEI_COUNT_REACHED)
 
         try {
-            call.call()
+            callFactory.getCall(query)
             fail("D2Error was expected but was not thrown")
         } catch (d2e: D2Error) {
             assertThat(d2e.errorCode() == D2ErrorCode.MAX_TEI_COUNT_REACHED).isTrue()
@@ -162,13 +162,13 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     @Test
-    fun throw_too_many_org_units_exception_when_request_was_too_long() {
-        whenever(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).doThrow(d2Error)
+    fun throw_too_many_org_units_exception_when_request_was_too_long() = runTest {
+        whenServiceQuery { throw d2Error }
         whenever(d2Error.errorCode()).doReturn(D2ErrorCode.TOO_MANY_ORG_UNITS)
         whenever(d2Error.httpErrorCode()).doReturn(HttpsURLConnection.HTTP_REQ_TOO_LONG)
 
         try {
-            call.call()
+            callFactory.getCall(query)
             fail("D2Error was expected but was not thrown")
         } catch (d2e: D2Error) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue()
@@ -176,43 +176,13 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     @Test(expected = D2Error::class)
-    fun throw_D2CallException_when_mapper_throws_exception() {
+    fun throw_D2CallException_when_mapper_throws_exception() = runTest {
         whenever(mapper.transform(searchGrid)).thenThrow(ParseException::class.java)
-        call.call()
+        callFactory.getCall(query)
     }
 
     @Test
-    fun should_not_map_active_event_status_if_greater_than_2_33() {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
-        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-        val activeCall = getFactory().getCall(activeQuery)
-
-        activeCall.call()
-
-        verifyService(activeQuery, EventStatus.ACTIVE)
-    }
-
-    @Test
-    fun should_map_active_event_status_if_not_greater_than_2_33() {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(false)
-
-        val activeQuery = query.copy(eventStatus = EventStatus.ACTIVE)
-        val activeCall = getFactory().getCall(activeQuery)
-
-        activeCall.call()
-
-        verifyService(activeQuery, EventStatus.VISITED)
-
-        val nonActiveQuery = query.copy(eventStatus = EventStatus.SCHEDULE)
-        val nonActiveCall = getFactory().getCall(nonActiveQuery)
-
-        nonActiveCall.call()
-
-        verifyService(activeQuery, EventStatus.SCHEDULE)
-    }
-
-    @Test
-    fun should_query_events_if_data_value_filter() {
+    fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
@@ -225,12 +195,11 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     .key("dataElement")
                     .operator(FilterItemOperator.EQ)
                     .value("2")
-                    .build()
-            )
+                    .build(),
+            ),
         )
-        val call = getFactory().getCall(query)
 
-        call.call()
+        callFactory.getCall(query)
 
         val expectedTeiQuery = TrackedEntityInstanceQueryCallFactory.getPostEventTeiQuery(query, events)
 
@@ -239,7 +208,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     @Test
-    fun should_query_events_for_multiple_orgunits() {
+    fun should_query_events_for_multiple_orgunits() = runTest {
         whenever(eventPayload.items()).doReturn(emptyList())
 
         val query = query.copy(
@@ -248,27 +217,20 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
                     .key("dataElement")
                     .operator(FilterItemOperator.EQ)
                     .value("2")
-                    .build()
+                    .build(),
             ),
-            orgUnits = listOf("orgunit1", "orgunit2")
+            orgUnits = listOf("orgunit1", "orgunit2"),
         )
-        val call = getFactory().getCall(query)
 
-        call.call()
+        callFactory.getCall(query)
 
         verifyEventService(query)
     }
 
-    private fun getFactory(): TrackedEntityInstanceQueryCallFactory {
-        return TrackedEntityInstanceQueryCallFactory(
-            trackedEntityService, eventService, mapper, apiCallExecutor, rxAPICallExecutor, dhisVersionManager
-        )
-    }
-
     private fun verifyService(
         query: TrackedEntityInstanceQueryOnline,
-        expectedStatus: EventStatus? = query.eventStatus
-    ) {
+        expectedStatus: EventStatus? = query.eventStatus,
+    ) = runBlocking {
         verify(trackedEntityService).query(
             eq(query.uids?.joinToString(";")),
             eq(query.orgUnits.joinToString(";")),
@@ -290,14 +252,16 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.assignedUserMode?.toString()),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
-            eq(query.order),
+            any(),
             eq(query.paging),
             eq(query.page),
-            eq(query.pageSize)
+            eq(query.pageSize),
         )
     }
 
-    private fun verifyEventService(query: TrackedEntityInstanceQueryOnline) {
+    private fun verifyEventService(
+        query: TrackedEntityInstanceQueryOnline,
+    ) {
         if (query.orgUnits.size <= 1) {
             verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())
         } else {
@@ -306,7 +270,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             }
         }
     }
-    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) {
+
+    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
         verify(eventService).getEvents(
             eq(EventFields.teiQueryFields),
             eq(orgunit),
@@ -321,7 +286,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.eventEndDate.simpleDateFormat()),
             eq(query.dueStartDate.simpleDateFormat()),
             eq(query.dueEndDate.simpleDateFormat()),
-            eq(query.order),
+            any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.paging),
             eq(query.page),
@@ -333,63 +298,67 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
     }
 
-    private fun whenServiceQuery(): OngoingStubbing<Call<SearchGrid>?> {
-        return whenever(
-            trackedEntityService.query(
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull()
-            )
-        )
+    private fun whenServiceQuery(answer: (InvocationOnMock) -> SearchGrid?) {
+        trackedEntityService.stub {
+            onBlocking {
+                query(
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                )
+            }.doAnswer(answer)
+        }
     }
 
-    private fun whenEventServiceQuery(): OngoingStubbing<Single<Payload<Event>>> {
-        return whenever(
-            eventService.getEvents(
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-                anyOrNull(),
-            )
-        )
+    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> Payload<Event>) {
+        eventService.stub {
+            onBlocking {
+                getEvents(
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                )
+            }.doAnswer(answer)
+        }
     }
 }

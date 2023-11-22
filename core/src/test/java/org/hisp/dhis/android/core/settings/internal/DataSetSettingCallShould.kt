@@ -28,40 +28,49 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class DataSetSettingCallShould {
-    private val handler: Handler<DataSetSetting> = mock()
+    private val handler: DataSetSettingHandler = mock()
     private val service: SettingAppService = mock()
-    private val dataSetSettingSingle: Single<DataSetSettings> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val dataSetSetting: DataSetSettings = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
 
     private lateinit var dataSetSettingCall: DataSetSettingCall
 
     @Before
     fun setUp() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
-        whenever(service.dataSetSettings(any())) doReturn dataSetSettingSingle
-        dataSetSettingCall = DataSetSettingCall(handler, service, apiCallExecutor, appVersionManager)
+        appVersionManager.stub {
+            onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V1_1
+        }
+        whenAPICall { dataSetSetting }
+
+        dataSetSettingCall = DataSetSettingCall(handler, service, coroutineAPICallExecutor, appVersionManager)
+    }
+
+    private fun whenAPICall(answer: Answer<DataSetSettings>) {
+        service.stub {
+            onBlocking { dataSetSettings(any()) }.doAnswer(answer)
+        }
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(dataSetSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        whenever(service.dataSetSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
 
-        dataSetSettingCall.getCompletable(false).blockingAwait()
+        dataSetSettingCall.download(false)
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)

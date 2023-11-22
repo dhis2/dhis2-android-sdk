@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -44,9 +41,11 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
+import org.koin.core.annotation.Singleton
+import java.util.*
 
-@Reusable
-internal class EventImportHandler @Inject constructor(
+@Singleton
+internal class EventImportHandler constructor(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,
@@ -58,7 +57,7 @@ internal class EventImportHandler @Inject constructor(
     @Suppress("NestedBlockDepth")
     fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>
+        events: List<Event>,
     ): TEIWebResponseHandlerSummary {
         val summary = TEIWebResponseHandlerSummary()
 
@@ -110,7 +109,7 @@ internal class EventImportHandler @Inject constructor(
 
     private fun processIgnoredEvents(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>
+        events: List<Event>,
     ): List<Event> {
         val processedEvents = getReferences(eventImportSummaries)
 
@@ -123,7 +122,7 @@ internal class EventImportHandler @Inject constructor(
 
     private fun storeEventImportConflicts(
         importSummary: EventImportSummary,
-        enrollmentUid: String?
+        enrollmentUid: String?,
     ) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
 
@@ -133,14 +132,14 @@ internal class EventImportHandler @Inject constructor(
                     .conflict(importSummary.description())
                     .displayDescription(importSummary.description())
                     .value(importSummary.reference())
-                    .build()
+                    .build(),
             )
         }
 
         importSummary.conflicts()?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
-                    .getEventConflict(importConflict, getConflictBuilder(enrollmentUid, importSummary))
+                    .getEventConflict(importConflict, getConflictBuilder(enrollmentUid, importSummary)),
             )
         }
 
@@ -149,7 +148,7 @@ internal class EventImportHandler @Inject constructor(
 
     private fun getConflictBuilder(
         enrollmentUid: String?,
-        eventImportSummary: EventImportSummary
+        eventImportSummary: EventImportSummary,
     ): TrackerImportConflict.Builder {
         val trackedEntityInstanceUid = enrollmentUid?.let {
             enrollmentStore.selectByUid(it)?.trackedEntityInstance()

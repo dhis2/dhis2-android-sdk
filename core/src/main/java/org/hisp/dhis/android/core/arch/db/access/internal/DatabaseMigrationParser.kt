@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.res.AssetManager
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigrations
 import java.io.IOException
 import java.util.ArrayList
 import java.util.Scanner
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigrations
 
 internal class DatabaseMigrationParser(
     private val assetManager: AssetManager,
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) {
     private val codeMigrations = DatabaseCodeMigrations(databaseAdapter)
 

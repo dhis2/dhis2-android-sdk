@@ -59,7 +59,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
         }
 
         val dataElement = getDataElement(visitor, dataElementId)
-        val handledValue = visitor.handleNulls(value)
+        val handledValue = visitor.handleNulls(value, dataElement.valueType())
         val strValue = handledValue?.toString()
 
         return formatValue(strValue, dataElement.valueType())
@@ -92,14 +92,14 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityDataValueTableInfo.Columns.VALUE,
-            dataElement.valueType()
+            dataElement.valueType(),
         )
 
         val selectExpression = ProgramIndicatorSQLUtils.getTrackerDataValueWhereClause(
             column = valueCastExpression,
             programStageUid = programStageId,
             dataElementUid = dataElementId,
-            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator,
         )
 
         return if (visitor.state.replaceNulls) {
@@ -117,8 +117,8 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             DimensionalItemId(
                 dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_DATA_VALUE,
                 id0 = stageId,
-                id1 = dataElementId
-            )
+                id1 = dataElementId,
+            ),
         )
     }
 

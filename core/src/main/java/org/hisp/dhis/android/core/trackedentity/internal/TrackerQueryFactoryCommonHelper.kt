@@ -27,28 +27,26 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.koin.core.annotation.Singleton
+import java.util.*
 
 @Suppress("TooManyFunctions")
-@Reusable
-internal class TrackerQueryFactoryCommonHelper @Inject constructor(
+@Singleton
+internal class TrackerQueryFactoryCommonHelper(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
+    private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore,
 ) {
 
     private fun getRootCaptureOrgUnitUids(): List<String> {
@@ -72,7 +70,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private fun getOrganisationUnits(
         params: ProgramDataDownloadParams,
         hasLimitByOrgUnit: Boolean,
-        byLimitExtractor: () -> List<String>
+        byLimitExtractor: () -> List<String>,
     ): Pair<OrganisationUnitMode, List<String>> {
         return when {
             params.orgUnits().size > 0 ->
@@ -90,7 +88,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     fun hasLimitByOrgUnit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
     ): Boolean {
         if (params.limitByOrgunit() != null) {
             return params.limitByOrgunit()!!
@@ -117,7 +115,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,
-        downloadExtractor: (ProgramSetting?) -> Int?
+        downloadExtractor: (ProgramSetting?) -> Int?,
     ): Int {
         val configLimit = getConfigLimit(params, programSettings, programUid, downloadExtractor)
 
@@ -133,13 +131,15 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,
-        downloadExtractor: (ProgramSetting?) -> Int?
+        downloadExtractor: (ProgramSetting?) -> Int?,
     ): Int {
         if (params.limit() != null) {
             when {
                 isGlobal(params, programUid) -> {
                     val download = params.limit()!! - specificEvents(
-                        params, programSettings, downloadExtractor
+                        params,
+                        programSettings,
+                        downloadExtractor,
                     )
                     return if (download > 0) download else 0
                 }
@@ -169,7 +169,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private fun specificEvents(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        downloadExtractor: (ProgramSetting?) -> Int?
+        downloadExtractor: (ProgramSetting?) -> Int?,
     ): Int {
         return programSettings?.specificSettings()?.map { settings ->
             val scope = settings.value.settingDownload()
@@ -206,7 +206,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     fun <O> divideByOrgUnits(
         orgUnits: List<String>,
         hasLimitByOrgUnit: Boolean,
-        builder: (List<String>) -> O
+        builder: (List<String>) -> O,
     ): List<O> {
         return if (hasLimitByOrgUnit && orgUnits.isNotEmpty()) {
             orgUnits.map { builder.invoke(listOf(it)) }
@@ -218,7 +218,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private fun getStartDate(
         programSettings: ProgramSettings?,
         programUid: String?,
-        downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?
+        downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?,
     ): String? {
         var period: DownloadPeriod? = null
         if (programSettings != null) {
@@ -246,11 +246,13 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         programUid: String?,
         limit: Int,
         orgUnitByLimitExtractor: () -> List<String>,
-        periodExtractor: (ProgramSetting?) -> DownloadPeriod?
+        periodExtractor: (ProgramSetting?) -> DownloadPeriod?,
     ): TrackerQueryCommonParams {
         val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid)
         val (ouMode, orgUnits) = getOrganisationUnits(
-            params, hasLimitByOrgUnit, orgUnitByLimitExtractor
+            params,
+            hasLimitByOrgUnit,
+            orgUnitByLimitExtractor,
         )
 
         return TrackerQueryCommonParams(
@@ -261,7 +263,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             hasLimitByOrgUnit,
             ouMode,
             orgUnits,
-            limit
+            limit,
         )
     }
 }

@@ -27,12 +27,8 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
 import io.reactivex.Single
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.enrollment.EnrollmentAccess
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
@@ -47,18 +43,20 @@ import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
+import org.koin.core.annotation.Singleton
+import java.util.Date
 
-@Reusable
-internal class EnrollmentServiceImpl @Inject constructor(
+@Singleton
+internal class EnrollmentServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
     private val programRepository: ProgramCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val eventCollectionRepository: EventCollectionRepository,
     private val programStagesCollectionRepository: ProgramStageCollectionRepository,
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner>
+    private val programTempOwnerStore: ProgramTempOwnerStore,
 ) : EnrollmentService {
 
     override fun blockingIsOpen(enrollmentUid: String): Boolean {
@@ -75,16 +73,25 @@ internal class EnrollmentServiceImpl @Inject constructor(
         val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
-            if (program.access()?.data()?.write() == true) EnrollmentAccess.WRITE_ACCESS
-            else EnrollmentAccess.READ_ACCESS
+            if (program.access()?.data()?.write() == true) {
+                EnrollmentAccess.WRITE_ACCESS
+            } else {
+                EnrollmentAccess.READ_ACCESS
+            }
 
         return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
-                if (hasTempOwnership(trackedEntityInstanceUid, programUid)) dataAccess
-                else EnrollmentAccess.PROTECTED_PROGRAM_DENIED
+                if (hasTempOwnership(trackedEntityInstanceUid, programUid)) {
+                    dataAccess
+                } else {
+                    EnrollmentAccess.PROTECTED_PROGRAM_DENIED
+                }
             AccessLevel.CLOSED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
-                else EnrollmentAccess.CLOSED_PROGRAM_DENIED
+                if (isTeiInCaptureScope(trackedEntityInstanceUid)) {
+                    dataAccess
+                } else {
+                    EnrollmentAccess.CLOSED_PROGRAM_DENIED
+                }
             else ->
                 dataAccess
         }
@@ -99,7 +106,7 @@ internal class EnrollmentServiceImpl @Inject constructor(
 
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .uid(tei.organisationUnit())
+            .uid(tei?.organisationUnit())
             .blockingExists()
     }
 
@@ -111,7 +118,7 @@ internal class EnrollmentServiceImpl @Inject constructor(
             .toList()
             .flatMap { currentProgramStagesUids: List<String?> ->
                 val repository = programStagesCollectionRepository.byProgramUid().eq(
-                    enrollmentRepository.uid(enrollmentUid).blockingGet().program()
+                    enrollmentRepository.uid(enrollmentUid).blockingGet()?.program(),
                 ).byAccessDataWrite().isTrue
 
                 repository.get().toFlowable()

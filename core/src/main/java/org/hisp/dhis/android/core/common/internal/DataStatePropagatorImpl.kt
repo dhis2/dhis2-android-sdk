@@ -27,12 +27,7 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -44,23 +39,27 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.koin.core.annotation.Singleton
+import java.util.*
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class DataStatePropagatorImpl @Inject internal constructor(
+internal class DataStatePropagatorImpl(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
-    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
-    private val programOwner: ObjectWithoutUidStore<ProgramOwner>
+    private val relationshipTypeStore: RelationshipTypeStore,
+    private val programOwner: ProgramOwnerStore,
 ) : DataStatePropagator {
 
     override fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?) {
@@ -100,7 +99,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         trackedEntityAttributeValue!!.trackedEntityInstance()?.let { trackedEntityInstanceUid ->
             val enrollments = enrollmentStore.selectByTrackedEntityInstanceAndAttribute(
                 trackedEntityInstanceUid,
-                trackedEntityAttributeValue.trackedEntityAttribute()!!
+                trackedEntityAttributeValue.trackedEntityAttribute()!!,
             )
             enrollments.forEach {
                 enrollmentStore.setSyncState(it.uid(), getStateForUpdate(it.syncState()))
@@ -276,7 +275,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
                 enrollmentStates +
                     relationshipStates +
                     programOwnerStates +
-                    instance.syncState()!!
+                    instance.syncState()!!,
             )
 
             trackedEntityInstanceStore.setAggregatedSyncState(trackedEntityInstanceUid, teiAggregatedSyncState)
@@ -344,7 +343,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
         eventUids: List<String>,
-        relationshipUids: List<String>
+        relationshipUids: List<String>,
     ): DataStateUidHolder {
         val enrollmentsFromEvents = eventStore.selectByUids(eventUids).mapNotNull { it.enrollment() }
 
@@ -362,7 +361,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
                 relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid() },
             trackedEntities = trackedEntityInstanceUids +
                 trackedEntitiesFromEnrollments +
-                relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() }
+                relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() },
         )
     }
 

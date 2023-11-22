@@ -27,14 +27,64 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
+import org.koin.core.annotation.Singleton
 
-internal interface TrackedEntityEnrollmentOrphanCleaner {
+@Singleton
+internal class TrackedEntityEnrollmentOrphanCleaner(
+    private val enrollmentStore: EnrollmentStore,
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
+) {
 
     fun deleteOrphan(
         parent: TrackedEntityInstance?,
         children: Collection<Enrollment>?,
-        program: String?
-    ): Boolean
+        program: String?,
+    ): Boolean {
+        return if (parent != null && children != null) {
+            val orphanEnrollmentsClause = WhereClauseBuilder().run {
+                appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, parent.uid())
+                appendNotInKeyStringValues(EnrollmentTableInfo.Columns.UID, children.map { it.uid() })
+                appendInKeyEnumValues(
+                    EnrollmentTableInfo.Columns.SYNC_STATE,
+                    listOf(State.SYNCED, State.SYNCED_VIA_SMS),
+                )
+                if (program != null) {
+                    appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, program)
+                }
+                build()
+            }
+
+            val orphanEnrollments = enrollmentStore.selectWhere(orphanEnrollmentsClause)
+
+            val deletedEnrollments = orphanEnrollments.filter { e -> isAccessibleByGlass(e, program) }
+
+            if (deletedEnrollments.isNotEmpty()) {
+                val deleteWhereClause = WhereClauseBuilder()
+                    .appendInKeyStringValues(EnrollmentTableInfo.Columns.UID, deletedEnrollments.map { it.uid() })
+                    .build()
+
+                enrollmentStore.deleteWhere(deleteWhereClause)
+            }
+
+            deletedEnrollments.isNotEmpty()
+        } else {
+            false
+        }
+    }
+
+    private fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
+        val isProtected = breakTheGlassHelper.isProtectedInSearchScope(
+            program = enrollment.program(),
+            organisationUnit = enrollment.organisationUnit(),
+        )
+
+        return !isProtected || enrollment.program() == program
+    }
 }

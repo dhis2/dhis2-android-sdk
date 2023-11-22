@@ -28,36 +28,35 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.util.concurrent.Callable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
-    companion object {
-        private lateinit var userStore: IdentifiableObjectStore<User>
+    private lateinit var userStore: IdentifiableObjectStore<User>
+    private lateinit var userCall: suspend() -> User
 
-        @BeforeClass
-        @JvmStatic
-        @Throws(Exception::class)
-        internal fun setUpClass() {
-            BaseMockIntegrationTestEmptyEnqueable.setUpClass()
-            val userCall: Callable<User> = objects.d2DIComponent.internalModules().user.userCall
-            userStore = UserStore.create(databaseAdapter)
-            dhis2MockServer.enqueueMockResponse("user/user38.json")
-            userCall.call()
-        }
+    @Before
+    fun setUp() {
+        userStore = UserStoreImpl(databaseAdapter)
+        userCall = { objects.d2DIComponent.internalModules.user.userCall.call() }
     }
 
     @Test
-    fun persist_user_in_database_when_call() {
+    fun persist_user_in_database_when_call() = runTest {
+        dhis2MockServer.enqueueMockResponse("user/user38.json")
+        userCall.invoke()
+
         assertThat(userStore.count()).isEqualTo(1)
         assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
     }

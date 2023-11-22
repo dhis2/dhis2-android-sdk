@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
@@ -40,9 +41,10 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFr
 internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T, R : ReadOnlyObjectRepository<T>>
 internal constructor(
     private val store: ReadableStore<M>,
-    private val childrenAppenders: Map<String, ChildrenAppender<M>>,
+    private val databaseAdapter: DatabaseAdapter,
+    private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val scope: RepositoryScope,
-    private val transformer: TwoWayTransformer<M, T>
+    private val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyObjectRepository<T> {
 
     fun blockingGetWithoutChildren(): M? {
@@ -54,7 +56,7 @@ internal constructor(
      * Returns the object in an asynchronous way, returning a `Single<M>`.
      * @return A `Single` object with the object
      */
-    override fun get(): Single<T> {
+    override fun get(): Single<T?> {
         return Single.fromCallable { blockingGet() }
     }
 
@@ -63,12 +65,15 @@ internal constructor(
      * executed in the main thread. Consider the asynchronous version [.get].
      * @return the object
      */
-    override fun blockingGet(): T {
-        return transformer.transform(
-            ChildrenAppenderExecutor.appendInObject(
-                blockingGetWithoutChildren(), childrenAppenders, scope.children()
-            )
+    override fun blockingGet(): T? {
+        val item = ChildrenAppenderExecutor.appendInObject(
+            blockingGetWithoutChildren(),
+            databaseAdapter,
+            childrenAppenders,
+            scope.children(),
         )
+
+        return item?.let { transformer.transform(it) }
     }
 
     /**

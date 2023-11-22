@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl.Companion.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -41,8 +40,9 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<UserOrganisationUnitLink>(
-    create(TestDatabaseAdapterFactory.get()),
-    UserOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    UserOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+    UserOrganisationUnitLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     private var linkStore: UserOrganisationUnitLinkStore = store as UserOrganisationUnitLinkStore
 
@@ -65,11 +65,11 @@ class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrat
         linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink())
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE),
         )
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE),
         )
         val orgUnitUids = linkStore
             .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
@@ -81,11 +81,11 @@ class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrat
         linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink())
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH),
         )
         linkStore.insert(
             UserOrganisationUnitLinkSamples
-                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope.SCOPE_TEI_SEARCH),
         )
 
         val orgUnitUids = linkStore.queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)

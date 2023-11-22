@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -46,22 +43,24 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
+import org.koin.core.annotation.Singleton
+import java.util.*
 
-@Reusable
-internal class EnrollmentImportHandler @Inject constructor(
+@Singleton
+internal class EnrollmentImportHandler(
     private val enrollmentStore: EnrollmentStore,
     private val eventImportHandler: EventImportHandler,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEnrollmentHandler: JobReportEnrollmentHandler,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
 ) {
 
     @Suppress("NestedBlockDepth")
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
-        teiState: State
+        teiState: State,
     ): TEIWebResponseHandlerSummary {
         val summary = TEIWebResponseHandlerSummary()
 
@@ -111,20 +110,20 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     private fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
-        enrollments: List<Enrollment>
+        enrollments: List<Enrollment>,
     ): TEIWebResponseHandlerSummary {
         return enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
             val enrollmentUid = enrollmentImportSummary.reference()!!
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
-                getEvents(enrollmentUid, enrollments)
+                getEvents(enrollmentUid, enrollments),
             )
         } ?: TEIWebResponseHandlerSummary()
     }
 
     private fun storeEnrollmentImportConflicts(
         enrollmentImportSummary: EnrollmentImportSummary,
-        teiUid: String
+        teiUid: String,
     ) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
 
@@ -134,14 +133,14 @@ internal class EnrollmentImportHandler @Inject constructor(
                     .conflict(enrollmentImportSummary.description())
                     .displayDescription(enrollmentImportSummary.description())
                     .value(enrollmentImportSummary.reference())
-                    .build()
+                    .build(),
             )
         }
 
         enrollmentImportSummary.conflicts()?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
-                    .getEnrollmentConflict(importConflict, getConflictBuilder(teiUid, enrollmentImportSummary))
+                    .getEnrollmentConflict(importConflict, getConflictBuilder(teiUid, enrollmentImportSummary)),
             )
         }
 
@@ -151,7 +150,7 @@ internal class EnrollmentImportHandler @Inject constructor(
     private fun processIgnoredEnrollments(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
-        teiState: State
+        teiState: State,
     ): List<Enrollment> {
         val processedEnrollments = getReferences(enrollmentImportSummaries)
 
@@ -159,15 +158,21 @@ internal class EnrollmentImportHandler @Inject constructor(
             // Tracker importer does not notify about enrollments already deleted in the server.
             // This is a workaround to accept as SUCCESS a missing enrollment only if it was deleted in the device.
             val state =
-                if (teiState == State.SYNCED && enrollment.deleted() == true) State.SYNCED
-                else State.TO_UPDATE
+                if (teiState == State.SYNCED && enrollment.deleted() == true) {
+                    State.SYNCED
+                } else {
+                    State.TO_UPDATE
+                }
 
             trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
             enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
             resetNestedDataStates(enrollment)
 
-            if (state == State.SYNCED) null
-            else enrollment
+            if (state == State.SYNCED) {
+                null
+            } else {
+                enrollment
+            }
         }
     }
 
@@ -179,7 +184,7 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     private fun getEvents(
         enrollmentUid: String,
-        enrollments: List<Enrollment>
+        enrollments: List<Enrollment>,
     ): List<Event> {
         return enrollments.find { it.uid() == enrollmentUid }?.let {
             EnrollmentInternalAccessor.accessEvents(it)
@@ -188,7 +193,7 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     private fun getConflictBuilder(
         trackedEntityInstanceUid: String,
-        enrollmentImportSummary: EnrollmentImportSummary
+        enrollmentImportSummary: EnrollmentImportSummary,
     ): TrackerImportConflict.Builder {
         return TrackerImportConflict.builder()
             .trackedEntityInstance(trackedEntityInstanceUid)

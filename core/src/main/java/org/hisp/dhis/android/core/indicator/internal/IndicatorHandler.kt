@@ -28,20 +28,17 @@
 
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkHandler
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class IndicatorHandler @Inject constructor(
-    indicatorStore: IdentifiableObjectStore<Indicator>,
-    private val indicatorLegendSetLinkHandler: OrderedLinkHandler<ObjectWithUid, IndicatorLegendSetLink>
+@Singleton
+internal class IndicatorHandler(
+    indicatorStore: IndicatorStore,
+    private val indicatorLegendSetLinkHandler: IndicatorLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
     override fun afterObjectHandled(o: Indicator, action: HandleAction) {

@@ -46,6 +46,6 @@ internal object CategoryOptionFields {
         .fields(
             fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
             fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
+            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
         ).build()
 }

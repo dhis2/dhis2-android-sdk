@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
@@ -38,66 +38,82 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class SynchronizationSettingCallShould {
 
-    private val handler: Handler<SynchronizationSettings> = mock()
+    private val handler: SynchronizationSettingHandler = mock()
     private val service: SettingAppService = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val generalSettingCall: GeneralSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val dataSetSettingCall: DataSetSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programSettingCall: ProgramSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val appVersionManager: SettingsAppInfoManager = mock()
 
     private val synchronizationSettings: SynchronizationSettings = mock()
-    private val synchronizationSettingSingle: Single<SynchronizationSettings> = Single.just(synchronizationSettings)
 
     private lateinit var synchronizationSettingCall: SynchronizationSettingCall
 
     @Before
     fun setUp() {
-        whenever(service.synchronizationSettings(any())) doReturn synchronizationSettingSingle
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
+        whenAPICall { synchronizationSettings }
+        appVersionManager.stub {
+            onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V1_1
+        }
         synchronizationSettingCall = SynchronizationSettingCall(
-            handler, service, apiCallExecutor,
-            generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager
+            handler,
+            service,
+            coroutineAPICallExecutor,
+            generalSettingCall,
+            dataSetSettingCall,
+            programSettingCall,
+            appVersionManager,
         )
     }
 
+    private fun whenAPICall(answer: Answer<SynchronizationSettings>) {
+        service.stub {
+            onBlocking { synchronizationSettings(any()) }.doAnswer(answer)
+        }
+    }
+
     @Test
-    fun call_dataSet_and_program_endpoints_if_version_1() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
+    fun call_dataSet_and_program_endpoints_if_version_1() = runTest {
+        whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V1_1
 
-        synchronizationSettingCall.getCompletable(false).blockingAwait()
+        synchronizationSettingCall.download(false)
 
-        verify(generalSettingCall.fetch(any(), any())).blockingGet()
-        verify(dataSetSettingCall.fetch(any())).blockingGet()
-        verify(programSettingCall.fetch(any())).blockingGet()
+        verify(generalSettingCall).fetch(any(), any())
+        verify(dataSetSettingCall).fetch(any())
+        verify(programSettingCall).fetch(any())
         verify(service, never()).synchronizationSettings(any())
     }
 
     @Test
-    fun call_synchronization_endpoint_if_version_2() {
-        whenever(apiCallExecutor.wrapSingle(synchronizationSettingSingle, false)) doReturn
-            synchronizationSettingSingle
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V2_0)
+    fun call_synchronization_endpoint_if_version_2() = runTest {
+        whenever(service.synchronizationSettings(any())) doReturn synchronizationSettings
 
-        synchronizationSettingCall.getCompletable(false).blockingAwait()
+        whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
 
-        verify(generalSettingCall.fetch(any(), any()), never()).blockingGet()
-        verify(dataSetSettingCall.fetch(any()), never()).blockingGet()
-        verify(programSettingCall.fetch(any()), never()).blockingGet()
+        synchronizationSettingCall.download(false)
+
+        verify(generalSettingCall, never()).fetch(any(), any())
+
+        verify(dataSetSettingCall, never()).fetch(any())
+
+        verify(programSettingCall, never()).fetch(any())
+
         verify(service).synchronizationSettings(any())
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V2_0)
-        whenever(apiCallExecutor.wrapSingle(synchronizationSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
+        whenever(service.synchronizationSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
 
-        synchronizationSettingCall.getCompletable(false).blockingAwait()
+        synchronizationSettingCall.download(false)
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)

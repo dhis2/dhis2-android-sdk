@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -39,15 +36,16 @@ import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AggregatedDataCallBundleFactory @Inject constructor(
+@Singleton
+internal class AggregatedDataCallBundleFactory(
     private val dataSetRepository: DataSetCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val dataSetSettingsObjectRepository: DataSetSettingsObjectRepository,
     private val periodManager: PeriodForDataSetManager,
-    private val aggregatedDataSyncStore: ObjectWithoutUidStore<AggregatedDataSync>,
-    private val lastUpdatedCalculator: AggregatedDataSyncLastUpdatedCalculator
+    private val aggregatedDataSyncStore: AggregatedDataSyncStore,
+    private val lastUpdatedCalculator: AggregatedDataSyncLastUpdatedCalculator,
 ) {
     val bundles: List<AggregatedDataCallBundle>
         get() {
@@ -63,7 +61,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
                 dataSetSettingsObjectRepository.blockingGet(),
                 rootOrganisationUnitUids,
                 HashSet(allOrganisationUnitUids),
-                syncValuesByDataSetUid
+                syncValuesByDataSetUid,
             )
         }
 
@@ -78,7 +76,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
         dataSetSettings: DataSetSettings?,
         rootOrganisationUnitUids: List<String>,
         allOrganisationUnitUids: Set<String>,
-        syncValues: Map<String, AggregatedDataSync>
+        syncValues: Map<String, AggregatedDataSync>,
     ): List<AggregatedDataCallBundle> {
         val organisationUnitsHash = allOrganisationUnitUids.hashCode()
         val keyDataSetMap = dataSets.groupBy { getBundleKey(dataSetSettings, it, syncValues, organisationUnitsHash) }
@@ -87,7 +85,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
             val periods = periodManager.getPeriodsInRange(
                 key.periodType,
                 -key.pastPeriods,
-                key.futurePeriods
+                key.futurePeriods,
             )
             if (periods.isNotEmpty()) {
                 val periodIds = selectPeriodIds(periods)
@@ -96,7 +94,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
                     dataSets,
                     periodIds,
                     rootOrganisationUnitUids,
-                    allOrganisationUnitUids
+                    allOrganisationUnitUids,
                 )
             } else {
                 null
@@ -108,7 +106,7 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
         dataSetSettings: DataSetSettings?,
         dataSet: DataSet,
         syncValues: Map<String, AggregatedDataSync>,
-        organisationUnitsHash: Int
+        organisationUnitsHash: Int,
     ): AggregatedDataCallBundleKey {
         val pastPeriods = getPastPeriods(dataSetSettings, dataSet)
         val futurePeriods = if (dataSet.openFuturePeriods() == null) 1 else dataSet.openFuturePeriods()!!
@@ -119,9 +117,12 @@ internal class AggregatedDataCallBundleFactory @Inject constructor(
             pastPeriods = pastPeriods,
             futurePeriods = futurePeriods,
             lastUpdated = lastUpdatedCalculator.getLastUpdated(
-                syncValue, dataSet, pastPeriods, futurePeriods,
-                organisationUnitsHash
-            )
+                syncValue,
+                dataSet,
+                pastPeriods,
+                futurePeriods,
+                organisationUnitsHash,
+            ),
         )
     }
 

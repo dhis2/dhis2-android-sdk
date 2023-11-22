@@ -27,13 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-import java.lang.RuntimeException
-import javax.inject.Inject
-import javax.inject.Singleton
 import net.openid.appauth.AuthState
+import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :
+internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecureStore) :
     CredentialsSecureStore {
 
     private var credentials: Credentials? = null

@@ -124,7 +124,7 @@ internal object AnalyticExpressionParserUtils {
 
     fun getDays(
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
-        contextMetadata: Map<String, MetadataItem>
+        contextMetadata: Map<String, MetadataItem>,
     ): Int? {
         val periods = contextEvaluationItem.allDimensionItems
             .mapNotNull { item ->

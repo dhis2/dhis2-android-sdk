@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.ERROR
 import org.hisp.dhis.android.core.common.State.SYNCED
@@ -41,17 +38,18 @@ import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataValueImportHandler @Inject constructor(
+@Singleton
+internal class DataValueImportHandler(
     private val dataValueStore: DataValueStore,
     private val dataValueConflictParser: DataValueConflictParser,
-    private val dataValueConflictStore: ObjectStore<DataValueConflict>
+    private val dataValueConflictStore: DataValueConflictStore,
 ) {
 
     fun handleImportSummary(
         dataValueSet: DataValueSet?,
-        dataValueImportSummary: DataValueImportSummary?
+        dataValueImportSummary: DataValueImportSummary?,
     ) {
         if (dataValueSet == null || dataValueImportSummary == null) {
             return
@@ -77,23 +75,23 @@ internal class DataValueImportHandler @Inject constructor(
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                    dataValue.attributeOptionCombo()
+                    dataValue.attributeOptionCombo(),
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                    dataValue.categoryOptionCombo()
+                    dataValue.categoryOptionCombo(),
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.DATA_ELEMENT,
-                    dataValue.dataElement()
+                    dataValue.dataElement(),
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.PERIOD,
-                    dataValue.period()
+                    dataValue.period(),
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.ORG_UNIT,
-                    dataValue.organisationUnit()
+                    dataValue.organisationUnit(),
                 ).build()
             dataValueConflictStore.deleteWhereIfExists(whereClause)
         }
@@ -101,11 +99,11 @@ internal class DataValueImportHandler @Inject constructor(
 
     private fun handleDataValueWarnings(
         dataValues: List<DataValue>,
-        dataValueImportSummary: DataValueImportSummary
+        dataValueImportSummary: DataValueImportSummary,
     ) {
         getValuesWithConflicts(
             dataValues,
-            dataValueImportSummary.importConflicts()
+            dataValueImportSummary.importConflicts(),
         )?.let { dataValueConflicts ->
             setDataValueStates(dataValues, dataValueConflicts)
         } ?: setStateToDataValues(WARNING, dataValues)
@@ -113,7 +111,7 @@ internal class DataValueImportHandler @Inject constructor(
 
     private fun getValuesWithConflicts(
         dataValues: List<DataValue>,
-        importConflicts: List<ImportConflict>?
+        importConflicts: List<ImportConflict>?,
     ): Set<DataValue>? {
         val dataValueImportConflicts: MutableList<DataValueConflict> = mutableListOf()
         importConflicts?.forEach { importConflict ->
@@ -142,7 +140,7 @@ internal class DataValueImportHandler @Inject constructor(
 
     private fun setDataValueStates(
         dataValues: List<DataValue>,
-        dataValueConflicts: Set<DataValue>
+        dataValueConflicts: Set<DataValue>,
     ) {
         val syncedValues = dataValues.filter { dataValue ->
             !dataValueConflicts.contains(dataValue)

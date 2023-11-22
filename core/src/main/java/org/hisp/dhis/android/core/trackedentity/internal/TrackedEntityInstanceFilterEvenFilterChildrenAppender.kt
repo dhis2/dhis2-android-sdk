@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 internal class TrackedEntityInstanceFilterEvenFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, TrackedEntityInstanceEventFilter>
+    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, TrackedEntityInstanceEventFilter>,
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
     override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
@@ -49,8 +49,8 @@ internal class TrackedEntityInstanceFilterEvenFilterChildrenAppender private con
             return TrackedEntityInstanceFilterEvenFilterChildrenAppender(
                 singleParentChildStore(
                     databaseAdapter,
-                    TrackedEntityInstanceEventFilterStore.CHILD_PROJECTION
-                ) { cursor: Cursor -> TrackedEntityInstanceEventFilter.create(cursor) }
+                    TrackedEntityInstanceEventFilterStoreImpl.CHILD_PROJECTION,
+                ) { cursor: Cursor -> TrackedEntityInstanceEventFilter.create(cursor) },
             )
         }
     }

@@ -25,44 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
 import org.hisp.dhis.android.core.settings.GeneralSettings
 
-@Suppress("MagicNumber")
-internal object GeneralSettingStore {
-    private val BINDER = StatementBinder<GeneralSettings> { o: GeneralSettings, w: StatementWrapper ->
-        w.bind(1, o.encryptDB())
-        w.bind(2, o.lastUpdated())
-        w.bind(3, o.reservedValues())
-        w.bind(4, o.smsGateway())
-        w.bind(5, o.smsResultSender())
-        w.bind(6, o.matomoID())
-        w.bind(7, o.matomoURL())
-        w.bind(8, o.allowScreenCapture())
-        w.bind(9, o.messageOfTheDay())
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {
-            _: GeneralSettings, _: StatementWrapper ->
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder<GeneralSettings> {
-            _: GeneralSettings, _: StatementWrapper ->
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {
-        return objectWithoutUidStore(
-            databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> GeneralSettings.create(cursor) }
-    }
-}
+internal interface GeneralSettingStore : ObjectWithoutUidStore<GeneralSettings>

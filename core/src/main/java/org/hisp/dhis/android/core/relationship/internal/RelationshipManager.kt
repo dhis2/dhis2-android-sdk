@@ -27,24 +27,23 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class RelationshipManager @Inject constructor(
+@Singleton
+internal class RelationshipManager(
     private var relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
-    private val relationshipVersionManager: RelationshipDHISVersionManager
+    private val relationshipVersionManager: RelationshipDHISVersionManager,
 ) {
 
     fun getByItem(
         searchItem: RelationshipItem,
         includeDeleted: Boolean,
-        onlyAccessible: Boolean
+        onlyAccessible: Boolean,
     ): List<Relationship> {
         val relationships = relationshipItemStore.getByItem(searchItem)
             .mapNotNull { item ->

@@ -46,6 +46,6 @@ object ProgramStageWorkingListEventDataFilterFields {
             fh.field<String>(Columns.EQ),
             fh.field<String>(API_IN),
             fh.field<String>(Columns.LIKE),
-            fh.field<String>(Columns.DATE_FILTER)
+            fh.field<String>(Columns.DATE_FILTER),
         ).build()
 }

@@ -28,20 +28,19 @@
 
 package org.hisp.dhis.android.core.datastore
 
-import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.datastore.internal.DataStoreDownloadCall
 import org.hisp.dhis.android.core.datastore.internal.DataStoreDownloadParams
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class DataStoreDownloader @Inject internal constructor(
+@Singleton
+class DataStoreDownloader internal constructor(
     private val call: DataStoreDownloadCall,
-    private val params: DataStoreDownloadParams
+    private val params: DataStoreDownloadParams,
 ) : BaseRepository {
     private val connectorFactory: ScopedFilterConnectorFactory<DataStoreDownloader, DataStoreDownloadParams> =
         ScopedFilterConnectorFactory { params ->

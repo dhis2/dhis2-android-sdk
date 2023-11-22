@@ -27,27 +27,27 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionParserUtils
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.koin.core.annotation.Singleton
 
-internal class IndicatorSQLEngine @Inject constructor(
-    private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
+@Singleton
+internal class IndicatorSQLEngine(
+    private val indicatorTypeStore: IndicatorTypeStore,
     private val analyticExpressionEngineFactory: AnalyticExpressionEngineFactory,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) {
 
     fun evaluateIndicator(
         indicator: Indicator,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
-        contextMetadata: Map<String, MetadataItem>
+        contextMetadata: Map<String, MetadataItem>,
     ): String? {
         val sqlQuery = getSql(indicator, contextEvaluationItem, contextMetadata)
 
@@ -61,13 +61,13 @@ internal class IndicatorSQLEngine @Inject constructor(
     fun getSql(
         indicator: Indicator,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
-        contextMetadata: Map<String, MetadataItem>
+        contextMetadata: Map<String, MetadataItem>,
     ): String {
         val engine = analyticExpressionEngineFactory.getEngine(
             method = ParserUtils.ITEM_GET_SQL,
             contextEvaluationItem = contextEvaluationItem,
             contextMetadata = contextMetadata,
-            days = AnalyticExpressionParserUtils.getDays(contextEvaluationItem, contextMetadata)
+            days = AnalyticExpressionParserUtils.getDays(contextEvaluationItem, contextMetadata),
         )
 
         val indicatorType = indicator.indicatorType()?.let {

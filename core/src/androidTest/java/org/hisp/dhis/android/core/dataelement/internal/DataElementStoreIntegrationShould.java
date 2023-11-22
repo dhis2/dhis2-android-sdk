@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class DataElementStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataElement> {
 
     public DataElementStoreIntegrationShould() {
-        super(DataElementStore.create(TestDatabaseAdapterFactory.get()), DataElementTableInfo.TABLE_INFO,
+        super(new DataElementStoreImpl(TestDatabaseAdapterFactory.get()), DataElementTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

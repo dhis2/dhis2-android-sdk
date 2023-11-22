@@ -117,7 +117,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
                 .includeDeleted(false);
     }
 
-    static EventQueryRepositoryScope empty() {
+    public static EventQueryRepositoryScope empty() {
         return builder().build();
     }
 

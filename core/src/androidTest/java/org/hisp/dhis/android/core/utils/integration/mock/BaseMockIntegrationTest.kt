@@ -44,10 +44,13 @@ abstract class BaseMockIntegrationTest {
     companion object {
         @JvmStatic
         lateinit var objects: MockIntegrationTestObjects
+
         @JvmStatic
         lateinit var d2: D2
+
         @JvmStatic
         lateinit var dhis2MockServer: Dhis2MockServer
+
         @JvmStatic
         lateinit var databaseAdapter: DatabaseAdapter
 
@@ -63,6 +66,24 @@ abstract class BaseMockIntegrationTest {
                 setServerUrl(dhis2MockServer.baseEndpoint)
             }
             return tuple.isNewInstance
+        }
+
+        fun freshLogin(username: String, password: String, url: String) {
+            try {
+                d2.userModule().logOut().blockingAwait()
+            } catch (e: RuntimeException) {
+                // Do nothing
+            } finally {
+                d2.userModule().blockingLogIn(username, password, url)
+            }
+        }
+
+        fun tryLogout() {
+            try {
+                d2.userModule().logOut().blockingAwait()
+            } catch (e: RuntimeException) {
+                // Do nothing
+            }
         }
 
         @JvmStatic

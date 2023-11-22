@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.*
@@ -36,11 +35,13 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.visualization.LegendStrategy
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsVisualizationsService @Inject constructor(
+@Singleton
+internal class AnalyticsVisualizationsService(
     private val analyticsRepository: AnalyticsRepository,
     private val visualizationCollectionRepository: VisualizationCollectionRepository,
-    private val dimensionHelper: AnalyticsVisualizationsServiceDimensionHelper
+    private val dimensionHelper: AnalyticsVisualizationsServiceDimensionHelper,
 ) {
 
     fun evaluate(params: AnalyticsVisualizationsRepositoryParams): Result<GridAnalyticsResponse, AnalyticsException> {
@@ -73,9 +74,8 @@ internal class AnalyticsVisualizationsService @Inject constructor(
     @Suppress("ComplexMethod")
     private fun getDimensionalResponse(
         visualization: Visualization,
-        params: AnalyticsVisualizationsRepositoryParams
+        params: AnalyticsVisualizationsRepositoryParams,
     ): Result<DimensionalResponse, AnalyticsException> {
-
         var queryAnalyticsRepository = analyticsRepository
 
         val queryDimensions =
@@ -116,8 +116,11 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
         val legendStrategy = when (visualizationLegendStrategy) {
             LegendStrategy.FIXED ->
-                if (legendSetUId != null) AnalyticsLegendStrategy.Fixed(legendSetUId)
-                else AnalyticsLegendStrategy.None
+                if (legendSetUId != null) {
+                    AnalyticsLegendStrategy.Fixed(legendSetUId)
+                } else {
+                    AnalyticsLegendStrategy.None
+                }
             LegendStrategy.BY_DATA_ITEM, null -> AnalyticsLegendStrategy.ByDataItem
         }
 
@@ -135,9 +138,8 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
     private fun buildGridResponse(
         visualization: Visualization,
-        dimensionalResponse: DimensionalResponse
+        dimensionalResponse: DimensionalResponse,
     ): GridAnalyticsResponse {
-
         val gridDimension = dimensionHelper.getGridDimensions(visualization)
 
         val rowIndexes = gridDimension.rows.map { dimensionalResponse.dimensions.indexOf(it) }
@@ -152,7 +154,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
                     columns = value.dimensions.filterNot { rows.contains(it) },
                     rows = rows,
                     value = value.value,
-                    legend = value.legend
+                    legend = value.legend,
                 )
             }
         }
@@ -165,7 +167,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             dimensions = gridDimension,
             dimensionItems = dimensionalResponse.dimensionItems,
             filters = dimensionalResponse.filters,
-            values = gridValues
+            values = gridValues,
         )
     }
 

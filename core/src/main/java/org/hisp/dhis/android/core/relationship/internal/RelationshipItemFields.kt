@@ -36,11 +36,11 @@ internal object RelationshipItemFields {
     val allFields: Fields<RelationshipItem> = Fields.builder<RelationshipItem>()
         .fields(
             fh.nestedField<RelationshipItemTrackedEntityInstance>(
-                RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+                RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
             ).with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
             fh.nestedField<RelationshipItemEnrollment>(RelationshipItemTableInfo.Columns.ENROLLMENT)
                 .with(RelationshipItemEnrollmentFields.enrollment),
             fh.nestedField<RelationshipItemEvent>(RelationshipItemTableInfo.Columns.EVENT)
-                .with(RelationshipItemEventFields.event)
+                .with(RelationshipItemEventFields.event),
         ).build()
 }

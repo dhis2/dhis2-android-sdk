@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.wipe.internal
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class WipeModuleImpl(
     private val d2CallExecutor: D2CallExecutor,
-    private val moduleWipers: List<ModuleWiper>
+    private val moduleWipers: List<ModuleWiper>,
 ) : WipeModule {
     @Throws(D2Error::class)
     override fun wipeEverything() {

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where
@@ -37,11 +36,11 @@ import org.hisp.dhis.android.core.category.Category
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface CategoryService {
+internal fun interface CategoryService {
     @GET("categories")
-    fun getCategories(
+    suspend fun getCategories(
         @Query("fields") @Which fields: Fields<Category>,
         @Query("filter") @Where uids: Filter<Category, String>,
-        @Query("paging") paging: Boolean
-    ): Single<Payload<Category>>
+        @Query("paging") paging: Boolean,
+    ): Payload<Category>
 }

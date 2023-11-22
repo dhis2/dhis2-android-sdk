@@ -31,25 +31,27 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import java.text.ParseException
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import java.text.ParseException
 
 /**
  * Unit test for in-memory program indicator executor.
@@ -65,11 +67,11 @@ class ProgramIndicatorExecutorShould {
     private val dataElementUid2 = "JHpWWC1bISq"
     private val constantUid1 = "gzlRs2HEGAf"
 
-    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+    private val dataElementStore: DataElementStore = mock()
 
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore = mock()
 
-    private val programStageStore: IdentifiableObjectStore<ProgramStage> = mock()
+    private val programStageStore: ProgramStageStore = mock()
 
     private val programIndicator: ProgramIndicator = mock()
 
@@ -85,7 +87,7 @@ class ProgramIndicatorExecutorShould {
 
     private val attributeValueMap: Map<String, TrackedEntityAttributeValue> = mapOf(
         attributeUid1 to attributeValue1,
-        attributeUid2 to attributeValue2
+        attributeUid2 to attributeValue2,
     )
 
     private val event1: Event = mock()
@@ -94,7 +96,7 @@ class ProgramIndicatorExecutorShould {
 
     private val eventsMap: Map<String, List<Event>> = mapOf(
         programStage1 to listOf(event1),
-        programStage2 to listOf(event2_1, event2_2)
+        programStage2 to listOf(event2_1, event2_2),
     )
 
     private val dataValue1: TrackedEntityDataValue = mock()
@@ -114,7 +116,7 @@ class ProgramIndicatorExecutorShould {
         programIndicatorContext,
         dataElementStore,
         trackedEntityAttributeStore,
-        programStageStore
+        programStageStore,
     )
 
     @Before
@@ -179,7 +181,7 @@ class ProgramIndicatorExecutorShould {
     fun evaluate_data_elements_with_value_count() {
         setExpression(
             "(${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}) / " +
-                `var`("value_count")
+                `var`("value_count"),
         )
         whenever(dataValue1.value()) doReturn "4.5"
         whenever(dataValue2_2.value()) doReturn "1.9"
@@ -192,7 +194,7 @@ class ProgramIndicatorExecutorShould {
     fun evaluate_data_elements_with_zero_pos_value_count() {
         setExpression(
             "(${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}) / " +
-                `var`("zero_pos_value_count")
+                `var`("zero_pos_value_count"),
         )
         whenever(dataValue1.value()) doReturn "7.5"
         whenever(dataValue2_2.value()) doReturn "-1.5"

@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AggregatedModuleImpl @Inject constructor(
-    private val dataDownloader: AggregatedDataDownloader
+@Singleton
+internal class AggregatedModuleImpl(
+    private val dataDownloader: AggregatedDataDownloader,
 ) : AggregatedModule {
 
     override fun data(): AggregatedDataDownloader {

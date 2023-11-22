@@ -29,34 +29,32 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.content.Context
-import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class AccountManagerImpl @Inject constructor(
-    private val databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
+internal class AccountManagerImpl constructor(
+    private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
-    private val context: Context
+    private val context: Context,
 ) : AccountManager {
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
@@ -120,7 +118,7 @@ internal class AccountManagerImpl @Inject constructor(
         val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
             configuration,
             credentials.username,
-            credentials.serverUrl
+            credentials.serverUrl,
         )
         val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
         databasesConfigurationStore.set(updatedConfiguration)

@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class UserInternalModule @Inject internal constructor(
-    internal val userCall: UserCall,
-    internal val logInCall: LogInCall
+@Singleton
+internal class UserInternalModule(
+    val userCall: UserCall,
+    val logInCall: LogInCall,
 )

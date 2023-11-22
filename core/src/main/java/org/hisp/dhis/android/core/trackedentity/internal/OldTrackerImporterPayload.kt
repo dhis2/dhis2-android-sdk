@@ -38,7 +38,7 @@ internal data class OldTrackerImporterPayload(
     val trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
     val events: List<Event> = emptyList(),
     val relationships: List<Relationship> = emptyList(),
-    val programOwners: Map<String, List<ProgramOwner>> = emptyMap()
+    val programOwners: Map<String, List<ProgramOwner>> = emptyMap(),
 ) {
     fun isEmpty(): Boolean = trackedEntityInstances.isEmpty() && events.isEmpty() && relationships.isEmpty()
 
@@ -48,7 +48,7 @@ internal data class OldTrackerImporterPayload(
         return OldTrackerImporterPayload(
             trackedEntityInstances = concat(trackedEntityInstances, other.trackedEntityInstances),
             events = concat(events, other.events),
-            relationships = concat(relationships, other.relationships)
+            relationships = concat(relationships, other.relationships),
         )
     }
 

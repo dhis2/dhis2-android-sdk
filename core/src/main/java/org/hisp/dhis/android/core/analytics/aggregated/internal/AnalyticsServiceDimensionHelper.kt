@@ -28,17 +28,18 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.koin.core.annotation.Singleton
 
-internal class AnalyticsServiceDimensionHelper @Inject constructor(
+@Singleton
+internal class AnalyticsServiceDimensionHelper(
     private val periodGenerator: ParentPeriodGenerator,
     private val periodHelper: PeriodHelper,
-    private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper
+    private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
 ) {
 
     fun getQueryDimensions(params: AnalyticsRepositoryParams): List<Dimension> {
@@ -50,7 +51,7 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
      */
     fun getQueryAbsoluteDimensionItems(
         queryDimensionItems: List<DimensionItem>,
-        dimensions: List<Dimension>
+        dimensions: List<Dimension>,
     ): Map<Dimension, List<AbsoluteDimensionItem>> {
         return dimensions.associateWith { dimension ->
             queryDimensionItems
@@ -67,7 +68,7 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
 
     fun getEvaluationItems(
         params: AnalyticsRepositoryParams,
-        queryAbsoluteDimensionItems: Map<Dimension, List<AbsoluteDimensionItem>>
+        queryAbsoluteDimensionItems: Map<Dimension, List<AbsoluteDimensionItem>>,
     ): List<AnalyticsServiceEvaluationItem> {
         val dimensionCartesianProductList = queryAbsoluteDimensionItems.entries
             .fold(listOf(listOf<AbsoluteDimensionItem>())) { acc, dimensionEntry ->
@@ -78,7 +79,7 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
             AnalyticsServiceEvaluationItem(
                 dimensionItems = dimensionList,
                 filters = params.filters,
-                aggregationType = params.aggregationType
+                aggregationType = params.aggregationType,
             )
         }
     }

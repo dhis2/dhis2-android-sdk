@@ -23,7 +23,11 @@
         {
           "id": "rtOkbpGEud4"
         }
-      ]
+      ],
+      "style": {
+        "color": "#FF0000",
+        "icon": "circle"
+      }
     }
   ]
 }

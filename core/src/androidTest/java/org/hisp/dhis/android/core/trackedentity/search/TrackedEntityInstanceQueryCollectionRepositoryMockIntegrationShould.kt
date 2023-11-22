@@ -32,13 +32,10 @@ import androidx.paging.PagedList
 import com.jraska.livedata.TestObserver
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @get:Rule
@@ -48,7 +45,6 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould : Base
     fun get_offline_initial_objects() {
         val liveData = d2.trackedEntityModule().trackedEntityInstanceQuery()
             .offlineOnly().getPaged(2)
-
         TestObserver.test(liveData)
             .awaitValue()
             .assertHasValue()

@@ -27,16 +27,14 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventLastUpdatedManager @Inject constructor(
-    store: ObjectWithoutUidStore<EventSync>,
-    private val resourceHandler: ResourceHandler
+@Singleton
+internal class EventLastUpdatedManager(
+    store: EventSyncStore,
+    private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
     fun update(bundle: EventQueryBundle) {

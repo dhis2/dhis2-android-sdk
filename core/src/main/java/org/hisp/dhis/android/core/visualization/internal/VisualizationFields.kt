@@ -58,7 +58,7 @@ internal object VisualizationFields {
         get() =
             commonFields()
                 .fields(
-                    fh.field<VisualizationLegend>(LEGEND)
+                    fh.field<VisualizationLegend>(LEGEND),
                 )
                 .build()
 
@@ -68,7 +68,7 @@ internal object VisualizationFields {
                 .fields(
                     fh.field<String>(LEGEND_DISPLAY_STRATEGY),
                     fh.field<String>(LEGEND_DISPLAY_STYLE),
-                    fh.nestedFieldWithUid(LEGEND_SET)
+                    fh.nestedFieldWithUid(LEGEND_SET),
                 ).build()
 
     private fun commonFields(): Fields.Builder<Visualization> =

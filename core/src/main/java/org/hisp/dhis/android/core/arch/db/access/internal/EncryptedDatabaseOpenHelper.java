@@ -30,28 +30,44 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteDatabaseHook;
-import net.sqlcipher.database.SQLiteOpenHelper;
+import net.zetetic.database.sqlcipher.SQLiteConnection;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabaseHook;
+import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
+
+import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader;
+
 
 class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private final BaseDatabaseOpenHelper baseHelper;
 
     static final SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
-        public void preKey(SQLiteDatabase database) {
-            // Nothing to do here
+        @Override
+        public void preKey(SQLiteConnection connection) {
+
         }
 
-        public void postKey(SQLiteDatabase database) {
-            database.rawExecSQL("PRAGMA cipher_page_size = 16384;");
-            database.rawExecSQL("PRAGMA cipher_memory_security = OFF;");
+        @Override
+        public void postKey(SQLiteConnection connection) {
+            // Should we add a Cancellation signal here?
+            connection.executeRaw("PRAGMA cipher_page_size = 16384;", null, null);
+            connection.execute("PRAGMA cipher_memory_security = OFF;", null, null);
         }
+
     };
 
-    EncryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
-        super(context, databaseName, null, targetVersion, hook);
-        SQLiteDatabase.loadLibs(context);
+    EncryptedDatabaseOpenHelper(Context context, String databaseName, String password, int targetVersion) {
+        /*
+        factory: use default
+        minimumSupportedVersion: use default
+        errorHandler: use default
+        enableWriteAheadLogging: TRUE for enabling Read and Write operations in parallel from more than one thread
+        From docs: "It is a good idea to enable write-ahead logging whenever a database will be concurrently
+        accessed and modified by multiple threads at the same time."
+         */
+        super(context, databaseName, password, null, targetVersion, 0, null, hook, true);
+        NativeLibraryLoader.INSTANCE.loadSQLCipher();
         this.baseHelper = new BaseDatabaseOpenHelper(context, targetVersion);
     }
 
@@ -70,4 +86,5 @@ class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         baseHelper.onUpgrade(new EncryptedDatabaseAdapter(db, getDatabaseName()), oldVersion, newVersion);
     }
+
 }

@@ -105,10 +105,13 @@ public class DatabaseAdapterFactory {
                                                boolean encrypt,
                                                int version) {
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
-                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
             String password = passwordManager.getPassword(databaseName);
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password), openHelper.getDatabaseName());
+
+            // We need the password to be set before instantiating the helper
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
+                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, password, version));
+            // It seems that now SQLCipher (4.5.5) handles password internally if previously given
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(), openHelper.getDatabaseName());
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
                     v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));

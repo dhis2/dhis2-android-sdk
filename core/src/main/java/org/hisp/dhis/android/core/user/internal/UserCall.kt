@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
@@ -57,7 +58,7 @@ internal class UserCall(
         try {
             userHandler.handle(user)
             transaction.setSuccessful()
-        } catch (constraintException: net.sqlcipher.SQLException) {
+        } catch (constraintException: SQLiteException) {
             // TODO review
             Log.d("CAll", "call: constraintException")
         } catch (constraintException: android.database.SQLException) {

@@ -67,7 +67,8 @@ val retrofit = "2.9.0"
 val okHttp = "4.10.0"
 val rxJava = "2.2.21"
 val rxAndroid = "2.1.1"
-val sqlCipher = "4.4.3"
+val sqlCipher = "4.5.5"
+val sqlLite = "2.2.0"
 val smsCompression = "0.2.0"
 val expressionParser = "1.0.33"
 
@@ -156,6 +157,7 @@ android {
 }
 
 dependencies {
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$libraryDesugaring")
 
     // RxJava
@@ -200,7 +202,9 @@ dependencies {
     api("com.gabrielittner.auto.value:auto-value-cursor-annotations:$autoValueCursor")
     kapt("com.gabrielittner.auto.value:auto-value-cursor:$autoValueCursor")
 
-    api("net.zetetic:android-database-sqlcipher:$sqlCipher")
+    api("net.zetetic:sqlcipher-android:$sqlCipher")
+    // From SQLCipher 4.5.5, it depends on androidx.sqlite:sqlite
+    api("androidx.sqlite:sqlite:$sqlLite")
 
     api("com.squareup.okhttp3:mockwebserver:$okHttp")
 

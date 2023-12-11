@@ -45,7 +45,7 @@ class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
     static final SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
         @Override
         public void preKey(SQLiteConnection connection) {
-
+            // Nothing to do here
         }
 
         @Override

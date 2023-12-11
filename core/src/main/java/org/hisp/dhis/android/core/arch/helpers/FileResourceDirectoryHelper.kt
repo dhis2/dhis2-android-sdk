@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
-import okio.Path
-import okio.Path.Companion.toOkioPath
-import okio.Path.Companion.toPath
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
@@ -97,10 +94,6 @@ object FileResourceDirectoryHelper {
         if (!file.exists()) {
             file.mkdirs()
         }
-        val string = "/path/to/file"
-        val okioPath: Path = string.toPath()
-        okioPath.toFile()
-        file.toOkioPath()
         return file
     }
 

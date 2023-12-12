@@ -70,6 +70,20 @@
           ]
         }
       ],
+      "attributeValues": [
+        {
+          "value": "Direct",
+          "attribute": {
+            "id": "qXS2NDUEAOS"
+          }
+        },
+        {
+          "value": "Direct 2",
+          "attribute": {
+            "id": "b0vcadVrn08"
+          }
+        }
+      ],
       "legendSet": {
         "id": "TiOkbpGEud4"
       }
@@ -241,23 +255,35 @@
         {
           "value": "Direct",
           "attribute": {
-            "lastUpdated": "2015-04-20T12:36:33.754",
-            "id": "qXS2NDUEAOS",
-            "created": "2015-04-20T12:23:04.044",
-            "name": "Collection method",
-            "code": "Collection method",
+            "id": "qXS2NDUEAOS"
+          }
+        },
+        {
+          "value": "Direct 2",
+          "attribute": {
+            "id": "b0vcadVrn08"
+          }
+        },
+        {
+          "value": "Direct 2",
+          "attribute": {
+            "lastUpdated": "2016-05-25T14:22:29.304",
+            "id": "b0vcadVrn08",
+            "created": "2016-05-25T13:58:15.561",
+            "name": "Data Source",
+            "code": "DataSource",
             "indicatorAttribute": false,
             "indicatorGroupAttribute": false,
-            "publicAccess": "rw------",
+            "publicAccess": "r-------",
             "userGroupAttribute": false,
             "dataElementAttribute": true,
             "constantAttribute": false,
-            "valueType": "LONG_TEXT",
+            "valueType": "TEXT",
             "categoryOptionAttribute": false,
             "optionSetAttribute": false,
             "sqlViewAttribute": false,
             "legendSetAttribute": false,
-            "displayFormName": "Collection method",
+            "displayFormName": "Data Source",
             "trackedEntityAttributeAttribute": false,
             "organisationUnitAttribute": false,
             "dataSetAttribute": false,
@@ -269,7 +295,7 @@
             "sectionAttribute": false,
             "trackedEntityTypeAttribute": false,
             "userAttribute": false,
-            "displayName": "Collection method",
+            "displayName": "Data Source",
             "mandatory": false,
             "categoryOptionGroupAttribute": false,
             "externalAccess": false,
@@ -294,7 +320,6 @@
             }
           }
         }
-      ]
-    }
+      ]    }
   ]
 }

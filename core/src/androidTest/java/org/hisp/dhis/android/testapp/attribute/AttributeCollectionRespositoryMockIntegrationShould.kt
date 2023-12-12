@@ -26,38 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.testapp.attribute
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class AttributeValueUtils {
-
-    private AttributeValueUtils() {
+@RunWith(D2JunitRunner::class)
+class AttributeCollectionRespositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_all() {
+        val attributes = d2.attributeModule().attributes().blockingGet()
+        Truth.assertThat(attributes.size).isEqualTo(2)
     }
 
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
-
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
-        }
-
-        return attributes;
-    }
-
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
+    @Test
+    fun filter_by_uid() {
+        val attributes = d2.attributeModule().attributes()
+            .byUid().eq("b0vcadVrn08")
+            .blockingGet()
+        Truth.assertThat(attributes.size).isEqualTo(1)
     }
 }

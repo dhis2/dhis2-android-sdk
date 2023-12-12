@@ -25,39 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.repository
 
-package org.hisp.dhis.android.core.attribute;
+import org.hisp.dhis.smscompression.models.SMSMetadata
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public final class AttributeValueUtils {
-
-    private AttributeValueUtils() {
+fun interface WebApiRepository {
+    /**
+     * @return Metadata object that contains ids lists needed to properly compress sms data
+     */
+    suspend fun getMetadataIds(config: GetMetadataIdsConfig): SMSMetadata
+    class GetMetadataIdsConfig {
+        var dataElements = true
+        var categoryOptionCombos = true
+        var organisationUnits = true
+        var users = true
+        var trackedEntityTypes = true
+        var trackedEntityAttributes = true
+        var programs = true
     }
 
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
-
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
+    class HttpException(private val code: Int) : RuntimeException() {
+        override fun toString(): String {
+            return "HTTP response:  $code"
         }
-
-        return attributes;
-    }
-
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
     }
 }

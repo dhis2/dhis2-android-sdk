@@ -26,39 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.domain.repository;
+package org.hisp.dhis.android.core.attribute
 
-import org.hisp.dhis.smscompression.models.SMSMetadata;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.attribute.internal.AttributeStore
+import org.koin.core.annotation.Singleton
 
-import io.reactivex.Single;
+@Singleton
+class AttributeCollectionRepository internal constructor(
+    store: AttributeStore,
+    databaseAdapter: DatabaseAdapter,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<Attribute, AttributeCollectionRepository>(
+    store,
+    databaseAdapter,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        AttributeCollectionRepository(
+            store,
+            databaseAdapter,
+            s,
+        )
+    },
 
-public interface WebApiRepository {
+) {
 
-    /**
-     * @return Metadata object that contains ids lists needed to properly compress sms data
-     */
-    Single<SMSMetadata> getMetadataIds(GetMetadataIdsConfig config);
-
-    class GetMetadataIdsConfig {
-        public boolean dataElements = true;
-        public boolean categoryOptionCombos = true;
-        public boolean organisationUnits = true;
-        public boolean users = true;
-        public boolean trackedEntityTypes = true;
-        public boolean trackedEntityAttributes = true;
-        public boolean programs = true;
-    }
-
-    class HttpException extends RuntimeException {
-        private final int code;
-
-        public HttpException(int code) {
-            this.code = code;
-        }
-
-        @Override
-        public String toString() {
-            return "HTTP response: " + " " + code;
-        }
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<Attribute> = emptyMap()
     }
 }

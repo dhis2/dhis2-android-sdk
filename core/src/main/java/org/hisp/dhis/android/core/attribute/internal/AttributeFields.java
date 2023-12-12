@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.attribute.internal;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.attribute.Attribute;
@@ -38,6 +39,8 @@ public final class AttributeFields {
     public static final String UNIQUE = "unique";
 
     private static final FieldsHelper<Attribute> fh = new FieldsHelper<>();
+
+    public static final Field<Attribute, String> uid = fh.uid();
 
     public static final Fields<Attribute> allFields = Fields.<Attribute>builder()
             .fields(fh.getNameableFields())

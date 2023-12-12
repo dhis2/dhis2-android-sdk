@@ -36,9 +36,7 @@ class TimeValidatorShould : ValidatorShouldHelper<TimeFailure>(TimeValidator) {
     @Test
     fun `Should success when passing valid values`() {
         valueShouldSuccess("00:00")
-        valueShouldSuccess("0:00")
         valueShouldSuccess("02:20")
-        valueShouldSuccess("2:20")
         valueShouldSuccess("11:59")
         valueShouldSuccess("12:00")
         valueShouldSuccess("12:59")
@@ -66,5 +64,7 @@ class TimeValidatorShould : ValidatorShouldHelper<TimeFailure>(TimeValidator) {
         valueShouldFail("02:2", TimeFailure.ParseException)
         valueShouldFail("2:2", TimeFailure.ParseException)
         valueShouldFail("0:0", TimeFailure.ParseException)
+        valueShouldFail("0:00", TimeFailure.ParseException)
+        valueShouldFail("2:20", TimeFailure.ParseException)
     }
 }

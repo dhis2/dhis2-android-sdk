@@ -346,6 +346,17 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
     }
 
     /**
+     * Filter by trackedEntity uid
+     *
+     * @return Repository connector
+     */
+    fun byTrackedEntities(): ListFilterConnector<R, String> {
+        return connectorFactory.listConnector { list: List<String> ->
+            scope.toBuilder().uids(list).build()
+        }
+    }
+
+    /**
      * Whether to allow or not cached results for online queries. Its value is 'false' by default.
      *
      * @return Repository connector

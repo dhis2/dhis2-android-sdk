@@ -276,16 +276,16 @@ Additionally, if you want the images associated to `Image` data values available
 
 DHIS2 has a functionality to filter TrackedEntityInstances by related
 properties, like attributes, organisation units, programs or enrollment
-dates. The Sdk provides the `TrackedEntityInstanceQueryCollectionRepository` 
+dates. The Sdk provides the `TrackedEntitySearchCollectionRepository` 
 with methods that allow the download of tracked entity
 instances within the search scope. It can be found inside the tracked entity instance module.
 
-The tracked entity instance query is a powerful tool that follows a
+The tracked entity instance search is a powerful tool that follows a
 builder pattern and allows the download of tracked entity instances
 filtering by **different parameters**.
 
 ```java
-d2.trackedEntityModule().trackedEntityInstanceQuery()
+d2.trackedEntityModule().trackedEntitySearch()
     .[repository mode]
     .[filters]
     .get()
@@ -316,7 +316,7 @@ Additionally, the repository offers different strategies to fetch data:
   connector. For example:
   
   ```java
-  d2.trackedEntityModule().trackedEntityInstanceQuery()
+  d2.trackedEntityModule().trackedEntitySearch()
       .byAttribute("uid1").eq("value1")
       .byAttribute("uid2").eq("value2")
       .get()
@@ -330,7 +330,7 @@ Additionally, the repository offers different strategies to fetch data:
   connector. For example:
   
   ```java
-  d2.trackedEntityModule().trackedEntityInstanceQuery()
+  d2.trackedEntityModule().trackedEntitySearch()
       .byFilter("uid1").eq("value1")
       .byFilter("uid2").eq("value2")
       .get()
@@ -372,7 +372,7 @@ Additionally, the repository offers different strategies to fetch data:
 Example:
 
 ```java
-d2.trackedEntityModule().trackedEntityInstanceQuery()
+d2.trackedEntityModule().trackedEntitySearch()
                 .byOrgUnits().eq("orgunitUid")
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq("programUid")
@@ -388,12 +388,12 @@ to fully download them using the `byUid()` filter of the `TrackedEntityInstanceD
 It could happen that you add filters to the query repository in different parts of the application and you don't have a clear picture about the filters applied, specially when using working lists because they add a set of parameters. In order to solve this, you can access the filter scope at any moment in the repository:
 
 ```java
-d2.trackedEntityModule().trackedEntityInstanceQuery()
+d2.trackedEntityModule().trackedEntitySearch()
     .[ filters ]
     .getScope();
 ```
 
-In addition to the standard `getPaged(int)` and `getDataSource()` methods that are available in all the repositories, the TrackedEntityInstanceQuery repository exposes a method to wrap the response in a `Result` object: the `getResultDataSource()`. This method is kind of a workaround to deal with the lack of error management in the Version 2 of the Android Paging Library (it is hardly improved in version 3). Using this dataSource you can catch search errors, such as "Min attributes required" or "Max tei count reached". 
+In addition to the standard `getPaged(int)` and `getDataSource()` methods that are available in all the repositories, the TrackedEntitySearch repository exposes a method to wrap the response in a `Result` object: the `getResultDataSource()`. This method is kind of a workaround to deal with the lack of error management in the Version 2 of the Android Paging Library (it is hardly improved in version 3). Using this dataSource you can catch search errors, such as "Min attributes required" or "Max tei count reached". 
 
 
  ### Working lists / Tracker filters
@@ -404,7 +404,7 @@ There are three concepts related to building a predifined filter for tracker obj
 - **EventFilters**: they define filters to be used against Event objects.
 - **ProgramStageWorkingList**: they define filters to be used against TrackedEntity objects and they add support to filter by event-related data. It is mandatory to specify a particular ProgramStage.
 
-As usual, they have their own collection repository and can be applied in "query" repositories. For example:
+As usual, they have their own collection repository and can be applied in "search" repositories. For example:
 
 ```java
 // Get the filters
@@ -413,7 +413,7 @@ List<EventFilter> filters = d2.eventModule().eventFilters().blockingGet();
 List<ProgramStageWorkingList> workingLists = d2.programModule().programStageWorkingLists().blockingGet();
 
 // Apply the filters
-d2.trackedEntityModule().trackedEntityInstanceQuery()
+d2.trackedEntityModule().trackedEntitySearch()
     .byTrackedEntityInstanceFilter().eq("filterUid")
     .byProgramStageWorkingList().eq("workingListUid")
     .get()

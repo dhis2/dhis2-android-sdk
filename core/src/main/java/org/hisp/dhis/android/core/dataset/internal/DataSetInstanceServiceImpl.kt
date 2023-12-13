@@ -94,9 +94,9 @@ internal class DataSetInstanceServiceImpl(
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ATTRIBUTE_OPTION_COMBO_NO_ASSIGN_TO_ORGUNIT)
             !blockingIsPeriodInOrgUnitRange(period, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ORGUNIT_RANGE)
-            dataSet?.let { !blockingIsExpired(dataSet, period) } ?: false ->
+            dataSet?.let { blockingIsExpired(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.EXPIRED)
-            dataSet?.let { !blockingIsClosed(dataSet, period) } ?: false ->
+            dataSet?.let { blockingIsClosed(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)
             else -> DataSetEditableStatus.Editable
         }
@@ -139,26 +139,31 @@ internal class DataSetInstanceServiceImpl(
     }
 
     internal fun blockingIsExpired(dataSet: DataSet, period: Period): Boolean {
-        val expiryDays = dataSet.expiryDays() ?: return false
-        val generatedPeriod = period.endDate()?.let { endDate ->
-            periodGenerator.generatePeriod(
-                periodType = PeriodType.Daily,
-                date = endDate,
-                offset = expiryDays - 1,
-            )
+        val expiryDays = dataSet.expiryDays()
+        return if (expiryDays == null || expiryDays <= 0) {
+            false
+        } else {
+            val expiryDate = period.endDate()?.let { endDate ->
+                periodGenerator.generatePeriod(
+                    periodType = PeriodType.Daily,
+                    date = endDate,
+                    offset = expiryDays - 1,
+                )
+            }?.endDate()
+
+            expiryDate?.let { Date().after(it) } ?: false
         }
-        return Date().after(generatedPeriod?.endDate())
     }
 
     internal fun blockingIsClosed(dataSet: DataSet, period: Period): Boolean {
-        val periodType = dataSet.periodType() ?: return true
+        val periodType = dataSet.periodType() ?: return false
         val openFuturePeriods = dataSet.openFuturePeriods() ?: 0
-        val generatedPeriod = periodGenerator.generatePeriod(
+        val latestFuturePeriod = periodGenerator.generatePeriod(
             periodType = periodType,
             date = Date(),
             offset = openFuturePeriods - 1,
         )
-        return period.endDate()?.before(generatedPeriod?.endDate()) ?: true
+        return period.endDate()?.after(latestFuturePeriod?.endDate()) ?: false
     }
 
     internal fun blockingIsPeriodInOrgUnitRange(period: Period, orgUnitUid: String): Boolean {

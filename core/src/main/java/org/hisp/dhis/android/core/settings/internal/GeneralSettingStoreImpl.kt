@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -52,7 +53,7 @@ internal class GeneralSettingStoreImpl(
     ) {
 
     companion object {
-        private val BINDER = StatementBinder<GeneralSettings> { o: GeneralSettings, w: StatementWrapper ->
+        private val BINDER = StatementBinder { o: GeneralSettings, w: StatementWrapper ->
             w.bind(1, o.encryptDB())
             w.bind(2, o.lastUpdated())
             w.bind(3, o.reservedValues())
@@ -62,13 +63,14 @@ internal class GeneralSettingStoreImpl(
             w.bind(7, o.matomoURL())
             w.bind(8, o.allowScreenCapture())
             w.bind(9, o.messageOfTheDay())
+            w.bind(10, StringListColumnAdapter.serialize(o.experimentalFeatures()))
         }
 
-        private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder {
                 _: GeneralSettings, _: StatementWrapper ->
         }
 
-        private val WHERE_DELETE_BINDER = WhereStatementBinder<GeneralSettings> {
+        private val WHERE_DELETE_BINDER = WhereStatementBinder {
                 _: GeneralSettings, _: StatementWrapper ->
         }
     }

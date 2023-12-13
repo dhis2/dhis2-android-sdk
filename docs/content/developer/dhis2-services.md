@@ -29,45 +29,20 @@ Check the javadoc documentation in the IDE to know more details about each metho
 ## Value Type helper
 
 The SDK include a enum helper class called `ValueType`. This class defines all the different types of values that you can find in DHIS2. In addition, for each of them you can find a validator for the type of value and information about the type of value it is, whether it is a date, a string, a boolean or other type.
-The ValueTypes offered by the SDK are listed below:
-
-- `TEXT`
-- `LONG_TEXT`
-- `LETTER`
-- `BOOLEAN`
-- `TRUE_ONLY`
-- `DATE`
-- `DATETIME`
-- `TIME`
-- `NUMBER`
-- `UNIT_INTERVAL`
-- `PERCENTAGE`
-- `INTEGER`
-- `INTEGER_POSITIVE`
-- `INTEGER_NEGATIVE`
-- `INTEGER_ZERO_OR_POSITIVE`
-- `FILE_RESOURCE`
-- `COORDINATE`
-- `PHONE_NUMBER`
-- `EMAIL`
-- `USERNAME`
-- `ORGANISATION_UNIT`
-- `TRACKER_ASSOCIATE`
-- `AGE`
-- `URL`
-- `IMAGE(String::class.java, UidValidator)`
 
 To access the type of value you can simply access it through the methods of the valueType.
 
 ```java
-    valueType.isDate();
-    valueType.isCoordinate();
+    valueType.isInteger();
+    valueType.isDecimal();
     valueType.isNumeric();
-    valueType.isText();
     valueType.isBoolean();
+    valueType.isText();
     valueType.isDate();
     valueType.isFile();
-    valueType.isInteger();
+    valueType.isCoordinate();
+    valueType.isGeo();
+    valueType.isJson();
 ```
 
 To validate a value starting from its valueType it can be done in the following way:

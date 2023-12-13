@@ -76,7 +76,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void filter_by_closed_date() throws ParseException {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
-                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).blockingGet();
+                .byClosedDate().eq(BaseIdentifiableObject.parseDate("2025-05-22T15:21:48.516")).blockingGet();
         assertThat(organisationUnits.size()).isEqualTo(1);
     }
 

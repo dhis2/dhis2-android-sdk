@@ -127,6 +127,15 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould :
     }
 
     @Test
+    fun find_by_uid() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .byTrackedEntities().eq("nWrB0TfWlvh")
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(1)
+    }
+
+    @Test
     fun exclude_uids() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
             .excludeUids().`in`("nWrB0TfWlvh")

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.search
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.PagedList
+import androidx.paging.Pager
 import androidx.paging.PagingData
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
@@ -275,6 +276,10 @@ class EventQueryCollectionRepository internal constructor(
 
     override fun getPagingData(pageSize: Int): Flow<PagingData<Event>> {
         return eventCollectionRepository.getPagingData(pageSize)
+    }
+
+    fun getPager(pageSize: Int): Pager<Event, Event> {
+        return eventCollectionRepository.getPager(pageSize)
     }
 
     val dataSource: DataSource<Event, Event>

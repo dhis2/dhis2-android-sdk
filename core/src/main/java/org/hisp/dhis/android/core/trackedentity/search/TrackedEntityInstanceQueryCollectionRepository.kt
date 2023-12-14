@@ -137,11 +137,15 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     }
 
     override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntityInstance>> {
+        return getPager(pageSize).flow
+    }
+
+    fun getPager(pageSize: Int): Pager<TrackedEntityInstance, TrackedEntityInstance> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
             pagingSource
-        }.flow
+        }
     }
 
     val dataSource: DataSource<TrackedEntityInstance, TrackedEntityInstance>

@@ -54,6 +54,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
+@Suppress("TooManyFunctions")
 internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     M : CoreObject,
     T : Any,
@@ -138,6 +139,14 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         ) {
             pagingSource
         }.flow
+    }
+
+    fun getPager(pageSize: Int): Pager<M, T> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+        ) {
+            pagingSource
+        }
     }
 
     val dataSource: DataSource<M, T>

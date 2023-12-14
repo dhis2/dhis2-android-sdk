@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 
+@Suppress("TooManyFunctions")
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
     internal val databaseAdapter: DatabaseAdapter,
@@ -120,11 +121,15 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     }
 
     override fun getPagingData(pageSize: Int): Flow<PagingData<M>> {
+        return getPager(pageSize).flow
+    }
+
+    fun getPager(pageSize: Int): Pager<M, M> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
             pagingSource
-        }.flow
+        }
     }
 
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))

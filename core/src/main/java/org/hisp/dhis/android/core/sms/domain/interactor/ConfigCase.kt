@@ -44,17 +44,17 @@ class ConfigCase(
     private val localDbRepository: LocalDbRepository,
 ) {
 
-    fun smsModuleConfig(): Single<SmsConfig> {
+    fun getSmsModuleConfig(): Single<SmsConfig> {
         return Single.zip(
-            localDbRepository.isModuleEnabled,
-            localDbRepository.gatewayNumber,
-            localDbRepository.waitingForResultEnabled,
-            localDbRepository.confirmationSenderNumber,
-            localDbRepository.waitingResultTimeout,
+            localDbRepository.isModuleEnabled(),
+            localDbRepository.getGatewayNumber(),
+            localDbRepository.getWaitingForResultEnabled(),
+            localDbRepository.getConfirmationSenderNumber(),
+            localDbRepository.getWaitingResultTimeout(),
         ) { moduleEnabled: Boolean,
-            gateway: String?,
+            gateway: String,
             waitingForResult: Boolean,
-            resultSender: String?,
+            resultSender: String,
             resultWaitingTimeout: Int,
             ->
             SmsConfig(
@@ -81,8 +81,12 @@ class ConfigCase(
      * @param number The sender number.
      * @return `Completable` that completes when the configuration is changed.
      */
-    fun setConfirmationSenderNumber(number: String): Completable {
-        return localDbRepository.setConfirmationSenderNumber(number)
+    fun setConfirmationSenderNumber(number: String?): Completable {
+        return if (number.isNullOrEmpty()) {
+            localDbRepository.deleteConfirmationSenderNumber()
+        } else {
+            localDbRepository.setConfirmationSenderNumber(number)
+        }
     }
 
     /**
@@ -141,8 +145,8 @@ class ConfigCase(
      * Get the metadata download configuration.
      * @return `Single with the` metadata download configuration.
      */
-    fun metadataDownloadConfig(): Single<GetMetadataIdsConfig> {
-        return localDbRepository.metadataDownloadConfig
+    fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
+        return localDbRepository.getMetadataDownloadConfig()
     }
 
     /**
@@ -155,14 +159,14 @@ class ConfigCase(
     }
 
     private suspend fun refreshMetadataIdsCoroutines() {
-        val enabled = localDbRepository.isModuleEnabled.blockingGet()
+        val enabled = localDbRepository.isModuleEnabled().blockingGet()
 
         if (enabled) {
             val config = try {
-                metadataDownloadConfig().blockingGet()
+                getMetadataDownloadConfig().blockingGet()
             } catch (ignored: Exception) {
                 Log.d(TAG, "Can't read saved SMS metadata download config. Using default.")
-                defaultMetadataDownloadConfig()
+                getDefaultMetadataDownloadConfig()
             }
 
             val metadata = webApiRepository.getMetadataIds(config)
@@ -186,15 +190,15 @@ class ConfigCase(
         }
     }
 
-    private fun defaultMetadataDownloadConfig(): GetMetadataIdsConfig {
+    private fun getDefaultMetadataDownloadConfig(): GetMetadataIdsConfig {
         return GetMetadataIdsConfig()
     }
 
     class SmsConfig internal constructor(
         val isModuleEnabled: Boolean,
-        val gateway: String?,
+        val gateway: String,
         val isWaitingForResult: Boolean,
-        val resultSender: String?,
+        val resultSender: String,
         val resultWaitingTimeout: Int,
     )
 

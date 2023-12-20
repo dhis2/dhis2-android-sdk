@@ -167,10 +167,11 @@ internal class TrackedEntityDataValueStoreImpl(
             w.bind(5, o.storedBy())
             w.bind(6, o.value())
             w.bind(7, o.providedElsewhere())
+            w.bind(8, o.syncState())
         }
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackedEntityDataValue, w: StatementWrapper ->
-            w.bind(8, o.event())
-            w.bind(9, o.dataElement())
+            w.bind(9, o.event())
+            w.bind(10, o.dataElement())
         }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { o: TrackedEntityDataValue, w: StatementWrapper ->
             w.bind(1, o.event())

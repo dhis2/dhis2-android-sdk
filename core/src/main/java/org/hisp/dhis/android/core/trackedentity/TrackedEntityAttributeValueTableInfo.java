@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.common.DataColumns.SYNC_STATE;
+
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
@@ -64,7 +66,8 @@ public final class TrackedEntityAttributeValueTableInfo {
                     CREATED,
                     LAST_UPDATED,
                     TRACKED_ENTITY_ATTRIBUTE,
-                    TRACKED_ENTITY_INSTANCE
+                    TRACKED_ENTITY_INSTANCE,
+                    SYNC_STATE
             );
         }
 

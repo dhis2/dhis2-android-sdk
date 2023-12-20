@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 
 import java.text.ParseException;
@@ -49,6 +50,7 @@ public class TrackedEntityAttributeValueSamples {
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .trackedEntityAttribute(trackedEntityAttribute)
                 .trackedEntityInstance(trackedEntityInstance)
+                .syncState(State.SYNCED)
                 .build();
     }
 

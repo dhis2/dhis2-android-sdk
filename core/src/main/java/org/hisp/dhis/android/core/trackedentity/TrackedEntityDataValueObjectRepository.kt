@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjec
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -76,7 +77,11 @@ class TrackedEntityDataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun delete(m: TrackedEntityDataValue) {
-        blockingSet(null)
+        if (m.syncState() === State.TO_POST) {
+            super.delete(m)
+        } else {
+            blockingSet(null)
+        }
     }
 
     override fun blockingExists(): Boolean {
@@ -87,11 +92,16 @@ class TrackedEntityDataValueObjectRepository internal constructor(
     private fun setBuilder(): TrackedEntityDataValue.Builder {
         val date = Date()
         val value = blockingGetWithoutChildren()
+
         return if (value != null) {
+            val state =
+                if (value.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE
             value.toBuilder()
+                .syncState(state)
                 .lastUpdated(date)
         } else {
             TrackedEntityDataValue.builder()
+                .syncState(State.TO_POST)
                 .created(date)
                 .lastUpdated(date)
                 .providedElsewhere(java.lang.Boolean.FALSE)

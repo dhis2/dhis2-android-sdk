@@ -90,6 +90,7 @@ internal class JobReportEventHandler internal constructor(
 
     fun handleSyncedEvent(eventUid: String) {
         handleEventNotes(eventUid, State.SYNCED)
+        trackedEntityDataValueStore.setSyncStateByEvent(eventUid, State.SYNCED)
         trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
         trackedEntityDataValueStore.removeUnassignedDataValuesByEvent(eventUid)
     }

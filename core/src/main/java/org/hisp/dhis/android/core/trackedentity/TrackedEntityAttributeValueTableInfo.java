@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.common.DataColumns.SYNC_STATE;
-
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DataColumns;
 
 public final class TrackedEntityAttributeValueTableInfo {
 
@@ -58,6 +57,7 @@ public final class TrackedEntityAttributeValueTableInfo {
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
         public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String SYNC_STATE = DataColumns.SYNC_STATE;
 
         @Override
         public String[] all() {

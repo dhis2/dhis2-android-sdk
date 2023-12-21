@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
 internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEntityDataValue> {
@@ -39,4 +40,5 @@ internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEn
     fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue>
     fun removeDeletedDataValuesByEvent(eventUid: String)
     fun removeUnassignedDataValuesByEvent(eventUid: String)
+    fun setSyncStateByEvent(eventUid: String, syncState: State)
 }

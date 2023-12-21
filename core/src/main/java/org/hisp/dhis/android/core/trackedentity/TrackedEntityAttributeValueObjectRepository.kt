@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjec
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithValueObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
@@ -76,7 +77,11 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun delete(m: TrackedEntityAttributeValue) {
-        blockingSet(null)
+        if (m.syncState() === State.TO_POST) {
+            super.delete(m)
+        } else {
+            blockingSet(null)
+        }
     }
 
     override fun blockingExists(): Boolean {
@@ -87,11 +92,16 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     private fun setBuilder(): TrackedEntityAttributeValue.Builder {
         val date = Date()
         val value = blockingGetWithoutChildren()
+
         return if (value != null) {
+            val state =
+                if (value.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE
             value.toBuilder()
+                .syncState(state)
                 .lastUpdated(date)
         } else {
             TrackedEntityAttributeValue.builder()
+                .syncState(State.TO_POST)
                 .created(date)
                 .lastUpdated(date)
                 .trackedEntityAttribute(trackedEntityAttribute)

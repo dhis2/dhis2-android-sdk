@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.koin.core.annotation.Singleton
 
@@ -35,6 +36,10 @@ import org.koin.core.annotation.Singleton
 internal class TrackedEntityDataValueHandler(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
 ) : ObjectWithoutUidHandlerImpl<TrackedEntityDataValue>(trackedEntityDataValueStore) {
+    override fun beforeObjectHandled(o: TrackedEntityDataValue): TrackedEntityDataValue {
+        return o.toBuilder().syncState(State.SYNCED).build()
+    }
+
     fun removeEventDataValues(eventUid: String?) {
         trackedEntityDataValueStore.deleteByEvent(eventUid!!)
     }

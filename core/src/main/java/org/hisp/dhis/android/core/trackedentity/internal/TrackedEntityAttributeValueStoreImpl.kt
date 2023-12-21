@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -168,6 +169,21 @@ internal class TrackedEntityAttributeValueStoreImpl(
             .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
             .build()
         deleteWhere(deleteWhereQuery)
+    }
+
+    override fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                trackedEntityInstanceUid,
+            )
+            .build()
+
+        databaseAdapter.execSQL(
+            "UPDATE ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+                    "SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
+                    "WHERE $whereClause"
+        )
     }
 
     private fun trackedEntityAttributeValueListFromQuery(query: String): List<TrackedEntityAttributeValue> {

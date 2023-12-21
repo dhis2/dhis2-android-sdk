@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
@@ -135,6 +136,21 @@ internal class TrackedEntityDataValueStoreImpl(
             ).build()
 
         return selectWhere(queryStatement)
+    }
+
+    override fun setSyncStateByEvent(eventUid: String, syncState: State) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityDataValueTableInfo.Columns.EVENT,
+                eventUid,
+            )
+            .build()
+
+        databaseAdapter.execSQL(
+            "UPDATE ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+                    "SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
+                    "WHERE $whereClause"
+        )
     }
 
     private fun getInProgramStageDataElementsSubQuery(eventUid: String): String {

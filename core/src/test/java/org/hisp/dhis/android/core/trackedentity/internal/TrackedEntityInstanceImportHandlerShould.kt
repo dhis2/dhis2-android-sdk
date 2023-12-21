@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionM
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportTrackedEntityHandler
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -71,7 +72,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val relationshipCollectionRepository: RelationshipCollectionRepository = mock()
 
-    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = mock()
+    private val jobReportTrackedEntityHandler: JobReportTrackedEntityHandler = mock()
 
     private val trackedEntityInstance: TrackedEntityInstance = mock()
 
@@ -87,7 +88,7 @@ class TrackedEntityInstanceImportHandlerShould {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler, trackerImportConflictStore,
             trackerImportConflictParser, relationshipStore, dataStatePropagator, relationshipDHISVersionManager,
-            relationshipCollectionRepository, trackedEntityAttributeValueStore,
+            relationshipCollectionRepository, jobReportTrackedEntityHandler,
         )
 
         whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)

@@ -38,7 +38,7 @@ import java.util.Date;
 public class TrackedEntityAttributeValueSamples {
 
     public static TrackedEntityAttributeValue get() {
-        return get("tracked_entity_attribute", "tracked_entity_instance", "value");
+        return get("cejWyOfXge6", "tracked_entity_instance", "value");
     }
 
     public static TrackedEntityAttributeValue get(String trackedEntityAttribute, String trackedEntityInstance,

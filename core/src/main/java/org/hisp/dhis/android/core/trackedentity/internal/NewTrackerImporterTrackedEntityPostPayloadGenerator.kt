@@ -100,7 +100,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
         tetAttributeMap: Map<String, List<String>>,
     ) {
         if (instance.syncState() != State.SYNCED) {
-            val transformed = NewTrackerImporterTrackedEntityTransformer.transform(instance, tetAttributeMap)
+            val transformed = NewTrackerImporterTrackedEntityTransformer.transform(instance, tetAttributeMap, false)
 
             transformed.let {
                 when (it.deleted()) {
@@ -119,7 +119,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
     ) {
         if (enrollment.syncState() != State.SYNCED) {
             val transformed =
-                NewTrackerImporterEnrollmentTransformer.transform(enrollment, attributes, programAttributeMap)
+                NewTrackerImporterEnrollmentTransformer.transform(enrollment, attributes, programAttributeMap, false)
 
             transformed.let {
                 when (it.deleted()) {
@@ -135,7 +135,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
         event: Event,
     ) {
         if (event.syncState() != State.SYNCED) {
-            val transformed = NewTrackerImporterEventTransformer.transform(event)
+            val transformed = NewTrackerImporterEventTransformer.transform(event, false)
 
             transformed.let {
                 when (it.deleted()) {

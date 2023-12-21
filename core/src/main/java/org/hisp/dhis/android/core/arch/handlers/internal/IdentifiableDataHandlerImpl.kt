@@ -225,8 +225,8 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
         return os.filter { o ->
             !storedObjectUids.contains(o.uid()) ||
-                    allowedObjectUids.contains(o.uid()) ||
-                    CollectionsHelper.isDeleted(o)
+                allowedObjectUids.contains(o.uid()) ||
+                CollectionsHelper.isDeleted(o)
         }
     }
 

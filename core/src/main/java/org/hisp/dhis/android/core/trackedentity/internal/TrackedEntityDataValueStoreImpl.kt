@@ -148,8 +148,8 @@ internal class TrackedEntityDataValueStoreImpl(
 
         databaseAdapter.execSQL(
             "UPDATE ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                    "SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
-                    "WHERE $whereClause"
+                "SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
+                "WHERE $whereClause",
         )
     }
 

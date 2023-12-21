@@ -181,8 +181,8 @@ internal class TrackedEntityAttributeValueStoreImpl(
 
         databaseAdapter.execSQL(
             "UPDATE ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-                    "SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
-                    "WHERE $whereClause"
+                "SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
+                "WHERE $whereClause",
         )
     }
 

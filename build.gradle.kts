@@ -9,10 +9,10 @@ buildscript {
     }
 
     dependencies {
-        classpath(libs.gradlePlugin)
-        classpath(libs.kotlinPlugin)
-        classpath(libs.ktlintPlugin)
-        classpath(libs.jacocoPlugin)
+        classpath(libs.gradle)
+        classpath(libs.kotlin)
+        classpath(libs.ktlint)
+        classpath(libs.jacoco)
     }
 }
 

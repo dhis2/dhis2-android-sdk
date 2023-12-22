@@ -28,7 +28,7 @@
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.13"
+    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.16"
     id("kotlin-android")
     id("kotlin-kapt")
     alias(libs.plugins.detekt)
@@ -108,6 +108,9 @@ android {
     }
 
     namespace = "org.hisp.dhis.android"
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {

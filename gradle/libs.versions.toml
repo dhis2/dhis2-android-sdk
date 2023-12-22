@@ -4,7 +4,7 @@ kotlin = "1.9.21"
 ktlint = "11.5.1"
 jacoco = "0.8.10"
 sonarqube = "3.3"
-detekt = "1.21.0"
+detekt = "1.18.0"
 dokka = "1.9.10"
 
 targetSdkVersion = "34"

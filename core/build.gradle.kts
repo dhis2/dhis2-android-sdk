@@ -28,11 +28,11 @@
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
+    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.13"
     id("kotlin-android")
     id("kotlin-kapt")
-    id("io.gitlab.arturbosch.detekt") version "1.21.0"
-    id("org.jetbrains.dokka") version "1.8.20" apply false
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka) apply false
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
@@ -45,61 +45,15 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 }
 
-val _targetSdkVersion = 34
-val _minSdkVersion = 21
 val VERSION_CODE: String by project
 val VERSION_NAME: String by project
 
-/*
-** Libraries
-*/
-val libraryDesugaring = "2.0.3"
-
-// android
-val annotation = "1.6.0"
-val paging = "2.1.2"
-
-// java
-val jackson = "2.13.4"
-val autoValue = "1.10.2"
-val autoValueCursor = "2.0.1"
-val retrofit = "2.9.0"
-val okHttp = "4.10.0"
-val rxJava = "2.2.21"
-val rxAndroid = "2.1.1"
-val sqlCipher = "4.5.5"
-val sqlLite = "2.2.0"
-val smsCompression = "0.2.0"
-val expressionParser = "1.0.33"
-
-// Kotlin
-val kotlinxDatetime = "0.4.0"
-val coroutines = "1.6.4"
-val koin = "3.5.0"
-val koinKsp = "1.3.0"
-
-// test dependencies
-val coreTesting = "2.2.0"
-val jUnit = "4.13.2"
-val mockito = "3.4.6"
-val mockitoKotlin = "2.2.0"
-val truth = "1.1.3"
-val testRunner = "1.5.2"
-val testRules = "1.5.0"
-val equalsVerifier = "3.14"
-val flipper = "0.83.0"
-val soloader = "0.10.5"
-val liveDataTesting = "1.3.0"
-
-// open id
-val appauth = "0.8.1"
-
 android {
-    compileSdk = _targetSdkVersion
+    compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
     defaultConfig {
-        minSdk = _minSdkVersion
-        targetSdk = _targetSdkVersion
+        minSdk = libs.versions.minSdkVersion.get().toInt()
+        targetSdk = libs.versions.targetSdkVersion.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
@@ -158,95 +112,91 @@ android {
 
 dependencies {
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$libraryDesugaring")
+    coreLibraryDesugaring(libs.desugaring)
 
     // RxJava
-    api("io.reactivex.rxjava2:rxjava:$rxJava")
-    api("io.reactivex.rxjava2:rxandroid:$rxAndroid")
+    api(libs.rx.java)
+    api(libs.rx.android)
 
     // AndroidX
-    api("androidx.annotation:annotation:$annotation")
-    api("androidx.paging:paging-runtime:$paging")
+    api(libs.androidx.annotation)
+    api(libs.androidx.paging)
 
     // Auto Value
-    api("com.google.auto.value:auto-value-annotations:$autoValue")
-    kapt("com.google.auto.value:auto-value:$autoValue")
+    api(libs.google.auto.value.annotation)
+    kapt(libs.google.auto.value)
 
     // Koin
-    implementation("io.insert-koin:koin-core:$koin")
-    implementation("io.insert-koin:koin-annotations:$koinKsp")
-    ksp("io.insert-koin:koin-ksp-compiler:$koinKsp")
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.compiler)
 
     // Jackson
-    api("com.fasterxml.jackson.core:jackson-databind:$jackson")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson")
+    api(libs.jackson.core)
+    api(libs.jackson.kotlin)
 
     // Square libraries
-    api("com.squareup.okhttp3:okhttp:$okHttp")
-    api("com.squareup.retrofit2:retrofit:$retrofit")
-    api("com.squareup.retrofit2:converter-jackson:$retrofit")
-    api("com.squareup.retrofit2:adapter-rxjava2:$retrofit")
+    api(libs.okhttp)
+    api(libs.okhttp.mockwebserver)
+    api(libs.retrofit.core)
+    api(libs.retrofit.jackson)
+    api(libs.retrofit.rxjava2)
 
     // Kotlin
-    api("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetime")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines")
+    api(libs.kotlinx.datetime)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.rx2)
 
-    // sms compression library
-    api("com.github.dhis2:sms-compression:$smsCompression")
-
-    // DHIS 2 antlr expression parser
-    api("org.hisp.dhis.parser:dhis-antlr-expression-parser:$expressionParser")
+    // DHIS2 libraries
+    api(libs.dhis2.compression)
+    api(libs.dhis2.antlr.parser)
 
     // Extension which generates mappers for work with cursor and content values
-    api("com.gabrielittner.auto.value:auto-value-cursor-annotations:$autoValueCursor")
-    kapt("com.gabrielittner.auto.value:auto-value-cursor:$autoValueCursor")
+    api(libs.auto.value.cursor.annotations)
+    kapt(libs.auto.value.cursor)
 
-    api("net.zetetic:sqlcipher-android:$sqlCipher")
+    api(libs.sqlcipher)
     // From SQLCipher 4.5.5, it depends on androidx.sqlite:sqlite
-    api("androidx.sqlite:sqlite:$sqlLite")
+    api(libs.sqlite)
 
-    api("com.squareup.okhttp3:mockwebserver:$okHttp")
+    implementation(libs.openid.appauth)
+    implementation(libs.listenablefuture.empty)
 
     // Java test dependencies
-    testImplementation("junit:junit:$jUnit")
-    testImplementation("org.mockito:mockito-core:$mockito")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin")
-    testImplementation("com.google.truth:truth:$truth") {
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.google.truth) {
         exclude(group = "junit") // Android has JUnit built in.
     }
 
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifier")
-    testImplementation("com.squareup.okhttp3:mockwebserver:$okHttp")
-    testImplementation("androidx.test:runner:$testRunner")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
+    testImplementation(libs.equalsverifier)
+    testImplementation(libs.androidx.test.runner)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // Android test dependencies
-    androidTestImplementation("org.mockito:mockito-core:$mockito")
-    androidTestImplementation("com.jraska.livedata:testing-ktx:$liveDataTesting")
-    androidTestImplementation("androidx.arch.core:core-testing:$coreTesting")
-    androidTestImplementation("androidx.test:runner:$testRunner")
-    androidTestImplementation("androidx.test:rules:$testRules")
-    androidTestImplementation("com.squareup.okhttp3:logging-interceptor:$okHttp")
-    androidTestImplementation("com.google.truth:truth:$truth") {
+    androidTestImplementation(libs.mockito.core)
+    androidTestImplementation(libs.livedata.testing.ktx)
+    androidTestImplementation(libs.androidx.arch.core.testing)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.okhttp.logging)
+    androidTestImplementation(libs.google.truth) {
         exclude(group = "junit") // Android has JUnit built in.
     }
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
-    debugImplementation("com.facebook.flipper:flipper:$flipper")
-    debugImplementation("com.facebook.soloader:soloader:$soloader")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:$flipper") {
+    debugImplementation(libs.facebook.soloader)
+    debugImplementation(libs.facebook.flipper.core)
+    debugImplementation(libs.facebook.flipper.network) {
         exclude(group = "com.squareup.okhttp3")
     }
 
-    releaseImplementation("com.facebook.flipper:flipper-noop:$flipper")
-
-    implementation("net.openid:appauth:$appauth")
-    implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
+    releaseImplementation(libs.facebook.flipper.noop)
 }
 
 detekt {
-    toolVersion = "1.18.0"
+    toolVersion = libs.versions.detekt.get()
     config = files("config/detekt.yml")
     parallel = true
     buildUponDefaultConfig = false

@@ -34,13 +34,12 @@ plugins {
 apply(from = project.file("../core/plugins/jacoco.gradle.kts"))
 
 android {
-    compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
     defaultConfig {
         applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = 21
-        targetSdk = 33
+        minSdk = libs.versions.minSdkVersion.get().toInt()
+        targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }

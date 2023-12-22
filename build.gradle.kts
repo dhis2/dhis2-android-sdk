@@ -1,8 +1,6 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
-    val kotlinVersion = "1.9.10"
-
     repositories {
         google()
         mavenLocal()
@@ -11,15 +9,15 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:11.5.1")
-        classpath("org.jacoco:org.jacoco.core:0.8.10")
+        classpath(libs.gradlePlugin)
+        classpath(libs.kotlinPlugin)
+        classpath(libs.ktlintPlugin)
+        classpath(libs.jacocoPlugin)
     }
 }
 
 plugins {
-    id("org.sonarqube") version "3.3"
+    alias(libs.plugins.sonarqube)
 }
 
 sonarqube {

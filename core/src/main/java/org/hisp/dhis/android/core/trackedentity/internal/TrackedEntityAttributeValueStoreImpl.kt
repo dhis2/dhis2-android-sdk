@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -170,6 +171,21 @@ internal class TrackedEntityAttributeValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
+    override fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                trackedEntityInstanceUid,
+            )
+            .build()
+
+        databaseAdapter.execSQL(
+            "UPDATE ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+                "SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
+                "WHERE $whereClause",
+        )
+    }
+
     private fun trackedEntityAttributeValueListFromQuery(query: String): List<TrackedEntityAttributeValue> {
         val trackedEntityAttributeValueList: MutableList<TrackedEntityAttributeValue> = ArrayList()
         val cursor = databaseAdapter.rawQuery(query)
@@ -179,20 +195,21 @@ internal class TrackedEntityAttributeValueStoreImpl(
 
     companion object {
         private val BINDER =
-            StatementBinder<TrackedEntityAttributeValue> { o: TrackedEntityAttributeValue, w: StatementWrapper ->
+            StatementBinder { o: TrackedEntityAttributeValue, w: StatementWrapper ->
                 w.bind(1, o.value())
                 w.bind(2, o.created())
                 w.bind(3, o.lastUpdated())
                 w.bind(4, o.trackedEntityAttribute())
                 w.bind(5, o.trackedEntityInstance())
+                w.bind(6, o.syncState())
             }
         private val WHERE_UPDATE_BINDER =
-            WhereStatementBinder<TrackedEntityAttributeValue> { o: TrackedEntityAttributeValue, w: StatementWrapper ->
-                w.bind(6, o.trackedEntityAttribute())
-                w.bind(7, o.trackedEntityInstance())
+            WhereStatementBinder { o: TrackedEntityAttributeValue, w: StatementWrapper ->
+                w.bind(7, o.trackedEntityAttribute())
+                w.bind(8, o.trackedEntityInstance())
             }
         private val WHERE_DELETE_BINDER =
-            WhereStatementBinder<TrackedEntityAttributeValue> { o: TrackedEntityAttributeValue, w: StatementWrapper ->
+            WhereStatementBinder { o: TrackedEntityAttributeValue, w: StatementWrapper ->
                 w.bind(1, o.trackedEntityAttribute())
                 w.bind(2, o.trackedEntityInstance())
             }

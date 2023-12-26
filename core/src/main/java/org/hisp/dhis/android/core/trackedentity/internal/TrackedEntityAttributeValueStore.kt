@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
 internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<TrackedEntityAttributeValue> {
@@ -50,4 +51,6 @@ internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<Trac
     )
 
     fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)
+
+    fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State)
 }

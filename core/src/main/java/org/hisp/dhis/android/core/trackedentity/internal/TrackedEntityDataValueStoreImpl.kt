@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
@@ -137,6 +138,21 @@ internal class TrackedEntityDataValueStoreImpl(
         return selectWhere(queryStatement)
     }
 
+    override fun setSyncStateByEvent(eventUid: String, syncState: State) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityDataValueTableInfo.Columns.EVENT,
+                eventUid,
+            )
+            .build()
+
+        databaseAdapter.execSQL(
+            "UPDATE ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+                "SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
+                "WHERE $whereClause",
+        )
+    }
+
     private fun getInProgramStageDataElementsSubQuery(eventUid: String): String {
         val psDataElementName = ProgramStageDataElementTableInfo.TABLE_INFO.name()
         val eventName = EventTableInfo.TABLE_INFO.name()
@@ -167,10 +183,11 @@ internal class TrackedEntityDataValueStoreImpl(
             w.bind(5, o.storedBy())
             w.bind(6, o.value())
             w.bind(7, o.providedElsewhere())
+            w.bind(8, o.syncState())
         }
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackedEntityDataValue, w: StatementWrapper ->
-            w.bind(8, o.event())
-            w.bind(9, o.dataElement())
+            w.bind(9, o.event())
+            w.bind(10, o.dataElement())
         }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { o: TrackedEntityDataValue, w: StatementWrapper ->
             w.bind(1, o.event())

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportTrackedEntityHandler
 import org.koin.core.annotation.Singleton
 import java.util.*
 
@@ -58,7 +59,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
     private val dataStatePropagator: DataStatePropagator,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
-    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
+    private val jobReportTrackedEntityHandler: JobReportTrackedEntityHandler,
 ) {
 
     private val alreadyDeletedInServerRegex =
@@ -96,13 +97,14 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
                     storeTEIImportConflicts(teiImportSummary)
                     val enSummary = handleEnrollmentImportSummaries(teiImportSummary, instances, state)
                     summary.add(enSummary)
-                    dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
-                }
 
-                if (state == State.SYNCED &&
-                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
-                ) {
-                    trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(teiUid)
+                    if (state == State.SYNCED &&
+                        (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
+                    ) {
+                        jobReportTrackedEntityHandler.handleSyncedEntity(teiUid)
+                    }
+
+                    dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
                 }
             }
         }

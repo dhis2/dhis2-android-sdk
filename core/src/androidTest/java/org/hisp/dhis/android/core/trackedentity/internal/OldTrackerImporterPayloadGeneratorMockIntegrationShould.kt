@@ -40,6 +40,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGeneratorMockIntegration() {
 
+    private val oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator
+
     @Test
     fun build_tracked_entity_instance_payload_with_nested_elements() {
         storeTrackerData()

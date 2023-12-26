@@ -51,7 +51,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
         val handleAction = trackedEntityStore.setSyncStateOrDelete(uid, state)
 
         if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
-            trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
+            handleSyncedEntity(uid)
         }
         return handleAction
     }
@@ -72,5 +72,10 @@ internal class JobReportTrackedEntityHandler internal constructor(
 
     override fun getRelatedRelationships(uid: String): List<String> {
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.teiItem(uid)).mapNotNull { it.uid() }
+    }
+
+    fun handleSyncedEntity(uid: String) {
+        trackedEntityAttributeValueStore.setSyncStateByInstance(uid, State.SYNCED)
+        trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
     }
 }

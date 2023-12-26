@@ -79,13 +79,14 @@ internal class EventImportHandler constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeEventImportConflicts(eventImportSummary, enrollmentUid)
-                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
-                }
 
-                if (state == State.SYNCED &&
-                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
-                ) {
-                    jobReportEventHandler.handleSyncedEvent(eventUid)
+                    if (state == State.SYNCED &&
+                        (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
+                    ) {
+                        jobReportEventHandler.handleSyncedEvent(eventUid)
+                    }
+
+                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
                 }
             }
         }

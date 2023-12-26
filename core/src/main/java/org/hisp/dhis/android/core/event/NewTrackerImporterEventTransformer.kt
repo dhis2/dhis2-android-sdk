@@ -27,14 +27,21 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
 
-internal object NewTrackerImporterEventTransformer : TwoWayTransformer<Event, NewTrackerImporterEvent> {
-    override fun transform(o: Event): NewTrackerImporterEvent {
+internal object NewTrackerImporterEventTransformer {
+    fun transform(
+        o: Event,
+        includeSyncedValues: Boolean = true,
+    ): NewTrackerImporterEvent {
+        val eventValues = o.trackedEntityDataValues()
+            ?.filter { includeSyncedValues || it.syncState() !== State.SYNCED }
+            ?.map { NewTrackerImporterTrackedEntityDataValueTransformer.transform(it) }
+
         return NewTrackerImporterEvent.builder()
             .id(o.id())
             .uid(o.uid())
@@ -57,11 +64,7 @@ internal object NewTrackerImporterEventTransformer : TwoWayTransformer<Event, Ne
             .assignedUser(o.assignedUser()?.let { NewTrackerImporterUserInfo.builder().uid(it).build() })
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
-            .trackedEntityDataValues(
-                o.trackedEntityDataValues()?.map {
-                    NewTrackerImporterTrackedEntityDataValueTransformer.transform(it)
-                },
-            )
+            .trackedEntityDataValues(eventValues)
             .notes(
                 o.notes()?.map {
                     NewTrackerImporterNoteTransformer.transform(it)
@@ -70,7 +73,7 @@ internal object NewTrackerImporterEventTransformer : TwoWayTransformer<Event, Ne
             .build()
     }
 
-    override fun deTransform(t: NewTrackerImporterEvent): Event {
+    fun deTransform(t: NewTrackerImporterEvent): Event {
         val notes = t.notes()?.map { NewTrackerImporterNoteTransformer.deTransform(it) }
 
         val dataValues = t.trackedEntityDataValues()?.map {

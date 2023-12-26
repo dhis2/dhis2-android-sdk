@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
@@ -38,12 +39,14 @@ internal object NewTrackerImporterEnrollmentTransformer {
         o: Enrollment,
         teiAttributes: List<TrackedEntityAttributeValue>?,
         programAttributeMap: Map<String, List<String>>,
+        includeSyncedAttributes: Boolean = true,
     ): NewTrackerImporterEnrollment {
+        val attributes = teiAttributes ?: emptyList()
         val programAttributeUids = programAttributeMap[o.program()] ?: emptyList()
-        val enrollmentAttributeValues = teiAttributes
-            ?.filter { programAttributeUids.contains(it.trackedEntityAttribute()) }
-            ?.map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
-            ?: emptyList()
+        val enrollmentAttributeValues = attributes
+            .filter { includeSyncedAttributes || it.syncState() !== State.SYNCED }
+            .filter { programAttributeUids.contains(it.trackedEntityAttribute()) }
+            .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
 
         return NewTrackerImporterEnrollment.builder()
             .id(o.id())

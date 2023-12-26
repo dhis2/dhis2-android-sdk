@@ -195,13 +195,13 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
                 oCollection
             }
             params.asRelationship -> {
-                removeAllowedExistingObjects(
+                filterExistingObjectsByState(
                     oCollection,
                     listOf(State.RELATIONSHIP.name),
                 )
             }
             else -> {
-                removeAllowedExistingObjects(
+                filterExistingObjectsByState(
                     oCollection,
                     listOf(
                         State.SYNCED.name,
@@ -219,18 +219,15 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
          */
     }
 
-    private fun removeAllowedExistingObjects(os: Collection<O>, allowedStates: List<String>): Collection<O> {
+    private fun filterExistingObjectsByState(os: Collection<O>, allowedStates: List<String>): Collection<O> {
         val storedObjectUids = storedObjectUids(os)
         val allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates)
-        val objectsToStore: MutableList<O> = ArrayList()
-        for (o in os) {
-            if (!storedObjectUids.contains(o.uid()) || allowedObjectUids.contains(o.uid()) ||
+
+        return os.filter { o ->
+            !storedObjectUids.contains(o.uid()) ||
+                allowedObjectUids.contains(o.uid()) ||
                 CollectionsHelper.isDeleted(o)
-            ) {
-                objectsToStore.add(o)
-            }
         }
-        return objectsToStore
     }
 
     private fun storedObjectUids(os: Collection<O>): List<String> {

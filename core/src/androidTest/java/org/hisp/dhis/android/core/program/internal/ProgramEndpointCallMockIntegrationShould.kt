@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.program.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
-import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples
 import org.hisp.dhis.android.core.data.program.ProgramSamples
 import org.hisp.dhis.android.core.data.program.ProgramTrackedEntityAttributeSamples
@@ -53,6 +52,7 @@ import org.junit.runner.RunWith
 import org.mockito.internal.util.collections.Sets
 
 @RunWith(D2JunitRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
@@ -92,11 +92,11 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
         @BeforeClass
         @JvmStatic
-        fun setUpTestClass() {
+        fun setUpTestClass() = runTest {
             setUpClass()
 
-            val executor = D2CallExecutor.create(databaseAdapter)
-            executor.executeD2CallTransactionally {
+            val executor = objects.d2DIComponent.coroutineApiCallExecutor
+            executor.wrapTransactionally {
                 val categoryComboUid = "m2jTvAj5kkm"
                 val categoryCombo = CreateCategoryComboUtils.create(1L, categoryComboUid)
                 databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
@@ -117,11 +117,8 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
                 val programStage = CreateProgramStageUtils.create(1L, "dBwrot7S420", programUid)
                 databaseAdapter.insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage)
                 dhis2MockServer.enqueueMockResponse("program/programs.json")
-                runBlocking {
-                    objects.d2DIComponent.programCall.download(Sets.newSet(programUid))
-                }
 
-                Unit()
+                objects.d2DIComponent.programCall.download(Sets.newSet(programUid))
             }
         }
     }

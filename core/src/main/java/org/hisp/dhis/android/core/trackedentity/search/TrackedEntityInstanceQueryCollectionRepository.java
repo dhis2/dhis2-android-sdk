@@ -459,6 +459,15 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * Filter by Uids.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byUIds() {
+        return connectorFactory.listConnector(uIds -> scope.toBuilder().uids(uIds).build());
+    }
+
+    /**
      * Apply the filters defined in a {@link ProgramStageWorkingList}. It will overwrite previous filters in case
      * they overlap. In the same way, they could be overwritten by subsequent filters.
      *

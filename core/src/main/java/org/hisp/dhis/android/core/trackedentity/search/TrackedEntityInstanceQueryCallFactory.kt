@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import dagger.Reusable
-import java.text.ParseException
-import java.util.concurrent.Callable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
@@ -46,7 +43,11 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormatWithDeleteValue
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import java.text.ParseException
+import java.util.concurrent.Callable
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
@@ -81,6 +82,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
                 )
             }
         } else {
+
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
                 trackedEntities = instances,
@@ -148,7 +150,7 @@ internal class TrackedEntityInstanceQueryCallFactory @Inject constructor(
             eventStatus = getEventStatus(query),
             trackedEntityType = query.trackedEntityType,
             query = query.query,
-            filter = toAPIFilterFormat(query.attributeFilter, upper = true),
+            filter = toAPIFilterFormatWithDeleteValue(query.attributeFilter, upper = true),
             assignedUserMode = query.assignedUserMode?.toString(),
             lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
             lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),

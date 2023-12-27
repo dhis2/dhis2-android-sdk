@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import kotlin.collections.HashSet
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -124,8 +123,9 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         baseOnlineQuery: TrackedEntityInstanceQueryOnline,
         requestLoadSize: Int
     ): List<Result<TrackedEntityInstance, D2Error>> {
-        val status = onlineQueryStatusMap[baseOnlineQuery]!!
-        if (status.isExhausted) {
+        val status = onlineQueryStatusMap[baseOnlineQuery]
+
+        if (status == null || status.isExhausted) {
             return emptyList()
         }
 

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import javax.inject.Inject
 
 internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     private val dateFilterPeriodHelper: DateFilterPeriodHelper
@@ -120,6 +120,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             includeDeleted = scope.includeDeleted(),
             trackedEntityType = scope.trackedEntityType(),
             order = toAPIOrderFormat(scope.order()),
+            uids = scope.uids()
         ).run {
             scope.program()?.let {
                 copy(
@@ -157,6 +158,25 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
     }
 
     companion object {
+        fun toAPIFilterFormatWithDeleteValue(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
+            return items
+                .groupBy { it.key() }
+                .map { (key, items) ->
+                    val clause = items.map { item ->
+                        val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
+                        val value = getAPIValue(item)
+
+                        if (value == "%DELETE%"){
+                            ""
+                        } else{
+                            ":" + operator + ":" + getAPIValue(item)
+                        }
+
+                    }
+
+                    key + clause.joinToString(separator = "")
+                }
+        }
         fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
             return items
                 .groupBy { it.key() }

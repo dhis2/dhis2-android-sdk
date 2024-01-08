@@ -40,7 +40,8 @@ import org.junit.runner.RunWith
 class RelationshipConstraintStoreIntegrationShould :
     ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint>(
         RelationshipConstraintStoreImpl(TestDatabaseAdapterFactory.get()),
-        RelationshipConstraintTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+        RelationshipConstraintTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): RelationshipConstraint {
         return relationshipConstraint

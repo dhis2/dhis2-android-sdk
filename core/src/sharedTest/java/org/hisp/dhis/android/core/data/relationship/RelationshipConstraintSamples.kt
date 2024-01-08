@@ -48,7 +48,7 @@ object RelationshipConstraintSamples {
                 TrackerDataView.builder()
                     .attributes(listOf("attribute_uid_1", "attribute_uid_3", "attribute_uid_3"))
                     .dataElements(listOf("data_element_uid_1", "data_element_uid_2", "data_element_uid_3"))
-                    .build()
+                    .build(),
             )
             .build()
 }

@@ -344,22 +344,15 @@ Additionally, the repository offers different strategies to fetch data:
 - `byDataValue()`. Search tracked entity instances based on the values of their events. This filter is usually used along with `programStage()` filter.
 - `byProgram()`. Filter by enrollment program. Only one program can be
   specified.
+- `byProgramStage()`. Filter by enrollment program stage. Only one program stage can be specified.
 - `byOrgUnits()`. Filter by tracked entity instance organisation units.
   More than one organisation unit can be specified.
-- `byOrgUnitMode()`. Define the organisation unit mode. The possible
-  modes are the next:
-  - **SELECTED**. Specified units only.
-  - **CHILDREN**. Immediate children of specified units, including
-    specified units.
-  - **DESCENDANTS**. All units in sub-hierarchy of specified units,
-    including specified units.
-  - **ACCESSIBLE**. All organisation units accessible by the user
-    (search scope).
-  - **ALL**. All units in system. Requires authority.
-- `byProgramStartDate()`. Define an enrollment start date. It only
-  applies if a program has been specified.
-- `byProgramEndDate()`. Define an enrollment end date. It only applies
-  if a program has been specified.
+- `byOrgUnitMode()`. Define the organisation unit mode.
+- `byProgramDate()`. Define an enrollment date filter. It only applies if a program has been specified.
+- `byIncidentDate()`. Define an incident date filter.
+- `byEnrollmentStatus()`. Define a filter for enrollment status.
+- `byEventDate()`. Define an event date filter.
+- `byEventStatus()`. Define a filter for event status.
 - `byTrackedEntityType()`. Filter by TrackedEntityType. Only one type
   can be specified.
 - `byIncludeDeleted()`. Whether to include or not deleted tracked entity
@@ -367,7 +360,12 @@ Additionally, the repository offers different strategies to fetch data:
   instances.
 - `byStates()`. Filter by sync status. Using this filter forces
   **offline only** mode.
+- `byFollowUp()`. Filter by followUp.
+- `byAssignedUserMode()`. Filter using an assignedUserMode.
+- `byLastUpdatedDate()`. Define a lastUpdated filter.
+- `byTrackedEntities()`. Filter by tracked entity uids.
 - `byTrackedEntityInstanceFilter()`. Also know as **working lists**, trackedEntityInstanceFilters are a predefined set of query parameters.
+- `byProgramStageWorkingList()`. Apply a ProgramStageWorkingList filter.
 
 Example:
 
@@ -396,7 +394,7 @@ d2.trackedEntityModule().trackedEntitySearch()
 In addition to the standard `getPaged(int)` and `getDataSource()` methods that are available in all the repositories, the TrackedEntitySearch repository exposes a method to wrap the response in a `Result` object: the `getResultDataSource()`. This method is kind of a workaround to deal with the lack of error management in the Version 2 of the Android Paging Library (it is hardly improved in version 3). Using this dataSource you can catch search errors, such as "Min attributes required" or "Max tei count reached". 
 
 
- ### Working lists / Tracker filters
+### Working lists / Tracker filters
 
 There are three concepts related to building a predifined filter for tracker objects:
 

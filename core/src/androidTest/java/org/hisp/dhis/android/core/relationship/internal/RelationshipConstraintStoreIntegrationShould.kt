@@ -25,36 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples.relationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class RelationshipConstraintStoreIntegrationShould extends
-        ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint> {
-
-    public RelationshipConstraintStoreIntegrationShould() {
-        super(new RelationshipConstraintStoreImpl(TestDatabaseAdapterFactory.get()),
-                RelationshipConstraintTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class RelationshipConstraintStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint>(
+        RelationshipConstraintStoreImpl(TestDatabaseAdapterFactory.get()),
+        RelationshipConstraintTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun buildObject(): RelationshipConstraint {
+        return relationshipConstraint
     }
 
-    @Override
-    protected RelationshipConstraint buildObject() {
-        return RelationshipConstraintSamples.getRelationshipConstraint();
-    }
-
-    @Override
-    protected RelationshipConstraint buildObjectToUpdate() {
-        return RelationshipConstraintSamples.getRelationshipConstraint().toBuilder()
-                .relationshipEntity(RelationshipEntityType.PROGRAM_INSTANCE)
-                .build();
+    override fun buildObjectToUpdate(): RelationshipConstraint {
+        return relationshipConstraint.toBuilder()
+            .relationshipEntity(RelationshipEntityType.PROGRAM_INSTANCE)
+            .build()
     }
 }

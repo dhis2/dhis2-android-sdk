@@ -25,26 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.relationship
 
-package org.hisp.dhis.android.core.data.relationship;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.core.relationship.TrackerDataView
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
-
-
-public class RelationshipConstraintSamples {
-
-    public static RelationshipConstraint getRelationshipConstraint() {
-        return RelationshipConstraint.builder()
-                .id(1L)
-                .relationshipType(ObjectWithUid.create("relationship_type_uid"))
-                .constraintType(RelationshipConstraintType.FROM)
-                .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                .trackedEntityType(ObjectWithUid.create("tracked_entity_type_uid"))
-                .program(ObjectWithUid.create("program_uid"))
-                .programStage(ObjectWithUid.create("program_stage_uid"))
-                .build();
-    }
+object RelationshipConstraintSamples {
+    @JvmStatic
+    val relationshipConstraint: RelationshipConstraint
+        get() = RelationshipConstraint.builder()
+            .id(1L)
+            .relationshipType(ObjectWithUid.create("relationship_type_uid"))
+            .constraintType(RelationshipConstraintType.FROM)
+            .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+            .trackedEntityType(ObjectWithUid.create("tracked_entity_type_uid"))
+            .program(ObjectWithUid.create("program_uid"))
+            .programStage(ObjectWithUid.create("program_stage_uid"))
+            .trackerDataView(
+                TrackerDataView.builder()
+                    .attributes(listOf("attribute_uid_1", "attribute_uid_3", "attribute_uid_3"))
+                    .dataElements(listOf("data_element_uid_1", "data_element_uid_2", "data_element_uid_3"))
+                    .build()
+            )
+            .build()
 }

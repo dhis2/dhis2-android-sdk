@@ -20,12 +20,29 @@
     "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
     "trackedEntityType": {
       "id": "nEenWmSyUEp"
+    },
+    "trackerDataView": {
+      "attributes": [
+        "b0vcadVrn08",
+        "qXS2NDUEAOS"
+      ],
+      "dataElements": [
+        "ciWE5jde1ax",
+        "hB9F8vKFmlk",
+        "uFAQYm3UgBL"
+      ]
     }
   },
   "toConstraint": {
     "relationshipEntity": "PROGRAM_INSTANCE",
     "program": {
       "id": "WSGAb5XwJ3Y"
+    },
+    "trackerDataView": {
+      "attributes": [
+        "b0vcadVrn08"
+      ],
+      "dataElements": []
     }
   }
 }

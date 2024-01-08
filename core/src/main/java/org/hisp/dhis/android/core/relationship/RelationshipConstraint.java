@@ -41,6 +41,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipEntityTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackerDataViewColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -74,6 +76,10 @@ public abstract class RelationshipConstraint extends BaseObject {
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
+    @Nullable
+    @ColumnAdapter(IgnoreTrackerDataViewColumnAdapter.class)
+    public abstract TrackerDataView trackerDataView();
+
     public static RelationshipConstraint create(Cursor cursor) {
         return AutoValue_RelationshipConstraint.createFromCursor(cursor);
     }
@@ -99,6 +105,8 @@ public abstract class RelationshipConstraint extends BaseObject {
         public abstract Builder program(ObjectWithUid program);
 
         public abstract Builder programStage(ObjectWithUid programStage);
+
+        public abstract Builder trackerDataView(TrackerDataView trackerDataView);
 
         public abstract RelationshipConstraint build();
     }

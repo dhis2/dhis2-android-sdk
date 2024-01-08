@@ -40,6 +40,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 
+import java.util.Collections;
 import java.util.List;
 
 @AutoValue
@@ -72,6 +73,29 @@ public abstract class TrackerDataView extends BaseObject {
 
         public abstract Builder dataElements(List<String> dataElements);
 
-        public abstract TrackerDataView build();
+        abstract TrackerDataView autoBuild();
+
+        //Auxiliary fields
+        abstract List<String> attributes();
+
+        abstract List<String> dataElements();
+
+        public TrackerDataView build() {
+
+            try {
+                attributes();
+            } catch (IllegalStateException e) {
+                attributes(Collections.emptyList());
+            }
+
+            try {
+                dataElements();
+            } catch (IllegalStateException e) {
+                dataElements(Collections.emptyList());
+            }
+
+            return autoBuild();
+        }
+
     }
 }

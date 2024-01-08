@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.relationship.TrackerDataView
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataset.internal.SectionFields;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
-import org.hisp.dhis.android.core.relationship.TrackerDataView;
+internal object TrackerDataViewFields {
+    private const val ATTRIBUTES = "attributes"
+    private const val DATA_ELEMENTS = "dataElements"
 
-final class RelationshipConstraintFields {
-    private static final String TRACKER_DATA_VIEW = "trackerDataView";
+    private val fh = FieldsHelper<TrackerDataView>()
 
-    private static final FieldsHelper<RelationshipConstraint> fh = new FieldsHelper<>();
-
-    static final Fields<RelationshipConstraint> allFields = Fields.<RelationshipConstraint>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<RelationshipEntityType>field(Columns.RELATIONSHIP_ENTITY),
-                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
-                    fh.nestedFieldWithUid(Columns.PROGRAM),
-                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
-                    fh.<TrackerDataView>nestedField(TRACKER_DATA_VIEW)
-                            .with(TrackerDataViewFields.INSTANCE.getAllFields())
-            ).build();
-
-    private RelationshipConstraintFields() {
-    }
+    val allFields: Fields<TrackerDataView> = Fields.builder<TrackerDataView>()
+        .fields(
+            fh.field<String>(ATTRIBUTES),
+            fh.field<String>(DATA_ELEMENTS)
+        ).build()
 }

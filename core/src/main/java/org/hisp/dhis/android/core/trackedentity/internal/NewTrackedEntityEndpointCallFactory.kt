@@ -68,7 +68,6 @@ internal class NewTrackedEntityEndpointCallFactory(
             page = query.page,
             pageSize = query.pageSize,
             lastUpdatedStartDate = query.lastUpdatedStr,
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { mapPayload(it) }
     }
@@ -81,7 +80,6 @@ internal class NewTrackedEntityEndpointCallFactory(
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { NewTrackerImporterTrackedEntityTransformer.deTransform(it) }
     }
@@ -91,7 +89,6 @@ internal class NewTrackedEntityEndpointCallFactory(
             trackedEntityInstance = uid,
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { mapPayload(it) }
     }
@@ -199,7 +196,6 @@ internal class NewTrackedEntityEndpointCallFactory(
                 paging = query.paging,
                 page = query.page,
                 pageSize = query.pageSize,
-                includeAllAttributes = true,
             )
 
             mapPayload(payload)

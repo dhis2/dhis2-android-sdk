@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
@@ -48,10 +49,12 @@ import java.util.List;
 public abstract class TrackerDataView extends BaseObject {
 
     @Nullable
+    @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_ATTRIBUTES)
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> attributes();
 
     @Nullable
+    @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_DATA_ELEMENTS)
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> dataElements();
 

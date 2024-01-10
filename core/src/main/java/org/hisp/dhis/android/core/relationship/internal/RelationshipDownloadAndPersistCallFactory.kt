@@ -57,20 +57,23 @@ internal class RelationshipDownloadAndPersistCallFactory(
         val events: MutableList<Event> = mutableListOf()
         val failedEvents: MutableList<String> = mutableListOf()
 
-        for (uid in relatives.relativeEventUids) {
+        for (item in relatives.getRelativeEvents()) {
             coroutineAPICallExecutor.wrap(storeError = true) {
-                trackerParentCallFactory.getEventCall().getRelationshipEntityCall(uid)
+                trackerParentCallFactory.getEventCall().getRelationshipEntityCall(item)
             }.fold(
-                onSuccess = { eventPayload -> events.addAll(eventPayload.items()) },
-                onFailure = { failedEvents.add(uid) },
+                onSuccess = { eventPayload ->
+                    events.addAll(eventPayload.items())
+                    eventPayload.items().mapNotNull { it.enrollment() }.forEach { enrollment ->
+                        val relativeEnrollment =
+                            RelationshipItemRelative(enrollment, item.relationshipTypeUid, item.itemType)
+                        relatives.addEnrollment(relativeEnrollment)
+                    }
+                },
+                onFailure = { failedEvents.add(item.itemUid) },
             )
         }
 
         eventPersistenceCallFactory.persistAsRelationships(events)
-
-        events
-            .mapNotNull { it.enrollment() }
-            .forEach { relatives.addEnrollment(it) }
 
         cleanFailedRelationships(failedEvents, RelationshipItemTableInfo.Columns.EVENT)
     }
@@ -79,20 +82,22 @@ internal class RelationshipDownloadAndPersistCallFactory(
         val enrollments: MutableList<Enrollment> = mutableListOf()
         val failedEnrollments: MutableList<String> = mutableListOf()
 
-        for (uid in relatives.relativeEnrollmentUids) {
+        for (item in relatives.getRelativeEnrollments()) {
             coroutineAPICallExecutor.wrap(storeError = true) {
-                trackerParentCallFactory.getEnrollmentCall().getRelationshipEntityCall(uid)
+                trackerParentCallFactory.getEnrollmentCall().getRelationshipEntityCall(item)
             }.fold(
-                onSuccess = { enrollment -> enrollments.add(enrollment) },
-                onFailure = { failedEnrollments.add(uid) },
+                onSuccess = { enrollment ->
+                    enrollments.add(enrollment)
+                    enrollment.trackedEntityInstance()?.let { tei ->
+                        val relativeTei = RelationshipItemRelative(tei, item.relationshipTypeUid, item.itemType)
+                        relatives.addTrackedEntityInstance(relativeTei)
+                    }
+                },
+                onFailure = { failedEnrollments.add(item.itemUid) },
             )
         }
 
         enrollmentPersistenceCallFactory.persistAsRelationships(enrollments).blockingAwait()
-
-        enrollments
-            .mapNotNull { it.trackedEntityInstance() }
-            .forEach { relatives.addTrackedEntityInstance(it) }
 
         cleanFailedRelationships(failedEnrollments, RelationshipItemTableInfo.Columns.ENROLLMENT)
     }
@@ -101,12 +106,12 @@ internal class RelationshipDownloadAndPersistCallFactory(
         val teis: MutableList<TrackedEntityInstance> = mutableListOf()
         val failedTeis: MutableList<String> = mutableListOf()
 
-        for (uid in relatives.relativeTrackedEntityInstanceUids) {
+        for (item in relatives.getRelativeTrackedEntityInstances()) {
             coroutineAPICallExecutor.wrap(storeError = true) {
-                trackerParentCallFactory.getTrackedEntityCall().getRelationshipEntityCall(uid)
+                trackerParentCallFactory.getTrackedEntityCall().getRelationshipEntityCall(item)
             }.fold(
                 onSuccess = { teiPayload -> teis.addAll(teiPayload.items()) },
-                onFailure = { failedTeis.add(uid) },
+                onFailure = { failedTeis.add(item.itemUid) },
             )
         }
 

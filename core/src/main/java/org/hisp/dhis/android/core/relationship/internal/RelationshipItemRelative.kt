@@ -25,20 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.internal
+package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 
-@Singleton
-internal class OldEnrollmentEndpointCallFactory(
-    private val service: EnrollmentService,
-) : EnrollmentEndpointCallFactory {
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
-        return service.getEnrollmentSingle(
-            enrollmentUid = item.itemUid,
-            fields = EnrollmentFields.asRelationshipFields,
-        )
-    }
-}
+data class RelationshipItemRelative(
+    val itemUid: String,
+    val relationshipTypeUid: String,
+    val itemType: RelationshipConstraintType
+)

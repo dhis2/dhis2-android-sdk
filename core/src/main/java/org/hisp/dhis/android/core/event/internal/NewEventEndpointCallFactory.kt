@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.koin.core.annotation.Singleton
@@ -58,9 +59,9 @@ internal class NewEventEndpointCallFactory(
         ).let { mapPayload(it) }
     }
 
-    override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
         return service.getEventSingle(
-            eventUid = uid,
+            eventUid = item.itemUid,
             fields = NewEventFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         ).let { mapPayload(it) }

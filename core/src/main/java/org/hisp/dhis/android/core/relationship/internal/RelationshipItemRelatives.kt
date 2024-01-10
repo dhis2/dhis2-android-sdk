@@ -25,45 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+class RelationshipItemRelatives {
+    private val relativeTrackedEntityInstanceItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
+    private val relativeEnrollmentItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
+    private val relativeEventItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class RelationshipItemRelatives {
-
-    private final Set<String> relativeTrackedEntityInstanceUids;
-    private final Set<String> relativeEnrollmentUids;
-    private final Set<String> relativeEventUids;
-
-    public RelationshipItemRelatives() {
-        this.relativeTrackedEntityInstanceUids = new HashSet<>();
-        this.relativeEnrollmentUids = new HashSet<>();
-        this.relativeEventUids = new HashSet<>();
+    fun addTrackedEntityInstance(uid: RelationshipItemRelative) {
+        relativeTrackedEntityInstanceItems.add(uid)
     }
 
-    public void addTrackedEntityInstance(String uid) {
-        this.relativeTrackedEntityInstanceUids.add(uid);
+    fun addEnrollment(uid: RelationshipItemRelative) {
+        relativeEnrollmentItems.add(uid)
     }
 
-    public void addEnrollment(String uid) {
-        this.relativeEnrollmentUids.add(uid);
+    fun addEvent(uid: RelationshipItemRelative) {
+        relativeEventItems.add(uid)
     }
 
-    public void addEvent(String uid) {
-        this.relativeEventUids.add(uid);
+    fun getRelativeTrackedEntityInstances(): Set<RelationshipItemRelative> {
+        return relativeTrackedEntityInstanceItems
     }
 
-    public Set<String> getRelativeTrackedEntityInstanceUids() {
-        return relativeTrackedEntityInstanceUids;
+    fun getRelativeEnrollments(): Set<RelationshipItemRelative> {
+        return relativeEnrollmentItems
     }
 
-    public Set<String> getRelativeEnrollmentUids() {
-        return relativeEnrollmentUids;
-    }
-
-    public Set<String> getRelativeEventUids() {
-        return relativeEventUids;
+    fun getRelativeEvents(): Set<RelationshipItemRelative> {
+        return relativeEventItems
     }
 }

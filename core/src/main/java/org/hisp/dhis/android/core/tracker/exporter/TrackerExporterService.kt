@@ -37,14 +37,6 @@ import retrofit2.http.*
 
 @Suppress("LongParameterList")
 internal interface TrackerExporterService {
-    @GET(TRACKED_ENTITY_INSTANCES)
-    suspend fun getTrackedEntityInstance(
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-    ): NTIPayload<NewTrackerImporterTrackedEntity>
-
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
         @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,

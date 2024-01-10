@@ -46,7 +46,7 @@ enum class DHISVersion(internal val prefix: String, internal val supported: Bool
     companion object {
         @JvmStatic
         fun getValue(versionStr: String): DHISVersion? {
-            return values().find { versionStr.startsWith(it.prefix).and(it.supported) }
+            return entries.find { versionStr.startsWith(it.prefix).and(it.supported) }
         }
 
         @JvmStatic
@@ -56,7 +56,7 @@ enum class DHISVersion(internal val prefix: String, internal val supported: Bool
 
         @JvmStatic
         fun allowedVersionsAsStr(): Array<String> {
-            return values().filter { it.supported }
+            return entries.filter { it.supported }
                 .map { it.prefix }
                 .toTypedArray()
         }

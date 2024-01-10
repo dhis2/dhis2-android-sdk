@@ -25,9 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.relationship.TrackerDataView
+class TrackerDataViewColumnAdapter : ColumnTypeAdapter<TrackerDataView> {
+    override fun fromCursor(cursor: Cursor, columnName: String): TrackerDataView? {
+        return TrackerDataView.create(cursor)
+    }
 
-internal class IgnoreTrackerDataViewColumnAdapter :
-    IgnoreColumnAdapter<TrackerDataView>()
+    override fun toContentValues(values: ContentValues, columnName: String, value: TrackerDataView?) {
+        value?.toContentValues()
+    }
+}

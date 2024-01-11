@@ -35,9 +35,11 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.ENROLLMENT
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.EVENT
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class RelationshipDHISVersionManager(
-    private val relationshipTypeStore: RelationshipTypeStore
+    private val relationshipTypeStore: RelationshipTypeStore,
 ) {
     fun getOwnedRelationships(relationships: Collection<Relationship>, elementUid: String): List<Relationship> {
         return relationships.filter { relationship ->
@@ -53,17 +55,19 @@ internal class RelationshipDHISVersionManager(
     }
 
     private fun getRelatedRelationshipItem(baseRelationship: BaseRelationship, parentUid: String): RelationshipItem? {
-        val fromUid = baseRelationship.from()?.elementUid() ?: return null
-        val toUid = baseRelationship.to()?.elementUid() ?: return null
+        val fromUid = baseRelationship.from()?.elementUid()
+        val toUid = baseRelationship.to()?.elementUid()
 
-        val itemBuilder =
-            if (parentUid == fromUid) {
+        val itemBuilder = when {
+            parentUid == fromUid ->
                 baseRelationship.to()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.TO)
-            } else {
+            parentUid == toUid ->
                 baseRelationship.from()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.FROM)
-            }
+            else ->
+                null
+        }
 
         return itemBuilder
             ?.relationship(ObjectWithUid.create(baseRelationship.uid()))
@@ -74,15 +78,15 @@ internal class RelationshipDHISVersionManager(
         relationships: Collection<Relationship>,
         parentUid: String,
         relatives: RelationshipItemRelatives,
-        relationshipHandler: RelationshipHandler
     ) {
         for (relationship in relationships) {
             val item = getRelatedRelationshipItem(relationship, parentUid)
-            if (item != null && !relationshipHandler.doesRelationshipItemExist(item)) {
+            if (item != null && relationship.relationshipType() != null && item.relationshipItemType() != null) {
                 val relationshipItem = RelationshipItemRelative(
                     itemUid = item.elementUid(),
-                    relationshipTypeUid = relationship.relationshipType() ?: continue,
-                    itemType = item.relationshipItemType() ?: continue
+                    itemType = item.elementType(),
+                    relationshipTypeUid = relationship.relationshipType()!!,
+                    constraintType = item.relationshipItemType()!!,
                 )
                 when (item.elementType()) {
                     TRACKED_ENTITY_INSTANCE -> relatives.addTrackedEntityInstance(relationshipItem)

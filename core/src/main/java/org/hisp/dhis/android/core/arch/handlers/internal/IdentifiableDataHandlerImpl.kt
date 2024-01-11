@@ -141,7 +141,6 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
                 ownedRelationships,
                 parent.uid(),
                 relatives,
-                relationshipHandler,
             )
         }
         relationshipHandler.handleMany(

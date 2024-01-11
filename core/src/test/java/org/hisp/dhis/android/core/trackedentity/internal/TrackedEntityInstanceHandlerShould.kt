@@ -196,7 +196,6 @@ class TrackedEntityInstanceHandlerShould {
             listOf(relationship),
             TEI_UID,
             relatives,
-            relationshipHandler,
         )
     }
 

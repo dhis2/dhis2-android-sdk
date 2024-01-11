@@ -29,8 +29,9 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 
-data class RelationshipItemRelative(
+internal data class RelationshipItemRelative(
     val itemUid: String,
+    val itemType: String,
     val relationshipTypeUid: String,
-    val itemType: RelationshipConstraintType
+    val constraintType: RelationshipConstraintType,
 )

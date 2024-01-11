@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-class RelationshipItemRelatives {
+internal class RelationshipItemRelatives {
     private val relativeTrackedEntityInstanceItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
     private val relativeEnrollmentItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
     private val relativeEventItems: MutableSet<RelationshipItemRelative> = mutableSetOf()

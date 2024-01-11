@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class NewTrackedEntityEndpointCallFactory(
     private val trackedExporterService: TrackerExporterService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
@@ -248,7 +249,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             .uid(item.relationshipTypeUid)
             .blockingGet()
 
-        val constraint = when(item.itemType) {
+        val constraint = when (item.constraintType) {
             RelationshipConstraintType.FROM -> relationshipType?.fromConstraint()
             RelationshipConstraintType.TO -> relationshipType?.toConstraint()
         }

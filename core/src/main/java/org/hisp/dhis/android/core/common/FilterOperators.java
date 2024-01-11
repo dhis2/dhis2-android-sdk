@@ -103,7 +103,7 @@ public abstract class FilterOperators {
     public abstract DateFilterPeriod dateFilter();
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> {
 
         public abstract T le(String le);
 

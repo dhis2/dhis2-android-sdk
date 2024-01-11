@@ -50,7 +50,7 @@ public abstract class TEIImportSummaries extends BaseImportSummaries implements 
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseImportSummaries.Builder<TEIImportSummaries.Builder> {
+    public abstract static class Builder extends BaseImportSummaries.Builder<TEIImportSummaries.Builder> {
 
         public abstract Builder importSummaries(List<TEIImportSummary> importSummaries);
 

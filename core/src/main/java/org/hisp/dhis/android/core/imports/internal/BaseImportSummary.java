@@ -73,7 +73,7 @@ public abstract class BaseImportSummary implements ImportSummary {
     public abstract String description();
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> {
 
         public abstract T importCount(ImportCount importCount);
 

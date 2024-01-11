@@ -220,7 +220,7 @@ public abstract class Program extends BaseNameableObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Program, Builder> {
 
         public abstract Builder id(Long id);

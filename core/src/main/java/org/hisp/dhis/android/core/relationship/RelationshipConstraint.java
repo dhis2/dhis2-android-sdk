@@ -91,7 +91,7 @@ public abstract class RelationshipConstraint extends BaseObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder relationshipType(ObjectWithUid relationshipType);
 

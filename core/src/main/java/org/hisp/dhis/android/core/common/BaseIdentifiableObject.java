@@ -107,7 +107,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     }
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> {
 
         @JsonProperty(UID)
         @JsonAlias({UUID})  // Introduced in 2.38 due to changes in userCredentials model DHIS2-12577

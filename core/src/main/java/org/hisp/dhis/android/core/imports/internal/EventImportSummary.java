@@ -38,7 +38,7 @@ public abstract class EventImportSummary extends BaseImportSummary {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
+    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
 
         public abstract EventImportSummary build();
     }

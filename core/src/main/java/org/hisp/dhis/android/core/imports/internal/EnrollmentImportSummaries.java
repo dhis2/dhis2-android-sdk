@@ -50,7 +50,7 @@ public abstract class EnrollmentImportSummaries extends BaseImportSummaries impl
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseImportSummaries.Builder<EnrollmentImportSummaries.Builder> {
+    public abstract static class Builder extends BaseImportSummaries.Builder<EnrollmentImportSummaries.Builder> {
 
         public abstract Builder importSummaries(List<EnrollmentImportSummary> importSummaries);
 

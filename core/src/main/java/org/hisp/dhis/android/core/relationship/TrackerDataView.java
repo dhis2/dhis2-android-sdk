@@ -26,45 +26,79 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
+
+import java.util.Collections;
+import java.util.List;
 
 @AutoValue
-public abstract class SectionIndicatorLink implements CoreObject {
+@JsonDeserialize(builder = AutoValue_TrackerDataView.Builder.class)
+public abstract class TrackerDataView extends BaseObject {
 
     @Nullable
-    public abstract String section();
+    @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_ATTRIBUTES)
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> attributes();
 
     @Nullable
-    public abstract String indicator();
+    @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_DATA_ELEMENTS)
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> dataElements();
 
-    public static Builder builder() {
-        return new AutoValue_SectionIndicatorLink.Builder();
+    public static TrackerDataView create(Cursor cursor) {
+        return $AutoValue_TrackerDataView.createFromCursor(cursor);
     }
 
-    public static SectionIndicatorLink create(Cursor cursor) {
-        return $AutoValue_SectionIndicatorLink.createFromCursor(cursor);
+    public static Builder builder() {
+        return new AutoValue_TrackerDataView.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
+        public abstract Builder attributes(List<String> attributes);
 
-        public abstract Builder section(@Nullable String section);
+        public abstract Builder dataElements(List<String> dataElements);
 
-        public abstract Builder indicator(@Nullable String indicator);
+        abstract TrackerDataView autoBuild();
 
-        public abstract SectionIndicatorLink build();
+        //Auxiliary fields
+        abstract List<String> attributes();
+
+        abstract List<String> dataElements();
+
+        public TrackerDataView build() {
+
+            try {
+                attributes();
+            } catch (IllegalStateException e) {
+                attributes(Collections.emptyList());
+            }
+
+            try {
+                dataElements();
+            } catch (IllegalStateException e) {
+                dataElements(Collections.emptyList());
+            }
+
+            return autoBuild();
+        }
+
     }
 }

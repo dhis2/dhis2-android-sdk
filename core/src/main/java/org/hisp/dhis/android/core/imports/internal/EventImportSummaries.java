@@ -50,7 +50,7 @@ public abstract class EventImportSummaries extends BaseImportSummaries implement
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseImportSummaries.Builder<EventImportSummaries.Builder> {
+    public abstract static class Builder extends BaseImportSummaries.Builder<EventImportSummaries.Builder> {
 
         public abstract Builder importSummaries(List<EventImportSummary> importSummaries);
 

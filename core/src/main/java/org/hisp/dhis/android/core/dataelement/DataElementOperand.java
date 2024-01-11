@@ -85,7 +85,7 @@ public abstract class DataElementOperand extends BaseObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         @JsonProperty(UID)
         public abstract Builder uid(String uid);

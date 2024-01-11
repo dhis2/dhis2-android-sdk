@@ -120,7 +120,7 @@ public abstract class DataElement extends BaseNameableObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<DataElement.Builder>
+    public abstract static class Builder extends BaseNameableObject.Builder<DataElement.Builder>
             implements ObjectWithStyle.Builder<DataElement, DataElement.Builder> {
 
         public abstract DataElement.Builder id(Long id);

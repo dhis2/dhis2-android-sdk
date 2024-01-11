@@ -65,7 +65,7 @@ public abstract class UserCredentials {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract Builder username(String username);
 
         public abstract Builder name(String username);

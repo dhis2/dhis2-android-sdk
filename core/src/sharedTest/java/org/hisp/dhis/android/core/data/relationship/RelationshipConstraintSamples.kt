@@ -25,44 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.relationship
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.core.relationship.TrackerDataView
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
-
-import java.util.Date;
-
-public abstract class TrackerBaseSync extends BaseObject {
-
-    @Nullable
-    public abstract String program();
-
-    @NonNull
-    public abstract Integer organisationUnitIdsHash();
-
-    @NonNull
-    public abstract Integer downloadLimit();
-
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
-
-        public abstract T program(String program);
-
-        public abstract T organisationUnitIdsHash(Integer organisationUnitIdsHash);
-
-        public abstract T downloadLimit(Integer limit);
-
-        public abstract T lastUpdated(Date lastUpdated);
-    }
+object RelationshipConstraintSamples {
+    @JvmStatic
+    val relationshipConstraint: RelationshipConstraint
+        get() = RelationshipConstraint.builder()
+            .id(1L)
+            .relationshipType(ObjectWithUid.create("relationship_type_uid"))
+            .constraintType(RelationshipConstraintType.FROM)
+            .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+            .trackedEntityType(ObjectWithUid.create("tracked_entity_type_uid"))
+            .program(ObjectWithUid.create("program_uid"))
+            .programStage(ObjectWithUid.create("program_stage_uid"))
+            .trackerDataView(
+                TrackerDataView.builder()
+                    .attributes(listOf("attribute_uid_1", "attribute_uid_3", "attribute_uid_3"))
+                    .dataElements(listOf("data_element_uid_1", "data_element_uid_2", "data_element_uid_3"))
+                    .build(),
+            )
+            .build()
 }

@@ -25,44 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.relationship.TrackerDataView
+class TrackerDataViewColumnAdapter : ColumnTypeAdapter<TrackerDataView> {
+    override fun fromCursor(cursor: Cursor, columnName: String): TrackerDataView? {
+        return TrackerDataView.create(cursor)
+    }
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
-
-import java.util.Date;
-
-public abstract class TrackerBaseSync extends BaseObject {
-
-    @Nullable
-    public abstract String program();
-
-    @NonNull
-    public abstract Integer organisationUnitIdsHash();
-
-    @NonNull
-    public abstract Integer downloadLimit();
-
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
-
-        public abstract T program(String program);
-
-        public abstract T organisationUnitIdsHash(Integer organisationUnitIdsHash);
-
-        public abstract T downloadLimit(Integer limit);
-
-        public abstract T lastUpdated(Date lastUpdated);
+    override fun toContentValues(values: ContentValues, columnName: String, value: TrackerDataView?) {
+        value?.toContentValues()
     }
 }

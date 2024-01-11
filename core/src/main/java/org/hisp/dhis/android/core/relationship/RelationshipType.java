@@ -99,7 +99,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         abstract Builder bIsToA(String bIsToA);

@@ -25,26 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.data.relationship;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples.relationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
+@RunWith(D2JunitRunner::class)
+class RelationshipConstraintStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint>(
+        RelationshipConstraintStoreImpl(TestDatabaseAdapterFactory.get()),
+        RelationshipConstraintTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): RelationshipConstraint {
+        return relationshipConstraint
+    }
 
-
-public class RelationshipConstraintSamples {
-
-    public static RelationshipConstraint getRelationshipConstraint() {
-        return RelationshipConstraint.builder()
-                .id(1L)
-                .relationshipType(ObjectWithUid.create("relationship_type_uid"))
-                .constraintType(RelationshipConstraintType.FROM)
-                .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                .trackedEntityType(ObjectWithUid.create("tracked_entity_type_uid"))
-                .program(ObjectWithUid.create("program_uid"))
-                .programStage(ObjectWithUid.create("program_stage_uid"))
-                .build();
+    override fun buildObjectToUpdate(): RelationshipConstraint {
+        return relationshipConstraint.toBuilder()
+            .relationshipEntity(RelationshipEntityType.PROGRAM_INSTANCE)
+            .build()
     }
 }

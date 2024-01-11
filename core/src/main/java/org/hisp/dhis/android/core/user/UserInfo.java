@@ -66,7 +66,7 @@ public abstract class UserInfo {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
 
         public abstract Builder uid(String uid);
 

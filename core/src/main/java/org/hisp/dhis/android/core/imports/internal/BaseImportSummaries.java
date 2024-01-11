@@ -70,7 +70,7 @@ public abstract class BaseImportSummaries {
     public abstract Integer ignored();
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> {
 
         public abstract T status(ImportStatus status);
 

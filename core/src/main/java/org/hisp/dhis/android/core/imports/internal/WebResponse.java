@@ -47,7 +47,7 @@ public abstract class WebResponse {
     public abstract String message();
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> {
         public abstract T httpStatus(String httpStatus);
 
         public abstract T httpStatusCode(Integer httpStatusCode);

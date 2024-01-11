@@ -70,7 +70,7 @@ public abstract class EventDataFilter extends FilterOperators implements CoreObj
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends FilterOperators.Builder<Builder> {
+    public abstract static class Builder extends FilterOperators.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder eventFilter(String eventFilter);

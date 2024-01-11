@@ -48,8 +48,6 @@ class RelationshipHandlerShould {
 
     private val relationshipItemHandler: RelationshipItemHandler = mock()
 
-    private val storeSelector: RelationshipItemElementStoreSelector = mock()
-
     private val itemElementStore: StoreWithState<*> = mock()
 
     private val NEW_UID = "new-uid"
@@ -71,9 +69,7 @@ class RelationshipHandlerShould {
             relationshipStore,
             relationshipItemStore,
             relationshipItemHandler,
-            storeSelector,
         )
-        whenever(storeSelector.getElementStore(any())).thenReturn(itemElementStore)
         whenever(itemElementStore.exists(RelationshipSamples.FROM_UID)).thenReturn(true)
         whenever(itemElementStore.exists(RelationshipSamples.TO_UID)).thenReturn(true)
         whenever(itemElementStore.exists(TEI_3_UID)).thenReturn(true)

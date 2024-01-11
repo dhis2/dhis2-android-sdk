@@ -59,7 +59,7 @@ public abstract class TrackerDataView extends BaseObject {
     public abstract List<String> dataElements();
 
     public static TrackerDataView create(Cursor cursor) {
-        return AutoValue_TrackerDataView.createFromCursor(cursor);
+        return $AutoValue_TrackerDataView.createFromCursor(cursor);
     }
 
     public static Builder builder() {
@@ -70,7 +70,7 @@ public abstract class TrackerDataView extends BaseObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder attributes(List<String> attributes);
 

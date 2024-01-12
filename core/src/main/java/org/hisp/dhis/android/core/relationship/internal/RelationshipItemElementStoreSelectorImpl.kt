@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.koin.core.annotation.Singleton
 
@@ -41,12 +42,21 @@ internal class RelationshipItemElementStoreSelectorImpl(
     private val eventStore: EventStore,
 ) : RelationshipItemElementStoreSelector {
     override fun getElementStore(item: RelationshipItem?): StoreWithState<*> {
-        return if (item!!.hasTrackedEntityInstance()) {
-            trackedEntityInstanceStore
-        } else if (item.hasEnrollment()) {
-            enrollmentStore
-        } else {
-            eventStore
+        return getElementStoreByElementType(item?.elementType())
+    }
+
+    override fun getElementStore(item: RelationshipItemRelative): StoreWithState<*> {
+        return getElementStoreByElementType(item.itemType)
+    }
+
+    private fun getElementStoreByElementType(elementType: String?): StoreWithState<*> {
+        return when (elementType) {
+            RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE ->
+                trackedEntityInstanceStore
+            RelationshipItemTableInfo.Columns.ENROLLMENT ->
+                enrollmentStore
+            else ->
+                eventStore
         }
     }
 }

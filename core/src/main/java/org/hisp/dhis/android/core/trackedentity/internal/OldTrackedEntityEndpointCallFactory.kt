@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
@@ -76,10 +77,10 @@ internal class OldTrackedEntityEndpointCallFactory(
         )
     }
 
-    override suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance> {
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstance(
             fields = TrackedEntityInstanceFields.asRelationshipFields,
-            trackedEntityInstance = uid,
+            trackedEntityInstance = item.itemUid,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
             includeAllAttributes = true,
             includeDeleted = true,

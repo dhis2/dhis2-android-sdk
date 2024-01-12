@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.koin.core.annotation.Singleton
 
@@ -54,9 +55,9 @@ internal class OldEventEndpointCallFactory(
         )
     }
 
-    override suspend fun getRelationshipEntityCall(uid: String): Payload<Event> {
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
         return service.getEventSingle(
-            eventUid = uid,
+            eventUid = item.itemUid,
             fields = EventFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         )

@@ -38,16 +38,12 @@ import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
-import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportTrackedEntityHandler
 import org.koin.core.annotation.Singleton
-import java.util.*
+import java.util.Date
 
 @Singleton
 internal class TrackedEntityInstanceImportHandler internal constructor(
@@ -55,10 +51,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
     private val enrollmentImportHandler: EnrollmentImportHandler,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
-    private val relationshipStore: RelationshipStore,
     private val dataStatePropagator: DataStatePropagator,
-    private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
-    private val relationshipRepository: RelationshipCollectionRepository,
     private val jobReportTrackedEntityHandler: JobReportTrackedEntityHandler,
 ) {
 
@@ -89,7 +82,6 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
                     resetNestedDataStates(instance)
                     instance?.let { summary.teis.error.add(it) }
                 } else {
-                    setRelationshipsState(teiUid, State.SYNCED)
                     instance?.let { summary.teis.success.add(it) }
                 }
 
@@ -152,17 +144,6 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
     }
 
-    // Legacy code for <= 2.29
-    private fun setRelationshipsState(trackedEntityInstanceUid: String?, state: State) {
-        val dbRelationships =
-            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true, false)
-        val ownedRelationships = relationshipDHISVersionManager
-            .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid)
-        for (relationship in ownedRelationships) {
-            relationshipStore.setSyncStateOrDelete(relationship.uid()!!, state)
-        }
-    }
-
     private fun processIgnoredTEIs(
         processedTEIs: List<String>,
         instances: List<TrackedEntityInstance>,
@@ -177,7 +158,6 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
     private fun resetNestedDataStates(instance: TrackedEntityInstance?) {
         instance?.let {
             dataStatePropagator.resetUploadingEnrollmentAndEventStates(instance.uid())
-            setRelationshipsState(instance.uid(), State.TO_UPDATE)
         }
     }
 

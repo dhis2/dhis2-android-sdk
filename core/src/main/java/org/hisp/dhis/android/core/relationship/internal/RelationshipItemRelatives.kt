@@ -25,37 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+internal class RelationshipItemRelatives {
+    private val relativeTrackedEntityInstanceItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
+    private val relativeEnrollmentItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
+    private val relativeEventItems: MutableSet<RelationshipItemRelative> = mutableSetOf()
 
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-
-import java.util.Set;
-
-public class RelationshipTypeBuilder {
-
-    private final Set<RelationshipConstraint> constraints;
-
-    RelationshipTypeBuilder(Set<RelationshipConstraint> constraints) {
-        this.constraints = constraints;
+    fun addTrackedEntityInstance(uid: RelationshipItemRelative) {
+        relativeTrackedEntityInstanceItems.add(uid)
     }
 
-    public RelationshipType typeWithConstraints(RelationshipType type) {
+    fun addEnrollment(uid: RelationshipItemRelative) {
+        relativeEnrollmentItems.add(uid)
+    }
 
-        RelationshipType.Builder typeBuilder = type.toBuilder();
+    fun addEvent(uid: RelationshipItemRelative) {
+        relativeEventItems.add(uid)
+    }
 
-        for (RelationshipConstraint constraint : this.constraints) {
-            if (constraint.relationshipType().uid().equals(type.uid())) {
-                if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
-                    typeBuilder.fromConstraint(constraint);
-                } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {
-                    typeBuilder.toConstraint(constraint);
-                }
-            }
-        }
+    fun getRelativeTrackedEntityInstances(): Set<RelationshipItemRelative> {
+        return relativeTrackedEntityInstanceItems
+    }
 
-        return typeBuilder.build();
+    fun getRelativeEnrollments(): Set<RelationshipItemRelative> {
+        return relativeEnrollmentItems
+    }
+
+    fun getRelativeEvents(): Set<RelationshipItemRelative> {
+        return relativeEventItems
     }
 }

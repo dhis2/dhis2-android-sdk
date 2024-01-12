@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
@@ -40,7 +41,7 @@ internal abstract class TrackedEntityEndpointCallFactory {
 
     abstract suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
 
-    abstract suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance>
+    abstract suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance>
 
     abstract suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult
 

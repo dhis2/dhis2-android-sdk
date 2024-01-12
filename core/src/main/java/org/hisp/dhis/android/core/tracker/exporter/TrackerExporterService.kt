@@ -37,15 +37,6 @@ import retrofit2.http.*
 
 @Suppress("LongParameterList")
 internal interface TrackerExporterService {
-    @GET(TRACKED_ENTITY_INSTANCES)
-    suspend fun getTrackedEntityInstance(
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-    ): NTIPayload<NewTrackerImporterTrackedEntity>
-
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
         @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,
@@ -54,7 +45,6 @@ internal interface TrackerExporterService {
         @Query(PROGRAM) program: String?,
         @Query(PROGRAM_STATUS) programStatus: String?,
         @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String?,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): NewTrackerImporterTrackedEntity
 
@@ -85,7 +75,6 @@ internal interface TrackerExporterService {
         @Query(PAGING) paging: Boolean,
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
     ): NTIPayload<NewTrackerImporterTrackedEntity>
 
@@ -164,7 +153,6 @@ internal interface TrackerExporterService {
         const val SCHEDULED_AFTER = "scheduledAfter"
         const val SCHEDULED_BEFORE = "scheduledBefore"
         const val TRACKED_ENTITY_TYPE = "trackedEntityType"
-        const val INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes"
         const val FILTER = "filter"
         const val FILTER_ATTRIBUTES = "filterAttributes"
         const val UPDATED_AFTER = "updatedAfter"

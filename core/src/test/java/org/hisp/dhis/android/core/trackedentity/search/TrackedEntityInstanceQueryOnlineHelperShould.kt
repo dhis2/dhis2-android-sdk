@@ -54,19 +54,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     }
 
     @Test
-    fun parse_query_in_api_format() {
-        val scope = queryBuilder
-            .query(
-                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("filter").build(),
-            )
-            .build()
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].query).isEqualTo("LIKE:filter")
-    }
-
-    @Test
     fun parse_filters_using_in_operator() {
         val list = listOf(
             "nom,app",

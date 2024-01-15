@@ -100,7 +100,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             incidentStartDate = Date(),
             incidentEndDate = Date(),
             trackedEntityType = "teiTypeStr",
-            query = "queryStr",
             attributeFilter = attribute,
             includeDeleted = false,
             lastUpdatedStartDate = Date(),
@@ -247,7 +246,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.eventEndDate.simpleDateFormat()),
             eq(expectedStatus?.toString()),
             eq(query.trackedEntityType),
-            eq(query.query),
             any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
@@ -302,7 +300,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         trackedEntityService.stub {
             onBlocking {
                 query(
-                    anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),

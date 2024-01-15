@@ -99,7 +99,6 @@ internal interface TrackedEntityInstanceService {
         @Query(EVENT_END_DATE) eventEndDate: String?,
         @Query(EVENT_STATUS) eventStatus: String?,
         @Query(TRACKED_ENTITY_TYPE) trackedEntityType: String?,
-        @Query(QUERY) query: String?,
         @Query(FILTER) filter: List<String?>?,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String?,
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
@@ -116,7 +115,6 @@ internal interface TrackedEntityInstanceService {
         const val OU = "ou"
         const val OU_MODE = "ouMode"
         const val FIELDS = "fields"
-        const val QUERY = "query"
         const val PAGING = "paging"
         const val PAGE = "page"
         const val PAGE_SIZE = "pageSize"

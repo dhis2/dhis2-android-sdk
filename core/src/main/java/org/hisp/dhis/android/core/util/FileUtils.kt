@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport;
+package org.hisp.dhis.android.core.util
 
-public interface MaintenanceModule {
-    ForeignKeyViolationCollectionRepository foreignKeyViolations();
-    D2ErrorCollectionRepository d2Errors();
-    PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
-                                                       int programRulesPerProgramThreshold);
+import okio.FileSystem
+import okio.GzipSink
+import okio.Okio
+import okio.Path
+import okio.buffer
+import okio.use
 
-
-    DatabaseImportExport databaseImportExport();
+internal object FileUtils {
+    fun zipFiles(file: Path, target: Path) {
+        FileSystem.SYSTEM.sink(target).use { sink ->
+            GzipSink(sink).buffer().use { gzipBuffer ->
+                gzipBuffer.writeAll(FileSystem.SYSTEM.source(file))
+            }
+        }
+    }
 }

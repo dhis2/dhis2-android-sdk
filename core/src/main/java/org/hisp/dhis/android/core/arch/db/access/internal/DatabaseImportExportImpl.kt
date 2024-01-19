@@ -28,8 +28,13 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toPath
+import okio.buffer
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
@@ -43,8 +48,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStoreImpl
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserStoreImpl
+import org.hisp.dhis.android.core.util.FileUtils
+import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 import java.io.File
+import java.util.Date
 
 @Singleton
 internal class DatabaseImportExportImpl(
@@ -61,6 +69,7 @@ internal class DatabaseImportExportImpl(
     companion object {
         const val TmpDatabase = "tmp-database.db"
         const val ExportDatabase = "export-database.db"
+        const val ExportMetadata = "export-metadata.json"
     }
 
     private val d2ErrorBuilder = D2Error.builder()
@@ -131,9 +140,9 @@ internal class DatabaseImportExportImpl(
         val credentials = credentialsStore.get()
         val databasesConfiguration = databaseConfigurationSecureStore.get()
         val userConfiguration = DatabaseConfigurationHelper.getLoggedAccount(
-            databasesConfiguration,
-            credentials.serverUrl,
-            credentials.username,
+            configuration = databasesConfiguration,
+            username = credentials.username,
+            serverUrl = credentials.serverUrl,
         )
 
         if (userConfiguration.encrypted()) {
@@ -146,6 +155,24 @@ internal class DatabaseImportExportImpl(
         databaseAdapter.close()
 
         val databaseName = userConfiguration.databaseName()
-        return databaseRenamer.copyDatabase(databaseName, ExportDatabase)
+        val copiedDatabase = databaseRenamer.copyDatabase(databaseName, ExportDatabase)
+
+        val metadata = DatabaseExportMetadata(
+            version = "V1",
+            date = Date().simpleDateFormat()!!,
+            serverUrl = credentials.serverUrl,
+            username = credentials.username,
+        )
+
+        val exportMetadataPath = copiedDatabase.parentFile?.let { "${it.path}/${ExportMetadata}".toPath() }
+        FileSystem.SYSTEM.sink(exportMetadataPath!!).use { sinkFile ->
+            sinkFile.buffer().use { bufferedSinkFile ->
+                bufferedSinkFile.writeUtf8(objectMapper().writeValueAsString(metadata))
+            }
+        }
+
+        FileUtils.zipFiles(exportMetadataPath, exportMetadataPath.parent!!.resolve("zipped.zip"))
+
+        return copiedDatabase
     }
 }

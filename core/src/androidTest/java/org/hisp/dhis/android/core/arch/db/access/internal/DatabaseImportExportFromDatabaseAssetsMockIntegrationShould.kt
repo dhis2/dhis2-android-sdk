@@ -27,10 +27,23 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-// @RunWith(D2JunitRunner::class)
+import androidx.test.platform.app.InstrumentationRegistry
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.D2Factory
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.After
+import org.junit.AfterClass
+import org.junit.BeforeClass
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(D2JunitRunner::class)
 class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
-    /*companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
+    companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val server = Dhis2MockServer(60809)
@@ -119,11 +132,13 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
 
         val systemInfoWithExpectedContextPath = d2.systemInfoModule().systemInfo().blockingGet()
-            .toBuilder().contextPath(serverUrl).build()
+            ?.toBuilder()?.contextPath(serverUrl)?.build()
 
         d2.databaseAdapter().delete(SystemInfoTableInfo.TABLE_INFO.name())
-        d2.databaseAdapter().insert(SystemInfoTableInfo.TABLE_INFO.name(), null,
-            systemInfoWithExpectedContextPath.toContentValues())
+        d2.databaseAdapter().insert(
+            SystemInfoTableInfo.TABLE_INFO.name(), null,
+            systemInfoWithExpectedContextPath?.toContentValues()
+        )
 
 
         val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
@@ -140,5 +155,5 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         d2.userModule().blockingLogIn("android", "Android123", serverUrl)
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
-    }*/
+    }
 }

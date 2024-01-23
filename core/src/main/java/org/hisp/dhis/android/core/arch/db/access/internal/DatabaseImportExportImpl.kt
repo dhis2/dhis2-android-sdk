@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
@@ -52,7 +51,6 @@ internal class DatabaseImportExportImpl(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
-    private val databaseAdapter: DatabaseAdapter,
 ) : DatabaseImportExport {
 
     companion object {
@@ -152,8 +150,6 @@ internal class DatabaseImportExportImpl(
                 .errorCode(D2ErrorCode.DATABASE_EXPORT_ENCRYPTED_NOT_SUPPORTED)
                 .build()
         }
-
-        databaseAdapter.close()
 
         val databaseName = userConfiguration.databaseName()
         val databaseFile = getDatabaseFile(databaseName)

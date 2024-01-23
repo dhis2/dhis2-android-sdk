@@ -28,19 +28,74 @@
 
 package org.hisp.dhis.android.core.util
 
-import okio.FileSystem
-import okio.GzipSink
-import okio.Okio
-import okio.Path
-import okio.buffer
-import okio.use
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
+@Suppress("NestedBlockDepth")
 internal object FileUtils {
-    fun zipFiles(file: Path, target: Path) {
-        FileSystem.SYSTEM.sink(target).use { sink ->
-            GzipSink(sink).buffer().use { gzipBuffer ->
-                gzipBuffer.writeAll(FileSystem.SYSTEM.source(file))
+
+    private const val bufferSize = 1024
+
+    @Suppress("TooGenericExceptionCaught")
+    fun zipFiles(files: List<File>, zipFile: File) {
+        val buffer = ByteArray(bufferSize)
+
+        try {
+            val fos = FileOutputStream(zipFile.path)
+            val zos = ZipOutputStream(fos)
+
+            files.forEach { file ->
+                val ze = ZipEntry(file.name)
+                zos.putNextEntry(ze)
+                val inStream = FileInputStream(file)
+                while (true) {
+                    val len = inStream.read(buffer)
+                    if (len <= 0) break
+                    zos.write(buffer, 0, len)
+                }
+
+                zos.closeEntry()
+                inStream.close()
             }
+
+            zos.close()
+            fos.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
+
+    fun unzipFiles(zipFile: File, unzipDirectory: File) {
+        val zip = ZipFile(zipFile)
+        val enum = zip.entries()
+        while (enum.hasMoreElements()) {
+            val entry = enum.nextElement()
+            val entryName = entry.name
+            val fis = FileInputStream(zip.name)
+            val zis = ZipInputStream(fis)
+
+            while (true) {
+                val nextEntry = zis.nextEntry ?: break
+                if (nextEntry.name == entryName) {
+                    val fout = FileOutputStream(File(unzipDirectory, nextEntry.name))
+                    var c = zis.read()
+                    while (c != -1) {
+                        fout.write(c)
+                        c = zis.read()
+                    }
+                    zis.closeEntry()
+                    fout.close()
+                }
+            }
+
+            zis.close()
+            fis.close()
+        }
+        zip.close()
     }
 }

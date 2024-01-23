@@ -27,133 +27,152 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
+import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.After
 import org.junit.AfterClass
+import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
+class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockIntegrationTest() {
 
-    companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
+    companion object {
 
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val server = Dhis2MockServer(60809)
+        const val username = "android"
+        const val password = "Android123"
+        const val host = "localhost"
+        const val port = 60809
+        const val serverUrl = "http://$host:$port"
+
         val importer = TestDatabaseImporter()
-
-        const val expectedDatabaseName = "localhost-60809_android_unencrypted.db"
-        const val serverUrl = "http://localhost:60809/"
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
-            server.setRequestDispatcher()
+            setUpClass(MockIntegrationTestDatabaseContent.DatabaseImportExport, port)
+            dhis2MockServer.setRequestDispatcher()
         }
 
         @AfterClass
         @JvmStatic
         fun tearDownClass() {
-            server.shutdown()
+            dhis2MockServer.shutdown()
         }
     }
 
-    @After
-    fun tearDown() {
-        context.deleteDatabase(expectedDatabaseName)
-        context.databaseList().forEach { dbName -> context.deleteDatabase(dbName) }
+    @Before
+    fun setUp() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
     }
 
     @Test
-    fun import_database_when_not_logged() {
-        importer.copyDatabaseFromAssets()
-
-        val d2 = D2Factory.forNewDatabase()
-
-        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
-
-        d2.userModule().blockingLogIn("android", "Android123", serverUrl)
-
-        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
-    }
-
-    @Test(expected = D2Error::class)
     fun import_fail_when_logged_in() {
-        importer.copyDatabaseFromAssets()
+        d2.userModule().blockingLogIn("other_user", "other_password", serverUrl)
 
-        val d2 = D2Factory.forNewDatabase()
-
-        d2.userModule().blockingLogIn("other", "Pw1010", serverUrl)
-
-        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
-    }
-
-    @Test(expected = D2Error::class)
-    fun import_fail_when_database_exists() {
-        importer.copyDatabaseFromAssets(expectedDatabaseName)
-
-        val d2 = D2Factory.forNewDatabase()
-
-        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context, expectedDatabaseName))
+        try {
+            d2.maintenanceModule().databaseImportExport().importDatabase(importer.validDatabaseFile(d2.context()))
+            fail("It should throw an error")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_LOGOUT_FIRST)
+        } finally {
+            d2.userModule().accountManager().deleteCurrentAccount()
+        }
     }
 
     @Test
-    fun export_when_logged() {
-        val d2 = D2Factory.forNewDatabase()
+    fun import_fail_when_account_exists() {
+        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogOut()
 
-        d2.userModule().blockingLogIn("android", "Pw1010", serverUrl)
-
-        val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
-
-        assertThat(exportedFile.path).isEqualTo("/data/user/0/org.hisp.dhis.android.test/databases/export-database.db")
+        try {
+            d2.maintenanceModule().databaseImportExport().importDatabase(importer.validDatabaseFile(d2.context()))
+            fail("It should throw an error")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_ALREADY_EXISTS)
+        } finally {
+            d2.userModule().blockingLogIn(username, password, serverUrl)
+            d2.userModule().accountManager().deleteCurrentAccount()
+        }
     }
 
-    @Test(expected = D2Error::class)
+    @Test
+    fun import_fail_when_invalid_database_file() {
+        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogOut()
+
+        try {
+            d2.maintenanceModule().databaseImportExport().importDatabase(importer.invalidDatabaseFile(d2.context()))
+            fail("It should throw an error")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
+        } finally {
+            d2.userModule().blockingLogIn(username, password, serverUrl)
+            d2.userModule().accountManager().deleteCurrentAccount()
+        }
+    }
+
+    @Test
+    fun import_fail_when_no_zip_file() {
+        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogOut()
+
+        try {
+            d2.maintenanceModule().databaseImportExport().importDatabase(importer.noZipFile(d2.context()))
+            fail("It should throw an error")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_FAILED)
+        } finally {
+            d2.userModule().blockingLogIn(username, password, serverUrl)
+            d2.userModule().accountManager().deleteCurrentAccount()
+        }
+    }
+
+    @Test
     fun export_fail_when_not_logged() {
-        val d2 = D2Factory.forNewDatabase()
-        d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
+        try {
+            d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
+            fail("It should throw an error")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_EXPORT_LOGIN_FIRST)
+        }
     }
 
     @Test
     fun export_and_reimport() {
-        var d2 = D2Factory.forNewDatabase()
-
-        d2.userModule().blockingLogIn("android", "Android123", serverUrl)
-
+        d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.metadataModule().blockingDownload()
 
-        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
-
-        val systemInfoWithExpectedContextPath = d2.systemInfoModule().systemInfo().blockingGet()
-            ?.toBuilder()?.contextPath(serverUrl)?.build()
-
-        d2.databaseAdapter().delete(SystemInfoTableInfo.TABLE_INFO.name())
-        d2.databaseAdapter().insert(
-            SystemInfoTableInfo.TABLE_INFO.name(), null,
-            systemInfoWithExpectedContextPath?.toContentValues()
-        )
-
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
 
         val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
 
-        d2.userModule().blockingLogOut()
+        d2.userModule().accountManager().deleteCurrentAccount()
 
-        context.deleteDatabase(expectedDatabaseName)
+        val fileMetadata = d2.maintenanceModule().databaseImportExport().importDatabase(exportedFile)
 
-        // We won't need to create a new D2 when we support database deletion (multi-user)
-        d2 = D2Factory.forNewDatabase()
+        assertThat(fileMetadata.username).isEqualTo(username)
+        assertThat(fileMetadata.serverUrl).isEqualTo(serverUrl)
 
-        d2.maintenanceModule().databaseImportExport().importDatabase(exportedFile)
+        try {
+            d2.userModule().blockingLogIn(username, "other-password", serverUrl)
+            fail("It should throw an error")
+        } catch (e: RuntimeException) {
+            assertThat((e.cause as D2Error).errorCode()).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
+        }
 
-        d2.userModule().blockingLogIn("android", "Android123", serverUrl)
+        d2.userModule().blockingLogIn(username, password, serverUrl)
 
-        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+
+        d2.userModule().accountManager().deleteCurrentAccount()
     }
 }

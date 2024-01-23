@@ -79,13 +79,17 @@ internal class LogInCall(
         val credentials = Credentials(username!!, trimmedServerUrl!!, password, null)
 
         return try {
-            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                userService.authenticate(
-                    okhttp3.Credentials.basic(username, password!!),
-                    UserFields.allFieldsWithoutOrgUnit(null),
-                )
-            }.getOrThrow()
-            loginOnline(user, credentials)
+            if (databaseManager.isPendingToImportDB(trimmedServerUrl, username)) {
+                importDB(trimmedServerUrl, credentials)
+            } else {
+                val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
+                    userService.authenticate(
+                        okhttp3.Credentials.basic(username, password!!),
+                        UserFields.allFieldsWithoutOrgUnit(null),
+                    )
+                }.getOrThrow()
+                loginOnline(user, credentials)
+            }
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
                 tryLoginOffline(credentials, d2Error)
@@ -158,6 +162,19 @@ internal class LogInCall(
         credentialsSecureStore.set(credentials)
         userIdStore.set(existingUser.user()!!)
         return userStore.selectByUid(existingUser.user()!!)!!
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun importDB(serverUrl: String, credentials: Credentials): User {
+        try {
+            databaseManager.importDB(serverUrl, credentials)
+            credentialsSecureStore.set(credentials)
+            val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
+            userIdStore.set(existingUser.user()!!)
+            return userStore.selectByUid(existingUser.user()!!)!!
+        } catch (e: Exception) {
+            throw exceptions.badCredentialsError()
+        }
     }
 
     @Throws(D2Error::class)

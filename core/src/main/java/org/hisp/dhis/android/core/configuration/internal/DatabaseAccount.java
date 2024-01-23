@@ -64,6 +64,10 @@ public abstract class DatabaseAccount {
     @Nullable
     public abstract State syncState();
 
+    @JsonProperty()
+    @Nullable
+    public abstract DatabaseAccountImportDB importDB();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -83,6 +87,8 @@ public abstract class DatabaseAccount {
         public abstract Builder encrypted(boolean encrypted);
 
         public abstract Builder databaseCreationDate(String databaseCreationDate);
+
+        public abstract Builder importDB(DatabaseAccountImportDB importDB);
 
         public abstract Builder syncState(State syncState);
 

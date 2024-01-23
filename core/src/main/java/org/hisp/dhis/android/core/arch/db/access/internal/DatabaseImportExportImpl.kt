@@ -28,26 +28,18 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
-import okio.FileSystem
-import okio.Path
-import okio.Path.Companion.toPath
-import okio.buffer
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
-import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
-import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
-import org.hisp.dhis.android.core.configuration.internal.DatabaseRenamer
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
-import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStoreImpl
 import org.hisp.dhis.android.core.user.UserModule
-import org.hisp.dhis.android.core.user.internal.UserStoreImpl
+import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.FileUtils
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
@@ -57,25 +49,24 @@ import java.util.Date
 @Singleton
 internal class DatabaseImportExportImpl(
     private val context: Context,
-    private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
-    private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
-    private val databaseRenamer: DatabaseRenamer,
     private val databaseAdapter: DatabaseAdapter,
 ) : DatabaseImportExport {
 
     companion object {
-        const val TmpDatabase = "tmp-database.db"
         const val ExportDatabase = "export-database.db"
+        const val ExportDatabaseProtected = "export-database-protected.db"
         const val ExportMetadata = "export-metadata.json"
+        const val ExportZip = "export-database.zip"
     }
 
     private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
-    override fun importDatabase(file: File) {
+    @Suppress("TooGenericExceptionCaught")
+    override fun importDatabase(file: File): DatabaseExportMetadata {
         if (userModule.blockingIsLogged()) {
             throw d2ErrorBuilder
                 .errorDescription("Please log out to import database")
@@ -83,52 +74,64 @@ internal class DatabaseImportExportImpl(
                 .build()
         }
 
-        var databaseAdapter: DatabaseAdapter? = null
-        try {
-            context.deleteDatabase(TmpDatabase)
-            val tmpDatabase = context.getDatabasePath(TmpDatabase)
-            file.copyTo(tmpDatabase)
+        val importMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.delete() }
+        val importDatabaseFile = getWorkingDir().resolve(ExportDatabaseProtected).also { it.delete() }
 
-            val openHelper = UnencryptedDatabaseOpenHelper(context, TmpDatabase, BaseDatabaseOpenHelper.VERSION)
-            val database = openHelper.readableDatabase
-            databaseAdapter = UnencryptedDatabaseAdapter(database, openHelper.databaseName)
+        return try {
+            FileUtils.unzipFiles(file, getWorkingDir())
 
-            if (database.version > BaseDatabaseOpenHelper.VERSION) {
+            if (!importMetadataFile.exists() || !importDatabaseFile.exists()) {
                 throw d2ErrorBuilder
-                    .errorDescription("Import database version higher than supported")
-                    .errorCode(D2ErrorCode.DATABASE_IMPORT_VERSION_HIGHER_THAN_SUPPORTED)
+                    .errorDescription("Import file is not valid")
+                    .errorCode(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
                     .build()
             }
 
-            val userStore = UserStoreImpl(databaseAdapter)
-            val username = userStore.selectFirst()!!.username()
+            val metadataContent = importMetadataFile.readText(Charsets.UTF_8)
+            val metadata = objectMapper().readValue(metadataContent, DatabaseExportMetadata::class.java)
 
-            val systemInfoStore = SystemInfoStoreImpl(databaseAdapter)
-            val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!
-            val serverUrl = ServerUrlParser.parse(contextPath).toString()
+            when {
+                metadata.version > BaseDatabaseOpenHelper.VERSION ->
+                    throw d2ErrorBuilder
+                        .errorDescription("Import database version higher than supported")
+                        .errorCode(D2ErrorCode.DATABASE_IMPORT_VERSION_HIGHER_THAN_SUPPORTED)
+                        .build()
 
-            // TODO What to do if username is null?
-            val databaseName = nameGenerator.getDatabaseName(serverUrl, username!!, false)
+                getExistingAccountForMetadata(metadata) != null ->
+                    throw d2ErrorBuilder
+                        .errorDescription("Import database already exists")
+                        .errorCode(D2ErrorCode.DATABASE_IMPORT_ALREADY_EXISTS)
+                        .build()
 
-            if (!context.databaseList().contains(databaseName)) {
-                val destDatabase = context.getDatabasePath(databaseName)
-                file.copyTo(destDatabase)
+                else -> {
+                    val databaseAccount = multiUserDatabaseManager.createNewPendingToImport(metadata)
+                    val destDatabase = context.getDatabasePath(databaseAccount.importDB()!!.protectedDbName())
+                    importDatabaseFile.copyTo(destDatabase)
 
-                multiUserDatabaseManager.createNew(serverUrl, username, false)
-            } else {
-                throw d2ErrorBuilder
-                    .errorDescription("Import database already exists")
-                    .errorCode(D2ErrorCode.DATABASE_IMPORT_ALREADY_EXISTS)
-                    .build()
+                    metadata
+                }
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is D2Error -> throw e
+                else ->
+                    throw d2ErrorBuilder
+                        .errorDescription("Import database failed")
+                        .errorCode(D2ErrorCode.DATABASE_IMPORT_FAILED)
+                        .originalException(e)
+                        .build()
             }
         } finally {
-            databaseAdapter?.close()
-            context.deleteDatabase(TmpDatabase)
+            importMetadataFile.delete()
+            importDatabaseFile.delete()
         }
     }
 
     override fun exportLoggedUserDatabase(): File {
-        context.deleteDatabase(ExportDatabase)
+        val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.delete() }
+        val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.delete() }
+        val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.delete() }
+        val zipFile = getWorkingDir().resolve(ExportZip).also { it.delete() }
 
         if (!userModule.blockingIsLogged()) {
             throw d2ErrorBuilder
@@ -138,12 +141,10 @@ internal class DatabaseImportExportImpl(
         }
 
         val credentials = credentialsStore.get()
-        val databasesConfiguration = databaseConfigurationSecureStore.get()
-        val userConfiguration = DatabaseConfigurationHelper.getLoggedAccount(
-            configuration = databasesConfiguration,
+        val userConfiguration = multiUserDatabaseManager.getAccount(
             username = credentials.username,
             serverUrl = credentials.serverUrl,
-        )
+        )!!
 
         if (userConfiguration.encrypted()) {
             throw d2ErrorBuilder
@@ -155,24 +156,51 @@ internal class DatabaseImportExportImpl(
         databaseAdapter.close()
 
         val databaseName = userConfiguration.databaseName()
-        val copiedDatabase = databaseRenamer.copyDatabase(databaseName, ExportDatabase)
-
-        val metadata = DatabaseExportMetadata(
-            version = "V1",
-            date = Date().simpleDateFormat()!!,
-            serverUrl = credentials.serverUrl,
+        val databaseFile = getDatabaseFile(databaseName)
+        databaseFile.copyTo(copiedDatabase)
+        CipherUtil.encryptFileUsingCredentials(
+            input = copiedDatabase,
+            output = protectedDatabase,
             username = credentials.username,
+            password = credentials.password!!,
         )
 
-        val exportMetadataPath = copiedDatabase.parentFile?.let { "${it.path}/${ExportMetadata}".toPath() }
-        FileSystem.SYSTEM.sink(exportMetadataPath!!).use { sinkFile ->
-            sinkFile.buffer().use { bufferedSinkFile ->
-                bufferedSinkFile.writeUtf8(objectMapper().writeValueAsString(metadata))
-            }
+        val metadata = DatabaseExportMetadata(
+            version = BaseDatabaseOpenHelper.VERSION,
+            date = Date().simpleDateFormat()!!,
+            serverUrl = userConfiguration.serverUrl(),
+            username = userConfiguration.username(),
+            encrypted = userConfiguration.encrypted(),
+        )
+
+        exportMetadataFile.bufferedWriter(Charsets.UTF_8).use {
+            it.write(objectMapper().writeValueAsString(metadata))
         }
 
-        FileUtils.zipFiles(exportMetadataPath, exportMetadataPath.parent!!.resolve("zipped.zip"))
+        FileUtils.zipFiles(
+            files = listOf(exportMetadataFile, protectedDatabase),
+            zipFile = zipFile,
+        )
 
-        return copiedDatabase
+        exportMetadataFile.delete()
+        copiedDatabase.delete()
+        protectedDatabase.delete()
+
+        return zipFile
+    }
+
+    private fun getWorkingDir(): File {
+        return context.filesDir
+    }
+
+    private fun getDatabaseFile(dbName: String): File {
+        return context.getDatabasePath(dbName)
+    }
+
+    private fun getExistingAccountForMetadata(metadata: DatabaseExportMetadata): DatabaseAccount? {
+        return multiUserDatabaseManager.getAccount(
+            metadata.serverUrl,
+            metadata.username,
+        )
     }
 }

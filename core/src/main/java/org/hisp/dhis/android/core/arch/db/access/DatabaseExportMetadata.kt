@@ -26,11 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.arch.db.access
 
-internal data class DatabaseExportMetadata(
-    val version: String,
+data class DatabaseExportMetadata(
+    val version: Int,
     val date: String,
     val serverUrl: String,
     val username: String,
+    val encrypted: Boolean,
 )

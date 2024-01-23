@@ -25,16 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 
-public interface MaintenanceModule {
-    ForeignKeyViolationCollectionRepository foreignKeyViolations();
-    D2ErrorCollectionRepository d2Errors();
-    PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
-                                                       int programRulesPerProgramThreshold);
+interface MaintenanceModule {
+    fun foreignKeyViolations(): ForeignKeyViolationCollectionRepository
+    fun d2Errors(): D2ErrorCollectionRepository
+    fun getPerformanceHintsService(
+        organisationUnitThreshold: Int,
+        programRulesPerProgramThreshold: Int,
+    ): PerformanceHintsService
 
-
-    DatabaseImportExport databaseImportExport();
+    fun databaseImportExport(): DatabaseImportExport
 }

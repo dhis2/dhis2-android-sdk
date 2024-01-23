@@ -55,8 +55,8 @@ abstract class BaseMockIntegrationTest {
         lateinit var databaseAdapter: DatabaseAdapter
 
         @JvmStatic
-        fun setUpClass(content: MockIntegrationTestDatabaseContent): Boolean {
-            val tuple = MockIntegrationTestObjectsFactory.getObjects(content)
+        fun setUpClass(content: MockIntegrationTestDatabaseContent, port: Int? = null): Boolean {
+            val tuple = MockIntegrationTestObjectsFactory.getObjects(content, port ?: 0)
             tuple.objects.let { objs ->
                 objects = objs
                 d2 = objs.d2

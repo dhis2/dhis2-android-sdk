@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.util.CipherUtil
+import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -130,7 +131,7 @@ internal class MultiUserDatabaseManager(
         val dbPath = context.getDatabasePath(account.databaseName())
         try {
             CipherUtil.decryptFileUsingCredentials(protectedDbPath, dbPath, account.username(), password)
-            protectedDbPath.delete()
+            protectedDbPath.deleteIfExists()
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
             val importedAccount = account.toBuilder()
                 .importDB(
@@ -141,7 +142,7 @@ internal class MultiUserDatabaseManager(
                 .build()
             addOrUpdatedAccountInternal(importedAccount)
         } catch (e: Exception) {
-            dbPath.delete()
+            dbPath.deleteIfExists()
             throw e
         }
     }

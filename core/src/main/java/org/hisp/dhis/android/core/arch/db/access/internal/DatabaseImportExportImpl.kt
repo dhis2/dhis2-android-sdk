@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.FileUtils
+import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 import java.io.File
@@ -72,8 +73,8 @@ internal class DatabaseImportExportImpl(
                 .build()
         }
 
-        val importMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.delete() }
-        val importDatabaseFile = getWorkingDir().resolve(ExportDatabaseProtected).also { it.delete() }
+        val importMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
+        val importDatabaseFile = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
 
         return try {
             FileUtils.unzipFiles(file, getWorkingDir())
@@ -120,16 +121,16 @@ internal class DatabaseImportExportImpl(
                         .build()
             }
         } finally {
-            importMetadataFile.delete()
-            importDatabaseFile.delete()
+            importMetadataFile.deleteIfExists()
+            importDatabaseFile.deleteIfExists()
         }
     }
 
     override fun exportLoggedUserDatabase(): File {
-        val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.delete() }
-        val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.delete() }
-        val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.delete() }
-        val zipFile = getWorkingDir().resolve(ExportZip).also { it.delete() }
+        val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
+        val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.deleteIfExists() }
+        val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
+        val zipFile = getWorkingDir().resolve(ExportZip).also { it.deleteIfExists() }
 
         if (!userModule.blockingIsLogged()) {
             throw d2ErrorBuilder
@@ -178,9 +179,9 @@ internal class DatabaseImportExportImpl(
             zipFile = zipFile,
         )
 
-        exportMetadataFile.delete()
-        copiedDatabase.delete()
-        protectedDatabase.delete()
+        exportMetadataFile.deleteIfExists()
+        copiedDatabase.deleteIfExists()
+        protectedDatabase.deleteIfExists()
 
         return zipFile
     }

@@ -39,7 +39,7 @@ import java.util.zip.ZipOutputStream
 @Suppress("NestedBlockDepth")
 internal object FileUtils {
 
-    private const val bufferSize = 1024
+    private const val bufferSize = 512
 
     @Suppress("TooGenericExceptionCaught")
     fun zipFiles(files: List<File>, zipFile: File) {
@@ -71,6 +71,8 @@ internal object FileUtils {
     }
 
     fun unzipFiles(zipFile: File, unzipDirectory: File) {
+        val buffer = ByteArray(bufferSize)
+
         val zip = ZipFile(zipFile)
         val enum = zip.entries()
         while (enum.hasMoreElements()) {
@@ -83,11 +85,12 @@ internal object FileUtils {
                 val nextEntry = zis.nextEntry ?: break
                 if (nextEntry.name == entryName) {
                     val fout = FileOutputStream(File(unzipDirectory, nextEntry.name))
-                    var c = zis.read()
-                    while (c != -1) {
-                        fout.write(c)
-                        c = zis.read()
+                    while (true) {
+                        val len = zis.read(buffer)
+                        if (len <= 0) break
+                        fout.write(buffer, 0, len)
                     }
+
                     zis.closeEntry()
                     fout.close()
                 }

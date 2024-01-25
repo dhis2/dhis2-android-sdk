@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.tracker.exporter
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
+import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
@@ -75,7 +75,7 @@ internal interface TrackerExporterService {
         @Query(PAGE) page: Int,
         @Query(PAGE_SIZE) pageSize: Int,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
-    ): NTIPayload<NewTrackerImporterTrackedEntity>
+    ): TrackerPayload<NewTrackerImporterTrackedEntity>
 
     @GET("$ENROLLMENTS/{$ENROLLMENT}")
     suspend fun getEnrollmentSingle(
@@ -112,14 +112,14 @@ internal interface TrackerExporterService {
         @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
         @Query(EVENT) eventUid: String? = null,
-    ): NTIPayload<NewTrackerImporterEvent>
+    ): TrackerPayload<NewTrackerImporterEvent>
 
     @GET(EVENTS)
     suspend fun getEventSingle(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
         @Query(EVENT) eventUid: String,
         @Query(OU_MODE) orgUnitMode: String,
-    ): NTIPayload<NewTrackerImporterEvent>
+    ): TrackerPayload<NewTrackerImporterEvent>
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "tracker/trackedEntities"

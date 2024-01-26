@@ -59,10 +59,6 @@ internal class TrackedEntityInstanceQueryPagingSource(
         localQueryHelper,
     )
 
-    init {
-        dataFetcher.refresh()
-    }
-
     override fun getRefreshKey(
         state: PagingState<TrackedEntityInstance, TrackedEntityInstance>,
     ): TrackedEntityInstance? {
@@ -72,14 +68,37 @@ internal class TrackedEntityInstanceQueryPagingSource(
     override suspend fun load(
         params: LoadParams<TrackedEntityInstance>,
     ): LoadResult<TrackedEntityInstance, TrackedEntityInstance> {
-        val pages = dataFetcher.loadPages(params.loadSize)
+        return when (params) {
+            is LoadParams.Refresh -> {
+                dataFetcher.refresh()
+                loadPages(params.loadSize)
+            }
+            is LoadParams.Append -> {
+                loadPages(params.loadSize)
+            }
+            is LoadParams.Prepend -> {
+                emptyPage()
+            }
+        }
+    }
+
+    private fun loadPages(loadSize: Int): LoadResult<TrackedEntityInstance, TrackedEntityInstance> {
+        val pages = dataFetcher.loadPages(loadSize)
 
         return pages.firstOrNull { it is Result.Failure }?.let {
             LoadResult.Error((it as Result.Failure).failure)
         } ?: LoadResult.Page(
             data = pages.map { it.getOrThrow() },
-            prevKey = pages.firstOrNull()?.getOrThrow(),
-            nextKey = pages.getOrNull(params.loadSize - 1)?.getOrThrow(),
+            prevKey = null, // Only paging forward
+            nextKey = pages.getOrNull(loadSize - 1)?.getOrThrow(),
+        )
+    }
+
+    private fun emptyPage(): LoadResult<TrackedEntityInstance, TrackedEntityInstance> {
+        return LoadResult.Page(
+            data = emptyList(),
+            prevKey = null,
+            nextKey = null,
         )
     }
 }

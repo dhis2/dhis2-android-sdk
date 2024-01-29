@@ -54,7 +54,7 @@ public final class ProgramStageFields {
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     private static final String STYLE = "style";
     static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
-    private static final String ATTRIBUTE_VALUES = "attributeValues";
+    public static final String ATTRIBUTE_VALUES = "attributeValues";
     private static final String ACCESS = "access";
 
     private static FieldsHelper<ProgramStage> fh = new FieldsHelper<>();

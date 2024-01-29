@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.dataelement.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -43,7 +41,6 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DataElementHandler constructor(
     dataElementStore: DataElementStore,
-    private val attributeHandler: AttributeHandler,
     private val dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
     private val dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<DataElement>(dataElementStore) {
@@ -51,11 +48,10 @@ internal class DataElementHandler constructor(
     override fun afterObjectHandled(o: DataElement, action: HandleAction) {
         if (o.attributeValues() != null) {
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
-            attributeHandler.handleMany(attributes)
             dataElementAttributeLinkHandler.handleMany(
                 o.uid(),
                 attributes,
-            ) { attribute: Attribute ->
+            ) { attribute: ObjectWithUid ->
                 DataElementAttributeValueLink.builder()
                     .dataElement(o.uid())
                     .attribute(attribute.uid())

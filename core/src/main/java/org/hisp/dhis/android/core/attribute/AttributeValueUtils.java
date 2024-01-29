@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.attribute;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +38,8 @@ public final class AttributeValueUtils {
     private AttributeValueUtils() {
     }
 
-    public static List<Attribute> extractAttributes(List<AttributeValue> attributeValues) {
-        List<Attribute> attributes = new ArrayList<>();
+    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
+        List<ObjectWithUid> attributes = new ArrayList<>();
 
         for (AttributeValue attValue : attributeValues) {
             attributes.add(attValue.attribute());

@@ -86,6 +86,7 @@ public class Dhis2MockServer {
     private static final String VALIDATION_RULES_JSON = "validation/validation_rules.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";
     private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
+    private static final String ATTRIBUTES_JSON = "attribute/attributes.json";
     private static final String INDICATORS_JSON = "indicators/indicators.json";
     private static final String INDICATOR_TYPES_JSON = "indicators/indicator_types.json";
     private static final String CATEGORY_COMBOS_JSON = "category/category_combos.json";
@@ -255,6 +256,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_SETS_JSON);
                 } else if (path.startsWith("/api/dataElements?")) {
                     return createMockResponse(DATA_ELEMENTS_JSON);
+                } else if (path.startsWith("/api/attributes?")) {
+                    return createMockResponse(ATTRIBUTES_JSON);
                 } else if (path.startsWith("/api/indicators?")) {
                     return createMockResponse(INDICATORS_JSON);
                 } else if (path.startsWith("/api/indicatorTypes?")) {
@@ -376,6 +379,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
         enqueueMockResponse(LEGEND_SETS_JSON);
+        enqueueMockResponse(ATTRIBUTES_JSON);
         enqueueMockResponse(EXPRESSION_DIMENSION_ITEMS);
     }
 

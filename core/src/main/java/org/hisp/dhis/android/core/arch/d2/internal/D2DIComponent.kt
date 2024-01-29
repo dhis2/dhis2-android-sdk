@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
 import org.hisp.dhis.android.core.program.internal.ProgramCall
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeHandler
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandler
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
@@ -94,7 +95,10 @@ internal class D2DIComponent(
     val trackedEntityTypeHandler: TrackedEntityTypeHandler,
 
     @get:VisibleForTesting
-    val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
+    internal val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
+
+    @get:VisibleForTesting
+    internal val newTrackerImporterPayloadGenerator: NewTrackerImporterTrackedEntityPostPayloadGenerator,
 
     @get:VisibleForTesting
     val categoryOptionStore: CategoryOptionStore,

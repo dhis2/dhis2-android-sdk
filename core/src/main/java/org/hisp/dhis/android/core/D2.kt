@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.modules.internal.WithProgressDownloader
+import org.hisp.dhis.android.core.attribute.AttributeModule
 import org.hisp.dhis.android.core.category.CategoryModule
 import org.hisp.dhis.android.core.constant.ConstantModule
 import org.hisp.dhis.android.core.dataelement.DataElementModule
@@ -154,6 +155,10 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun eventModule(): EventModule {
         return modules.event
+    }
+
+    fun attributeModule(): AttributeModule {
+        return modules.attributes
     }
 
     fun expressionDimensionItemModule(): ExpressionDimensionItemModule {

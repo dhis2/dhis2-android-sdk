@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.d2.internal
 
 import org.hisp.dhis.android.core.analytics.AnalyticsModule
+import org.hisp.dhis.android.core.attribute.AttributeModule
 import org.hisp.dhis.android.core.category.CategoryModule
 import org.hisp.dhis.android.core.constant.ConstantModule
 import org.hisp.dhis.android.core.dataelement.DataElementModule
@@ -63,6 +64,7 @@ import org.koin.core.annotation.Singleton
 @Suppress("LongParameterList")
 internal class D2Modules(
     val analytics: AnalyticsModule,
+    val attributes: AttributeModule,
     val category: CategoryModule,
     val constant: ConstantModule,
     val dataElement: DataElementModule,

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.domain.metadata
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataset.DataSet
@@ -63,7 +64,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(15)
+        testObserver.assertValueCount(16)
 
         val values = testObserver.values()
 
@@ -89,6 +90,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 ProgramIndicator::class,
                 Indicator::class,
                 LegendSet::class,
+                Attribute::class,
                 ExpressionDimensionItem::class,
             ).map { it.java.simpleName },
         )

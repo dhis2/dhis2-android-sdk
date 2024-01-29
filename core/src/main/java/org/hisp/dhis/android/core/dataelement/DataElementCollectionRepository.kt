@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.dataelement.internal.DataElementAttributeChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.dataelement.internal.DataElementLegendSetChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -110,9 +111,14 @@ class DataElementCollectionRepository internal constructor(
         return cf.withChild(DataElementFields.LEGEND_SETS)
     }
 
+    fun withAttributes(): DataElementCollectionRepository {
+        return cf.withChild(DataElementFields.ATTRIBUTE_VALUES)
+    }
+
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<DataElement> = mapOf(
             DataElementFields.LEGEND_SETS to DataElementLegendSetChildrenAppender::create,
+            DataElementFields.ATTRIBUTE_VALUES to DataElementAttributeChildrenAppender::create,
         )
     }
 }

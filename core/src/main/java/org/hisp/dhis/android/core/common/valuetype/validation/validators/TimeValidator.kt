@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.TimeFailu
 
 object TimeValidator : ValueTypeValidator<TimeFailure> {
 
-    private val TIME_PATTERN = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\$".toRegex()
+    private val TIME_PATTERN = "([01][0-9]|2[0-3]):[0-5][0-9]".toRegex()
 
     override fun validate(value: String): Result<String, TimeFailure> {
         return when {

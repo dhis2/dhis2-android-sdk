@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,32 +28,72 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
+    private String sampleEvent = "event1";
+    private String sampleDataElement = "bx6fsa0t90x";
+
+    @Before
+    public void setup() {
+        hardDeleteDataValue();
+    }
+
+    @After
+    public void tearDown() {
+        hardDeleteDataValue();
+    }
+
     @Test
-    public void update_value() throws D2Error {
-        String value = "new_value";
+    public void create_value() throws D2Error {
+        String value1 = "new_value";
+        String value2 = "other_value";
 
         TrackedEntityDataValueObjectRepository repository = objectRepository();
 
-        repository.blockingSet(value);
-        assertThat(repository.blockingGet().value()).isEqualTo(value);
+        repository.blockingSet(value1);
+        assertThat(repository.blockingGet().value()).isEqualTo(value1);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST);
 
-        repository.blockingDelete();
+        repository.blockingSet(value2);
+        assertThat(repository.blockingGet().value()).isEqualTo(value2);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST);
+    }
+
+    @Test
+    public void update_value() throws D2Error {
+        String value1 = "new_value";
+        String value2 = "other_value";
+
+        TrackedEntityDataValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet(value1);
+        assertThat(repository.blockingGet().value()).isEqualTo(value1);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST);
+
+        TrackedEntityDataValue value = repository.blockingGet();
+        setDataValueState(value, State.ERROR);
+
+        repository.blockingSet(value2);
+        assertThat(repository.blockingGet().value()).isEqualTo(value2);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test
@@ -62,6 +102,7 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
         repository.blockingSet("value");
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
+
         repository.blockingDelete();
         assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
@@ -70,8 +111,6 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityDataValues()
                 .value("no_event", "no_data_element").blockingExists()).isEqualTo(Boolean.FALSE);
-
-        List<TrackedEntityDataValue> d = d2.trackedEntityModule().trackedEntityDataValues().blockingGet();
 
         assertThat(d2.trackedEntityModule().trackedEntityDataValues()
                 .value("single1", "jDx8LZlznYu").blockingExists()).isEqualTo(Boolean.TRUE);
@@ -83,7 +122,8 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
         repository.blockingSet("value");
         repository.blockingDelete();
-        assertValueIsDeleted(repository);
+        assertThat(repository.blockingExists()).isEqualTo(false);
+        assertThat(repository.blockingGet()).isNull();
     }
 
     @Test
@@ -92,19 +132,29 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
 
         repository.blockingSet("value");
         repository.blockingSet(null);
-        assertValueIsDeleted(repository);
-    }
-
-    private void assertValueIsDeleted(TrackedEntityDataValueObjectRepository objectRepository) throws D2Error {
-        assertThat(objectRepository.blockingExists()).isEqualTo(false);
-        assertThat(objectRepository.blockingGet().value()).isEqualTo(null);
-        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(true);
-        objectRepository.blockingSet("1");
-        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(false);
-        objectRepository.blockingSet(null);
+        assertThat(repository.blockingExists()).isEqualTo(false);
+        assertThat(repository.blockingGet().value()).isEqualTo(null);
+        assertThat(repository.blockingGet().deleted()).isEqualTo(true);
     }
 
     private TrackedEntityDataValueObjectRepository objectRepository() {
-        return d2.trackedEntityModule().trackedEntityDataValues().value("event1", "bx6fsa0t90x");
+        return d2.trackedEntityModule().trackedEntityDataValues().value(sampleEvent, sampleDataElement);
+    }
+
+    private void hardDeleteDataValue() {
+        TrackedEntityDataValueStore store = new TrackedEntityDataValueStoreImpl(databaseAdapter);
+
+        store.deleteWhereIfExists(new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, sampleEvent)
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, sampleDataElement)
+                .build());
+    }
+
+    private void setDataValueState(TrackedEntityDataValue value, State syncState) {
+        TrackedEntityDataValueStore store = new TrackedEntityDataValueStoreImpl(databaseAdapter);
+
+        store.updateWhere(
+                value.toBuilder().syncState(syncState).build()
+        );
     }
 }

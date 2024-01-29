@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwnerTransformer
@@ -35,10 +36,12 @@ internal object NewTrackerImporterTrackedEntityTransformer {
     fun transform(
         o: TrackedEntityInstance,
         tetAttributeMap: Map<String, List<String>>,
+        includeSyncedAttributes: Boolean = true,
     ): NewTrackerImporterTrackedEntity {
         val teiAttributes = o.trackedEntityAttributeValues() ?: emptyList()
         val typeAttributes = tetAttributeMap[o.trackedEntityType()] ?: emptyList()
         val teiTypeAttributes = teiAttributes
+            .filter { includeSyncedAttributes || it.syncState() !== State.SYNCED }
             .filter { typeAttributes.contains(it.trackedEntityAttribute()) }
             .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
         val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.transform(it) }

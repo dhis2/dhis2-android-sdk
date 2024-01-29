@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.domain.metadata
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Completable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.call.BaseD2Progress
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -90,6 +90,7 @@ class MetadataCallShould : BaseCallShould() {
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
+    private val attributeModuleDownloader: AttributeModuleDownloader = mock()
     private val expressionDimensIndicatorModuleDownloader: ExpressionDimensionItemModuleDownloader = mock()
 
     private val networkError: D2Error = D2Error.builder()
@@ -138,6 +139,9 @@ class MetadataCallShould : BaseCallShould() {
         legendSetModuleDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
+        attributeModuleDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         expressionDimensIndicatorModuleDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
@@ -151,7 +155,9 @@ class MetadataCallShould : BaseCallShould() {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
         whenever(smsModule.configCase()).thenReturn(configCase)
-        whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
+        configCase.stub {
+            onBlocking { refreshMetadataIdsCallable() }.doReturn(Unit)
+        }
         generalSettingCall.stub {
             onBlocking { isDatabaseEncrypted() }.doReturn(false)
         }
@@ -176,6 +182,7 @@ class MetadataCallShould : BaseCallShould() {
             multiUserDatabaseManager,
             credentialsSecureStore,
             legendSetModuleDownloader,
+            attributeModuleDownloader,
             expressionDimensIndicatorModuleDownloader,
         )
     }

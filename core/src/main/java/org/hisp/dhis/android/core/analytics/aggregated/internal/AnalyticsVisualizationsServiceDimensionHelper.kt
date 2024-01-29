@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
-import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.attribute.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramAttributeValueLinkHandler(
     store: ProgramAttributeValueLinkStore,
-) : LinkHandlerImpl<Attribute, ProgramAttributeValueLink>(store)
+) : LinkHandlerImpl<ObjectWithUid, ProgramAttributeValueLink>(store)

@@ -14,7 +14,7 @@ libraryDesugaring = "2.0.4"
 
 # android
 annotation = "1.6.0"
-paging = "2.1.2"
+paging = "3.2.1"
 
 # java
 jackson = "2.13.4"
@@ -67,7 +67,8 @@ rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxJa
 rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxAndroid" }
 
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
-androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 
 google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autoValue" }
 google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }

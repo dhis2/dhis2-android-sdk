@@ -26,26 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist
+package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 
-interface TrackerLineListRepository {
+internal object DataFilterHelper {
+    fun getWhereClause(itemId: String, filters: List<DataFilter>): String {
+        return if (filters.isEmpty()) {
+            "1"
+        } else {
+            return filters.joinToString(" AND ") { getSqlOperator(itemId, it) }
+        }
+    }
 
-    fun withEventOutput(programId: String, programStageId: String?): TrackerLineListRepository
+    private fun getSqlOperator(itemId: String, filter: DataFilter): String {
+        val comparison = when (filter) {
+            is DataFilter.EqualTo -> "= '${filter.value}'"
+            is DataFilter.NotEqualTo -> "!= '${filter.value}'"
+            is DataFilter.EqualToIgnoreCase -> "= '${filter.value}' COLLATE NOCASE"
+            is DataFilter.NotEqualToIgnoreCase -> "!= '${filter.value}' COLLATE NOCASE"
+            is DataFilter.GreaterThan -> "> ${filter.value}"
+            is DataFilter.GreaterThanOrEqualTo -> ">= '${filter.value}'"
+            is DataFilter.LessThan -> "< '${filter.value}'"
+            is DataFilter.LessThanOrEqualTo -> "<= '${filter.value}'"
+            is DataFilter.Like -> "= '%${filter.value}%'"
+            is DataFilter.LikeIgnoreCase -> "= '%${filter.value}%' COLLATE NOCASE"
+            is DataFilter.NotLike -> "!= '%${filter.value}%'"
+            is DataFilter.NotLikeIgnoreCase -> "!= '%${filter.value}%' COLLATE NOCASE"
+            is DataFilter.In -> "IN (${filter.values.joinToString(", ") {"'$it'"}})"
+        }
 
-    fun withEnrollmentOutput(programId: String): TrackerLineListRepository
-
-    fun withColumn(column: TrackerLineListItem): TrackerLineListRepository
-
-    fun withFilter(filter: TrackerLineListItem): TrackerLineListRepository
-
-    // TODO
-    fun withTrackerVisualization(): TrackerLineListRepository
-
-    fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
-
-    fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
+        return "\"$itemId\" $comparison"
+    }
 }

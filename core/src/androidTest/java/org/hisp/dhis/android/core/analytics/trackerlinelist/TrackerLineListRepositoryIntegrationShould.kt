@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.analytics.trackerlinelist
 
-@Singleton
-internal class AnalyticsModuleImpl(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val analyticsVisualizationsRepository: AnalyticsVisualizationsRepository,
-    private val trackerLineListRepository: TrackerLineListRepository,
-) : AnalyticsModule {
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun evaluate_program_attributes() {
+        val result = d2.analyticsModule().trackerLineList()
+            .withEventOutput("IpHINAT79UW", "dBwrot7S420")
+            .withColumn(
+                TrackerLineListItem.ProgramAttribute(
+                    uid = "cejWyOfXge6",
+                    filters = listOf(DataFilter.GreaterThan("789"))
+                )
+            )
+            .blockingEvaluate()
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
-
-    override fun visualizations(): AnalyticsVisualizationsRepository = analyticsVisualizationsRepository
-
-    override fun trackerLineList(): TrackerLineListRepository = trackerLineListRepository
+        assertThat(result.getOrThrow().rows.size).isEqualTo(2)
+    }
 }

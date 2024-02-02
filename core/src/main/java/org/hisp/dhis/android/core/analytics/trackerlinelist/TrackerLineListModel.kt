@@ -76,7 +76,19 @@ sealed class DateFilter() {
 }
 
 sealed class DataFilter() {
+    data class EqualTo(val value: String): DataFilter()
+    data class NotEqualTo(val value: String): DataFilter()
+    data class EqualToIgnoreCase(val value: String): DataFilter()
+    data class NotEqualToIgnoreCase(val value: String): DataFilter()
     data class GreaterThan(val value: String) : DataFilter()
+    data class GreaterThanOrEqualTo(val value: String) : DataFilter()
+    data class LessThan(val value: String) : DataFilter()
+    data class LessThanOrEqualTo(val value: String) : DataFilter()
+    data class Like(val value: String) : DataFilter()
+    data class NotLike(val value: String) : DataFilter()
+    data class LikeIgnoreCase(val value: String) : DataFilter()
+    data class NotLikeIgnoreCase(val value: String) : DataFilter()
+    data class In(val values: List<String>) : DataFilter()
 }
 
 internal object Label {

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsVisualizationsRepositoryParams
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListParams
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListParams
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -51,5 +52,10 @@ internal class AnalyticsDIModule {
     @Singleton
     fun emptyAnalyticsVisualizationsParam(): AnalyticsVisualizationsRepositoryParams {
         return AnalyticsVisualizationsRepositoryParams(null, null, null)
+    }
+
+    @Singleton
+    fun emptyTrackerLineListParams(): TrackerLineListParams {
+        return TrackerLineListParams(null, null, null, emptyList(), emptyList())
     }
 }

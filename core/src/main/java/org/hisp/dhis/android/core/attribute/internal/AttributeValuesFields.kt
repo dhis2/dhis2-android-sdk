@@ -25,9 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute.internal
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-public enum AccessLevel {
-    OPEN, AUDITED, PROTECTED, CLOSED
+internal object AttributeValuesFields {
+    const val VALUE = "value"
+    const val ATTRIBUTE = "attribute"
+
+    private val fh = FieldsHelper<AttributeValue>()
+
+    val allFields: Fields<AttributeValue> = Fields.builder<AttributeValue>()
+        .fields(
+            fh.field<String>(VALUE),
+            fh.nestedField<ObjectWithUid>(ATTRIBUTE).with(ObjectWithUid.uid),
+        ).build()
 }

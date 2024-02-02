@@ -25,34 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.SectionRendering;
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo.Columns;
+internal object ProgramTrackedEntityAttributeFields {
+    const val RENDER_TYPE = "renderType"
+    private val fh = FieldsHelper<ProgramTrackedEntityAttribute>()
 
-public final class ProgramStageSectionFields {
-
-    public static final String PROGRAM_INDICATORS = "programIndicators";
-    public static final String DATA_ELEMENTS = "dataElements";
-    private static final String RENDER_TYPE = "renderType";
-
-    private static final FieldsHelper<ProgramStageSection> fh = new FieldsHelper<>();
-
-    public static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.nestedFieldWithUid(PROGRAM_INDICATORS),
-                    fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.<SectionRendering>nestedField(RENDER_TYPE),
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Boolean>field(Columns.DISPLAY_DESCRIPTION)
-            ).build();
-
-    private ProgramStageSectionFields() {
-    }
+    val allFields: Fields<ProgramTrackedEntityAttribute> = Fields.builder<ProgramTrackedEntityAttribute>()
+        .fields(fh.getNameableFields())
+        .fields(
+            fh.field<String>(ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY),
+            fh.nestedFieldWithUid(ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM),
+            fh.field<Boolean>(ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE),
+            fh.field<Boolean>(ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST),
+            fh.field<Int>(ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER),
+            fh.field<Boolean>(ProgramTrackedEntityAttributeTableInfo.Columns.SEARCHABLE),
+            fh.nestedFieldWithUid(ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE),
+            fh.field<ValueTypeRendering>(RENDER_TYPE),
+        ).build()
 }

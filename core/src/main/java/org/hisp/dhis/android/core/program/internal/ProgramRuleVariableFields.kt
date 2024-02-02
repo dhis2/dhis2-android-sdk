@@ -25,26 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.common.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.program.ProgramRuleVariable
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType
+import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.common.DataAccess;
+internal object ProgramRuleVariableFields {
+    private val fh = FieldsHelper<ProgramRuleVariable>()
 
-public final class DataAccessFields {
-
-    private static final String READ = "read";
-    private static final String WRITE = "write";
-
-    public static final Field<DataAccess, Boolean> read = Field.create(READ);
-    public static final Field<DataAccess, Boolean> write = Field.create(WRITE);
-
-    public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
-            read,
-            write
-    ).build();
-
-    private DataAccessFields() {
-    }
+    val allFields: Fields<ProgramRuleVariable> = Fields.builder<ProgramRuleVariable>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.field<Boolean>(ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET),
+            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.PROGRAM),
+            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE),
+            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT),
+            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE),
+            fh.field<ProgramRuleVariableSourceType>(
+                ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE,
+            ),
+        ).build()
 }

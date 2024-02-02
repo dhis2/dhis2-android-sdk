@@ -25,34 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program.internal;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns;
-
-public final class ProgramTrackedEntityAttributeFields {
-    public static final String RENDER_TYPE = "renderType";
-
-    private static FieldsHelper<ProgramTrackedEntityAttribute> fh = new FieldsHelper<>();
-
-    public static final Fields<ProgramTrackedEntityAttribute> allFields
-            = Fields.<ProgramTrackedEntityAttribute>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<String>field(Columns.MANDATORY),
-                    fh.nestedFieldWithUid(Columns.PROGRAM),
-                    fh.<Boolean>field(Columns.ALLOW_FUTURE_DATE),
-                    fh.<Boolean>field(Columns.DISPLAY_IN_LIST),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.<Boolean>field(Columns.SEARCHABLE),
-                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
-                    fh.<ValueTypeRendering>field(RENDER_TYPE)
-                    ).build();
-
-    private ProgramTrackedEntityAttributeFields() {
-    }
+enum class AccessLevel {
+    OPEN,
+    AUDITED,
+    PROTECTED,
+    CLOSED,
 }

@@ -25,29 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
+import org.hisp.dhis.android.core.program.SectionRendering
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.program.ProgramRuleVariable;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns;
+internal object ProgramStageSectionFields {
+    const val PROGRAM_INDICATORS = "programIndicators"
+    const val DATA_ELEMENTS = "dataElements"
+    private const val RENDER_TYPE = "renderType"
 
-final class ProgramRuleVariableFields {
+    private val fh = FieldsHelper<ProgramStageSection>()
 
-    private static FieldsHelper<ProgramRuleVariable> fh = new FieldsHelper<>();
-    static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Boolean>field(Columns.USE_CODE_FOR_OPTION_SET),
-                    fh.nestedFieldWithUid(Columns.PROGRAM),
-                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
-                    fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
-                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
-                    fh.<ProgramRuleVariableSourceType>field(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
-            ).build();
-
-    private ProgramRuleVariableFields() {
-    }
+    val allFields: Fields<ProgramStageSection> = Fields.builder<ProgramStageSection>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.field<Int>(ProgramStageSectionTableInfo.Columns.SORT_ORDER),
+            fh.nestedFieldWithUid(PROGRAM_INDICATORS),
+            fh.nestedFieldWithUid(DATA_ELEMENTS),
+            fh.nestedField<SectionRendering>(RENDER_TYPE),
+            fh.field<String>(ProgramStageSectionTableInfo.Columns.DESCRIPTION),
+            fh.field<Boolean>(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION),
+        ).build()
 }

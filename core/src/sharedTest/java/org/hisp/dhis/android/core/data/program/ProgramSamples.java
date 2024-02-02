@@ -75,6 +75,12 @@ public class ProgramSamples {
                 .maxTeiCountToReturn(2)
                 .featureType(FeatureType.POINT)
                 .accessLevel(AccessLevel.PROTECTED)
+                .enrollmentLabel("enrollmentLabel")
+                .followUpLabel("followUpLabel")
+                .orgUnitLabel("orgUnitLabel")
+                .relationshipLabel("relationshipLabel")
+                .noteLabel("noteLabel")
+                .trackedEntityAttributeLabel("trackedEntityAttributeLabel")
                 .build();
         return builder.build();
     }

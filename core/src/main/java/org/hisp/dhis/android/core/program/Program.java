@@ -205,6 +205,30 @@ public abstract class Program extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
+    public abstract String enrollmentLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String followUpLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String orgUnitLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String relationshipLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String noteLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String trackedEntityAttributeLabel();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -285,6 +309,18 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder featureType(FeatureType featureType);
 
         public abstract Builder accessLevel(AccessLevel accessLevel);
+
+        public abstract Builder enrollmentLabel(String enrollmentLabel);
+
+        public abstract Builder followUpLabel(String followUpLabel);
+
+        public abstract Builder orgUnitLabel(String orgUnitLabel);
+
+        public abstract Builder relationshipLabel(String relationshipLabel);
+
+        public abstract Builder noteLabel(String noteLabel);
+
+        public abstract Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 

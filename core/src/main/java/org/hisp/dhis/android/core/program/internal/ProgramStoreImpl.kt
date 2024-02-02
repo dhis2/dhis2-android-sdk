@@ -87,6 +87,12 @@ internal class ProgramStoreImpl(
                 w.bind(34, o.maxTeiCountToReturn())
                 w.bind(35, o.featureType())
                 w.bind(36, o.accessLevel())
+                w.bind(37, o.enrollmentLabel())
+                w.bind(38, o.followUpLabel())
+                w.bind(39, o.orgUnitLabel())
+                w.bind(40, o.relationshipLabel())
+                w.bind(41, o.noteLabel())
+                w.bind(42, o.trackedEntityAttributeLabel())
             }
         }
     }

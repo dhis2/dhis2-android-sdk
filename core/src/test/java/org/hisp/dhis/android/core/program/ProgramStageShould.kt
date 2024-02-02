@@ -71,6 +71,8 @@ class ProgramStageShould : BaseObjectShould("program/program_stage.json"), Objec
         assertThat(programStage.validationStrategy()).isEqualTo(ValidationStrategy.ON_UPDATE_AND_INSERT)
         assertThat(programStage.featureType()).isEqualTo(FeatureType.POINT)
         assertThat(programStage.enableUserAssignment()).isTrue()
+        assertThat(programStage.programStageLabel()).isEqualTo("ProgramStage Label")
+        assertThat(programStage.eventLabel()).isEqualTo("Event Label")
 
         val dataElements = ProgramStageInternalAccessor.accessProgramStageDataElements(programStage)
         assertThat(dataElements[0].uid()).isEqualTo("EQCf1l2Mdr8")

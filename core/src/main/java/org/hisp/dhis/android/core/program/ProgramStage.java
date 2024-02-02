@@ -194,6 +194,14 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract ValidationStrategy validationStrategy();
 
     @Nullable
+    @JsonProperty
+    public abstract String programStageLabel();
+
+    @Nullable
+    @JsonProperty
+    public abstract String eventLabel();
+
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
@@ -273,6 +281,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder remindCompleted(Boolean remindCompleted);
 
         public abstract Builder validationStrategy(ValidationStrategy validationStrategy);
+
+        public abstract Builder programStageLabel(String programStageLabel);
+
+        public abstract Builder eventLabel(String eventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 

@@ -331,6 +331,26 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
+    public void filter_by_program_stage_label() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages()
+                        .byProgramStageLabel().eq("ProgramStage Label")
+                        .blockingGet();
+
+        assertThat(programStages.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_event_label() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages()
+                        .byEventLabel().eq("Event Label")
+                        .blockingGet();
+
+        assertThat(programStages.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_field_color() {
         List<ProgramStage> programStages = d2.programModule().programStages()
                 .byColor().eq("#444")

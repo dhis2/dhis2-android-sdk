@@ -77,6 +77,8 @@ public final class ProgramStageTableInfo {
         public static final String VALIDATION_STRATEGY = "validationStrategy";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String ENABLE_USER_ASSIGNMENT = "enableUserAssignment";
+        public static final String PROGRAM_STAGE_LABEL = "programStageLabel";
+        public static final String EVENT_LABEL = "eventLabel";
 
         @Override
         public String[] all() {
@@ -105,7 +107,9 @@ public final class ProgramStageTableInfo {
                     REMIND_COMPLETED,
                     FEATURE_TYPE,
                     ENABLE_USER_ASSIGNMENT,
-                    VALIDATION_STRATEGY
+                    VALIDATION_STRATEGY,
+                    PROGRAM_STAGE_LABEL,
+                    EVENT_LABEL
             );
         }
     }

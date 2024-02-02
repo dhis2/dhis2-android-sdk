@@ -119,6 +119,13 @@ public class ProgramSamples {
                 .minAttributesRequiredToSearch(7)
                 .featureType(FeatureType.NONE)
                 .maxTeiCountToReturn(20)
+                .enrollmentLabel("Enrollment Label")
+                .followUpLabel("Follow up Label")
+                .orgUnitLabel("OrgUnit Label")
+                .relationshipLabel("Relationship Label")
+                .noteLabel("Note Label")
+                .trackedEntityAttributeLabel("TrackedEntityAttribute Label")
+
 
                 .build();
     }

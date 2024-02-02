@@ -43,7 +43,6 @@ internal data class TrackedEntityInstanceQueryOnline(
     val orgUnitMode: OrganisationUnitMode? = null,
     val program: String? = null,
     val programStage: String? = null,
-    val query: String? = null,
     val attributeFilter: List<RepositoryScopeFilterItem> = emptyList(),
     val dataValueFilter: List<RepositoryScopeFilterItem> = emptyList(),
     val programStartDate: Date? = null,

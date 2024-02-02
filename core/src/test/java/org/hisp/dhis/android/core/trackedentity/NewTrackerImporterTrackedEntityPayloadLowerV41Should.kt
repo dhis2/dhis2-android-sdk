@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.data.relationship;
+import com.fasterxml.jackson.core.type.TypeReference
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
+class NewTrackerImporterTrackedEntityPayloadLowerV41Should :
+    BaseObjectShould("trackedentity/new_tracker_importer_tracked_entities_lower_v41.json"),
+    ObjectShould {
 
+    @Test
+    override fun map_from_json_string() {
+        val trackedEntityPayload = objectMapper.readValue(
+            jsonStream,
+            object : TypeReference<TrackerPayload<NewTrackerImporterTrackedEntity>>() {},
+        )
 
-public class RelationshipConstraintSamples {
-
-    public static RelationshipConstraint getRelationshipConstraint() {
-        return RelationshipConstraint.builder()
-                .id(1L)
-                .relationshipType(ObjectWithUid.create("relationship_type_uid"))
-                .constraintType(RelationshipConstraintType.FROM)
-                .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                .trackedEntityType(ObjectWithUid.create("tracked_entity_type_uid"))
-                .program(ObjectWithUid.create("program_uid"))
-                .programStage(ObjectWithUid.create("program_stage_uid"))
-                .build();
+        assertThat(trackedEntityPayload.pager()?.page).isEqualTo(1)
+        assertThat(trackedEntityPayload.pager()?.pageSize).isEqualTo(50)
+        assertThat(trackedEntityPayload.items().size).isEqualTo(2)
     }
 }

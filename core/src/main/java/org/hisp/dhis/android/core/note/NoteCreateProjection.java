@@ -90,7 +90,7 @@ public abstract class NoteCreateProjection {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract Builder noteType(Note.NoteType noteType);
 
         public abstract Builder event(String event);

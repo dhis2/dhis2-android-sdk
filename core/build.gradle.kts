@@ -123,7 +123,7 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.annotation)
-    api(libs.androidx.paging)
+    api(libs.androidx.paging.runtime)
 
     // Auto Value
     api(libs.google.auto.value.annotation)
@@ -188,6 +188,7 @@ dependencies {
         exclude(group = "junit") // Android has JUnit built in.
     }
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.paging.testing)
 
     debugImplementation(libs.facebook.soloader)
     debugImplementation(libs.facebook.flipper.core)

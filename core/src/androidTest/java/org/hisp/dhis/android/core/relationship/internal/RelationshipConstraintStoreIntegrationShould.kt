@@ -25,10 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
+package org.hisp.dhis.android.core.relationship.internal
 
-data class NTIPayload<T>(
-    val page: Int,
-    val pageSize: Int,
-    val instances: List<T>,
-)
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples.relationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
+
+@RunWith(D2JunitRunner::class)
+class RelationshipConstraintStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint>(
+        RelationshipConstraintStoreImpl(TestDatabaseAdapterFactory.get()),
+        RelationshipConstraintTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): RelationshipConstraint {
+        return relationshipConstraint
+    }
+
+    override fun buildObjectToUpdate(): RelationshipConstraint {
+        return relationshipConstraint.toBuilder()
+            .relationshipEntity(RelationshipEntityType.PROGRAM_INSTANCE)
+            .build()
+    }
+}

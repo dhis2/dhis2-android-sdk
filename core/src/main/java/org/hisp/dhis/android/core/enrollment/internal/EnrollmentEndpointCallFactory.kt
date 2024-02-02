@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 
 internal interface EnrollmentEndpointCallFactory {
-    suspend fun getRelationshipEntityCall(uid: String): Enrollment
+    suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Enrollment
 }

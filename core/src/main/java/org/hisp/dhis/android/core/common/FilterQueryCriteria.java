@@ -91,7 +91,7 @@ public abstract class FilterQueryCriteria {
     public abstract DateFilterPeriod lastUpdatedDate();
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> {
 
         public abstract T followUp(Boolean followUp);
 

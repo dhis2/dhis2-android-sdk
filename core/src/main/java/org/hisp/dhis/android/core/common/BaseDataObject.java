@@ -57,7 +57,7 @@ public abstract class BaseDataObject extends BaseObject implements DataObject {
     public abstract State syncState();
 
     @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseObject.Builder<T> {
+    protected abstract static class Builder<T extends Builder> extends BaseObject.Builder<T> {
         public abstract T syncState(@Nullable State syncState);
 
         /**

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.relationship.TrackerDataView
 
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+internal object TrackerDataViewFields {
+    private const val ATTRIBUTES = "attributes"
+    private const val DATA_ELEMENTS = "dataElements"
 
-import java.util.Set;
+    private val fh = FieldsHelper<TrackerDataView>()
 
-public class RelationshipTypeBuilder {
-
-    private final Set<RelationshipConstraint> constraints;
-
-    RelationshipTypeBuilder(Set<RelationshipConstraint> constraints) {
-        this.constraints = constraints;
-    }
-
-    public RelationshipType typeWithConstraints(RelationshipType type) {
-
-        RelationshipType.Builder typeBuilder = type.toBuilder();
-
-        for (RelationshipConstraint constraint : this.constraints) {
-            if (constraint.relationshipType().uid().equals(type.uid())) {
-                if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
-                    typeBuilder.fromConstraint(constraint);
-                } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {
-                    typeBuilder.toConstraint(constraint);
-                }
-            }
-        }
-
-        return typeBuilder.build();
-    }
+    val allFields: Fields<TrackerDataView> = Fields.builder<TrackerDataView>()
+        .fields(
+            fh.field<String>(ATTRIBUTES),
+            fh.field<String>(DATA_ELEMENTS),
+        ).build()
 }

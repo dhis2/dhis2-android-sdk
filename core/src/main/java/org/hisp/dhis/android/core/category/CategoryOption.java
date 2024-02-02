@@ -88,7 +88,7 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder startDate(@Nullable Date startDate);

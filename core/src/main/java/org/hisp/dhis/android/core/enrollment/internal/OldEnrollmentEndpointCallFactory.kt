@@ -28,16 +28,17 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OldEnrollmentEndpointCallFactory(
     private val service: EnrollmentService,
 ) : EnrollmentEndpointCallFactory {
-    override suspend fun getRelationshipEntityCall(uid: String): Enrollment {
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
         return service.getEnrollmentSingle(
-            uid,
-            EnrollmentFields.asRelationshipFields,
+            enrollmentUid = item.itemUid,
+            fields = EnrollmentFields.asRelationshipFields,
         )
     }
 }

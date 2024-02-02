@@ -28,11 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.internal.NewEventFields
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -49,9 +52,11 @@ import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class NewTrackedEntityEndpointCallFactory(
     private val trackedExporterService: TrackerExporterService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
 ) : TrackedEntityEndpointCallFactory() {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
@@ -68,7 +73,6 @@ internal class NewTrackedEntityEndpointCallFactory(
             page = query.page,
             pageSize = query.pageSize,
             lastUpdatedStartDate = query.lastUpdatedStr,
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { mapPayload(it) }
     }
@@ -81,19 +85,20 @@ internal class NewTrackedEntityEndpointCallFactory(
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { NewTrackerImporterTrackedEntityTransformer.deTransform(it) }
     }
 
-    override suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance> {
-        return trackedExporterService.getTrackedEntityInstance(
-            trackedEntityInstance = uid,
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {
+        return trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
+            trackedEntityInstanceUid = item.itemUid,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
-            includeAllAttributes = true,
+            program = getRelatedProgramUid(item),
+            programStatus = null,
+            programStartDate = null,
             includeDeleted = true,
-        ).let { mapPayload(it) }
+        ).let { Payload(listOf(NewTrackerImporterTrackedEntityTransformer.deTransform(it))) }
     }
 
     override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
@@ -164,7 +169,7 @@ internal class NewTrackedEntityEndpointCallFactory(
                 updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted,
             )
-        }.getOrThrow().instances
+        }.getOrThrow().items()
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
@@ -190,7 +195,6 @@ internal class NewTrackedEntityEndpointCallFactory(
                 eventEndDate = query.eventEndDate.simpleDateFormat(),
                 eventStatus = query.eventStatus?.toString(),
                 trackedEntityType = query.trackedEntityType,
-                query = query.query,
                 filter = toAPIFilterFormat(query.attributeFilter, upper = true),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
@@ -199,7 +203,6 @@ internal class NewTrackedEntityEndpointCallFactory(
                 paging = query.paging,
                 page = query.page,
                 pageSize = query.pageSize,
-                includeAllAttributes = true,
             )
 
             mapPayload(payload)
@@ -218,16 +221,14 @@ internal class NewTrackedEntityEndpointCallFactory(
             orgUnitMode = query.orgUnitMode,
             program = query.program,
             uids = events.mapNotNull { it.trackedEntity() }.distinct(),
-            query = query.query,
-            attributeFilter = query.attributeFilter,
             order = query.order,
             trackedEntityType = query.trackedEntityType,
             includeDeleted = query.includeDeleted,
         )
     }
 
-    private fun mapPayload(payload: NTIPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
-        val newItems = payload.instances.map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
+    private fun mapPayload(payload: TrackerPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
+        val newItems = payload.items().map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
         return Payload(newItems)
     }
 
@@ -237,5 +238,19 @@ internal class NewTrackedEntityEndpointCallFactory(
         } else {
             orgUnits.joinToString(";")
         }
+    }
+
+    private fun getRelatedProgramUid(item: RelationshipItemRelative): String? {
+        val relationshipType = relationshipTypeRepository
+            .withConstraints()
+            .uid(item.relationshipTypeUid)
+            .blockingGet()
+
+        val constraint = when (item.constraintType) {
+            RelationshipConstraintType.FROM -> relationshipType?.fromConstraint()
+            RelationshipConstraintType.TO -> relationshipType?.toConstraint()
+        }
+
+        return constraint?.program()?.uid()
     }
 }

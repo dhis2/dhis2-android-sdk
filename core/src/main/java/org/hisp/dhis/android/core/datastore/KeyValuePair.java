@@ -56,7 +56,7 @@ public abstract class KeyValuePair implements CoreObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract Builder id(Long id);
 
         public abstract Builder key(String key);

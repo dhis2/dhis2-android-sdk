@@ -149,7 +149,6 @@ internal class TrackedEntityInstanceQueryCallFactory(
                     eventEndDate = query.eventEndDate.simpleDateFormat(),
                     eventStatus = getEventStatus(query),
                     trackedEntityType = query.trackedEntityType,
-                    query = query.query,
                     filter = toAPIFilterFormat(query.attributeFilter, upper = true),
                     assignedUserMode = query.assignedUserMode?.toString(),
                     lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),

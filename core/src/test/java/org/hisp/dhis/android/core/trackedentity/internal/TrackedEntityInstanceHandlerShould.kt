@@ -182,7 +182,6 @@ class TrackedEntityInstanceHandlerShould {
 
     @Test
     fun invoke_relationship_handler_with_relationship_from_version_manager() {
-        whenever(relationshipVersionManager.getRelativeTei(relationship, TEI_UID)).doReturn(relative)
         whenever(relationshipVersionManager.getOwnedRelationships(listOf(relationship), TEI_UID))
             .doReturn(listOf(relationship))
         whenever(relative.toBuilder()).doReturn(relativeBuilder)
@@ -197,14 +196,11 @@ class TrackedEntityInstanceHandlerShould {
             listOf(relationship),
             TEI_UID,
             relatives,
-            relationshipHandler,
         )
     }
 
     @Test
     fun do_not_invoke_relationship_repository_when_no_relative() {
-        whenever(relationshipVersionManager.getRelativeTei(relationship, TEI_UID)).doReturn(null)
-
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relationshipItemRelatives)
 
         verify(relationshipHandler, never()).handle(any())

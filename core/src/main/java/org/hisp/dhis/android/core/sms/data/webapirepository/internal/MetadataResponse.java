@@ -70,7 +70,7 @@ public abstract class MetadataResponse {
 
         @AutoValue.Builder
         @JsonPOJOBuilder(withPrefix = "")
-        public static abstract class Builder {
+        public abstract static class Builder {
 
             public abstract MetadataSystemInfo.Builder date(Date date);
 
@@ -85,7 +85,7 @@ public abstract class MetadataResponse {
 
         @AutoValue.Builder
         @JsonPOJOBuilder(withPrefix = "")
-        public static abstract class Builder {
+        public abstract static class Builder {
 
             public abstract MetadataId.Builder id(String id);
 
@@ -95,7 +95,7 @@ public abstract class MetadataResponse {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
 
         public abstract MetadataResponse.Builder system(MetadataSystemInfo systemInfo);
 

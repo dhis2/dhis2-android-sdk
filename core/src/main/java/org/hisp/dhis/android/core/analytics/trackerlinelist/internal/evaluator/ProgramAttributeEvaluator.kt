@@ -28,24 +28,30 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.DataFilterHelper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
 
 internal class ProgramAttributeEvaluator(
     private val item: TrackerLineListItem.ProgramAttribute,
     private val metadata: Map<String, MetadataItem>,
 ) : TrackerLineListEvaluator {
     override fun getSelectSQLForEvent(): String {
-        return "SELECT " +
-                "${TrackedEntityAttributeValueTableInfo.Columns.VALUE} " +
-                "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
-                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '${item.id}'"
+        val column = getColumnValueCast(
+            column = TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+            valueType = getAttribute().valueType(),
+        )
+        return "SELECT $column " +
+            "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+            "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '${item.id}'"
     }
 
     override fun getWhereSQLForEvent(): String {
@@ -58,5 +64,12 @@ internal class ProgramAttributeEvaluator(
 
     override fun getWhereSQLForEnrollment(): String {
         TODO("Not yet implemented")
+    }
+
+    private fun getAttribute(): TrackedEntityAttribute {
+        return (
+            (metadata[item.id] ?: throw AnalyticsException.InvalidTrackedEntityAttribute(item.id)) as
+                MetadataItem.TrackedEntityAttributeItem
+            ).item
     }
 }

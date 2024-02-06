@@ -40,11 +40,14 @@ class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationTestFullDi
             .withColumn(
                 TrackerLineListItem.ProgramAttribute(
                     uid = "cejWyOfXge6",
-                    filters = listOf(DataFilter.GreaterThan("789"))
-                )
+                    filters = listOf(
+                        DataFilter.GreaterThan("400000"),
+                        DataFilter.LowerThan("700000"),
+                    ),
+                ),
             )
             .blockingEvaluate()
 
-        assertThat(result.getOrThrow().rows.size).isEqualTo(2)
+        assertThat(result.getOrThrow().rows.size).isEqualTo(1)
     }
 }

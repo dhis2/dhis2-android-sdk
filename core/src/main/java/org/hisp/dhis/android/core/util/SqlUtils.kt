@@ -26,9 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
+package org.hisp.dhis.android.core.util
 
-object TrackerLineListSQLLabel {
-    const val EventAlias = "ev"
-    const val EnrollmentAlias = "en"
+import org.hisp.dhis.android.core.common.ValueType
+
+internal object SqlUtils {
+    fun getColumnValueCast(
+        column: String,
+        valueType: ValueType?,
+    ): String {
+        return when {
+            valueType?.isNumeric == true ->
+                "CAST($column AS NUMERIC)"
+            valueType?.isBoolean == true ->
+                "CASE WHEN $column = 'true' THEN 1 ELSE 0 END"
+            else ->
+                column
+        }
+    }
 }

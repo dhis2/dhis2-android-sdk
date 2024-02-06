@@ -47,7 +47,7 @@ internal class TrackerLineListRepositoryImpl(
             params.copy(
                 outputType = TrackerLineListOutputType.EVENT,
                 programId = programId,
-                programStageId = programStageId
+                programStageId = programStageId,
             )
         }
     }
@@ -56,7 +56,7 @@ internal class TrackerLineListRepositoryImpl(
         return updateParams {
             params.copy(
                 outputType = TrackerLineListOutputType.ENROLLMENT,
-                programId = programId
+                programId = programId,
             )
         }
     }
@@ -83,7 +83,7 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     private fun updateParams(
-        func: (params: TrackerLineListParams) -> TrackerLineListParams
+        func: (params: TrackerLineListParams) -> TrackerLineListParams,
     ): TrackerLineListRepositoryImpl {
         return TrackerLineListRepositoryImpl(func(params), service)
     }

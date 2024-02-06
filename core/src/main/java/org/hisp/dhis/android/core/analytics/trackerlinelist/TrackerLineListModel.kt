@@ -57,33 +57,33 @@ sealed class TrackerLineListItem(val id: String) {
         val uid: String,
         val program: String,
         val programStage: String,
-        val filters: List<DataFilter>
+        val filters: List<DataFilter>,
     ) : TrackerLineListItem("$program.$programStage.$uid")
 
-    object CreatedBy: TrackerLineListItem(Label.CreatedBy)
+    object CreatedBy : TrackerLineListItem(Label.CreatedBy)
 
-    object LastUpdatedBy: TrackerLineListItem(Label.LastUpdatedBy)
+    object LastUpdatedBy : TrackerLineListItem(Label.LastUpdatedBy)
 
-    data class ProgramStatus(val filters: List<EnrollmentStatus>): TrackerLineListItem(Label.ProgramStatus)
+    data class ProgramStatus(val filters: List<EnrollmentStatus>) : TrackerLineListItem(Label.ProgramStatus)
 
-    data class EventStatus(val filters: List<EventStatus>): TrackerLineListItem(Label.EventStatus)
+    data class EventStatus(val filters: List<EventStatus>) : TrackerLineListItem(Label.EventStatus)
 }
 
-sealed class DateFilter() {
+sealed class DateFilter {
     data class Relative(val relative: RelativePeriod) : DateFilter()
     data class Absolute(val uid: String) : DateFilter()
     data class Range(val startDate: String, val endDate: String) : DateFilter()
 }
 
-sealed class DataFilter() {
-    data class EqualTo(val value: String): DataFilter()
-    data class NotEqualTo(val value: String): DataFilter()
-    data class EqualToIgnoreCase(val value: String): DataFilter()
-    data class NotEqualToIgnoreCase(val value: String): DataFilter()
+sealed class DataFilter {
+    data class EqualTo(val value: String) : DataFilter()
+    data class NotEqualTo(val value: String) : DataFilter()
+    data class EqualToIgnoreCase(val value: String) : DataFilter()
+    data class NotEqualToIgnoreCase(val value: String) : DataFilter()
     data class GreaterThan(val value: String) : DataFilter()
     data class GreaterThanOrEqualTo(val value: String) : DataFilter()
-    data class LessThan(val value: String) : DataFilter()
-    data class LessThanOrEqualTo(val value: String) : DataFilter()
+    data class LowerThan(val value: String) : DataFilter()
+    data class LowerThanOrEqualTo(val value: String) : DataFilter()
     data class Like(val value: String) : DataFilter()
     data class NotLike(val value: String) : DataFilter()
     data class LikeIgnoreCase(val value: String) : DataFilter()

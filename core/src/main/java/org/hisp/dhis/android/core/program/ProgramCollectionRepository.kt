@@ -165,6 +165,30 @@ class ProgramCollectionRepository internal constructor(
         return cf.enumC(ProgramTableInfo.Columns.ACCESS_LEVEL)
     }
 
+    fun byEnrollmentLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.ENROLLMENT_LABEL)
+    }
+
+    fun byFollowUpLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.FOLLOW_UP_LABEL)
+    }
+
+    fun byOrgUnitLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.ORG_UNIT_LABEL)
+    }
+
+    fun byRelationshipLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.RELATIONSHIP_LABEL)
+    }
+
+    fun byNoteLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.NOTE_LABEL)
+    }
+
+    fun byTrackedEntityAttributeLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL)
+    }
+
     fun byColor(): StringFilterConnector<ProgramCollectionRepository> {
         return cf.string(ProgramTableInfo.Columns.COLOR)
     }

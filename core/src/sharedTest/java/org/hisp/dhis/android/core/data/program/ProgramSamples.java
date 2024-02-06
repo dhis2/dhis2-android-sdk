@@ -75,6 +75,12 @@ public class ProgramSamples {
                 .maxTeiCountToReturn(2)
                 .featureType(FeatureType.POINT)
                 .accessLevel(AccessLevel.PROTECTED)
+                .enrollmentLabel("enrollmentLabel")
+                .followUpLabel("followUpLabel")
+                .orgUnitLabel("orgUnitLabel")
+                .relationshipLabel("relationshipLabel")
+                .noteLabel("noteLabel")
+                .trackedEntityAttributeLabel("trackedEntityAttributeLabel")
                 .build();
         return builder.build();
     }
@@ -113,6 +119,13 @@ public class ProgramSamples {
                 .minAttributesRequiredToSearch(7)
                 .featureType(FeatureType.NONE)
                 .maxTeiCountToReturn(20)
+                .enrollmentLabel("Enrollment Label")
+                .followUpLabel("Follow up Label")
+                .orgUnitLabel("OrgUnit Label")
+                .relationshipLabel("Relationship Label")
+                .noteLabel("Note Label")
+                .trackedEntityAttributeLabel("TrackedEntityAttribute Label")
+
 
                 .build();
     }

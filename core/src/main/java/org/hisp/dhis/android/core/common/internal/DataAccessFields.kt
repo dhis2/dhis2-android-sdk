@@ -25,26 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal
 
-package org.hisp.dhis.android.core.attribute.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.DataAccess
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+internal object DataAccessFields {
+    private const val READ = "read"
+    private const val WRITE = "write"
 
-public final class AttributeValuesFields {
-    public static final String VALUE = "value";
-    public static final String ATTRIBUTE = "attribute";
+    val read: Field<DataAccess, Boolean> = Field.create(READ)
 
-    private static final FieldsHelper<AttributeValue> fh = new FieldsHelper<>();
+    val write: Field<DataAccess, Boolean> = Field.create(WRITE)
 
-    public static final Fields<AttributeValue> allFields = Fields.<AttributeValue>builder()
-            .fields(
-                    fh.<String>field(VALUE),
-                    fh.<ObjectWithUid>nestedField(ATTRIBUTE).with(ObjectWithUid.uid)
-            ).build();
-
-    private AttributeValuesFields() {
-    }
+    val allFields: Fields<DataAccess> = Fields.builder<DataAccess>().fields(
+        read,
+        write,
+    ).build()
 }

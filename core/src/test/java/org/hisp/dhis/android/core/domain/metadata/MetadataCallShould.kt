@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 import org.junit.Assert.fail
 import org.junit.Before
@@ -81,6 +82,7 @@ class MetadataCallShould : BaseCallShould() {
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
     private val dataSetDownloader: DataSetModuleDownloader = mock()
     private val visualizationDownloader: VisualizationModuleDownloader = mock()
+    private val trackerVisualizationDownloader: TrackerVisualizationModuleDownloader = mock()
     private val constantDownloader: ConstantModuleDownloader = mock()
     private val indicatorDownloader: IndicatorModuleDownloader = mock()
     private val programIndicatorModuleDownloader: ProgramIndicatorModuleDownloader = mock()
@@ -136,6 +138,9 @@ class MetadataCallShould : BaseCallShould() {
         visualizationDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
+        trackerVisualizationDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(emptyList())
+        }
         legendSetModuleDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
@@ -173,6 +178,7 @@ class MetadataCallShould : BaseCallShould() {
             organisationUnitDownloader,
             dataSetDownloader,
             visualizationDownloader,
+            trackerVisualizationDownloader,
             constantDownloader,
             indicatorDownloader,
             programIndicatorModuleDownloader,

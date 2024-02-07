@@ -52,8 +52,6 @@ internal class TrackerVisualizationCall(
     override suspend fun download(uids: Set<String>): List<TrackerVisualization> {
         val accessFilter = "access." + AccessFields.read.eq(true).generateString()
 
-        // TODO Limit by version
-
         return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             apiDownloader.downloadPartitioned(
                 uids,

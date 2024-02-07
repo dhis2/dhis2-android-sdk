@@ -100,7 +100,7 @@ public abstract class TrackerVisualization extends BaseIdentifiableObject implem
     }
 
     public static TrackerVisualization create(Cursor cursor) {
-        return AutoValue_TrackerVisualization.createFromCursor(cursor);
+        return $AutoValue_TrackerVisualization.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

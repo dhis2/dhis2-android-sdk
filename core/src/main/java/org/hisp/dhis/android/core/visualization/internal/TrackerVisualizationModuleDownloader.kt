@@ -38,7 +38,7 @@ internal class TrackerVisualizationModuleDownloader internal constructor(
     TypedModuleDownloader<List<TrackerVisualization>> {
 
     override suspend fun downloadMetadata(): List<TrackerVisualization> {
-        // TODO Extract tracker visualization uids from analytics settings
+        // Extract visualizations in ANDROSDK-1811
         val trackerVisualizations = setOf("s85urBIkN0z")
         return visualizationCall.download(trackerVisualizations)
     }

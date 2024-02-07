@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access
 
-import java.io.File
+package org.hisp.dhis.android.core.util
 
-interface DatabaseImportExport {
-    fun importDatabase(file: File): DatabaseExportMetadata
-    fun exportLoggedUserDatabase(): File
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+
+class CipherUtilShould {
+    @Test
+    fun create_16_long_salt() {
+        assertThat(CipherUtil.getSalt("password").size).isEqualTo(16)
+        assertThat(CipherUtil.getSalt("s").size).isEqualTo(16)
+        assertThat(CipherUtil.getSalt("veryverylongpasswordforuser").size).isEqualTo(16)
+    }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.maintenance.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.maintenance.D2ErrorCollectionRepository
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationCollectionRepository
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule
@@ -39,6 +40,7 @@ internal class MaintenanceModuleImpl(
     private val databaseAdapter: DatabaseAdapter,
     private val foreignKeyViolations: ForeignKeyViolationCollectionRepository,
     private val d2Errors: D2ErrorCollectionRepository,
+    private val databaseImportExport: DatabaseImportExport,
 ) : MaintenanceModule {
     override fun getPerformanceHintsService(
         organisationUnitThreshold: Int,
@@ -57,5 +59,9 @@ internal class MaintenanceModuleImpl(
 
     override fun d2Errors(): D2ErrorCollectionRepository {
         return d2Errors
+    }
+
+    override fun databaseImportExport(): DatabaseImportExport {
+        return databaseImportExport
     }
 }

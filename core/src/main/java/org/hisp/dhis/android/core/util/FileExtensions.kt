@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access
 
+package org.hisp.dhis.android.core.util
+
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import java.io.File
 
-interface DatabaseImportExport {
-    fun importDatabase(file: File): DatabaseExportMetadata
-    fun exportLoggedUserDatabase(): File
+internal fun File.deleteIfExists() {
+    if (exists()) {
+        val deleted = delete()
+        if (!deleted) {
+            throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorDescription("File $path exists and cannot be deleted")
+                .errorCode(D2ErrorCode.UNEXPECTED)
+                .build()
+        }
+    }
 }

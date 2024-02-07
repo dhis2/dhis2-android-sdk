@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access
 
-import java.io.File
+package org.hisp.dhis.android.core.configuration.internal
 
-interface DatabaseImportExport {
-    fun importDatabase(file: File): DatabaseExportMetadata
-    fun exportLoggedUserDatabase(): File
+enum class DatabaseAccountImportStatus {
+    PENDING_TO_IMPORT,
+    IMPORTED,
 }

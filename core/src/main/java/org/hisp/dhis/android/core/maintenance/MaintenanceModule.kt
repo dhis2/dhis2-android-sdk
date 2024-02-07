@@ -25,11 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access
+package org.hisp.dhis.android.core.maintenance
 
-import java.io.File
+import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 
-interface DatabaseImportExport {
-    fun importDatabase(file: File): DatabaseExportMetadata
-    fun exportLoggedUserDatabase(): File
+interface MaintenanceModule {
+    fun foreignKeyViolations(): ForeignKeyViolationCollectionRepository
+    fun d2Errors(): D2ErrorCollectionRepository
+    fun getPerformanceHintsService(
+        organisationUnitThreshold: Int,
+        programRulesPerProgramThreshold: Int,
+    ): PerformanceHintsService
+
+    fun databaseImportExport(): DatabaseImportExport
 }

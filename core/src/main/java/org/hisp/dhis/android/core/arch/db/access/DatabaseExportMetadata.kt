@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maintenance;
 
-public interface MaintenanceModule {
-    ForeignKeyViolationCollectionRepository foreignKeyViolations();
-    D2ErrorCollectionRepository d2Errors();
-    PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
-                                                       int programRulesPerProgramThreshold);
+package org.hisp.dhis.android.core.arch.db.access
 
-
-    // TODO restore when finished DatabaseImportExport databaseImportExport();
-}
+data class DatabaseExportMetadata(
+    val version: Int,
+    val date: String,
+    val serverUrl: String,
+    val username: String,
+    val encrypted: Boolean,
+)

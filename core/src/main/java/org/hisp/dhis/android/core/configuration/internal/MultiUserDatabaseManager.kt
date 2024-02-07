@@ -30,13 +30,17 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.util.CipherUtil
+import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class MultiUserDatabaseManager(
     private val context: Context,
     private val databaseAdapter: DatabaseAdapter,
@@ -76,24 +80,19 @@ internal class MultiUserDatabaseManager(
     }
 
     fun createNew(serverUrl: String, username: String, encrypt: Boolean) {
-        val configuration = databaseConfigurationSecureStore.get()
-
-        configuration?.maxAccounts()?.let { maxAccounts ->
-            val exceedingAccounts = DatabaseConfigurationHelper
-                .getOldestAccounts(configuration.accounts(), maxAccounts - 1)
-
-            val updatedConfiguration =
-                DatabaseConfigurationHelper.removeAccount(configuration, exceedingAccounts)
-
-            databaseConfigurationSecureStore.set(updatedConfiguration)
-            exceedingAccounts.forEach {
-                FileResourceDirectoryHelper.deleteFileResourceDirectories(context, it)
-                databaseAdapterFactory.deleteDatabase(it)
-            }
-        }
-
-        val userConfiguration = addNewAccountInternal(serverUrl, username, encrypt)
+        removeExceedingAccounts()
+        val userConfiguration = addOrUpdateAccountInternal(serverUrl, username, encrypt)
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration)
+    }
+
+    fun createNewPendingToImport(metadata: DatabaseExportMetadata): DatabaseAccount {
+        removeExceedingAccounts()
+        return addOrUpdateAccountInternal(
+            metadata.serverUrl,
+            metadata.username,
+            metadata.encrypted,
+            importStatus = DatabaseAccountImportStatus.PENDING_TO_IMPORT,
+        )
     }
 
     fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean) {
@@ -126,6 +125,28 @@ internal class MultiUserDatabaseManager(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
+    fun importAndLoadDb(account: DatabaseAccount, password: String) {
+        val protectedDbPath = context.getDatabasePath(account.importDB()!!.protectedDbName())
+        val dbPath = context.getDatabasePath(account.databaseName())
+        try {
+            CipherUtil.decryptFileUsingCredentials(protectedDbPath, dbPath, account.username(), password)
+            protectedDbPath.deleteIfExists()
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
+            val importedAccount = account.toBuilder()
+                .importDB(
+                    account.importDB()!!.toBuilder()
+                        .status(DatabaseAccountImportStatus.IMPORTED)
+                        .build(),
+                )
+                .build()
+            addOrUpdatedAccountInternal(importedAccount)
+        } catch (e: Exception) {
+            dbPath.deleteIfExists()
+            throw e
+        }
+    }
+
     private fun loadExistingChangingEncryptionIfRequired(
         serverUrl: String,
         username: String,
@@ -136,7 +157,7 @@ internal class MultiUserDatabaseManager(
         val encrypt = encryptionExtractor(existingAccount)
         changeEncryptionIfRequired(serverUrl, existingAccount, encrypt)
         if (encrypt != existingAccount.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
-            val updatedAccount = addNewAccountInternal(
+            val updatedAccount = addOrUpdateAccountInternal(
                 serverUrl,
                 username,
                 encrypt,
@@ -165,24 +186,52 @@ internal class MultiUserDatabaseManager(
         }
     }
 
-    private fun getAccount(serverUrl: String, username: String): DatabaseAccount? {
+    fun getAccount(serverUrl: String, username: String): DatabaseAccount? {
         val configuration = databaseConfigurationSecureStore.get()
         return DatabaseConfigurationHelper.getAccount(configuration, serverUrl, username)
     }
 
-    private fun addNewAccountInternal(
+    private fun addOrUpdateAccountInternal(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        importStatus: DatabaseAccountImportStatus? = null,
     ): DatabaseAccount {
-        val updatedAccount = configurationHelper.addAccount(
+        val updatedAccount = configurationHelper.addOrUpdateAccount(
             databaseConfigurationSecureStore.get(),
             serverUrl,
             username,
             encrypt,
+            importStatus,
         )
         databaseConfigurationSecureStore.set(updatedAccount)
         return DatabaseConfigurationHelper.getLoggedAccount(updatedAccount, username, serverUrl)
+    }
+
+    private fun addOrUpdatedAccountInternal(account: DatabaseAccount) {
+        val updatedAccount = configurationHelper.addOrUpdateAccount(
+            databaseConfigurationSecureStore.get(),
+            account,
+        )
+        databaseConfigurationSecureStore.set(updatedAccount)
+    }
+
+    private fun removeExceedingAccounts() {
+        val configuration = databaseConfigurationSecureStore.get()
+
+        configuration?.maxAccounts()?.let { maxAccounts ->
+            val exceedingAccounts = DatabaseConfigurationHelper
+                .getOldestAccounts(configuration.accounts(), maxAccounts - 1)
+
+            val updatedConfiguration =
+                DatabaseConfigurationHelper.removeAccount(configuration, exceedingAccounts)
+
+            databaseConfigurationSecureStore.set(updatedConfiguration)
+            exceedingAccounts.forEach {
+                FileResourceDirectoryHelper.deleteFileResourceDirectories(context, it)
+                databaseAdapterFactory.deleteDatabase(it)
+            }
+        }
     }
 
     companion object {

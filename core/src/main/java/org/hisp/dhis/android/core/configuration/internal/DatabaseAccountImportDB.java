@@ -25,11 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access
+package org.hisp.dhis.android.core.configuration.internal;
 
-import java.io.File
+import androidx.annotation.NonNull;
 
-interface DatabaseImportExport {
-    fun importDatabase(file: File): DatabaseExportMetadata
-    fun exportLoggedUserDatabase(): File
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DatabaseAccountImportDB.Builder.class)
+public abstract class DatabaseAccountImportDB {
+
+    @JsonProperty()
+    @NonNull
+    public abstract DatabaseAccountImportStatus status();
+
+    @JsonProperty
+    @NonNull
+    public abstract String protectedDbName();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_DatabaseAccountImportDB.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder status(DatabaseAccountImportStatus importStatus);
+
+        public abstract Builder protectedDbName(String protectedDbName);
+
+        public abstract DatabaseAccountImportDB build();
+    }
 }

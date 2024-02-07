@@ -25,10 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.data.visualization
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+object TrackerVisualizationDimensionSamples {
+
+    fun trackerVisualizationDimension(): TrackerVisualizationDimension =
+        TrackerVisualizationDimension.builder()
+            .id(1L)
+            .trackerVisualization("tracker_visualization_uid")
+            .position(LayoutPosition.COLUMN)
+            .dimension("ou")
+            .dimensionType("ORGANISATION_UNIT")
+            .program(ObjectWithUid.create("program_uid"))
+            .programStage(ObjectWithUid.create("program_stage_uid"))
+            .items(
+                listOf(
+                    ObjectWithUid.create("USER_ORGUNIT"),
+                    ObjectWithUid.create("USER_ORGUNIT_CHILDREN"),
+                ),
+            )
+            .repetition(
+                TrackerVisualizationDimensionRepetition.builder()
+                    .indexes(listOf(-1, 1, 0))
+                    .build(),
+            )
+            .build()
 }

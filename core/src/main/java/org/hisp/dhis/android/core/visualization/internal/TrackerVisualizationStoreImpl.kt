@@ -27,18 +27,39 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
-import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
-import org.hisp.dhis.android.core.visualization.VisualizationModule
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class VisualizationModuleImpl(
-    private val visualizations: VisualizationCollectionRepository,
-    private val trackerVisualizations: TrackerVisualizationCollectionRepository,
-) : VisualizationModule {
-
-    override fun visualizations(): VisualizationCollectionRepository = visualizations
-
-    override fun trackerVisualizations(): TrackerVisualizationCollectionRepository = trackerVisualizations
+@Suppress("MagicNumber")
+internal class TrackerVisualizationStoreImpl(
+    databaseAdapter: DatabaseAdapter,
+) : TrackerVisualizationStore,
+    IdentifiableObjectStoreImpl<TrackerVisualization>(
+        databaseAdapter,
+        TrackerVisualizationTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> TrackerVisualization.create(cursor) },
+    ) {
+    companion object {
+        private val BINDER = object : IdentifiableStatementBinder<TrackerVisualization>() {
+            override fun bindToStatement(o: TrackerVisualization, w: StatementWrapper) {
+                super.bindToStatement(o, w)
+                w.bind(7, o.description())
+                w.bind(8, o.displayDescription())
+                w.bind(9, o.type())
+                w.bind(10, o.outputType())
+                w.bind(11, UidsHelper.getUidOrNull(o.program()))
+                w.bind(12, UidsHelper.getUidOrNull(o.programStage()))
+                w.bind(13, UidsHelper.getUidOrNull(o.trackedEntityType()))
+            }
+        }
+    }
 }

@@ -95,5 +95,11 @@ internal object ProgramFields {
             fh.field<AccessLevel>(ProgramTableInfo.Columns.ACCESS_LEVEL),
             fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
             fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+            fh.field<String>(ProgramTableInfo.Columns.ENROLLMENT_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.FOLLOW_UP_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.ORG_UNIT_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.RELATIONSHIP_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.NOTE_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL),
         ).build()
 }

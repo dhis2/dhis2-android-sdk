@@ -93,5 +93,7 @@ internal object ProgramStageFields {
             fh.field<ValidationStrategy>(ProgramStageTableInfo.Columns.VALIDATION_STRATEGY),
             fh.field<Boolean>(ProgramStageTableInfo.Columns.ENABLE_USER_ASSIGNMENT),
             fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+            fh.field<String>(ProgramStageTableInfo.Columns.PROGRAM_STAGE_LABEL),
+            fh.field<String>(ProgramStageTableInfo.Columns.EVENT_LABEL),
         ).build()
 }

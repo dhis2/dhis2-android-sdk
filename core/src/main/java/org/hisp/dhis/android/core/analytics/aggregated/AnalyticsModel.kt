@@ -50,6 +50,8 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class DataElementOperandItem(val item: DataElementOperand, dataElementName: String, cocName: String?) :
         MetadataItem(item.uid()!!, "$dataElementName $cocName")
 
+    class TrackedEntityAttributeItem(val item: TrackedEntityAttribute) : MetadataItem(item.uid(), item.displayName()!!)
+
     class IndicatorItem(val item: Indicator) : MetadataItem(item.uid(), item.displayName()!!)
     class ProgramIndicatorItem(val item: ProgramIndicator) : MetadataItem(item.uid(), item.displayName()!!)
     class EventDataElementItem(val item: DataElement, val program: Program) :

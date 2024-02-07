@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.analytics.trackerlinelist
 
-@Singleton
-internal class AnalyticsModuleImpl(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val analyticsVisualizationsRepository: AnalyticsVisualizationsRepository,
-    private val trackerLineListRepository: TrackerLineListRepository,
-) : AnalyticsModule {
+import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.arch.helpers.Result
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+interface TrackerLineListRepository {
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
+    fun withEventOutput(programId: String, programStageId: String?): TrackerLineListRepository
 
-    override fun visualizations(): AnalyticsVisualizationsRepository = analyticsVisualizationsRepository
+    fun withEnrollmentOutput(programId: String): TrackerLineListRepository
 
-    override fun trackerLineList(): TrackerLineListRepository = trackerLineListRepository
+    fun withColumn(column: TrackerLineListItem): TrackerLineListRepository
+
+    fun withFilter(filter: TrackerLineListItem): TrackerLineListRepository
+
+    // TODO
+    fun withTrackerVisualization(): TrackerLineListRepository
+
+    fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
+
+    fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
 }

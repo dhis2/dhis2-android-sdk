@@ -25,27 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.analytics.trackerlinelist
 
-@Singleton
-internal class AnalyticsModuleImpl(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val analyticsVisualizationsRepository: AnalyticsVisualizationsRepository,
-    private val trackerLineListRepository: TrackerLineListRepository,
-) : AnalyticsModule {
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+data class TrackerLineListResponse(
+    val metadata: Map<String, MetadataItem>,
+    val headers: List<TrackerLineListItem>,
+    val filters: List<TrackerLineListItem>,
+    val rows: List<TrackerLineListValue>,
+)
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
-
-    override fun visualizations(): AnalyticsVisualizationsRepository = analyticsVisualizationsRepository
-
-    override fun trackerLineList(): TrackerLineListRepository = trackerLineListRepository
-}
+data class TrackerLineListValue(
+    val metadataItem: String,
+    val value: String?,
+)

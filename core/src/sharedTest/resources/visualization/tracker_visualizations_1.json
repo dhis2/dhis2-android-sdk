@@ -1,0 +1,53 @@
+{
+  "name": "Child line list",
+  "created": "2024-02-07T07:37:41.116",
+  "lastUpdated": "2024-02-07T07:43:25.556",
+  "description": "Child line list description",
+  "type": "LINE_LIST",
+  "program": {
+    "id": "IpHINAT79UW"
+  },
+  "outputType": "ENROLLMENT",
+  "filters": [
+    {
+      "dimensionType": "PERIOD",
+      "items": [
+        {
+          "id": "LAST_10_YEARS"
+        }
+      ],
+      "dimension": "enrollmentDate"
+    }
+  ],
+  "columns": [
+    {
+      "dimensionType": "ORGANISATION_UNIT",
+      "items": [
+        {
+          "id": "USER_ORGUNIT"
+        }
+      ],
+      "dimension": "ou"
+    },
+    {
+      "dimensionType": "PROGRAM_ATTRIBUTE",
+      "items": [],
+      "dimension": "cejWyOfXge6"
+    },
+    {
+      "dimensionType": "DATA_X",
+      "items": [
+        {
+          "id": "COMPLETED"
+        },
+        {
+          "id": "ACTIVE"
+        }
+      ],
+      "dimension": "programStatus"
+    }
+  ],
+  "displayName": "Child line list",
+  "displayDescription": "Child line list description",
+  "id": "s85urBIkN0z"
+}

@@ -27,22 +27,44 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.JSONObjectListColumnAdapter
+import android.content.ContentValues
+import android.database.Cursor
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
-internal class ObjectWithUidListColumnAdapter : JSONObjectListColumnAdapter<ObjectWithUid>() {
-    override fun getObjectClass(): Class<List<ObjectWithUid>> {
-        return ArrayList<ObjectWithUid>().javaClass
+internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWithUid>> {
+
+    override fun fromCursor(cursor: Cursor, columnName: String): List<ObjectWithUid> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val str = cursor.getString(columnIndex)
+        return try {
+            val idList = ObjectMapperFactory.objectMapper().readValue(str, ArrayList<String>().javaClass)
+            idList.map { ObjectWithUid.create(it) }
+        } catch (e: JsonProcessingException) {
+            listOf()
+        } catch (e: JsonMappingException) {
+            listOf()
+        } catch (e: IllegalArgumentException) {
+            listOf()
+        } catch (e: IllegalStateException) {
+            listOf()
+        }
     }
 
-    override fun serialize(o: List<ObjectWithUid>?): String? {
-        return ObjectWithUidListColumnAdapter.serialize(o)
+    override fun toContentValues(values: ContentValues, columnName: String, value: List<ObjectWithUid>?) {
+        try {
+            values.put(columnName, serialize(value))
+        } catch (e: JsonProcessingException) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
         fun serialize(o: List<ObjectWithUid>?): String? {
-            return o?.let {
+            return o?.map { it.uid() }.let {
                 ObjectMapperFactory.objectMapper().writeValueAsString(it)
             }
         }

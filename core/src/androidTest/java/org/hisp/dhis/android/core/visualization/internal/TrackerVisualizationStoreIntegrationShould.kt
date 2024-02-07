@@ -25,10 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.TrackerVisualizationSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationType
+import org.junit.runner.RunWith
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+@RunWith(D2JunitRunner::class)
+class TrackerVisualizationStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<TrackerVisualization>(
+        TrackerVisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackerVisualizationTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): TrackerVisualization {
+        return TrackerVisualizationSamples.trackerVisualization()
+    }
+
+    override fun buildObjectToUpdate(): TrackerVisualization {
+        return TrackerVisualizationSamples.trackerVisualization().toBuilder()
+            .type(TrackerVisualizationType.LINE)
+            .build()
+    }
 }

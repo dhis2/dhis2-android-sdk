@@ -25,10 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+internal interface TrackerVisualizationService {
+
+    @GET("$TRACKER_VISUALIZATIONS/{$TRACKER_VISUALIZATION_UID}")
+    suspend fun getSingleTrackerVisualization(
+        @Path(TRACKER_VISUALIZATION_UID) uid: String,
+        @Query("fields") @Which fields: Fields<TrackerVisualization>,
+        @Query("filter") accessFilter: String,
+        @Query("paging") paging: Boolean,
+    ): TrackerVisualization
+
+    companion object {
+        const val TRACKER_VISUALIZATIONS = "eventVisualizations"
+        const val TRACKER_VISUALIZATION_UID = "visualizationUid"
+    }
 }

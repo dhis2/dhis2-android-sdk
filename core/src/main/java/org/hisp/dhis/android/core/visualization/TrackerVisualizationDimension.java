@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.visualization;
 
+import android.database.Cursor;
+
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,7 +38,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationDimensionRepetitionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LayoutPositionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
@@ -92,6 +93,10 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_TrackerVisualizationDimension.Builder();
+    }
+
+    public static TrackerVisualizationDimension create(Cursor cursor) {
+        return $AutoValue_TrackerVisualizationDimension.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

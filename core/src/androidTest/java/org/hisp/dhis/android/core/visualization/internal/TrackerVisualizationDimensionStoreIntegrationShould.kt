@@ -25,10 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.TrackerVisualizationDimensionSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
+import org.junit.runner.RunWith
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+@RunWith(D2JunitRunner::class)
+class TrackerVisualizationDimensionStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<TrackerVisualizationDimension>(
+        TrackerVisualizationDimensionStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackerVisualizationDimensionTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return "tracker_visualization_uid"
+    }
+
+    override fun buildObject(): TrackerVisualizationDimension {
+        return TrackerVisualizationDimensionSamples.trackerVisualizationDimension()
+    }
+
+    override fun buildObjectWithOtherMasterUid(): TrackerVisualizationDimension {
+        return TrackerVisualizationDimensionSamples.trackerVisualizationDimension().toBuilder()
+            .trackerVisualization("tracker_visualization_uid_2")
+            .build()
+    }
 }

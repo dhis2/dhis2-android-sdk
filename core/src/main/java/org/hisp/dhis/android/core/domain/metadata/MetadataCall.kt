@@ -69,7 +69,9 @@ import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 import org.koin.core.annotation.Singleton
 
@@ -86,6 +88,7 @@ internal class MetadataCall(
     private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
     private val dataSetDownloader: DataSetModuleDownloader,
     private val visualizationDownloader: VisualizationModuleDownloader,
+    private val trackerVisualizationDownloader: TrackerVisualizationModuleDownloader,
     private val constantModuleDownloader: ConstantModuleDownloader,
     private val indicatorModuleDownloader: IndicatorModuleDownloader,
     private val programIndicatorModuleDownloader: ProgramIndicatorModuleDownloader,
@@ -100,7 +103,7 @@ internal class MetadataCall(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 15
+        const val CALLS_COUNT = 16
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -158,6 +161,9 @@ internal class MetadataCall(
 
         visualizationDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Visualization::class.java, false))
+
+        trackerVisualizationDownloader.downloadMetadata()
+        emit(progressManager.increaseProgress(TrackerVisualization::class.java, false))
 
         programIndicatorModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(ProgramIndicator::class.java, false))

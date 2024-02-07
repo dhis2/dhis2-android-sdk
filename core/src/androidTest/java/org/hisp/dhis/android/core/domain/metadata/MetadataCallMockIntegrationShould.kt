@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.junit.After
 import org.junit.Test
@@ -64,7 +65,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(16)
+        testObserver.assertValueCount(17)
 
         val values = testObserver.values()
 
@@ -87,6 +88,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 DataSet::class,
                 Category::class,
                 Visualization::class,
+                TrackerVisualization::class,
                 ProgramIndicator::class,
                 Indicator::class,
                 LegendSet::class,

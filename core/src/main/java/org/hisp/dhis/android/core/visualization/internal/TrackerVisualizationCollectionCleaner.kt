@@ -25,10 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
+import org.koin.core.annotation.Singleton
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
-}
+@Singleton
+internal class TrackerVisualizationCollectionCleaner(
+    databaseAdapter: DatabaseAdapter,
+) : CollectionCleanerImpl<TrackerVisualization>(
+    tableName = TrackerVisualizationTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter,
+)

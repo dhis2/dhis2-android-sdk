@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
 import org.hisp.dhis.android.core.user.internal.AuthorityService
 import org.hisp.dhis.android.core.user.internal.UserService
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleService
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationService
 import org.hisp.dhis.android.core.visualization.internal.VisualizationService
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -97,6 +98,7 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(TrackedEntityTypeService::class.java) }
     single { get<Retrofit>().create(TrackerExporterService::class.java) }
     single { get<Retrofit>().create(TrackerImporterService::class.java) }
+    single { get<Retrofit>().create(TrackerVisualizationService::class.java) }
     single { get<Retrofit>().create(UserService::class.java) }
     single { get<Retrofit>().create(ValidationRuleService::class.java) }
     single { get<Retrofit>().create(VisualizationService::class.java) }

@@ -25,10 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+package org.hisp.dhis.android.core.visualization.internal
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
-}
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.koin.core.annotation.Singleton
+
+@Singleton
+internal class TrackerVisualizationDimensionHandler(
+    store: TrackerVisualizationDimensionStore,
+) : LinkHandlerImpl<TrackerVisualizationDimension, TrackerVisualizationDimension>(store)

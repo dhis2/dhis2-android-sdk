@@ -3,6 +3,10 @@ pipeline {
         label "ec2-android"
     }
 
+    options {
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
     stages{
         stage('Change to JAVA 17') {
             steps {

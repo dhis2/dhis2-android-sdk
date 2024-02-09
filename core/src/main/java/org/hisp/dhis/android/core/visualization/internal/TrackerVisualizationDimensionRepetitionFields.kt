@@ -25,10 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+internal object TrackerVisualizationDimensionRepetitionFields {
+    private const val INDEXES = "indexes"
+
+    private val fh = FieldsHelper<TrackerVisualizationDimensionRepetition>()
+
+    val allFields: Fields<TrackerVisualizationDimensionRepetition> =
+        Fields.builder<TrackerVisualizationDimensionRepetition>()
+            .fields(
+                fh.field<String>(INDEXES),
+            )
+            .build()
 }

@@ -27,26 +27,40 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationDimensionRepetitionColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class VisualizationModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            TrackerVisualizationTableInfo.TABLE_INFO,
-            TrackerVisualizationDimensionTableInfo.TABLE_INFO,
-            VisualizationTableInfo.TABLE_INFO,
-            VisualizationDimensionItemTableInfo.TABLE_INFO,
-        )
-    }
-
-    override fun wipeData() {
-        // No data to wipe
+@Suppress("MagicNumber")
+internal class TrackerVisualizationDimensionStoreImpl(
+    databaseAdapter: DatabaseAdapter,
+) : TrackerVisualizationDimensionStore,
+    LinkStoreImpl<TrackerVisualizationDimension>(
+        databaseAdapter,
+        TrackerVisualizationDimensionTableInfo.TABLE_INFO,
+        TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
+        BINDER,
+        { TrackerVisualizationDimension.create(it) },
+    ) {
+    companion object {
+        private val BINDER = StatementBinder { o: TrackerVisualizationDimension, w: StatementWrapper ->
+            w.bind(1, o.trackerVisualization())
+            w.bind(2, o.position())
+            w.bind(3, o.dimension())
+            w.bind(4, o.dimensionType())
+            w.bind(5, UidsHelper.getUidOrNull(o.program()))
+            w.bind(6, UidsHelper.getUidOrNull(o.programStage()))
+            w.bind(7, ObjectWithUidListColumnAdapter.serialize(o.items()))
+            w.bind(8, o.filter())
+            w.bind(9, TrackerVisualizationDimensionRepetitionColumnAdapter.serialize(o.repetition()))
+        }
     }
 }

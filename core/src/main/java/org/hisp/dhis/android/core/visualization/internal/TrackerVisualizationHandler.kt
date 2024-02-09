@@ -27,18 +27,42 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
-import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
-import org.hisp.dhis.android.core.visualization.VisualizationModule
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class VisualizationModuleImpl(
-    private val visualizations: VisualizationCollectionRepository,
-    private val trackerVisualizations: TrackerVisualizationCollectionRepository,
-) : VisualizationModule {
+internal class TrackerVisualizationHandler(
+    store: TrackerVisualizationStore,
+    private val trackerVisualizationCollectionCleaner: TrackerVisualizationCollectionCleaner,
+    private val dimensionHandler: TrackerVisualizationDimensionHandler,
+) : IdentifiableHandlerImpl<TrackerVisualization>(store) {
 
-    override fun visualizations(): VisualizationCollectionRepository = visualizations
+    override fun afterObjectHandled(o: TrackerVisualization, action: HandleAction) {
+        val dimensions =
+            toDimensions(o.columns(), LayoutPosition.COLUMN) +
+                toDimensions(o.filters(), LayoutPosition.FILTER)
 
-    override fun trackerVisualizations(): TrackerVisualizationCollectionRepository = trackerVisualizations
+        dimensionHandler.handleMany(o.uid(), dimensions) {
+            it.toBuilder().trackerVisualization(o.uid()).build()
+        }
+    }
+
+    override fun afterCollectionHandled(oCollection: Collection<TrackerVisualization>?) {
+        trackerVisualizationCollectionCleaner.deleteNotPresent(oCollection)
+    }
+
+    private fun toDimensions(
+        dimensions: List<TrackerVisualizationDimension>?,
+        position: LayoutPosition,
+    ): List<TrackerVisualizationDimension> {
+        return dimensions?.map { dimension ->
+            dimension.toBuilder()
+                .position(position)
+                .build()
+        } ?: emptyList()
+    }
 }

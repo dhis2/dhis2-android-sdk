@@ -25,10 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.visualization
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+object TrackerVisualizationTableInfo {
+
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "TrackerVisualization"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
+    }
+
+    class Columns : IdentifiableColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION,
+                TYPE,
+                OUTPUT_TYPE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                TRACKED_ENTITY_TYPE,
+            )
+        }
+
+        companion object {
+            const val DESCRIPTION = "description"
+            const val DISPLAY_DESCRIPTION = "displayDescription"
+            const val TYPE = "type"
+            const val OUTPUT_TYPE = "outputType"
+            const val PROGRAM = "program"
+            const val PROGRAM_STAGE = "programStage"
+            const val TRACKED_ENTITY_TYPE = "trackedEntityType"
+        }
+    }
 }

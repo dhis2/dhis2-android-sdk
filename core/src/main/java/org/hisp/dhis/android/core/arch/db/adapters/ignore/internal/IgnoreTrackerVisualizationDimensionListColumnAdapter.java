@@ -25,10 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension;
+
+import java.util.List;
+
+public final class IgnoreTrackerVisualizationDimensionListColumnAdapter
+        extends IgnoreColumnAdapter<List<TrackerVisualizationDimension>> {
 }

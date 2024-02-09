@@ -25,10 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+class TrackerVisualizationOutputTypeColumnAdapter : EnumColumnAdapter<TrackerVisualizationOutputType>() {
+    override fun getEnumClass(): Class<TrackerVisualizationOutputType> {
+        return TrackerVisualizationOutputType::class.java
+    }
 }

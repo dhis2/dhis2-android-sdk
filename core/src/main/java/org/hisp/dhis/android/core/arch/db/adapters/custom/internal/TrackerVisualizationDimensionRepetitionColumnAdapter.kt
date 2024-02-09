@@ -25,10 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+internal class TrackerVisualizationDimensionRepetitionColumnAdapter :
+    JSONObjectColumnAdapter<TrackerVisualizationDimensionRepetition>() {
+
+    override fun getEnumClass(): Class<TrackerVisualizationDimensionRepetition> {
+        return TrackerVisualizationDimensionRepetition::class.java
+    }
+
+    override fun serialize(o: TrackerVisualizationDimensionRepetition?): String? {
+        return TrackerVisualizationDimensionRepetitionColumnAdapter.serialize(o)
+    }
+
+    companion object {
+        fun serialize(o: TrackerVisualizationDimensionRepetition?): String? {
+            return o?.let {
+                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            }
+        }
+    }
 }

@@ -25,10 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.koin.core.annotation.Singleton
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+@Singleton
+internal class TrackerVisualizationModuleDownloader internal constructor(
+    private val visualizationCall: TrackerVisualizationCall,
+) :
+    TypedModuleDownloader<List<TrackerVisualization>> {
+
+    override suspend fun downloadMetadata(): List<TrackerVisualization> {
+        // Extract visualizations in ANDROSDK-1811
+        val trackerVisualizations = setOf("s85urBIkN0z")
+        return visualizationCall.download(trackerVisualizations)
+    }
 }

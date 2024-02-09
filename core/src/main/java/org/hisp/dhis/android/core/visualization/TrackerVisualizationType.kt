@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.visualization
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
-
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+enum class TrackerVisualizationType {
+    COLUMN,
+    STACKED_COLUMN,
+    BAR,
+    STACKED_BAR,
+    LINE,
+    LINE_LIST,
+    AREA,
+    STACKED_AREA,
+    PIE,
+    RADAR,
+    GAUGE,
+    YEAR_OVER_YEAR_LINE,
+    YEAR_OVER_YEAR_COLUMN,
+    SINGLE_VALUE,
+    PIVOT_TABLE,
+    SCATTER,
+    BUBBLE,
 }

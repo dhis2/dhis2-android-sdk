@@ -27,26 +27,36 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import org.koin.core.annotation.Singleton
 
-@Singleton
-class VisualizationModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            TrackerVisualizationTableInfo.TABLE_INFO,
-            TrackerVisualizationDimensionTableInfo.TABLE_INFO,
-            VisualizationTableInfo.TABLE_INFO,
-            VisualizationDimensionItemTableInfo.TABLE_INFO,
-        )
-    }
+internal object TrackerVisualizationFields {
+    private const val COLUMNS = "columns"
+    private const val FILTERS = "filters"
 
-    override fun wipeData() {
-        // No data to wipe
-    }
+    internal const val ITEMS = "items"
+
+    private val fh = FieldsHelper<TrackerVisualization>()
+    val uid = fh.uid()
+
+    val allFields: Fields<TrackerVisualization> =
+        Fields.builder<TrackerVisualization>()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                fh.field<String>(TrackerVisualizationTableInfo.Columns.DESCRIPTION),
+                fh.field<String>(TrackerVisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
+                fh.field<String>(TrackerVisualizationTableInfo.Columns.TYPE),
+                fh.field<String>(TrackerVisualizationTableInfo.Columns.OUTPUT_TYPE),
+                fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.PROGRAM),
+                fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.PROGRAM_STAGE),
+                fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.TRACKED_ENTITY_TYPE),
+                fh.nestedField<TrackerVisualizationDimension>(COLUMNS)
+                    .with(TrackerVisualizationDimensionFields.allFields),
+                fh.nestedField<TrackerVisualizationDimension>(FILTERS)
+                    .with(TrackerVisualizationDimensionFields.allFields),
+            )
+            .build()
 }

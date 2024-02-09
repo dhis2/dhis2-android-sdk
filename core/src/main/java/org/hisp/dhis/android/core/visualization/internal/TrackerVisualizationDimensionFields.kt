@@ -25,10 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+internal object TrackerVisualizationDimensionFields {
+    private val fh = FieldsHelper<TrackerVisualizationDimension>()
+
+    val allFields: Fields<TrackerVisualizationDimension> =
+        Fields.builder<TrackerVisualizationDimension>()
+            .fields(
+                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION),
+                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION_TYPE),
+                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM),
+                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM_STAGE),
+                fh.nestedFieldWithUid(TrackerVisualizationDimensionTableInfo.Columns.ITEMS),
+                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.FILTER),
+                fh.nestedField<TrackerVisualizationDimensionRepetition>(
+                    TrackerVisualizationDimensionTableInfo.Columns.REPETITION,
+                )
+                    .with(TrackerVisualizationDimensionRepetitionFields.allFields),
+            )
+            .build()
 }

@@ -25,10 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
 
-interface VisualizationModule {
-    fun visualizations(): VisualizationCollectionRepository
+package org.hisp.dhis.android.core.visualization;
 
-    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import java.util.List;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TrackerVisualizationDimensionRepetition.Builder.class)
+public abstract class TrackerVisualizationDimensionRepetition {
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<Integer> indexes();
+
+    public static Builder builder() {
+        return new AutoValue_TrackerVisualizationDimensionRepetition.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder indexes(List<Integer> indexes);
+
+        public abstract TrackerVisualizationDimensionRepetition build();
+    }
 }

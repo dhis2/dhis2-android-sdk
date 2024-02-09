@@ -32,7 +32,7 @@
       "reportDateToUse": "report_date_to_use",
       "style": {
         "color": "#444",
-        "icon": "program-stage-icon"
+        "icon": "visit_icon"
       },
       "access": {
         "read": true,

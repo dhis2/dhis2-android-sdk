@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.icon.IconType
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
@@ -57,8 +58,9 @@ internal class CustomIconCall(
             ) { partitionKeys: Set<String> ->
                 try {
                     val customIcons = service.getCustomIcons(
-                        CustomIconFields.allFields,
+                        fields = CustomIconFields.allFields,
                         keys = CustomIconFields.key.`in`(partitionKeys),
+                        type = IconType.CUSTOM.name
                     )
                     Payload(customIcons)
                 } catch (ignored: Exception) {

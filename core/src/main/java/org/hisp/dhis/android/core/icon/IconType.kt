@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.icon.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.icon.CustomIcon
-import retrofit2.http.GET
-import retrofit2.http.Query
+package org.hisp.dhis.android.core.icon
 
-internal interface IconService {
-
-    @GET(ICONS)
-    suspend fun getCustomIcons(
-        @Query("fields") @Which fields: Fields<CustomIcon>,
-        @Query("keys") @Where keys: Filter<CustomIcon, String>,
-        @Query("type") type: String?,
-    ): List<CustomIcon>
-
-    companion object {
-        const val ICONS = "icons"
-    }
+enum class IconType {
+    CUSTOM,
+    DEFAULT,
 }

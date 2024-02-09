@@ -48,6 +48,8 @@ import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
+import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.icon.internal.CustomIconModuleDownloader
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
@@ -100,10 +102,11 @@ internal class MetadataCall(
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
     private val attributeModuleDownloader: AttributeModuleDownloader,
     private val expressionDimensionItemModuleDownloader: ExpressionDimensionItemModuleDownloader,
+    private val customIconDownloader: CustomIconModuleDownloader,
 ) {
 
     companion object {
-        const val CALLS_COUNT = 16
+        const val CALLS_COUNT = 17
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -178,7 +181,10 @@ internal class MetadataCall(
         emit(progressManager.increaseProgress(Attribute::class.java, false))
 
         expressionDimensionItemModuleDownloader.downloadMetadata()
-        emit(progressManager.increaseProgress(ExpressionDimensionItem::class.java, true))
+        emit(progressManager.increaseProgress(ExpressionDimensionItem::class.java, false))
+
+        customIconDownloader.downloadMetadata()
+        emit(progressManager.increaseProgress(CustomIcon::class.java, true))
     }
 
     private suspend fun changeEncryptionIfRequiredCoroutines() {

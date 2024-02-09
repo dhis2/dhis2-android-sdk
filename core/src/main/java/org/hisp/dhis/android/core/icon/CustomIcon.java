@@ -26,39 +26,58 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.icon;
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import android.database.Cursor;
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
+import androidx.annotation.NonNull;
 
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.CoreObject;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_CustomIcon.Builder.class)
+public abstract class CustomIcon implements CoreObject {
+
+    @NonNull
+    @JsonProperty()
+    public abstract String key();
+
+    @NonNull
+    @JsonProperty
+    public abstract String fileResourceUid();
+
+    @NonNull
+    @JsonProperty
+    public abstract String href();
+
+    @NonNull
+    public static CustomIcon create(Cursor cursor) {
+        return AutoValue_CustomIcon.createFromCursor(cursor);
     }
 
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_CustomIcon.Builder();
     }
 
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
+        public abstract Builder id(Long id);
 
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
+        public abstract Builder key(String key);
 
-    companion object {
-        const val VERSION = 160
+        public abstract Builder fileResourceUid(String fileResourceUid);
+
+        public abstract Builder href(String href);
+
+        public abstract CustomIcon build();
     }
 }

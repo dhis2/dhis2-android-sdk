@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.icon.internal
 
-import android.content.Context
-import android.content.res.AssetManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.icon.CustomIconTableInfo
+import org.koin.core.annotation.Singleton
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
-
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
+@Singleton
+internal class CustomIconStoreImpl(
+    databaseAdapter: DatabaseAdapter
+) : CustomIconStore,
+    ObjectWithoutUidStoreImpl<CustomIcon>(
+        databaseAdapter,
+        CustomIconTableInfo.TABLE_INFO,
+        BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
+        CustomIcon::create,
+    ) {
 
     companion object {
-        const val VERSION = 160
+        private val BINDER = StatementBinder { o: CustomIcon, w: StatementWrapper ->
+            w.bind(1, o.key())
+            w.bind(2, o.fileResourceUid())
+            w.bind(3, o.href())
+        }
+
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: CustomIcon, w: StatementWrapper ->
+            w.bind(4, o.key())
+        }
+
+        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: CustomIcon, w: StatementWrapper ->
+            w.bind(1, o.key())
+        }
     }
 }

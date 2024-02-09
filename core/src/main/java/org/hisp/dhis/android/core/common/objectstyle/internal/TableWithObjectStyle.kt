@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.common.objectstyle.internal
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
+import org.hisp.dhis.android.core.option.OptionTableInfo
+import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageTableInfo
+import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
-
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 160
+internal object TableWithObjectStyle {
+    //TODO Test table containing icon
+    val allTableNames: List<String> = setOf(
+        DataElementTableInfo.TABLE_INFO,
+        DataSetTableInfo.TABLE_INFO,
+        IndicatorTableInfo.TABLE_INFO,
+        OptionTableInfo.TABLE_INFO,
+        ProgramSectionTableInfo.TABLE_INFO,
+        ProgramStageTableInfo.TABLE_INFO,
+        ProgramTableInfo.TABLE_INFO,
+        TrackedEntityAttributeTableInfo.TABLE_INFO,
+        TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
+        TrackedEntityTypeTableInfo.TABLE_INFO
+    ).map {
+        it.name()
     }
 }

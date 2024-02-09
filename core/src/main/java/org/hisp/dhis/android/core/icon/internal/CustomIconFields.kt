@@ -25,40 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.icon.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.icon.CustomIcon
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+internal object CustomIconFields {
+    private const val KEY = "key"
+    private const val FILE_RESOURCE_UID = "fileResourceUid"
+    private const val HREF = "href"
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
+    private val fh = FieldsHelper<CustomIcon>()
 
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
+    val key = fh.field<String>(KEY)
 
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 160
-    }
+    val allFields: Fields<CustomIcon> =
+        Fields.builder<CustomIcon>()
+            .fields(
+                fh.field<String>(KEY),
+                fh.field<String>(FILE_RESOURCE_UID),
+                fh.field<String>(HREF),
+            )
+            .build()
 }

@@ -25,40 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.icon.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal
-
-import android.content.Context
-import android.content.res.AssetManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.core.common.NameableWithStyleColumns
+import org.hisp.dhis.android.core.common.objectstyle.internal.TableWithObjectStyle
+import org.hisp.dhis.android.core.icon.DefaultIcon
+import org.koin.core.annotation.Singleton
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
+@Singleton
+internal class CustomIconSeeker(
+    databaseAdapter: DatabaseAdapter,
+) : BaseUidsSeeker(databaseAdapter) {
+    fun seekUids(): Set<String> {
+        val query = MultipleTableQueryBuilder()
+            .generateQuery(NameableWithStyleColumns.ICON, TableWithObjectStyle.allTableNames).build()
 
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
+        val allIcons = readSingleColumnResults(query)
 
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 160
+        return allIcons.filterNot { DefaultIcon.all.contains(it)}.toSet()
     }
 }

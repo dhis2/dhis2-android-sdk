@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImagerProviderChildrenAppender
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
+import org.hisp.dhis.android.core.map.layer.internal.bing.ImageryProvider
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -66,6 +67,10 @@ class MapLayerCollectionRepository internal constructor(
         return cf.string(MapLayerTableInfo.Columns.DISPLAY_NAME)
     }
 
+    fun byCode(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.CODE)
+    }
+
     fun byExternal(): BooleanFilterConnector<MapLayerCollectionRepository> {
         return cf.bool(MapLayerTableInfo.Columns.EXTERNAL)
     }
@@ -84,6 +89,18 @@ class MapLayerCollectionRepository internal constructor(
 
     fun withImageryProviders(): MapLayerCollectionRepository {
         return cf.withChild(MapLayer.IMAGERY_PROVIDERS)
+    }
+
+    fun byMapService(): EnumFilterConnector<MapLayerCollectionRepository, MapService> {
+        return cf.enumC(MapLayerTableInfo.Columns.MAP_SERVICE)
+    }
+
+    fun byImageFormat(): EnumFilterConnector<MapLayerCollectionRepository, ImageFormat> {
+        return cf.enumC(MapLayerTableInfo.Columns.IMAGE_FORMAT)
+    }
+
+    fun byLayers(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.LAYERS)
     }
 
     internal companion object {

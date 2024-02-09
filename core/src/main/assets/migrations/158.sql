@@ -1,0 +1,6 @@
+# Add external map layers (ANDROSDK-1800)
+
+ALTER TABLE MapLayer ADD COLUMN code TEXT;
+ALTER TABLE MapLayer ADD COLUMN mapService TEXT;
+ALTER TABLE MapLayer ADD COLUMN imageFormat TEXT;
+ALTER TABLE MapLayer ADD COLUMN layers TEXT;

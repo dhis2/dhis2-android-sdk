@@ -36,6 +36,7 @@ object MapLayerSamples {
             .id(1L)
             .uid("map_layer_uid")
             .name("Map Layer")
+            .code("MAP_CODE")
             .displayName("Display map layer")
             .external(true)
             .mapLayerPosition(MapLayerPosition.BASEMAP)

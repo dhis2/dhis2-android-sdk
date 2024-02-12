@@ -31,8 +31,6 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
-import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

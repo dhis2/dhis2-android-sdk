@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.data.maps
 
+import org.hisp.dhis.android.core.map.layer.ImageFormat
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.MapService
 
 object MapLayerSamples {
     fun get(): MapLayer {
@@ -44,6 +46,9 @@ object MapLayerSamples {
             .imageUrl("https://provider-{s}.url")
             .subdomains(listOf("a", "b", "c"))
             .subdomainPlaceholder("{s}")
+            .imageFormat(ImageFormat.JPG)
+            .layers("layer")
+            .mapService(MapService.TMS)
             .build()
     }
 }

@@ -37,9 +37,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImagerProviderChildrenAppender
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
-import org.hisp.dhis.android.core.map.layer.internal.bing.ImageryProvider
 import org.koin.core.annotation.Singleton
 
+@Suppress("TooManyFunctions")
 @Singleton
 class MapLayerCollectionRepository internal constructor(
     store: MapLayerStore,

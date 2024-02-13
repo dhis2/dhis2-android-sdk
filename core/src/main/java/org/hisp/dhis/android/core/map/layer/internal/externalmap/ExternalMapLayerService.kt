@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface ExternalMapLayerService {
+internal fun interface ExternalMapLayerService {
 
     @GET("externalMapLayers")
     suspend fun getExternalMapLayers(

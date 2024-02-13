@@ -85,18 +85,18 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     @ColumnAdapter(IgnoreMapLayerImageryProviderColumnAdapter.class)
     public abstract List<MapLayerImageryProvider> imageryProviders();
 
-    @NonNull
+    @Nullable
     public abstract String code();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(MapServiceColumnAdapter.class)
     public abstract MapService mapService();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(ImageFormatColumnAdapter.class)
     public abstract ImageFormat imageFormat();
 
-    @NonNull
+    @Nullable
     public abstract String layers();
 
     public static MapLayer create(Cursor cursor) {

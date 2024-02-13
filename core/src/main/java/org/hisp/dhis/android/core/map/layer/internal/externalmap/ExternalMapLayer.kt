@@ -32,15 +32,15 @@ import org.hisp.dhis.android.core.map.layer.ImageFormat
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
 
-data class ExternalMapLayer(
+internal data class ExternalMapLayer(
     val id: String,
     val name: String,
     val displayName: String,
-    val code: String,
+    val code: String? = null,
     val url: String,
-    val attribution: String,
+    val attribution: String? = null,
     val mapService: MapService,
-    val imageFormat: ImageFormat,
-    val layers: String,
+    val imageFormat: ImageFormat? = null,
+    val layers: String? = null,
     val mapLayerPosition: MapLayerPosition,
 )

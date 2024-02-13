@@ -27,9 +27,11 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 
 internal object ExternalMapLayerFields {
@@ -38,6 +40,9 @@ internal object ExternalMapLayerFields {
 
     private val fh = FieldsHelper<ExternalMapLayer>()
     val uid = fh.uid()
+
+    val mapLayerPosition: Field<ExternalMapLayer, MapLayerPosition> =
+        Field.create(MapLayerTableInfo.Columns.MAP_LAYER_POSITION)
 
     val allFields: Fields<ExternalMapLayer> = Fields.builder<ExternalMapLayer>()
         .fields(fh.getIdentifiableFields())

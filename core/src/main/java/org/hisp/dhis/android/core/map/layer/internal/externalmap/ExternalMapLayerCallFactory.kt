@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.map.layer.internal.externalmap
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 import org.koin.core.annotation.Singleton
 
@@ -48,7 +49,11 @@ internal class ExternalMapLayerCallFactory(
     }
 
     private suspend fun getExternalMapLayers(): List<MapLayer> {
-        return service.getExternalMapLayers(ExternalMapLayerFields.allFields, false).items()
+        return service.getExternalMapLayers(
+            ExternalMapLayerFields.allFields,
+            ExternalMapLayerFields.mapLayerPosition.eq(MapLayerPosition.BASEMAP),
+            false,
+        ).items()
             .map { externalMapLayer ->
                 MapLayer.builder()
                     .uid(externalMapLayer.id)

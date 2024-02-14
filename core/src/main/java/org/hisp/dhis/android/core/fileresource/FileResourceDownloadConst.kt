@@ -42,4 +42,5 @@ enum class FileResourceElementType {
 enum class FileResourceDomainType {
     AGGREGATED,
     TRACKER,
+    CUSTOM_ICON,
 }

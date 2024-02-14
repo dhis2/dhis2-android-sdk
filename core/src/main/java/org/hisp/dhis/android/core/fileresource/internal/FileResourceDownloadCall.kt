@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
+import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.koin.core.annotation.Singleton
@@ -61,7 +62,7 @@ internal class FileResourceDownloadCall(
 ) {
 
     fun download(params: FileResourceDownloadParams): Flow<D2Progress> = flow {
-        val progressManager = D2ProgressManager(2)
+        val progressManager = D2ProgressManager(4)
         val existingFileResources = fileResourceStore.selectUids()
 
         val paramsWithCorrectedMaxContentLength = params.copy(
@@ -75,7 +76,12 @@ internal class FileResourceDownloadCall(
 
         downloadTrackerValues(paramsWithCorrectedMaxContentLength, existingFileResources)
         emit(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
+
+        downloadCustomIcons(paramsWithCorrectedMaxContentLength, existingFileResources)
+        emit(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
+
         fileResourceRoutine.blockingDeleteOutdatedFileResources()
+        emit(progressManager.increaseProgress(FileResource::class.java, isComplete = true))
     }
 
     private suspend fun downloadAggregatedValues(
@@ -148,6 +154,21 @@ internal class FileResourceDownloadCall(
                     getUid = { v -> v.value() },
                 )
             }
+        }
+    }
+
+    private suspend fun downloadCustomIcons(params: FileResourceDownloadParams, existingFileResources: List<String>) {
+        if (params.domainTypes.contains(FileResourceDomainType.CUSTOM_ICON)) {
+            val iconKeys: List<CustomIcon> = helper.getMissingCustomIcons(existingFileResources)
+
+            downloadAndPersistFiles(
+                values = iconKeys,
+                maxContentLength = params.maxContentLength,
+                download = { v ->
+                    fileResourceService.getCustomIcon(v.href())
+                },
+                getUid = { v -> v.fileResourceUid() },
+            )
         }
     }
 

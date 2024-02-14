@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 
 internal data class FileResourceDownloadParams(
-    val valueTypes: List<FileResourceValueType> = FileResourceValueType.values().asList(),
-    val elementTypes: List<FileResourceElementType> = FileResourceElementType.values().asList(),
-    val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.values().asList(),
+    val valueTypes: List<FileResourceValueType> = FileResourceValueType.entries,
+    val elementTypes: List<FileResourceElementType> = FileResourceElementType.entries,
+    val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.entries,
     val maxContentLength: Int? = null,
 ) : BaseScope

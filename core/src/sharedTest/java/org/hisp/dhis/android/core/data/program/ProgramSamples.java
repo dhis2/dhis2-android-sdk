@@ -111,7 +111,7 @@ public class ProgramSamples {
                 .categoryCombo(ObjectWithUid.create("m2jTvAj5kkm"))
                 .access(Access.create(true, true, DataAccess.create(true, true)))
                 .accessLevel(AccessLevel.PROTECTED)
-                .style(ObjectStyle.builder().color("#333").icon("program-icon").build())
+                .style(ObjectStyle.builder().color("#333").icon("antenatal_icon").build())
                 .relatedProgram(ObjectWithUid.create("lxAQ7Zs9VYR"))
                 .expiryDays(2)
                 .completeEventsExpiryDays(4)

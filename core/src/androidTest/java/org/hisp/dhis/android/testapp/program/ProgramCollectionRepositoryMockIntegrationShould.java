@@ -254,7 +254,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void filter_by_field_icon() {
         List<Program> programs = d2.programModule().programs()
-                .byIcon().eq("program-icon")
+                .byIcon().eq("antenatal_icon")
                 .blockingGet();
         assertThat(programs.size()).isEqualTo(1);
     }

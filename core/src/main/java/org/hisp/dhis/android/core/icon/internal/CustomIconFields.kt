@@ -38,8 +38,6 @@ internal object CustomIconFields {
 
     private val fh = FieldsHelper<CustomIcon>()
 
-    val key = fh.field<String>(KEY)
-
     val allFields: Fields<CustomIcon> =
         Fields.builder<CustomIcon>()
             .fields(

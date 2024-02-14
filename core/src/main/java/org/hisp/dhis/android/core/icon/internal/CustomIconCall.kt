@@ -57,12 +57,12 @@ internal class CustomIconCall(
                 handler,
             ) { partitionKeys: Set<String> ->
                 try {
-                    val customIcons = service.getCustomIcons(
+                    service.getCustomIcons(
                         fields = CustomIconFields.allFields,
-                        keys = CustomIconFields.key.`in`(partitionKeys),
-                        type = IconType.CUSTOM.name
+                        keys = partitionKeys.joinToString(","),
+                        type = IconType.CUSTOM.name,
+                        paging = false,
                     )
-                    Payload(customIcons)
                 } catch (ignored: Exception) {
                     Payload()
                 }

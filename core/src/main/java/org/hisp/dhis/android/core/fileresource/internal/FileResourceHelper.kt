@@ -138,6 +138,8 @@ internal class FileResourceHelper(
             FileResourceDomainType.AGGREGATED ->
                 getRelatedDataValue(fileResourceUid)?.syncState()
                     ?: State.TO_POST
+            FileResourceDomainType.CUSTOM_ICON ->
+                State.SYNCED
         }
     }
 

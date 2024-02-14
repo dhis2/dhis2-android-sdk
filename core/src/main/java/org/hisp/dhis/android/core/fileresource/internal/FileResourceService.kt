@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.map.layer.internal.bing.BingServerResponse
 import retrofit2.http.*
 
 internal interface FileResourceService {
@@ -61,6 +62,11 @@ internal interface FileResourceService {
         @Query("dimension") dimension: String,
     ): ResponseBody
 
+    @GET
+    suspend fun getCustomIcon(
+        @Url customIconHref: String,
+    ): ResponseBody
+
     @GET("$DATA_VALUES/files")
     suspend fun getFileFromDataValue(
         @Query("de") dataElement: String,
@@ -69,6 +75,7 @@ internal interface FileResourceService {
         @Query("co") categoryOptionCombo: String,
         @Query("dimension") dimension: String,
     ): ResponseBody
+
 
     companion object {
         const val FILE_RESOURCES = "fileResources"

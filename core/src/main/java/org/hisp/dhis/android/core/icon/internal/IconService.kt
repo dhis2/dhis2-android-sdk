@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.icon.CustomIcon
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -40,9 +41,10 @@ internal interface IconService {
     @GET(ICONS)
     suspend fun getCustomIcons(
         @Query("fields") @Which fields: Fields<CustomIcon>,
-        @Query("keys") @Where keys: Filter<CustomIcon, String>,
+        @Query("keys") keys: String,
         @Query("type") type: String?,
-    ): List<CustomIcon>
+        @Query("paging") paging: Boolean,
+    ): Payload<CustomIcon>
 
     companion object {
         const val ICONS = "icons"

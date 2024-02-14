@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.settings.SystemSettings
 internal object SystemSettingsFields {
     private const val KEY_FLAG = "keyFlag"
     private const val KEY_STYLE = "keyStyle"
+    private const val KEY_DEFAULT_BASE_MAP = "keyDefaultBaseMap"
     private const val KEY_BING_MAPS_API_KEY = "keyBingMapsApiKey"
 
     private val fh = FieldsHelper<SystemSettings>()
@@ -42,6 +43,7 @@ internal object SystemSettingsFields {
         .fields(
             fh.field<String>(KEY_FLAG),
             fh.field<String>(KEY_STYLE),
+            fh.field<String>(KEY_DEFAULT_BASE_MAP),
         ).build()
 
     val bingApiKey: Fields<SystemSettings> = Fields.builder<SystemSettings>()

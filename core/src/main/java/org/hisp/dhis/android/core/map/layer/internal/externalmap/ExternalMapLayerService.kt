@@ -25,30 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.maps
 
-import org.hisp.dhis.android.core.map.layer.ImageFormat
-import org.hisp.dhis.android.core.map.layer.MapLayer
+package org.hisp.dhis.android.core.map.layer.internal.externalmap
+
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
-import org.hisp.dhis.android.core.map.layer.MapService
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-object MapLayerSamples {
-    fun get(): MapLayer {
-        return MapLayer.builder()
-            .id(1L)
-            .uid("map_layer_uid")
-            .name("Map Layer")
-            .code("MAP_CODE")
-            .displayName("Display map layer")
-            .external(true)
-            .mapLayerPosition(MapLayerPosition.BASEMAP)
-            .style("light")
-            .imageUrl("https://provider-{s}.url")
-            .subdomains(listOf("a", "b", "c"))
-            .subdomainPlaceholder("{s}")
-            .imageFormat(ImageFormat.JPG)
-            .layers("layer")
-            .mapService(MapService.TMS)
-            .build()
-    }
+internal fun interface ExternalMapLayerService {
+
+    @GET("externalMapLayers")
+    suspend fun getExternalMapLayers(
+        @Query("fields") @Which fields: Fields<ExternalMapLayer>,
+        @Query("filter") @Where mapLayerPosition: Filter<ExternalMapLayer, MapLayerPosition>,
+        @Query("paging") paging: Boolean,
+    ): Payload<ExternalMapLayer>
 }

@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.testapp.map.layer
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.map.layer.ImageFormat
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.core.map.layer.MapService
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemaps
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -45,7 +47,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
         val mapLayers = d2.mapsModule().mapLayers()
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(5)
+        assertThat(mapLayers.size).isEqualTo(9)
     }
 
     @Test
@@ -76,6 +78,15 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
     }
 
     @Test
+    fun filter_by_code() {
+        val mapLayers = d2.mapsModule().mapLayers()
+            .byCode().eq("DARK_BASEMAP")
+            .blockingGet()
+
+        assertThat(mapLayers.size).isEqualTo(1)
+    }
+
+    @Test
     fun filter_by_external() {
         val mapLayers = d2.mapsModule().mapLayers()
             .byExternal().isFalse
@@ -90,7 +101,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .byMapLayerPosition().eq(MapLayerPosition.BASEMAP)
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(5)
+        assertThat(mapLayers.size).isEqualTo(9)
     }
 
     @Test
@@ -112,6 +123,33 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
         assertThat(mapLayers.first().imageryProviders()).isNotEmpty()
     }
 
+    @Test
+    fun filter_by_map_service() {
+        val mapLayers = d2.mapsModule().mapLayers()
+            .byMapService().eq(MapService.WMS)
+            .blockingGet()
+
+        assertThat(mapLayers.size).isEqualTo(2)
+    }
+
+    @Test
+    fun filter_by_image_format() {
+        val mapLayers = d2.mapsModule().mapLayers()
+            .byImageFormat().eq(ImageFormat.JPG)
+            .blockingGet()
+
+        assertThat(mapLayers.size).isEqualTo(1)
+    }
+
+    @Test
+    fun filter_by_layers() {
+        val mapLayers = d2.mapsModule().mapLayers()
+            .byLayers().eq("layer_test")
+            .blockingGet()
+
+        assertThat(mapLayers.size).isEqualTo(1)
+    }
+
     companion object {
         @BeforeClass
         @JvmStatic
@@ -123,6 +161,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             dhis2MockServer.enqueueMockResponse("map/layer/bing/bing_server_response.json")
             dhis2MockServer.enqueueMockResponse(401)
             dhis2MockServer.enqueueMockResponse("map/layer/bing/bing_server_response.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/externalmap/external_map_layers.json")
 
             d2.mapsModule().mapLayersDownloader().downloadMetadata().blockingAwait()
         }

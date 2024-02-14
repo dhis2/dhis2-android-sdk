@@ -19,6 +19,7 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeService
 import org.hisp.dhis.android.core.legendset.internal.LegendSetService
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingService
+import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerService
 import org.hisp.dhis.android.core.option.internal.OptionGroupService
 import org.hisp.dhis.android.core.option.internal.OptionService
 import org.hisp.dhis.android.core.option.internal.OptionSetService
@@ -69,6 +70,7 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(EventFilterService::class.java) }
     single { get<Retrofit>().create(EventService::class.java) }
     single { get<Retrofit>().create(ExpressionDimensionItemService::class.java) }
+    single { get<Retrofit>().create(ExternalMapLayerService::class.java) }
     single { get<Retrofit>().create(FileResourceService::class.java) }
     single { get<Retrofit>().create(IndicatorService::class.java) }
     single { get<Retrofit>().create(IndicatorTypeService::class.java) }

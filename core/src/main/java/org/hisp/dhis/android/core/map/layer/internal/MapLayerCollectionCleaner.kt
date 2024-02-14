@@ -25,30 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.maps
+package org.hisp.dhis.android.core.map.layer.internal
 
-import org.hisp.dhis.android.core.map.layer.ImageFormat
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerPosition
-import org.hisp.dhis.android.core.map.layer.MapService
+import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
+import org.koin.core.annotation.Singleton
 
-object MapLayerSamples {
-    fun get(): MapLayer {
-        return MapLayer.builder()
-            .id(1L)
-            .uid("map_layer_uid")
-            .name("Map Layer")
-            .code("MAP_CODE")
-            .displayName("Display map layer")
-            .external(true)
-            .mapLayerPosition(MapLayerPosition.BASEMAP)
-            .style("light")
-            .imageUrl("https://provider-{s}.url")
-            .subdomains(listOf("a", "b", "c"))
-            .subdomainPlaceholder("{s}")
-            .imageFormat(ImageFormat.JPG)
-            .layers("layer")
-            .mapService(MapService.TMS)
-            .build()
-    }
-}
+@Singleton
+internal class MapLayerCollectionCleaner(
+    databaseAdapter: DatabaseAdapter,
+) : CollectionCleanerImpl<MapLayer>(
+    tableName = MapLayerTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter,
+)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.icon.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
-import org.hisp.dhis.android.core.icon.CustomIconTableInfo
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-@Singleton
-internal class CustomIconModuleDownloader internal constructor(
-    private val customIconCall: CustomIconCall,
-    private val customIconSeeker: CustomIconSeeker,
-    private val customIconStore: CustomIconStore,
-    private val customIconCleaner: CustomIconCollectionCleaner,
-) : UntypedSuspendModuleDownloader {
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 
-    override suspend fun downloadMetadata() {
-        val customIcons = customIconSeeker.seekUids()
-        val existingCustomIcons = customIconStore.selectStringColumnsWhereClause(CustomIconTableInfo.Columns.KEY, "1")
-        val customIconsToDownload = customIcons.minus(existingCustomIcons.toSet())
-        customIconCall.download(customIconsToDownload)
-        customIconCleaner.deleteNotPresentByKey(customIcons)
+internal open class BaseCollectionCleaner(
+    private val tableName: String,
+    private val databaseAdapter: DatabaseAdapter,
+    private val key: String,
+) {
+    fun deleteNotPresentByKey(uids: Collection<String>): Boolean {
+        val objectUids = CollectionsHelper.commaAndSpaceSeparatedCollectionValues(uids.map { "'$it'" })
+        val clause = "$key NOT IN ($objectUids);"
+        return databaseAdapter.delete(tableName, clause, null) > 0
     }
 }

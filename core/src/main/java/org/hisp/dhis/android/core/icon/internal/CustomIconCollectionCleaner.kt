@@ -27,23 +27,16 @@
  */
 package org.hisp.dhis.android.core.icon.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
+import org.hisp.dhis.android.core.arch.cleaners.internal.BaseCollectionCleaner
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.icon.CustomIconTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CustomIconModuleDownloader internal constructor(
-    private val customIconCall: CustomIconCall,
-    private val customIconSeeker: CustomIconSeeker,
-    private val customIconStore: CustomIconStore,
-    private val customIconCleaner: CustomIconCollectionCleaner,
-) : UntypedSuspendModuleDownloader {
-
-    override suspend fun downloadMetadata() {
-        val customIcons = customIconSeeker.seekUids()
-        val existingCustomIcons = customIconStore.selectStringColumnsWhereClause(CustomIconTableInfo.Columns.KEY, "1")
-        val customIconsToDownload = customIcons.minus(existingCustomIcons.toSet())
-        customIconCall.download(customIconsToDownload)
-        customIconCleaner.deleteNotPresentByKey(customIcons)
-    }
-}
+internal class CustomIconCollectionCleaner(
+    databaseAdapter: DatabaseAdapter,
+) : BaseCollectionCleaner(
+    tableName = CustomIconTableInfo.TABLE_INFO.name(),
+    databaseAdapter = databaseAdapter,
+    key = CustomIconTableInfo.Columns.KEY,
+)

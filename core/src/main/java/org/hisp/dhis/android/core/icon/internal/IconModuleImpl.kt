@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.icon.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.icon.IconCollectionRepository
+import org.hisp.dhis.android.core.icon.IconModule
+import org.koin.core.annotation.Singleton
 
-internal interface CustomIconStore : ObjectWithoutUidStore<CustomIcon> {
-    fun selectByKey(key: String): CustomIcon?
+@Singleton
+internal class IconModuleImpl(
+    private val icons: IconCollectionRepository,
+) : IconModule {
+    override fun icons(): IconCollectionRepository {
+        return icons
+    }
 }

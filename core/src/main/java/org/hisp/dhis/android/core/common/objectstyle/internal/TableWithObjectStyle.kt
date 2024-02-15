@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
 
 internal object TableWithObjectStyle {
-    //TODO Test table containing icon
+    // TODO Test table containing icon
     val allTableNames: List<String> = setOf(
         DataElementTableInfo.TABLE_INFO,
         DataSetTableInfo.TABLE_INFO,
@@ -51,7 +51,7 @@ internal object TableWithObjectStyle {
         ProgramTableInfo.TABLE_INFO,
         TrackedEntityAttributeTableInfo.TABLE_INFO,
         TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
-        TrackedEntityTypeTableInfo.TABLE_INFO
+        TrackedEntityTypeTableInfo.TABLE_INFO,
     ).map {
         it.name()
     }

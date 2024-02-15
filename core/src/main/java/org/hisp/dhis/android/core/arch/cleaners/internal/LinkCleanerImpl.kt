@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
@@ -42,7 +41,7 @@ internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
         tableName = tableName,
         databaseAdapter = databaseAdapter,
         key = applicableColumn,
-    ){
+    ) {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {

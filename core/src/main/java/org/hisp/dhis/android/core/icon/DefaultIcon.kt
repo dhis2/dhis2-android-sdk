@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.android.core.icon
 
+@Suppress("LargeClass")
 internal object DefaultIcon {
+
+    const val mimeType = "application/xml"
+
     val all = listOf(
         "2g_negative",
         "2g_outline",

@@ -42,5 +42,6 @@ internal class IconModuleWiper(
     }
 
     override fun wipeData() {
+        // No data to wipe
     }
 }

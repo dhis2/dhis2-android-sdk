@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.icon.internal
+package org.hisp.dhis.android.testapp.icon
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.icon.CustomIcon
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.icon.Icon
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Assert.fail
+import org.junit.Test
 
-internal interface CustomIconStore : ObjectWithoutUidStore<CustomIcon> {
-    fun selectByKey(key: String): CustomIcon?
+class IconCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+    @Test
+    fun find_default_icon() {
+        val icon = d2.iconModule().icons()
+            .key("2g_negative")
+            .blockingGet()
+
+        when (icon) {
+            is Icon.Default ->
+                assertThat(icon.key).isEqualTo("2g_negative")
+
+            else ->
+                fail("Unexpected icon type")
+        }
+    }
+
+    @Test
+    fun find_custom_icon() {
+        val icon = d2.iconModule().icons()
+            .key("antenatal_icon")
+            .blockingGet()
+
+        when (icon) {
+            is Icon.Custom -> {
+                assertThat(icon.key).isEqualTo("antenatal_icon")
+                assertThat(icon.path).isNull()
+            }
+
+            else ->
+                fail("Unexpected icon type")
+        }
+    }
 }

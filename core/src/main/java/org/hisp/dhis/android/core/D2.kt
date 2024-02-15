@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.event.EventModule
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import org.hisp.dhis.android.core.icon.IconModule
 import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
 import org.hisp.dhis.android.core.legendset.LegendSetModule
@@ -167,6 +168,10 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun fileResourceModule(): FileResourceModule {
         return modules.fileResource
+    }
+
+    fun iconModule(): IconModule {
+        return modules.icon
     }
 
     fun importModule(): ImportModule {

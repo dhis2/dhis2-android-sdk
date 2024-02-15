@@ -73,7 +73,7 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(ExpressionDimensionItemService::class.java) }
     single { get<Retrofit>().create(ExternalMapLayerService::class.java) }
     single { get<Retrofit>().create(FileResourceService::class.java) }
-    single { get<Retrofit>().create(IconService::class.java)}
+    single { get<Retrofit>().create(IconService::class.java) }
     single { get<Retrofit>().create(IndicatorService::class.java) }
     single { get<Retrofit>().create(IndicatorTypeService::class.java) }
     single { get<Retrofit>().create(LegendSetService::class.java) }

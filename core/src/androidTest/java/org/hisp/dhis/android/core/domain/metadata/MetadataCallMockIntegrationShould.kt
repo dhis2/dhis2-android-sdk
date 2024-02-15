@@ -95,7 +95,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 LegendSet::class,
                 Attribute::class,
                 ExpressionDimensionItem::class,
-                CustomIcon::class
+                CustomIcon::class,
             ).map { it.java.simpleName },
         )
 

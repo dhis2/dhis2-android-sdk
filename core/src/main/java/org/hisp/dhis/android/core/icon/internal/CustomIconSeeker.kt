@@ -45,6 +45,6 @@ internal class CustomIconSeeker(
 
         val allIcons = readSingleColumnResults(query)
 
-        return allIcons.filterNot { DefaultIcon.all.contains(it)}.toSet()
+        return allIcons.filterNot { DefaultIcon.all.contains(it) }.toSet()
     }
 }

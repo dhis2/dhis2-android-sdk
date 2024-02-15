@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.icon
 
-enum class IconType {
-    CUSTOM,
-    DEFAULT,
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.icon.internal.CustomIconStore
+import org.koin.core.annotation.Singleton
+
+@Singleton
+@Suppress("TooManyFunctions")
+class IconCollectionRepository internal constructor(
+    private val customIconStore: CustomIconStore,
+    private val fileResourceStore: FileResourceStore,
+) {
+
+    fun key(key: String): ReadOnlyObjectRepository<Icon> {
+        return object : ReadOnlyObjectRepository<Icon> {
+            override fun get(): Single<Icon?> {
+                return Single.fromCallable { blockingGet() }
+            }
+
+            override fun blockingGet(): Icon? {
+                return if (DefaultIcon.all.contains(key)) {
+                    Icon.Default(key)
+                } else {
+                    customIconStore.selectByKey(key)?.let { customIcon ->
+                        val fileResource = fileResourceStore.selectByUid(customIcon.fileResourceUid())
+                        Icon.Custom(customIcon.key(), customIcon.fileResourceUid(), fileResource?.path())
+                    }
+                }
+            }
+
+            override fun exists(): Single<Boolean> {
+                return Single.fromCallable { blockingExists() }
+            }
+
+            override fun blockingExists(): Boolean {
+                return blockingGet() != null
+            }
+        }
+    }
 }

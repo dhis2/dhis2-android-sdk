@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -39,7 +40,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIconStoreImpl(
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : CustomIconStore,
     ObjectWithoutUidStoreImpl<CustomIcon>(
         databaseAdapter,
@@ -49,6 +50,14 @@ internal class CustomIconStoreImpl(
         WHERE_DELETE_BINDER,
         CustomIcon::create,
     ) {
+
+    override fun selectByKey(key: String): CustomIcon? {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(CustomIconTableInfo.Columns.KEY, key)
+            .build()
+
+        return selectOneWhere(whereClause)
+    }
 
     companion object {
         private val BINDER = StatementBinder { o: CustomIcon, w: StatementWrapper ->

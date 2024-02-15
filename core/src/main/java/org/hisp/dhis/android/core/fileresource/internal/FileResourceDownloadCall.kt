@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.koin.core.annotation.Singleton
 
-@SuppressWarnings("LongParameterList")
+@SuppressWarnings("LongParameterList", "MagicNumber")
 @Singleton
 internal class FileResourceDownloadCall(
     private val fileResourceStore: FileResourceStore,

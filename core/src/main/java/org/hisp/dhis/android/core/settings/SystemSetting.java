@@ -44,7 +44,8 @@ public abstract class SystemSetting implements CoreObject {
 
     public enum SystemSettingKey {
         FLAG,
-        STYLE
+        STYLE,
+        DEFAULT_BASE_MAP,
     }
 
     @Nullable

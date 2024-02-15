@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
@@ -88,7 +89,9 @@ internal class FileResourceDownloadCall(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
     ) {
-        if (params.domainTypes.contains(FileResourceDomainType.AGGREGATED)) {
+        if (params.domainTypes.contains(FileResourceDomainType.DATA_VALUE) &&
+            params.dataDomainTypes.contains(FileResourceDataDomainType.AGGREGATED)
+        ) {
             val dataValues = helper.getMissingAggregatedDataValues(params, existingFileResources)
 
             downloadAndPersistFiles(
@@ -109,7 +112,9 @@ internal class FileResourceDownloadCall(
     }
 
     private suspend fun downloadTrackerValues(params: FileResourceDownloadParams, existingFileResources: List<String>) {
-        if (params.domainTypes.contains(FileResourceDomainType.TRACKER)) {
+        if (params.domainTypes.contains(FileResourceDomainType.DATA_VALUE) &&
+            params.dataDomainTypes.contains(FileResourceDataDomainType.TRACKER)
+        ) {
             if (params.elementTypes.contains(FileResourceElementType.TRACED_ENTITY_ATTRIBUTE)) {
                 val attributeDataValues = helper.getMissingTrackerAttributeValues(params, existingFileResources)
 

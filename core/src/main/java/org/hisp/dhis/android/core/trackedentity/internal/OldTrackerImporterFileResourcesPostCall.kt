@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
@@ -150,7 +150,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
     }
 
     fun updateFileResourceStates(fileResources: List<String>) {
-        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.TRACKER)
+        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDataDomainType.TRACKER)
     }
 
     @Suppress("TooGenericExceptionCaught")

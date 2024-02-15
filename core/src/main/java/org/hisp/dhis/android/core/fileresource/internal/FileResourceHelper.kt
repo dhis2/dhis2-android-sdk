@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.trackedentity.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
@@ -121,7 +121,7 @@ internal class FileResourceHelper(
         }
     }
 
-    fun updateFileResourceStates(fileResources: List<String>, domainType: FileResourceDomainType) {
+    fun updateFileResourceStates(fileResources: List<String>, domainType: FileResourceDataDomainType) {
         fileResources.forEach { fr ->
             val relatedState = getRelatedResourceState(fr, domainType)
             val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
@@ -129,17 +129,15 @@ internal class FileResourceHelper(
         }
     }
 
-    private fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDomainType): State {
+    private fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDataDomainType): State {
         return when (domain) {
-            FileResourceDomainType.TRACKER ->
+            FileResourceDataDomainType.TRACKER ->
                 getRelatedEvent(fileResourceUid)?.syncState()
                     ?: getRelatedTei(fileResourceUid)?.syncState()
                     ?: State.TO_POST
-            FileResourceDomainType.AGGREGATED ->
+            FileResourceDataDomainType.AGGREGATED ->
                 getRelatedDataValue(fileResourceUid)?.syncState()
                     ?: State.TO_POST
-            FileResourceDomainType.CUSTOM_ICON ->
-                State.SYNCED
         }
     }
 

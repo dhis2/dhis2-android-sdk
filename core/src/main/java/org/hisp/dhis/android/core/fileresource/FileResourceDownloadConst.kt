@@ -39,8 +39,12 @@ enum class FileResourceElementType {
     TRACED_ENTITY_ATTRIBUTE,
 }
 
-enum class FileResourceDomainType {
+enum class FileResourceDataDomainType {
     AGGREGATED,
     TRACKER,
-    CUSTOM_ICON,
+}
+
+enum class FileResourceDomainType(internal val domainType: FileResourceDomain) {
+    DATA_VALUE(FileResourceDomain.DATA_VALUE),
+    CUSTOM_ICON(FileResourceDomain.CUSTOM_ICON),
 }

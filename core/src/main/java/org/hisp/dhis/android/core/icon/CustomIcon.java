@@ -40,7 +40,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CustomIcon.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_CustomIcon.Builder.class)
 public abstract class CustomIcon implements CoreObject {
 
     @NonNull
@@ -57,7 +57,7 @@ public abstract class CustomIcon implements CoreObject {
 
     @NonNull
     public static CustomIcon create(Cursor cursor) {
-        return AutoValue_CustomIcon.createFromCursor(cursor);
+        return $AutoValue_CustomIcon.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

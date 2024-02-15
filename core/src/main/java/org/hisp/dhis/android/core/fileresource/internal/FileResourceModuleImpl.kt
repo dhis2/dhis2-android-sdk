@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDownloader
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
@@ -46,7 +47,8 @@ internal class FileResourceModuleImpl(
         "Replace with fileResourceDownloader()",
         replaceWith = ReplaceWith(
             expression = "fileResourceDownloader()\n" +
-                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byDomainType().eq(FileResourceDomainType.DATA_VALUE)\n" +
+                "            .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)\n" +
                 "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
                 "            .download()",
             "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
@@ -55,7 +57,8 @@ internal class FileResourceModuleImpl(
     )
     override fun download(): Observable<D2Progress> {
         return fileResourceDownloader()
-            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byDomainType().eq(FileResourceDomainType.DATA_VALUE)
+            .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
             .byValueType().eq(FileResourceValueType.IMAGE)
             .download()
     }
@@ -64,7 +67,8 @@ internal class FileResourceModuleImpl(
         "Replace with fileResourceDownloader()",
         replaceWith = ReplaceWith(
             expression = "fileResourceDownloader()\n" +
-                "            .byDomainType().eq(FileResourceDomainType.TRACKER)\n" +
+                "            .byDomainType().eq(FileResourceDomainType.DATA_VALUE)\n" +
+                "            .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)\n" +
                 "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
                 "            .blockingDownload()",
             "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -65,7 +66,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(17)
+        testObserver.assertValueCount(18)
 
         val values = testObserver.values()
 
@@ -94,6 +95,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 LegendSet::class,
                 Attribute::class,
                 ExpressionDimensionItem::class,
+                CustomIcon::class,
             ).map { it.java.simpleName },
         )
 

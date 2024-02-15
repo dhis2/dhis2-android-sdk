@@ -34,4 +34,6 @@ enum class FileResourceDomain {
     MESSAGE_ATTACHMENT,
     USER_AVATAR,
     ORG_UNIT,
+    CUSTOM_ICON,
+    JOB_DATA,
 }

@@ -29,23 +29,25 @@ package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
-    private val tableName: String,
-    private val applicableColumn: String,
+    tableName: String,
+    applicableColumn: String,
+    databaseAdapter: DatabaseAdapter,
     private val parentStore: ObjectStore<P>,
-    private val databaseAdapter: DatabaseAdapter,
-) : LinkCleaner<P> {
+) : LinkCleaner<P>,
+    BaseCollectionCleaner(
+        tableName = tableName,
+        databaseAdapter = databaseAdapter,
+        key = applicableColumn,
+    ) {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {
             return false
         }
-        val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
-        val clause = "$applicableColumn NOT IN ($objectUids);"
-        return databaseAdapter.delete(tableName, clause, null) > 0
+        return deleteNotPresentByKey(objects.map { it.uid() })
     }
 
     override fun deleteNotPresentInDb(): Boolean {

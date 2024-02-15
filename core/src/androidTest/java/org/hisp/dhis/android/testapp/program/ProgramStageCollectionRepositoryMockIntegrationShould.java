@@ -361,7 +361,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     @Test
     public void filter_by_field_icon() {
         List<ProgramStage> programStages = d2.programModule().programStages()
-                .byIcon().eq("program-stage-icon")
+                .byIcon().eq("visit_icon")
                 .blockingGet();
         assertThat(programStages.size()).isEqualTo(1);
     }

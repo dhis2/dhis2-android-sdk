@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
+import org.hisp.dhis.android.core.icon.internal.CustomIconModuleDownloader
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -94,6 +95,7 @@ class MetadataCallShould : BaseCallShould() {
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
     private val attributeModuleDownloader: AttributeModuleDownloader = mock()
     private val expressionDimensIndicatorModuleDownloader: ExpressionDimensionItemModuleDownloader = mock()
+    private val customIconDownloader: CustomIconModuleDownloader = mock()
 
     private val networkError: D2Error = D2Error.builder()
         .errorCode(D2ErrorCode.UNKNOWN_HOST)
@@ -159,6 +161,9 @@ class MetadataCallShould : BaseCallShould() {
         categoryDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
+        customIconDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         whenever(smsModule.configCase()).thenReturn(configCase)
         configCase.stub {
             onBlocking { refreshMetadataIdsCallable() }.doReturn(Unit)
@@ -190,6 +195,7 @@ class MetadataCallShould : BaseCallShould() {
             legendSetModuleDownloader,
             attributeModuleDownloader,
             expressionDimensIndicatorModuleDownloader,
+            customIconDownloader,
         )
     }
 

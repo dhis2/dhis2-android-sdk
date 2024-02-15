@@ -61,6 +61,11 @@ internal interface FileResourceService {
         @Query("dimension") dimension: String,
     ): ResponseBody
 
+    @GET
+    suspend fun getCustomIcon(
+        @Url customIconHref: String,
+    ): ResponseBody
+
     @GET("$DATA_VALUES/files")
     suspend fun getFileFromDataValue(
         @Query("de") dataElement: String,

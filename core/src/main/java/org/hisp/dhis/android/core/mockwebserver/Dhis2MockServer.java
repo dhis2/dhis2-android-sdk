@@ -103,6 +103,7 @@ public class Dhis2MockServer {
     private static final String NEW_EVENTS_JSON = "event/new_tracker_importer_events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String EXPRESSION_DIMENSION_ITEMS = "expressiondimensionitem/expression_dimension_items.json";
+    private static final String CUSTOM_ICONS_JSON = "icon/custom_icons.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String NEW_TRACKED_ENTITY_INSTANCES_JSON =
             "trackedentity/new_tracker_importer_tracked_entities.json";
@@ -301,6 +302,8 @@ public class Dhis2MockServer {
                     return createMockResponse(LEGEND_SETS_JSON);
                 } else if (path.startsWith("/api/expressionDimensionItems?")) {
                     return createMockResponse(EXPRESSION_DIMENSION_ITEMS);
+                } else if (path.startsWith("/api/icons?")) {
+                    return createMockResponse(CUSTOM_ICONS_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else if (path.startsWith("/api/metadata")) {
@@ -385,6 +388,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(LEGEND_SETS_JSON);
         enqueueMockResponse(ATTRIBUTES_JSON);
         enqueueMockResponse(EXPRESSION_DIMENSION_ITEMS);
+        enqueueMockResponse(CUSTOM_ICONS_JSON);
     }
 
     private MockResponse createMockResponse(String fileName) {

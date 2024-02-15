@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
@@ -62,7 +62,7 @@ internal class DataValueFileResourcePostCall(
     }
 
     fun updateFileResourceStates(fileResources: List<String>) {
-        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.AGGREGATED)
+        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDataDomainType.AGGREGATED)
     }
 }
 

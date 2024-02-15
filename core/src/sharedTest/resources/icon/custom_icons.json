@@ -1,0 +1,20 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 2,
+    "pageSize": 50
+  },
+  "icons": [
+    {
+      "key": "antenatal_icon",
+      "fileResourceUid": "lNrwSpIy1Q9",
+      "href": "https://play.im.dhis2.org/dev/api/icons/antenatal_icon/icon"
+    },
+    {
+      "key": "visit_icon",
+      "fileResourceUid": "yx5Vm0DBjFr",
+      "href": "https://play.im.dhis2.org/dev/api/icons/visit_icon/icon"
+    }
+  ]
+}

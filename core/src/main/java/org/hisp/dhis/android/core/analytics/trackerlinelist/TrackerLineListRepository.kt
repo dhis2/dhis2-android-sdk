@@ -42,8 +42,7 @@ interface TrackerLineListRepository {
 
     fun withFilter(filter: TrackerLineListItem): TrackerLineListRepository
 
-    // TODO
-    fun withTrackerVisualization(): TrackerLineListRepository
+    fun withTrackerVisualization(trackerVisualization: String): TrackerLineListRepository
 
     fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
 

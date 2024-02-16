@@ -40,47 +40,75 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerLineListService(
     private val databaseAdapter: DatabaseAdapter,
+    private val trackerVisualizationCollectionRepository: TrackerVisualizationCollectionRepository,
     private val metadataHelper: TrackerLineListServiceMetadataHelper,
+    private val trackerVisualizationMapper: TrackerVisualizationMapper,
 ) {
     fun evaluate(params: TrackerLineListParams): Result<TrackerLineListResponse, AnalyticsException> {
-        // TODO Validate params
+        return try {
+            val evaluatedParams = evaluateParams(params)
 
-        val metadata = metadataHelper.getMetadata(params)
+            // TODO Validate params
 
-        val sqlClause = when (params.outputType!!) {
-            TrackerLineListOutputType.EVENT -> getEventSqlClause(params, metadata)
-            TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause()
+            val metadata = metadataHelper.getMetadata(evaluatedParams)
+
+            val sqlClause = when (evaluatedParams.outputType!!) {
+                TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, metadata)
+                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause()
+            }
+
+            val cursor = databaseAdapter.rawQuery(sqlClause)
+            val values = mapCursorToColumns(evaluatedParams, cursor)
+
+            Result.Success(
+                TrackerLineListResponse(
+                    metadata = metadata,
+                    headers = emptyList(),
+                    filters = emptyList(),
+                    rows = values,
+                ),
+            )
+        } catch (e: AnalyticsException) {
+            Result.Failure(e)
         }
+    }
 
-        val cursor = databaseAdapter.rawQuery(sqlClause)
-        val values = mapCursorToColumns(params, cursor)
+    private fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
+        return if (params.trackerVisualization != null) {
+            val visualization = getTrackerVisualization(params.trackerVisualization)
+                ?:  throw AnalyticsException.InvalidVisualization(params.trackerVisualization)
 
-        return Result.Success(
-            TrackerLineListResponse(
-                metadata = metadata,
-                headers = emptyList(),
-                filters = emptyList(),
-                rows = values,
-            ),
-        )
+            trackerVisualizationMapper.toTrackerLineListParams(visualization) + params
+        } else {
+            params
+        }
+    }
+
+    private fun getTrackerVisualization(trackerVisualization: String): TrackerVisualization? {
+        return trackerVisualizationCollectionRepository
+            .withColumnsAndFilters()
+            .uid(trackerVisualization)
+            .blockingGet()
     }
 
     private fun getEventSqlClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
         return "SELECT " +
-            "${getEventSelectColumns(params, metadata)} " +
-            "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
-            "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
-            "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
-            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
-            "WHERE " +
-            "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-            "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
-            "${getEventWhereClause(params, metadata)} "
+                "${getEventSelectColumns(params, metadata)} " +
+                "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
+                "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+                "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+                "WHERE " +
+                "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
+                "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
+                "${getEventWhereClause(params, metadata)} "
     }
 
     private fun getEnrollmentSqlClause(): String {

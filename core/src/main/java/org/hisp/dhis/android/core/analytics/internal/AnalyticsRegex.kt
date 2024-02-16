@@ -26,32 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
+package org.hisp.dhis.android.core.analytics.internal
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-
-internal data class TrackerLineListParams(
-    val trackerVisualization: String?,
-    val outputType: TrackerLineListOutputType?,
-    val programId: String?,
-    val programStageId: String?,
-    val columns: List<TrackerLineListItem>,
-    val filters: List<TrackerLineListItem>,
-) {
-    operator fun plus(other: TrackerLineListParams): TrackerLineListParams {
-        return other.copy(
-            outputType = other.outputType ?: outputType,
-            programId = other.programId ?: programId,
-            programStageId = other.programStageId ?: programStageId,
-            columns = other.columns.fold(columns) { list, item -> updateInList(list, item) },
-            filters = other.filters.fold(filters) { list, item -> updateInList(list, item) },
-        )
-    }
-
-    companion object {
-        fun updateInList(items: List<TrackerLineListItem>, newItem: TrackerLineListItem): List<TrackerLineListItem> {
-            val otherItems = items.filterNot { it.id == newItem.id }
-            return otherItems + newItem
-        }
-    }
+internal object AnalyticsRegex {
+    val uidRegex = "^\\w{11}\$".toRegex()
+    val composedUidOperandRegex = "^(\\w{11})\\.(\\w{11})\$".toRegex()
+    val orgunitLevelRegex = "^LEVEL-(\\d+)\$".toRegex()
+    val orgunitGroupRegex = "^OU_GROUP-(\\w{11})\$".toRegex()
+    val dateRangeRegex = "^(\\d{4}-\\d{1,2}-\\d{1,2})_(\\d{4}-\\d{1,2}-\\d{1,2})\$".toRegex()
 }

@@ -26,32 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
+package org.hisp.dhis.android.core.analytics.internal
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.dateRangeRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-internal data class TrackerLineListParams(
-    val trackerVisualization: String?,
-    val outputType: TrackerLineListOutputType?,
-    val programId: String?,
-    val programStageId: String?,
-    val columns: List<TrackerLineListItem>,
-    val filters: List<TrackerLineListItem>,
-) {
-    operator fun plus(other: TrackerLineListParams): TrackerLineListParams {
-        return other.copy(
-            outputType = other.outputType ?: outputType,
-            programId = other.programId ?: programId,
-            programStageId = other.programStageId ?: programStageId,
-            columns = other.columns.fold(columns) { list, item -> updateInList(list, item) },
-            filters = other.filters.fold(filters) { list, item -> updateInList(list, item) },
-        )
+@RunWith(JUnit4::class)
+class AnalyticsRegexShould {
+
+    @Test
+    fun should_evaluate_orgunit_regex() {
+        assertThat(orgunitLevelRegex.matches("LEVEL-4")).isTrue()
+        assertThat(orgunitLevelRegex.matches("LEVEL-ajflkaaf")).isFalse()
+
+        val (level) = orgunitLevelRegex.find("LEVEL-5")!!.destructured
+        assertThat(level).isEqualTo("5")
     }
 
-    companion object {
-        fun updateInList(items: List<TrackerLineListItem>, newItem: TrackerLineListItem): List<TrackerLineListItem> {
-            val otherItems = items.filterNot { it.id == newItem.id }
-            return otherItems + newItem
-        }
+    @Test
+    fun should_evaluate_date_range() {
+        assertThat(dateRangeRegex.matches("2015-12-11_2024-01-04")).isTrue()
+        assertThat(dateRangeRegex.matches("2015-12-11")).isFalse()
+
+        val (start, end) = dateRangeRegex.find("2015-12-11_2024-01-04")!!.destructured
+        assertThat(start).isEqualTo("2015-12-11")
+        assertThat(end).isEqualTo("2024-01-04")
+    }
+
+    @Test
+    fun should_evaluate_uid() {
+        assertThat(uidRegex.matches("YuQRtpL10I")).isFalse()
+        assertThat(uidRegex.matches("YuQRtpLP10I")).isTrue()
+        assertThat(uidRegex.matches("YuQRtpL10Ier")).isFalse()
     }
 }

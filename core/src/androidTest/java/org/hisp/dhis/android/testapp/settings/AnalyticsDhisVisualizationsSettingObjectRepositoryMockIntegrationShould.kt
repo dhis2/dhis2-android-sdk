@@ -60,7 +60,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .blockingGetByProgram("IpHINAT79UW")
 
         assertThat(programSettings?.size).isEqualTo(1)
-        assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(2)
+        assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(1)
         assertThat(
             programSettings?.first()?.visualizations()?.first()?.uid(),
         ).isEqualTo("PYBH8ZaAQnC")

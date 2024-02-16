@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,48 +28,7 @@
 
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
-
-object AnalyticsDhisVisualizationTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "AnalyticsDhisVisualization"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
-    }
-
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                UID,
-                SCOPE_UID,
-                SCOPE,
-                GROUP_UID,
-                GROUP_NAME,
-                NAME,
-                TIME_STAMP,
-                TYPE,
-            )
-        }
-
-        companion object {
-            const val UID = IdentifiableColumns.UID
-            const val SCOPE_UID = "scopeUid"
-            const val SCOPE = "scope"
-            const val GROUP_UID = "groupUid"
-            const val GROUP_NAME = "groupName"
-            const val NAME = "name"
-            const val TIME_STAMP = "timestamp"
-            const val TYPE = "type"
-        }
-    }
+enum class AnalyticsDhisVisualizationType {
+    VISUALIZATION,
+    TRACKER_VISUALIZATION,
 }

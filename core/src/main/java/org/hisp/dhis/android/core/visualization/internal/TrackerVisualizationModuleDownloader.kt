@@ -28,18 +28,23 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerVisualizationModuleDownloader internal constructor(
     private val visualizationCall: TrackerVisualizationCall,
+    private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
 ) :
     TypedModuleDownloader<List<TrackerVisualization>> {
 
     override suspend fun downloadMetadata(): List<TrackerVisualization> {
-        // Extract visualizations in ANDROSDK-1811
-        val trackerVisualizations = setOf("s85urBIkN0z")
-        return visualizationCall.download(trackerVisualizations)
+        val visualizations = analyticsDhisVisualizationStore.selectAll()
+            .filter { it.type() == AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION }
+            .map { it.uid() }.toSet()
+
+        return visualizationCall.download(visualizations)
     }
 }

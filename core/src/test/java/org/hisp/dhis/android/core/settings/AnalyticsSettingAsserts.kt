@@ -99,7 +99,7 @@ object AnalyticsSettingAsserts {
             when (group.id()) {
                 "12345678910" -> {
                     assertThat(group.name()).isEqualTo("Ejemplo")
-                    assertThat(group.visualizations().size).isEqualTo(2)
+                    assertThat(group.visualizations().size).isEqualTo(3)
                 }
                 "12345678911" -> {
                     assertThat(group.name()).isEqualTo("Otro ejemplo")

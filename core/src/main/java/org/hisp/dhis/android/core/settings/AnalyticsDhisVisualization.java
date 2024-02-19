@@ -42,7 +42,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationScopeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;

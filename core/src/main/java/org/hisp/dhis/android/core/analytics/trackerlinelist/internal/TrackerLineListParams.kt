@@ -39,19 +39,28 @@ internal data class TrackerLineListParams(
     val filters: List<TrackerLineListItem>,
 ) {
     operator fun plus(other: TrackerLineListParams): TrackerLineListParams {
-        return other.copy(
+        return copy(
             outputType = other.outputType ?: outputType,
             programId = other.programId ?: programId,
             programStageId = other.programStageId ?: programStageId,
-            columns = other.columns.fold(columns) { list, item -> updateInList(list, item) },
-            filters = other.filters.fold(filters) { list, item -> updateInList(list, item) },
+        ).run {
+            other.columns.fold(this) { params, item -> params.pushToColumns(item) }
+        }.run {
+            other.filters.fold(this) { params, item -> params.pushToFilter(item) }
+        }
+    }
+
+    fun pushToColumns(item: TrackerLineListItem): TrackerLineListParams {
+        return copy(
+            columns = columns.filterNot { it.id == item.id } + item,
+            filters = filters.filterNot { it.id == item.id },
         )
     }
 
-    companion object {
-        fun updateInList(items: List<TrackerLineListItem>, newItem: TrackerLineListItem): List<TrackerLineListItem> {
-            val otherItems = items.filterNot { it.id == newItem.id }
-            return otherItems + newItem
-        }
+    fun pushToFilter(item: TrackerLineListItem): TrackerLineListParams {
+        return copy(
+            columns = columns.filterNot { it.id == item.id },
+            filters = filters.filterNot { it.id == item.id } + item,
+        )
     }
 }

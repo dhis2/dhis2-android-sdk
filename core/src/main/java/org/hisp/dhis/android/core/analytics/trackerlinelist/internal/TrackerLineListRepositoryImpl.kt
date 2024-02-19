@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListParams.Companion.updateInList
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.koin.core.annotation.Singleton
 
@@ -63,11 +62,11 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     override fun withColumn(column: TrackerLineListItem): TrackerLineListRepositoryImpl {
-        return updateParams { params.copy(columns = updateInList(params.columns, column)) }
+        return updateParams { params.pushToColumns(column) }
     }
 
     override fun withFilter(filter: TrackerLineListItem): TrackerLineListRepositoryImpl {
-        return updateParams { params.copy(columns = updateInList(params.filters, filter)) }
+        return updateParams { params.pushToFilter(filter) }
     }
 
     override fun withTrackerVisualization(trackerVisualization: String): TrackerLineListRepositoryImpl {

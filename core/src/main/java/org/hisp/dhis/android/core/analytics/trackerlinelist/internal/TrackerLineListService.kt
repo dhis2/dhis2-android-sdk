@@ -83,7 +83,7 @@ internal class TrackerLineListService(
     private fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
         return if (params.trackerVisualization != null) {
             val visualization = getTrackerVisualization(params.trackerVisualization)
-                ?:  throw AnalyticsException.InvalidVisualization(params.trackerVisualization)
+                ?: throw AnalyticsException.InvalidVisualization(params.trackerVisualization)
 
             trackerVisualizationMapper.toTrackerLineListParams(visualization) + params
         } else {
@@ -100,15 +100,15 @@ internal class TrackerLineListService(
 
     private fun getEventSqlClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
         return "SELECT " +
-                "${getEventSelectColumns(params, metadata)} " +
-                "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
-                "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
-                "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
-                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
-                "WHERE " +
-                "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-                "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
-                "${getEventWhereClause(params, metadata)} "
+            "${getEventSelectColumns(params, metadata)} " +
+            "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
+            "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+            "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
+            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+            "WHERE " +
+            "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
+            "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
+            "${getEventWhereClause(params, metadata)} "
     }
 
     private fun getEnrollmentSqlClause(): String {

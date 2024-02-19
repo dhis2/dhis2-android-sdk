@@ -50,8 +50,9 @@ import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class TrackerVisualizationMapper(
-    private val organisationUnitLevelStore: OrganisationUnitLevelStore
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
     fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
         return TrackerLineListParams(
@@ -76,12 +77,14 @@ internal class TrackerVisualizationMapper(
         return dimensions?.mapNotNull { item ->
             val mapper = when (item.dimensionType()) {
                 "ORGANISATION_UNIT" -> ::mapOrganisationUnit
-                "ORGANISATION_UNIT_GROUP_SET" -> ::mapOrganisationUnitGroup
                 "PERIOD" -> ::mapPeriod
                 "PROGRAM_INDICATOR" -> ::mapProgramIndicator
                 "PROGRAM_ATTRIBUTE" -> ::mapProgramAttribute
                 "PROGRAM_DATA_ELEMENT" -> ::mapProgramDataElement
                 "DATA_X" -> ::mapDataX
+                "ORGANISATION_UNIT_GROUP_SET" ->
+                    throw AnalyticsException.InvalidArguments("Dimension ORGANISATION_UNIT_GROUP_SET IS not supported")
+
                 else -> { _ -> null }
             }
             mapper(item)
@@ -119,13 +122,8 @@ internal class TrackerVisualizationMapper(
 
                     else -> null
                 }
-            } ?: emptyList()
+            } ?: emptyList(),
         )
-    }
-
-    private fun mapOrganisationUnitGroup(item: TrackerVisualizationDimension): TrackerLineListItem? {
-        // TODO
-        return null
     }
 
     private fun mapPeriod(item: TrackerVisualizationDimension): TrackerLineListItem? {
@@ -158,25 +156,26 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapDataX(item: TrackerVisualizationDimension): TrackerLineListItem? {
+    internal fun mapDataX(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return when (item.dimension()) {
             "createdBy" -> TrackerLineListItem.CreatedBy
             "lastUpdatedBy" -> TrackerLineListItem.LastUpdatedBy
             "programStatus" -> TrackerLineListItem.ProgramStatusItem(
                 filters = item.items()?.mapNotNull { e -> EnrollmentStatus.entries.find { it.name == e.uid() } }
-                    ?: emptyList()
+                    ?: emptyList(),
             )
 
             "eventStatus" -> TrackerLineListItem.EventStatusItem(
                 filters = item.items()?.mapNotNull { e -> EventStatus.entries.find { it.name == e.uid() } }
-                    ?: emptyList()
+                    ?: emptyList(),
             )
 
             else -> null
         }
     }
 
-    private fun mapDataFilters(item: TrackerVisualizationDimension): List<DataFilter> {
+    @Suppress("ComplexMethod")
+    internal fun mapDataFilters(item: TrackerVisualizationDimension): List<DataFilter> {
         return if (item.filter().isNullOrEmpty()) {
             emptyList()
         } else {
@@ -210,7 +209,7 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapDateFilters(item: TrackerVisualizationDimension): List<DateFilter> {
+    internal fun mapDateFilters(item: TrackerVisualizationDimension): List<DateFilter> {
         return item.items()?.mapNotNull { it.uid() }?.map { uid ->
             val relativePeriod = RelativePeriod.entries.find { it.name == uid }
 

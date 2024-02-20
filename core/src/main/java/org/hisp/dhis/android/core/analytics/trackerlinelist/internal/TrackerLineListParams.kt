@@ -31,9 +31,36 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 
 internal data class TrackerLineListParams(
+    val trackerVisualization: String?,
     val outputType: TrackerLineListOutputType?,
     val programId: String?,
     val programStageId: String?,
     val columns: List<TrackerLineListItem>,
     val filters: List<TrackerLineListItem>,
-)
+) {
+    operator fun plus(other: TrackerLineListParams): TrackerLineListParams {
+        return copy(
+            outputType = other.outputType ?: outputType,
+            programId = other.programId ?: programId,
+            programStageId = other.programStageId ?: programStageId,
+        ).run {
+            other.columns.fold(this) { params, item -> params.pushToColumns(item) }
+        }.run {
+            other.filters.fold(this) { params, item -> params.pushToFilter(item) }
+        }
+    }
+
+    fun pushToColumns(item: TrackerLineListItem): TrackerLineListParams {
+        return copy(
+            columns = columns.filterNot { it.id == item.id } + item,
+            filters = filters.filterNot { it.id == item.id },
+        )
+    }
+
+    fun pushToFilter(item: TrackerLineListItem): TrackerLineListParams {
+        return copy(
+            columns = columns.filterNot { it.id == item.id },
+            filters = filters.filterNot { it.id == item.id } + item,
+        )
+    }
+}

@@ -62,16 +62,15 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     override fun withColumn(column: TrackerLineListItem): TrackerLineListRepositoryImpl {
-        return updateParams { params.copy(columns = updateItems(params.columns, column)) }
+        return updateParams { params.pushToColumns(column) }
     }
 
     override fun withFilter(filter: TrackerLineListItem): TrackerLineListRepositoryImpl {
-        return updateParams { params.copy(columns = updateItems(params.filters, filter)) }
+        return updateParams { params.pushToFilter(filter) }
     }
 
-    // TODO
-    override fun withTrackerVisualization(): TrackerLineListRepositoryImpl {
-        return TODO()
+    override fun withTrackerVisualization(trackerVisualization: String): TrackerLineListRepositoryImpl {
+        return updateParams { params.copy(trackerVisualization = trackerVisualization) }
     }
 
     override fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {
@@ -86,10 +85,5 @@ internal class TrackerLineListRepositoryImpl(
         func: (params: TrackerLineListParams) -> TrackerLineListParams,
     ): TrackerLineListRepositoryImpl {
         return TrackerLineListRepositoryImpl(func(params), service)
-    }
-
-    private fun updateItems(items: List<TrackerLineListItem>, newItem: TrackerLineListItem): List<TrackerLineListItem> {
-        val otherItems = items.filterNot { it.id == newItem.id }
-        return otherItems + newItem
     }
 }

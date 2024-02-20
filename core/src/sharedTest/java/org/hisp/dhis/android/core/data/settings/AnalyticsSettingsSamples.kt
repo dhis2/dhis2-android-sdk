@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.settings
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiData
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
@@ -112,5 +113,6 @@ object AnalyticsSettingsSamples {
             .timestamp("2021-07-01T02:55:16.8770")
             .uid("PYBH8ZaAQnC")
             .name("Sample name")
+            .type(AnalyticsDhisVisualizationType.VISUALIZATION)
             .build()
 }

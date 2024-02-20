@@ -32,6 +32,9 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.composedUidOperandRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
@@ -54,9 +57,6 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     private val dataDimension = "dx"
     private val orgUnitDimension = "ou"
     private val periodDimension = "pe"
-    private val uidRegex = "^\\w{11}\$".toRegex()
-    private val composedUidOperandRegex = "^(\\w{11})\\.(\\w{11})\$".toRegex()
-    private val orgunitLevelRegex = "LEVEL-(\\d+)".toRegex()
 
     fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
         return dimensions?.map { dimension ->

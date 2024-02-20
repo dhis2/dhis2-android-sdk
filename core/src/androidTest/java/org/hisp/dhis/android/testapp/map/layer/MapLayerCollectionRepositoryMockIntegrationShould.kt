@@ -101,7 +101,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .byMapLayerPosition().eq(MapLayerPosition.BASEMAP)
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(9)
+        assertThat(mapLayers.size).isEqualTo(7)
     }
 
     @Test

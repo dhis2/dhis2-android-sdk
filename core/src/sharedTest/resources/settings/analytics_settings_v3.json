@@ -70,14 +70,17 @@
           {
             "id": "FAFa11yFeFe",
             "name": "Sample title fro visualization",
+            "type": "VISUALIZATION",
             "timestamp": "2021-07-01T03:01:16.8770"
           },
           {
             "id": "PYBH8ZaAQnC",
+            "type": "VISUALIZATION",
             "timestamp": "2021-07-01T03:02:16.8770"
           },
           {
             "id": "s85urBIkN0z",
+            "type": "TRACKER_VISUALIZATION",
             "timestamp": "2021-07-01T03:02:16.8770"
           }
         ]
@@ -88,6 +91,7 @@
         "visualizations": [
           {
             "id": "PYBH8ZaAQnC",
+            "type": "VISUALIZATION",
             "timestamp": "2021-07-01T03:04:16.8770"
           }
         ]
@@ -101,6 +105,7 @@
           "visualizations": [
             {
               "id": "FAFa11yFeFe",
+              "type": "VISUALIZATION",
               "timestamp": "2021-07-01T02:55:16.8770"
             }
           ]
@@ -115,6 +120,7 @@
           "visualizations": [
             {
               "id": "PYBH8ZaAQnC",
+              "type": "VISUALIZATION",
               "timestamp": "2021-07-01T02:55:16.8770"
             }
           ]

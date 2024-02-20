@@ -31,15 +31,12 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 
 sealed class TrackerLineListItem(val id: String) {
 
-    sealed class OrganisationUnitItem(id: String) : TrackerLineListItem(id) {
-        data class Absolute(val uid: String) : OrganisationUnitItem(uid)
-        data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitItem(relative.name)
-        data class Level(val uid: String) : OrganisationUnitItem(uid)
-        data class Group(val uid: String) : OrganisationUnitItem(uid)
-    }
+    class OrganisationUnitItem(val filters: List<OrganisationUnitFilter>) :
+        TrackerLineListItem(Label.OrganisationUnit)
 
     sealed class DateItem(id: String) : TrackerLineListItem(id) {
         data class LastUpdated(val filters: List<DateFilter>) : DateItem(Label.LastUpdated)
@@ -55,18 +52,25 @@ sealed class TrackerLineListItem(val id: String) {
 
     data class ProgramDataElement(
         val uid: String,
-        val program: String,
-        val programStage: String,
+        val program: String?,
+        val programStage: String?,
         val filters: List<DataFilter>,
-    ) : TrackerLineListItem("$program.$programStage.$uid")
+    ) : TrackerLineListItem("${program?.let { "$it." } ?: ""}${programStage?.let { "$it." } ?: ""}$uid")
 
     object CreatedBy : TrackerLineListItem(Label.CreatedBy)
 
     object LastUpdatedBy : TrackerLineListItem(Label.LastUpdatedBy)
 
-    data class ProgramStatus(val filters: List<EnrollmentStatus>) : TrackerLineListItem(Label.ProgramStatus)
+    data class ProgramStatusItem(val filters: List<EnrollmentStatus>) : TrackerLineListItem(Label.ProgramStatus)
 
-    data class EventStatus(val filters: List<EventStatus>) : TrackerLineListItem(Label.EventStatus)
+    data class EventStatusItem(val filters: List<EventStatus>) : TrackerLineListItem(Label.EventStatus)
+}
+
+sealed class OrganisationUnitFilter {
+    data class Absolute(val uid: String) : OrganisationUnitFilter()
+    data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitFilter()
+    data class Level(val uid: String) : OrganisationUnitFilter()
+    data class Group(val uid: String) : OrganisationUnitFilter()
 }
 
 sealed class DateFilter {
@@ -92,6 +96,7 @@ sealed class DataFilter {
 }
 
 internal object Label {
+    const val OrganisationUnit = "ou"
     const val LastUpdated = "lastUpdated"
     const val IncidentDate = "incidentDate"
     const val EnrollmentDate = "enrollmentDate"

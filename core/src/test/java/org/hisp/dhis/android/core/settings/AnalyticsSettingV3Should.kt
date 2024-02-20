@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,48 +28,37 @@
 
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-object AnalyticsDhisVisualizationTableInfo {
+class AnalyticsSettingV3Should : BaseObjectShould("settings/analytics_settings_v3.json"), ObjectShould {
 
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "AnalyticsDhisVisualization"
-        }
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val analyticsSettings = objectMapper.readValue(jsonStream, AnalyticsSettings::class.java)
 
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
-    }
+        AnalyticsSettingAsserts.assertTeiAnalytics(analyticsSettings.tei())
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                UID,
-                SCOPE_UID,
-                SCOPE,
-                GROUP_UID,
-                GROUP_NAME,
-                NAME,
-                TIME_STAMP,
-                TYPE,
-            )
-        }
+        AnalyticsSettingAsserts.assertDhisVisualizations(analyticsSettings.dhisVisualizations())
 
-        companion object {
-            const val UID = IdentifiableColumns.UID
-            const val SCOPE_UID = "scopeUid"
-            const val SCOPE = "scope"
-            const val GROUP_UID = "groupUid"
-            const val GROUP_NAME = "groupName"
-            const val NAME = "name"
-            const val TIME_STAMP = "timestamp"
-            const val TYPE = "type"
+        analyticsSettings.dhisVisualizations().home().forEach {
+            it.visualizations().forEach {
+                when (it.uid()) {
+                    "FAFa11yFeFe" ->
+                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
+
+                    "PYBH8ZaAQnC" ->
+                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
+
+                    "s85urBIkN0z" ->
+                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION)
+                }
+            }
         }
     }
 }

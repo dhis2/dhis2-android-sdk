@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings
+package org.hisp.dhis.android.core.analytics.internal
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.dateRangeRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-object AnalyticsDhisVisualizationTableInfo {
+@RunWith(JUnit4::class)
+class AnalyticsRegexShould {
 
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "AnalyticsDhisVisualization"
-        }
+    @Test
+    fun should_evaluate_orgunit_regex() {
+        assertThat(orgunitLevelRegex.matches("LEVEL-4")).isTrue()
+        assertThat(orgunitLevelRegex.matches("LEVEL-ajflkaaf")).isFalse()
 
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
+        val (level) = orgunitLevelRegex.find("LEVEL-5")!!.destructured
+        assertThat(level).isEqualTo("5")
     }
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                UID,
-                SCOPE_UID,
-                SCOPE,
-                GROUP_UID,
-                GROUP_NAME,
-                NAME,
-                TIME_STAMP,
-                TYPE,
-            )
-        }
+    @Test
+    fun should_evaluate_date_range() {
+        assertThat(dateRangeRegex.matches("2015-12-11_2024-01-04")).isTrue()
+        assertThat(dateRangeRegex.matches("2015-12-11")).isFalse()
 
-        companion object {
-            const val UID = IdentifiableColumns.UID
-            const val SCOPE_UID = "scopeUid"
-            const val SCOPE = "scope"
-            const val GROUP_UID = "groupUid"
-            const val GROUP_NAME = "groupName"
-            const val NAME = "name"
-            const val TIME_STAMP = "timestamp"
-            const val TYPE = "type"
-        }
+        val (start, end) = dateRangeRegex.find("2015-12-11_2024-01-04")!!.destructured
+        assertThat(start).isEqualTo("2015-12-11")
+        assertThat(end).isEqualTo("2024-01-04")
+    }
+
+    @Test
+    fun should_evaluate_uid() {
+        assertThat(uidRegex.matches("YuQRtpL10I")).isFalse()
+        assertThat(uidRegex.matches("YuQRtpLP10I")).isTrue()
+        assertThat(uidRegex.matches("YuQRtpL10Ier")).isFalse()
     }
 }

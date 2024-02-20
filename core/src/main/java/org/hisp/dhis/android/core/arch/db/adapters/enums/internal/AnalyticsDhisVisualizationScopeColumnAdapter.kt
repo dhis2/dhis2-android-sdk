@@ -25,14 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope;
-
-public class AnalyticsDhisVisualizationScopeColumnAdapter extends EnumColumnAdapter<AnalyticsDhisVisualizationScope> {
-    @Override
-    protected Class<AnalyticsDhisVisualizationScope> getEnumClass() {
-        return AnalyticsDhisVisualizationScope.class;
+internal class AnalyticsDhisVisualizationScopeColumnAdapter : EnumColumnAdapter<AnalyticsDhisVisualizationScope>() {
+    override fun getEnumClass(): Class<AnalyticsDhisVisualizationScope> {
+        return AnalyticsDhisVisualizationScope::class.java
     }
 }

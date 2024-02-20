@@ -54,7 +54,11 @@ internal class DatabaseConfigurationHelper @Inject constructor(
         username: String,
         encrypt: Boolean
     ): DatabasesConfiguration {
-        val newAccount = DatabaseAccount.builder()
+        val existedAccount = configuration?.accounts()?.find {
+            equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
+        }
+
+        val newAccount = existedAccount ?: DatabaseAccount.builder()
             .username(username)
             .serverUrl(serverUrl)
             .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt))

@@ -37,6 +37,7 @@ class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationTestFullDi
     fun evaluate_program_attributes() {
         val result = d2.analyticsModule().trackerLineList()
             .withEventOutput("IpHINAT79UW", "dBwrot7S420")
+            .withColumn(TrackerLineListItem.OrganisationUnitItem(filters = emptyList()))
             .withColumn(
                 TrackerLineListItem.ProgramAttribute(
                     uid = "cejWyOfXge6",

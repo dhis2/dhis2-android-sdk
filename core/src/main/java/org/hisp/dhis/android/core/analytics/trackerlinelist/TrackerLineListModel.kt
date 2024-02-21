@@ -38,12 +38,12 @@ sealed class TrackerLineListItem(val id: String) {
     class OrganisationUnitItem(val filters: List<OrganisationUnitFilter>) :
         TrackerLineListItem(Label.OrganisationUnit)
 
-    sealed class DateItem(id: String) : TrackerLineListItem(id) {
-        data class LastUpdated(val filters: List<DateFilter>) : DateItem(Label.LastUpdated)
-        data class IncidentDate(val filters: List<DateFilter>) : DateItem(Label.IncidentDate)
-        data class EnrollmentDate(val filters: List<DateFilter>) : DateItem(Label.EnrollmentDate)
-        data class ScheduledDate(val filters: List<DateFilter>) : DateItem(Label.ScheduledDate)
-        data class EventDate(val filters: List<DateFilter>) : DateItem(Label.EventDate)
+    sealed class DateItem(id: String, val filters: List<DateFilter>) : TrackerLineListItem(id) {
+        class LastUpdated(filters: List<DateFilter>) : DateItem(Label.LastUpdated, filters)
+        class IncidentDate(filters: List<DateFilter>) : DateItem(Label.IncidentDate, filters)
+        class EnrollmentDate(filters: List<DateFilter>) : DateItem(Label.EnrollmentDate, filters)
+        class ScheduledDate(filters: List<DateFilter>) : DateItem(Label.ScheduledDate, filters)
+        class EventDate(filters: List<DateFilter>) : DateItem(Label.EventDate, filters)
     }
 
     data class ProgramIndicator(val uid: String, val filters: List<DataFilter>) : TrackerLineListItem(uid)

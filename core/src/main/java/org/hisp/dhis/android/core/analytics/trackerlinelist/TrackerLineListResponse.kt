@@ -34,7 +34,7 @@ data class TrackerLineListResponse(
     val metadata: Map<String, MetadataItem>,
     val headers: List<TrackerLineListItem>,
     val filters: List<TrackerLineListItem>,
-    val rows: List<TrackerLineListValue>,
+    val rows: List<List<TrackerLineListValue>>,
 )
 
 data class TrackerLineListValue(

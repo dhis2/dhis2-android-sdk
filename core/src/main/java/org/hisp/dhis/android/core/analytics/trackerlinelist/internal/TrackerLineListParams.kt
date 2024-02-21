@@ -38,6 +38,8 @@ internal data class TrackerLineListParams(
     val columns: List<TrackerLineListItem>,
     val filters: List<TrackerLineListItem>,
 ) {
+    val allItems = columns + filters
+
     operator fun plus(other: TrackerLineListParams): TrackerLineListParams {
         return copy(
             outputType = other.outputType ?: outputType,
@@ -62,5 +64,9 @@ internal data class TrackerLineListParams(
             columns = columns.filterNot { it.id == item.id },
             filters = filters.filterNot { it.id == item.id } + item,
         )
+    }
+
+    fun hasOrgunit(): Boolean {
+        return (columns + filters).any { it is TrackerLineListItem.OrganisationUnitItem}
     }
 }

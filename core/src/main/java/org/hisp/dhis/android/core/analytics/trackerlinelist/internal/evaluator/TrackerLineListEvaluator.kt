@@ -28,9 +28,25 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-internal interface TrackerLineListEvaluator {
-    fun getSelectSQLForEvent(): String
-    fun getWhereSQLForEvent(): String
-    fun getSelectSQLForEnrollment(): String
-    fun getWhereSQLForEnrollment(): String
+internal open class TrackerLineListEvaluator {
+    open fun getSelectSQLForEvent(): String {
+        return getCommonSelectSQL()
+    }
+    open fun getWhereSQLForEvent(): String {
+        return getCommonWhereSQL()
+    }
+    open fun getSelectSQLForEnrollment(): String {
+        return getCommonSelectSQL()
+    }
+    open fun getWhereSQLForEnrollment(): String {
+        return getCommonWhereSQL()
+    }
+
+    protected open fun getCommonSelectSQL(): String {
+        throw RuntimeException("Not implemented")
+    }
+
+    protected open fun getCommonWhereSQL(): String {
+        throw RuntimeException("Not implemented")
+    }
 }

@@ -28,23 +28,36 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgunitAlias
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
-internal object TrackerLineListEvaluatorMapper {
-    fun getEvaluator(item: TrackerLineListItem, metadata: Map<String, MetadataItem>): TrackerLineListEvaluator {
-        return when (item) {
-            is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, metadata)
-            is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, metadata)
-            is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item)
-            is TrackerLineListItem.DateItem.LastUpdated -> LastUpdatedEvaluator(item)
-            is TrackerLineListItem.DateItem.IncidentDate -> IncidentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.ScheduledDate -> ScheduledDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EventDate -> EventDateEvaluator(item)
-            is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
-            is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
-            else -> TODO()
+internal class OrganisationUnitEvaluator(
+    private val item: TrackerLineListItem.OrganisationUnitItem,
+) : TrackerLineListEvaluator() {
+    override fun getCommonSelectSQL(): String {
+        return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
+    }
+
+    override fun getCommonWhereSQL(): String {
+        return if (item.filters.isEmpty()) {
+            "1"
+        } else {
+            return item.filters.joinToString(" AND ") { getFilterWhereClause(it) }
+        }
+    }
+
+    private fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
+        return when (filter) {
+            is OrganisationUnitFilter.Absolute ->
+                "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%${filter.uid}%'"
+
+            is OrganisationUnitFilter.Relative -> TODO()
+
+            is OrganisationUnitFilter.Level -> TODO()
+
+            is OrganisationUnitFilter.Group -> TODO()
         }
     }
 }

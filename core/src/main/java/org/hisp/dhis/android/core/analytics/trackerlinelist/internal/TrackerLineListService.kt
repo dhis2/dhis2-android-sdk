@@ -36,13 +36,16 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgunitAlias
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
 import org.koin.core.annotation.Singleton
+import java.lang.RuntimeException
 
 @Singleton
 internal class TrackerLineListService(
@@ -61,7 +64,7 @@ internal class TrackerLineListService(
 
             val sqlClause = when (evaluatedParams.outputType!!) {
                 TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, metadata)
-                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause()
+                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause(evaluatedParams, metadata)
             }
 
             val cursor = databaseAdapter.rawQuery(sqlClause)
@@ -77,6 +80,8 @@ internal class TrackerLineListService(
             )
         } catch (e: AnalyticsException) {
             Result.Failure(e)
+        } catch (e: RuntimeException) {
+            Result.Failure(AnalyticsException.SQLException(e.message ?: ""))
         }
     }
 
@@ -100,45 +105,79 @@ internal class TrackerLineListService(
 
     private fun getEventSqlClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
         return "SELECT " +
-            "${getEventSelectColumns(params, metadata)} " +
-            "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
-            "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
-            "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
-            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
-            "WHERE " +
-            "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-            "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
-            "${getEventWhereClause(params, metadata)} "
+                "${getEventSelectColumns(params, metadata)} " +
+                "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
+                "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+                "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+                if (params.hasOrgunit()) {
+                    "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
+                            "ON $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT} = " +
+                            "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+                } else {
+                    ""
+                } +
+                "WHERE " +
+                "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
+                "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
+                "${getEventWhereClause(params, metadata)} "
     }
 
-    private fun getEnrollmentSqlClause(): String {
-        return TODO()
-    }
-
-    private fun mapCursorToColumns(params: TrackerLineListParams, cursor: Cursor): List<TrackerLineListValue> {
-        val values: MutableList<TrackerLineListValue> = mutableListOf()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    params.columns.forEachIndexed { index, item ->
-                        values.add(TrackerLineListValue(item.id, cursor.getString(index)))
-                    }
-                } while (c.moveToNext())
-            }
-        }
-        return values
+    private fun getEnrollmentSqlClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+        return "SELECT " +
+                "${getEnrollmentSelectColumns(params, metadata)} " +
+                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+                if (params.hasOrgunit()) {
+                    "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
+                            "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} = " +
+                            "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+                } else {
+                    ""
+                } +
+                "WHERE " +
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
+                "${getEnrollmentWhereClause(params, metadata)} "
     }
 
     private fun getEventSelectColumns(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
-        return params.columns.joinToString(", ") {
+        return params.allItems.joinToString(", ") {
             "(${TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getSelectSQLForEvent()}) ${it.id}"
         }
     }
 
     private fun getEventWhereClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
-        return (params.columns + params.filters).joinToString(" AND ") {
+        return params.allItems.joinToString(" AND ") {
             TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getWhereSQLForEvent()
         }
+    }
+
+    private fun getEnrollmentSelectColumns(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+        return params.allItems.joinToString(", ") {
+            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getSelectSQLForEnrollment()}) ${it.id}"
+        }
+    }
+
+    private fun getEnrollmentWhereClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+        return params.allItems.joinToString(" AND ") {
+            TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getWhereSQLForEnrollment()
+        }
+    }
+
+    private fun mapCursorToColumns(params: TrackerLineListParams, cursor: Cursor): List<List<TrackerLineListValue>> {
+        val values: MutableList<List<TrackerLineListValue>> = mutableListOf()
+        cursor.use { c ->
+            if (c.count > 0) {
+                c.moveToFirst()
+                do {
+                    val row: MutableList<TrackerLineListValue> = mutableListOf()
+                    params.columns.forEach { item ->
+                        val columnIndex = cursor.getColumnIndex(item.id)
+                        row.add(TrackerLineListValue(item.id, cursor.getString(columnIndex)))
+                    }
+                    values.add(row)
+                } while (c.moveToNext())
+            }
+        }
+        return values
     }
 }

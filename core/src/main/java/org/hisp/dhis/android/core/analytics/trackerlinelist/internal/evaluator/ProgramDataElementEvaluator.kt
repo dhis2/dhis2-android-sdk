@@ -28,23 +28,46 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.DataFilterHelper
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
 
-internal object TrackerLineListEvaluatorMapper {
-    fun getEvaluator(item: TrackerLineListItem, metadata: Map<String, MetadataItem>): TrackerLineListEvaluator {
-        return when (item) {
-            is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, metadata)
-            is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, metadata)
-            is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item)
-            is TrackerLineListItem.DateItem.LastUpdated -> LastUpdatedEvaluator(item)
-            is TrackerLineListItem.DateItem.IncidentDate -> IncidentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.ScheduledDate -> ScheduledDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EventDate -> EventDateEvaluator(item)
-            is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
-            is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
-            else -> TODO()
-        }
+internal class ProgramDataElementEvaluator(
+    private val item: TrackerLineListItem.ProgramDataElement,
+    private val metadata: Map<String, MetadataItem>,
+) : TrackerLineListEvaluator() {
+    override fun getSelectSQLForEvent(): String {
+        return "SELECT ${getColumnSql()} " +
+                "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = " +
+                "$EventAlias.${EventTableInfo.Columns.UID} " +
+                "AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${item.uid}'"
+    }
+
+    override fun getSelectSQLForEnrollment(): String {
+        return TODO()
+    }
+
+    override fun getWhereSQLForEvent(): String {
+        return DataFilterHelper.getWhereClause(item.id, item.filters)
+    }
+
+    override fun getWhereSQLForEnrollment(): String {
+        return TODO()
+    }
+
+    private fun getColumnSql(): String {
+        val dataElementMetadata = metadata[item.id] ?: throw AnalyticsException.InvalidDataElement(item.id)
+        val dataElement = ((dataElementMetadata) as MetadataItem.DataElementItem).item
+
+        return getColumnValueCast(
+            column = TrackedEntityDataValueTableInfo.Columns.VALUE,
+            valueType = dataElement.valueType(),
+        )
     }
 }

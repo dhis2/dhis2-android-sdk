@@ -28,23 +28,19 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 
-internal object TrackerLineListEvaluatorMapper {
-    fun getEvaluator(item: TrackerLineListItem, metadata: Map<String, MetadataItem>): TrackerLineListEvaluator {
-        return when (item) {
-            is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, metadata)
-            is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, metadata)
-            is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item)
-            is TrackerLineListItem.DateItem.LastUpdated -> LastUpdatedEvaluator(item)
-            is TrackerLineListItem.DateItem.IncidentDate -> IncidentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.ScheduledDate -> ScheduledDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EventDate -> EventDateEvaluator(item)
-            is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
-            is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
-            else -> TODO()
-        }
+internal class IncidentDateEvaluator(
+    item: TrackerLineListItem.DateItem.IncidentDate,
+) : BaseDateEvaluator(item) {
+
+    override fun getCommonSelectSQL(): String {
+        return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.INCIDENT_DATE}"
+    }
+
+    override fun getCommonWhereSQL(): String {
+        return getDateWhereClause()
     }
 }

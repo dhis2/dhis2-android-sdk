@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
@@ -58,7 +57,6 @@ internal class LogInCall(
     private val databaseManager: LogInDatabaseManager,
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
-    private val versionManager: DHISVersionManager,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
 ) {
     suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
@@ -85,7 +83,7 @@ internal class LogInCall(
                 val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                     userService.authenticate(
                         okhttp3.Credentials.basic(username, password!!),
-                        UserFields.allFieldsWithoutOrgUnit(null),
+                        UserFields.allFieldsWithoutOrgUnit,
                     )
                 }.getOrThrow()
                 loginOnline(user, credentials)
@@ -189,7 +187,7 @@ internal class LogInCall(
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                 userService.authenticate(
                     "Bearer ${openIDConnectState.idToken}",
-                    UserFields.allFieldsWithoutOrgUnit(versionManager.getVersion()),
+                    UserFields.allFieldsWithoutOrgUnit,
                 )
             }.getOrThrow()
             credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)

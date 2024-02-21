@@ -115,9 +115,7 @@ object UserFields {
         }
     }
 
-    fun allFieldsWithoutOrgUnit(version: DHISVersion?): Fields<User> {
-        return getBaseFields(version).build()
-    }
+    val allFieldsWithoutOrgUnit: Fields<User> = getBaseFields(null).build()
 
     fun allFieldsWithOrgUnit(version: DHISVersion?): Fields<User> {
         return getBaseFields(version)

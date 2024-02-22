@@ -28,32 +28,13 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
-import org.hisp.dhis.android.core.event.EventTableInfo
+internal class NotSupportedEvaluator : TrackerLineListEvaluator() {
 
-internal class EventStatusEvaluator(
-    private val item: TrackerLineListItem.EventStatusItem,
-) : TrackerLineListEvaluator() {
-
-    override fun getSelectSQLForEvent(): String {
-        return "$EventAlias.${EventTableInfo.Columns.STATUS}"
+    override fun getCommonSelectSQL(): String {
+        return "Not supported"
     }
 
-    override fun getSelectSQLForEnrollment(): String {
-        throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
-    }
-
-    override fun getWhereSQLForEvent(): String {
-        return if (item.filters.isEmpty()) {
-            "1"
-        } else {
-            "${item.id} IN (${item.filters.joinToString(", ") { "'${it.name}'" }})"
-        }
-    }
-
-    override fun getWhereSQLForEnrollment(): String {
-        throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
+    override fun getCommonWhereSQL(): String {
+        return "1"
     }
 }

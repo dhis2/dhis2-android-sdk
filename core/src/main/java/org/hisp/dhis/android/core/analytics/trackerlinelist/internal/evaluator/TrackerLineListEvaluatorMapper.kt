@@ -36,15 +36,20 @@ internal object TrackerLineListEvaluatorMapper {
         return when (item) {
             is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, metadata)
             is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, metadata)
+            is TrackerLineListItem.ProgramIndicator -> TODO()
             is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item)
+
+            is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
+            is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
+
             is TrackerLineListItem.DateItem.LastUpdated -> LastUpdatedEvaluator(item)
             is TrackerLineListItem.DateItem.IncidentDate -> IncidentDateEvaluator(item)
             is TrackerLineListItem.DateItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
             is TrackerLineListItem.DateItem.ScheduledDate -> ScheduledDateEvaluator(item)
             is TrackerLineListItem.DateItem.EventDate -> EventDateEvaluator(item)
-            is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
-            is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
-            else -> TODO()
+
+            is TrackerLineListItem.CreatedBy -> NotSupportedEvaluator()
+            is TrackerLineListItem.LastUpdatedBy -> NotSupportedEvaluator()
         }
     }
 }

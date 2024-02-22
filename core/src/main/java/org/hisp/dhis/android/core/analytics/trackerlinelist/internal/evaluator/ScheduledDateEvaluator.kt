@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -41,7 +42,7 @@ internal class ScheduledDateEvaluator(
     }
 
     override fun getWhereSQLForEnrollment(): String {
-        return TODO()
+        throw AnalyticsException.InvalidArguments("ScheduledDate is not supported in ENROLLMENT output type")
     }
 
     override fun getWhereSQLForEvent(): String {
@@ -49,6 +50,6 @@ internal class ScheduledDateEvaluator(
     }
 
     override fun getSelectSQLForEnrollment(): String {
-        return TODO()
+        throw AnalyticsException.InvalidArguments("ScheduledDate is not supported in ENROLLMENT output type")
     }
 }

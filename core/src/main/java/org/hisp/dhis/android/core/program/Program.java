@@ -229,6 +229,14 @@ public abstract class Program extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
+    public abstract String programStageLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String eventLabel();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -321,6 +329,10 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder noteLabel(String noteLabel);
 
         public abstract Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel);
+
+        public abstract Builder programStageLabel(String programStageLabel);
+
+        public abstract Builder eventLabel(String eventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 

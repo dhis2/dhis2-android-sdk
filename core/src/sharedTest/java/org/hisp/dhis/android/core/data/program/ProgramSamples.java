@@ -81,6 +81,8 @@ public class ProgramSamples {
                 .relationshipLabel("relationshipLabel")
                 .noteLabel("noteLabel")
                 .trackedEntityAttributeLabel("trackedEntityAttributeLabel")
+                .programStageLabel("programStageLabel")
+                .eventLabel("eventLabel")
                 .build();
         return builder.build();
     }
@@ -125,7 +127,8 @@ public class ProgramSamples {
                 .relationshipLabel("Relationship Label")
                 .noteLabel("Note Label")
                 .trackedEntityAttributeLabel("TrackedEntityAttribute Label")
-
+                .programStageLabel("programStageLabel")
+                .eventLabel("eventLabel")
 
                 .build();
     }

@@ -20,6 +20,8 @@
   "relationshipLabel": "Relationship Label",
   "noteLabel": "Note Label",
   "trackedEntityAttributeLabel": "TrackedEntityAttribute Label",
+  "programStageLabel": "ProgramStage Label",
+  "eventLabel": "Event Label",
   "selectEnrollmentDatesInFuture": false,
   "registration": true,
   "useFirstStageDuringRegistration": false,

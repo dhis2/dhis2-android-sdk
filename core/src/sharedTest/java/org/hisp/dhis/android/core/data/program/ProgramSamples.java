@@ -127,8 +127,8 @@ public class ProgramSamples {
                 .relationshipLabel("Relationship Label")
                 .noteLabel("Note Label")
                 .trackedEntityAttributeLabel("TrackedEntityAttribute Label")
-                .programStageLabel("programStageLabel")
-                .eventLabel("eventLabel")
+                .programStageLabel("ProgramStage Label")
+                .eventLabel("Event Label")
 
                 .build();
     }

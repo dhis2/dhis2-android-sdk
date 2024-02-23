@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
@@ -61,10 +60,11 @@ internal class TrackerLineListService(
             // TODO Validate params
 
             val metadata = metadataHelper.getMetadata(evaluatedParams)
+            val context = TrackerLineListContext(metadata, databaseAdapter)
 
             val sqlClause = when (evaluatedParams.outputType!!) {
-                TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, metadata)
-                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause(evaluatedParams, metadata)
+                TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, context)
+                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause(evaluatedParams, context)
             }
 
             val cursor = databaseAdapter.rawQuery(sqlClause)
@@ -103,9 +103,9 @@ internal class TrackerLineListService(
             .blockingGet()
     }
 
-    private fun getEventSqlClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+    private fun getEventSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return "SELECT " +
-                "${getEventSelectColumns(params, metadata)} " +
+                "${getEventSelectColumns(params, context)} " +
                 "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
                 "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
                 "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
@@ -120,12 +120,12 @@ internal class TrackerLineListService(
                 "WHERE " +
                 "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
                 "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
-                "${getEventWhereClause(params, metadata)} "
+                "${getEventWhereClause(params, context)} "
     }
 
-    private fun getEnrollmentSqlClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+    private fun getEnrollmentSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return "SELECT " +
-                "${getEnrollmentSelectColumns(params, metadata)} " +
+                "${getEnrollmentSelectColumns(params, context)} " +
                 "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
                 if (params.hasOrgunit()) {
                     "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
@@ -136,30 +136,30 @@ internal class TrackerLineListService(
                 } +
                 "WHERE " +
                 "$EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-                "${getEnrollmentWhereClause(params, metadata)} "
+                "${getEnrollmentWhereClause(params, context)} "
     }
 
-    private fun getEventSelectColumns(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+    private fun getEventSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return params.allItems.joinToString(", ") {
-            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getSelectSQLForEvent()}) ${it.id}"
+            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEvent()}) ${it.id}"
         }
     }
 
-    private fun getEventWhereClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+    private fun getEventWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return params.allItems.joinToString(" AND ") {
-            TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getWhereSQLForEvent()
+            TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEvent()
         }
     }
 
-    private fun getEnrollmentSelectColumns(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+    private fun getEnrollmentSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return params.allItems.joinToString(", ") {
-            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getSelectSQLForEnrollment()}) ${it.id}"
+            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEnrollment()}) ${it.id}"
         }
     }
 
-    private fun getEnrollmentWhereClause(params: TrackerLineListParams, metadata: Map<String, MetadataItem>): String {
+    private fun getEnrollmentWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return params.allItems.joinToString(" AND ") {
-            TrackerLineListEvaluatorMapper.getEvaluator(it, metadata).getWhereSQLForEnrollment()
+            TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEnrollment()
         }
     }
 

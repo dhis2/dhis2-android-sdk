@@ -28,34 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
-internal object DataFilterHelper {
-    fun getWhereClause(itemId: String, filters: List<DataFilter>): String {
-        return if (filters.isEmpty()) {
-            "1"
-        } else {
-            return filters.joinToString(" AND ") { getSqlOperator(itemId, it) }
-        }
-    }
-
-    private fun getSqlOperator(itemId: String, filter: DataFilter): String {
-        val comparison = when (filter) {
-            is DataFilter.EqualTo -> "= '${filter.value}'"
-            is DataFilter.NotEqualTo -> "!= '${filter.value}'"
-            is DataFilter.EqualToIgnoreCase -> "= '${filter.value}' COLLATE NOCASE"
-            is DataFilter.NotEqualToIgnoreCase -> "!= '${filter.value}' COLLATE NOCASE"
-            is DataFilter.GreaterThan -> "> ${filter.value}"
-            is DataFilter.GreaterThanOrEqualTo -> ">= ${filter.value}"
-            is DataFilter.LowerThan -> "< ${filter.value}"
-            is DataFilter.LowerThanOrEqualTo -> "<= ${filter.value}"
-            is DataFilter.Like -> "= '%${filter.value}%'"
-            is DataFilter.LikeIgnoreCase -> "= '%${filter.value}%' COLLATE NOCASE"
-            is DataFilter.NotLike -> "!= '%${filter.value}%'"
-            is DataFilter.NotLikeIgnoreCase -> "!= '%${filter.value}%' COLLATE NOCASE"
-            is DataFilter.In -> "IN (${filter.values.joinToString(", ") {"'$it'"}})"
-        }
-
-        return "\"$itemId\" $comparison"
-    }
-}
+data class TrackerLineListContext(
+    val metadata: Map<String, MetadataItem>,
+    val databaseAdapter: DatabaseAdapter,
+)

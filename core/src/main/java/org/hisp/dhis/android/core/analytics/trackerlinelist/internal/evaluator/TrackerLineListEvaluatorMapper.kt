@@ -28,15 +28,16 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
 
 internal object TrackerLineListEvaluatorMapper {
-    fun getEvaluator(item: TrackerLineListItem, metadata: Map<String, MetadataItem>): TrackerLineListEvaluator {
+    fun getEvaluator(item: TrackerLineListItem, context: TrackerLineListContext): TrackerLineListEvaluator {
         return when (item) {
-            is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, metadata)
-            is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, metadata)
-            is TrackerLineListItem.ProgramIndicator -> TODO()
+            is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, context.metadata)
+            is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, context.metadata)
+            is TrackerLineListItem.ProgramIndicator -> ProgramIndicatorEvaluator(item, context)
+
             is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item)
 
             is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)

@@ -30,12 +30,28 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgunitAlias
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
 
 internal class OrganisationUnitEvaluator(
     private val item: TrackerLineListItem.OrganisationUnitItem,
+    context: TrackerLineListContext,
 ) : TrackerLineListEvaluator() {
+
+    private val userOrganisationUnitLinkStore = UserOrganisationUnitLinkStoreImpl(context.databaseAdapter)
+    private val organisationUnitStore = OrganisationUnitStoreImpl(context.databaseAdapter)
+    private val orgunitLevelStore = OrganisationUnitLevelStoreImpl(context.databaseAdapter)
+    private val orgunitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(context.databaseAdapter)
+
     override fun getCommonSelectSQL(): String {
         return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
     }
@@ -50,14 +66,72 @@ internal class OrganisationUnitEvaluator(
 
     private fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
         return when (filter) {
-            is OrganisationUnitFilter.Absolute ->
-                "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%${filter.uid}%'"
+            is OrganisationUnitFilter.Absolute -> inPathOf(filter.uid)
 
-            is OrganisationUnitFilter.Relative -> TODO()
+            is OrganisationUnitFilter.Relative -> {
+                val userAssignedOrgunits = userOrganisationUnitLinkStore
+                    .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
 
-            is OrganisationUnitFilter.Level -> TODO()
+                when (filter.relative) {
+                    RelativeOrganisationUnit.USER_ORGUNIT -> {
+                        inPathOfAny(userAssignedOrgunits)
+                    }
 
-            is OrganisationUnitFilter.Group -> TODO()
+                    RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN -> {
+                        val children = getChildren(userAssignedOrgunits)
+
+                        inPathOfAny(children)
+                    }
+
+                    RelativeOrganisationUnit.USER_ORGUNIT_GRANDCHILDREN -> {
+                        val children = getChildren(userAssignedOrgunits)
+                        val grandChildren = getChildren(children)
+
+                        inPathOfAny(grandChildren)
+                    }
+                }
+            }
+
+            is OrganisationUnitFilter.Level -> {
+                val level = orgunitLevelStore.selectByUid(filter.uid)
+                val orgunits = orgunitLevelStore.selectUidsWhere(
+                    WhereClauseBuilder()
+                        .appendKeyStringValue(OrganisationUnitTableInfo.Columns.LEVEL, level?.level()?.toString())
+                        .build()
+                )
+
+                inPathOfAny(orgunits)
+            }
+
+            is OrganisationUnitFilter.Group -> {
+                val orgunits = orgunitGroupLinkStore.selectWhere(
+                    WhereClauseBuilder()
+                        .appendKeyStringValue(
+                            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
+                            filter.uid
+                        )
+                        .build()
+                )
+
+                inPathOfAny(orgunits.mapNotNull { it.organisationUnit() })
+            }
         }
+    }
+
+    private fun inPathOfAny(orgunits: List<String>): String {
+        val orClauses = orgunits.joinToString(" OR ") { ou -> inPathOf(ou) }
+        return "($orClauses)"
+    }
+
+    private fun inPathOf(orgunit: String): String {
+        return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%${orgunit}%'"
+    }
+
+    private fun getChildren(orgunits: List<String>): List<String> {
+        return organisationUnitStore.selectUidsWhere(
+            WhereClauseBuilder()
+                .appendInKeyStringValues(OrganisationUnitTableInfo.Columns.PARENT, orgunits)
+                .build()
+        )
     }
 }

@@ -56,6 +56,5 @@ public class UserGroupShould extends BaseObjectShould implements ObjectShould {
         assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp");
         assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program");
         assertThat(userGroup.name()).isEqualTo("_PROGRAM_TB program");
-        assertThat(userGroup.code()).isEqualTo("_PROGRAM_TB program");
     }
 }

@@ -25,8 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal
 
-import org.hisp.dhis.android.core.user.UserGroup
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-class IgnoreUserGroupListColumnAdapter : IgnoreColumnAdapter<List<UserGroup>>()
+import org.hisp.dhis.android.core.user.UserGroup;
+
+import java.util.List;
+
+public final class IgnoreUserGroupListColumnAdapter extends IgnoreColumnAdapter<List<UserGroup>> {
+}

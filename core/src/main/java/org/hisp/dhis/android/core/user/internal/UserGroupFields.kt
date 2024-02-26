@@ -27,32 +27,13 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.user.UserGroup
 
-@Singleton
-internal class UserModuleWiper(
-    private val tableWiper: TableWiper,
-) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            UserTableInfo.TABLE_INFO,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO,
-            AuthenticatedUserTableInfo.TABLE_INFO,
-            AuthorityTableInfo.TABLE_INFO,
-            UserRoleTableInfo.TABLE_INFO,
-            UserGroupTableInfo.TABLE_INFO,
-        )
-    }
-
-    override fun wipeData() {
-        // No data to wipe
-    }
+internal object UserGroupFields {
+    private val fh = FieldsHelper<UserGroup>()
+    val allFields: Fields<UserGroup> = Fields.builder<UserGroup>()
+        .fields(fh.getIdentifiableFields())
+        .build()
 }

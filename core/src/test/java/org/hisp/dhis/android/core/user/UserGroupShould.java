@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.user;
 
-@Singleton
-internal class UserModuleWiper(
-    private val tableWiper: TableWiper,
-) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            UserTableInfo.TABLE_INFO,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO,
-            AuthenticatedUserTableInfo.TABLE_INFO,
-            AuthorityTableInfo.TABLE_INFO,
-            UserRoleTableInfo.TABLE_INFO,
-            UserGroupTableInfo.TABLE_INFO,
-        )
+import static com.google.common.truth.Truth.assertThat;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+public class UserGroupShould extends BaseObjectShould implements ObjectShould {
+
+    public UserGroupShould() {
+        super("user/user_group.json");
     }
 
-    override fun wipeData() {
-        // No data to wipe
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        UserGroup userGroup = objectMapper.readValue(jsonStream, UserGroup.class);
+
+        assertThat(userGroup.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251"));
+        assertThat(userGroup.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114"));
+        assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp");
+        assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program");
+        assertThat(userGroup.name()).isEqualTo("_PROGRAM_TB program");
     }
 }

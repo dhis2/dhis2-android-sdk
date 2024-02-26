@@ -25,34 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.data.user;
 
-@Singleton
-internal class UserModuleWiper(
-    private val tableWiper: TableWiper,
-) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            UserTableInfo.TABLE_INFO,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO,
-            AuthenticatedUserTableInfo.TABLE_INFO,
-            AuthorityTableInfo.TABLE_INFO,
-            UserRoleTableInfo.TABLE_INFO,
-            UserGroupTableInfo.TABLE_INFO,
-        )
-    }
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    override fun wipeData() {
-        // No data to wipe
+import org.hisp.dhis.android.core.user.UserGroup;
+
+public class UserGroupSamples {
+
+    public static UserGroup getUserGroup() {
+        UserGroup.Builder builder = UserGroup.builder();
+
+        fillIdentifiableProperties(builder);
+        return builder
+                .id(1L)
+                .build();
     }
 }

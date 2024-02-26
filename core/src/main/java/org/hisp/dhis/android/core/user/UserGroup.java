@@ -25,34 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.user;
 
-@Singleton
-internal class UserModuleWiper(
-    private val tableWiper: TableWiper,
-) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            UserTableInfo.TABLE_INFO,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO,
-            AuthenticatedUserTableInfo.TABLE_INFO,
-            AuthorityTableInfo.TABLE_INFO,
-            UserRoleTableInfo.TABLE_INFO,
-            UserGroupTableInfo.TABLE_INFO,
-        )
+import android.database.Cursor;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
+@AutoValue
+@JsonDeserialize(builder = $$AutoValue_UserGroup.Builder.class)
+public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
+
+    public static Builder builder() {
+        return new $$AutoValue_UserGroup.Builder();
     }
 
-    override fun wipeData() {
-        // No data to wipe
+    public static UserGroup create(Cursor cursor) {
+        return $AutoValue_UserGroup.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract UserGroup build();
     }
 }

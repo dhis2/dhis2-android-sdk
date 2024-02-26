@@ -25,34 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.user.internal.UserGroupStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class UserModuleWiper(
-    private val tableWiper: TableWiper,
-) : ModuleWiper {
-    override fun wipeMetadata() {
-        tableWiper.wipeTables(
-            UserTableInfo.TABLE_INFO,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO,
-            AuthenticatedUserTableInfo.TABLE_INFO,
-            AuthorityTableInfo.TABLE_INFO,
-            UserRoleTableInfo.TABLE_INFO,
-            UserGroupTableInfo.TABLE_INFO,
+class UserGroupCollectionRepository internal constructor(
+    store: UserGroupStore,
+    databaseAdapter: DatabaseAdapter,
+    scope: RepositoryScope,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<UserGroup, UserGroupCollectionRepository>(
+    store,
+    databaseAdapter,
+    childrenAppenders,
+    scope,
+    FilterConnectorFactory(
+        scope,
+    ) { s: RepositoryScope ->
+        UserGroupCollectionRepository(
+            store,
+            databaseAdapter,
+            s,
         )
-    }
-
-    override fun wipeData() {
-        // No data to wipe
+    },
+) {
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<UserGroup> = emptyMap()
     }
 }

@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFiel
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
+import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
 
 object UserFields {
@@ -55,6 +56,7 @@ object UserFields {
     const val NATIONALITY = "nationality"
     const val USER_CREDENTIALS = "userCredentials"
     const val USER_ROLES = "userRoles"
+    const val USER_GROUPS = "userGroups"
     private const val ORGANISATION_UNITS = "organisationUnits"
     private const val TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits"
 
@@ -83,11 +85,13 @@ object UserFields {
     private val organisationUnits = NestedField.create<User, OrganisationUnit>(ORGANISATION_UNITS)
     private val teiSearchOrganisationUnits = NestedField.create<User, OrganisationUnit>(TEI_SEARCH_ORGANISATION_UNITS)
     private val userRoles = NestedField.create<User, UserRole>(USER_ROLES)
+    private val userGroups = NestedField.create<User, UserGroup>(USER_GROUPS)
 
     private fun commonFields(): Fields.Builder<User> {
         return Fields.builder<User>().fields(
             uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle, surname,
             firstName, introduction, employer, interests, languages, email, phoneNumber, nationality, deleted,
+            userGroups.with(UserGroupFields.allFields),
         )
     }
 

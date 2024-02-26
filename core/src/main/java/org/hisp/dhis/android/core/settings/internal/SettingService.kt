@@ -69,4 +69,7 @@ internal interface SettingService {
 
     @GET
     suspend fun latestAppVersion(@Url url: String): LatestAppVersion
+
+    @GET
+    suspend fun versions(@Url url: String): List<LatestAppVersion>
 }

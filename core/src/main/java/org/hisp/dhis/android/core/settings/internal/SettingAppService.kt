@@ -79,6 +79,10 @@ internal class SettingAppService(
         return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
     }
 
+    suspend fun versions(): List<LatestAppVersion> {
+        return settingService.versions("$APK_DISTRIBUTION_NAMESPACE/versions")
+    }
+
     private fun getNamespace(version: SettingsAppDataStoreVersion): String {
         return when (version) {
             SettingsAppDataStoreVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1

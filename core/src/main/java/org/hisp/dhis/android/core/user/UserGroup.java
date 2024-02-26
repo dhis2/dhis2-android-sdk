@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_UserGroup.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_UserGroup.Builder.class)
 public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
 
     public static Builder builder() {

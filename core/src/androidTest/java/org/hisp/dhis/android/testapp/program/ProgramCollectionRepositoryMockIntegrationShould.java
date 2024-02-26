@@ -244,6 +244,22 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void filter_by_program_stage_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byProgramStageLabel().eq("ProgramStage Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_event_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byEventLabel().eq("Event Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_field_color() {
         List<Program> programs = d2.programModule().programs()
                 .byColor().eq("#333")

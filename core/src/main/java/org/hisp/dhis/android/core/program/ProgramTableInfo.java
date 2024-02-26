@@ -81,6 +81,8 @@ public final class ProgramTableInfo {
         public static final String RELATIONSHIP_LABEL = "relationshipLabel";
         public static final String NOTE_LABEL = "noteLabel";
         public static final String TRACKED_ENTITY_ATTRIBUTE_LABEL = "trackedEntityAttributeLabel";
+        public static final String PROGRAM_STAGE_LABEL = "programStageLabel";
+        public static final String EVENT_LABEL = "eventLabel";
 
         @Override
         public String[] all() {
@@ -114,7 +116,9 @@ public final class ProgramTableInfo {
                     ORG_UNIT_LABEL,
                     RELATIONSHIP_LABEL,
                     NOTE_LABEL,
-                    TRACKED_ENTITY_ATTRIBUTE_LABEL
+                    TRACKED_ENTITY_ATTRIBUTE_LABEL,
+                    PROGRAM_STAGE_LABEL,
+                    EVENT_LABEL
             );
         }
     }

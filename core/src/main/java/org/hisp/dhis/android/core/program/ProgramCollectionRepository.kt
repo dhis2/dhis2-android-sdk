@@ -189,6 +189,14 @@ class ProgramCollectionRepository internal constructor(
         return cf.string(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL)
     }
 
+    fun byProgramStageLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.PROGRAM_STAGE_LABEL)
+    }
+
+    fun byEventLabel(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.EVENT_LABEL)
+    }
+
     fun byColor(): StringFilterConnector<ProgramCollectionRepository> {
         return cf.string(ProgramTableInfo.Columns.COLOR)
     }

@@ -67,6 +67,8 @@ class ProgramShould : BaseObjectShould("program/program.json"), ObjectShould {
         assertThat(program.relationshipLabel()).isEqualTo("Relationship Label")
         assertThat(program.noteLabel()).isEqualTo("Note Label")
         assertThat(program.trackedEntityAttributeLabel()).isEqualTo("TrackedEntityAttribute Label")
+        assertThat(program.programStageLabel()).isEqualTo("ProgramStage Label")
+        assertThat(program.eventLabel()).isEqualTo("Event Label")
         assertThat(program.displayFrontPageList()).isFalse()
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION)
         assertThat(program.displayIncidentDate()).isFalse()

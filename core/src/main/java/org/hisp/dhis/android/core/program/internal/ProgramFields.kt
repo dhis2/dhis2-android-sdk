@@ -101,5 +101,7 @@ internal object ProgramFields {
             fh.field<String>(ProgramTableInfo.Columns.RELATIONSHIP_LABEL),
             fh.field<String>(ProgramTableInfo.Columns.NOTE_LABEL),
             fh.field<String>(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.PROGRAM_STAGE_LABEL),
+            fh.field<String>(ProgramTableInfo.Columns.EVENT_LABEL),
         ).build()
 }

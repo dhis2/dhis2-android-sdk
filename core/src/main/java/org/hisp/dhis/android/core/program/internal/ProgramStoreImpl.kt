@@ -93,6 +93,8 @@ internal class ProgramStoreImpl(
                 w.bind(40, o.relationshipLabel())
                 w.bind(41, o.noteLabel())
                 w.bind(42, o.trackedEntityAttributeLabel())
+                w.bind(43, o.programStageLabel())
+                w.bind(44, o.eventLabel())
             }
         }
     }

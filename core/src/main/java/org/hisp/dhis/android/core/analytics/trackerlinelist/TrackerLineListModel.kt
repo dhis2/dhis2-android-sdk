@@ -51,11 +51,25 @@ sealed class TrackerLineListItem(val id: String) {
     data class ProgramAttribute(val uid: String, val filters: List<DataFilter>) : TrackerLineListItem(uid)
 
     data class ProgramDataElement(
-        val uid: String,
+        val dataElement: String,
         val program: String?,
         val programStage: String?,
         val filters: List<DataFilter>,
-    ) : TrackerLineListItem("${program?.let { "$it." } ?: ""}${programStage?.let { "$it." } ?: ""}$uid")
+        val repetitionIndexes: List<Int>?
+    ) : TrackerLineListItem(
+        stageDataElementId(dataElement, program, programStage) +
+                (repetitionIndexes?.joinToString { it.toString() } ?: "")) {
+
+        val stageDataElementIdx = stageDataElementId(dataElement, program, programStage)
+
+        companion object {
+            fun stageDataElementId(dataElement: String, program: String?, programStage: String?): String {
+                return (program?.let { "$it." } ?: "") +
+                        (programStage?.let { "$it." } ?: "") +
+                        dataElement
+            }
+        }
+    }
 
     object CreatedBy : TrackerLineListItem(Label.CreatedBy)
 

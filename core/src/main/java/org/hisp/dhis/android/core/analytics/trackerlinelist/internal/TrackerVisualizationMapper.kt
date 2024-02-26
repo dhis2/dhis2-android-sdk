@@ -151,8 +151,10 @@ internal class TrackerVisualizationMapper(
 
     private fun mapProgramDataElement(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return item.dimension()?.let { uid ->
-            TrackerLineListItem
-                .ProgramDataElement(uid, item.program()?.uid(), item.programStage()?.uid(), mapDataFilters(item))
+            TrackerLineListItem.ProgramDataElement(
+                uid, item.program()?.uid(), item.programStage()?.uid(),
+                mapDataFilters(item), item.repetition()?.indexes()
+            )
         }
     }
 

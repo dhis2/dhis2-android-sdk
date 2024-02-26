@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
@@ -86,14 +87,19 @@ internal class TrackerLineListService(
     }
 
     private fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
-        return if (params.trackerVisualization != null) {
-            val visualization = getTrackerVisualization(params.trackerVisualization)
-                ?: throw AnalyticsException.InvalidVisualization(params.trackerVisualization)
+        return params
+            .run {
+                if (this.trackerVisualization != null) {
+                    val visualization = getTrackerVisualization(this.trackerVisualization)
+                        ?: throw AnalyticsException.InvalidVisualization(this.trackerVisualization)
 
-            trackerVisualizationMapper.toTrackerLineListParams(visualization) + params
-        } else {
-            params
-        }
+                    trackerVisualizationMapper.toTrackerLineListParams(visualization) + this
+                } else {
+                    this
+                }
+            }.run {
+                this.flattenRepeatedDataElements()
+            }
     }
 
     private fun getTrackerVisualization(trackerVisualization: String): TrackerVisualization? {
@@ -141,7 +147,7 @@ internal class TrackerLineListService(
 
     private fun getEventSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return params.allItems.joinToString(", ") {
-            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEvent()}) ${it.id}"
+            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEvent()}) '${it.id}'"
         }
     }
 
@@ -153,13 +159,23 @@ internal class TrackerLineListService(
 
     private fun getEnrollmentSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return params.allItems.joinToString(", ") {
-            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEnrollment()}) ${it.id}"
+            "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEnrollment()}) '${it.id}'"
         }
     }
 
     private fun getEnrollmentWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
-        return params.allItems.joinToString(" AND ") {
-            TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEnrollment()
+        val unflattenedRepeatedDataElements =  params.allItems.groupBy { item ->
+            when (item) {
+                is TrackerLineListItem.ProgramDataElement -> item.stageDataElementIdx
+                else -> item.id
+            }
+        }
+
+        return unflattenedRepeatedDataElements.values.joinToString(" AND ") { items ->
+            val orClause = items.joinToString(" OR ") {
+                TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEnrollment()
+            }
+            "($orClause)"
         }
     }
 
@@ -171,7 +187,7 @@ internal class TrackerLineListService(
                 do {
                     val row: MutableList<TrackerLineListValue> = mutableListOf()
                     params.columns.forEach { item ->
-                        val columnIndex = cursor.getColumnIndex(item.id)
+                        val columnIndex = cursor.columnNames.indexOf(item.id)
                         row.add(TrackerLineListValue(item.id, cursor.getString(columnIndex)))
                     }
                     values.add(row)

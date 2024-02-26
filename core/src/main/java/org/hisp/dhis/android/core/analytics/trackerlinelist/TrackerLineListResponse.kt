@@ -32,9 +32,14 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 
 data class TrackerLineListResponse(
     val metadata: Map<String, MetadataItem>,
-    val headers: List<TrackerLineListItem>,
-    val filters: List<TrackerLineListItem>,
+    val headers: List<TrackerLineListHeader>,
+    val filters: List<TrackerLineListHeader>,
     val rows: List<List<TrackerLineListValue>>,
+)
+
+data class TrackerLineListHeader(
+    val id: String,
+    val repetitionIndex: Int? = null,
 )
 
 data class TrackerLineListValue(

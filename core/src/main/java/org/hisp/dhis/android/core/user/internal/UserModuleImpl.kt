@@ -43,6 +43,7 @@ internal class UserModuleImpl(
     private val logInCall: LogInCall,
     private val authenticatedUser: AuthenticatedUserObjectRepository,
     private val userRoles: UserRoleCollectionRepository,
+    private val userGroups: UserGroupCollectionRepository,
     private val authorities: AuthorityCollectionRepository,
     private val userCredentials: UserCredentialsObjectRepository,
     private val user: UserObjectRepository,
@@ -56,6 +57,10 @@ internal class UserModuleImpl(
 
     override fun userRoles(): UserRoleCollectionRepository {
         return userRoles
+    }
+
+    override fun userGroups(): UserGroupCollectionRepository {
+        return userGroups
     }
 
     override fun authorities(): AuthorityCollectionRepository {

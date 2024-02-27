@@ -63,5 +63,6 @@ public class GeneralSettingsV2Should extends BaseObjectShould implements ObjectS
         assertThat(generalSettings.messageOfTheDay()).isEqualTo("Message of the day");
         assertThat(generalSettings.experimentalFeatures().size()).isEqualTo(1);
         assertThat(generalSettings.experimentalFeatures().get(0)).isEqualTo("newFormLayout");
+        assertThat(generalSettings.bypassDHIS2VersionCheck()).isTrue();
     }
 }

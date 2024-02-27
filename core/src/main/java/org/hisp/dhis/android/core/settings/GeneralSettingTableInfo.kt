@@ -25,57 +25,53 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+object GeneralSettingTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "GeneralSetting"
+        }
 
-public final class GeneralSettingTableInfo {
-
-    private GeneralSettingTableInfo() {
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "GeneralSetting";
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                ENCRYPT_DB,
+                LAST_UPDATED,
+                RESERVED_VALUES,
+                SMS_GATEWAY,
+                SMS_RESULT_SENDER,
+                MATOMO_ID,
+                MATOMO_URL,
+                ALLOW_SCREEN_CAPTURE,
+                MESSAGE_OF_THE_DAY,
+                EXPERIMENTAL_FEATURES,
+                BYPASS_DHIS2_VERSION_CHECK,
+            )
         }
 
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String ENCRYPT_DB = "encryptDB";
-        public static final String LAST_UPDATED = "lastUpdated";
-        public static final String RESERVED_VALUES = "reservedValues";
-        public static final String SMS_GATEWAY = "smsGateway";
-        public static final String SMS_RESULT_SENDER = "smsResultSender";
-        public static final String MATOMO_ID = "matomoID";
-        public static final String MATOMO_URL = "matomoURL";
-        public static final String ALLOW_SCREEN_CAPTURE = "allowScreenCapture";
-        public static final String MESSAGE_OF_THE_DAY = "messageOfTheDay";
-        public static final String EXPERIMENTAL_FEATURES = "experimentalFeatures";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    ENCRYPT_DB,
-                    LAST_UPDATED,
-                    RESERVED_VALUES,
-                    SMS_GATEWAY,
-                    SMS_RESULT_SENDER,
-                    MATOMO_ID,
-                    MATOMO_URL,
-                    ALLOW_SCREEN_CAPTURE,
-                    MESSAGE_OF_THE_DAY,
-                    EXPERIMENTAL_FEATURES
-            );
+        companion object {
+            const val ENCRYPT_DB = "encryptDB"
+            const val LAST_UPDATED = "lastUpdated"
+            const val RESERVED_VALUES = "reservedValues"
+            const val SMS_GATEWAY = "smsGateway"
+            const val SMS_RESULT_SENDER = "smsResultSender"
+            const val MATOMO_ID = "matomoID"
+            const val MATOMO_URL = "matomoURL"
+            const val ALLOW_SCREEN_CAPTURE = "allowScreenCapture"
+            const val MESSAGE_OF_THE_DAY = "messageOfTheDay"
+            const val EXPERIMENTAL_FEATURES = "experimentalFeatures"
+            const val BYPASS_DHIS2_VERSION_CHECK = "bypassDHIS2VersionCheck"
         }
     }
 }

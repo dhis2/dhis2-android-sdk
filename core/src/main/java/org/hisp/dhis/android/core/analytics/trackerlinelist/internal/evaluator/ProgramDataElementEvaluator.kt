@@ -87,7 +87,8 @@ internal class ProgramDataElementEvaluator(
     }
 
     private fun getColumnSql(): String {
-        val dataElementMetadata = metadata[item.dataElement] ?: throw AnalyticsException.InvalidDataElement(item.id)
+        val dataElementMetadata = metadata[item.dataElement]
+            ?: throw AnalyticsException.InvalidDataElement(item.id)
         val dataElement = ((dataElementMetadata) as MetadataItem.DataElementItem).item
 
         return getColumnValueCast(

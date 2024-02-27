@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
@@ -39,7 +41,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("LongParameterList")
 internal class TrackerLineListServiceMetadataHelper(
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val dataElementStore: DataElementStore,
@@ -96,23 +97,26 @@ internal class TrackerLineListServiceMetadataHelper(
 
     private fun getProgramDataElement(item: TrackerLineListItem.ProgramDataElement): List<MetadataItem> {
         val dataElement = dataElementStore.selectByUid(item.dataElement)
+            ?.let { MetadataItem.DataElementItem(it) }
             ?: throw AnalyticsException.InvalidDataElement(item.dataElement)
 
-        /*val program = item.program?.let { getProgram(it) }
-        val programStage = item.programStage?.let { getProgramStage(it) }*/
+        val program = item.program?.let { getProgram(it) }
+            ?.let { MetadataItem.ProgramItem(it) }
+            ?: throw AnalyticsException.InvalidArguments("DataElement ${item.dataElement} has no program defined")
 
-        return listOfNotNull(
-            MetadataItem.DataElementItem(dataElement),
-        )
+        val programStage = item.programStage?.let { getProgramStage(it) }
+            ?.let { MetadataItem.ProgramStageItem(it) }
+
+        return listOfNotNull(dataElement, program, programStage)
     }
 
-    private fun getProgram(programId: String): MetadataItem {
-        /*return programStore.selectByUid(programId)
-            ?: throw AnalyticsException.InvalidProgram(programId)*/
-        TODO()
+    private fun getProgram(programId: String): Program {
+        return programStore.selectByUid(programId)
+            ?: throw AnalyticsException.InvalidProgram(programId)
     }
 
-    private fun getProgramStage(programStageId: String): MetadataItem {
-        TODO()
+    private fun getProgramStage(programStageId: String): ProgramStage {
+        return programStageStore.selectByUid(programStageId)
+            ?: throw AnalyticsException.InvalidProgramStage(programStageId)
     }
 }

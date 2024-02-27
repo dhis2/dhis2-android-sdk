@@ -81,11 +81,11 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegra
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
         val event1 = generator.generate()
-        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period201911.startDate())
+        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period202001.startDate())
         val event2 = generator.generate()
         helper.createTrackerEvent(event2, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period201912.startDate())
         val event3 = generator.generate()
-        helper.createTrackerEvent(event3, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period202001.startDate())
+        helper.createTrackerEvent(event3, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period201911.startDate())
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "8")
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "19")
@@ -112,5 +112,13 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegra
         val row = rows.first()
         assertThat(row.size).isEqualTo(4)
 
+        rows.first().forEachIndexed { index, value ->
+            when (index) {
+                0 -> assertThat(value.value).isEqualTo("2")
+                1 -> assertThat(value.value).isEqualTo("19")
+                2 -> assertThat(value.value).isEqualTo("19")
+                3 -> assertThat(value.value).isEqualTo("8")
+            }
+        }
     }
 }

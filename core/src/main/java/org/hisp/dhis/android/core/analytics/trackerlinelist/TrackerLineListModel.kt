@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsModelHelper.eventDataElementId
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -57,18 +58,10 @@ sealed class TrackerLineListItem(val id: String) {
         val filters: List<DataFilter>,
         val repetitionIndexes: List<Int>?
     ) : TrackerLineListItem(
-        stageDataElementId(dataElement, program, programStage) +
+        eventDataElementId(program, programStage, dataElement) +
                 (repetitionIndexes?.joinToString { it.toString() } ?: "")) {
 
-        val stageDataElementIdx = stageDataElementId(dataElement, program, programStage)
-
-        companion object {
-            fun stageDataElementId(dataElement: String, program: String?, programStage: String?): String {
-                return (program?.let { "$it." } ?: "") +
-                        (programStage?.let { "$it." } ?: "") +
-                        dataElement
-            }
-        }
+        val stageDataElementIdx = eventDataElementId(program, programStage, dataElement)
     }
 
     object CreatedBy : TrackerLineListItem(Label.CreatedBy)

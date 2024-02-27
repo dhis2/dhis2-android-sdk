@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 sealed class MetadataItem(val id: String, val displayName: String) {
@@ -54,6 +55,8 @@ sealed class MetadataItem(val id: String, val displayName: String) {
 
     class IndicatorItem(val item: Indicator) : MetadataItem(item.uid(), item.displayName()!!)
     class ProgramIndicatorItem(val item: ProgramIndicator) : MetadataItem(item.uid(), item.displayName()!!)
+    class ProgramItem(val item: Program) : MetadataItem(item.uid(), item.displayName()!!)
+    class ProgramStageItem(val item: ProgramStage) : MetadataItem(item.uid(), item.displayName()!!)
     class EventDataElementItem(val item: DataElement, val program: Program) :
         MetadataItem("${program.uid()}.${item.uid()}", "${program.displayName()} ${item.displayName()}")
     class EventAttributeItem(val item: TrackedEntityAttribute, val program: Program) :

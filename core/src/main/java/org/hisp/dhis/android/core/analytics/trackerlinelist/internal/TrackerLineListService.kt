@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListServiceHelper.mapCursorToColumns
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
@@ -74,8 +73,8 @@ internal class TrackerLineListService(
             Result.Success(
                 TrackerLineListResponse(
                     metadata = metadata,
-                    headers = emptyList(),
-                    filters = emptyList(),
+                    headers = evaluatedParams.columns,
+                    filters = evaluatedParams.filters,
                     rows = values,
                 ),
             )
@@ -164,7 +163,7 @@ internal class TrackerLineListService(
     }
 
     private fun getEnrollmentWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
-        val unflattenedRepeatedDataElements =  params.allItems.groupBy { item ->
+        val unflattenedRepeatedDataElements = params.allItems.groupBy { item ->
             when (item) {
                 is TrackerLineListItem.ProgramDataElement -> item.stageDataElementIdx
                 else -> item.id
@@ -177,23 +176,5 @@ internal class TrackerLineListService(
             }
             "($orClause)"
         }
-    }
-
-    private fun mapCursorToColumns(params: TrackerLineListParams, cursor: Cursor): List<List<TrackerLineListValue>> {
-        val values: MutableList<List<TrackerLineListValue>> = mutableListOf()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    val row: MutableList<TrackerLineListValue> = mutableListOf()
-                    params.columns.forEach { item ->
-                        val columnIndex = cursor.columnNames.indexOf(item.id)
-                        row.add(TrackerLineListValue(item.id, cursor.getString(columnIndex)))
-                    }
-                    values.add(row)
-                } while (c.moveToNext())
-            }
-        }
-        return values
     }
 }

@@ -64,6 +64,7 @@ internal class GeneralSettingStoreImpl(
             w.bind(8, o.allowScreenCapture())
             w.bind(9, o.messageOfTheDay())
             w.bind(10, StringListColumnAdapter.serialize(o.experimentalFeatures()))
+            w.bind(11, o.bypassDHIS2VersionCheck())
         }
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder {

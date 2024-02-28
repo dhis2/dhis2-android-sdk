@@ -58,8 +58,14 @@ class SMSVersionShould {
     }
 
     @Test
+    fun return_unknown_version_if_patch_does_not_exist_but_bypass_is_true() {
+        val smsVersion = getValue("2.32.100", true)
+        assertThat(smsVersion).isEqualTo(DHISPatchVersion.UNKNOWN.smsVersion)
+    }
+
+    @Test
     fun return_non_null_for_any_version_greater_than_2_32() {
-        DHISVersion.values()
+        DHISVersion.entries
             .filter { it > DHISVersion.V2_32 && it.supported }
             .forEach {
                 assertThat(getValue(it.prefix + ".0")).isNotNull()

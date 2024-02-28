@@ -129,6 +129,14 @@ class SystemInfoCallShould {
     }
 
     @Test
+    fun invoke_set_version_and_check_bypass_Version_after_successful_call() = runTest {
+        systemInfoSyncCall.download(true)
+
+        verify(versionManager).getBypassVersion()
+        verify(versionManager).setVersion(any())
+    }
+
+    @Test
     fun throw_d2_call_exception_when_system_version_not_supported() = runTest {
         whenever(systemInfo.version()).thenReturn("2.28")
 

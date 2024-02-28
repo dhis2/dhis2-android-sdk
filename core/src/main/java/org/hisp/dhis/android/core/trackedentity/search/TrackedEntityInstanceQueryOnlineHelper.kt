@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.koin.core.annotation.Singleton
 import java.util.Date
@@ -70,12 +71,26 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
             }
         }
 
+        // Integrity checks
         return queries.map { query ->
-            if (query.eventStatus == EventStatus.SCHEDULE && query.dueStartDate == null) {
-                query.copy(dueStartDate = Date())
-            } else {
-                query
-            }
+            query
+                .run {
+                    if (this.eventStatus == EventStatus.SCHEDULE && this.dueStartDate == null) {
+                        copy(dueStartDate = Date())
+                    } else {
+                        this
+                    }
+                }
+                .run {
+                    if (this.orgUnitMode == OrganisationUnitMode.ALL ||
+                        this.orgUnitMode == OrganisationUnitMode.ACCESSIBLE ||
+                        this.orgUnitMode == OrganisationUnitMode.CAPTURE
+                    ) {
+                        copy(orgUnits = emptyList())
+                    } else {
+                        this
+                    }
+                }
         }
     }
 

@@ -53,16 +53,19 @@ internal class TrackerLineListService(
     private val metadataHelper: TrackerLineListServiceMetadataHelper,
     private val trackerVisualizationMapper: TrackerVisualizationMapper,
 ) {
+    @Suppress("TooGenericExceptionCaught")
     fun evaluate(params: TrackerLineListParams): Result<TrackerLineListResponse, AnalyticsException> {
         return try {
             val evaluatedParams = evaluateParams(params)
 
-            // TODO Validate params
+            if (evaluatedParams.outputType == null) {
+                throw AnalyticsException.InvalidArguments("Output type cannot be empty.")
+            }
 
             val metadata = metadataHelper.getMetadata(evaluatedParams)
             val context = TrackerLineListContext(metadata, databaseAdapter)
 
-            val sqlClause = when (evaluatedParams.outputType!!) {
+            val sqlClause = when (evaluatedParams.outputType) {
                 TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, context)
                 TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause(evaluatedParams, context)
             }
@@ -110,38 +113,38 @@ internal class TrackerLineListService(
 
     private fun getEventSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return "SELECT " +
-                "${getEventSelectColumns(params, context)} " +
-                "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
-                "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
-                "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
-                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
-                if (params.hasOrgunit()) {
-                    "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
-                            "ON $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT} = " +
-                            "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.UID} "
-                } else {
-                    ""
-                } +
-                "WHERE " +
-                "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-                "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
-                "${getEventWhereClause(params, context)} "
+            "${getEventSelectColumns(params, context)} " +
+            "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
+            "LEFT JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+            "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
+            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+            if (params.hasOrgunit()) {
+                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
+                    "ON $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT} = " +
+                    "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+            } else {
+                ""
+            } +
+            "WHERE " +
+            "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
+            "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
+            "${getEventWhereClause(params, context)} "
     }
 
     private fun getEnrollmentSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return "SELECT " +
-                "${getEnrollmentSelectColumns(params, context)} " +
-                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
-                if (params.hasOrgunit()) {
-                    "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
-                            "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} = " +
-                            "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.UID} "
-                } else {
-                    ""
-                } +
-                "WHERE " +
-                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-                "${getEnrollmentWhereClause(params, context)} "
+            "${getEnrollmentSelectColumns(params, context)} " +
+            "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+            if (params.hasOrgunit()) {
+                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgunitAlias " +
+                    "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} = " +
+                    "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+            } else {
+                ""
+            } +
+            "WHERE " +
+            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
+            "${getEnrollmentWhereClause(params, context)} "
     }
 
     private fun getEventSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {

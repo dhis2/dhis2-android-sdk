@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.T
 import org.hisp.dhis.android.core.event.EventTableInfo
 
 internal class EventDateEvaluator(
-    item: TrackerLineListItem.DateItem.EventDate,
+    item: TrackerLineListItem.EventDate,
 ) : BaseDateEvaluator(item) {
 
     override fun getSelectSQLForEvent(): String {

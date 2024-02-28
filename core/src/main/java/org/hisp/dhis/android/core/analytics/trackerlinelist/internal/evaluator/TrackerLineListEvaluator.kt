@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+
 internal open class TrackerLineListEvaluator {
     open fun getSelectSQLForEvent(): String {
         return getCommonSelectSQL()
@@ -43,10 +45,10 @@ internal open class TrackerLineListEvaluator {
     }
 
     protected open fun getCommonSelectSQL(): String {
-        throw RuntimeException("Not implemented")
+        throw AnalyticsException.SQLException("SELECT clause is not implemented for this evaluator")
     }
 
     protected open fun getCommonWhereSQL(): String {
-        throw RuntimeException("Not implemented")
+        throw AnalyticsException.SQLException("WHERE clause is not implemented for this evaluator")
     }
 }

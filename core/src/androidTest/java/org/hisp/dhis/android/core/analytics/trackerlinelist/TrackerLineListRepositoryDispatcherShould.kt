@@ -26,33 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
+package org.hisp.dhis.android.core.analytics.trackerlinelist
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-internal object TrackerLineListServiceHelper {
-    fun mapCursorToColumns(params: TrackerLineListParams, cursor: Cursor): List<List<TrackerLineListValue>> {
-        val rows: MutableList<List<TrackerLineListValue>> = mutableListOf()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    val row = mapRowValues(cursor, params.columns)
-                    rows.add(row)
-                } while (c.moveToNext())
-            }
-        }
-        return rows
-    }
+@RunWith(D2JunitRunner::class)
+internal class TrackerLineListRepositoryDispatcherShould : BaseMockIntegrationTestFullDispatcher() {
 
-    private fun mapRowValues(cursor: Cursor, columns: List<TrackerLineListItem>): List<TrackerLineListValue> {
-        val row: MutableList<TrackerLineListValue> = mutableListOf()
-        columns.forEach { item ->
-            val columnIndex = cursor.columnNames.indexOf(item.id)
-            row.add(TrackerLineListValue(item.id, cursor.getString(columnIndex)))
-        }
-        return row
+    @Test
+    fun evaluate_program_attributes() {
+        val result = d2.analyticsModule().trackerLineList()
+            .withTrackerVisualization("s85urBIkN0z")
+            .blockingEvaluate()
+
+        val rows = result.getOrThrow().rows
+        assertThat(rows.size).isEqualTo(2)
     }
 }

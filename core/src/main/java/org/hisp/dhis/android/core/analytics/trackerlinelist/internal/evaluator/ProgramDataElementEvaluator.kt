@@ -59,18 +59,18 @@ internal class ProgramDataElementEvaluator(
         val eventIdx = item.repetitionIndexes?.firstOrNull() ?: 0
 
         val eventSelectClause = "IN (SELECT ${EventTableInfo.Columns.UID} " +
-                "FROM ${EventTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
-                (item.programStage?.let { "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' " } ?: "") +
-                "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} ${if (eventIdx <= 0) "DESC" else "ASC"} " +
-                "LIMIT 1 " +
-                "OFFSET ${
-                    if (eventIdx <= 0) {
-                        -eventIdx
-                    } else {
-                        eventIdx - 1
-                    }
-                })"
+            "FROM ${EventTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+            (item.programStage?.let { "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' " } ?: "") +
+            "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} ${if (eventIdx <= 0) "DESC" else "ASC"} " +
+            "LIMIT 1 " +
+            "OFFSET ${
+                if (eventIdx <= 0) {
+                    -eventIdx
+                } else {
+                    eventIdx - 1
+                }
+            })"
 
         return getSelectClause(eventSelectClause)
     }
@@ -81,9 +81,9 @@ internal class ProgramDataElementEvaluator(
 
     private fun getSelectClause(selectEventClause: String): String {
         return "SELECT ${getColumnSql()} " +
-                "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} $selectEventClause " +
-                "AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${item.dataElement}'"
+            "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} $selectEventClause " +
+            "AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${item.dataElement}'"
     }
 
     private fun getColumnSql(): String {

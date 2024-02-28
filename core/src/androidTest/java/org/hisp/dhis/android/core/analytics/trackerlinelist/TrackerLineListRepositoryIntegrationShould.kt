@@ -40,11 +40,17 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Date
 
 @RunWith(D2JunitRunner::class)
 internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegrationShould() {
@@ -55,7 +61,7 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegra
     fun evaluate_program_attributes() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "45")
 
         val result = d2.analyticsModule().trackerLineList()
@@ -79,13 +85,13 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegra
     fun evaluate_repeated_data_elements() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
         val event1 = generator.generate()
-        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period202001.startDate())
+        createDefaultTrackerEvent(event1, enrollment1, eventDate = period202001.startDate())
         val event2 = generator.generate()
-        helper.createTrackerEvent(event2, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period201912.startDate())
+        createDefaultTrackerEvent(event2, enrollment1, eventDate = period201912.startDate())
         val event3 = generator.generate()
-        helper.createTrackerEvent(event3, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(), eventDate = period201911.startDate())
+        createDefaultTrackerEvent(event3, enrollment1, eventDate = period201911.startDate())
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "8")
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "19")
@@ -99,10 +105,10 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegra
                     program = program.uid(),
                     programStage = programStage1.uid(),
                     filters = listOf(
-                        DataFilter.GreaterThan("15")
+                        DataFilter.GreaterThan("15"),
                     ),
-                    repetitionIndexes = listOf(1, 2, 0, -1)
-                )
+                    repetitionIndexes = listOf(1, 2, 0, -1),
+                ),
             )
             .blockingEvaluate()
 
@@ -120,5 +126,142 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseEvaluatorIntegra
                 3 -> assertThat(value.value).isEqualTo("8")
             }
         }
+    }
+
+    @Test
+    fun should_filter_by_date() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1, enrollmentDate = period202001.startDate())
+        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "123")
+
+        helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment2 = generator.generate()
+        createDefaultEnrollment(trackedEntity2.uid(), enrollment2, enrollmentDate = period201912.startDate())
+        helper.insertTrackedEntityAttributeValue(trackedEntity2.uid(), attribute1.uid(), "789")
+
+        // Filter by absolute value
+        val result1 = d2.analyticsModule().trackerLineList()
+            .withEnrollmentOutput(program.uid())
+            .withColumn(TrackerLineListItem.ProgramAttribute(attribute1.uid()))
+            .withColumn(
+                TrackerLineListItem.EnrollmentDate(
+                    filters = listOf(DateFilter.Absolute("2020")),
+                ),
+            )
+            .blockingEvaluate()
+
+        val rows1 = result1.getOrThrow().rows
+        assertThat(rows1.size).isEqualTo(1)
+        assertThat(rows1[0][0].value).isEqualTo("123")
+        assertThat(rows1[0][1].value).isEqualTo("2020-01-01T00:00:00.000")
+
+        // Filter by range
+        val result2 = d2.analyticsModule().trackerLineList()
+            .withEnrollmentOutput(program.uid())
+            .withColumn(TrackerLineListItem.ProgramAttribute(attribute1.uid()))
+            .withColumn(
+                TrackerLineListItem.EnrollmentDate(
+                    filters = listOf(
+                        DateFilter.Range(
+                            startDate = DateUtils.DATE_FORMAT.format(period201911.startDate()!!),
+                            endDate = DateUtils.DATE_FORMAT.format(period201912.endDate()!!),
+                        ),
+                    ),
+                ),
+            )
+            .blockingEvaluate()
+
+        val rows2 = result2.getOrThrow().rows
+        assertThat(rows2.size).isEqualTo(1)
+        assertThat(rows2[0][0].value).isEqualTo("789")
+        assertThat(rows2[0][1].value).isEqualTo("2019-12-01T00:00:00.000")
+    }
+
+    @Test
+    fun evaluate_program_indicator() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1, enrollmentDate = period202001.startDate())
+        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "123")
+
+        val event1 = generator.generate()
+        createDefaultTrackerEvent(event1, enrollment1, eventDate = period202001.startDate())
+        val event2 = generator.generate()
+        createDefaultTrackerEvent(event2, enrollment1, eventDate = period201912.startDate())
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "5")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "10")
+
+        val programIndicator = generator.generate()
+        helper.setProgramIndicatorExpression(
+            programIndicator,
+            program.uid(),
+            expression = "A{${attribute1.uid()}} + #{${programStage1.uid()}.${dataElement1.uid()}}",
+            analyticsType = AnalyticsType.EVENT,
+        )
+
+        val result = d2.analyticsModule().trackerLineList()
+            .withEventOutput(program.uid(), programStage1.uid())
+            .withColumn(TrackerLineListItem.EventDate())
+            .withColumn(TrackerLineListItem.ProgramIndicator(programIndicator))
+            .blockingEvaluate()
+
+        val rows = result.getOrThrow().rows
+        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows[0][0].value).isEqualTo(DateUtils.DATE_FORMAT.format(period202001.startDate()!!))
+        assertThat(rows[0][1].value).isEqualTo("128")
+        assertThat(rows[1][0].value).isEqualTo(DateUtils.DATE_FORMAT.format(period201912.startDate()!!))
+        assertThat(rows[1][1].value).isEqualTo("133")
+    }
+
+    private fun createDefaultEnrollment(
+        teiUid: String,
+        enrollmentUid: String,
+        programUid: String = program.uid(),
+        orgunitUid: String = orgunitChild1.uid(),
+        enrollmentDate: Date? = null,
+        incidentDate: Date? = null,
+        created: Date? = null,
+        lastUpdated: Date? = null,
+        status: EnrollmentStatus? = EnrollmentStatus.ACTIVE,
+    ) {
+        helper.createEnrollment(
+            teiUid,
+            enrollmentUid,
+            programUid,
+            orgunitUid,
+            enrollmentDate,
+            incidentDate,
+            created,
+            lastUpdated,
+            status,
+        )
+    }
+
+    private fun createDefaultTrackerEvent(
+        eventUid: String,
+        enrollmentUid: String,
+        programUid: String = program.uid(),
+        programStageUid: String = programStage1.uid(),
+        orgunitUid: String = orgunitChild1.uid(),
+        deleted: Boolean = false,
+        eventDate: Date? = null,
+        created: Date? = null,
+        lastUpdated: Date? = null,
+        status: EventStatus? = EventStatus.ACTIVE,
+    ) {
+        helper.createTrackerEvent(
+            eventUid,
+            enrollmentUid,
+            programUid,
+            programStageUid,
+            orgunitUid,
+            deleted,
+            eventDate,
+            created,
+            lastUpdated,
+            status,
+        )
     }
 }

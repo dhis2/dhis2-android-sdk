@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.T
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 
 internal class EnrollmentDateEvaluator(
-    item: TrackerLineListItem.DateItem.EnrollmentDate,
+    item: TrackerLineListItem.EnrollmentDate,
 ) : BaseDateEvaluator(item) {
 
     override fun getCommonSelectSQL(): String {

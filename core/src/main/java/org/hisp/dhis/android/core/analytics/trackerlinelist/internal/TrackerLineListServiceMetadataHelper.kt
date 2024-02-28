@@ -91,7 +91,7 @@ internal class TrackerLineListServiceMetadataHelper(
             ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
 
         return listOf(
-            MetadataItem.ProgramIndicatorItem(programIndicator)
+            MetadataItem.ProgramIndicatorItem(programIndicator),
         )
     }
 

@@ -128,11 +128,11 @@ internal class TrackerVisualizationMapper(
 
     private fun mapPeriod(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return when (item.dimension()) {
-            "lastUpdated" -> TrackerLineListItem.DateItem.LastUpdated(mapDateFilters(item))
-            "incidentDate" -> TrackerLineListItem.DateItem.IncidentDate(mapDateFilters(item))
-            "enrollmentDate" -> TrackerLineListItem.DateItem.EnrollmentDate(mapDateFilters(item))
-            "scheduledDate" -> TrackerLineListItem.DateItem.ScheduledDate(mapDateFilters(item))
-            "eventDate" -> TrackerLineListItem.DateItem.EventDate(mapDateFilters(item))
+            "lastUpdated" -> TrackerLineListItem.LastUpdated(mapDateFilters(item))
+            "incidentDate" -> TrackerLineListItem.IncidentDate(mapDateFilters(item))
+            "enrollmentDate" -> TrackerLineListItem.EnrollmentDate(mapDateFilters(item))
+            "scheduledDate" -> TrackerLineListItem.ScheduledDate(mapDateFilters(item))
+            "eventDate" -> TrackerLineListItem.EventDate(mapDateFilters(item))
             else -> null
         }
     }
@@ -152,8 +152,11 @@ internal class TrackerVisualizationMapper(
     private fun mapProgramDataElement(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return item.dimension()?.let { uid ->
             TrackerLineListItem.ProgramDataElement(
-                uid, item.program()?.uid(), item.programStage()?.uid(),
-                mapDataFilters(item), item.repetition()?.indexes()
+                uid,
+                item.program()?.uid(),
+                item.programStage()?.uid(),
+                mapDataFilters(item),
+                item.repetition()?.indexes(),
             )
         }
     }

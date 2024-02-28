@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.DateItem
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodParser
 import java.util.Date
 
 internal abstract class BaseDateEvaluator(
-    private val item: TrackerLineListItem.DateItem,
+    private val item: DateItem,
 ) : TrackerLineListEvaluator() {
 
     private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
@@ -48,7 +48,7 @@ internal abstract class BaseDateEvaluator(
         return if (item.filters.isEmpty()) {
             "1"
         } else {
-            return item.filters.joinToString(" AND ") { getFilterWhereClause(it) }
+            return item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
         }
     }
     private fun getFilterWhereClause(filter: DateFilter): String {
@@ -76,11 +76,11 @@ internal abstract class BaseDateEvaluator(
     private fun betweenDates(startDate: Date, endDate: Date): String {
         return betweenDates(
             startDate = DateUtils.DATE_FORMAT.format(startDate),
-            endDate = DateUtils.DATE_FORMAT.format(endDate)
+            endDate = DateUtils.DATE_FORMAT.format(endDate),
         )
     }
 
     private fun betweenDates(startDate: String, endDate: String): String {
-        return "julianday(${item.id}) > julianday('$startDate') AND julianday(${item.id}) < julianday('$endDate')"
+        return "julianday(${item.id}) >= julianday('$startDate') AND julianday(${item.id}) <= julianday('$endDate')"
     }
 }

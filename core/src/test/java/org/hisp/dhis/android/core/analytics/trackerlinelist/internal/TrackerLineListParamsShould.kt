@@ -47,8 +47,8 @@ class TrackerLineListParamsShould {
             programStageId = "program_stage_uid",
             columns = listOf(
                 TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.GreaterThan("5"))),
-                TrackerLineListItem.ProgramIndicator("indicator", listOf()),
-                TrackerLineListItem.DateItem.EventDate(listOf()),
+                TrackerLineListItem.ProgramIndicator("indicator"),
+                TrackerLineListItem.EventDate(),
             ),
             filters = listOf(),
         )
@@ -62,7 +62,7 @@ class TrackerLineListParamsShould {
                 TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.NotEqualTo("10"))),
             ),
             filters = listOf(
-                TrackerLineListItem.DateItem.EventDate(listOf(DateFilter.Absolute("202405"))),
+                TrackerLineListItem.EventDate(listOf(DateFilter.Absolute("202405"))),
             ),
         )
 
@@ -73,11 +73,11 @@ class TrackerLineListParamsShould {
         assertThat(params.programId).isEqualTo("program_uid")
         assertThat(params.programStageId).isEqualTo("program_stage_uid")
         assertThat(params.columns).containsExactly(
-            TrackerLineListItem.ProgramIndicator("indicator", listOf()),
+            TrackerLineListItem.ProgramIndicator("indicator"),
             TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.NotEqualTo("10"))),
         )
         assertThat(params.filters).containsExactly(
-            TrackerLineListItem.DateItem.EventDate(listOf(DateFilter.Absolute("202405"))),
+            TrackerLineListItem.EventDate(listOf(DateFilter.Absolute("202405"))),
         )
     }
 
@@ -89,7 +89,7 @@ class TrackerLineListParamsShould {
             programId = "programId",
             programStageId = null,
             columns = listOf(
-                TrackerLineListItem.ProgramDataElement("dataElement", null, null, listOf(), listOf(0, -1, -2, 1, 2))
+                TrackerLineListItem.ProgramDataElement("dataElement", null, null, listOf(), listOf(0, -1, -2, 1, 2)),
             ),
             filters = emptyList(),
         )

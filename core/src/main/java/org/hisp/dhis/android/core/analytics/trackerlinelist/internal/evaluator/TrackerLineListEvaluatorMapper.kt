@@ -43,11 +43,11 @@ internal object TrackerLineListEvaluatorMapper {
             is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
             is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
 
-            is TrackerLineListItem.DateItem.LastUpdated -> LastUpdatedEvaluator(item)
-            is TrackerLineListItem.DateItem.IncidentDate -> IncidentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
-            is TrackerLineListItem.DateItem.ScheduledDate -> ScheduledDateEvaluator(item)
-            is TrackerLineListItem.DateItem.EventDate -> EventDateEvaluator(item)
+            is TrackerLineListItem.LastUpdated -> LastUpdatedEvaluator(item)
+            is TrackerLineListItem.IncidentDate -> IncidentDateEvaluator(item)
+            is TrackerLineListItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
+            is TrackerLineListItem.ScheduledDate -> ScheduledDateEvaluator(item)
+            is TrackerLineListItem.EventDate -> EventDateEvaluator(item)
 
             is TrackerLineListItem.CreatedBy -> NotSupportedEvaluator()
             is TrackerLineListItem.LastUpdatedBy -> NotSupportedEvaluator()

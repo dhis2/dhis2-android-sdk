@@ -82,9 +82,9 @@ internal class ProgramIndicatorEvaluator(
         }
 
         return "SELECT CASE ($filterExpression) " +
-                "WHEN 1 THEN ($selectExpression) " +
-                "ELSE '' " +
-                "END"
+            "WHEN 1 THEN ($selectExpression) " +
+            "ELSE '' " +
+            "END"
     }
 
     override fun getCommonWhereSQL(): String {

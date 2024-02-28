@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 
 internal class LastUpdatedEvaluator(
-    item: TrackerLineListItem.DateItem.LastUpdated,
+    item: TrackerLineListItem.LastUpdated,
 ) : BaseDateEvaluator(item) {
 
     override fun getSelectSQLForEvent(): String {

@@ -13,7 +13,10 @@
       "dimensionType": "PERIOD",
       "items": [
         {
-          "id": "LAST_10_YEARS"
+          "id": "2018"
+        },
+        {
+          "id": "2019"
         }
       ],
       "dimension": "enrollmentDate"

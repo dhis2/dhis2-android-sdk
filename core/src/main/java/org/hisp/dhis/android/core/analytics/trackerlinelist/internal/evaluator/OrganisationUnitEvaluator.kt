@@ -97,7 +97,7 @@ internal class OrganisationUnitEvaluator(
                 val orgunits = orgunitLevelStore.selectUidsWhere(
                     WhereClauseBuilder()
                         .appendKeyStringValue(OrganisationUnitTableInfo.Columns.LEVEL, level?.level()?.toString())
-                        .build()
+                        .build(),
                 )
 
                 inPathOfAny(orgunits)
@@ -108,9 +108,9 @@ internal class OrganisationUnitEvaluator(
                     WhereClauseBuilder()
                         .appendKeyStringValue(
                             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-                            filter.uid
+                            filter.uid,
                         )
-                        .build()
+                        .build(),
                 )
 
                 inPathOfAny(orgunits.mapNotNull { it.organisationUnit() })
@@ -124,14 +124,14 @@ internal class OrganisationUnitEvaluator(
     }
 
     private fun inPathOf(orgunit: String): String {
-        return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%${orgunit}%'"
+        return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
     }
 
     private fun getChildren(orgunits: List<String>): List<String> {
         return organisationUnitStore.selectUidsWhere(
             WhereClauseBuilder()
                 .appendInKeyStringValues(OrganisationUnitTableInfo.Columns.PARENT, orgunits)
-                .build()
+                .build(),
         )
     }
 }

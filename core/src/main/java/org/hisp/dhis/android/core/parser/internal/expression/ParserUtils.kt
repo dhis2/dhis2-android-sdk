@@ -93,6 +93,7 @@ internal object ParserUtils {
         ExpressionParser.LEAST to FunctionLeast(),
         ExpressionParser.LOG to FunctionLog(),
         ExpressionParser.LOG10 to FunctionLog10(),
+        ExpressionParser.CONTAINS to FunctionContains(),
 
         // Common variables
         ExpressionParser.OUG_BRACE to ItemOrgUnitGroup(),

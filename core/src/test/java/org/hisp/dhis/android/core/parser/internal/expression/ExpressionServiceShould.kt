@@ -274,6 +274,25 @@ class ExpressionServiceShould {
     }
 
     @Test
+    fun evaluate_contains() {
+        assertEqual("contains('MOLD_ALLERGY,LATEX_ALLERGY', 'MOLD_ALLERGY')", true)
+        assertEqual("contains('MOLD_ALLERGY,LATEX_ALLERGY', 'LATEX_ALLERGY', 'MOLD_ALLERGY')", true)
+        assertEqual("contains('MOLD_ALLERGY,LATEX_ALLERGY', 'ALLERGY')", true)
+        assertEqual("contains('MOLD_ALLERGY,LATEX_ALLERGY', 'RGY,LAT')", true)
+        assertEqual("contains('abcdef', 'abcdef')", true)
+        assertEqual("contains('abcdef', 'bcd')", true)
+        assertEqual("contains('abcdef', 'xyz')", false)
+
+        assertEqual("containsItems('MOLD_ALLERGY,LATEX_ALLERGY', 'MOLD_ALLERGY')", true)
+        assertEqual("containsItems('MOLD_ALLERGY,LATEX_ALLERGY', 'LATEX_ALLERGY', 'MOLD_ALLERGY')", true)
+        assertEqual("containsItems('MOLD_ALLERGY,LATEX_ALLERGY', 'ALLERGY')", false)
+        assertEqual("containsItems('MOLD_ALLERGY,LATEX_ALLERGY', 'RGY,LAT')", false)
+        assertEqual("containsItems('abcdef', 'abcdef')", true)
+        assertEqual("containsItems('abcdef', 'bcd')", false)
+        assertEqual("containsItems('abcdef', 'xyz')", false)
+    }
+
+    @Test
     fun evaluate_divide_by_zero() {
         assertThat(service.getExpressionValue("4 / 0")).isEqualTo(null)
     }
@@ -315,9 +334,9 @@ class ExpressionServiceShould {
     @Test
     fun get_dataelement_ids_in_nested_expressions() {
         val expression = "if(" +
-            "${de(dataElementId1)} > 0, " +
-            "greatest(${de(dataElementId1)}, ${de(dataElementId2)})," +
-            "${deOperand(dataElementId1, categoryOptionComboId1)})"
+                "${de(dataElementId1)} > 0, " +
+                "greatest(${de(dataElementId1)}, ${de(dataElementId2)})," +
+                "${deOperand(dataElementId1, categoryOptionComboId1)})"
 
         val dataElementOperands = service.getDataElementOperands(expression)
         assertThat(dataElementOperands.size).isEqualTo(3)
@@ -339,9 +358,9 @@ class ExpressionServiceShould {
         whenever(constant.displayName()).thenReturn("Constant")
 
         val expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " +
-            de(dataElementId2) + " * " +
-            oug(orgunitGroupId) + " + " +
-            constant(constantId)
+                de(dataElementId2) + " * " +
+                oug(orgunitGroupId) + " + " +
+                constant(constantId)
         val description = service.getExpressionDescription(expression, constantMap)
 
         assertThat(description).isEqualTo("Data Element 1 (COC 1) + Data Element 2 * Org Unit Group + Constant")
@@ -360,13 +379,13 @@ class ExpressionServiceShould {
     @Test
     fun regenerate_expression() {
         val expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " +
-            de(dataElementId2) + " / " +
-            constant(constantId) + " * " +
-            oug(orgunitGroupId) + " - " +
-            "5.0 + " +
-            "'expr' + " +
-            "true + " +
-            days
+                de(dataElementId2) + " / " +
+                constant(constantId) + " * " +
+                oug(orgunitGroupId) + " - " +
+                "5.0 + " +
+                "'expr' + " +
+                "true + " +
+                days
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
             DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0,
             DataElementObject(dataElementId2) to 3.0,
@@ -394,6 +413,10 @@ class ExpressionServiceShould {
             service.regenerateExpression(expression, context)
 
         assertThat(regeneratedExpression).isEqualTo("5.0 + " + de(dataElementId2))
+    }
+
+    private fun assertEqual(expression: String, result: Any) {
+        assertThat(service.getExpressionValue(expression)).isEqualTo(result)
     }
 
     private fun constant(uid: String): String {

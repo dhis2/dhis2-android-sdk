@@ -46,13 +46,13 @@ enum class DHISVersion(internal val prefix: String, internal val supported: Bool
 
     companion object {
         @JvmStatic
-        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean?): DHISVersion? {
+        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean? = false): DHISVersion? {
             return entries.find { versionStr.startsWith(it.prefix).and(it.supported) }
                 ?: bypassDHIS2VersionCheck.takeIf { it == true }?.let { UNKNOWN }
         }
 
         @JvmStatic
-        fun isAllowedVersion(versionStr: String, bypassDHIS2VersionCheck: Boolean?): Boolean {
+        fun isAllowedVersion(versionStr: String, bypassDHIS2VersionCheck: Boolean? = false): Boolean {
             return getValue(versionStr, bypassDHIS2VersionCheck) != null
         }
 

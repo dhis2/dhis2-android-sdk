@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
+import androidx.annotation.VisibleForTesting
+
 interface DHISVersionManager {
     fun getVersion(): DHISVersion
     fun getPatchVersion(): DHISPatchVersion?
@@ -56,4 +58,6 @@ interface DHISVersionManager {
      * @return True if current version is greater or equal than the parameter.
      */
     fun isGreaterOrEqualThan(version: DHISVersion): Boolean
+
+    fun setBypassVersion(bypassDHIS2VersionCheck: Boolean?)
 }

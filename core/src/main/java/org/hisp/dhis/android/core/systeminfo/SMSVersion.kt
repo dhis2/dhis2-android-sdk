@@ -34,7 +34,7 @@ enum class SMSVersion(val intValue: Int) {
 
     companion object {
         @JvmStatic
-        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean?): SMSVersion? {
+        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean? = false): SMSVersion? {
             val patchVersion = DHISPatchVersion.getValue(versionStr, bypassDHIS2VersionCheck)
 
             return if (patchVersion == null) {

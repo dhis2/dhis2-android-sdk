@@ -75,7 +75,7 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
 
     companion object {
         @JvmStatic
-        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean?): DHISPatchVersion? {
+        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean? = false): DHISPatchVersion? {
             return entries.find { versionStr == it.strValue || versionStr.startsWith(it.strValue + "-") }
                 ?: bypassDHIS2VersionCheck.takeIf { it == true }?.let { UNKNOWN }
         }

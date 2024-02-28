@@ -41,17 +41,19 @@ enum class DHISVersion(internal val prefix: String, internal val supported: Bool
     V2_39("2.39"),
     V2_40("2.40"),
     V2_41("2.41"),
+    UNKNOWN("UNKNOWN", false),
     ;
 
     companion object {
         @JvmStatic
-        fun getValue(versionStr: String): DHISVersion? {
+        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean?): DHISVersion? {
             return entries.find { versionStr.startsWith(it.prefix).and(it.supported) }
+                ?: bypassDHIS2VersionCheck.takeIf { it == true }?.let { UNKNOWN }
         }
 
         @JvmStatic
-        fun isAllowedVersion(versionStr: String): Boolean {
-            return getValue(versionStr) != null
+        fun isAllowedVersion(versionStr: String, bypassDHIS2VersionCheck: Boolean?): Boolean {
+            return getValue(versionStr, bypassDHIS2VersionCheck) != null
         }
 
         @JvmStatic

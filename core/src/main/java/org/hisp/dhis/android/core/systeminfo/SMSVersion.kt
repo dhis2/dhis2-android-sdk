@@ -34,18 +34,18 @@ enum class SMSVersion(val intValue: Int) {
 
     companion object {
         @JvmStatic
-        fun getValue(versionStr: String): SMSVersion? {
-            val patchVersion = DHISPatchVersion.getValue(versionStr)
+        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean?): SMSVersion? {
+            val patchVersion = DHISPatchVersion.getValue(versionStr, bypassDHIS2VersionCheck)
 
             return if (patchVersion == null) {
-                DHISVersion.getValue(versionStr)?.let { getLatestInDHISVersion(it) }
+                DHISVersion.getValue(versionStr, bypassDHIS2VersionCheck)?.let { getLatestInDHISVersion(it) }
             } else {
                 patchVersion.smsVersion
             }
         }
 
         private fun getLatestInDHISVersion(dhisVersion: DHISVersion): SMSVersion? {
-            return DHISPatchVersion.values()
+            return DHISPatchVersion.entries
                 .filter { it.majorVersion == dhisVersion && it.smsVersion != null }
                 .fold(null) { latest: SMSVersion?, version ->
                     if (latest == null || latest.intValue < version.smsVersion!!.intValue) {

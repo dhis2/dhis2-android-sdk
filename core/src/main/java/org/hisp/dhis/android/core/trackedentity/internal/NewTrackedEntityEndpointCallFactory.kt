@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 
@@ -230,28 +231,6 @@ internal class NewTrackedEntityEndpointCallFactory(
     private fun mapPayload(payload: TrackerPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
         val newItems = payload.items().map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
         return Payload(newItems)
-    }
-
-    private fun getOrgunits(query: TrackerAPIQuery): String? {
-        return getOrgunits(query.orgUnit?.let { listOf(it) }, query.commonParams.ouMode)
-    }
-
-    private fun getOrgunits(query: TrackedEntityInstanceQueryOnline): String? {
-        return getOrgunits(query.orgUnits, query.orgUnitMode)
-    }
-
-    private fun getOrgunits(orgunits: List<String>?, mode: OrganisationUnitMode?): String? {
-        return if (orgunits.isNullOrEmpty()) {
-            null
-        } else if (
-            mode == OrganisationUnitMode.ALL ||
-            mode == OrganisationUnitMode.ACCESSIBLE ||
-            mode == OrganisationUnitMode.CAPTURE
-        ) {
-            null
-        } else {
-            orgunits.joinToString(";")
-        }
     }
 
     private fun getRelatedProgramUid(item: RelationshipItemRelative): String? {

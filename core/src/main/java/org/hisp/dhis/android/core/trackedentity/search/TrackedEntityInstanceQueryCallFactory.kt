@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSe
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 import java.text.ParseException
@@ -135,7 +136,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
             ) {
                 trackedEntityService.query(
                     trackedEntityInstance = uidsStr,
-                    orgUnit = getOrgunits(query.orgUnits),
+                    orgUnit = getOrgunits(query),
                     orgUnitMode = query.orgUnitMode?.toString(),
                     program = query.program,
                     programStage = query.programStage,
@@ -155,8 +156,8 @@ internal class TrackedEntityInstanceQueryCallFactory(
                     lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                     order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
                     paging = query.paging,
-                    pageSize = query.pageSize,
-                    page = query.page,
+                    pageSize = query.pageSize.takeIf { query.paging },
+                    page = query.page.takeIf { query.paging },
                 )
             }.getOrThrow().let { mapper.transform(it) }
         } catch (pe: ParseException) {
@@ -176,14 +177,6 @@ internal class TrackedEntityInstanceQueryCallFactory(
             EventStatus.VISITED.toString()
         } else {
             query.eventStatus.toString()
-        }
-    }
-
-    private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) {
-            null
-        } else {
-            orgUnits.joinToString(";")
         }
     }
 

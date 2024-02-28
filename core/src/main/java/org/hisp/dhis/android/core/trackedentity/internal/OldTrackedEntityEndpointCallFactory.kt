@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -49,7 +50,7 @@ internal class OldTrackedEntityEndpointCallFactory(
         return trackedEntityInstanceService.getTrackedEntityInstances(
             fields = TrackedEntityInstanceFields.allFields,
             trackedEntityInstances = getUidStr(query),
-            orgUnits = query.orgUnit,
+            orgUnits = getOrgunits(query),
             orgUnitMode = query.commonParams.ouMode.name,
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),

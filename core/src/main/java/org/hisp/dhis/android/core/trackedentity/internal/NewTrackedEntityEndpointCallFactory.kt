@@ -63,7 +63,7 @@ internal class NewTrackedEntityEndpointCallFactory(
         return trackedExporterService.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstances = getUidStr(query),
-            orgUnits = query.orgUnit,
+            orgUnits = getOrgunits(query),
             orgUnitMode = query.commonParams.ouMode.name,
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
@@ -114,14 +114,14 @@ internal class NewTrackedEntityEndpointCallFactory(
                 val instances = getTrackedEntityQuery(teiQuery)
                 TrackerQueryResult(
                     trackedEntities = instances,
-                    exhausted = events.size < query.pageSize,
+                    exhausted = events.size < query.pageSize || !query.paging,
                 )
             }
         } else {
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
                 trackedEntities = instances,
-                exhausted = instances.size < query.pageSize,
+                exhausted = instances.size < query.pageSize || !query.paging,
             )
         }
     }
@@ -163,8 +163,8 @@ internal class NewTrackedEntityEndpointCallFactory(
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
-                pageSize = query.pageSize,
-                page = query.page,
+                pageSize = query.pageSize.takeIf { query.paging },
+                page = query.page.takeIf { query.paging },
                 updatedAfter = query.lastUpdatedStartDate.simpleDateFormat(),
                 updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted,
@@ -181,7 +181,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.asRelationshipFields,
                 trackedEntityInstances = uidsStr,
-                orgUnits = getOrgunits(query.orgUnits),
+                orgUnits = getOrgunits(query),
                 orgUnitMode = query.orgUnitMode?.toString(),
                 program = query.program,
                 programStage = query.programStage,
@@ -201,8 +201,8 @@ internal class NewTrackedEntityEndpointCallFactory(
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 paging = query.paging,
-                page = query.page,
-                pageSize = query.pageSize,
+                page = query.page.takeIf { query.paging },
+                pageSize = query.pageSize.takeIf { query.paging },
             )
 
             mapPayload(payload)
@@ -232,11 +232,25 @@ internal class NewTrackedEntityEndpointCallFactory(
         return Payload(newItems)
     }
 
-    private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) {
+    private fun getOrgunits(query: TrackerAPIQuery): String? {
+        return getOrgunits(query.orgUnit?.let { listOf(it) }, query.commonParams.ouMode)
+    }
+
+    private fun getOrgunits(query: TrackedEntityInstanceQueryOnline): String? {
+        return getOrgunits(query.orgUnits, query.orgUnitMode)
+    }
+
+    private fun getOrgunits(orgunits: List<String>?, mode: OrganisationUnitMode?): String? {
+        return if (orgunits.isNullOrEmpty()) {
+            null
+        } else if (
+            mode == OrganisationUnitMode.ALL ||
+            mode == OrganisationUnitMode.ACCESSIBLE ||
+            mode == OrganisationUnitMode.CAPTURE
+        ) {
             null
         } else {
-            orgUnits.joinToString(";")
+            orgunits.joinToString(";")
         }
     }
 

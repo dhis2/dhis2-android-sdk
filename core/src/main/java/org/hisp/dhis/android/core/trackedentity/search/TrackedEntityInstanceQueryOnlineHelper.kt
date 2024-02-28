@@ -71,26 +71,12 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
             }
         }
 
-        // Integrity checks
         return queries.map { query ->
-            query
-                .run {
-                    if (this.eventStatus == EventStatus.SCHEDULE && this.dueStartDate == null) {
-                        copy(dueStartDate = Date())
-                    } else {
-                        this
-                    }
-                }
-                .run {
-                    if (this.orgUnitMode == OrganisationUnitMode.ALL ||
-                        this.orgUnitMode == OrganisationUnitMode.ACCESSIBLE ||
-                        this.orgUnitMode == OrganisationUnitMode.CAPTURE
-                    ) {
-                        copy(orgUnits = emptyList())
-                    } else {
-                        this
-                    }
-                }
+            if (query.eventStatus == EventStatus.SCHEDULE && query.dueStartDate == null) {
+                query.copy(dueStartDate = Date())
+            } else {
+                query
+            }
         }
     }
 

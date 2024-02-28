@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper.listToStr
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.calendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
@@ -73,34 +72,6 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
 
         assertThat(onlineQueries.size).isEqualTo(1)
         assertThat(onlineQueries[0].attributeFilter.size).isEqualTo(1)
-    }
-
-    @Test
-    fun should_empty_orgunit_list_if_mode_accessible() {
-        val scope = TrackedEntityInstanceQueryRepositoryScope.builder()
-            .orgUnits(listOf("orgunit1"))
-            .orgUnitMode(OrganisationUnitMode.ACCESSIBLE)
-            .build()
-
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].orgUnits).isEmpty()
-        assertThat(onlineQueries[0].orgUnitMode).isEqualTo(OrganisationUnitMode.ACCESSIBLE)
-    }
-
-    @Test
-    fun should_empty_orgunit_list_if_mode_selected() {
-        val scope = TrackedEntityInstanceQueryRepositoryScope.builder()
-            .orgUnits(listOf("orgunit1"))
-            .orgUnitMode(OrganisationUnitMode.SELECTED)
-            .build()
-
-        val onlineQueries = onlineHelper.fromScope(scope)
-
-        assertThat(onlineQueries.size).isEqualTo(1)
-        assertThat(onlineQueries[0].orgUnits).isEqualTo(listOf("orgunit1"))
-        assertThat(onlineQueries[0].orgUnitMode).isEqualTo(OrganisationUnitMode.SELECTED)
     }
 
     @Test

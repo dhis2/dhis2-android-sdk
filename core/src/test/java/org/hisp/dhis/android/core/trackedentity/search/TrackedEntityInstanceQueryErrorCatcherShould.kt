@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Test

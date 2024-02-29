@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,18 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist
+package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.event.EventTableInfo
 
-data class TrackerLineListResponse(
-    val metadata: Map<String, MetadataItem>,
-    val headers: List<TrackerLineListItem>,
-    val filters: List<TrackerLineListItem>,
-    val rows: List<List<TrackerLineListValue>>,
-)
+internal class EventStatusEvaluator(
+    private val item: TrackerLineListItem.EventStatusItem,
+) : TrackerLineListEvaluator() {
 
-data class TrackerLineListValue(
-    val id: String,
-    val value: String?,
-)
+    override fun getSelectSQLForEvent(): String {
+        return "$EventAlias.${EventTableInfo.Columns.STATUS}"
+    }
+
+    override fun getSelectSQLForEnrollment(): String {
+        throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
+    }
+
+    override fun getWhereSQLForEvent(): String {
+        return if (item.filters.isEmpty()) {
+            "1"
+        } else {
+            "${item.id} IN (${item.filters.joinToString(", ") { "'${it.name}'" }})"
+        }
+    }
+
+    override fun getWhereSQLForEnrollment(): String {
+        throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
+    }
+}

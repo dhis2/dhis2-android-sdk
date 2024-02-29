@@ -51,9 +51,9 @@ class TrackerLineListRepositoryShould {
 
     @Test
     fun `Call service with overridden columns`() {
-        val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "program", "programStage", listOf())
+        val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "program", "programStage", listOf(), null)
         val de1_2 = de1_1.copy(filters = listOf(DataFilter.EqualTo("value")))
-        val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "program", "programStage", listOf())
+        val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "program", "programStage", listOf(), null)
 
         repository
             .withColumn(de1_1)
@@ -67,8 +67,8 @@ class TrackerLineListRepositoryShould {
         assertThat(columns.size).isEqualTo(2)
 
         val dataElementColumns = columns.filterIsInstance<TrackerLineListItem.ProgramDataElement>()
-        val de1 = dataElementColumns.find { it.uid == "dataElement1" }!!
-        val de2 = dataElementColumns.find { it.uid == "dataElement2" }!!
+        val de1 = dataElementColumns.find { it.dataElement == "dataElement1" }!!
+        val de2 = dataElementColumns.find { it.dataElement == "dataElement2" }!!
 
         assertThat(de1.filters.size).isEqualTo(1)
         assertThat(de2.filters.size).isEqualTo(0)

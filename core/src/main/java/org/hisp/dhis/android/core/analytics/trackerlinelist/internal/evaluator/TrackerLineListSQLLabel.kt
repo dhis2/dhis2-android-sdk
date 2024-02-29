@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-object TrackerLineListSQLLabel {
-    const val EventAlias = "ev"
-    const val EnrollmentAlias = "en"
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+
+internal object TrackerLineListSQLLabel {
+    const val EventAlias = ProgramIndicatorSQLUtils.event
+    const val EnrollmentAlias = ProgramIndicatorSQLUtils.enrollment
+    const val OrgunitAlias = "ou"
 }

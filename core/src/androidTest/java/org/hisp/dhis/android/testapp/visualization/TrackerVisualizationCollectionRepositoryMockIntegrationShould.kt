@@ -122,7 +122,8 @@ class TrackerVisualizationCollectionRepositoryMockIntegrationShould :
         assertThat(visualization.filters()!!.size).isEqualTo(1)
         assertThat(visualization.filters()!![0].dimension()).isEqualTo("enrollmentDate")
         assertThat(visualization.filters()!![0].dimensionType()).isEqualTo("PERIOD")
-        assertThat(visualization.filters()!![0].items()!!.size).isEqualTo(1)
-        assertThat(visualization.filters()!![0].items()!![0].uid()).isEqualTo("LAST_10_YEARS")
+        assertThat(visualization.filters()!![0].items()!!.size).isEqualTo(2)
+        assertThat(visualization.filters()!![0].items()!![0].uid()).isEqualTo("2018")
+        assertThat(visualization.filters()!![0].items()!![1].uid()).isEqualTo("2019")
     }
 }

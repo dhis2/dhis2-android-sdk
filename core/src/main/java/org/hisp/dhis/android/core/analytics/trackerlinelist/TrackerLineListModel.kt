@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsModelHelper.eventDataElementId
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -35,35 +36,58 @@ import org.hisp.dhis.android.core.event.EventStatus
 
 sealed class TrackerLineListItem(val id: String) {
 
-    class OrganisationUnitItem(val filters: List<OrganisationUnitFilter>) :
+    data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter>) :
         TrackerLineListItem(Label.OrganisationUnit)
 
-    sealed class DateItem(id: String) : TrackerLineListItem(id) {
-        data class LastUpdated(val filters: List<DateFilter>) : DateItem(Label.LastUpdated)
-        data class IncidentDate(val filters: List<DateFilter>) : DateItem(Label.IncidentDate)
-        data class EnrollmentDate(val filters: List<DateFilter>) : DateItem(Label.EnrollmentDate)
-        data class ScheduledDate(val filters: List<DateFilter>) : DateItem(Label.ScheduledDate)
-        data class EventDate(val filters: List<DateFilter>) : DateItem(Label.EventDate)
-    }
+    data class LastUpdated(override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.LastUpdated), DateItem
 
-    data class ProgramIndicator(val uid: String, val filters: List<DataFilter>) : TrackerLineListItem(uid)
+    data class IncidentDate(override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.IncidentDate), DateItem
 
-    data class ProgramAttribute(val uid: String, val filters: List<DataFilter>) : TrackerLineListItem(uid)
+    data class EnrollmentDate(override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.EnrollmentDate), DateItem
+
+    data class ScheduledDate(override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.ScheduledDate), DateItem
+
+    data class EventDate(override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.EventDate), DateItem
+
+    data class ProgramIndicator(val uid: String, val filters: List<DataFilter> = emptyList()) :
+        TrackerLineListItem(uid)
+
+    data class ProgramAttribute(val uid: String, val filters: List<DataFilter> = emptyList()) :
+        TrackerLineListItem(uid)
 
     data class ProgramDataElement(
-        val uid: String,
+        val dataElement: String,
         val program: String?,
         val programStage: String?,
-        val filters: List<DataFilter>,
-    ) : TrackerLineListItem("${program?.let { "$it." } ?: ""}${programStage?.let { "$it." } ?: ""}$uid")
+        val filters: List<DataFilter> = emptyList(),
+        val repetitionIndexes: List<Int>? = null,
+    ) : TrackerLineListItem(
+        eventDataElementId(program, programStage, dataElement) +
+            (repetitionIndexes?.joinToString { it.toString() } ?: ""),
+    ) {
+
+        val stageDataElementIdx = eventDataElementId(program, programStage, dataElement)
+    }
+
+    data class ProgramStatusItem(val filters: List<EnrollmentStatus> = emptyList()) :
+        TrackerLineListItem(Label.ProgramStatus)
+
+    data class EventStatusItem(val filters: List<EventStatus> = emptyList()) :
+        TrackerLineListItem(Label.EventStatus)
 
     object CreatedBy : TrackerLineListItem(Label.CreatedBy)
 
     object LastUpdatedBy : TrackerLineListItem(Label.LastUpdatedBy)
+}
 
-    data class ProgramStatusItem(val filters: List<EnrollmentStatus>) : TrackerLineListItem(Label.ProgramStatus)
-
-    data class EventStatusItem(val filters: List<EventStatus>) : TrackerLineListItem(Label.EventStatus)
+internal interface DateItem {
+    val id: String
+    val filters: List<DateFilter>
 }
 
 sealed class OrganisationUnitFilter {

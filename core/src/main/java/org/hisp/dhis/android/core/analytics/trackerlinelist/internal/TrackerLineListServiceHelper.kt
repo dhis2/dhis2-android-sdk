@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,18 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist
+package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import android.database.Cursor
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
 
-data class TrackerLineListResponse(
-    val metadata: Map<String, MetadataItem>,
-    val headers: List<TrackerLineListItem>,
-    val filters: List<TrackerLineListItem>,
-    val rows: List<List<TrackerLineListValue>>,
-)
+internal object TrackerLineListServiceHelper {
+    fun mapCursorToColumns(params: TrackerLineListParams, cursor: Cursor): List<List<TrackerLineListValue>> {
+        val rows: MutableList<List<TrackerLineListValue>> = mutableListOf()
+        cursor.use { c ->
+            if (c.count > 0) {
+                c.moveToFirst()
+                do {
+                    val row = mapRowValues(cursor, params.columns)
+                    rows.add(row)
+                } while (c.moveToNext())
+            }
+        }
+        return rows
+    }
 
-data class TrackerLineListValue(
-    val id: String,
-    val value: String?,
-)
+    private fun mapRowValues(cursor: Cursor, columns: List<TrackerLineListItem>): List<TrackerLineListValue> {
+        val row: MutableList<TrackerLineListValue> = mutableListOf()
+        columns.forEach { item ->
+            val columnIndex = cursor.columnNames.indexOf(item.id)
+            row.add(TrackerLineListValue(item.id, cursor.getString(columnIndex)))
+        }
+        return row
+    }
+}

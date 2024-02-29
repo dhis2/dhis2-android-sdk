@@ -38,6 +38,8 @@ internal data class TrackerLineListParams(
     val columns: List<TrackerLineListItem>,
     val filters: List<TrackerLineListItem>,
 ) {
+    val allItems = columns + filters
+
     operator fun plus(other: TrackerLineListParams): TrackerLineListParams {
         return copy(
             outputType = other.outputType ?: outputType,
@@ -62,5 +64,46 @@ internal data class TrackerLineListParams(
             columns = columns.filterNot { it.id == item.id },
             filters = filters.filterNot { it.id == item.id } + item,
         )
+    }
+
+    fun hasOrgunit(): Boolean {
+        return (columns + filters).any { it is TrackerLineListItem.OrganisationUnitItem }
+    }
+
+    fun flattenRepeatedDataElements(): TrackerLineListParams {
+        return this.copy(
+            columns = flattenRepeatedDataElements(this.columns),
+            filters = flattenRepeatedDataElements(this.filters),
+        )
+    }
+
+    private fun flattenRepeatedDataElements(items: List<TrackerLineListItem>): List<TrackerLineListItem> {
+        return items.map { item ->
+            when (item) {
+                is TrackerLineListItem.ProgramDataElement -> flattenDataElement(item)
+                else -> listOf(item)
+            }
+        }.flatten()
+    }
+
+    private fun flattenDataElement(item: TrackerLineListItem.ProgramDataElement): List<TrackerLineListItem> {
+        val flattenDataElements =
+            if (item.repetitionIndexes.isNullOrEmpty()) {
+                listOf(item)
+            } else {
+                sortIndexes(item.repetitionIndexes).map { idx -> item.copy(repetitionIndexes = listOf(idx)) }
+            }
+
+        return flattenDataElements.map {
+            it.copy(
+                program = it.program ?: programId,
+                programStage = it.programStage ?: programStageId,
+            )
+        }
+    }
+
+    private fun sortIndexes(indexes: List<Int>): List<Int> {
+        val (positive, negativeOrZero) = indexes.sorted().partition { it > 0 }
+        return positive + negativeOrZero
     }
 }

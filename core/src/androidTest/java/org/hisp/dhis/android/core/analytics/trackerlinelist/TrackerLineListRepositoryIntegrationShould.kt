@@ -30,24 +30,20 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
+import org.junit.runner.RunWith
 
-class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+@RunWith(D2JunitRunner::class)
+internal class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+
     @Test
-    fun evaluate_program_attributes() {
+    fun evaluate_tracker_visualization() {
         val result = d2.analyticsModule().trackerLineList()
-            .withEventOutput("IpHINAT79UW", "dBwrot7S420")
-            .withColumn(
-                TrackerLineListItem.ProgramAttribute(
-                    uid = "cejWyOfXge6",
-                    filters = listOf(
-                        DataFilter.GreaterThan("400000"),
-                        DataFilter.LowerThan("700000"),
-                    ),
-                ),
-            )
+            .withTrackerVisualization("s85urBIkN0z")
             .blockingEvaluate()
 
-        assertThat(result.getOrThrow().rows.size).isEqualTo(1)
+        val rows = result.getOrThrow().rows
+        assertThat(rows.size).isEqualTo(2)
     }
 }

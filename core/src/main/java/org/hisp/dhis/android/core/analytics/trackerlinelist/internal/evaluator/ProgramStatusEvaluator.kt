@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,18 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist
+package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 
-data class TrackerLineListResponse(
-    val metadata: Map<String, MetadataItem>,
-    val headers: List<TrackerLineListItem>,
-    val filters: List<TrackerLineListItem>,
-    val rows: List<List<TrackerLineListValue>>,
-)
+internal class ProgramStatusEvaluator(
+    private val item: TrackerLineListItem.ProgramStatusItem,
+) : TrackerLineListEvaluator() {
 
-data class TrackerLineListValue(
-    val id: String,
-    val value: String?,
-)
+    override fun getCommonSelectSQL(): String {
+        return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.STATUS}"
+    }
+
+    override fun getCommonWhereSQL(): String {
+        return if (item.filters.isEmpty()) {
+            "1"
+        } else {
+            "${item.id} IN (${item.filters.joinToString(", ") { "'${it.name}'" }})"
+        }
+    }
+}

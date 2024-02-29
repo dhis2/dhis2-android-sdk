@@ -47,8 +47,8 @@ class TrackerLineListParamsShould {
             programStageId = "program_stage_uid",
             columns = listOf(
                 TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.GreaterThan("5"))),
-                TrackerLineListItem.ProgramIndicator("indicator", listOf()),
-                TrackerLineListItem.DateItem.EventDate(listOf()),
+                TrackerLineListItem.ProgramIndicator("indicator"),
+                TrackerLineListItem.EventDate(),
             ),
             filters = listOf(),
         )
@@ -62,7 +62,7 @@ class TrackerLineListParamsShould {
                 TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.NotEqualTo("10"))),
             ),
             filters = listOf(
-                TrackerLineListItem.DateItem.EventDate(listOf(DateFilter.Absolute("202405"))),
+                TrackerLineListItem.EventDate(listOf(DateFilter.Absolute("202405"))),
             ),
         )
 
@@ -73,11 +73,43 @@ class TrackerLineListParamsShould {
         assertThat(params.programId).isEqualTo("program_uid")
         assertThat(params.programStageId).isEqualTo("program_stage_uid")
         assertThat(params.columns).containsExactly(
-            TrackerLineListItem.ProgramIndicator("indicator", listOf()),
+            TrackerLineListItem.ProgramIndicator("indicator"),
             TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.NotEqualTo("10"))),
         )
         assertThat(params.filters).containsExactly(
-            TrackerLineListItem.DateItem.EventDate(listOf(DateFilter.Absolute("202405"))),
+            TrackerLineListItem.EventDate(listOf(DateFilter.Absolute("202405"))),
         )
+    }
+
+    @Test
+    fun should_flatten_repeated_data_elements() {
+        val params = TrackerLineListParams(
+            trackerVisualization = null,
+            outputType = TrackerLineListOutputType.ENROLLMENT,
+            programId = "programId",
+            programStageId = null,
+            columns = listOf(
+                TrackerLineListItem.ProgramDataElement("dataElement", null, null, listOf(), listOf(0, -1, -2, 1, 2)),
+            ),
+            filters = emptyList(),
+        )
+
+        val flattenedParams = params.flattenRepeatedDataElements()
+
+        assertThat(flattenedParams.columns.size).isEqualTo(5)
+
+        flattenedParams.columns.map { it as TrackerLineListItem.ProgramDataElement }.forEachIndexed { index, item ->
+            when (index) {
+                0 -> assertIndex(item, 1)
+                1 -> assertIndex(item, 2)
+                2 -> assertIndex(item, -2)
+                3 -> assertIndex(item, -1)
+                4 -> assertIndex(item, 0)
+            }
+        }
+    }
+
+    private fun assertIndex(item: TrackerLineListItem.ProgramDataElement, idx: Int) {
+        assertThat(item.repetitionIndexes!!.first()).isEqualTo(idx)
     }
 }

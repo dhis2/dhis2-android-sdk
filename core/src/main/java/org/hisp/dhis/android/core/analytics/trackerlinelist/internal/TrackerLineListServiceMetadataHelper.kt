@@ -31,13 +31,22 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("LongParameterList")
 internal class TrackerLineListServiceMetadataHelper(
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
+    private val dataElementStore: DataElementStore,
+    private val programIndicatorStore: ProgramIndicatorStore,
+    private val programStore: ProgramStore,
+    private val programStageStore: ProgramStageStore,
 ) {
 
     fun getMetadata(params: TrackerLineListParams): Map<String, MetadataItem> {
@@ -56,6 +65,8 @@ internal class TrackerLineListServiceMetadataHelper(
         if (!metadata.containsKey(item.id)) {
             val metadataItems = when (item) {
                 is TrackerLineListItem.ProgramAttribute -> getProgramAttributeItems(item)
+                is TrackerLineListItem.ProgramDataElement -> getProgramDataElement(item)
+                is TrackerLineListItem.ProgramIndicator -> getProgramIndicator(item)
                 else -> emptyList()
             }
             val metadataItemsMap = metadataItems.associateBy { it.id }
@@ -73,5 +84,39 @@ internal class TrackerLineListServiceMetadataHelper(
         return listOf(
             MetadataItem.TrackedEntityAttributeItem(attribute),
         )
+    }
+
+    private fun getProgramIndicator(item: TrackerLineListItem.ProgramIndicator): List<MetadataItem> {
+        val programIndicator = programIndicatorStore.selectByUid(item.uid)
+            ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
+
+        return listOf(
+            MetadataItem.ProgramIndicatorItem(programIndicator),
+        )
+    }
+
+    private fun getProgramDataElement(item: TrackerLineListItem.ProgramDataElement): List<MetadataItem> {
+        val dataElement = dataElementStore.selectByUid(item.dataElement)
+            ?.let { MetadataItem.DataElementItem(it) }
+            ?: throw AnalyticsException.InvalidDataElement(item.dataElement)
+
+        val program = item.program?.let { getProgram(it) }
+            ?.let { MetadataItem.ProgramItem(it) }
+            ?: throw AnalyticsException.InvalidArguments("DataElement ${item.dataElement} has no program defined")
+
+        val programStage = item.programStage?.let { getProgramStage(it) }
+            ?.let { MetadataItem.ProgramStageItem(it) }
+
+        return listOfNotNull(dataElement, program, programStage)
+    }
+
+    private fun getProgram(programId: String): Program {
+        return programStore.selectByUid(programId)
+            ?: throw AnalyticsException.InvalidProgram(programId)
+    }
+
+    private fun getProgramStage(programStageId: String): ProgramStage {
+        return programStageStore.selectByUid(programStageId)
+            ?: throw AnalyticsException.InvalidProgramStage(programStageId)
     }
 }

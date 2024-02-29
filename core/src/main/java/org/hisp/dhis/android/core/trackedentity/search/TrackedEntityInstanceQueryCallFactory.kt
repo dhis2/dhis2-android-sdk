@@ -102,7 +102,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
         return coroutineAPICallExecutor.wrap(storeError = false) {
             eventService.getEvents(
                 fields = EventFields.teiQueryFields,
-                orgUnit = orgunit,
+                orgUnit = getOrgunits(orgunit, query.orgUnitMode),
                 orgUnitMode = query.orgUnitMode?.toString(),
                 status = query.eventStatus?.toString(),
                 program = query.program,
@@ -117,8 +117,8 @@ internal class TrackedEntityInstanceQueryCallFactory(
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
-                pageSize = query.pageSize,
-                page = query.page,
+                pageSize = query.pageSize.takeIf { query.paging },
+                page = query.page.takeIf { query.paging },
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted,

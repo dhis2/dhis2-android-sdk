@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -42,7 +43,7 @@ internal class OldEventEndpointCallFactory(
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         return service.getEvents(
             fields = EventFields.allFields,
-            orgUnit = eventQuery.orgUnit,
+            orgUnit = getOrgunits(eventQuery),
             orgUnitMode = eventQuery.commonParams.ouMode.name,
             program = eventQuery.commonParams.program,
             startDate = getEventStartDate(eventQuery),

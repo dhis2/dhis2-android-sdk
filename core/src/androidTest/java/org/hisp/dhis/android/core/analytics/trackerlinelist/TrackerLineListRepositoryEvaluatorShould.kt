@@ -215,6 +215,26 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         assertThat(rows[1][1].value).isEqualTo("133")
     }
 
+    @Test
+    fun evaluate_single_events() {
+        val event1 = generator.generate()
+        helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+        val event2 = generator.generate()
+        helper.createSingleEvent(event2, program.uid(), programStage1.uid(), orgunitChild1.uid())
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "5")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "10")
+
+        val result = d2.analyticsModule().trackerLineList()
+            .withEventOutput(program.uid(), programStage1.uid())
+            .withColumn(TrackerLineListItem.ProgramDataElement(dataElement1.uid(), program.uid(), programStage1.uid()))
+            .blockingEvaluate()
+
+        val rows = result.getOrThrow().rows
+        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows.flatten().map { it.value }).containsExactly("5", "10")
+    }
+
     private fun createDefaultEnrollment(
         teiUid: String,
         enrollmentUid: String,

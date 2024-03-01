@@ -1,5 +1,5 @@
 [versions]
-gradle = "8.2.2"
+gradle = "8.3.0"
 kotlin = "1.9.21"
 ktlint = "11.5.1"
 jacoco = "0.8.10"

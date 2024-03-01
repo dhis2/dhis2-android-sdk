@@ -220,6 +220,12 @@ object BaseEvaluatorSamples {
         .valueType(ValueType.INTEGER)
         .build()
 
+    val attribute2 = TrackedEntityAttribute.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 2")
+        .valueType(ValueType.TEXT)
+        .build()
+
     val period2019SunW25: Period = Period.builder()
         .periodId("2019SunW25")
         .periodType(PeriodType.WeeklySunday)

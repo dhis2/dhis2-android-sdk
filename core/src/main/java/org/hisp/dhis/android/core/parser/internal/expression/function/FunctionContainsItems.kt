@@ -31,15 +31,15 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class FunctionContains : ExpressionItem {
+internal class FunctionContainsItems : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val values = ctx.expr().map(visitor::castStringVisit)
 
-        val targetValue = values[0]
+        val targetValues = values[0].split(",")
         val containedValues = values.drop(1)
 
-        return containedValues.all { targetValue.contains(it) }
+        return containedValues.all { targetValues.contains(it) }
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
@@ -48,6 +48,9 @@ internal class FunctionContains : ExpressionItem {
         val targetValue = values[0]
         val containedValues = values.drop(1).map { it.trimStart('\'').trimEnd('\'') }
 
-        return "(${containedValues.joinToString(" AND ") { "$targetValue LIKE '%$it%'" }})"
+        val sql = "(${containedValues.joinToString(" AND ") {
+            "($targetValue LIKE '%,$it' OR $targetValue LIKE '$it,%' OR $targetValue LIKE '%,$it,%')"
+        }})"
+        return sql
     }
 }

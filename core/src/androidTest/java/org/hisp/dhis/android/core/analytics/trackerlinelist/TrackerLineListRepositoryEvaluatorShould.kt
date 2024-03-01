@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
@@ -213,6 +214,41 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         assertThat(rows[0][1].value).isEqualTo("128")
         assertThat(rows[1][0].value).isEqualTo(DateUtils.DATE_FORMAT.format(period201912.startDate()!!))
         assertThat(rows[1][1].value).isEqualTo("133")
+    }
+
+    @Test
+    fun evaluate_contains_functions() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1, enrollmentDate = period202001.startDate())
+        helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute2.uid(), "ALLERGY,LATEX")
+
+        fun evaluateExpression(expression: String, expected: String) {
+            val programIndicator = generator.generate()
+            helper.setProgramIndicatorExpression(
+                programIndicator,
+                program.uid(),
+                expression = expression,
+                analyticsType = AnalyticsType.ENROLLMENT,
+            )
+
+            val result = d2.analyticsModule().trackerLineList()
+                .withEnrollmentOutput(program.uid())
+                .withColumn(TrackerLineListItem.ProgramIndicator(programIndicator))
+                .blockingEvaluate()
+
+            val rows = result.getOrThrow().rows
+            assertThat(rows.size).isEqualTo(1)
+            assertThat(rows.first().first().value).isEqualTo(expected)
+        }
+
+        evaluateExpression("if(contains(A{${attribute2.uid()}}, 'LATEX', 'ALLERGY'), '1', '0')", "1")
+        evaluateExpression("if(contains(A{${attribute2.uid()}}, 'GY,LA'), '1', '0')", "1")
+        evaluateExpression("if(contains(A{${attribute2.uid()}}, 'xy', 'ALLERGY'), '1', '0')", "0")
+
+        evaluateExpression("if(containsItems(A{${attribute2.uid()}}, 'LATEX', 'ALLERGY'), '1', '0')", "1")
+        evaluateExpression("if(containsItems(A{${attribute2.uid()}}, 'GY,LA'), '1', '0')", "0")
+        evaluateExpression("if(containsItems(A{${attribute2.uid()}}, 'xy', 'ALLERGY'), '1', '0')", "0")
     }
 
     @Test

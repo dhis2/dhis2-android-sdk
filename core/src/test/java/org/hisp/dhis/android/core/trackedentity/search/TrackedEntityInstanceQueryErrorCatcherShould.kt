@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +43,7 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
     @Test
     fun return_too_many_orgunits() {
         val response =
-            Response.error<Any>(HttpsURLConnection.HTTP_REQ_TOO_LONG, ResponseBody.create(null, ""))
+            Response.error<Any>(HttpsURLConnection.HTTP_REQ_TOO_LONG, "".toResponseBody(null))
 
         assertThat(catcher.catchError(response, response.errorBody()!!.string()))
             .isEqualTo(D2ErrorCode.TOO_MANY_ORG_UNITS)
@@ -59,7 +59,7 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "message": "maxteicountreached"
             }"""
 
-        val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
+        val response = Response.error<Any>(409, responseError.toResponseBody(null))
         assertThat(catcher.catchError(response, response.errorBody()!!.string()))
             .isEqualTo(D2ErrorCode.MAX_TEI_COUNT_REACHED)
     }
@@ -74,7 +74,23 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "message": "Organisation unit is not part of the search scope: O6uvpzGd5pu"
             }"""
 
-        val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
+        val response = Response.error<Any>(409, responseError.toResponseBody(null))
+        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+            .isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE)
+    }
+
+    @Test
+    fun return_orgunit_not_in_search_scope_v41() {
+        val responseError =
+            """{
+                "httpStatus": "Forbidden",
+                "httpStatusCode": 403,
+                "status": "ERROR",
+                "message": "Organisation unit is not part of the search scope: vWbkYPRmKyS",
+                "errorCode": "E1006"
+            }"""
+
+        val response = Response.error<Any>(403, responseError.toResponseBody(null))
         assertThat(catcher.catchError(response, response.errorBody()!!.string()))
             .isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE)
     }
@@ -89,7 +105,7 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "message": "At least 1 attributes should be mentioned in the search criteria."
             }"""
 
-        val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
+        val response = Response.error<Any>(409, responseError.toResponseBody(null))
         assertThat(catcher.catchError(response, response.errorBody()!!.string()))
             .isEqualTo(D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED)
     }

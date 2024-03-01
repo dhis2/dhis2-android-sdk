@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 
@@ -63,7 +64,7 @@ internal class NewTrackedEntityEndpointCallFactory(
         return trackedExporterService.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstances = getUidStr(query),
-            orgUnits = query.orgUnit,
+            orgUnits = getOrgunits(query),
             orgUnitMode = query.commonParams.ouMode.name,
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
@@ -114,14 +115,14 @@ internal class NewTrackedEntityEndpointCallFactory(
                 val instances = getTrackedEntityQuery(teiQuery)
                 TrackerQueryResult(
                     trackedEntities = instances,
-                    exhausted = events.size < query.pageSize,
+                    exhausted = events.size < query.pageSize || !query.paging,
                 )
             }
         } else {
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
                 trackedEntities = instances,
-                exhausted = instances.size < query.pageSize,
+                exhausted = instances.size < query.pageSize || !query.paging,
             )
         }
     }
@@ -163,8 +164,8 @@ internal class NewTrackedEntityEndpointCallFactory(
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
-                pageSize = query.pageSize,
-                page = query.page,
+                pageSize = query.pageSize.takeIf { query.paging },
+                page = query.page.takeIf { query.paging },
                 updatedAfter = query.lastUpdatedStartDate.simpleDateFormat(),
                 updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted,
@@ -181,7 +182,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.asRelationshipFields,
                 trackedEntityInstances = uidsStr,
-                orgUnits = getOrgunits(query.orgUnits),
+                orgUnits = getOrgunits(query),
                 orgUnitMode = query.orgUnitMode?.toString(),
                 program = query.program,
                 programStage = query.programStage,
@@ -201,8 +202,8 @@ internal class NewTrackedEntityEndpointCallFactory(
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 paging = query.paging,
-                page = query.page,
-                pageSize = query.pageSize,
+                page = query.page.takeIf { query.paging },
+                pageSize = query.pageSize.takeIf { query.paging },
             )
 
             mapPayload(payload)
@@ -230,14 +231,6 @@ internal class NewTrackedEntityEndpointCallFactory(
     private fun mapPayload(payload: TrackerPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
         val newItems = payload.items().map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
         return Payload(newItems)
-    }
-
-    private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) {
-            null
-        } else {
-            orgUnits.joinToString(";")
-        }
     }
 
     private fun getRelatedProgramUid(item: RelationshipItemRelative): String? {

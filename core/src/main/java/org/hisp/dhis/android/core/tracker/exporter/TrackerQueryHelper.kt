@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.Event
+package org.hisp.dhis.android.core.tracker.exporter
+
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 
-@Singleton
-internal class OldEventEndpointCallFactory(
-    private val service: EventService,
-) : EventEndpointCallFactory() {
-
-    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return service.getEvents(
-            fields = EventFields.allFields,
-            orgUnit = getOrgunits(eventQuery),
-            orgUnitMode = eventQuery.commonParams.ouMode.name,
-            program = eventQuery.commonParams.program,
-            startDate = getEventStartDate(eventQuery),
-            paging = true,
-            page = eventQuery.page,
-            pageSize = eventQuery.pageSize,
-            lastUpdatedStartDate = eventQuery.lastUpdatedStr,
-            includeDeleted = true,
-            eventUid = getUidStr(eventQuery),
-        )
+internal object TrackerQueryHelper {
+    fun getOrgunits(query: TrackerAPIQuery): String? {
+        return getOrgunits(query.orgUnit?.let { listOf(it) }, query.commonParams.ouMode)
     }
 
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
-        return service.getEventSingle(
-            eventUid = item.itemUid,
-            fields = EventFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
-        )
+    fun getOrgunits(query: TrackedEntityInstanceQueryOnline): String? {
+        return getOrgunits(query.orgUnits, query.orgUnitMode)
+    }
+
+    fun getOrgunits(orgunit: String?, mode: OrganisationUnitMode?): String? {
+        return getOrgunits(orgunit?.let { listOf(it) }, mode)
+    }
+
+    private fun getOrgunits(orgunits: List<String>?, mode: OrganisationUnitMode?): String? {
+        return if (orgunits.isNullOrEmpty()) {
+            null
+        } else if (
+            mode == OrganisationUnitMode.ALL ||
+            mode == OrganisationUnitMode.ACCESSIBLE ||
+            mode == OrganisationUnitMode.CAPTURE
+        ) {
+            null
+        } else {
+            orgunits.joinToString(";")
+        }
     }
 }

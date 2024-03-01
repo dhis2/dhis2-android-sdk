@@ -72,8 +72,8 @@ internal interface TrackerExporterService {
         @Query(UPDATED_BEFORE) lastUpdatedEndDate: String? = null,
         @Query(ORDER) order: String? = null,
         @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE) page: Int?,
+        @Query(PAGE_SIZE) pageSize: Int?,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
     ): TrackerPayload<NewTrackerImporterTrackedEntity>
 
@@ -106,8 +106,8 @@ internal interface TrackerExporterService {
         @Query(ORDER) order: String? = null,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
         @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE) page: Int?,
+        @Query(PAGE_SIZE) pageSize: Int?,
         @Query(UPDATED_AFTER) updatedAfter: String?,
         @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,

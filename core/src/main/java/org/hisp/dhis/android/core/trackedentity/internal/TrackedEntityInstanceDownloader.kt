@@ -76,23 +76,23 @@ class TrackedEntityInstanceDownloader internal constructor(
     }
 
     fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader {
-        return cf.baseString(QueryParams.PROGRAM).eq(programUid)!!
+        return cf.baseString(QueryParams.PROGRAM).eq(programUid)
     }
 
     fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader {
-        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit)!!
+        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit)
     }
 
     fun limitByProgram(limitByProgram: Boolean): TrackedEntityInstanceDownloader {
-        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram)!!
+        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram)
     }
 
     fun limit(limit: Int): TrackedEntityInstanceDownloader {
-        return cf.integer(QueryParams.LIMIT).eq(limit)!!
+        return cf.integer(QueryParams.LIMIT).eq(limit)
     }
 
     fun byProgramStatus(status: EnrollmentScope): TrackedEntityInstanceDownloader {
-        return cf.baseString(QueryParams.PROGRAM_STATUS).eq(status.toString())!!
+        return cf.baseString(QueryParams.PROGRAM_STATUS).eq(status.toString())
     }
 
     /**
@@ -103,6 +103,6 @@ class TrackedEntityInstanceDownloader internal constructor(
      * @return the new repository
      */
     fun overwrite(overwrite: Boolean): TrackedEntityInstanceDownloader {
-        return cf.bool(QueryParams.OVERWRITE).eq(overwrite)!!
+        return cf.bool(QueryParams.OVERWRITE).eq(overwrite)
     }
 }

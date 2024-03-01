@@ -113,7 +113,10 @@ class DHISVersionManagerShould {
     @Test
     fun return_unknown_if_unknown_patch_version_and_bypass_dhis2_version_is_true() {
         dhisVersionManager.setBypassVersion(true)
-        whenever(systemInfo.version()).thenReturn("2.47.59")
+        whenever(systemInfo.version()).thenReturn("2.100.100")
+        assertThat(dhisVersionManager.getPatchVersion()).isEqualTo(DHISPatchVersion.UNKNOWN)
+
+        whenever(systemInfo.version()).thenReturn("2.100.0")
         assertThat(dhisVersionManager.getPatchVersion()).isEqualTo(DHISPatchVersion.UNKNOWN)
     }
 

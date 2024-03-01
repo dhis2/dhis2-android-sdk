@@ -59,8 +59,14 @@ class SMSVersionShould {
 
     @Test
     fun return_unknown_version_if_patch_does_not_exist_but_bypass_is_true() {
-        val smsVersion = getValue("2.32.100", true)
+        val smsVersion = getValue("2.100.100", true)
         assertThat(smsVersion).isEqualTo(DHISPatchVersion.UNKNOWN.smsVersion)
+    }
+
+    @Test
+    fun return_null_if_patch_does_not_exist_but_bypass_is_false() {
+        val smsVersion = getValue("2.100.100", false)
+        assertThat(smsVersion).isNull()
     }
 
     @Test

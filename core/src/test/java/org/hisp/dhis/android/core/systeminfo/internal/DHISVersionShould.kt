@@ -46,4 +46,20 @@ class DHISVersionShould {
                 }
             }
     }
+
+    @Test
+    fun return_unknown_when_bypassing_version_for_unsupported_versions() {
+        DHISVersion.entries
+            .forEach {
+                if (it.supported) {
+                    assertThat(DHISVersion.getValue(it.prefix + ".0", true)).isNotNull()
+                    assertThat(DHISVersion.getValue(it.prefix + ".9", true)).isNotNull()
+                } else {
+                    assertThat(DHISVersion.getValue(it.prefix + ".0", true))
+                        .isEqualTo(DHISVersion.UNKNOWN)
+                    assertThat(DHISVersion.getValue(it.prefix + ".9", true))
+                        .isEqualTo(DHISVersion.UNKNOWN)
+                }
+            }
+    }
 }

@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
-import androidx.annotation.VisibleForTesting
-
 interface DHISVersionManager {
     fun getVersion(): DHISVersion
     fun getPatchVersion(): DHISPatchVersion?

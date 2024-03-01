@@ -65,7 +65,7 @@ internal class NewTrackedEntityEndpointCallFactory(
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
         return trackedExporterService.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
-            trackedEntityInstances = parameterManager.getTrackedEntityParameter(query.uids),
+            trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
             orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
@@ -181,7 +181,7 @@ internal class NewTrackedEntityEndpointCallFactory(
         ) {
             val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.asRelationshipFields,
-                trackedEntityInstances = parameterManager.getTrackedEntityParameter(query.uids),
+                trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
                 orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
                 orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
                 program = query.program,

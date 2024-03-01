@@ -176,7 +176,13 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         }
 
         val glassResponse: HttpMessageResponse =
-            executor.wrap { ownershipService.breakGlass(tei.uid(), program, "Sync") }.getOrThrow()
+            executor.wrap {
+                ownershipService.breakGlass(
+                    mapOf(OwnershipService.TRACKED_ENTITY to tei.uid()),
+                    program,
+                    "Sync",
+                )
+            }.getOrThrow()
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)

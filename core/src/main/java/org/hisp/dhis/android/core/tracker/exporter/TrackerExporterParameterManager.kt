@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.tracker.exporter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerExporterParameterManager(
     private val dhisVersionManager: DHISVersionManager,
 ) {
-    fun getTrackedEntityParameter(uids: Collection<String>?): Map<String, String> {
+    fun getTrackedEntitiesParameter(uids: Collection<String>?): Map<String, String> {
         return if (uids.isNullOrEmpty()) {
             emptyMap()
         } else if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
@@ -46,7 +47,7 @@ internal class TrackerExporterParameterManager(
         }
     }
 
-    fun getEventParameter(uids: Collection<String>?): Map<String, String> {
+    fun getEventsParameter(uids: Collection<String>?): Map<String, String> {
         return if (uids.isNullOrEmpty()) {
             emptyMap()
         } else if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
@@ -73,6 +74,14 @@ internal class TrackerExporterParameterManager(
             mapOf(TrackerExporterService.ORG_UNITS to uids.joinToString(","))
         } else {
             mapOf(TrackerExporterService.ORG_UNIT to uids.joinToString(";"))
+        }
+    }
+
+    fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+            mapOf(OwnershipService.TRACKED_ENTITY to uid)
+        } else {
+            mapOf(OwnershipService.TRACKED_ENTITY_INSTACE to uid)
         }
     }
 }

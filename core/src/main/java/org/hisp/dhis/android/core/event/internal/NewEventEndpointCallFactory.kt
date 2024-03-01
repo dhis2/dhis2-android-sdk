@@ -57,13 +57,13 @@ internal class NewEventEndpointCallFactory(
             pageSize = eventQuery.pageSize,
             updatedAfter = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = parameterManager.getEventParameter(eventQuery.uids),
+            eventUid = parameterManager.getEventsParameter(eventQuery.uids),
         ).let { mapPayload(it) }
     }
 
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
         return service.getEventSingle(
-            eventUid = parameterManager.getEventParameter(listOf(item.itemUid)),
+            eventUid = parameterManager.getEventsParameter(listOf(item.itemUid)),
             fields = NewEventFields.asRelationshipFields,
             orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
         ).let { mapPayload(it) }

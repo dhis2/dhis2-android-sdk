@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.koin.core.annotation.Singleton
 import java.util.*
 
@@ -50,6 +51,7 @@ internal class OwnershipManagerImpl(
     private val dataStatePropagator: DataStatePropagator,
     private val programTempOwnerStore: ProgramTempOwnerStore,
     private val programOwnerStore: ProgramOwnerStore,
+    private val parameterManager: TrackerExporterParameterManager,
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
@@ -132,7 +134,11 @@ internal class OwnershipManagerImpl(
         reason: String,
     ): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
-            ownershipService.breakGlass(trackedEntityInstance, program, reason)
+            ownershipService.breakGlass(
+                parameterManager.getTrackedEntityForOwnershipParameter(trackedEntityInstance),
+                program,
+                reason,
+            )
         }
     }
 

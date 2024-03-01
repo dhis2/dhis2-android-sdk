@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper
 
 internal abstract class TrackedEntityEndpointCallFactory {
 
@@ -46,7 +47,11 @@ internal abstract class TrackedEntityEndpointCallFactory {
     abstract suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult
 
     protected fun getUidStr(query: TrackerAPIQuery): String? {
-        return if (query.uids.isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids, ";")
+        return if (query.uids.isEmpty()) null else query.uids.joinToString(";")
+    }
+
+    protected fun getOrgunitStr(query: TrackerAPIQuery): String? {
+        return TrackerQueryHelper.getOrgunits(query)?.joinToString(";")
     }
 
     protected fun getProgramStatus(query: TrackerAPIQuery): String? {

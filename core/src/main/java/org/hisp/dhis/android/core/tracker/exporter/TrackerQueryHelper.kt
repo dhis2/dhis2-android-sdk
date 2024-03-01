@@ -32,19 +32,19 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 
 internal object TrackerQueryHelper {
-    fun getOrgunits(query: TrackerAPIQuery): String? {
+    fun getOrgunits(query: TrackerAPIQuery): List<String>? {
         return getOrgunits(query.orgUnit?.let { listOf(it) }, query.commonParams.ouMode)
     }
 
-    fun getOrgunits(query: TrackedEntityInstanceQueryOnline): String? {
+    fun getOrgunits(query: TrackedEntityInstanceQueryOnline): List<String>? {
         return getOrgunits(query.orgUnits, query.orgUnitMode)
     }
 
-    fun getOrgunits(orgunit: String?, mode: OrganisationUnitMode?): String? {
+    fun getOrgunits(orgunit: String?, mode: OrganisationUnitMode?): List<String>? {
         return getOrgunits(orgunit?.let { listOf(it) }, mode)
     }
 
-    private fun getOrgunits(orgunits: List<String>?, mode: OrganisationUnitMode?): String? {
+    private fun getOrgunits(orgunits: List<String>?, mode: OrganisationUnitMode?): List<String>? {
         return if (orgunits.isNullOrEmpty()) {
             null
         } else if (
@@ -54,7 +54,7 @@ internal object TrackerQueryHelper {
         ) {
             null
         } else {
-            orgunits.joinToString(";")
+            orgunits
         }
     }
 }

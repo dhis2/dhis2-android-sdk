@@ -102,7 +102,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
         return coroutineAPICallExecutor.wrap(storeError = false) {
             eventService.getEvents(
                 fields = EventFields.teiQueryFields,
-                orgUnit = getOrgunits(orgunit, query.orgUnitMode),
+                orgUnit = getOrgunits(orgunit, query.orgUnitMode)?.firstOrNull(),
                 orgUnitMode = query.orgUnitMode?.toString(),
                 status = query.eventStatus?.toString(),
                 program = query.program,
@@ -127,16 +127,14 @@ internal class TrackedEntityInstanceQueryCallFactory(
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
-        val uidsStr = query.uids?.joinToString(";")
-
         return try {
             coroutineAPICallExecutor.wrap(
                 storeError = false,
                 errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
             ) {
                 trackedEntityService.query(
-                    trackedEntityInstance = uidsStr,
-                    orgUnit = getOrgunits(query),
+                    trackedEntityInstance = query.uids?.joinToString(";"),
+                    orgUnit = getOrgunits(query)?.joinToString(";"),
                     orgUnitMode = query.orgUnitMode?.toString(),
                     program = query.program,
                     programStage = query.programStage,

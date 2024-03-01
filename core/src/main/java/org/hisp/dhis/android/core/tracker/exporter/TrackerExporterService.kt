@@ -37,23 +37,23 @@ import retrofit2.http.*
 
 @Suppress("LongParameterList")
 internal interface TrackerExporterService {
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
+    @GET("$TRACKED_ENTITIES_API/{$TRACKED_ENTITY}")
     suspend fun getSingleTrackedEntityInstance(
-        @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,
+        @Path(TRACKED_ENTITY) trackedEntityInstanceUid: String,
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
-        @Query(OU_MODE) orgUnitMode: String?,
+        @QueryMap orgUnitMode: Map<String, String> = emptyMap(),
         @Query(PROGRAM) program: String?,
         @Query(PROGRAM_STATUS) programStatus: String?,
         @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String?,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
     ): NewTrackerImporterTrackedEntity
 
-    @GET(TRACKED_ENTITY_INSTANCES)
+    @GET(TRACKED_ENTITIES_API)
     suspend fun getTrackedEntityInstances(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstances: String? = null,
-        @Query(OU) orgUnits: String? = null,
-        @Query(OU_MODE) orgUnitMode: String? = null,
+        @QueryMap trackedEntityInstances: Map<String, String> = emptyMap(),
+        @QueryMap orgUnits: Map<String, String> = emptyMap(),
+        @QueryMap orgUnitMode: Map<String, String> = emptyMap(),
         @Query(PROGRAM) program: String? = null,
         @Query(PROGRAM_STAGE) programStage: String? = null,
         @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String? = null,
@@ -77,17 +77,17 @@ internal interface TrackerExporterService {
         @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
     ): TrackerPayload<NewTrackerImporterTrackedEntity>
 
-    @GET("$ENROLLMENTS/{$ENROLLMENT}")
+    @GET("$ENROLLMENTS_API/{$ENROLLMENT}")
     suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT) enrollmentUid: String,
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>,
     ): NewTrackerImporterEnrollment
 
-    @GET(EVENTS)
+    @GET(EVENTS_API)
     suspend fun getEvents(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
-        @Query(OU) orgUnit: String?,
-        @Query(OU_MODE) orgUnitMode: String?,
+        @Query(ORG_UNIT) orgUnit: String?,
+        @QueryMap orgUnitMode: Map<String, String> = emptyMap(),
         @Query(STATUS) status: String? = null,
         @Query(PROGRAM) program: String?,
         @Query(PROGRAM_STAGE) programStage: String? = null,
@@ -111,25 +111,29 @@ internal interface TrackerExporterService {
         @Query(UPDATED_AFTER) updatedAfter: String?,
         @Query(UPDATED_BEFORE) updatedBefore: String? = null,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String? = null,
+        @QueryMap eventUid: Map<String, String> = emptyMap(),
     ): TrackerPayload<NewTrackerImporterEvent>
 
-    @GET(EVENTS)
+    @GET(EVENTS_API)
     suspend fun getEventSingle(
         @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
-        @Query(EVENT) eventUid: String,
-        @Query(OU_MODE) orgUnitMode: String,
+        @QueryMap eventUid: Map<String, String>? = null,
+        @QueryMap orgUnitMode: Map<String, String>? = null,
     ): TrackerPayload<NewTrackerImporterEvent>
 
     companion object {
-        const val TRACKED_ENTITY_INSTANCES = "tracker/trackedEntities"
-        const val ENROLLMENTS = "tracker/enrollments"
-        const val EVENTS = "tracker/events"
-        const val TRACKED_ENTITY_INSTACE = "trackedEntity"
+        const val TRACKED_ENTITIES_API = "tracker/trackedEntities"
+        const val ENROLLMENTS_API = "tracker/enrollments"
+        const val EVENTS_API = "tracker/events"
+        const val TRACKED_ENTITY = "trackedEntity"
+        const val TRACKED_ENTITIES = "trackedEntities"
         const val ENROLLMENT = "enrollment"
         const val EVENT = "event"
-        const val OU = "orgUnit"
-        const val OU_MODE = "ouMode"
+        const val EVENTS = "events"
+        const val ORG_UNIT = "orgUnit"
+        const val ORG_UNITS = "orgUnits"
+        const val OU_MODE = "orgUnitMode"
+        const val OU_MODE_BELOW_41 = "ouMode"
         const val FIELDS = "fields"
         const val PAGING = "paging"
         const val PAGE = "page"

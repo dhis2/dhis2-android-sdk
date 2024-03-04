@@ -49,7 +49,7 @@ internal class LatestAppVersionCall(
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             val userGroupUids = userModule.userGroups().blockingGet().map { it.uid() }
 
-            val versions = settingAppService.versions()
+            val versions = settingAppService.versions().items()
 
             val filteredVersions = versions.filter { version ->
                 version.userGroups()?.any { userGroupUid ->

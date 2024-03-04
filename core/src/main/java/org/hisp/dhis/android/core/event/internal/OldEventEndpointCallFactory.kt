@@ -43,7 +43,7 @@ internal class OldEventEndpointCallFactory(
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         return service.getEvents(
             fields = EventFields.allFields,
-            orgUnit = getOrgunits(eventQuery),
+            orgUnit = getOrgunits(eventQuery)?.firstOrNull(),
             orgUnitMode = eventQuery.commonParams.ouMode.name,
             program = eventQuery.commonParams.program,
             startDate = getEventStartDate(eventQuery),

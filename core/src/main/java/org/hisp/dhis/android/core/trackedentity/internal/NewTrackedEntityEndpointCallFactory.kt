@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
@@ -58,14 +59,15 @@ internal class NewTrackedEntityEndpointCallFactory(
     private val trackedExporterService: TrackerExporterService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
+    private val parameterManager: TrackerExporterParameterManager,
 ) : TrackedEntityEndpointCallFactory() {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
         return trackedExporterService.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
-            trackedEntityInstances = getUidStr(query),
-            orgUnits = getOrgunits(query),
-            orgUnitMode = query.commonParams.ouMode.name,
+            trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
+            orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
+            orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
@@ -82,7 +84,7 @@ internal class NewTrackedEntityEndpointCallFactory(
         return trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstanceUid = uid,
-            orgUnitMode = query.commonParams.ouMode.name,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
@@ -94,7 +96,7 @@ internal class NewTrackedEntityEndpointCallFactory(
         return trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
             trackedEntityInstanceUid = item.itemUid,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
             program = getRelatedProgramUid(item),
             programStatus = null,
             programStartDate = null,
@@ -145,7 +147,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             trackedExporterService.getEvents(
                 fields = NewEventFields.teiQueryFields,
                 orgUnit = orgunit,
-                orgUnitMode = query.orgUnitMode?.toString(),
+                orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
                 status = query.eventStatus?.toString(),
                 program = query.program,
                 programStage = query.programStage,
@@ -177,13 +179,11 @@ internal class NewTrackedEntityEndpointCallFactory(
         return coroutineAPICallExecutor.wrap(
             errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
         ) {
-            val uidsStr = query.uids?.joinToString(";")
-
             val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.asRelationshipFields,
-                trackedEntityInstances = uidsStr,
-                orgUnits = getOrgunits(query),
-                orgUnitMode = query.orgUnitMode?.toString(),
+                trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
+                orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
+                orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
                 program = query.program,
                 programStage = query.programStage,
                 programStartDate = query.programStartDate.simpleDateFormat(),

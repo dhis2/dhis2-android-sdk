@@ -35,19 +35,21 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class NewEventEndpointCallFactory(
     private val service: TrackerExporterService,
+    private val parameterManager: TrackerExporterParameterManager,
 ) : EventEndpointCallFactory() {
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         return service.getEvents(
             fields = NewEventFields.allFields,
             orgUnit = eventQuery.orgUnit,
-            orgUnitMode = eventQuery.commonParams.ouMode.name,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(eventQuery.commonParams.ouMode),
             program = eventQuery.commonParams.program,
             occurredAfter = getEventStartDate(eventQuery),
             paging = true,
@@ -55,15 +57,15 @@ internal class NewEventEndpointCallFactory(
             pageSize = eventQuery.pageSize,
             updatedAfter = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = getUidStr(eventQuery),
+            eventUid = parameterManager.getEventsParameter(eventQuery.uids),
         ).let { mapPayload(it) }
     }
 
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
         return service.getEventSingle(
-            eventUid = item.itemUid,
+            eventUid = parameterManager.getEventsParameter(listOf(item.itemUid)),
             fields = NewEventFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
         ).let { mapPayload(it) }
     }
 

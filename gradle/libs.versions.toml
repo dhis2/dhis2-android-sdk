@@ -1,5 +1,5 @@
 [versions]
-gradle = "8.2.2"
+gradle = "8.3.0"
 kotlin = "1.9.21"
 ktlint = "11.5.1"
 jacoco = "0.8.10"
@@ -27,7 +27,7 @@ rxAndroid = "2.1.1"
 sqlCipher = "4.5.5"
 sqlLite = "2.2.0"
 smsCompression = "0.2.0"
-expressionParser = "1.0.33"
+expressionParser = "1.0.36"
 
 # Kotlin
 kotlinxDatetime = "0.4.1"

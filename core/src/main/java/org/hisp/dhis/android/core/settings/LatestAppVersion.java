@@ -35,8 +35,10 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
@@ -55,6 +57,11 @@ public abstract class LatestAppVersion implements CoreObject {
 
     @JsonProperty()
     @Nullable
+    public abstract Boolean defaultVersion();
+
+    @JsonProperty()
+    @Nullable
+    @ColumnAdapter(IgnoreStringListColumnAdapter.class)
     public abstract List<String> userGroups();
 
     public static LatestAppVersion create(Cursor cursor) {
@@ -75,6 +82,8 @@ public abstract class LatestAppVersion implements CoreObject {
         public abstract Builder version(String version);
 
         public abstract Builder downloadURL(String downloadURL);
+
+        public abstract Builder defaultVersion(Boolean defaultVersion);
 
         public abstract Builder userGroups(List<String> userGroups);
 

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.user.UserModule
@@ -41,6 +40,7 @@ internal class LatestAppVersionCall(
     private val latestAppVersionHandler: LatestAppVersionHandler,
     private val settingAppService: SettingAppService,
     private val userModule: UserModule,
+    private val versionComparator: LatestAppVersionComparator,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<LatestAppVersion>(coroutineAPICallExecutor) {
 
@@ -49,17 +49,17 @@ internal class LatestAppVersionCall(
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
             val userGroupUids = userModule.userGroups().blockingGet().map { it.uid() }
 
-            val filteredVersions = settingAppService.versions().filter { version ->
+            val versions = settingAppService.versions()
+
+            val filteredVersions = versions.filter { version ->
                 version.userGroups()?.any { userGroupUid ->
                     userGroupUids.contains(userGroupUid)
                 } ?: false
             }
 
-            val highestVersion = filteredVersions.maxByOrNull { version ->
-                // TODO get hightest filtered version
-            }
+            val highestVersion = filteredVersions.maxWithOrNull(versionComparator.comparator)
 
-            highestVersion ?: settingAppService.latestAppVersion()
+            highestVersion ?: versions.find { it.defaultVersion() == true } ?: settingAppService.latestAppVersion()
         }
     }
 

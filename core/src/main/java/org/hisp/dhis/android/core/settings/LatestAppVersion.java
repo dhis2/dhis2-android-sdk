@@ -38,7 +38,9 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringListColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
@@ -57,6 +59,7 @@ public abstract class LatestAppVersion implements CoreObject {
 
     @JsonProperty()
     @Nullable
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean defaultVersion();
 
     @JsonProperty()
@@ -76,7 +79,7 @@ public abstract class LatestAppVersion implements CoreObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder version(String version);

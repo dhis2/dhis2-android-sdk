@@ -53,7 +53,6 @@ internal val javaDIClasses = module {
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }
     single { DatabaseAdapterFactory(get(), get()) }
-    single { DatabaseExport(get(), get(), get()) }
     single { D2CallExecutor(get(), get()) }
     single { DataSetsStore(get(), get(), get(), get()) }
 }

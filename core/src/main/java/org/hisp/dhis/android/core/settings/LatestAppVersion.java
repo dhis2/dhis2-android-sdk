@@ -35,15 +35,10 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_LatestAppVersion.Builder.class)
@@ -56,16 +51,6 @@ public abstract class LatestAppVersion implements CoreObject {
     @JsonProperty()
     @Nullable
     public abstract String downloadURL();
-
-    @JsonProperty()
-    @Nullable
-    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
-    public abstract Boolean defaultVersion();
-
-    @JsonProperty()
-    @Nullable
-    @ColumnAdapter(IgnoreStringListColumnAdapter.class)
-    public abstract List<String> userGroups();
 
     public static LatestAppVersion create(Cursor cursor) {
         return $AutoValue_LatestAppVersion.createFromCursor(cursor);
@@ -85,10 +70,6 @@ public abstract class LatestAppVersion implements CoreObject {
         public abstract Builder version(String version);
 
         public abstract Builder downloadURL(String downloadURL);
-
-        public abstract Builder defaultVersion(Boolean defaultVersion);
-
-        public abstract Builder userGroups(List<String> userGroups);
 
         public abstract LatestAppVersion build();
     }

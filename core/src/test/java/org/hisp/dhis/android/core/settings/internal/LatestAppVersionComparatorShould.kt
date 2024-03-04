@@ -29,24 +29,21 @@ package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-
 @RunWith(JUnit4::class)
 class LatestAppVersionComparatorShould {
-    private val version1: LatestAppVersion = mock()
-    private val version2: LatestAppVersion = mock()
-    private val version3: LatestAppVersion = mock()
+    private val version1: ApkDistributionVersion = mock()
+    private val version2: ApkDistributionVersion = mock()
+    private val version3: ApkDistributionVersion = mock()
     private val comparator = LatestAppVersionComparator().comparator
-
 
     @Test
     fun correctly_compare_versions_where_one_is_greater() {
-        whenever(version1.version()) doReturn "1.2.3"
-        whenever(version2.version()) doReturn "1.2.4"
+        whenever(version1.version) doReturn "1.2.3"
+        whenever(version2.version) doReturn "1.2.4"
 
         val result = comparator.compare(version1, version2)
 
@@ -55,8 +52,8 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun treat_versions_as_equal_when_they_are_the_same() {
-        whenever(version1.version()) doReturn "1.2.3"
-        whenever(version2.version()) doReturn "1.2.3"
+        whenever(version1.version) doReturn "1.2.3"
+        whenever(version2.version) doReturn "1.2.3"
 
         val result = comparator.compare(version1, version2)
 
@@ -65,8 +62,8 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun handle_versions_with_different_lengths_correctly() {
-        whenever(version1.version()) doReturn "1.2"
-        whenever(version2.version()) doReturn "1.2.1"
+        whenever(version1.version) doReturn "1.2"
+        whenever(version2.version) doReturn "1.2.1"
 
         val result = comparator.compare(version1, version2)
 
@@ -75,8 +72,8 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun handle_non_numeric_parts_by_treating_them_as_0() {
-        whenever(version1.version()) doReturn "1.2.x"
-        whenever(version2.version()) doReturn "1.2.1"
+        whenever(version1.version) doReturn "1.2.x"
+        whenever(version2.version) doReturn "1.2.1"
 
         val result = comparator.compare(version1, version2)
 
@@ -85,9 +82,9 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun return_the_greatest_version() {
-        whenever(version1.version()) doReturn "1.2"
-        whenever(version2.version()) doReturn "1.1.1"
-        whenever(version3.version()) doReturn "1.1.0"
+        whenever(version1.version) doReturn "1.2"
+        whenever(version2.version) doReturn "1.1.1"
+        whenever(version3.version) doReturn "1.1.0"
 
         val highestVersion = listOf(version1, version2, version3).maxWithOrNull(comparator)
 
@@ -96,9 +93,9 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun return_the_first_in_list_when_two_greatest_versions() {
-        whenever(version1.version()) doReturn "1.2.0"
-        whenever(version2.version()) doReturn "1.2.1"
-        whenever(version3.version()) doReturn "1.2.1"
+        whenever(version1.version) doReturn "1.2.0"
+        whenever(version2.version) doReturn "1.2.1"
+        whenever(version3.version) doReturn "1.2.1"
 
         val highestVersion = listOf(version1, version2, version3).maxWithOrNull(comparator)
 
@@ -107,9 +104,9 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun return_the_first_version_when_string_is_not_a_number() {
-        whenever(version1.version()) doReturn "version_one"
-        whenever(version2.version()) doReturn "version_two"
-        whenever(version3.version()) doReturn "version_three"
+        whenever(version1.version) doReturn "version_one"
+        whenever(version2.version) doReturn "version_two"
+        whenever(version3.version) doReturn "version_three"
 
         val highestVersion = listOf(version1, version2, version3).maxWithOrNull(comparator)
 
@@ -118,7 +115,7 @@ class LatestAppVersionComparatorShould {
 
     @Test
     fun return_null_when_empty_list() {
-        val highestVersion = emptyList<LatestAppVersion>().maxWithOrNull(comparator)
+        val highestVersion = emptyList<ApkDistributionVersion>().maxWithOrNull(comparator)
 
         assertThat(highestVersion).isNull()
     }

@@ -33,7 +33,6 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.LatestAppVersion
-import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.UserGroupCollectionRepository
 import org.hisp.dhis.android.core.user.UserModule
 import org.junit.Before
@@ -64,7 +63,9 @@ class LatestAppVersionCallShould {
         whenever(userModule.userGroups()).thenReturn(userGroupCollectionRepository)
         whenever(userGroupCollectionRepository.blockingGet()).thenReturn(emptyList())
 
-        latestAppVersionCall = LatestAppVersionCall(handler, service, userModule, versionComparator, coroutineAPICallExecutor)
+        latestAppVersionCall = LatestAppVersionCall(
+            handler, service, userModule, versionComparator, coroutineAPICallExecutor,
+        )
     }
 
     private fun whenVersionsAPICall(answer: Answer<List<LatestAppVersion>>) {

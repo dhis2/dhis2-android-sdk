@@ -80,7 +80,7 @@ internal class SettingAppService(
         return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
     }
 
-    suspend fun versions(): Payload<LatestAppVersion> {
+    suspend fun versions(): Payload<ApkDistributionVersion> {
         return settingService.versions("$APK_DISTRIBUTION_NAMESPACE/versions")
     }
 

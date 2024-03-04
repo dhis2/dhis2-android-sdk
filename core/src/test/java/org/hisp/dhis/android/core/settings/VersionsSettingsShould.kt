@@ -30,18 +30,19 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.settings.internal.ApkDistributionVersion
 import org.junit.Test
 
 class VersionsSettingsShould : BaseObjectShould("settings/version.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val version = objectMapper.readValue(jsonStream, LatestAppVersion::class.java)
+        val version = objectMapper.readValue(jsonStream, ApkDistributionVersion::class.java)
 
-        Truth.assertThat(version.version()).isEqualTo("40.1")
-        Truth.assertThat(version.defaultVersion()).isTrue()
-        Truth.assertThat(version.userGroups()?.get(0)).isEqualTo("Kk12LkEWtXp")
-        Truth.assertThat(version.downloadURL()).isEqualTo(
+        Truth.assertThat(version.version).isEqualTo("40.1")
+        Truth.assertThat(version.defaultVersion).isTrue()
+        Truth.assertThat(version.userGroups?.get(0)).isEqualTo("Kk12LkEWtXp")
+        Truth.assertThat(version.downloadURL).isEqualTo(
             "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.1/dhis2-40.1.apk",
         )
     }

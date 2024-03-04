@@ -72,5 +72,5 @@ internal interface SettingService {
     suspend fun latestAppVersion(@Url url: String): LatestAppVersion
 
     @GET
-    suspend fun versions(@Url url: String): Payload<LatestAppVersion>
+    suspend fun versions(@Url url: String): Payload<ApkDistributionVersion>
 }

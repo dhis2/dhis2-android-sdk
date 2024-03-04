@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LatestAppVersionComparator {
-    val comparator: Comparator<in LatestAppVersion> = Comparator { v1, v2 ->
-        val partsV1 = v1.version()?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
-        val partsV2 = v2.version()?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
+    val comparator: Comparator<in ApkDistributionVersion> = Comparator { v1, v2 ->
+        val partsV1 = v1.version?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
+        val partsV2 = v2.version?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
         var result = 0
         val maxLength = maxOf(partsV1.size, partsV2.size)
         for (i in 0 until maxLength) {

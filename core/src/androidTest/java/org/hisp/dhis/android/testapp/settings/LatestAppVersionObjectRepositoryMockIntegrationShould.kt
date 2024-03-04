@@ -25,25 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.settings.LatestAppVersion;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class LatestAppVersionObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+@RunWith(D2JunitRunner::class)
+class LatestAppVersionObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_user_settings() {
-        LatestAppVersion latestAppVersion = d2.settingModule().latestAppVersion().blockingGet();
-        assertThat(latestAppVersion.downloadURL()).isEqualTo(
-                "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk");
-        assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1");
+    fun find_latest_app_version() {
+        val latestAppVersion = d2.settingModule().latestAppVersion().blockingGet()
+        Truth.assertThat(latestAppVersion?.version()).isEqualTo("40.2")
+        Truth.assertThat(latestAppVersion?.downloadURL()).isEqualTo(
+            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.2/dhis2-40.2.apk"
+        )
     }
 }

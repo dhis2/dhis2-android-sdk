@@ -69,12 +69,15 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
     V2_40_0(DHISVersion.V2_40, "2.40.0", SMSVersion.V2),
 
     V2_41_0(DHISVersion.V2_41, "2.41.0", SMSVersion.V2),
+
+    UNKNOWN(DHISVersion.UNKNOWN, "UNKNOWN", SMSVersion.V2),
     ;
 
     companion object {
         @JvmStatic
-        fun getValue(versionStr: String): DHISPatchVersion? {
-            return values().find { versionStr == it.strValue || versionStr.startsWith(it.strValue + "-") }
+        fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean? = false): DHISPatchVersion? {
+            return entries.find { versionStr == it.strValue || versionStr.startsWith(it.strValue + "-") }
+                ?: bypassDHIS2VersionCheck.takeIf { it == true }?.let { UNKNOWN }
         }
     }
 }

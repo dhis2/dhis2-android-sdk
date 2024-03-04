@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.d2.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner

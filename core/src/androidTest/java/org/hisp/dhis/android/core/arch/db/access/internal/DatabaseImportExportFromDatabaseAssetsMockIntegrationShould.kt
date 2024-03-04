@@ -148,10 +148,27 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
     @Test
     fun export_and_reimport() {
+        test_export_and_reimport(beforeExport = {})
+    }
+
+    @Test
+    fun export_and_reimport_encrypted() {
+        test_export_and_reimport(beforeExport = {
+            // Change encryption
+            d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
+                d2.d2DIComponent.credentialsSecureStore.get(),
+                encrypt = true,
+            )
+        })
+    }
+
+    private fun test_export_and_reimport(beforeExport: () -> Unit) {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.metadataModule().blockingDownload()
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+
+        beforeExport()
 
         val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
 

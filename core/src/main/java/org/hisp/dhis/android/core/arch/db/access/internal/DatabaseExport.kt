@@ -37,50 +37,84 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.koin.core.annotation.Singleton
+import java.io.File
 
 @Singleton
 internal class DatabaseExport(
     private val context: Context,
     private val passwordManager: DatabaseEncryptionPasswordManager,
-    private val configurationHelper: DatabaseConfigurationHelper
+    private val configurationHelper: DatabaseConfigurationHelper,
 ) {
     fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         export(
-            oldConfiguration, newConfiguration, null,
-            passwordManager.getPassword(newConfiguration.databaseName()), "Encrypt", null,
-            EncryptedDatabaseOpenHelper.hook
+            oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName()),
+            newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName()),
+            oldPassword = null,
+            newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
+            tag = "Encrypt",
+            oldHook = null,
+            newHook = EncryptedDatabaseOpenHelper.hook,
+        )
+    }
+
+    fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
+        export(
+            oldDatabaseFile = sourceFile,
+            newDatabaseFile = targetFile,
+            oldPassword = null,
+            newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
+            tag = "Encrypt",
+            oldHook = null,
+            newHook = EncryptedDatabaseOpenHelper.hook,
         )
     }
 
     fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         export(
-            oldConfiguration, newConfiguration, passwordManager.getPassword(oldConfiguration.databaseName()),
-            "", "Decrypt", EncryptedDatabaseOpenHelper.hook, null
+            oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName()),
+            newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName()),
+            oldPassword = passwordManager.getPassword(oldConfiguration.databaseName()),
+            newPassword = "",
+            tag = "Decrypt",
+            oldHook = EncryptedDatabaseOpenHelper.hook,
+            newHook = null,
         )
     }
 
+    fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
+        export(
+            oldDatabaseFile = context.getDatabasePath(account.databaseName()),
+            newDatabaseFile = destinationFile,
+            oldPassword = passwordManager.getPassword(account.databaseName()),
+            newPassword = "",
+            tag = "Decrypt",
+            oldHook = EncryptedDatabaseOpenHelper.hook,
+            newHook = null,
+        )
+    }
+
+    @Suppress("LongParameterList")
     private fun export(
-        oldConfiguration: DatabaseAccount,
-        newConfiguration: DatabaseAccount,
+        oldDatabaseFile: File,
+        newDatabaseFile: File,
         oldPassword: String?,
         newPassword: String,
         tag: String,
         oldHook: SQLiteDatabaseHook?,
-        newHook: SQLiteDatabaseHook?
+        newHook: SQLiteDatabaseHook?,
     ) {
         wrapAction({
-            val oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName())
-            val newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName())
-
             loadSQLCipher()
 
             val oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null, null, oldHook)
             oldDatabase.rawExecSQL(
                 String.format(
-                    "ATTACH DATABASE '%s' as alias KEY '%s';", newDatabaseFile.absolutePath, newPassword
-                )
+                    "ATTACH DATABASE '%s' as alias KEY '%s';",
+                    newDatabaseFile.absolutePath,
+                    newPassword,
+                ),
             )
 
             if (newHook != null) {
@@ -92,8 +126,11 @@ internal class DatabaseExport(
 
             val version = oldDatabase.version
             val newDatabase = SQLiteDatabase.openOrCreateDatabase(
-                newDatabaseFile, newPassword, null,
-                null, newHook
+                newDatabaseFile,
+                newPassword,
+                null,
+                null,
+                newHook,
             )
             newDatabase.version = version
 
@@ -102,6 +139,7 @@ internal class DatabaseExport(
         }, tag)
     }
 
+    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     private fun wrapAction(action: Action, tag: String) {
         val startMillis = System.currentTimeMillis()
         try {

@@ -129,9 +129,16 @@ internal class MultiUserDatabaseManager(
     fun importAndLoadDb(account: DatabaseAccount, password: String) {
         val protectedDbPath = context.getDatabasePath(account.importDB()!!.protectedDbName())
         val dbPath = context.getDatabasePath(account.databaseName())
+        val tempDbPath = context.filesDir.resolve("temp.db").also { it.deleteIfExists() }
         try {
-            CipherUtil.decryptFileUsingCredentials(protectedDbPath, dbPath, account.username(), password)
+            CipherUtil.decryptFileUsingCredentials(protectedDbPath, tempDbPath, account.username(), password)
             protectedDbPath.deleteIfExists()
+
+            if (account.encrypted()) {
+                databaseExport.encryptAndCopyTo(account, sourceFile = tempDbPath, targetFile = dbPath)
+            } else {
+                tempDbPath.copyTo(dbPath)
+            }
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
             val importedAccount = account.toBuilder()
                 .importDB(
@@ -144,6 +151,8 @@ internal class MultiUserDatabaseManager(
         } catch (e: Exception) {
             dbPath.deleteIfExists()
             throw e
+        } finally {
+            tempDbPath.deleteIfExists()
         }
     }
 

@@ -52,6 +52,7 @@ internal class DatabaseImportExportImpl(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
+    private val databaseExport: DatabaseExport,
 ) : DatabaseImportExport {
 
     companion object {
@@ -145,16 +146,15 @@ internal class DatabaseImportExportImpl(
             serverUrl = credentials.serverUrl,
         )!!
 
-        if (userConfiguration.encrypted()) {
-            throw d2ErrorBuilder
-                .errorDescription("Database export of encrypted database not supported")
-                .errorCode(D2ErrorCode.DATABASE_EXPORT_ENCRYPTED_NOT_SUPPORTED)
-                .build()
-        }
-
         val databaseName = userConfiguration.databaseName()
         val databaseFile = getDatabaseFile(databaseName)
-        databaseFile.copyTo(copiedDatabase)
+
+        if (userConfiguration.encrypted()) {
+            databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase)
+        } else {
+            databaseFile.copyTo(copiedDatabase)
+        }
+
         CipherUtil.encryptFileUsingCredentials(
             input = copiedDatabase,
             output = protectedDatabase,

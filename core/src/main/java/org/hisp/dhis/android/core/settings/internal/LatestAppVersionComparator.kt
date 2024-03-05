@@ -26,51 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor;
+import org.koin.core.annotation.Singleton
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-@JsonDeserialize(builder = $$AutoValue_LatestAppVersion.Builder.class)
-public abstract class LatestAppVersion implements CoreObject {
-
-    @JsonProperty()
-    @Nullable
-    public abstract String version();
-
-    @JsonProperty()
-    @Nullable
-    public abstract String downloadURL();
-
-    public static LatestAppVersion create(Cursor cursor) {
-        return $AutoValue_LatestAppVersion.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new $AutoValue_LatestAppVersion.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder version(String version);
-
-        public abstract Builder downloadURL(String downloadURL);
-
-        public abstract LatestAppVersion build();
+@Singleton
+internal class LatestAppVersionComparator {
+    val comparator: Comparator<in ApkDistributionVersion> = Comparator { v1, v2 ->
+        val partsV1 = v1.version?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
+        val partsV2 = v2.version?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
+        var result = 0
+        val maxLength = maxOf(partsV1.size, partsV2.size)
+        for (i in 0 until maxLength) {
+            val partV1 = partsV1.getOrElse(i) { 0 }
+            val partV2 = partsV2.getOrElse(i) { 0 }
+            result = partV1.compareTo(partV2)
+            if (result != 0) break
+        }
+        result
     }
 }

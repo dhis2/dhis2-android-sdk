@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.settings;
+package org.hisp.dhis.android.core.settings.internal
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.settings.LatestAppVersion;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class LatestAppVersionObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
-    @Test
-    public void find_user_settings() {
-        LatestAppVersion latestAppVersion = d2.settingModule().latestAppVersion().blockingGet();
-        assertThat(latestAppVersion.downloadURL()).isEqualTo(
-                "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk");
-        assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1");
-    }
-}
+internal data class ApkDistributionVersion(
+    val version: String?,
+    val downloadURL: String?,
+    val isDefault: Boolean?,
+    val userGroups: List<String>?,
+)

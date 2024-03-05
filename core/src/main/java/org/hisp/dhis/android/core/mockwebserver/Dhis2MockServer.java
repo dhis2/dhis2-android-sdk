@@ -65,6 +65,7 @@ public class Dhis2MockServer {
     private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings_v2.json";
     private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v3.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
+    private static final String VERSIONS_JSON = "settings/versions.json";
     private static final String LATEST_APP_VERSION_JSON = "settings/latest_app_version.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAMS_INDICATORS_JSON = "program/program_indicators.json";
@@ -222,7 +223,9 @@ public class Dhis2MockServer {
                     return createMockResponse(ANALYTICS_SETTINGS_JSON);
                 } else if (path.startsWith("/api/userSettings?")) {
                     return createMockResponse(USER_SETTINGS_JSON);
-                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
+                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/versions")) {
+                    return createMockResponse(VERSIONS_JSON);
+                }  else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
                     return createMockResponse(LATEST_APP_VERSION_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
@@ -349,7 +352,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON);
         enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
-        enqueueMockResponse(LATEST_APP_VERSION_JSON);
+        enqueueMockResponse(VERSIONS_JSON);
         enqueueMockResponse(STOCK_USE_CASES_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);

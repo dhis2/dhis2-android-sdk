@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.settings.internal.ApkDistributionVersion
+import org.junit.Test
 
-import android.database.Cursor;
+class VersionsSettingsShould : BaseObjectShould("settings/version.json"), ObjectShould {
 
-import androidx.annotation.Nullable;
+    @Test
+    override fun map_from_json_string() {
+        val version = objectMapper.readValue(jsonStream, ApkDistributionVersion::class.java)
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-@JsonDeserialize(builder = $$AutoValue_LatestAppVersion.Builder.class)
-public abstract class LatestAppVersion implements CoreObject {
-
-    @JsonProperty()
-    @Nullable
-    public abstract String version();
-
-    @JsonProperty()
-    @Nullable
-    public abstract String downloadURL();
-
-    public static LatestAppVersion create(Cursor cursor) {
-        return $AutoValue_LatestAppVersion.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new $AutoValue_LatestAppVersion.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder version(String version);
-
-        public abstract Builder downloadURL(String downloadURL);
-
-        public abstract LatestAppVersion build();
+        Truth.assertThat(version.version).isEqualTo("40.1")
+        Truth.assertThat(version.isDefault).isTrue()
+        Truth.assertThat(version.userGroups?.get(0)).isEqualTo("Kk12LkEWtXp")
+        Truth.assertThat(version.downloadURL).isEqualTo(
+            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.1/dhis2-40.1.apk",
+        )
     }
 }

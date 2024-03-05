@@ -11,7 +11,7 @@
       },
       "downloadURL": "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.3/dhis2-40.3.apk",
       "version": "40.3",
-      "defaultVersion": true
+      "isDefault": true
     },
     {
       "androidOSVersion": {
@@ -24,7 +24,7 @@
       },
       "downloadURL": "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.2/dhis2-40.2.apk",
       "version": "40.2",
-      "defaultVersion": false,
+      "isDefault": false,
       "userGroups": ["Kk12LkEWtXp"]
     },
     {
@@ -38,7 +38,7 @@
       },
       "downloadURL": "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.1/dhis2-40.1.apk",
       "version": "40.1",
-      "defaultVersion": false,
+      "isDefault": false,
       "userGroups": ["Kk12LkEWtXp"]
     }
   ]

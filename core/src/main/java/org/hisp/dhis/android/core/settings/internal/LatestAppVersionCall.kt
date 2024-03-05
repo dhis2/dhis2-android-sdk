@@ -46,7 +46,7 @@ internal class LatestAppVersionCall(
 
     override suspend fun tryFetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
-            val userGroupUids = userModule.userGroups().blockingGet().map { it.uid() }
+            val userGroupUids = userModule.userGroups().blockingGetUids()
 
             val versions = settingAppService.versions().items()
 
@@ -57,7 +57,7 @@ internal class LatestAppVersionCall(
             }
 
             val version = filteredVersions.maxWithOrNull(versionComparator.comparator)
-                ?: versions.find { it.defaultVersion == true }
+                ?: versions.find { it.isDefault == true }
 
             version?.let { LatestAppVersion.builder().version(it.version).downloadURL(it.downloadURL).build() }
                 ?: settingAppService.latestAppVersion()

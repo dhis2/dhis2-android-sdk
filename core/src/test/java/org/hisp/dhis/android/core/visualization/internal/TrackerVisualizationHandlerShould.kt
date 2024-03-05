@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.junit.Before
@@ -42,6 +43,7 @@ class TrackerVisualizationHandlerShould {
     private val store: TrackerVisualizationStore = mock()
     private val collectionCleaner: TrackerVisualizationCollectionCleaner = mock()
     private val dimensionHandler: TrackerVisualizationDimensionHandler = mock()
+    private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner = mock()
     private val dimension: TrackerVisualizationDimension = TrackerVisualizationDimension.builder().build()
     private val trackerVisualization: TrackerVisualization = mock()
 
@@ -53,6 +55,7 @@ class TrackerVisualizationHandlerShould {
         trackerVisualizationHandler = TrackerVisualizationHandler(
             store,
             collectionCleaner,
+            analyticsDhisVisualizationCleaner,
             dimensionHandler,
         )
 

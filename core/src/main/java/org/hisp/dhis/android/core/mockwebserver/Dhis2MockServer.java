@@ -380,6 +380,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
         enqueueMockResponse(VISUALIZATIONS_1_JSON);
         enqueueMockResponse(VISUALIZATIONS_2_JSON);
+        enqueueMockResponse(404);
         enqueueMockResponse(TRACKER_VISUALIZATIONS_1_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);

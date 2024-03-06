@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
@@ -39,6 +41,7 @@ import org.koin.core.annotation.Singleton
 internal class VisualizationHandler(
     store: VisualizationStore,
     private val visualizationCollectionCleaner: VisualizationCollectionCleaner,
+    private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner,
     private val itemHandler: VisualizationDimensionItemHandler,
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
@@ -55,6 +58,10 @@ internal class VisualizationHandler(
 
     override fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
         visualizationCollectionCleaner.deleteNotPresent(oCollection)
+        analyticsDhisVisualizationCleaner.deleteNotPresent(
+            uids = store.selectUids(),
+            type = AnalyticsDhisVisualizationType.VISUALIZATION,
+        )
     }
 
     private fun toItems(

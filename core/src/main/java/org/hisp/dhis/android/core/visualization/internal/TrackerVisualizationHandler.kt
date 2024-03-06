@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
@@ -38,6 +40,7 @@ import org.koin.core.annotation.Singleton
 internal class TrackerVisualizationHandler(
     store: TrackerVisualizationStore,
     private val trackerVisualizationCollectionCleaner: TrackerVisualizationCollectionCleaner,
+    private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner,
     private val dimensionHandler: TrackerVisualizationDimensionHandler,
 ) : IdentifiableHandlerImpl<TrackerVisualization>(store) {
 
@@ -53,6 +56,10 @@ internal class TrackerVisualizationHandler(
 
     override fun afterCollectionHandled(oCollection: Collection<TrackerVisualization>?) {
         trackerVisualizationCollectionCleaner.deleteNotPresent(oCollection)
+        analyticsDhisVisualizationCleaner.deleteNotPresent(
+            uids = store.selectUids(),
+            type = AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION,
+        )
     }
 
     private fun toDimensions(

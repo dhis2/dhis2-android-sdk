@@ -46,6 +46,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
         assertThat(
             analyticsDhisVisualizationsSetting.home().first().visualizations().first().name(),
         ).isNotEmpty()
+        assertThat(analyticsDhisVisualizationsSetting.home().first().visualizations().size).isEqualTo(3)
 
         assertThat(analyticsDhisVisualizationsSetting.program().size).isEqualTo(1)
         assertThat(analyticsDhisVisualizationsSetting.dataSet().size).isEqualTo(1)

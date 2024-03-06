@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 import android.content.Context
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -59,7 +60,7 @@ internal class DatabaseImportExportImpl(
         const val ExportDatabase = "export-database.db"
         const val ExportDatabaseProtected = "export-database-protected.db"
         const val ExportMetadata = "export-metadata.json"
-        const val ExportZip = "export-database.zip"
+        const val ExportZip = "-database.zip"
     }
 
     private val d2ErrorBuilder = D2Error.builder()
@@ -131,7 +132,6 @@ internal class DatabaseImportExportImpl(
         val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
         val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.deleteIfExists() }
         val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
-        val zipFile = getWorkingDir().resolve(ExportZip).also { it.deleteIfExists() }
 
         if (!userModule.blockingIsLogged()) {
             throw d2ErrorBuilder
@@ -173,6 +173,9 @@ internal class DatabaseImportExportImpl(
         exportMetadataFile.bufferedWriter(Charsets.UTF_8).use {
             it.write(objectMapper().writeValueAsString(metadata))
         }
+
+        val zipName = credentials.username + '-' + getCurrentTimeAndDate() + '-' + ExportZip
+        val zipFile = getWorkingDir().resolve(zipName).also { it.deleteIfExists() }
 
         FileUtils.zipFiles(
             files = listOf(exportMetadataFile, protectedDatabase),

@@ -89,7 +89,12 @@ class TrackerLineListParamsShould {
             programId = "programId",
             programStageId = null,
             columns = listOf(
-                TrackerLineListItem.ProgramDataElement("dataElement", null, null, listOf(), listOf(0, -1, -2, 1, 2)),
+                TrackerLineListItem.ProgramDataElement(
+                    "dataElement",
+                    "programStage",
+                    listOf(),
+                    listOf(0, -1, -2, 1, 2),
+                ),
             ),
             filters = emptyList(),
         )

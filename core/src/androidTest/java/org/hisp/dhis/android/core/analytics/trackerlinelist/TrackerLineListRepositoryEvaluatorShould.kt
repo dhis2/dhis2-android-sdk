@@ -103,7 +103,6 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
             .withColumn(
                 TrackerLineListItem.ProgramDataElement(
                     dataElement = dataElement1.uid(),
-                    program = program.uid(),
                     programStage = programStage1.uid(),
                     filters = listOf(
                         DataFilter.GreaterThan("15"),
@@ -203,7 +202,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         )
 
         val result = d2.analyticsModule().trackerLineList()
-            .withEventOutput(program.uid(), programStage1.uid())
+            .withEventOutput(programStage1.uid())
             .withColumn(TrackerLineListItem.EventDate())
             .withColumn(TrackerLineListItem.ProgramIndicator(programIndicator))
             .blockingEvaluate()
@@ -262,8 +261,8 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "10")
 
         val result = d2.analyticsModule().trackerLineList()
-            .withEventOutput(program.uid(), programStage1.uid())
-            .withColumn(TrackerLineListItem.ProgramDataElement(dataElement1.uid(), program.uid(), programStage1.uid()))
+            .withEventOutput(programStage1.uid())
+            .withColumn(TrackerLineListItem.ProgramDataElement(dataElement1.uid(), programStage1.uid()))
             .blockingEvaluate()
 
         val rows = result.getOrThrow().rows

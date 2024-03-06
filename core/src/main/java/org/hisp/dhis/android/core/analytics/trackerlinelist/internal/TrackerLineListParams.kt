@@ -88,18 +88,10 @@ internal data class TrackerLineListParams(
     }
 
     private fun flattenDataElement(item: TrackerLineListItem.ProgramDataElement): List<TrackerLineListItem> {
-        val flattenDataElements =
-            if (item.repetitionIndexes.isNullOrEmpty()) {
-                listOf(item)
-            } else {
-                sortIndexes(item.repetitionIndexes).map { idx -> item.copy(repetitionIndexes = listOf(idx)) }
-            }
-
-        return flattenDataElements.map {
-            it.copy(
-                program = it.program ?: programId,
-                programStage = it.programStage ?: programStageId,
-            )
+        return if (item.repetitionIndexes.isNullOrEmpty()) {
+            listOf(item)
+        } else {
+            sortIndexes(item.repetitionIndexes).map { idx -> item.copy(repetitionIndexes = listOf(idx)) }
         }
     }
 

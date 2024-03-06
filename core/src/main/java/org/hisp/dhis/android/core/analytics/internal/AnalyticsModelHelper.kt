@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.analytics.internal
 
 internal object AnalyticsModelHelper {
-    fun eventDataElementId(program: String?, programStage: String?, dataElement: String): String {
-        return listOfNotNull(program, programStage, dataElement).joinToString(".")
+    fun eventDataElementId(programStage: String, dataElement: String): String {
+        return "$programStage.$dataElement"
     }
 }

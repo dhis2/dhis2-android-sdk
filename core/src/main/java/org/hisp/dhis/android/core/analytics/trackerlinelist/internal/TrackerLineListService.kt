@@ -126,7 +126,6 @@ internal class TrackerLineListService(
                 ""
             } +
             "WHERE " +
-            "$EventAlias.${EventTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
             "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
             "${getEventWhereClause(params, context)} "
     }

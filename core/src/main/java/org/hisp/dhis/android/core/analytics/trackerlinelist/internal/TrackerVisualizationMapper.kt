@@ -60,8 +60,8 @@ internal class TrackerVisualizationMapper(
             programId = trackerVisualization.program()?.uid(),
             programStageId = trackerVisualization.programStage()?.uid(),
             outputType = mapOutputType(trackerVisualization.outputType()),
-            columns = mapDimensions(trackerVisualization.columns()),
-            filters = mapDimensions(trackerVisualization.filters()),
+            columns = mapDimensions(trackerVisualization.columns(), trackerVisualization),
+            filters = mapDimensions(trackerVisualization.filters(), trackerVisualization),
         )
     }
 
@@ -73,21 +73,23 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapDimensions(dimensions: List<TrackerVisualizationDimension>?): List<TrackerLineListItem> {
+    private fun mapDimensions(
+        dimensions: List<TrackerVisualizationDimension>?,
+        trackerVisualization: TrackerVisualization,
+    ): List<TrackerLineListItem> {
         return dimensions?.mapNotNull { item ->
-            val mapper = when (item.dimensionType()) {
-                "ORGANISATION_UNIT" -> ::mapOrganisationUnit
-                "PERIOD" -> ::mapPeriod
-                "PROGRAM_INDICATOR" -> ::mapProgramIndicator
-                "PROGRAM_ATTRIBUTE" -> ::mapProgramAttribute
-                "PROGRAM_DATA_ELEMENT" -> ::mapProgramDataElement
-                "DATA_X" -> ::mapDataX
+            when (item.dimensionType()) {
+                "ORGANISATION_UNIT" -> mapOrganisationUnit(item)
+                "PERIOD" -> mapPeriod(item)
+                "PROGRAM_INDICATOR" -> mapProgramIndicator(item)
+                "PROGRAM_ATTRIBUTE" -> mapProgramAttribute(item)
+                "PROGRAM_DATA_ELEMENT" -> mapProgramDataElement(item, trackerVisualization)
+                "DATA_X" -> mapDataX(item)
                 "ORGANISATION_UNIT_GROUP_SET" ->
                     throw AnalyticsException.InvalidArguments("Dimension ORGANISATION_UNIT_GROUP_SET IS not supported")
 
-                else -> { _ -> null }
+                else -> null
             }
-            mapper(item)
         } ?: emptyList()
     }
 
@@ -149,12 +151,14 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapProgramDataElement(item: TrackerVisualizationDimension): TrackerLineListItem? {
+    private fun mapProgramDataElement(
+        item: TrackerVisualizationDimension,
+        trackerVisualization: TrackerVisualization,
+    ): TrackerLineListItem? {
         return item.dimension()?.let { uid ->
             TrackerLineListItem.ProgramDataElement(
                 uid,
-                item.program()?.uid(),
-                item.programStage()?.uid(),
+                item.programStage()?.uid() ?: trackerVisualization.programStage()!!.uid(),
                 mapDataFilters(item),
                 item.repetition()?.indexes(),
             )

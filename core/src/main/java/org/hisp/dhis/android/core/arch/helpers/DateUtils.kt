@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
@@ -94,5 +97,19 @@ object DateUtils {
         c.time = date
         c.add(Calendar.MONTH, amount)
         return c.time
+    }
+
+    private fun Int.zeroPrefixed(length: Int = 2): String = this.toString().padStart(length, '0')
+    internal fun getCurrentTimeAndDate(): String {
+        val dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+        val year = dateTime.year
+        val month = dateTime.monthNumber.zeroPrefixed()
+        val day = dateTime.dayOfMonth.zeroPrefixed()
+        val hour = dateTime.hour.zeroPrefixed()
+        val minute = dateTime.minute.zeroPrefixed()
+        val seconds = dateTime.second.zeroPrefixed()
+
+        return "$year$month$day-$hour$minute$seconds"
     }
 }

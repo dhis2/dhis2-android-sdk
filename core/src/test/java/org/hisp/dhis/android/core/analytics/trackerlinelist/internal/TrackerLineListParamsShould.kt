@@ -73,8 +73,8 @@ class TrackerLineListParamsShould {
         assertThat(params.programId).isEqualTo("program_uid")
         assertThat(params.programStageId).isEqualTo("program_stage_uid")
         assertThat(params.columns).containsExactly(
-            TrackerLineListItem.ProgramIndicator("indicator"),
             TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.NotEqualTo("10"))),
+            TrackerLineListItem.ProgramIndicator("indicator"),
         )
         assertThat(params.filters).containsExactly(
             TrackerLineListItem.EventDate(listOf(DateFilter.Absolute("202405"))),

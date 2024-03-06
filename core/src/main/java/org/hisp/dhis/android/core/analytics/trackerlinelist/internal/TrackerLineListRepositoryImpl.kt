@@ -62,11 +62,11 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     override fun withColumn(column: TrackerLineListItem): TrackerLineListRepositoryImpl {
-        return updateParams { params.pushToColumns(column) }
+        return updateParams { params.updateInColumns(column) }
     }
 
     override fun withFilter(filter: TrackerLineListItem): TrackerLineListRepositoryImpl {
-        return updateParams { params.pushToFilter(filter) }
+        return updateParams { params.updateInFilters(filter) }
     }
 
     override fun withTrackerVisualization(trackerVisualization: String): TrackerLineListRepositoryImpl {

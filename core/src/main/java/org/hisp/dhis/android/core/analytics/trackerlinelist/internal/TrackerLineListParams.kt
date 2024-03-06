@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.util.replaceOrPush
 
 internal data class TrackerLineListParams(
     val trackerVisualization: String?,
@@ -46,23 +47,23 @@ internal data class TrackerLineListParams(
             programId = other.programId ?: programId,
             programStageId = other.programStageId ?: programStageId,
         ).run {
-            other.columns.fold(this) { params, item -> params.pushToColumns(item) }
+            other.columns.fold(this) { params, item -> params.updateInColumns(item) }
         }.run {
-            other.filters.fold(this) { params, item -> params.pushToFilter(item) }
+            other.filters.fold(this) { params, item -> params.updateInFilters(item) }
         }
     }
 
-    fun pushToColumns(item: TrackerLineListItem): TrackerLineListParams {
+    fun updateInColumns(item: TrackerLineListItem): TrackerLineListParams {
         return copy(
-            columns = columns.filterNot { it.id == item.id } + item,
+            columns = columns.replaceOrPush(item) { it.id == item.id },
             filters = filters.filterNot { it.id == item.id },
         )
     }
 
-    fun pushToFilter(item: TrackerLineListItem): TrackerLineListParams {
+    fun updateInFilters(item: TrackerLineListItem): TrackerLineListParams {
         return copy(
             columns = columns.filterNot { it.id == item.id },
-            filters = filters.filterNot { it.id == item.id } + item,
+            filters = filters.replaceOrPush(item) { it.id == item.id },
         )
     }
 

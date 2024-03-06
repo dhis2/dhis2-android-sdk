@@ -50,15 +50,15 @@ class TrackerLineListRepositoryShould {
     private val repository = TrackerLineListRepositoryImpl(initialParams, service)
 
     @Test
-    fun `Call service with overridden columns`() {
+    fun `Call service with overridden columns respecting initial order`() {
         val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "program", "programStage", listOf(), null)
-        val de1_2 = de1_1.copy(filters = listOf(DataFilter.EqualTo("value")))
         val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "program", "programStage", listOf(), null)
+        val de1_2 = de1_1.copy(filters = listOf(DataFilter.EqualTo("value")))
 
         repository
             .withColumn(de1_1)
-            .withColumn(de1_2)
             .withColumn(de2_1)
+            .withColumn(de1_2)
             .blockingEvaluate()
 
         verify(service).evaluate(paramsCaptor.capture())
@@ -67,10 +67,18 @@ class TrackerLineListRepositoryShould {
         assertThat(columns.size).isEqualTo(2)
 
         val dataElementColumns = columns.filterIsInstance<TrackerLineListItem.ProgramDataElement>()
-        val de1 = dataElementColumns.find { it.dataElement == "dataElement1" }!!
-        val de2 = dataElementColumns.find { it.dataElement == "dataElement2" }!!
 
-        assertThat(de1.filters.size).isEqualTo(1)
-        assertThat(de2.filters.size).isEqualTo(0)
+        dataElementColumns.forEachIndexed { index, item ->
+            when (index) {
+                0 -> {
+                    assertThat(item.dataElement).isEqualTo("dataElement1")
+                    assertThat(item.filters.size).isEqualTo(1)
+                }
+                1 -> {
+                    assertThat(item.dataElement).isEqualTo("dataElement2")
+                    assertThat(item.filters.size).isEqualTo(0)
+                }
+            }
+        }
     }
 }

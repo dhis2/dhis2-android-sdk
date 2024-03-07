@@ -70,6 +70,31 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
+    fun find_current_account_after_login() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        val currentAccount = d2.userModule().accountManager().getCurrentAccount()
+        assertThat(currentAccount?.username()).isEqualTo(user1)
+        assertThat(currentAccount?.syncState()).isNotNull()
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+    }
+
+    @Test
+    fun cannot_find_current_account_after_logout() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        val currentAccount = d2.userModule().accountManager().getCurrentAccount()
+        assertThat(currentAccount).isNull()
+    }
+
+    @Test
     fun can_change_max_accounts() {
         d2.userModule().accountManager().setMaxAccounts(5)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(5)

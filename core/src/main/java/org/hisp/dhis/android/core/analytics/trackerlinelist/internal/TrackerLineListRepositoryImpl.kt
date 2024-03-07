@@ -42,11 +42,10 @@ internal class TrackerLineListRepositoryImpl(
     private val service: TrackerLineListService,
 ) : TrackerLineListRepository {
 
-    override fun withEventOutput(programId: String, programStageId: String?): TrackerLineListRepositoryImpl {
+    override fun withEventOutput(programStageId: String): TrackerLineListRepositoryImpl {
         return updateParams {
             params.copy(
                 outputType = TrackerLineListOutputType.EVENT,
-                programId = programId,
                 programStageId = programStageId,
             )
         }

@@ -100,14 +100,14 @@ internal class TrackerLineListServiceMetadataHelper(
             ?.let { MetadataItem.DataElementItem(it) }
             ?: throw AnalyticsException.InvalidDataElement(item.dataElement)
 
-        val program = item.program?.let { getProgram(it) }
+        val programStage = getProgramStage(item.programStage)
+            .let { MetadataItem.ProgramStageItem(it) }
+
+        val program = programStage.item.program()?.uid()?.let { getProgram(it) }
             ?.let { MetadataItem.ProgramItem(it) }
-            ?: throw AnalyticsException.InvalidArguments("DataElement ${item.dataElement} has no program defined")
+            ?: throw AnalyticsException.InvalidArguments("ProgramStage ${programStage.item.uid()} has no program")
 
-        val programStage = item.programStage?.let { getProgramStage(it) }
-            ?.let { MetadataItem.ProgramStageItem(it) }
-
-        return listOfNotNull(dataElement, program, programStage)
+        return listOf(dataElement, program, programStage)
     }
 
     private fun getProgram(programId: String): Program {

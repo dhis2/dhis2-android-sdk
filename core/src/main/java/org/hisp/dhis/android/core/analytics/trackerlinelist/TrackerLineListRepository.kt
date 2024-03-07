@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 
 interface TrackerLineListRepository {
 
-    fun withEventOutput(programId: String, programStageId: String?): TrackerLineListRepository
+    fun withEventOutput(programStageId: String): TrackerLineListRepository
 
     fun withEnrollmentOutput(programId: String): TrackerLineListRepository
 

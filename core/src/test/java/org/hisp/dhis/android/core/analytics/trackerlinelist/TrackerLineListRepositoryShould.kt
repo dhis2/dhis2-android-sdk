@@ -51,8 +51,8 @@ class TrackerLineListRepositoryShould {
 
     @Test
     fun `Call service with overridden columns respecting initial order`() {
-        val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "program", "programStage", listOf(), null)
-        val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "program", "programStage", listOf(), null)
+        val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "programStage", listOf(), null)
+        val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "programStage", listOf(), null)
         val de1_2 = de1_1.copy(filters = listOf(DataFilter.EqualTo("value")))
 
         repository

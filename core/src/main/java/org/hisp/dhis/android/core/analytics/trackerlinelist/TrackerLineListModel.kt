@@ -62,16 +62,15 @@ sealed class TrackerLineListItem(val id: String) {
 
     data class ProgramDataElement(
         val dataElement: String,
-        val program: String?,
-        val programStage: String?,
+        val programStage: String,
         val filters: List<DataFilter> = emptyList(),
         val repetitionIndexes: List<Int>? = null,
     ) : TrackerLineListItem(
-        eventDataElementId(program, programStage, dataElement) +
+        eventDataElementId(programStage, dataElement) +
             (repetitionIndexes?.joinToString { it.toString() } ?: ""),
     ) {
 
-        val stageDataElementIdx = eventDataElementId(program, programStage, dataElement)
+        val stageDataElementIdx = eventDataElementId(programStage, dataElement)
     }
 
     data class ProgramStatusItem(val filters: List<EnrollmentStatus> = emptyList()) :

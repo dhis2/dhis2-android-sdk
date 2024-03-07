@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 
 sealed class TrackerLineListItem(val id: String) {
 
-    data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter>) :
+    data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter> = emptyList()) :
         TrackerLineListItem(Label.OrganisationUnit)
 
     data class LastUpdated(override val filters: List<DateFilter> = emptyList()) :
@@ -73,10 +73,10 @@ sealed class TrackerLineListItem(val id: String) {
         val stageDataElementIdx = eventDataElementId(programStage, dataElement)
     }
 
-    data class ProgramStatusItem(val filters: List<EnrollmentStatus> = emptyList()) :
+    data class ProgramStatusItem(val filters: List<EnumFilter<EnrollmentStatus>> = emptyList()) :
         TrackerLineListItem(Label.ProgramStatus)
 
-    data class EventStatusItem(val filters: List<EventStatus> = emptyList()) :
+    data class EventStatusItem(val filters: List<EnumFilter<EventStatus>> = emptyList()) :
         TrackerLineListItem(Label.EventStatus)
 
     object CreatedBy : TrackerLineListItem(Label.CreatedBy)
@@ -94,27 +94,39 @@ sealed class OrganisationUnitFilter {
     data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitFilter()
     data class Level(val uid: String) : OrganisationUnitFilter()
     data class Group(val uid: String) : OrganisationUnitFilter()
+    data class EqualTo(val orgunitName: String, val ignoreCase: Boolean = false) : OrganisationUnitFilter()
+    data class NotEqualTo(val orgunitName: String, val ignoreCase: Boolean = false) : OrganisationUnitFilter()
+    data class Like(val orgunitName: String, val ignoreCase: Boolean = true) : OrganisationUnitFilter()
+    data class NotLike(val orgunitName: String, val ignoreCase: Boolean = true) : OrganisationUnitFilter()
 }
 
 sealed class DateFilter {
     data class Relative(val relative: RelativePeriod) : DateFilter()
     data class Absolute(val uid: String) : DateFilter()
     data class Range(val startDate: String, val endDate: String) : DateFilter()
+    data class EqualTo(val timestamp: String, val ignoreCase: Boolean = false) : DateFilter()
+    data class NotEqualTo(val timestamp: String, val ignoreCase: Boolean = false) : DateFilter()
+    data class Like(val timestamp: String, val ignoreCase: Boolean = true) : DateFilter()
+    data class NotLike(val timestamp: String, val ignoreCase: Boolean = true) : DateFilter()
+}
+
+sealed class EnumFilter<T> {
+    data class EqualTo<T>(val value: String, val ignoreCase: Boolean = false) : EnumFilter<T>()
+    data class NotEqualTo<T>(val value: String, val ignoreCase: Boolean = false) : EnumFilter<T>()
+    data class Like<T>(val value: String, val ignoreCase: Boolean = true) : EnumFilter<T>()
+    data class NotLike<T>(val value: String, val ignoreCase: Boolean = true) : EnumFilter<T>()
+    data class In<T>(val values: List<T>) : EnumFilter<T>()
 }
 
 sealed class DataFilter {
-    data class EqualTo(val value: String) : DataFilter()
-    data class NotEqualTo(val value: String) : DataFilter()
-    data class EqualToIgnoreCase(val value: String) : DataFilter()
-    data class NotEqualToIgnoreCase(val value: String) : DataFilter()
+    data class EqualTo(val value: String, val ignoreCase: Boolean = false) : DataFilter()
+    data class NotEqualTo(val value: String, val ignoreCase: Boolean = false) : DataFilter()
     data class GreaterThan(val value: String) : DataFilter()
     data class GreaterThanOrEqualTo(val value: String) : DataFilter()
     data class LowerThan(val value: String) : DataFilter()
     data class LowerThanOrEqualTo(val value: String) : DataFilter()
-    data class Like(val value: String) : DataFilter()
-    data class NotLike(val value: String) : DataFilter()
-    data class LikeIgnoreCase(val value: String) : DataFilter()
-    data class NotLikeIgnoreCase(val value: String) : DataFilter()
+    data class Like(val value: String, val ignoreCase: Boolean = true) : DataFilter()
+    data class NotLike(val value: String, val ignoreCase: Boolean = true) : DataFilter()
     data class In(val values: List<String>) : DataFilter()
 }
 

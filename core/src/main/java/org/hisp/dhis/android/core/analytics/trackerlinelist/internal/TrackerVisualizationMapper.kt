@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevel
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
+import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -171,11 +172,15 @@ internal class TrackerVisualizationMapper(
             "lastUpdatedBy" -> TrackerLineListItem.LastUpdatedBy
             "programStatus" -> TrackerLineListItem.ProgramStatusItem(
                 filters = item.items()?.mapNotNull { e -> EnrollmentStatus.entries.find { it.name == e.uid() } }
+                    .takeIf { !it.isNullOrEmpty() }
+                    ?.let { statuses -> listOf(EnumFilter.In(statuses)) }
                     ?: emptyList(),
             )
 
             "eventStatus" -> TrackerLineListItem.EventStatusItem(
                 filters = item.items()?.mapNotNull { e -> EventStatus.entries.find { it.name == e.uid() } }
+                    .takeIf { !it.isNullOrEmpty() }
+                    ?.let { statuses -> listOf(EnumFilter.In(statuses)) }
                     ?: emptyList(),
             )
 
@@ -195,19 +200,19 @@ internal class TrackerVisualizationMapper(
                 val value = filterPair.getOrNull(1)
                 if (operator != null && value != null) {
                     when (operator) {
-                        "EQ" -> DataFilter.EqualTo(value)
-                        "!EQ" -> DataFilter.NotEqualTo(value)
-                        "IEQ" -> DataFilter.EqualToIgnoreCase(value)
-                        "!IEQ" -> DataFilter.NotEqualToIgnoreCase(value)
+                        "EQ" -> DataFilter.EqualTo(value, ignoreCase = false)
+                        "!EQ" -> DataFilter.NotEqualTo(value, ignoreCase = false)
+                        "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
+                        "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
                         "GT" -> DataFilter.GreaterThan(value)
                         "GE" -> DataFilter.GreaterThanOrEqualTo(value)
                         "LT" -> DataFilter.LowerThan(value)
                         "LE" -> DataFilter.LowerThanOrEqualTo(value)
                         "NE" -> DataFilter.NotEqualTo(value)
-                        "LIKE" -> DataFilter.Like(value)
-                        "!LIKE" -> DataFilter.NotLike(value)
-                        "ILIKE" -> DataFilter.LikeIgnoreCase(value)
-                        "!ILIKE" -> DataFilter.NotLikeIgnoreCase(value)
+                        "LIKE" -> DataFilter.Like(value, ignoreCase = false)
+                        "!LIKE" -> DataFilter.NotLike(value, ignoreCase = false)
+                        "ILIKE" -> DataFilter.Like(value, ignoreCase = true)
+                        "!ILIKE" -> DataFilter.NotLike(value, ignoreCase = true)
                         "IN" -> DataFilter.In(value.split(";"))
                         else -> null
                     }

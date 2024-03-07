@@ -26,36 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
+package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
+import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 
-internal object DataFilterHelper {
-    fun getWhereClause(itemId: String, filters: List<DataFilter>): String {
+internal abstract class BaseEnumEvaluator<T : Enum<*>>(
+    private val itemId: String,
+    private val filters: List<EnumFilter<T>>,
+) : TrackerLineListEvaluator() {
+
+    fun getWhereClause(): String {
         return if (filters.isEmpty()) {
             "1"
         } else {
-            return filters.joinToString(" AND ") { getSqlOperator(itemId, it) }
+            return filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
         }
     }
 
-    private fun getSqlOperator(itemId: String, filter: DataFilter): String {
-        val comparison = when (filter) {
-            is DataFilter.EqualTo -> "= '${filter.value}'"
-            is DataFilter.NotEqualTo -> "!= '${filter.value}'"
-            is DataFilter.EqualToIgnoreCase -> "= '${filter.value}' COLLATE NOCASE"
-            is DataFilter.NotEqualToIgnoreCase -> "!= '${filter.value}' COLLATE NOCASE"
-            is DataFilter.GreaterThan -> "> ${filter.value}"
-            is DataFilter.GreaterThanOrEqualTo -> ">= ${filter.value}"
-            is DataFilter.LowerThan -> "< ${filter.value}"
-            is DataFilter.LowerThanOrEqualTo -> "<= ${filter.value}"
-            is DataFilter.Like -> "= '%${filter.value}%'"
-            is DataFilter.LikeIgnoreCase -> "= '%${filter.value}%' COLLATE NOCASE"
-            is DataFilter.NotLike -> "!= '%${filter.value}%'"
-            is DataFilter.NotLikeIgnoreCase -> "!= '%${filter.value}%' COLLATE NOCASE"
-            is DataFilter.In -> "IN (${filter.values.joinToString(", ") {"'$it'"}})"
+    private fun getFilterWhereClause(filter: EnumFilter<T>): String {
+        val filterHelper = FilterHelper(itemId)
+        return when (filter) {
+            is EnumFilter.EqualTo -> filterHelper.equalTo(filter.value, filter.ignoreCase)
+            is EnumFilter.NotEqualTo -> filterHelper.notEqualTo(filter.value, filter.ignoreCase)
+            is EnumFilter.Like -> filterHelper.like(filter.value, filter.ignoreCase)
+            is EnumFilter.NotLike -> filterHelper.notLike(filter.value, filter.ignoreCase)
+            is EnumFilter.In -> filterHelper.inValues(filter.values.map { it.name })
         }
-
-        return "\"$itemId\" $comparison"
     }
 }

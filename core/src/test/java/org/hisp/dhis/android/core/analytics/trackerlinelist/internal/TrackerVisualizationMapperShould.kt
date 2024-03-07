@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
+import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -57,8 +58,8 @@ class TrackerVisualizationMapperShould {
 
         assertThat(dataFilters).containsExactly(
             DataFilter.GreaterThan("6"),
-            DataFilter.LikeIgnoreCase("ar"),
-            DataFilter.NotEqualTo("4"),
+            DataFilter.Like("ar", ignoreCase = true),
+            DataFilter.NotEqualTo("4", ignoreCase = false),
         )
     }
 
@@ -89,12 +90,24 @@ class TrackerVisualizationMapperShould {
             .items(
                 listOf(
                     ObjectWithUid.create(EnrollmentStatus.ACTIVE.name),
+                    ObjectWithUid.create(EnrollmentStatus.CANCELLED.name),
                 ),
             )
             .build()
 
         val programStatus = mapper.mapDataX(item)
 
-        assertThat(programStatus).isEqualTo(TrackerLineListItem.ProgramStatusItem(listOf(EnrollmentStatus.ACTIVE)))
+        assertThat(programStatus).isEqualTo(
+            TrackerLineListItem.ProgramStatusItem(
+                listOf(
+                    EnumFilter.In(
+                        listOf(
+                            EnrollmentStatus.ACTIVE,
+                            EnrollmentStatus.CANCELLED,
+                        ),
+                    ),
+                ),
+            ),
+        )
     }
 }

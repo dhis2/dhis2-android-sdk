@@ -28,20 +28,29 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 
-internal class ProgramStatusEvaluator(
-    private val item: TrackerLineListItem.ProgramStatusItem,
-) : BaseEnumEvaluator<EnrollmentStatus>(item.id, item.filters) {
-
-    override fun getCommonSelectSQL(): String {
-        return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.STATUS}"
+internal object DataFilterHelper {
+    fun getWhereClause(itemId: String, filters: List<DataFilter>): String {
+        return if (filters.isEmpty()) {
+            "1"
+        } else {
+            val filterHelper = FilterHelper(itemId)
+            return filters.joinToString(" AND ") { getSqlOperator(filterHelper, it) }
+        }
     }
 
-    override fun getCommonWhereSQL(): String {
-        return getWhereClause()
+    private fun getSqlOperator(helper: FilterHelper, filter: DataFilter): String {
+        return when (filter) {
+            is DataFilter.EqualTo -> helper.equalTo(filter.value, filter.ignoreCase)
+            is DataFilter.NotEqualTo -> helper.notEqualTo(filter.value, filter.ignoreCase)
+            is DataFilter.GreaterThan -> helper.greaterThan(filter.value)
+            is DataFilter.GreaterThanOrEqualTo -> helper.greaterThanOrEqualTo(filter.value)
+            is DataFilter.LowerThan -> helper.lowerThan(filter.value)
+            is DataFilter.LowerThanOrEqualTo -> helper.lowerThanOrEqualTo(filter.value)
+            is DataFilter.Like -> helper.like(filter.value, filter.ignoreCase)
+            is DataFilter.NotLike -> helper.notLike(filter.value, filter.ignoreCase)
+            is DataFilter.In -> helper.inValues(filter.values)
+        }
     }
 }

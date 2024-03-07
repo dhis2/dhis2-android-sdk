@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period202001
@@ -67,7 +68,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
 
         val result = d2.analyticsModule().trackerLineList()
             .withEnrollmentOutput(program.uid())
-            .withColumn(TrackerLineListItem.OrganisationUnitItem(filters = emptyList()))
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
             .withColumn(
                 TrackerLineListItem.ProgramAttribute(
                     uid = attribute1.uid(),
@@ -248,6 +249,29 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         evaluateExpression("if(containsItems(A{${attribute2.uid()}}, 'LATEX', 'ALLERGY'), '1', '0')", "1")
         evaluateExpression("if(containsItems(A{${attribute2.uid()}}, 'GY,LA'), '1', '0')", "0")
         evaluateExpression("if(containsItems(A{${attribute2.uid()}}, 'xy', 'ALLERGY'), '1', '0')", "0")
+    }
+
+    @Test
+    fun evaluate_orgunit_filters() {
+        val event1 = generator.generate()
+        helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+        val event2 = generator.generate()
+        helper.createSingleEvent(event2, program.uid(), programStage1.uid(), orgunitChild2.uid())
+
+        val result = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(
+                TrackerLineListItem.OrganisationUnitItem(
+                    filters = listOf(
+                        OrganisationUnitFilter.Like(orgunitChild1.displayName()!!),
+                    ),
+                ),
+            )
+            .blockingEvaluate()
+
+        val rows = result.getOrThrow().rows
+        assertThat(rows.size).isEqualTo(1)
+        assertThat(rows.first().first().value).isEqualTo(orgunitChild1.displayName())
     }
 
     @Test

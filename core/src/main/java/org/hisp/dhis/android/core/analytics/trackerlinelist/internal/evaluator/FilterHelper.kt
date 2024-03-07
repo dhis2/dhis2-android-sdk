@@ -28,20 +28,19 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+@Suppress("TooManyFunctions")
+internal class FilterHelper(private val itemId: String) {
+    fun equalTo(value: String, ignoreCase: Boolean): String = itemTo("= '$value'${case(ignoreCase)}")
+    fun notEqualTo(value: String, ignoreCase: Boolean): String = itemTo("!= '$value'${case(ignoreCase)}")
+    fun greaterThan(value: String): String = itemTo("> $value")
+    fun greaterThanOrEqualTo(value: String): String = itemTo(">= $value")
+    fun lowerThan(value: String): String = itemTo("< $value")
+    fun lowerThanOrEqualTo(value: String): String = itemTo("<= $value")
+    fun like(value: String, ignoreCase: Boolean): String = itemTo("LIKE '%$value%'${case(ignoreCase)}")
+    fun notLike(value: String, ignoreCase: Boolean): String = itemTo("NOT LIKE '%$value%'${case(ignoreCase)}")
+    fun inValues(values: List<String>): String = itemTo("IN (${values.joinToString(", ") { "'$it'" }})")
 
-internal class ProgramStatusEvaluator(
-    private val item: TrackerLineListItem.ProgramStatusItem,
-) : BaseEnumEvaluator<EnrollmentStatus>(item.id, item.filters) {
+    private fun itemTo(comparison: String) = "\"$itemId\" $comparison"
 
-    override fun getCommonSelectSQL(): String {
-        return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.STATUS}"
-    }
-
-    override fun getCommonWhereSQL(): String {
-        return getWhereClause()
-    }
+    private fun case(ignoreCase: Boolean) = if (ignoreCase) " COLLATE NOCASE" else ""
 }

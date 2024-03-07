@@ -51,7 +51,9 @@ internal abstract class BaseDateEvaluator(
             return item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
         }
     }
+
     private fun getFilterWhereClause(filter: DateFilter): String {
+        val filterHelper = FilterHelper(item.id)
         return when (filter) {
             is DateFilter.Absolute -> {
                 val periodType = PeriodType.periodTypeFromPeriodId(filter.uid)
@@ -70,6 +72,11 @@ internal abstract class BaseDateEvaluator(
             is DateFilter.Range -> {
                 betweenDates(filter.startDate, filter.endDate)
             }
+
+            is DateFilter.EqualTo -> filterHelper.equalTo(filter.timestamp, filter.ignoreCase)
+            is DateFilter.NotEqualTo -> filterHelper.notEqualTo(filter.timestamp, filter.ignoreCase)
+            is DateFilter.Like -> filterHelper.like(filter.timestamp, filter.ignoreCase)
+            is DateFilter.NotLike -> filterHelper.notLike(filter.timestamp, filter.ignoreCase)
         }
     }
 

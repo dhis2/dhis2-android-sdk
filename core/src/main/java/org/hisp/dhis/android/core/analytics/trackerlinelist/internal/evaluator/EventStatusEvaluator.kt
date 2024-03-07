@@ -31,11 +31,12 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
 
 internal class EventStatusEvaluator(
-    private val item: TrackerLineListItem.EventStatusItem,
-) : TrackerLineListEvaluator() {
+    item: TrackerLineListItem.EventStatusItem,
+) : BaseEnumEvaluator<EventStatus>(item.id, item.filters) {
 
     override fun getSelectSQLForEvent(): String {
         return "$EventAlias.${EventTableInfo.Columns.STATUS}"
@@ -46,11 +47,7 @@ internal class EventStatusEvaluator(
     }
 
     override fun getWhereSQLForEvent(): String {
-        return if (item.filters.isEmpty()) {
-            "1"
-        } else {
-            "${item.id} IN (${item.filters.joinToString(", ") { "'${it.name}'" }})"
-        }
+        return getWhereClause()
     }
 
     override fun getWhereSQLForEnrollment(): String {

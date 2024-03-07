@@ -49,7 +49,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
-internal class AccountManagerImpl constructor(
+internal class AccountManagerImpl(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
@@ -61,6 +61,12 @@ internal class AccountManagerImpl constructor(
 
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
+    }
+
+    override fun getCurrentAccount(): DatabaseAccount? {
+        return credentialsSecureStore.get()
+            ?.let { multiUserDatabaseManager.getAccount(it.serverUrl, it.username) }
+            ?.let { updateSyncState(it) }
     }
 
     override fun setMaxAccounts(maxAccounts: Int?) {

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevel
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
+import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -171,11 +172,15 @@ internal class TrackerVisualizationMapper(
             "lastUpdatedBy" -> TrackerLineListItem.LastUpdatedBy
             "programStatus" -> TrackerLineListItem.ProgramStatusItem(
                 filters = item.items()?.mapNotNull { e -> EnrollmentStatus.entries.find { it.name == e.uid() } }
+                    .takeIf { !it.isNullOrEmpty() }
+                    ?.let { statuses -> listOf(EnumFilter.In(statuses)) }
                     ?: emptyList(),
             )
 
             "eventStatus" -> TrackerLineListItem.EventStatusItem(
                 filters = item.items()?.mapNotNull { e -> EventStatus.entries.find { it.name == e.uid() } }
+                    .takeIf { !it.isNullOrEmpty() }
+                    ?.let { statuses -> listOf(EnumFilter.In(statuses)) }
                     ?: emptyList(),
             )
 

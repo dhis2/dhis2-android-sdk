@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 
 sealed class TrackerLineListItem(val id: String) {
 
-    data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter>) :
+    data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter> = emptyList()) :
         TrackerLineListItem(Label.OrganisationUnit)
 
     data class LastUpdated(override val filters: List<DateFilter> = emptyList()) :
@@ -73,10 +73,10 @@ sealed class TrackerLineListItem(val id: String) {
         val stageDataElementIdx = eventDataElementId(programStage, dataElement)
     }
 
-    data class ProgramStatusItem(val filters: List<EnrollmentStatus> = emptyList()) :
+    data class ProgramStatusItem(val filters: List<EnumFilter<EnrollmentStatus>> = emptyList()) :
         TrackerLineListItem(Label.ProgramStatus)
 
-    data class EventStatusItem(val filters: List<EventStatus> = emptyList()) :
+    data class EventStatusItem(val filters: List<EnumFilter<EventStatus>> = emptyList()) :
         TrackerLineListItem(Label.EventStatus)
 
     object CreatedBy : TrackerLineListItem(Label.CreatedBy)
@@ -94,12 +94,40 @@ sealed class OrganisationUnitFilter {
     data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitFilter()
     data class Level(val uid: String) : OrganisationUnitFilter()
     data class Group(val uid: String) : OrganisationUnitFilter()
+    data class EqualTo(val orgunitName: String) : OrganisationUnitFilter()
+    data class NotEqualTo(val orgunitName: String) : OrganisationUnitFilter()
+    data class EqualToIgnoreCase(val orgunitName: String) : OrganisationUnitFilter()
+    data class NotEqualToIgnoreCase(val orgunitName: String) : OrganisationUnitFilter()
+    data class Like(val orgunitName: String) : OrganisationUnitFilter()
+    data class NotLike(val orgunitName: String) : OrganisationUnitFilter()
+    data class LikeIgnoreCase(val orgunitName: String) : OrganisationUnitFilter()
+    data class NotLikeIgnoreCase(val orgunitName: String) : OrganisationUnitFilter()
 }
 
 sealed class DateFilter {
     data class Relative(val relative: RelativePeriod) : DateFilter()
     data class Absolute(val uid: String) : DateFilter()
     data class Range(val startDate: String, val endDate: String) : DateFilter()
+    data class EqualTo(val timestamp: String) : DateFilter()
+    data class NotEqualTo(val timestamp: String) : DateFilter()
+    data class EqualToIgnoreCase(val timestamp: String) : DateFilter()
+    data class NotEqualToIgnoreCase(val timestamp: String) : DateFilter()
+    data class Like(val timestamp: String) : DateFilter()
+    data class NotLike(val timestamp: String) : DateFilter()
+    data class LikeIgnoreCase(val timestamp: String) : DateFilter()
+    data class NotLikeIgnoreCase(val timestamp: String) : DateFilter()
+}
+
+sealed class EnumFilter<T> {
+    data class EqualTo<T>(val value: String) : EnumFilter<T>()
+    data class NotEqualTo<T>(val value: String) : EnumFilter<T>()
+    data class EqualToIgnoreCase<T>(val value: String) : EnumFilter<T>()
+    data class NotEqualToIgnoreCase<T>(val value: String) : EnumFilter<T>()
+    data class Like<T>(val value: String) : EnumFilter<T>()
+    data class NotLike<T>(val value: String) : EnumFilter<T>()
+    data class LikeIgnoreCase<T>(val value: String) : EnumFilter<T>()
+    data class NotLikeIgnoreCase<T>(val value: String) : EnumFilter<T>()
+    data class In<T>(val values: List<T>) : EnumFilter<T>()
 }
 
 sealed class DataFilter {

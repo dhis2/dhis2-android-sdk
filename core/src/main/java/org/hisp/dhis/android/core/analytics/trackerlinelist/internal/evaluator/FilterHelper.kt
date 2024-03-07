@@ -26,36 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
+package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
+@Suppress("TooManyFunctions")
+internal class FilterHelper(private val itemId: String) {
+    fun equalTo(value: String): String = itemTo("= '$value'")
+    fun notEqualTo(value: String): String = itemTo("!= '$value'")
+    fun equalToIgnoreCase(value: String): String = itemTo("= '$value' COLLATE NOCASE")
+    fun notEqualToIgnoreCase(value: String): String = itemTo("!= '$value' COLLATE NOCASE")
+    fun greaterThan(value: String): String = itemTo("> $value")
+    fun greaterThanOrEqualTo(value: String): String = itemTo(">= $value")
+    fun lowerThan(value: String): String = itemTo("< $value")
+    fun lowerThanOrEqualTo(value: String): String = itemTo("<= $value")
+    fun like(value: String): String = itemTo("LIKE '%$value%'")
+    fun likeIgnoreCase(value: String): String = itemTo("LIKE '%$value%' COLLATE NOCASE")
+    fun notLike(value: String): String = itemTo("NOT LIKE '%$value%'")
+    fun notLikeIgnoreCase(value: String): String = itemTo("NOT LIKE '%$value%' COLLATE NOCASE")
+    fun inValues(values: List<String>): String = itemTo("IN (${values.joinToString(", ") { "'$it'" }})")
 
-internal object DataFilterHelper {
-    fun getWhereClause(itemId: String, filters: List<DataFilter>): String {
-        return if (filters.isEmpty()) {
-            "1"
-        } else {
-            return filters.joinToString(" AND ") { getSqlOperator(itemId, it) }
-        }
-    }
-
-    private fun getSqlOperator(itemId: String, filter: DataFilter): String {
-        val comparison = when (filter) {
-            is DataFilter.EqualTo -> "= '${filter.value}'"
-            is DataFilter.NotEqualTo -> "!= '${filter.value}'"
-            is DataFilter.EqualToIgnoreCase -> "= '${filter.value}' COLLATE NOCASE"
-            is DataFilter.NotEqualToIgnoreCase -> "!= '${filter.value}' COLLATE NOCASE"
-            is DataFilter.GreaterThan -> "> ${filter.value}"
-            is DataFilter.GreaterThanOrEqualTo -> ">= ${filter.value}"
-            is DataFilter.LowerThan -> "< ${filter.value}"
-            is DataFilter.LowerThanOrEqualTo -> "<= ${filter.value}"
-            is DataFilter.Like -> "= '%${filter.value}%'"
-            is DataFilter.LikeIgnoreCase -> "= '%${filter.value}%' COLLATE NOCASE"
-            is DataFilter.NotLike -> "!= '%${filter.value}%'"
-            is DataFilter.NotLikeIgnoreCase -> "!= '%${filter.value}%' COLLATE NOCASE"
-            is DataFilter.In -> "IN (${filter.values.joinToString(", ") {"'$it'"}})"
-        }
-
-        return "\"$itemId\" $comparison"
-    }
+    private fun itemTo(comparison: String) = "\"$itemId\" $comparison"
 }

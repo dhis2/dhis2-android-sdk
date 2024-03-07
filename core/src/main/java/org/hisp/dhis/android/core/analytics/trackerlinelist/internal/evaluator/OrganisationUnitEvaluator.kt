@@ -64,7 +64,9 @@ internal class OrganisationUnitEvaluator(
         }
     }
 
+    @Suppress("ComplexMethod")
     private fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
+        val filterHelper = FilterHelper(item.id)
         return when (filter) {
             is OrganisationUnitFilter.Absolute -> inPathOf(filter.uid)
 
@@ -115,6 +117,15 @@ internal class OrganisationUnitEvaluator(
 
                 inPathOfAny(orgunits.mapNotNull { it.organisationUnit() })
             }
+
+            is OrganisationUnitFilter.EqualTo -> filterHelper.equalTo(filter.orgunitName)
+            is OrganisationUnitFilter.NotEqualTo -> filterHelper.notEqualTo(filter.orgunitName)
+            is OrganisationUnitFilter.EqualToIgnoreCase -> filterHelper.equalToIgnoreCase(filter.orgunitName)
+            is OrganisationUnitFilter.NotEqualToIgnoreCase -> filterHelper.notEqualToIgnoreCase(filter.orgunitName)
+            is OrganisationUnitFilter.Like -> filterHelper.like(filter.orgunitName)
+            is OrganisationUnitFilter.LikeIgnoreCase -> filterHelper.likeIgnoreCase(filter.orgunitName)
+            is OrganisationUnitFilter.NotLike -> filterHelper.notLike(filter.orgunitName)
+            is OrganisationUnitFilter.NotLikeIgnoreCase -> filterHelper.notLikeIgnoreCase(filter.orgunitName)
         }
     }
 

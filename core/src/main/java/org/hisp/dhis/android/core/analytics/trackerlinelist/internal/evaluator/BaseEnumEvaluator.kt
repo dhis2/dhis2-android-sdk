@@ -28,20 +28,33 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 
-internal class ProgramStatusEvaluator(
-    private val item: TrackerLineListItem.ProgramStatusItem,
-) : BaseEnumEvaluator<EnrollmentStatus>(item.id, item.filters) {
+internal abstract class BaseEnumEvaluator<T : Enum<*>>(
+    private val itemId: String,
+    private val filters: List<EnumFilter<T>>,
+) : TrackerLineListEvaluator() {
 
-    override fun getCommonSelectSQL(): String {
-        return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.STATUS}"
+    fun getWhereClause(): String {
+        return if (filters.isEmpty()) {
+            "1"
+        } else {
+            return filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
+        }
     }
 
-    override fun getCommonWhereSQL(): String {
-        return getWhereClause()
+    private fun getFilterWhereClause(filter: EnumFilter<T>): String {
+        val filterHelper = FilterHelper(itemId)
+        return when (filter) {
+            is EnumFilter.EqualTo -> filterHelper.equalTo(filter.value)
+            is EnumFilter.NotEqualTo -> filterHelper.notEqualTo(filter.value)
+            is EnumFilter.EqualToIgnoreCase -> filterHelper.notEqualTo(filter.value)
+            is EnumFilter.NotEqualToIgnoreCase -> filterHelper.notEqualToIgnoreCase(filter.value)
+            is EnumFilter.Like -> filterHelper.like(filter.value)
+            is EnumFilter.LikeIgnoreCase -> filterHelper.likeIgnoreCase(filter.value)
+            is EnumFilter.NotLike -> filterHelper.notLike(filter.value)
+            is EnumFilter.NotLikeIgnoreCase -> filterHelper.notLikeIgnoreCase(filter.value)
+            is EnumFilter.In -> filterHelper.inValues(filter.values.map { it.name })
+        }
     }
 }

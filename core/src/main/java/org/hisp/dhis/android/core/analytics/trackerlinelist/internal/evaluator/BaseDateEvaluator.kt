@@ -73,14 +73,10 @@ internal abstract class BaseDateEvaluator(
                 betweenDates(filter.startDate, filter.endDate)
             }
 
-            is DateFilter.EqualTo -> filterHelper.equalTo(filter.timestamp)
-            is DateFilter.NotEqualTo -> filterHelper.notEqualTo(filter.timestamp)
-            is DateFilter.EqualToIgnoreCase -> filterHelper.notEqualTo(filter.timestamp)
-            is DateFilter.NotEqualToIgnoreCase -> filterHelper.notEqualToIgnoreCase(filter.timestamp)
-            is DateFilter.Like -> filterHelper.like(filter.timestamp)
-            is DateFilter.LikeIgnoreCase -> filterHelper.likeIgnoreCase(filter.timestamp)
-            is DateFilter.NotLike -> filterHelper.notLike(filter.timestamp)
-            is DateFilter.NotLikeIgnoreCase -> filterHelper.notLikeIgnoreCase(filter.timestamp)
+            is DateFilter.EqualTo -> filterHelper.equalTo(filter.timestamp, filter.ignoreCase)
+            is DateFilter.NotEqualTo -> filterHelper.notEqualTo(filter.timestamp, filter.ignoreCase)
+            is DateFilter.Like -> filterHelper.like(filter.timestamp, filter.ignoreCase)
+            is DateFilter.NotLike -> filterHelper.notLike(filter.timestamp, filter.ignoreCase)
         }
     }
 

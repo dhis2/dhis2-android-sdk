@@ -30,19 +30,17 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
 @Suppress("TooManyFunctions")
 internal class FilterHelper(private val itemId: String) {
-    fun equalTo(value: String): String = itemTo("= '$value'")
-    fun notEqualTo(value: String): String = itemTo("!= '$value'")
-    fun equalToIgnoreCase(value: String): String = itemTo("= '$value' COLLATE NOCASE")
-    fun notEqualToIgnoreCase(value: String): String = itemTo("!= '$value' COLLATE NOCASE")
+    fun equalTo(value: String, ignoreCase: Boolean): String = itemTo("= '$value'${case(ignoreCase)}")
+    fun notEqualTo(value: String, ignoreCase: Boolean): String = itemTo("!= '$value'${case(ignoreCase)}")
     fun greaterThan(value: String): String = itemTo("> $value")
     fun greaterThanOrEqualTo(value: String): String = itemTo(">= $value")
     fun lowerThan(value: String): String = itemTo("< $value")
     fun lowerThanOrEqualTo(value: String): String = itemTo("<= $value")
-    fun like(value: String): String = itemTo("LIKE '%$value%'")
-    fun likeIgnoreCase(value: String): String = itemTo("LIKE '%$value%' COLLATE NOCASE")
-    fun notLike(value: String): String = itemTo("NOT LIKE '%$value%'")
-    fun notLikeIgnoreCase(value: String): String = itemTo("NOT LIKE '%$value%' COLLATE NOCASE")
+    fun like(value: String, ignoreCase: Boolean): String = itemTo("LIKE '%$value%'${case(ignoreCase)}")
+    fun notLike(value: String, ignoreCase: Boolean): String = itemTo("NOT LIKE '%$value%'${case(ignoreCase)}")
     fun inValues(values: List<String>): String = itemTo("IN (${values.joinToString(", ") { "'$it'" }})")
 
     private fun itemTo(comparison: String) = "\"$itemId\" $comparison"
+
+    private fun case(ignoreCase: Boolean) = if (ignoreCase) " COLLATE NOCASE" else ""
 }

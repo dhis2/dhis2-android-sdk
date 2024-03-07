@@ -46,14 +46,10 @@ internal abstract class BaseEnumEvaluator<T : Enum<*>>(
     private fun getFilterWhereClause(filter: EnumFilter<T>): String {
         val filterHelper = FilterHelper(itemId)
         return when (filter) {
-            is EnumFilter.EqualTo -> filterHelper.equalTo(filter.value)
-            is EnumFilter.NotEqualTo -> filterHelper.notEqualTo(filter.value)
-            is EnumFilter.EqualToIgnoreCase -> filterHelper.notEqualTo(filter.value)
-            is EnumFilter.NotEqualToIgnoreCase -> filterHelper.notEqualToIgnoreCase(filter.value)
-            is EnumFilter.Like -> filterHelper.like(filter.value)
-            is EnumFilter.LikeIgnoreCase -> filterHelper.likeIgnoreCase(filter.value)
-            is EnumFilter.NotLike -> filterHelper.notLike(filter.value)
-            is EnumFilter.NotLikeIgnoreCase -> filterHelper.notLikeIgnoreCase(filter.value)
+            is EnumFilter.EqualTo -> filterHelper.equalTo(filter.value, filter.ignoreCase)
+            is EnumFilter.NotEqualTo -> filterHelper.notEqualTo(filter.value, filter.ignoreCase)
+            is EnumFilter.Like -> filterHelper.like(filter.value, filter.ignoreCase)
+            is EnumFilter.NotLike -> filterHelper.notLike(filter.value, filter.ignoreCase)
             is EnumFilter.In -> filterHelper.inValues(filter.values.map { it.name })
         }
     }

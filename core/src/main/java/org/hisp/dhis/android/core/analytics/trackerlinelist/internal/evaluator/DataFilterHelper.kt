@@ -42,18 +42,14 @@ internal object DataFilterHelper {
 
     private fun getSqlOperator(helper: FilterHelper, filter: DataFilter): String {
         return when (filter) {
-            is DataFilter.EqualTo -> helper.equalTo(filter.value)
-            is DataFilter.NotEqualTo -> helper.notEqualTo(filter.value)
-            is DataFilter.EqualToIgnoreCase -> helper.equalToIgnoreCase(filter.value)
-            is DataFilter.NotEqualToIgnoreCase -> helper.notEqualToIgnoreCase(filter.value)
+            is DataFilter.EqualTo -> helper.equalTo(filter.value, filter.ignoreCase)
+            is DataFilter.NotEqualTo -> helper.notEqualTo(filter.value, filter.ignoreCase)
             is DataFilter.GreaterThan -> helper.greaterThan(filter.value)
             is DataFilter.GreaterThanOrEqualTo -> helper.greaterThanOrEqualTo(filter.value)
             is DataFilter.LowerThan -> helper.lowerThan(filter.value)
             is DataFilter.LowerThanOrEqualTo -> helper.lowerThanOrEqualTo(filter.value)
-            is DataFilter.Like -> helper.like(filter.value)
-            is DataFilter.LikeIgnoreCase -> helper.likeIgnoreCase(filter.value)
-            is DataFilter.NotLike -> helper.notLike(filter.value)
-            is DataFilter.NotLikeIgnoreCase -> helper.notLikeIgnoreCase(filter.value)
+            is DataFilter.Like -> helper.like(filter.value, filter.ignoreCase)
+            is DataFilter.NotLike -> helper.notLike(filter.value, filter.ignoreCase)
             is DataFilter.In -> helper.inValues(filter.values)
         }
     }

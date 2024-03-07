@@ -259,7 +259,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         helper.createSingleEvent(event2, program.uid(), programStage1.uid(), orgunitChild2.uid())
 
         val result = d2.analyticsModule().trackerLineList()
-            .withEventOutput(program.uid(), programStage1.uid())
+            .withEventOutput(programStage1.uid())
             .withColumn(
                 TrackerLineListItem.OrganisationUnitItem(
                     filters = listOf(

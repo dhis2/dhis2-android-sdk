@@ -58,8 +58,8 @@ class TrackerVisualizationMapperShould {
 
         assertThat(dataFilters).containsExactly(
             DataFilter.GreaterThan("6"),
-            DataFilter.LikeIgnoreCase("ar"),
-            DataFilter.NotEqualTo("4"),
+            DataFilter.Like("ar", ignoreCase = true),
+            DataFilter.NotEqualTo("4", ignoreCase = false),
         )
     }
 
@@ -104,10 +104,10 @@ class TrackerVisualizationMapperShould {
                         listOf(
                             EnrollmentStatus.ACTIVE,
                             EnrollmentStatus.CANCELLED,
-                        )
-                    )
-                )
-            )
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 }

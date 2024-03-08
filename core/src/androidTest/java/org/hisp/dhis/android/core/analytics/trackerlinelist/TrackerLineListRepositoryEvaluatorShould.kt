@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
@@ -292,6 +293,41 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         val rows = result.getOrThrow().rows
         assertThat(rows.size).isEqualTo(2)
         assertThat(rows.flatten().map { it.value }).containsExactly("5", "10")
+    }
+
+    @Test
+    fun evaluate_paging() {
+        val event1 = generator.generate()
+        helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+        val event2 = generator.generate()
+        helper.createSingleEvent(event2, program.uid(), programStage1.uid(), orgunitChild2.uid())
+
+        val baseRepo = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
+
+        // Page 1
+        val resultPage1 = baseRepo
+            .withPageConfig(PageConfig.Paging(1, 1))
+            .blockingEvaluate()
+
+        assertThat(resultPage1.getOrThrow().rows.size).isEqualTo(1)
+        assertThat(resultPage1.getOrThrow().rows.first().first().value).isEqualTo(orgunitChild1.displayName())
+
+        // Page 2
+        val resultPage2 = baseRepo
+            .withPageConfig(PageConfig.Paging(2, 1))
+            .blockingEvaluate()
+
+        assertThat(resultPage2.getOrThrow().rows.size).isEqualTo(1)
+        assertThat(resultPage2.getOrThrow().rows.first().first().value).isEqualTo(orgunitChild2.displayName())
+
+        // No paging
+        val resultNoPaging = baseRepo
+            .withPageConfig(PageConfig.NoPaging)
+            .blockingEvaluate()
+
+        assertThat(resultNoPaging.getOrThrow().rows.size).isEqualTo(2)
     }
 
     private fun createDefaultEnrollment(

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.T
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgunitAlias
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
@@ -127,7 +128,8 @@ internal class TrackerLineListService(
             } +
             "WHERE " +
             "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
-            "${getEventWhereClause(params, context)} "
+            "${getEventWhereClause(params, context)} " +
+            appendPaging(params.pageConfig)
     }
 
     private fun getEnrollmentSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
@@ -143,7 +145,8 @@ internal class TrackerLineListService(
             } +
             "WHERE " +
             "$EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${params.programId!!}' AND " +
-            "${getEnrollmentWhereClause(params, context)} "
+            "${getEnrollmentWhereClause(params, context)} " +
+            appendPaging(params.pageConfig)
     }
 
     private fun getEventSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
@@ -177,6 +180,13 @@ internal class TrackerLineListService(
                 TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEnrollment()
             }
             "($orClause)"
+        }
+    }
+
+    private fun appendPaging(pageConfig: PageConfig): String {
+        return when (pageConfig) {
+            is PageConfig.NoPaging -> ""
+            is PageConfig.Paging -> "LIMIT ${pageConfig.pageSize} OFFSET ${pageConfig.pageSize * (pageConfig.page - 1)}"
         }
     }
 }

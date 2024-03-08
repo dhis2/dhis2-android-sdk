@@ -26,28 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist
+package org.hisp.dhis.android.core.arch.repositories.paging
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
-
-interface TrackerLineListRepository {
-
-    fun withEventOutput(programStageId: String): TrackerLineListRepository
-
-    fun withEnrollmentOutput(programId: String): TrackerLineListRepository
-
-    fun withColumn(column: TrackerLineListItem): TrackerLineListRepository
-
-    fun withFilter(filter: TrackerLineListItem): TrackerLineListRepository
-
-    fun withTrackerVisualization(trackerVisualization: String): TrackerLineListRepository
-
-    fun withPageConfig(pageConfig: PageConfig): TrackerLineListRepository
-
-    fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
-
-    fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
+sealed class PageConfig {
+    data object NoPaging : PageConfig()
+    data class Paging(val page: Int, val pageSize: Int) : PageConfig()
 }

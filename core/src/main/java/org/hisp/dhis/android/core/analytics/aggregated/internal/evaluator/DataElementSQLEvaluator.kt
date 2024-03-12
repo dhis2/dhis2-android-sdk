@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -38,13 +37,15 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
-internal class DataElementSQLEvaluator @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
+@Singleton
+internal class DataElementSQLEvaluator(
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
@@ -88,7 +89,8 @@ internal class DataElementSQLEvaluator @Inject constructor(
             AggregationType.SUM,
             AggregationType.COUNT,
             AggregationType.MIN,
-            AggregationType.MAX -> {
+            AggregationType.MAX,
+            -> {
                 "SELECT ${aggregator.sql}(${dvColumns.VALUE}) " +
                     "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
                     "WHERE $whereClause"
@@ -111,12 +113,14 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
             }
             AggregationType.LAST,
-            AggregationType.LAST_IN_PERIOD -> {
+            AggregationType.LAST_IN_PERIOD,
+            -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
             AggregationType.LAST_AVERAGE_ORG_UNIT,
-            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT -> {
+            AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
@@ -129,7 +133,8 @@ internal class DataElementSQLEvaluator @Inject constructor(
             AggregationType.STDDEV,
             AggregationType.VARIANCE,
             AggregationType.DEFAULT,
-            AggregationType.NONE -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
+            AggregationType.NONE,
+            -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
         }
     }
 
@@ -156,7 +161,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
     private fun appendDataWhereClause(
         items: List<DimensionItem>,
-        builder: WhereClauseBuilder
+        builder: WhereClauseBuilder,
     ): WhereClauseBuilder {
         val innerClause = items.map { it as DimensionItem.DataItem }
             .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
@@ -168,7 +173,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
                             .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.dataElement)
                             .appendKeyStringValue(
                                 DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                                item.categoryOptionCombo
+                                item.categoryOptionCombo,
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -176,7 +181,7 @@ internal class DataElementSQLEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                "dataItem ${item.javaClass.name} in DataElement Evaluator.",
                         )
                 }
             }.build()
@@ -196,34 +201,34 @@ internal class DataElementSQLEvaluator @Inject constructor(
 
         return builder.appendInSubQuery(
             DataValueTableInfo.Columns.PERIOD,
-            AnalyticsEvaluatorHelper.getInPeriodsClause(periods)
+            AnalyticsEvaluatorHelper.getInPeriodsClause(periods),
         )
     }
 
     private fun appendOrgunitWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
             columnName = DataValueTableInfo.Columns.ORGANISATION_UNIT,
             items = items,
             builder = builder,
-            metadata = metadata
+            metadata = metadata,
         )
     }
 
     private fun appendCategoryWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
             attributeColumnName = DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
             disaggregationColumnName = DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
             items = items,
             builder = builder,
-            metadata = metadata
+            metadata = metadata,
         )
     }
 

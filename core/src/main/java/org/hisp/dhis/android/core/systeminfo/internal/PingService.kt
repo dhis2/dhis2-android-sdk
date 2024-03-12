@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import io.reactivex.Completable
 import retrofit2.http.GET
 
 internal interface PingService {
 
     @GET("system/ping")
-    fun getPing(): Completable
+    suspend fun getPing(): String
 }

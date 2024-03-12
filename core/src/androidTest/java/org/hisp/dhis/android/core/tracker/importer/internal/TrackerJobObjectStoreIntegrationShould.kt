@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
     create(TestDatabaseAdapterFactory.get()),
     TrackerJobObjectTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): TrackerJobObject {
         return TrackerJobObjectSamples.get1()

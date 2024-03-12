@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.data.event
 
-import java.text.ParseException
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.event.EventDataFilter
+import java.text.ParseException
+import java.util.*
 
 internal object EventDataFilterSamples {
     fun get(): EventDataFilter {
@@ -53,7 +53,7 @@ internal object EventDataFilterSamples {
                     .startDate(getSimpleDate("2014-05-01"))
                     .endDate(getSimpleDate("2019-03-20"))
                     .type(DatePeriodType.ABSOLUTE)
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -78,7 +78,7 @@ internal object EventDataFilterSamples {
                     .startDate(getSimpleDate("2014-05-01"))
                     .endDate(getSimpleDate("2019-03-20"))
                     .type(DatePeriodType.ABSOLUTE)
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -91,7 +91,7 @@ internal object EventDataFilterSamples {
                     .startBuffer(-5)
                     .endBuffer(5)
                     .type(DatePeriodType.RELATIVE)
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -103,7 +103,7 @@ internal object EventDataFilterSamples {
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_WEEK)
                     .type(DatePeriodType.RELATIVE)
-                    .build()
+                    .build(),
             )
             .build()
     }

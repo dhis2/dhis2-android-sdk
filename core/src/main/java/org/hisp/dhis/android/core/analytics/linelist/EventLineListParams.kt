@@ -43,10 +43,10 @@ internal data class EventLineListParams(
 
     val organisationUnits: List<OrganisationUnitFilter>? = null,
 
-    val analyticsLegendStrategy: AnalyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem
+    val analyticsLegendStrategy: AnalyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem,
 ) : BaseScope
 
 internal data class LineListItem(
     val uid: String,
-    val legendSet: String? = null
+    val legendSet: String? = null,
 )

@@ -25,46 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
 
-@Suppress("MagicNumber")
-internal object ProgramSectionStore {
-
-    private val BINDER: StatementBinder<ProgramSection> =
-        object : IdentifiableWithStyleStatementBinder<ProgramSection>() {
-            override fun bindToStatement(o: ProgramSection, w: StatementWrapper) {
-                super.bindToStatement(o, w)
-                w.bind(9, o.description())
-                w.bind(10, getUidOrNull(o.program()))
-                w.bind(11, o.sortOrder())
-                w.bind(12, o.formName())
-                w.bind(13, o.renderType()?.desktop()?.type())
-                w.bind(14, o.renderType()?.mobile()?.type())
-            }
-        }
-
-    val CHILD_PROJECTION = SingleParentChildProjection(
-        ProgramSectionTableInfo.TABLE_INFO, ProgramSectionTableInfo.Columns.PROGRAM
-    )
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramSection> {
-        return objectWithUidStore(
-            databaseAdapter,
-            ProgramSectionTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> ProgramSection.create(cursor) }
-    }
-}
+internal interface ProgramSectionStore : IdentifiableObjectStore<ProgramSection>

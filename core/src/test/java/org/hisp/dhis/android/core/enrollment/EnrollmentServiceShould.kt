@@ -87,7 +87,7 @@ class EnrollmentServiceShould {
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
         whenever(
             trackedEntityInstanceRepository
-                .uid(trackedEntityInstanceUid).blockingGet()
+                .uid(trackedEntityInstanceUid).blockingGet(),
         ) doReturn trackedEntityInstance
         whenever(programRepository.uid(programUid).blockingGet()) doReturn program
 
@@ -101,7 +101,7 @@ class EnrollmentServiceShould {
             organisationUnitRepository,
             eventCollectionRepository,
             programStageCollectionRepository,
-            programTempOwnerStore
+            programTempOwnerStore,
         )
     }
 
@@ -155,7 +155,7 @@ class EnrollmentServiceShould {
             organisationUnitRepository
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .uid(organisationUnitId)
-                .blockingExists()
+                .blockingExists(),
         ) doReturn true
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
@@ -170,7 +170,7 @@ class EnrollmentServiceShould {
             organisationUnitRepository
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .uid(organisationUnitId)
-                .blockingExists()
+                .blockingExists(),
         ) doReturn false
         whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
         whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("1999-01-01T00:00:00.000")
@@ -187,7 +187,7 @@ class EnrollmentServiceShould {
             organisationUnitRepository
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .uid(organisationUnitId)
-                .blockingExists()
+                .blockingExists(),
         ) doReturn false
         whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
         whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("2999-01-01T00:00:00.000")
@@ -198,25 +198,24 @@ class EnrollmentServiceShould {
 
     @Test
     fun `Enrollment has any events that allows events creation`() {
-
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
         whenever(enrollment.program()) doReturn programUid
 
         whenever(
-            programStageCollectionRepository.byProgramUid().eq(programUid)
+            programStageCollectionRepository.byProgramUid().eq(programUid),
         ) doReturn programStageCollectionRepository
         whenever(
-            programStageCollectionRepository.byAccessDataWrite().isTrue
+            programStageCollectionRepository.byAccessDataWrite().isTrue,
         ) doReturn programStageCollectionRepository
         whenever(
-            programStageCollectionRepository.get()
+            programStageCollectionRepository.get(),
         ) doReturn Single.just(getProgramStages())
 
         whenever(
-            eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
+            eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid),
         ) doReturn eventCollectionRepository
         whenever(
-            eventCollectionRepository.byDeleted().isFalse
+            eventCollectionRepository.byDeleted().isFalse,
         ) doReturn eventCollectionRepository
         whenever(eventCollectionRepository.get()) doReturn Single.just(getEventList())
 
@@ -225,25 +224,24 @@ class EnrollmentServiceShould {
 
     @Test
     fun `Enrollment has not any events that allows events creation`() {
-
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
         whenever(enrollment.program()) doReturn programUid
 
         whenever(
-            programStageCollectionRepository.byProgramUid().eq(programUid)
+            programStageCollectionRepository.byProgramUid().eq(programUid),
         ) doReturn programStageCollectionRepository
         whenever(
-            programStageCollectionRepository.byAccessDataWrite().isTrue
+            programStageCollectionRepository.byAccessDataWrite().isTrue,
         ) doReturn programStageCollectionRepository
         whenever(
-            programStageCollectionRepository.get()
+            programStageCollectionRepository.get(),
         ) doReturn Single.just(getProgramStages())
 
         whenever(
-            eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
+            eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid),
         ) doReturn eventCollectionRepository
         whenever(
-            eventCollectionRepository.byDeleted().isFalse
+            eventCollectionRepository.byDeleted().isFalse,
         ) doReturn eventCollectionRepository
         whenever(eventCollectionRepository.get()) doReturn Single.just(getEventList())
 
@@ -258,7 +256,7 @@ class EnrollmentServiceShould {
         Event.builder()
             .uid("eventUid2")
             .programStage("2")
-            .build()
+            .build(),
     )
 
     private fun getProgramStages() = listOf(
@@ -271,6 +269,6 @@ class EnrollmentServiceShould {
             .access(Access.create(true, true, DataAccess.create(true, true)))
             .uid("2")
             .repeatable(true)
-            .build()
+            .build(),
     )
 }

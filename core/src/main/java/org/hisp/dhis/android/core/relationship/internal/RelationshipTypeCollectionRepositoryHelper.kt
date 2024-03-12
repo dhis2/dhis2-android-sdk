@@ -68,7 +68,7 @@ object RelationshipTypeCollectionRepositoryHelper {
             .appendOrInSubQuery(
                 Columns.PROGRAM,
                 "SELECT ${EnrollmentTableInfo.Columns.PROGRAM} FROM ${EnrollmentTableInfo.TABLE_INFO.name()}" +
-                    " WHERE ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} == '${tei.uid()}'"
+                    " WHERE ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} == '${tei.uid()}'",
             )
             .build()
     }
@@ -108,7 +108,7 @@ object RelationshipTypeCollectionRepositoryHelper {
                     WhereClauseBuilder()
                         .appendOrKeyStringValue(Columns.PROGRAM, it.program())
                         .appendOrKeyStringValue(Columns.PROGRAM_STAGE, it.programStage())
-                        .build()
+                        .build(),
                 )
             }
         }
@@ -118,7 +118,7 @@ object RelationshipTypeCollectionRepositoryHelper {
 
     private fun <T> availableForItemRawQuery(
         t: T?,
-        availableForItem: (T, RelationshipConstraintType?) -> String
+        availableForItem: (T, RelationshipConstraintType?) -> String,
     ): String {
         return t?.let {
             "SELECT DISTINCT ${RelationshipTypeTableInfo.Columns.UID} " +

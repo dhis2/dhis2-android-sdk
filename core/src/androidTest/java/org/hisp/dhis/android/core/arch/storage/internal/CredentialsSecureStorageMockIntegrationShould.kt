@@ -38,8 +38,8 @@ import org.junit.runner.RunWith
 class CredentialsSecureStorageMockIntegrationShould {
     private fun instantiateStore(): CredentialsSecureStoreImpl = CredentialsSecureStoreImpl(
         ChunkedSecureStore(
-            AndroidSecureStore(InstrumentationRegistry.getInstrumentation().context)
-        )
+            AndroidSecureStore(InstrumentationRegistry.getInstrumentation().context),
+        ),
     )
 
     @Test

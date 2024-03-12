@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.testapp.resource;
 
-import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
 import org.mockito.Mock;
 

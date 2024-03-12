@@ -65,7 +65,6 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
     @Test
     fun have_empty_database_when_wipe_db_after_sync_data() {
-        givenAFreshLoginInDatabase()
         activateSMSModule()
         givenAMetadataInDatabase()
         givenDataInDatabase()
@@ -76,16 +75,6 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         d2.wipeModule().wipeEverything()
 
         assertThatDatabase(databaseAdapter).isEmpty
-    }
-
-    private fun givenAFreshLoginInDatabase() {
-        try {
-            d2.userModule().logOut().blockingAwait()
-        } catch (e: RuntimeException) {
-            // Do nothing
-        } finally {
-            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
-        }
     }
 
     private fun activateSMSModule() {
@@ -109,7 +98,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
             D2Error.builder()
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("Sample error")
-                .build()
+                .build(),
         )
         TrackerImportConflictStoreImpl.create(databaseAdapter).insert(TrackerImportConflict.builder().build())
         FileResourceStoreImpl.create(databaseAdapter).insert(FileResource.builder().uid("uid").build())
@@ -119,13 +108,13 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
             KeyValuePair.builder()
                 .key("key1")
                 .value("value1")
-                .build()
+                .build(),
         )
         LocalDataStoreStore.create(databaseAdapter).insert(
             KeyValuePair.builder()
                 .key("key2")
                 .value("value2")
-                .build()
+                .build(),
         )
         ProgramTempOwnerStore.create(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
 
@@ -134,11 +123,11 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
         StockUseCaseStore.create(databaseAdapter).insert(
             InternalStockUseCaseSamples.get()
-                .toBuilder().uid("lxAQ7Zs9VYR").build()
+                .toBuilder().uid("lxAQ7Zs9VYR").build(),
         )
         StockUseCaseTransactionLinkStore.create(databaseAdapter).insert(
             InternalStockUseCaseTransactionSamples.get()
-                .toBuilder().programUid("lxAQ7Zs9VYR").build()
+                .toBuilder().programUid("lxAQ7Zs9VYR").build(),
         )
 
         MapLayerStore.create(databaseAdapter).insert(MapLayerSamples.get())

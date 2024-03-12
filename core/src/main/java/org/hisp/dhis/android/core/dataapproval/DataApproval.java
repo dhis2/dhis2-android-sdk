@@ -69,16 +69,16 @@ public abstract class DataApproval extends BaseObject {
         return AutoValue_DataApproval.createFromCursor(cursor);
     }
 
-    public static DataApproval.Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_DataApproval.Builder();
     }
 
-    public abstract DataApproval.Builder toBuilder();
+    public abstract Builder toBuilder();
 
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<DataApproval.Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         @JsonProperty(DataApprovalFields.WORKFLOW)
         public abstract Builder workflow(@NonNull String workflow);

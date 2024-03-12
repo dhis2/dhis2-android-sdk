@@ -27,17 +27,21 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.category.CategoryCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryModule
+import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class CategoryModuleImpl @Inject internal constructor(
+@Singleton
+internal class CategoryModuleImpl(
     private val categories: CategoryCollectionRepository,
     private val categoryOptions: CategoryOptionCollectionRepository,
     private val categoryOptionCombos: CategoryOptionComboCollectionRepository,
     private val categoryCombos: CategoryComboCollectionRepository,
-    private val categoryOptionComboService: CategoryOptionComboService
+    private val categoryOptionComboService: CategoryOptionComboService,
 ) : CategoryModule {
     override fun categories(): CategoryCollectionRepository {
         return categories

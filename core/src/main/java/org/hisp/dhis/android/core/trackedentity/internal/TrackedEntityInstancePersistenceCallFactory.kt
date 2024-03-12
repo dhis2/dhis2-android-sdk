@@ -27,51 +27,48 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
+@Singleton
+internal class TrackedEntityInstancePersistenceCallFactory(
     private val trackedEntityInstanceHandler: TrackedEntityInstanceHandler,
     private val uidsHelper: TrackedEntityInstanceUidHelper,
-    private val organisationUnitDownloader: OrganisationUnitModuleDownloader
+    private val organisationUnitDownloader: OrganisationUnitModuleDownloader,
 ) {
-    fun persistTEIs(
+    suspend fun persistTEIs(
         trackedEntityInstances: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives
-    ): Completable {
-        return persistTEIsInternal(trackedEntityInstances, params, relatives)
+        relatives: RelationshipItemRelatives,
+    ) {
+        persistTEIsInternal(trackedEntityInstances, params, relatives)
     }
 
-    fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>): Completable {
+    suspend fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>) {
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = false,
             overwrite = false,
-            asRelationship = true
+            asRelationship = true,
         )
-        return persistTEIsInternal(trackedEntityInstances, params, relatives = null)
+
+        persistTEIsInternal(trackedEntityInstances, params, relatives = null)
     }
 
-    private fun persistTEIsInternal(
+    private suspend fun persistTEIsInternal(
         trackedEntityInstances: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
-    ): Completable {
-        return Completable.defer {
-            trackedEntityInstanceHandler.handleMany(
-                trackedEntityInstances, params, relatives
-            )
-            if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
-                organisationUnitDownloader.refreshOrganisationUnits()
-            } else {
-                Completable.complete()
-            }
+        relatives: RelationshipItemRelatives?,
+    ) {
+        trackedEntityInstanceHandler.handleMany(
+            trackedEntityInstances,
+            params,
+            relatives,
+        )
+        if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
+            organisationUnitDownloader.refreshOrganisationUnits()
         }
     }
 }

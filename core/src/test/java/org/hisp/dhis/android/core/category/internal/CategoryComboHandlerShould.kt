@@ -66,8 +66,10 @@ class CategoryComboHandlerShould {
         whenever(categoryComboStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
 
         categoryComboHandler = CategoryComboHandler(
-            categoryComboStore, optionComboHandler,
-            categoryCategoryComboLinkHandler, categoryOptionCleaner
+            categoryComboStore,
+            optionComboHandler,
+            categoryCategoryComboLinkHandler,
+            categoryOptionCleaner,
         )
     }
 

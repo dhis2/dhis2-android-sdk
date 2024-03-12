@@ -25,38 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute.internal
 
-package org.hisp.dhis.android.core.attribute.internal;
+import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.core.attribute.AttributeTableInfo
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.data.attribute.AttributeSamples
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.attribute.Attribute;
-import org.hisp.dhis.android.core.attribute.AttributeTableInfo;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.attribute.AttributeSamples;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class AttributeStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Attribute> {
-
-    public AttributeStoreIntegrationShould() {
-        super(AttributeStore.create(TestDatabaseAdapterFactory.get()), AttributeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class AttributeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Attribute>(
+    AttributeStoreImpl(TestDatabaseAdapterFactory.get()),
+    AttributeTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): Attribute {
+        return AttributeSamples.getAttribute()
     }
 
-    @Override
-    protected Attribute buildObject() {
-        return AttributeSamples.getAttribute();
-    }
-
-    @Override
-    protected Attribute buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): Attribute {
         return AttributeSamples.getAttribute().toBuilder()
-                .valueType(ValueType.AGE)
-                .build();
+            .valueType(ValueType.AGE)
+            .build()
     }
 }

@@ -37,7 +37,7 @@ internal object IndicatorEvaluatorHelper {
 
     fun getIndicator(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
+        metadata: Map<String, MetadataItem>,
     ): Indicator {
         val indicatorItem = evaluationItem.allDimensionItems
             .find { it is DimensionItem.DataItem.IndicatorItem }
@@ -48,12 +48,12 @@ internal object IndicatorEvaluatorHelper {
 
     fun getContextEvaluationItem(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        indicator: Indicator
+        indicator: Indicator,
     ): AnalyticsServiceEvaluationItem {
         return AnalyticsServiceEvaluationItem(
             dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != indicator.uid() },
             filters = evaluationItem.filters.filter { it.id != indicator.uid() },
-            aggregationType = evaluationItem.aggregationType
+            aggregationType = evaluationItem.aggregationType,
         )
     }
 }

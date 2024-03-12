@@ -27,47 +27,46 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 @Suppress("LongParameterList")
 internal interface DataSetCompleteRegistrationService {
 
     @GET("completeDataSetRegistrations")
-    fun getDataSetCompleteRegistrations(
+    suspend fun getDataSetCompleteRegistrations(
         @Query("fields") @Which fields: Fields<DataSetCompleteRegistration>,
         @Query("lastUpdated") lastUpdated: String?,
         @Query("dataSet") dataSetUids: String,
         @Query("period") periodIds: String,
         @Query("orgUnit") organisationUnitIds: String,
         @Query("children") children: Boolean,
-        @Query("paging") paging: Boolean
-    ): Single<DataSetCompleteRegistrationPayload>
+        @Query("paging") paging: Boolean,
+    ): DataSetCompleteRegistrationPayload
 
     @POST("completeDataSetRegistrations")
-    fun postDataSetCompleteRegistrations(
-        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload
-    ): Call<DataValueImportSummary>
+    suspend fun postDataSetCompleteRegistrations(
+        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
+    ): DataValueImportSummary
 
     @POST("completeDataSetRegistrations")
-    fun postDataSetCompleteRegistrationsWebResponse(
-        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload
-    ): Call<DataValueImportSummaryWebResponse>
+    suspend fun postDataSetCompleteRegistrationsWebResponse(
+        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
+    ): DataValueImportSummaryWebResponse
 
     @DELETE("completeDataSetRegistrations")
-    fun deleteDataSetCompleteRegistration(
+    suspend fun deleteDataSetCompleteRegistration(
         @Query("ds") dataSet: String,
         @Query("pe") periodId: String,
         @Query("ou") orgUnit: String,
         @Query("cc") categoryComboUid: String,
         @Query("cp") categoryOptionUids: String,
-        @Query("multiOu") multiOrganisationUnit: Boolean
-    ): Call<Unit>
+        @Query("multiOu") multiOrganisationUnit: Boolean,
+    ): Response<Unit>
 }

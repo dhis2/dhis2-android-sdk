@@ -52,10 +52,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProg
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.internal.ProgramStore;
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore;
 import org.junit.Before;

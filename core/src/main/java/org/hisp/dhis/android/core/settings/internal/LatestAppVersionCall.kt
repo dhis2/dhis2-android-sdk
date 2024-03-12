@@ -28,22 +28,21 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.LatestAppVersion
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class LatestAppVersionCall @Inject constructor(
-    private val latestAppVersionHandler: ObjectWithoutUidHandlerImpl<LatestAppVersion>,
+@Singleton
+internal class LatestAppVersionCall(
+    private val latestAppVersionHandler: LatestAppVersionHandler,
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor
-) : BaseSettingCall<LatestAppVersion>() {
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : BaseSettingCall<LatestAppVersion>(coroutineAPICallExecutor) {
 
-    override fun fetch(storeError: Boolean): Single<LatestAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.latestAppVersion(), storeError)
+    override suspend fun tryFetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.latestAppVersion() }
     }
 
     override fun process(item: LatestAppVersion?) {

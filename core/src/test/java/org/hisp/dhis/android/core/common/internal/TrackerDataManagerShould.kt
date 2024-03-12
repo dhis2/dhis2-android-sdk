@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildrenAppender
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.junit.Before
 import org.junit.Test
@@ -73,8 +72,13 @@ class TrackerDataManagerShould {
         whenever(relationshipStore.getRelationshipsByItem(any())).doReturn(listOf(relationship))
 
         trackerDataManager = TrackerDataManagerImpl(
-            trackedEntityStore, enrollmentStore, eventStore, relationshipStore,
-            relationshipChildrenAppender, dataStatePropagator, programOwnerStore
+            trackedEntityStore,
+            enrollmentStore,
+            eventStore,
+            relationshipStore,
+            relationshipChildrenAppender,
+            dataStatePropagator,
+            programOwnerStore,
         )
     }
 

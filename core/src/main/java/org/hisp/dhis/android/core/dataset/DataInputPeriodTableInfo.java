@@ -45,7 +45,7 @@ public class DataInputPeriodTableInfo {
 
         @Override
         public CoreColumns columns() {
-            return new DataInputPeriodTableInfo.Columns();
+            return new Columns();
         }
     };
 

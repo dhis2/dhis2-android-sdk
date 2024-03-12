@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import kotlin.collections.HashSet
-import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -41,14 +41,16 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
+@Suppress("TooManyFunctions")
 internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val store: TrackedEntityInstanceStore,
+    private val databaseAdapter: DatabaseAdapter,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
-    private val childrenAppenders: Map<String, ChildrenAppender<TrackedEntityInstance>>,
-    private val onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, TrackedEntityInstanceOnlineResult>,
+    private val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
+    private val onlineCache: TrackedEntityInstanceOnlineCache,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
-    private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper
+    private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
 ) {
     private val baseOnlineQueries: List<TrackedEntityInstanceQueryOnline> = onlineHelper.fromScope(scope)
     private val onlineQueryStatusMap: MutableMap<TrackedEntityInstanceQueryOnline, OnlineQueryStatus> = HashMap()
@@ -80,11 +82,11 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 isExhaustedOffline = instances.size < requestedLoadSize
             }
             if (result.size < requestedLoadSize && scope.mode() == RepositoryMode.OFFLINE_FIRST) {
-                val onlineInstances = queryOnlineRecursive(requestedLoadSize)
+                val onlineInstances = queryOnline(requestedLoadSize)
                 result.addAll(onlineInstances)
             }
         } else {
-            val instances = queryOnlineRecursive(requestedLoadSize)
+            val instances = queryOnline(requestedLoadSize)
             result.addAll(instances)
             if (result.size < requestedLoadSize && scope.mode() == RepositoryMode.ONLINE_FIRST) {
                 val onlineInstances = queryOffline(requestedLoadSize)
@@ -94,20 +96,35 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return result
     }
 
+    fun queryAllOffline(): List<Result<TrackedEntityInstance, D2Error>> {
+        return queryOffline(-1)
+    }
+
+    fun queryAllOfflineUids(): List<String> {
+        val sqlQuery = localQueryHelper.getUidsWhereClause(scope, scope.excludedUids(), -1)
+        return store.selectUidsWhere(sqlQuery)
+    }
+
+    fun queryAllOnline(): List<Result<TrackedEntityInstance, D2Error>> {
+        return queryOnline(-1)
+    }
+
     private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val sqlQuery = localQueryHelper.getSqlQuery(
-            scope, returnedUidsOffline,
-            requestedLoadSize
+            scope,
+            returnedUidsOffline,
+            requestedLoadSize,
         )
         val instances = store.selectRawQuery(sqlQuery)
         returnedUidsOffline.addAll(instances.map { it.uid() })
 
         return appendAttributes(instances).map {
-            Result.Success<TrackedEntityInstance, D2Error>(it)
+            Result.Success(it)
         }
     }
 
-    private fun queryOnlineRecursive(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    @Suppress("ComplexCondition")
+    private fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
         do {
@@ -115,14 +132,19 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 val queryResult = getOnlineQueryResults(baseOnlineQuery, requestLoadSize)
                 result.addAll(queryResult)
             }
-        } while (result.all { it.succeeded } && result.size < requestLoadSize && !areAllOnlineQueriesExhausted())
+        } while (
+            result.all { it.succeeded } &&
+            requestLoadSize > 0 &&
+            result.size < requestLoadSize &&
+            !areAllOnlineQueriesExhausted()
+        )
 
         return result
     }
 
     private fun getOnlineQueryResults(
         baseOnlineQuery: TrackedEntityInstanceQueryOnline,
-        requestLoadSize: Int
+        requestLoadSize: Int,
     ): List<Result<TrackedEntityInstance, D2Error>> {
         val status = onlineQueryStatusMap[baseOnlineQuery]!!
         if (status.isExhausted) {
@@ -130,11 +152,17 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         }
 
         val page = (status.requestedItems / requestLoadSize) + 1
-        val onlineQuery = baseOnlineQuery.copy(
-            page = page,
-            pageSize = requestLoadSize,
-            paging = true
-        )
+        val onlineQuery = if (requestLoadSize > 0) {
+            baseOnlineQuery.copy(
+                page = page,
+                pageSize = requestLoadSize,
+                paging = true,
+            )
+        } else {
+            baseOnlineQuery.copy(
+                paging = false,
+            )
+        }
         val queryInstances = queryOnline(onlineQuery)
 
         status.requestedItems += requestLoadSize
@@ -145,6 +173,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
                 when (it) {
                     is Result.Success ->
                         !returnedUidsOffline.contains(it.value.uid()) && !returnedUidsOnline.contains(it.value.uid())
+
                     is Result.Failure ->
                         !returnedErrorCodes.contains(it.failure.errorCode())
                 }
@@ -160,37 +189,40 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     }
 
     private fun queryOnline(
-        onlineQuery: TrackedEntityInstanceQueryOnline
+        onlineQuery: TrackedEntityInstanceQueryOnline,
     ): TrackedEntityInstanceOnlineResult {
         return try {
             val cachedInstances = if (scope.allowOnlineCache()) onlineCache[onlineQuery] else null
 
-            cachedInstances ?: trackerParentCallFactory.getTrackedEntityCall()
-                .getQueryCall(onlineQuery)
-                .call()
+            cachedInstances ?: runBlocking {
+                trackerParentCallFactory.getTrackedEntityCall()
+                    .getQueryCall(onlineQuery)
+            }
                 .let { result ->
                     TrackedEntityInstanceOnlineResult(
                         items = result.trackedEntities.map { Result.Success(it) },
-                        exhausted = result.exhausted
+                        exhausted = result.exhausted,
                     )
                 }
                 .also { onlineCache[onlineQuery] = it }
         } catch (e: D2Error) {
             TrackedEntityInstanceOnlineResult(
                 items = listOf(Result.Failure(e)),
-                exhausted = true
+                exhausted = true,
             )
         }
     }
 
     private fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
-            withoutChildren, childrenAppenders,
+            withoutChildren,
+            databaseAdapter,
+            childrenAppenders,
             ChildrenSelection(
                 setOf(
-                    TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES
-                )
-            )
+                    TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
+                ),
+            ),
         )
     }
 
@@ -201,5 +233,5 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
 private data class OnlineQueryStatus(
     var requestedItems: Int = 0,
-    var isExhausted: Boolean = false
+    var isExhausted: Boolean = false,
 )

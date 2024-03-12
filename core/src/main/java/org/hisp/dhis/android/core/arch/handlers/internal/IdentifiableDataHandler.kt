@@ -36,6 +36,6 @@ internal interface IdentifiableDataHandler<O> where O : DeletableDataObject, O :
     fun handleMany(
         oCollection: Collection<O>?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     )
 }

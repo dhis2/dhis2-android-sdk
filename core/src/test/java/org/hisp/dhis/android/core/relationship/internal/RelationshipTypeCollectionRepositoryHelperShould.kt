@@ -76,7 +76,7 @@ class RelationshipTypeCollectionRepositoryHelperShould {
                 "AND (program IS NULL " +
                 "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
                 ")" +
-                ")"
+                ")",
         )
     }
 }

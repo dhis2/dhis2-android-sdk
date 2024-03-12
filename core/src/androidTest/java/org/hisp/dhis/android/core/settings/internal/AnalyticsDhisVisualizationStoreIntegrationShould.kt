@@ -41,7 +41,7 @@ class AnalyticsDhisVisualizationStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<AnalyticsDhisVisualization>(
         AnalyticsDhisVisualizationStore.create(TestDatabaseAdapterFactory.get()),
         AnalyticsDhisVisualizationTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): AnalyticsDhisVisualization {
         return AnalyticsSettingsSamples.analyticsDhisVisualization

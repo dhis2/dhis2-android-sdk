@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.datastore
 
-import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -45,18 +44,20 @@ import org.hisp.dhis.android.core.common.DeletableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.core.datastore.internal.DataStorePostCall
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class DataStoreCollectionRepository @Inject internal constructor(
+@Singleton
+class DataStoreCollectionRepository internal constructor(
     private val store: DataStoreEntryStore,
     private val call: DataStorePostCall,
-    childrenAppenders: MutableMap<String, ChildrenAppender<DataStoreEntry>>,
-    scope: RepositoryScope
+    databaseAdapter: DatabaseAdapter,
+    scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataStoreEntry, DataStoreCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
-    FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, childrenAppenders, s) }
+    FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, databaseAdapter, s) },
 ),
     ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
     override fun upload(): Observable<D2Progress> {
@@ -76,7 +77,7 @@ class DataStoreCollectionRepository @Inject internal constructor(
             .byKey().eq(key)
             .scope
 
-        return DataStoreObjectRepository(store, childrenAppenders, valueScope, namespace, key)
+        return DataStoreObjectRepository(store, databaseAdapter, childrenAppenders, valueScope, namespace, key)
     }
 
     fun byNamespace(): StringFilterConnector<DataStoreCollectionRepository> {
@@ -97,5 +98,9 @@ class DataStoreCollectionRepository @Inject internal constructor(
 
     fun byDeleted(): BooleanFilterConnector<DataStoreCollectionRepository> {
         return cf.bool(DeletableColumns.DELETED)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<DataStoreEntry> = emptyMap()
     }
 }

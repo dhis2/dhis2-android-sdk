@@ -72,8 +72,12 @@ class EventImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
 
         eventImportHandler = EventImportHandler(
-            eventStore, enrollmentStore, trackerImportConflictStore, trackerImportConflictParser, jobReportEventHandler,
-            dataStatePropagator
+            eventStore,
+            enrollmentStore,
+            trackerImportConflictStore,
+            trackerImportConflictParser,
+            jobReportEventHandler,
+            dataStatePropagator,
         )
     }
 

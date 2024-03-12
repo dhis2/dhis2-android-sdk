@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 internal class ObjectWithUidChildStoreImpl<P : ObjectWithUidInterface>(
     private val linkTableChildProjection: LinkTableChildProjection,
     private val databaseAdapter: DatabaseAdapter,
-    private val statementBuilder: SQLStatementBuilder
+    private val statementBuilder: SQLStatementBuilder,
 ) : ObjectWithUidChildStore<P> {
 
     override fun getChildren(p: P): List<ObjectWithUid> {

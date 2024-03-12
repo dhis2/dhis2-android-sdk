@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
@@ -43,8 +45,6 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.period.PeriodType;
-
-import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
 
 public final class DataSetFields {
 

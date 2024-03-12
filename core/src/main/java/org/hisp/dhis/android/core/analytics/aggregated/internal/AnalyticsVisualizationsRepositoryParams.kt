@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 internal data class AnalyticsVisualizationsRepositoryParams(
     val visualization: String?,
     val periods: List<DimensionItem.PeriodItem>?,
-    val organisationUnits: List<DimensionItem.OrganisationUnitItem>?
+    val organisationUnits: List<DimensionItem.OrganisationUnitItem>?,
 )

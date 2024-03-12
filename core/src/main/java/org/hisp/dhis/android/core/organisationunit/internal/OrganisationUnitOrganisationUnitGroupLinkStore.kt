@@ -25,32 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 
-@Suppress("MagicNumber")
-internal object OrganisationUnitOrganisationUnitGroupLinkStore {
-
-    private val BINDER = StatementBinder { o: OrganisationUnitOrganisationUnitGroupLink, w: StatementWrapper ->
-        w.bind(1, o.organisationUnit())
-        w.bind(2, o.organisationUnitGroup())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<OrganisationUnitOrganisationUnitGroupLink> {
-        return linkStore(
-            databaseAdapter,
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-            BINDER
-        ) { cursor: Cursor -> OrganisationUnitOrganisationUnitGroupLink.create(cursor) }
-    }
-}
+internal interface OrganisationUnitOrganisationUnitGroupLinkStore : LinkStore<OrganisationUnitOrganisationUnitGroupLink>

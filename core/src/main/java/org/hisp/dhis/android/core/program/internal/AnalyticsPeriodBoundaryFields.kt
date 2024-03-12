@@ -39,6 +39,6 @@ object AnalyticsPeriodBoundaryFields {
             fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.BOUNDARY_TARGET),
             fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),
             fh.field<Int>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIODS),
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIOD_TYPE)
+            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIOD_TYPE),
         ).build()
 }

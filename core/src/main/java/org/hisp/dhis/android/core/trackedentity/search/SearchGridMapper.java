@@ -31,21 +31,17 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.koin.core.annotation.Singleton;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class SearchGridMapper {
+@Singleton
+public class SearchGridMapper {
     private static final Integer NON_ATTRIBUTE_LENGTH = 7;
 
-    @Inject
-    SearchGridMapper() {
+    public SearchGridMapper() {
         // Empty constructor to add Dagger annotation
     }
 

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal class StringSetColumnAdapter : JSONObjectSetColumnAdapter<String>() {

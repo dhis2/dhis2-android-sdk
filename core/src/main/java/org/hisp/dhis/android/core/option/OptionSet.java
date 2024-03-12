@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import androidx.annotation.Nullable;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_OptionSet.Builder.class)
 public abstract class OptionSet extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable

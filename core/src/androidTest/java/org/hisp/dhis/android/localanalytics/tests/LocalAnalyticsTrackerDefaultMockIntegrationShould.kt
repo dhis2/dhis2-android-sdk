@@ -46,7 +46,7 @@ internal class LocalAnalyticsTrackerDefaultMockIntegrationShould :
         fun setUpClass() {
             setUpClass(
                 LocalAnalyticsDataParams.DefaultFactor,
-                MockIntegrationTestDatabaseContent.LocalAnalyticsDefaultDispatcher
+                MockIntegrationTestDatabaseContent.LocalAnalyticsDefaultDispatcher,
             )
         }
     }

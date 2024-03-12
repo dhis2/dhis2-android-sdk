@@ -27,23 +27,20 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import retrofit2.Retrofit
 
 object EventCallFactory {
     @JvmStatic
-    fun create(
+    suspend fun create(
         retrofit: Retrofit,
         orgUnit: String?,
         pageSize: Int,
-        uids: Collection<String> = emptyList()
-    ): Single<Payload<Event>> {
-
+        uids: Collection<String> = emptyList(),
+    ): Payload<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 program = null,
@@ -53,15 +50,15 @@ object EventCallFactory {
                 orgUnitsBeforeDivision = emptyList(),
                 limit = 50,
                 ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null
+                startDate = null,
             ),
             orgUnit = orgUnit,
             pageSize = pageSize,
-            uids = uids
+            uids = uids,
         )
 
         return OldEventEndpointCallFactory(
-            retrofit.create(EventService::class.java)
+            retrofit.create(EventService::class.java),
         ).getCollectionCall(eventQuery)
     }
 }

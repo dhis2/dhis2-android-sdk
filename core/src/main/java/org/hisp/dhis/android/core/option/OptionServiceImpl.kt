@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.option
 
-import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class OptionServiceImpl @Inject constructor(
-    private val optionRepository: OptionCollectionRepository
+@Singleton
+class OptionServiceImpl(
+    private val optionRepository: OptionCollectionRepository,
 ) : OptionService {
 
     override fun blockingSearchForOptions(

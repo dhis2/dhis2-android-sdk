@@ -39,9 +39,9 @@ internal data class TrackerAPIQuery(
     val lastUpdatedStr: String? = null,
     override val page: Int = 1,
     override val pageSize: Int = DEFAULT_PAGE_SIZE,
-    override val paging: Boolean = true
+    override val paging: Boolean = true,
 ) : BaseQueryKt(
     page,
     pageSize,
-    paging
+    paging,
 )

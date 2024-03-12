@@ -27,29 +27,34 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import java.net.HttpURLConnection
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import java.net.HttpURLConnection
 
-internal abstract class BaseSettingCall<T> : CompletableProvider {
+internal abstract class BaseSettingCall<T> internal constructor(
+    val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : DownloadProvider {
 
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
-    }
-
-    fun download(storeError: Boolean): Single<T> {
-        return fetch(storeError)
-            .doOnSuccess { process(it) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && isExpectedError(throwable)) {
+    override suspend fun download(storeError: Boolean) {
+        fetch(storeError).fold(
+            { process(it) },
+            { throwable ->
+                if (isExpectedError(throwable)) {
                     process(null)
                 }
-            }
+            },
+        )
+    }
+
+    suspend fun fetch(storeError: Boolean): Result<T, D2Error> {
+        return try {
+            tryFetch(storeError)
+        } catch (d2Error: D2Error) {
+            Result.Failure(d2Error)
+        }
     }
 
     private fun isExpectedError(throwable: D2Error): Boolean {
@@ -58,7 +63,7 @@ internal abstract class BaseSettingCall<T> : CompletableProvider {
             throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
     }
 
-    abstract fun fetch(storeError: Boolean): Single<T>
+    protected abstract suspend fun tryFetch(storeError: Boolean): Result<T, D2Error>
 
-    abstract fun process(item: T?)
+    protected abstract fun process(item: T?)
 }

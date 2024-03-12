@@ -82,9 +82,14 @@ class EventHandlerShould {
         whenever(eventBuilder.build()).doReturn(event)
 
         eventHandler = EventHandler(
-            relationshipVersionManager, relationshipHandler, eventStore,
-            trackedEntityDataValueHandler, noteHandler, noteVersionManager, noteUniquenessManager,
-            relationshipOrphanCleaner
+            relationshipVersionManager,
+            relationshipHandler,
+            eventStore,
+            trackedEntityDataValueHandler,
+            noteHandler,
+            noteVersionManager,
+            noteUniquenessManager,
+            relationshipOrphanCleaner,
         )
     }
 

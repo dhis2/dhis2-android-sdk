@@ -38,7 +38,7 @@ internal class AggregatedDataSyncStoreIntegrationShould :
     ObjectWithoutUidStoreAbstractIntegrationShould<AggregatedDataSync>(
         create(TestDatabaseAdapterFactory.get()),
         AggregatedDataSyncTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
 
     override fun buildObject(): AggregatedDataSync {

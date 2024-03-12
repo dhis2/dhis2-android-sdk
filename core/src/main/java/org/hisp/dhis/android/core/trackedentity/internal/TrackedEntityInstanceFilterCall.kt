@@ -27,38 +27,35 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class TrackedEntityInstanceFilterCall @Inject internal constructor(
+@Singleton
+class TrackedEntityInstanceFilterCall internal constructor(
     private val service: TrackedEntityInstanceFilterService,
-    private val handler: Handler<TrackedEntityInstanceFilter>,
+    private val handler: TrackedEntityInstanceFilterHandler,
     private val apiDownloader: APIDownloader,
-    private val versionManager: DHISVersionManager
-) : UidsCall<TrackedEntityInstanceFilter> {
-    override fun download(uids: Set<String>): Single<List<TrackedEntityInstanceFilter>> {
+    private val versionManager: DHISVersionManager,
+) : UidsCallCoroutines<TrackedEntityInstanceFilter> {
+    override suspend fun download(uids: Set<String>): List<TrackedEntityInstanceFilter> {
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
 
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
-                handler
+                handler,
             ) { partitionUids: Set<String> ->
                 service.getTrackedEntityInstanceFilters(
                     TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                     accessDataReadFilter,
                     TrackedEntityInstanceFilterFields.allFields,
-                    false
+                    false,
                 )
             }
         } else {
@@ -71,10 +68,10 @@ class TrackedEntityInstanceFilterCall @Inject internal constructor(
                         TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                         accessDataReadFilter,
                         TrackedEntityInstanceFilterFields.allFieldsAPI37,
-                        false
+                        false,
                     )
                 },
-                { it.toTrackedEntityInstanceFilter() }
+                { it.toTrackedEntityInstanceFilter() },
             )
         }
     }

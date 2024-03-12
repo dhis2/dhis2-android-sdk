@@ -51,9 +51,9 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         @JvmStatic
         fun setUpClass() {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher)
+            dhis2MockServer.setRequestDispatcher()
+            freshLogin("android", "Android123", dhis2MockServer.baseEndpoint)
             if (isNewInstance) {
-                dhis2MockServer.setRequestDispatcher()
-                freshLogin()
                 downloadMetadata()
                 downloadTrackedEntityInstances()
                 downloadEvents()
@@ -70,16 +70,6 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
         @JvmStatic
         fun tearDownClass() {
             dhis2MockServer.shutdown()
-        }
-
-        private fun freshLogin() {
-            try {
-                d2.userModule().logOut().blockingAwait()
-            } catch (e: RuntimeException) {
-                // Do nothing
-            } finally {
-                d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.baseEndpoint)
-            }
         }
 
         private fun downloadMetadata() {
@@ -116,7 +106,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .url("http://dhis2.org/api/programs/uid")
                     .errorDescription("Different server offline")
                     .httpErrorCode(402)
-                    .build()
+                    .build(),
             )
         }
 
@@ -127,7 +117,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .trackedEntityInstance(null)
                     .enrollment(null)
                     .event(null)
-                    .build()
+                    .build(),
             )
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
@@ -139,7 +129,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .tableReference("table_reference_2")
                     .errorCode("error_code_2")
                     .status(ImportStatus.ERROR)
-                    .build()
+                    .build(),
             )
 
             val dataValueConflictStore = DataValueConflictStore.create(databaseAdapter)
@@ -152,7 +142,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .dataElement("bx6fsa0t90x")
                     .categoryOptionCombo("bRowv6yZOF2")
                     .status(ImportStatus.WARNING)
-                    .build()
+                    .build(),
             )
             dataValueConflictStore.insert(
                 DataValueConflictSamples.get().toBuilder()
@@ -161,7 +151,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .period("202201")
                     .orgUnit("YuQRtpLP10I")
                     .displayDescription("display_description_other")
-                    .build()
+                    .build(),
             )
         }
 
@@ -173,13 +163,13 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                 KeyValuePair.builder()
                     .key("key1")
                     .value("value1")
-                    .build()
+                    .build(),
             )
             dataStore.insert(
                 KeyValuePair.builder()
                     .key("key2")
                     .value("value2")
-                    .build()
+                    .build(),
             )
         }
     }

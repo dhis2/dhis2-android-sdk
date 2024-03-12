@@ -33,7 +33,7 @@ internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem 
 
     private val regex: Regex = Regex(
         "File resource with uid '(\\w{11})' has already been assigned to " +
-            "a different object"
+            "a different object",
     )
     private fun description(fileResourceUid: String) = "The file $fileResourceUid has already been assigned"
 
@@ -49,7 +49,7 @@ internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem 
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getFileResource(conflict)?.let { fileResourceUid ->
             description(fileResourceUid)

@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -39,30 +41,33 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import retrofit2.Call
 
 @RunWith(JUnit4::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class OwnershipManagerShould {
 
-    private val apiCallExecutor: APICallExecutor = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val ownershipService: OwnershipService = mock()
     private val dataStatePropagator: DataStatePropagator = mock()
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner> = mock()
-    private val programOwnerStore: ObjectWithoutUidStore<ProgramOwner> = mock()
+    private val programTempOwnerStore: ProgramTempOwnerStore = mock()
+    private val programOwnerStore: ProgramOwnerStore = mock()
 
     private val httpResponse: HttpMessageResponse = mock()
-    private val call: Call<HttpMessageResponse> = mock()
 
     private lateinit var ownershipManager: OwnershipManagerImpl
 
     @Before
     fun setUp() {
-        whenever(ownershipService.breakGlass(any(), any(), any())).doReturn(call)
-        whenever(apiCallExecutor.executeObjectCall(any<Call<HttpMessageResponse>>())).doReturn(httpResponse)
+        ownershipService.stub {
+            onBlocking { breakGlass(any(), any(), any()) }.doAnswer { httpResponse }
+        }
 
         ownershipManager = OwnershipManagerImpl(
-            apiCallExecutor, ownershipService, dataStatePropagator,
-            programTempOwnerStore, programOwnerStore
+            coroutineAPICallExecutor,
+            ownershipService,
+            dataStatePropagator,
+            programTempOwnerStore,
+            programOwnerStore,
         )
     }
 
@@ -91,7 +96,7 @@ class OwnershipManagerShould {
     }
 
     @Test
-    fun do_not_persist_program_temp_owner_on_fake_break_glass() {
+    fun do_not_persist_program_temp_owner_on_fake_break_glass() = runTest {
         ownershipManager.fakeBreakGlass("tei_uid", "program_uid")
 
         verify(programTempOwnerStore).selectWhere(any(), any(), any())

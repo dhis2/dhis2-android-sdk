@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.*
@@ -42,6 +39,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceLocalQueryHelperShould {
@@ -64,7 +64,7 @@ class TrackedEntityInstanceLocalQueryHelperShould {
             .orgUnits(listOf("DiszpKrYNg8"))
             .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
             .query(
-                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build()
+                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build(),
             )
             .build()
 
@@ -85,10 +85,10 @@ class TrackedEntityInstanceLocalQueryHelperShould {
                     .type(DatePeriodType.ABSOLUTE)
                     .startDate(format.parse("2019-04-15"))
                     .endDate(format.parse("2019-05-19"))
-                    .build()
+                    .build(),
             )
             .query(
-                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build()
+                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build(),
             )
             .build()
 
@@ -104,7 +104,7 @@ class TrackedEntityInstanceLocalQueryHelperShould {
             .states(listOf(State.SYNCED, State.TO_POST, State.TO_UPDATE))
             .program(programUid)
             .query(
-                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build()
+                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build(),
             )
             .build()
 
@@ -170,26 +170,14 @@ class TrackedEntityInstanceLocalQueryHelperShould {
     }
 
     @Test
-    fun build_sql_query_with_event_status_only_if_event_dates_defined() {
-        val eventFilterWithoutDates = TrackedEntityInstanceQueryEventFilter.builder()
-            .eventStatus(listOf(EventStatus.ACTIVE)).build()
-
-        val scopeWithoutDates = queryBuilder
-            .program(programUid)
-            .eventFilters(listOf(eventFilterWithoutDates))
-            .build()
-
-        val query1 = localQueryHelper.getSqlQuery(scopeWithoutDates, emptySet(), 50)
-
-        assertThat(query1).doesNotContain("ACTIVE")
-
+    fun build_sql_query_with_event_dates() {
         val eventFilterWithDates = TrackedEntityInstanceQueryEventFilter.builder()
             .eventDate(
                 DateFilterPeriod.builder()
                     .type(DatePeriodType.ABSOLUTE)
                     .startDate(Date())
                     .endDate(Date())
-                    .build()
+                    .build(),
             )
             .eventStatus(listOf(EventStatus.ACTIVE)).build()
 
@@ -198,10 +186,10 @@ class TrackedEntityInstanceLocalQueryHelperShould {
             .eventFilters(listOf(eventFilterWithDates))
             .build()
 
-        val query2 = localQueryHelper.getSqlQuery(scopeWithDates, emptySet(), 50)
+        val query = localQueryHelper.getSqlQuery(scopeWithDates, emptySet(), 50)
 
-        assertThat(query2).contains("ACTIVE")
-        assertThat(query2).contains("eventDate")
+        assertThat(query).contains("ACTIVE")
+        assertThat(query).contains("eventDate")
     }
 
     @Test
@@ -231,8 +219,8 @@ class TrackedEntityInstanceLocalQueryHelperShould {
                         .key("key")
                         .operator(FilterItemOperator.IN)
                         .value(FilterOperatorsHelper.listToStr(listOf("element1", "element2")))
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .build()
 

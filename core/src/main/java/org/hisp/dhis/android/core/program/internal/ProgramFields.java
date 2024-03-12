@@ -55,7 +55,7 @@ public final class ProgramFields {
     private static final String ACCESS = "access";
     private static final String STYLE = "style";
     public static final String PROGRAM_SECTIONS = "programSections";
-    private static final String ATTRIBUTE_VALUES = "attributeValues";
+    public static final String ATTRIBUTE_VALUES = "attributeValues";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
 

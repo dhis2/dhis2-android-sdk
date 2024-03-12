@@ -37,20 +37,15 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 @SuppressWarnings({
         "PMD.CyclomaticComplexity",
         "PMD.StdCyclomaticComplexity"
 })
-@Singleton
 public class PeriodParser {
 
     private final CalendarProvider calendarProvider;
 
-    @Inject
-    PeriodParser(CalendarProvider calendarProvider) {
+    public PeriodParser(CalendarProvider calendarProvider) {
         this.calendarProvider = calendarProvider;
     }
 

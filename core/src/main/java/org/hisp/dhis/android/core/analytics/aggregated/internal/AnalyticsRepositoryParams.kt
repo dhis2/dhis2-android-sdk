@@ -36,5 +36,5 @@ internal data class AnalyticsRepositoryParams(
     val dimensions: List<DimensionItem>,
     val filters: List<DimensionItem>,
     val analyticsLegendStrategy: AnalyticsLegendStrategy = AnalyticsLegendStrategy.ByDataItem,
-    val aggregationType: AggregationType = AggregationType.DEFAULT
+    val aggregationType: AggregationType = AggregationType.DEFAULT,
 )

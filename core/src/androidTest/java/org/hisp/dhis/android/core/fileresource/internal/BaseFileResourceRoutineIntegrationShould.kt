@@ -28,19 +28,10 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.option.internal.OptionSetStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.junit.After
 import org.junit.Before

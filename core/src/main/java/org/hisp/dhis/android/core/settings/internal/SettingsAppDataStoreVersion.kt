@@ -34,5 +34,5 @@ internal enum class SettingsAppDataStoreVersion {
     V1_1,
 
     @JsonProperty("2.0")
-    V2_0
+    V2_0,
 }

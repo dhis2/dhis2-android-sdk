@@ -48,7 +48,7 @@ internal class VValueCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return ProgramIndicatorSQLUtils.valueCountExpression(
             itemIds = visitor.itemIds,
-            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator,
         )
     }
 }

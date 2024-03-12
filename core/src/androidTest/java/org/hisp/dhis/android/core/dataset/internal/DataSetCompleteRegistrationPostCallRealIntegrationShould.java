@@ -33,7 +33,6 @@ import static com.google.common.truth.Truth.assertThat;
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
 import org.junit.Before;
 
 import java.text.SimpleDateFormat;

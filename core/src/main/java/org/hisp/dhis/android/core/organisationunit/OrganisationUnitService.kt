@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
-import dagger.Reusable
 import io.reactivex.Single
-import java.util.*
-import javax.inject.Inject
+import org.koin.core.annotation.Singleton
+import java.util.Date
 
-@Reusable
-class OrganisationUnitService @Inject constructor(
-    private val organisationUnitRepository: OrganisationUnitCollectionRepository
+@Singleton
+class OrganisationUnitService(
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository,
 ) {
 
     fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {

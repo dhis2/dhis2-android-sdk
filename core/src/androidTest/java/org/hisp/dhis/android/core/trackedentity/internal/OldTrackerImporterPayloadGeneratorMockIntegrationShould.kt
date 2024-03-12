@@ -40,6 +40,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGeneratorMockIntegration() {
 
+    private val oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator
+
     @Test
     fun build_tracked_entity_instance_payload_with_nested_elements() {
         storeTrackerData()
@@ -84,7 +86,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(teiId),
-            to = RelationshipHelper.eventItem(singleEventId)
+            to = RelationshipHelper.eventItem(singleEventId),
         )
         val instance = teiStore.selectByUid(teiId)!!
 
@@ -106,7 +108,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(fromTeiUid),
-            to = RelationshipHelper.eventItem(event1Id)
+            to = RelationshipHelper.eventItem(event1Id),
         )
         val instance = teiStore.selectByUid(fromTeiUid)!!
 
@@ -124,7 +126,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(fromTeiUid),
-            to = RelationshipHelper.enrollmentItem(enrollment1Id)
+            to = RelationshipHelper.enrollmentItem(enrollment1Id),
         )
         val instance = teiStore.selectByUid(fromTeiUid)!!
 
@@ -142,7 +144,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(fromTeiUid),
-            to = RelationshipHelper.teiItem(teiId)
+            to = RelationshipHelper.teiItem(teiId),
         )
         val instance = teiStore.selectByUid(fromTeiUid)!!
 
@@ -172,7 +174,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.eventItem(singleEventId),
-            to = RelationshipHelper.teiItem(teiId)
+            to = RelationshipHelper.teiItem(teiId),
         )
         val event = eventStore.selectByUid(singleEventId)!!
 
@@ -193,7 +195,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.enrollmentItem(enrollment1Id),
-            to = RelationshipHelper.enrollmentItem(enrollment1Id)
+            to = RelationshipHelper.enrollmentItem(enrollment1Id),
         )
         val instance = teiStore.selectByUid(teiId)!!
 

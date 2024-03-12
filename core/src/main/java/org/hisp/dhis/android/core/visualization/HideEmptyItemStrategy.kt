@@ -32,7 +32,8 @@ enum class HideEmptyItemStrategy {
     BEFORE_FIRST,
     AFTER_LAST,
     BEFORE_FIRST_AFTER_LAST,
-    ALL;
+    ALL,
+    ;
 
     open fun isHide(): Boolean {
         return this == BEFORE_FIRST || this == AFTER_LAST || this == BEFORE_FIRST_AFTER_LAST || this == ALL

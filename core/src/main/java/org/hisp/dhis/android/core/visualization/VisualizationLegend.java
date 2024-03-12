@@ -66,7 +66,7 @@ public abstract class VisualizationLegend {
         return AutoValue_VisualizationLegend.createFromCursor(cursor);
     }
 
-    public abstract VisualizationLegend.Builder toBuilder();
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_VisualizationLegend.Builder();

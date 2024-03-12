@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import kotlinx.coroutines.rx2.rxObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.State
@@ -43,18 +40,19 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataStoreDownloadCall @Inject constructor(
+@Singleton
+internal class DataStoreDownloadCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataStoreEntryService: DataStoreService,
-    private val dataStoreEntryHandler: LinkHandler<DataStoreEntry, DataStoreEntry>,
-    private val versionManager: DHISVersionManager
+    private val dataStoreEntryHandler: DataStoreHandler,
+    private val versionManager: DHISVersionManager,
 ) {
     fun download(params: DataStoreDownloadParams): Observable<D2Progress> {
         return rxObservable {
             return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
-                cleanForeignKeyErrors = true
+                cleanForeignKeyErrors = true,
             ) {
                 coroutineAPICallExecutor.wrap(storeError = false) {
                     dataStoreEntryService.getNamespaces()
@@ -69,7 +67,7 @@ internal class DataStoreDownloadCall @Inject constructor(
                             }
                             send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
                         },
-                        onFailure = { t -> throw t }
+                        onFailure = { t -> throw t },
                     )
             }
         }
@@ -126,7 +124,7 @@ internal class DataStoreDownloadCall @Inject constructor(
                 },
                 onFailure = { t ->
                     entries = Result.Failure(t)
-                }
+                },
             )
         } while (lastPage.size >= PAGE_SIZE && result.succeeded)
 

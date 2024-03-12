@@ -45,7 +45,7 @@ public class DataApprovalTableInfo {
 
         @Override
         public CoreColumns columns() {
-            return new DataApprovalTableInfo.Columns();
+            return new Columns();
         }
     };
 

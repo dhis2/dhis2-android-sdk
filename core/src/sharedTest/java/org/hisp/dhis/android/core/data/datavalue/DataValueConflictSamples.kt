@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.data.datavalue
 
-import java.text.ParseException
-import java.util.Date
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.ImportStatus
+import java.text.ParseException
+import java.util.Date
 
 object DataValueConflictSamples {
 

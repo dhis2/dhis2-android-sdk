@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.attribute.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 public final class AttributeValuesFields {
     public static final String VALUE = "value";
@@ -42,7 +42,7 @@ public final class AttributeValuesFields {
     public static final Fields<AttributeValue> allFields = Fields.<AttributeValue>builder()
             .fields(
                     fh.<String>field(VALUE),
-                    fh.<Attribute>nestedField(ATTRIBUTE).with(AttributeFields.allFields)
+                    fh.<ObjectWithUid>nestedField(ATTRIBUTE).with(ObjectWithUid.uid)
             ).build();
 
     private AttributeValuesFields() {

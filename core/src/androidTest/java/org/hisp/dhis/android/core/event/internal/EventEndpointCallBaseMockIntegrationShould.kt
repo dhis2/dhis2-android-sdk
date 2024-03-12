@@ -101,7 +101,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
             event.toBuilder()
                 .syncState(state)
                 .aggregatedSyncState(state)
-                .status(EventStatus.SKIPPED).build()
+                .status(EventStatus.SKIPPED).build(),
         )
 
         enqueue(events1File)

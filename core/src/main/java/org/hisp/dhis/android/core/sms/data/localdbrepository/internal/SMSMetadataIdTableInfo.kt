@@ -50,7 +50,7 @@ internal object SMSMetadataIdTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 TYPE,
-                UID
+                UID,
             )
         }
 
@@ -58,7 +58,7 @@ internal object SMSMetadataIdTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 TYPE,
-                UID
+                UID,
             )
         }
 

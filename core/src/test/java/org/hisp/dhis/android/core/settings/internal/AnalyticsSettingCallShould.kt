@@ -28,61 +28,74 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.stubbing.Answer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class AnalyticsSettingCallShould {
-    private val handler: Handler<AnalyticsTeiSetting> = mock()
-    private val analyticsDhisVisualizationsSettingHandler: Handler<AnalyticsDhisVisualization> = mock()
+    private val handler: AnalyticsTeiSettingHandler = mock()
+    private val analyticsDhisVisualizationsSettingHandler: AnalyticsDhisVisualizationSettingHandler = mock()
     private val service: SettingAppService = mock()
-    private val analyticsSettingSingle: Single<AnalyticsSettings> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val analyticsSettings: AnalyticsSettings = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val appVersionManager: SettingsAppInfoManager = mock()
 
     private lateinit var analyticsSettingCall: AnalyticsSettingCall
 
     @Before
     fun setUp() {
-        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
-        whenever(service.analyticsSettings(any())) doReturn analyticsSettingSingle
+        appVersionManager.stub {
+            onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V1_1
+        }
+        whenAPICall { analyticsSettings }
         analyticsSettingCall = AnalyticsSettingCall(
             handler,
             analyticsDhisVisualizationsSettingHandler,
             service,
-            apiCallExecutor,
-            appVersionManager
+            coroutineAPICallExecutor,
+            appVersionManager,
         )
     }
 
+    private fun whenAPICall(answer: Answer<AnalyticsSettings>) {
+        service.stub {
+            onBlocking { analyticsSettings(any()) }.doAnswer(answer)
+        }
+    }
+
     @Test
-    fun default_to_empty_collection_if_version_1_1() {
-        analyticsSettingCall.getCompletable(false).blockingAwait()
+    fun default_to_empty_collection_if_version_1_1() = runTest {
+        analyticsSettingCall.download(false)
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)
     }
 
     @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(analyticsSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun default_to_empty_collection_if_not_found() = runTest {
+        appVersionManager.stub {
+            onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V2_0
+        }
 
-        analyticsSettingCall.getCompletable(false).blockingAwait()
+        whenever(service.analyticsSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+
+        analyticsSettingCall.download(false)
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)

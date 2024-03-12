@@ -29,35 +29,19 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth
-import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
-    companion object {
-        private lateinit var visualizationsSingle: Single<List<Visualization>>
-
-        @BeforeClass
-        @JvmStatic
-        @Throws(Exception::class)
-        internal fun setUpClass() {
-            BaseMockIntegrationTestEmptyEnqueable.setUpClass()
-            visualizationsSingle = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
-                HashSet(
-                    Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe")
-                )
-            )
-        }
-    }
-
     @Test
-    fun download_persist_and_get_visualizations_successfully() {
+    fun download_persist_and_get_visualizations_successfully() = runTest {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
@@ -69,7 +53,12 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
         dhis2MockServer.enqueueMockResponse("visualization/visualizations_2.json")
         d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
 
-        var visualizations = visualizationsSingle.blockingGet()
+        var visualizations = objects.d2DIComponent.internalModules.visualization.visualizationCall.download(
+            HashSet(
+                Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe"),
+            ),
+        )
+
         Truth.assertThat(visualizations.isEmpty()).isFalse()
         visualizations = d2.visualizationModule().visualizations().blockingGet()
         Truth.assertThat(visualizations.isEmpty()).isFalse()

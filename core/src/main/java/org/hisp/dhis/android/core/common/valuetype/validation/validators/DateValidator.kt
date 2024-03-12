@@ -30,19 +30,20 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.DateFailure
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 object DateValidator : ValueTypeValidator<DateFailure> {
 
-    private val DATE_PATTERN = "^\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])\$".toRegex()
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun validate(value: String): Result<String, DateFailure> {
-        return when (value.matches(DATE_PATTERN)) {
-            true -> {
-                Result.Success(value)
-            }
-            else -> {
-                Result.Failure(DateFailure.ParseException)
-            }
+        return try {
+            val formattedValue = LocalDate.parse(value, formatter)
+            Result.Success(formattedValue.toString())
+        } catch (e: DateTimeParseException) {
+            Result.Failure(DateFailure.ParseException)
         }
     }
 }

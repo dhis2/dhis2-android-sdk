@@ -80,14 +80,14 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             "DiszpKrYNg8",
             "Ok9OQpitjQr",
             "DwrQJzeChWp",
-            "DwrQJzeChWp"
+            "DwrQJzeChWp",
         ).blockingSet(value1)
         d2.dataValueModule().dataValues().value(
             "20191021",
             "DiszpKrYNg8",
             "vANAXwtLwcT",
             "bRowv6yZOF2",
-            "bRowv6yZOF2"
+            "bRowv6yZOF2",
         ).blockingSet(value2)
     }
 }

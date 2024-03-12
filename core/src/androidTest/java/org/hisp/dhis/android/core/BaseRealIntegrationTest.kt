@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core
 
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
@@ -37,8 +36,10 @@ import org.junit.Before
 abstract class BaseRealIntegrationTest {
     @JvmField
     protected var username: String = RealServerMother.username
+
     @JvmField
     protected var password: String = RealServerMother.password
+
     @JvmField
     protected var url: String = RealServerMother.url
 
@@ -56,8 +57,10 @@ abstract class BaseRealIntegrationTest {
 
     internal fun getGenericCallData(d2: D2): GenericCallData {
         return GenericCallData.create(
-            d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
-            d2.systemInfoModule().versionManager()
+            d2.databaseAdapter(),
+            d2.retrofit(),
+            ResourceHandler.create(d2.databaseAdapter()),
+            d2.systemInfoModule().versionManager(),
         )
     }
 

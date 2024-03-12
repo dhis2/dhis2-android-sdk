@@ -25,55 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
-@Suppress("MagicNumber")
-internal object ProgramStageWorkingListEventDataFilterStore {
-    private val BINDER = StatementBinder { o: ProgramStageWorkingListEventDataFilter, w: StatementWrapper ->
-        w.bindNull(1)
-        w.bind(2, o.dataItem())
-        w.bindNull(3)
-        w.bindNull(4)
-        w.bind(5, o.programStageWorkingList())
-        w.bindNull(6)
-        w.bindNull(7)
-        w.bind(8, o.le())
-        w.bind(9, o.ge())
-        w.bind(10, o.gt())
-        w.bind(11, o.lt())
-        w.bind(12, o.eq())
-        w.bind(13, StringSetColumnAdapter.serialize(o.`in`()))
-        w.bind(14, o.like())
-        w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
-    }
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListEventDataFilter, _ -> }
-    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListEventDataFilter, _ -> }
-
-    @JvmField
-    val CHILD_PROJECTION = SingleParentChildProjection(
-        ItemFilterTableInfo.TABLE_INFO,
-        ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST
-    )
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            ItemFilterTableInfo.TABLE_INFO,
-            BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { ProgramStageWorkingListEventDataFilter.create(it) }
-    }
-}
+internal interface ProgramStageWorkingListEventDataFilterStore :
+    ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter>

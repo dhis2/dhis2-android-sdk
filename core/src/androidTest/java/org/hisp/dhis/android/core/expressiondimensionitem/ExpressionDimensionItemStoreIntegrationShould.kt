@@ -39,7 +39,7 @@ class ExpressionDimensionItemStoreIntegrationShould :
     IdentifiableObjectStoreAbstractIntegrationShould<ExpressionDimensionItem>(
         ExpressionDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
         ExpressionDimensionItemTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
 
     override fun buildObject(): ExpressionDimensionItem {

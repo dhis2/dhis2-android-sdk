@@ -41,7 +41,7 @@ class CategoryOptionOrganisationUnitLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<CategoryOptionOrganisationUnitLink>(
         CategoryOptionOrganisationUnitLinkStore.create(TestDatabaseAdapterFactory.get()),
         CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
 
     override fun buildObjectWithOtherMasterUid(): CategoryOptionOrganisationUnitLink {

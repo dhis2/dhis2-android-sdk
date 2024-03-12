@@ -28,78 +28,122 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
         extends BaseMockIntegrationTestFullDispatcher {
 
+    TrackedEntityInstanceObjectRepository teiRepository;
+    TrackedEntityAttributeValueObjectRepository attributeRepository;
+    String attribute = "aejWyOfXge6";
+
+    @Before
+    public void setup() throws D2Error {
+        TrackedEntityInstanceCreateProjection projection = TrackedEntityInstanceCreateProjection
+                .create("DiszpKrYNg8", "nEenWmSyUEp");
+
+        String uid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(projection);
+        attributeRepository = objectRepository(uid);
+        teiRepository = d2.trackedEntityModule().trackedEntityInstances().uid(uid);
+    }
+
+    @After
+    public void teardown() throws D2Error {
+        teiRepository.blockingDelete();
+    }
+
+    @Test
+    public void create_value() throws D2Error {
+        String value1 = "new_value";
+        String value2 = "other_value";
+
+        attributeRepository.blockingSet(value1);
+        assertThat(attributeRepository.blockingGet().value()).isEqualTo(value1);
+        assertThat(attributeRepository.blockingGet().syncState()).isEqualTo(State.TO_POST);
+
+        attributeRepository.blockingSet(value2);
+        assertThat(attributeRepository.blockingGet().value()).isEqualTo(value2);
+        assertThat(attributeRepository.blockingGet().syncState()).isEqualTo(State.TO_POST);
+    }
+
     @Test
     public void update_value() throws D2Error {
-        String value = "new_value";
+        String value1 = "new_value";
+        String value2 = "other_value";
 
-        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
+        attributeRepository.blockingSet(value1);
+        assertThat(attributeRepository.blockingGet().value()).isEqualTo(value1);
+        assertThat(attributeRepository.blockingGet().syncState()).isEqualTo(State.TO_POST);
 
-        repository.blockingSet(value);
-        assertThat(repository.blockingGet().value()).isEqualTo(value);
+        TrackedEntityAttributeValue value = attributeRepository.blockingGet();
+        setDataValueState(value, State.ERROR);
 
-        repository.blockingDelete();
+        attributeRepository.blockingSet(value2);
+        assertThat(attributeRepository.blockingGet().value()).isEqualTo(value2);
+        assertThat(attributeRepository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test
     public void delete_value() throws D2Error {
-        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
+        attributeRepository.blockingSet("value");
+        assertThat(attributeRepository.blockingExists()).isEqualTo(Boolean.TRUE);
 
-        repository.blockingSet("value");
-        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        repository.blockingDelete();
-        assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
+        attributeRepository.blockingDelete();
+        assertThat(attributeRepository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("no_attribute", "no_instance").blockingExists()).isEqualTo(Boolean.FALSE);
+
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("cejWyOfXge6", "nWrB0TfWlvh").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
     @Test
     public void mark_a_value_as_deleted_using_the_delete_method() throws D2Error {
-        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
-
-        repository.blockingSet("value");
-        repository.blockingDelete();
-        assertValueIsDeleted(repository);
+        attributeRepository.blockingSet("value");
+        attributeRepository.blockingDelete();
+        assertThat(attributeRepository.blockingExists()).isEqualTo(false);
+        assertThat(attributeRepository.blockingGet()).isNull();
     }
 
     @Test
     public void mark_a_value_as_deleted_when_setting_a_null() throws D2Error {
-        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
-
-        repository.blockingSet("value");
-        repository.blockingSet(null);
-        assertValueIsDeleted(repository);
+        attributeRepository.blockingSet("value");
+        attributeRepository.blockingSet(null);
+        assertThat(attributeRepository.blockingExists()).isEqualTo(false);
+        assertThat(attributeRepository.blockingGet().value()).isEqualTo(null);
+        assertThat(attributeRepository.blockingGet().deleted()).isEqualTo(true);
     }
 
-    private void assertValueIsDeleted(TrackedEntityAttributeValueObjectRepository objectRepository) throws D2Error {
-        assertThat(objectRepository.blockingExists()).isEqualTo(false);
-        assertThat(objectRepository.blockingGet().value()).isEqualTo(null);
-        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(true);
-        objectRepository.blockingSet("1");
-        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(false);
-        objectRepository.blockingSet(null);
-    }
-
-    private TrackedEntityAttributeValueObjectRepository objectRepository() {
+    private TrackedEntityAttributeValueObjectRepository objectRepository(String teiUid) {
         return d2.trackedEntityModule().trackedEntityAttributeValues()
-                .value("aejWyOfXge6", "nWrB0TfWlvh");
+                .value(attribute, teiUid);
+    }
+
+    private void setDataValueState(TrackedEntityAttributeValue value, State syncState) {
+        TrackedEntityAttributeValueStore store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
+
+        store.updateWhere(
+                value.toBuilder().syncState(syncState).build()
+        );
     }
 }

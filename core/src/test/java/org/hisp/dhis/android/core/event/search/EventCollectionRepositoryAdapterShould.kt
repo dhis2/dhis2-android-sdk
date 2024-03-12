@@ -59,7 +59,7 @@ class EventCollectionRepositoryAdapterShould {
             eventRepository,
             ouRepository,
             userRepository,
-            dateFilterPeriodHelper
+            dateFilterPeriodHelper,
         )
 
         whenever(ouRepository.blockingGetUids()) doReturn orgunitDescendants
@@ -121,8 +121,8 @@ class EventCollectionRepositoryAdapterShould {
                     EventQueryScopeOrderByItem.builder()
                         .column(EventQueryScopeOrderColumn.COMPLETED_DATE)
                         .direction(RepositoryScope.OrderByDirection.DESC)
-                        .build()
-                )
+                        .build(),
+                ),
             ).build()
 
         val intermediateRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)

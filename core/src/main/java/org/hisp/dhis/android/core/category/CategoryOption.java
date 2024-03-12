@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_CategoryOption.Builder.class)
 public abstract class CategoryOption extends BaseNameableObject implements CoreObject {
 
     @Nullable
@@ -83,7 +83,7 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_CategoryOption.Builder();
+        return new $$AutoValue_CategoryOption.Builder();
     }
 
     @AutoValue.Builder

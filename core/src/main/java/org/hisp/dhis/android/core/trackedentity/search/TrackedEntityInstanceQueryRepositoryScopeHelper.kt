@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
@@ -43,16 +41,17 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.AttributeValu
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject constructor(
-    private val dateFilterPeriodHelper: DateFilterPeriodHelper
+@Singleton
+internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 
     @Suppress("ComplexMethod")
     fun addTrackedEntityInstanceFilter(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        filter: TrackedEntityInstanceFilter
+        filter: TrackedEntityInstanceFilter,
     ): TrackedEntityInstanceQueryRepositoryScope {
         val builder = scope.toBuilder()
 
@@ -78,7 +77,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
     private fun applyEventFilters(
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
-        eventFilters: List<TrackedEntityInstanceEventFilter>
+        eventFilters: List<TrackedEntityInstanceEventFilter>,
     ) {
         val filters = eventFilters.map { eventFilter ->
             val eventBuilder = TrackedEntityInstanceQueryEventFilter.builder()
@@ -111,7 +110,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
     @Suppress("ComplexMethod")
     private fun applyAttributeValueFilter(
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
-        filter: AttributeValueFilter?
+        filter: AttributeValueFilter?,
     ) {
         filter?.let {
             val existingFilters = builder.build().filter()
@@ -126,7 +125,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
     @Suppress("ComplexMethod")
     fun addProgramStageWorkingList(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        workingList: ProgramStageWorkingList
+        workingList: ProgramStageWorkingList,
     ): TrackedEntityInstanceQueryRepositoryScope {
         val builder = scope.toBuilder()
 
@@ -156,7 +155,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
     private fun applyDataValueFilter(
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
-        filter: ProgramStageWorkingListEventDataFilter?
+        filter: ProgramStageWorkingListEventDataFilter?,
     ) {
         filter?.let {
             val existingFilters = builder.build().dataValue()
@@ -169,7 +168,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
     private fun getCommonFilterOperators(
         filterBuilder: RepositoryScopeFilterItem.Builder,
-        filter: FilterOperators
+        filter: FilterOperators,
     ): List<RepositoryScopeFilterItem> {
         val filterItems: MutableList<RepositoryScopeFilterItem> = mutableListOf()
 
@@ -213,7 +212,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
     private fun getAttributeValueFilterOperators(
         filterBuilder: RepositoryScopeFilterItem.Builder,
-        filter: AttributeValueFilter
+        filter: AttributeValueFilter,
     ): List<RepositoryScopeFilterItem> {
         val filterItems: MutableList<RepositoryScopeFilterItem> = mutableListOf()
 
@@ -229,7 +228,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
     private fun applyOrder(
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
-        order: String
+        order: String,
     ) {
         val items = order.split(",").mapNotNull { orderItem ->
             val orderTokens = orderItem.split(":")
@@ -245,8 +244,11 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
             if (column != null) {
                 val direction =
-                    if (directionStr == "desc") RepositoryScope.OrderByDirection.DESC
-                    else RepositoryScope.OrderByDirection.ASC
+                    if (directionStr == "desc") {
+                        RepositoryScope.OrderByDirection.DESC
+                    } else {
+                        RepositoryScope.OrderByDirection.ASC
+                    }
 
                 TrackedEntityInstanceQueryScopeOrderByItem.builder()
                     .column(column)
@@ -265,7 +267,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper @Inject construct
 
     fun addFilter(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        filter: RepositoryScopeFilterItem
+        filter: RepositoryScopeFilterItem,
     ): TrackedEntityInstanceQueryRepositoryScope {
         val otherFilters = scope.filter().filterNot { it.key() == filter.key() && it.operator() == filter.operator() }
         return scope.toBuilder().filter(otherFilters + filter).build()

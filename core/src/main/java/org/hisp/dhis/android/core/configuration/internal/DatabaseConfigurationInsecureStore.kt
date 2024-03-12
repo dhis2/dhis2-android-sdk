@@ -25,14 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.configuration.internal
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
-internal object DatabaseConfigurationInsecureStore {
-    operator fun get(insecureStore: InsecureStore): ObjectKeyValueStore<DatabasesConfiguration> {
-        return JsonKeyValueStoreImpl(insecureStore, "DB_CONFIGS", DatabasesConfiguration::class.java)
-    }
-}
+interface DatabaseConfigurationInsecureStore : ObjectKeyValueStore<DatabasesConfiguration>

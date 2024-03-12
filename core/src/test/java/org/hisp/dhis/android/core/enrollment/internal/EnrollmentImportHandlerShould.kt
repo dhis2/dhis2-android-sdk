@@ -80,8 +80,12 @@ class EnrollmentImportHandlerShould {
     @Throws(Exception::class)
     fun setUp() {
         enrollmentImportHandler = EnrollmentImportHandler(
-            enrollmentStore, eventImportHandler, trackerImportConflictStore, trackerImportConflictParser,
-            jobReportEnrollmentHandler, dataStatePropagator
+            enrollmentStore,
+            eventImportHandler,
+            trackerImportConflictStore,
+            trackerImportConflictParser,
+            jobReportEnrollmentHandler,
+            dataStatePropagator,
         )
 
         whenever(enrollment.trackedEntityInstance()).thenReturn("tei_uid")
@@ -147,7 +151,9 @@ class EnrollmentImportHandlerShould {
         whenever(missingEnrollment.uid()).thenReturn("missing_enrollment_uid")
 
         val response = enrollmentImportHandler.handleEnrollmentImportSummary(
-            listOf(importSummary), enrollments, teiState
+            listOf(importSummary),
+            enrollments,
+            teiState,
         )
 
         assertThat(response.enrollments.ignored.size).isEqualTo(1)

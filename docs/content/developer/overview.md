@@ -14,4 +14,4 @@ The SDK is mainly written in Java 8 using the reduced subset of features allowed
 
 It uses [RxJava](https://github.com/ReactiveX/RxJava) to facilitate the asynchronous treatment of some methods. Although it is optional, we recommend this approach to ensure non-blocking calls.
 
-Other libraries internally used by the SDK are: [Dagger](https://github.com/google/dagger) for dependency injection, [Jackson](https://github.com/FasterXML/jackson) for JSON parsing, [Retrofit](https://square.github.io/retrofit/) and [OkHttpClient](https://square.github.io/okhttp/) for API communication or [SQLBrite](https://github.com/square/sqlbrite) for DB migrations.
+Other libraries internally used by the SDK are: [Koin](https://insert-koin.io/) for dependency injection, [Jackson](https://github.com/FasterXML/jackson) for JSON parsing, [Retrofit](https://square.github.io/retrofit/) and [OkHttpClient](https://square.github.io/okhttp/) for API communication or [SQLCipher](https://www.zetetic.net/sqlcipher/) for DB encryption.

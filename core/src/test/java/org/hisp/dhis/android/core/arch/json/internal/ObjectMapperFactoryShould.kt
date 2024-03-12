@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.arch.json.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.junit.Before
 import org.junit.Test
+import java.util.*
 
 class ObjectMapperFactoryShould {
 
@@ -66,7 +66,7 @@ class ObjectMapperFactoryShould {
             "2020-12-01T12:34:56" to "2020-12-01T12:34:56.000",
             "2020-12-01T12:34:56" to "2020-12-01T12:34:56.000",
             "2020-12-01T12:34" to "2020-12-01T12:34:00.000",
-            "2020-12-01" to "2020-12-01T00:00:00.000"
+            "2020-12-01" to "2020-12-01T00:00:00.000",
         ).forEach { (source, expected) ->
             val sourceDate = objectMapper.readValue("\"$source\"", Date::class.java)
             val expectedDate = BaseIdentifiableObject.parseDate(expected)

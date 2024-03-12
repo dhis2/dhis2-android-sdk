@@ -45,7 +45,31 @@ import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemPeriodInY
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemYearlyPeriodCount
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.*
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2AddDays
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Ceil
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Concatenate
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Condition
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Count
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2CountIfCondition
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2CountIfValue
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2DaysBetween
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Floor
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2HasValue
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Left
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Length
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2MinutesBetween
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Modulus
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2MonthsBetween
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Oizp
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Right
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Round
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Split
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Substring
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2ValidatePattern
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2WeeksBetween
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2YearsBetween
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Zing
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.D2Zpvc
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 
 /*
@@ -124,7 +148,7 @@ internal object AnalyticExpressionParserUtils {
 
     fun getDays(
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
-        contextMetadata: Map<String, MetadataItem>
+        contextMetadata: Map<String, MetadataItem>,
     ): Int? {
         val periods = contextEvaluationItem.allDimensionItems
             .mapNotNull { item ->

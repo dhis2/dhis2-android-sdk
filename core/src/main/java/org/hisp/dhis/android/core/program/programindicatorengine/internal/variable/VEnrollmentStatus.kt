@@ -45,7 +45,7 @@ internal class VEnrollmentStatus : ExpressionItem {
         return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(
-                    column = EnrollmentTableInfo.Columns.STATUS
+                    column = EnrollmentTableInfo.Columns.STATUS,
                 )
             AnalyticsType.ENROLLMENT, null ->
                 "$enrollment.${EnrollmentTableInfo.Columns.STATUS}"

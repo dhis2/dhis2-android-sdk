@@ -65,7 +65,7 @@ internal object NewEnrollmentFields {
         .fields(
             fh.nestedField<NewTrackerImporterEvent>(EVENTS).with(NewEventFields.allFields),
             fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.all),
-            fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields)
+            fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
         ).build()
 
     val asRelationshipFields: Fields<NewTrackerImporterEnrollment> = commonFields().build()
@@ -86,7 +86,7 @@ internal object NewEnrollmentFields {
             fh.field<EnrollmentStatus>(STATUS),
             fh.field<Boolean>(DELETED),
             fh.field<String>(TRACKED_ENTITY),
-            fh.field<Geometry>(GEOMETRY)
+            fh.field<Geometry>(GEOMETRY),
         )
     }
 }

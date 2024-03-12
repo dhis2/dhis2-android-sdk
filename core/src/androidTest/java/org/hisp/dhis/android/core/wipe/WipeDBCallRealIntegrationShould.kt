@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
 class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test

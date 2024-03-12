@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.text.ParseException;
@@ -50,6 +51,7 @@ public class TrackedEntityDataValueSamples {
                 .storedBy("username")
                 .value(value)
                 .providedElsewhere(Boolean.TRUE)
+                .syncState(State.SYNCED)
                 .build();
     }
 

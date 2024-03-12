@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 
 class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // This test is commented because technically it is flaky.
@@ -50,7 +49,7 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         // TODO: we should create dependant server data verifications in other test suite
         /* verifyNumberOfDownloadedEvents(49);
         verifyNumberOfDownloadedTrackedEntityDataValue(335);
-        */
+         */
     }
 
     // @Test

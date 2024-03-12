@@ -91,7 +91,7 @@ class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
             entry<DisplayDensity>("DisplayDensity"),
             entry<LegendStrategy>("LegendDisplayStrategy"),
             entry<HideEmptyItemStrategy>("HideEmptyItemStrategy"),
-            entry<FileResourceStorageStatus>("FileResourceStorageStatus")
+            entry<FileResourceStorageStatus>("FileResourceStorageStatus"),
         )
     }
 }

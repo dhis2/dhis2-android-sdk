@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
@@ -38,16 +36,17 @@ import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataStoreHandler @Inject constructor(
-    private val store: DataStoreEntryStore
+@Singleton
+internal class DataStoreHandler constructor(
+    private val store: DataStoreEntryStore,
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
     override fun handleMany(
         masterUid: String,
         slaves: Collection<DataStoreEntry>?,
-        transformer: (DataStoreEntry) -> DataStoreEntry
+        transformer: (DataStoreEntry) -> DataStoreEntry,
     ) {
         val entriesToHandle = filterUnsycnedEntries(masterUid, slaves)
         handleMany(entriesToHandle)
@@ -64,14 +63,14 @@ internal class DataStoreHandler @Inject constructor(
 
     private fun filterUnsycnedEntries(
         namespace: String,
-        slaves: Collection<DataStoreEntry>?
+        slaves: Collection<DataStoreEntry>?,
     ): List<DataStoreEntry>? {
         return slaves?.let {
             val whereClause = WhereClauseBuilder().run {
                 appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
                 appendNotInKeyStringValues(
                     DataColumns.SYNC_STATE,
-                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
+                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
                 )
                 build()
             }
@@ -85,7 +84,7 @@ internal class DataStoreHandler @Inject constructor(
 
     private fun cleanOrphan(
         namespace: String,
-        slaves: Collection<DataStoreEntry>?
+        slaves: Collection<DataStoreEntry>?,
     ) {
         val notInSlaves = WhereClauseBuilder().run {
             appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)

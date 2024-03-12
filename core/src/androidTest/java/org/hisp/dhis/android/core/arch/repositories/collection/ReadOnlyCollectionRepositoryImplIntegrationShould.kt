@@ -114,7 +114,7 @@ class ReadOnlyCollectionRepositoryImplIntegrationShould : BaseMockIntegrationTes
         fun setUpTestClass() {
             setUpClass()
             typeMap = RelationshipTypeSamples.typeMap
-            val handler = objects.d2DIComponent.relationshipTypeHandler()
+            val handler = objects.d2DIComponent.relationshipTypeHandler
             handler.handle(RelationshipTypeSamples.RELATIONSHIP_TYPE_1)
             handler.handle(RelationshipTypeSamples.RELATIONSHIP_TYPE_2)
             relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes()

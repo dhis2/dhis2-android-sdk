@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.trackedentity.AttributeValueFilterSamples
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -40,7 +39,7 @@ import org.junit.runner.RunWith
 class AttributeValueFilterStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AttributeValueFilter>(
     create(TestDatabaseAdapterFactory.get()),
     ItemFilterTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): AttributeValueFilter {
         return AttributeValueFilterSamples.get()

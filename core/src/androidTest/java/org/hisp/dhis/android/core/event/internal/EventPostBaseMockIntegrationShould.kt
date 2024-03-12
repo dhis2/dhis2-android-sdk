@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl.Companion.create
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable

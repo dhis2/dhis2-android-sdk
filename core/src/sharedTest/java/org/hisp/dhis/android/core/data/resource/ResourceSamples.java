@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.data.resource;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.resource.internal.Resource;
 
 import java.text.ParseException;
 import java.util.Date;

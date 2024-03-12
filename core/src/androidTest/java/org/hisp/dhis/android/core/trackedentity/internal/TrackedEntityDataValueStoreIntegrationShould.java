@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore;
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;

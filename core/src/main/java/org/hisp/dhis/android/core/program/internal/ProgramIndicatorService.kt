@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where
@@ -40,11 +39,11 @@ import retrofit2.http.Query
 
 internal interface ProgramIndicatorService {
     @GET("programIndicators")
-    fun getProgramIndicator(
+    suspend fun getProgramIndicator(
         @Query("fields") @Which fields: Fields<ProgramIndicator>,
         @Query("filter") @Where displayInForm: Filter<ProgramIndicator, Boolean>?,
         @Query("filter") program: String?,
         @Query("filter") @Where uids: Filter<ProgramIndicator, String>?,
         @Query("paging") paging: Boolean,
-    ): Single<Payload<ProgramIndicator>>
+    ): Payload<ProgramIndicator>
 }

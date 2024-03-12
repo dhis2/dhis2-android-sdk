@@ -42,7 +42,7 @@ internal object AnalyticsDimensionHelper {
 
     @Suppress("ThrowsCount")
     inline fun <reified E : DimensionItem> getSingleItemByDimension(
-        item: AnalyticsServiceEvaluationItem
+        item: AnalyticsServiceEvaluationItem,
     ): List<E> {
         val dimensionItems = item.dimensionItems.filterIsInstance<E>()
 

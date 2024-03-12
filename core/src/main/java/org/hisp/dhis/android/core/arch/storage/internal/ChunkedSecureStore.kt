@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.koin.core.annotation.Singleton
 
 private const val SIZE_IN_CHARACTERS = 200
 
 @Singleton
-class ChunkedSecureStore @Inject constructor(private val internalStore: SecureStore) : SecureStore {
+class ChunkedSecureStore(private val internalStore: SecureStore) : KeyValueStore {
 
     override fun setData(key: String, data: String?) {
         removeData(key)

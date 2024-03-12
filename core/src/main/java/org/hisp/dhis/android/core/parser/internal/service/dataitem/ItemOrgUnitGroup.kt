@@ -78,7 +78,7 @@ internal class ItemOrgUnitGroup : ExpressionItem {
     private fun getDimensionalItemId(ctx: ExprContext): DimensionalItemId {
         return DimensionalItemId(
             dimensionalItemType = DimensionalItemType.ORGANISATION_UNIT_GROUP,
-            id0 = ctx.uid0.text
+            id0 = ctx.uid0.text,
         )
     }
 }

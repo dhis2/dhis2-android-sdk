@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner

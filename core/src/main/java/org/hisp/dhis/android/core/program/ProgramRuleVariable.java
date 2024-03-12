@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramRuleVariable.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramRuleVariable.Builder.class)
 public abstract class ProgramRuleVariable extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -75,7 +75,7 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
     }
 
     public static Builder builder() {
-        return new AutoValue_ProgramRuleVariable.Builder();
+        return new $$AutoValue_ProgramRuleVariable.Builder();
     }
 
     public abstract Builder toBuilder();

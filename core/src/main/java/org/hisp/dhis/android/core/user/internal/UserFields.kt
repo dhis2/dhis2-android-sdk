@@ -87,7 +87,7 @@ object UserFields {
     private fun commonFields(): Fields.Builder<User> {
         return Fields.builder<User>().fields(
             uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle, surname,
-            firstName, introduction, employer, interests, languages, email, phoneNumber, nationality, deleted
+            firstName, introduction, employer, interests, languages, email, phoneNumber, nationality, deleted,
         )
     }
 
@@ -123,7 +123,7 @@ object UserFields {
         return getBaseFields(version)
             .fields(
                 organisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
-                teiSearchOrganisationUnits.with(OrganisationUnitFields.fieldsInUserCall)
+                teiSearchOrganisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
             )
             .build()
     }

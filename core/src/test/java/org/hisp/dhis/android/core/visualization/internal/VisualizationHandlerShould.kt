@@ -58,7 +58,7 @@ class VisualizationHandlerShould {
         visualizationHandler = VisualizationHandler(
             visualizationStore,
             visualizationCollectionCleaner,
-            visualizationDimensionItemHandler
+            visualizationDimensionItemHandler,
         )
 
         whenever(visualization.columns()).doReturn(listOf(visualizationDimension))

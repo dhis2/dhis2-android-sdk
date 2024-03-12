@@ -33,11 +33,11 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 internal abstract class TrackerQueryInternalFactory<T>(
     protected val commonHelper: TrackerQueryFactoryCommonHelper,
     protected val params: ProgramDataDownloadParams,
-    protected val programSettings: ProgramSettings?
+    protected val programSettings: ProgramSettings?,
 ) {
 
     fun queryGlobal(
-        programs: List<String>
+        programs: List<String>,
     ): List<T> {
         return queryInternal(programs, null) {
             commonHelper.getCaptureOrgUnitUids()
@@ -45,7 +45,7 @@ internal abstract class TrackerQueryInternalFactory<T>(
     }
 
     fun queryPerProgram(
-        programUid: String?
+        programUid: String?,
     ): List<T> {
         return queryInternal(listOf(programUid!!), programUid) {
             commonHelper.getLinkedCaptureOrgUnitUids(programUid)
@@ -55,6 +55,6 @@ internal abstract class TrackerQueryInternalFactory<T>(
     protected abstract fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>
+        orgUnitByLimitExtractor: () -> List<String>,
     ): List<T>
 }

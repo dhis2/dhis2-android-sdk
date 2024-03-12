@@ -33,7 +33,7 @@ internal object LackingTEICascadeDeleteAuthorityConflict : TrackerImportConflict
 
     private val regex: Regex = Regex(
         "Tracked entity instance (\\w{11}) cannot be deleted as it has associated" +
-            " enrollments and user does not have authority F_TEI_CASCADE_DELETE"
+            " enrollments and user does not have authority F_TEI_CASCADE_DELETE",
     )
     private fun description(trackedEntityInstance: String) =
         "You lack the authority to delete the entity: $trackedEntityInstance"
@@ -50,7 +50,7 @@ internal object LackingTEICascadeDeleteAuthorityConflict : TrackerImportConflict
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)

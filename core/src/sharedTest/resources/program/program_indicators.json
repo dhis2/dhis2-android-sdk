@@ -83,6 +83,30 @@
           "offsetPeriods": 2
         }
       ]
+    },
+    {
+      "created": "2014-10-20T11:26:19.631",
+      "lastUpdated": "2014-10-20T11:26:19.631",
+      "name": "Item header expression",
+      "id": "kALwOyvVvdT",
+      "shortName": "Item header expression",
+      "displayDescription": "Header",
+      "aggregationType": "AVERAGE",
+      "expression": "d2:concatenate(A{cejWyOfXge6}, ', ', A{aejWyOfXge6})",
+      "dimensionItem": "kALwOyvVvdT",
+      "displayName": "Item header expression",
+      "displayInForm": false,
+      "description": "Header",
+      "displayShortName": "Item header expression",
+      "decimals": 2,
+      "filter": "1",
+      "analyticsType": "ENROLLMENT",
+      "program": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "legendSets": [],
+      "analyticsPeriodBoundaries": [
+      ]
     }
   ]
 }

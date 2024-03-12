@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;

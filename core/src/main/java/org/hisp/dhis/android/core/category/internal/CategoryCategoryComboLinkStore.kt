@@ -25,31 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
 
-@Suppress("MagicNumber")
-internal object CategoryCategoryComboLinkStore {
-
-    private val BINDER = StatementBinder { o: CategoryCategoryComboLink, w: StatementWrapper ->
-        w.bind(1, o.category())
-        w.bind(2, o.categoryCombo())
-        w.bind(3, o.sortOrder())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryComboLink> {
-        return linkStore(
-            databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER
-        ) { cursor: Cursor -> CategoryCategoryComboLink.create(cursor) }
-    }
-}
+internal interface CategoryCategoryComboLinkStore : LinkStore<CategoryCategoryComboLink>

@@ -27,12 +27,132 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import android.util.Log
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper
+import org.koin.core.annotation.Singleton
 
-internal interface OrganisationUnitHandler : HandlerWithTransformer<OrganisationUnit> {
-    fun resetLinks()
-    fun setData(user: User, scope: OrganisationUnit.Scope)
-    fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>)
+@Singleton
+internal class OrganisationUnitHandler constructor(
+    organisationUnitStore: OrganisationUnitStore,
+    private val userOrganisationUnitLinkHandler: UserOrganisationUnitLinkHandler,
+    private val organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler,
+    private val dataSetOrganisationUnitLinkHandler: DataSetOrganisationUnitLinkHandler,
+    private val organisationUnitGroupHandler: OrganisationUnitGroupHandler,
+    private val organisationUnitGroupLinkHandler: OrganisationUnitOrganisationUnitGroupLinkHandler,
+) : IdentifiableHandlerImpl<OrganisationUnit>(organisationUnitStore) {
+    private var user: User? = null
+    private var scope: OrganisationUnit.Scope? = null
+
+    fun resetLinks() {
+        userOrganisationUnitLinkHandler.resetAllLinks()
+        organisationUnitProgramLinkHandler.resetAllLinks()
+        dataSetOrganisationUnitLinkHandler.resetAllLinks()
+        organisationUnitGroupLinkHandler.resetAllLinks()
+    }
+
+    fun setData(user: User, scope: OrganisationUnit.Scope) {
+        this.user = user
+        this.scope = scope
+    }
+
+    override fun beforeCollectionHandled(oCollection: Collection<OrganisationUnit>): Collection<OrganisationUnit> {
+        return oCollection
+    }
+
+    override fun beforeObjectHandled(o: OrganisationUnit): OrganisationUnit {
+        return if (GeometryHelper.isValid(o.geometry())) {
+            o
+        } else {
+            Log.i(
+                this.javaClass.simpleName,
+                "OrganisationUnit " + o.uid() + " has invalid geometryValue",
+            )
+            o.toBuilder().geometry(null).build()
+        }
+    }
+
+    override fun afterObjectHandled(o: OrganisationUnit, action: HandleAction) {
+        addOrganisationUnitProgramLink(o)
+        addOrganisationUnitDataSetLink(o)
+        organisationUnitGroupHandler.handleMany(o.organisationUnitGroups())
+        addOrganisationUnitOrganisationUnitGroupLink(o)
+    }
+
+    override fun afterCollectionHandled(oCollection: Collection<OrganisationUnit>?) {
+        oCollection?.let { addUserOrganisationUnitLinks(it) }
+    }
+
+    private fun addOrganisationUnitProgramLink(organisationUnit: OrganisationUnit) {
+        val orgUnitPrograms = organisationUnit.programs()
+        if (orgUnitPrograms != null) {
+            organisationUnitProgramLinkHandler.handleMany(
+                organisationUnit.uid(),
+                orgUnitPrograms,
+            ) { program ->
+                OrganisationUnitProgramLink.builder()
+                    .organisationUnit(organisationUnit.uid())
+                    .program(program.uid())
+                    .build()
+            }
+        }
+    }
+
+    private fun addOrganisationUnitDataSetLink(organisationUnit: OrganisationUnit) {
+        val orgUnitDataSets = organisationUnit.dataSets()
+        if (orgUnitDataSets != null) {
+            dataSetOrganisationUnitLinkHandler.handleMany(
+                organisationUnit.uid(),
+                orgUnitDataSets,
+            ) { dataSet ->
+                DataSetOrganisationUnitLink.builder()
+                    .dataSet(dataSet.uid())
+                    .organisationUnit(organisationUnit.uid())
+                    .build()
+            }
+        }
+    }
+
+    private fun addOrganisationUnitOrganisationUnitGroupLink(organisationUnit: OrganisationUnit) {
+        organisationUnit.organisationUnitGroups()?.let { orgunitGroups ->
+            organisationUnitGroupLinkHandler.handleMany(
+                organisationUnit.uid(),
+                orgunitGroups,
+            ) { organisationUnitGroup ->
+                OrganisationUnitOrganisationUnitGroupLink.builder()
+                    .organisationUnit(organisationUnit.uid())
+                    .organisationUnitGroup(organisationUnitGroup.uid())
+                    .build()
+            }
+        }
+    }
+
+    fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>) {
+        val builder = UserOrganisationUnitLink.builder()
+            .organisationUnitScope(scope!!.name)
+            .user(user!!.uid())
+
+        // TODO MasterUid set to "" to avoid cleaning link table. Orgunits are paged, so the whole orguntit list is
+        //  not available in the handler. Maybe the store should not be a linkStore.
+        userOrganisationUnitLinkHandler.handleMany(
+            "",
+            organisationUnits,
+        ) { orgUnit: OrganisationUnit ->
+            builder
+                .organisationUnit(orgUnit.uid())
+                .root(UserOrganisationUnitLinkHelper.isRoot(scope!!, user!!, orgUnit))
+                .userAssigned(UserOrganisationUnitLinkHelper.userIsAssigned(scope, user, orgUnit))
+                .build()
+        }
+    }
 }

@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class LatestAppVersionStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<LatestAppVersion>(
     create(TestDatabaseAdapterFactory.get()),
     LatestAppVersionTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): LatestAppVersion {
         return latestAppVersion

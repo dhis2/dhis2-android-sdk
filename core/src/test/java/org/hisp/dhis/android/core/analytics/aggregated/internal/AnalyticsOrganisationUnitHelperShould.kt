@@ -54,7 +54,7 @@ class AnalyticsOrganisationUnitHelperShould {
         userOrganisationUnitStore,
         organisationUnitStore,
         organisationUnitLevelStore,
-        organisationUnitOrganisationUnitGroupLinkStore
+        organisationUnitOrganisationUnitGroupLinkStore,
     )
 
     @Test
@@ -64,11 +64,11 @@ class AnalyticsOrganisationUnitHelperShould {
 
         whenever(
             userOrganisationUnitStore
-                .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE),
         ) doReturn unorderedList
 
         whenever(
-            organisationUnitStore.selectUidsWhere(any(), any())
+            organisationUnitStore.selectUidsWhere(any(), any()),
         ) doReturn orderedList
 
         val relativeUids = helper.getRelativeOrganisationUnitUids(RelativeOrganisationUnit.USER_ORGUNIT)

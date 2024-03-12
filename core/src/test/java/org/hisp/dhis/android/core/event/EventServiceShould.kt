@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
 import org.hisp.dhis.android.core.event.internal.EventDateUtils
 import org.hisp.dhis.android.core.event.internal.EventServiceImpl
@@ -76,8 +75,14 @@ class EventServiceShould {
     private val eventDateUtils: EventDateUtils = mock()
 
     private val eventService: EventService = EventServiceImpl(
-        enrollmentRepository, eventRepository, programRepository, programStageRepository,
-        enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
+        enrollmentRepository,
+        eventRepository,
+        programRepository,
+        programStageRepository,
+        enrollmentService,
+        organisationUnitService,
+        categoryOptionComboService,
+        eventDateUtils,
     )
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")

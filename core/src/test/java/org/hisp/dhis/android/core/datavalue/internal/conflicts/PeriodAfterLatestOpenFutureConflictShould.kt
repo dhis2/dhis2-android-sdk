@@ -46,7 +46,7 @@ internal class PeriodAfterLatestOpenFutureConflictShould {
     @Test
     fun `Should match error messages`() {
         assert(
-            periodAfterLatestOpenFutureConflict.matches(DataValueImportConflictSamples.periodAfterLatestOpenFuture())
+            periodAfterLatestOpenFutureConflict.matches(DataValueImportConflictSamples.periodAfterLatestOpenFuture()),
         )
     }
 }

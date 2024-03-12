@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -38,16 +37,13 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import java.util.*
 
 open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: DatabaseAdapter) {
 
@@ -72,7 +68,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         incidentDate: Date? = null,
         created: Date? = null,
         lastUpdated: Date? = null,
-        status: EnrollmentStatus? = EnrollmentStatus.ACTIVE
+        status: EnrollmentStatus? = EnrollmentStatus.ACTIVE,
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
@@ -90,7 +86,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         eventDate: Date?,
         created: Date? = null,
         lastUpdated: Date? = null,
-        status: EventStatus? = EventStatus.ACTIVE
+        status: EventStatus? = EventStatus.ACTIVE,
     ) {
         val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
@@ -108,7 +104,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         eventDate: Date? = null,
         created: Date? = null,
         lastUpdated: Date? = null,
-        status: EventStatus? = EventStatus.ACTIVE
+        status: EventStatus? = EventStatus.ACTIVE,
     ) {
         createEvent(
             eventUid = eventUid,
@@ -120,7 +116,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             created = created,
             lastUpdated = lastUpdated,
             eventDate = eventDate,
-            status = status
+            status = status,
         )
     }
 
@@ -132,7 +128,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         deleted: Boolean = false,
         eventDate: Date? = null,
         lastUpdated: Date? = null,
-        status: EventStatus? = EventStatus.ACTIVE
+        status: EventStatus? = EventStatus.ACTIVE,
     ) {
         createEvent(
             eventUid = eventUid,
@@ -143,14 +139,14 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             deleted = deleted,
             eventDate = eventDate,
             lastUpdated = lastUpdated,
-            status = status
+            status = status,
         )
     }
 
     fun setProgramIndicatorExpression(
         programIndicatorUid: String,
         programUid: String,
-        expression: String
+        expression: String,
     ) {
         insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE)
     }
@@ -159,7 +155,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         programIndicatorUid: String,
         programUid: String,
         expression: String,
-        aggregationType: AggregationType
+        aggregationType: AggregationType,
     ) {
         val programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
             .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build()
@@ -194,13 +190,13 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
                 relationship.from()!!.toBuilder()
                     .relationshipItemType(RelationshipConstraintType.FROM)
                     .relationship(r)
-                    .build()
+                    .build(),
             )
             it.insert(
                 relationship.to()!!.toBuilder()
                     .relationshipItemType(RelationshipConstraintType.TO)
                     .relationship(r)
-                    .build()
+                    .build(),
             )
         }
     }

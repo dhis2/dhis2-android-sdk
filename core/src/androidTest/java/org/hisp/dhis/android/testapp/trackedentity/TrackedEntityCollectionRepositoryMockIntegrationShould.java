@@ -182,7 +182,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     public void filter_by_program_uids() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances()
-                        .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
+                        .byProgramUids(Lists.newArrayList("IpHINAT79UW"))
                         .blockingGet();
 
         assertThat(trackedEntityInstances.size()).isEqualTo(2);

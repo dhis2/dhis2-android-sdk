@@ -35,6 +35,13 @@ object ProgramConfigurationSettingSamples {
             .uid("aBcDeFg")
             .completionSpinner(true)
             .optionalSearch(true)
+            .disableReferrals(true)
+            .disableCollapsibleSections(true)
+            .itemHeader(
+                ProgramItemHeader.builder()
+                    .programIndicator("programIndicator")
+                    .build(),
+            )
             .build()
     }
 }

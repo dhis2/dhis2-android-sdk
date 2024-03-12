@@ -37,12 +37,12 @@ internal interface AnalyticsEvaluator {
     fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods? = null
+        queryMods: QueryMods? = null,
     ): String?
 
     fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
-        queryMods: QueryMods? = null
+        queryMods: QueryMods? = null,
     ): String?
 }

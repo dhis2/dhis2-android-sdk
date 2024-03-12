@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.category.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
@@ -38,18 +37,19 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("MagicNumber")
-internal class CategoryOptionComboStoreImpl private constructor(
+internal class CategoryOptionComboStoreImpl constructor(
     databaseAdapter: DatabaseAdapter,
-    statementBuilder: SQLStatementBuilderImpl
-) : IdentifiableObjectStoreImpl<CategoryOptionCombo>(
-    databaseAdapter,
-    statementBuilder,
-    BINDER,
-    { cursor: Cursor -> CategoryOptionCombo.create(cursor) }
-),
-    CategoryOptionComboStore {
+) : CategoryOptionComboStore,
+    IdentifiableObjectStoreImpl<CategoryOptionCombo>(
+        databaseAdapter,
+        CategoryOptionComboTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> CategoryOptionCombo.create(cursor) },
+    ) {
 
     override fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
         val whereClause = WhereClauseBuilder()
@@ -66,11 +66,5 @@ internal class CategoryOptionComboStoreImpl private constructor(
                     w.bind(7, getUidOrNull(o.categoryCombo()))
                 }
             }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): CategoryOptionComboStore {
-            val statementBuilder = SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO)
-            return CategoryOptionComboStoreImpl(databaseAdapter, statementBuilder)
-        }
     }
 }

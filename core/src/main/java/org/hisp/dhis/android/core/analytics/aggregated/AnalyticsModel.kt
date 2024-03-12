@@ -70,17 +70,17 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class OrganisationUnitItem(val item: OrganisationUnit) : MetadataItem(item.uid(), item.displayName()!!)
     class OrganisationUnitLevelItem(
         val item: OrganisationUnitLevel,
-        val organisationUnitUids: List<String>
+        val organisationUnitUids: List<String>,
     ) : MetadataItem(item.uid(), item.displayName()!!)
 
     class OrganisationUnitGroupItem(
         val item: OrganisationUnitGroup,
-        val organisationUnitUids: List<String>
+        val organisationUnitUids: List<String>,
     ) : MetadataItem(item.uid(), item.displayName()!!)
 
     class OrganisationUnitRelativeItem(
         val item: RelativeOrganisationUnit,
-        val organisationUnitUids: List<String>
+        val organisationUnitUids: List<String>,
     ) : MetadataItem(item.name, item.name)
 
     class PeriodItem(val item: Period) : MetadataItem(item.periodId()!!, item.periodId()!!)
@@ -126,7 +126,7 @@ sealed class DimensionItem(val dimension: Dimension, val id: String) {
 
     class CategoryItem(
         val uid: String,
-        val categoryOption: String
+        val categoryOption: String,
     ) : DimensionItem(Dimension.Category(uid), categoryOption), AbsoluteDimensionItem
 }
 

@@ -27,22 +27,21 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventDownloader
 import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.event.EventModule
 import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventModuleImpl @Inject internal constructor(
+@Singleton
+internal class EventModuleImpl(
     private val events: EventCollectionRepository,
     private val eventFilters: EventFilterCollectionRepository,
     private val eventDownloader: EventDownloader,
     private val eventService: EventServiceImpl,
-    private val eventQuery: EventQueryCollectionRepository
+    private val eventQuery: EventQueryCollectionRepository,
 ) : EventModule {
     override fun events(): EventCollectionRepository {
         return events

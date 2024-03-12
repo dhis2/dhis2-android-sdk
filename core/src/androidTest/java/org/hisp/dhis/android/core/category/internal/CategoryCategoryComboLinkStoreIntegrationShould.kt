@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.category.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore.create
 import org.hisp.dhis.android.core.data.category.CategoryCategoryComboLinkSamples
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
@@ -40,8 +39,9 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class CategoryCategoryComboLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<CategoryCategoryComboLink>(
-    create(TestDatabaseAdapterFactory.get()),
-    CategoryCategoryComboLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    CategoryCategoryComboLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+    CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {
         return CategoryCategoryComboLinkSamples.getCategoryCategoryComboLink().categoryCombo()!!

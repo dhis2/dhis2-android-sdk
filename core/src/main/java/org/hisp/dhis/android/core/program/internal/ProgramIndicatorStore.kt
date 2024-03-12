@@ -25,47 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
 
-@Suppress("MagicNumber")
-internal object ProgramIndicatorStore {
-    val CHILD_PROJECTION = SingleParentChildProjection(
-        ProgramIndicatorTableInfo.TABLE_INFO, ProgramIndicatorTableInfo.Columns.PROGRAM
-    )
-    private val BINDER: StatementBinder<ProgramIndicator> = object : NameableStatementBinder<ProgramIndicator>() {
-        override fun bindToStatement(
-            o: ProgramIndicator,
-            w: StatementWrapper
-        ) {
-            super.bindToStatement(o, w)
-            w.bind(11, o.displayInForm())
-            w.bind(12, o.expression())
-            w.bind(13, o.dimensionItem())
-            w.bind(14, o.filter())
-            w.bind(15, o.decimals())
-            w.bind(16, o.aggregationType())
-            w.bind(17, getUidOrNull(o.program()))
-            w.bind(18, o.analyticsType())
-        }
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramIndicator> {
-        return objectWithUidStore(
-            databaseAdapter,
-            ProgramIndicatorTableInfo.TABLE_INFO, BINDER
-        ) { cursor: Cursor -> ProgramIndicator.create(cursor) }
-    }
-}
+internal interface ProgramIndicatorStore : IdentifiableObjectStore<ProgramIndicator>

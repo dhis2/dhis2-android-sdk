@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal class E1064Interpreter internal constructor(
     private val interpreterHelper: InterpreterHelper,
-    override val regex: Regex
+    override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1064
     override fun companions(error: JobValidationError): List<String> {
@@ -43,7 +43,7 @@ internal class E1064Interpreter internal constructor(
         return listOf(
             attributeValue,
             interpreterHelper.trackedEntityAttributeStoreDisplayName(attributeUid),
-            attributeUid
+            attributeUid,
         )
     }
 }

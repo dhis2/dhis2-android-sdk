@@ -27,15 +27,16 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.koin.core.annotation.Singleton
 
-internal class IndicatorEvaluator @Inject constructor(
-    private val indicatorEngine: IndicatorEngine
+@Singleton
+internal class IndicatorEvaluator(
+    private val indicatorEngine: IndicatorEngine,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
@@ -49,7 +50,7 @@ internal class IndicatorEvaluator @Inject constructor(
         return indicatorEngine.evaluateIndicator(
             indicator = indicator,
             contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
+            contextMetadata = metadata,
         )
     }
 

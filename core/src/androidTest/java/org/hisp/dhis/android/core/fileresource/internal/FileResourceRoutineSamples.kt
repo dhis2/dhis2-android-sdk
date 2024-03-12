@@ -29,9 +29,6 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
-import java.io.File
-import java.util.Calendar
-import java.util.Date
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -52,6 +49,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import java.io.File
+import java.util.Calendar
+import java.util.Date
 
 object FileResourceRoutineSamples {
     private val generator = UidGeneratorImpl()

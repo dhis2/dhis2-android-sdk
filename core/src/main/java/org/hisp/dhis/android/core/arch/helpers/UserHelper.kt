@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
+import okio.ByteString
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import okio.ByteString
 
 object UserHelper {
     /**

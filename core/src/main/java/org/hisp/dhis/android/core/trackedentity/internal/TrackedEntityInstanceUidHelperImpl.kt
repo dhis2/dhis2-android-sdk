@@ -27,29 +27,27 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackedEntityInstanceUidHelperImpl @Inject constructor(
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>
+@Singleton
+internal class TrackedEntityInstanceUidHelperImpl(
+    private val organisationUnitStore: OrganisationUnitStore,
 ) : TrackedEntityInstanceUidHelper {
 
     override fun hasMissingOrganisationUnitUids(
-        trackedEntityInstances: Collection<TrackedEntityInstance>
+        trackedEntityInstances: Collection<TrackedEntityInstance>,
     ): Boolean {
         return getMissingOrganisationUnitUids(trackedEntityInstances).isNotEmpty()
     }
 
     override fun getMissingOrganisationUnitUids(
-        trackedEntityInstances: Collection<TrackedEntityInstance>
+        trackedEntityInstances: Collection<TrackedEntityInstance>,
     ): Set<String> {
         val uids = trackedEntityInstances.flatMap {
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(it)

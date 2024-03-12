@@ -25,60 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.visualization.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
-@Suppress("MagicNumber")
-internal object VisualizationStore {
-    private val BINDER = object : IdentifiableStatementBinder<Visualization>() {
-        override fun bindToStatement(o: Visualization, w: StatementWrapper) {
-            super.bindToStatement(o, w)
-            w.bind(7, o.description())
-            w.bind(8, o.displayDescription())
-            w.bind(9, o.displayFormName())
-            w.bind(10, o.title())
-            w.bind(11, o.displayTitle())
-            w.bind(12, o.subtitle())
-            w.bind(13, o.displaySubtitle())
-            w.bind(14, o.type())
-            w.bind(15, o.hideTitle())
-            w.bind(16, o.hideSubtitle())
-            w.bind(17, o.hideEmptyColumns())
-            w.bind(18, o.hideEmptyRows())
-            w.bind(19, o.hideEmptyRowItems())
-            w.bind(20, o.hideLegend())
-            w.bind(21, o.showHierarchy())
-            w.bind(22, o.rowTotals())
-            w.bind(23, o.rowSubTotals())
-            w.bind(24, o.colTotals())
-            w.bind(25, o.colSubTotals())
-            w.bind(26, o.showDimensionLabels())
-            w.bind(27, o.percentStackedValues())
-            w.bind(28, o.noSpaceBetweenColumns())
-            w.bind(29, o.skipRounding())
-            w.bind(30, o.displayDensity())
-            w.bind(31, o.digitGroupSeparator())
-            w.bind(32, o.legend()?.showKey())
-            w.bind(33, o.legend()?.style())
-            w.bind(34, UidsHelper.getUidOrNull(o.legend()?.set()))
-            w.bind(35, o.legend()?.strategy())
-            w.bind(36, o.aggregationType())
-        }
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Visualization> {
-        return StoreFactory.objectWithUidStore(
-            databaseAdapter, VisualizationTableInfo.TABLE_INFO, BINDER
-        ) { cursor: Cursor -> Visualization.create(cursor) }
-    }
-}
+internal interface VisualizationStore : IdentifiableObjectStore<Visualization>

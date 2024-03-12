@@ -31,11 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
@@ -186,8 +183,11 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     fun return_data_value_object_repository() {
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
-                "2018", "DiszpKrYNg8", "g9eOBujte1U",
-                "Gmbgme7z9BF", "bRowv6yZOF2"
+                "2018",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2",
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()

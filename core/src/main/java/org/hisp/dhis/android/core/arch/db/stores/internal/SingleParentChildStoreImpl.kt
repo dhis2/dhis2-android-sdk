@@ -38,7 +38,7 @@ internal class SingleParentChildStoreImpl<P : ObjectWithUidInterface, C>(
     private val childProjection: SingleParentChildProjection,
     private val databaseAdapter: DatabaseAdapter,
     private val statementBuilder: SQLStatementBuilder,
-    private val cursorExecutor: CursorExecutor<C>
+    private val cursorExecutor: CursorExecutor<C>,
 ) : SingleParentChildStore<P, C> {
 
     override fun getChildren(p: P): List<C> {

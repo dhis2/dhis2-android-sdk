@@ -46,6 +46,6 @@ internal object CategoryComboFields {
             fh.field<Boolean>(CategoryComboTableInfo.Columns.IS_DEFAULT),
             fh.nestedFieldWithUid(CATEGORIES),
             fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS)
-                .with(CategoryOptionComboFields.allFields)
+                .with(CategoryOptionComboFields.allFields),
         ).build()
 }

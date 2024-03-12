@@ -58,8 +58,11 @@ class AnalyticsTeiSettingHandlerShould {
         whenever(analyticsTeiSetting.uid()) doReturn "tei_setting_uid"
 
         analyticsTeiSettingHandler = AnalyticsTeiSettingHandler(
-            analyticsTeiSettingStore, teiDataElementHandler,
-            teiIndicatorHandler, teiAttributeHandler, whoDataHandler
+            analyticsTeiSettingStore,
+            teiDataElementHandler,
+            teiIndicatorHandler,
+            teiAttributeHandler,
+            whoDataHandler,
         )
     }
 

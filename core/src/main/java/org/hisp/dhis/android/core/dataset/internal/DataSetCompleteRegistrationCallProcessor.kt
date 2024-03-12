@@ -27,16 +27,14 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetCompleteRegistrationCallProcessor @Inject internal constructor(
+@Singleton
+internal class DataSetCompleteRegistrationCallProcessor internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val handler: Handler<DataSetCompleteRegistration>
+    private val handler: DataSetCompleteRegistrationHandler,
 ) {
 
     internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
@@ -55,9 +53,11 @@ internal class DataSetCompleteRegistrationCallProcessor @Inject internal constru
      linked to a particular query before storing the returned values. Only records in "SYNCED" state are removed.
      */
     private fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
-        for (rootOrgUnitUid in query.rootOrgUnitUids()) {
+        for (rootOrgUnitUid in query.rootOrgUnitUids) {
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
-                query.dataSetUids(), query.periodIds(), rootOrgUnitUid
+                query.dataSetUids,
+                query.periodIds,
+                rootOrgUnitUid,
             )
         }
     }

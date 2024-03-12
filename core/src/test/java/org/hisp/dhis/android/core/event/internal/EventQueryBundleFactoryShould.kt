@@ -35,11 +35,9 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.settings.*
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Assert.fail
 import org.junit.Before
@@ -84,13 +82,14 @@ class EventQueryBundleFactoryShould {
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
-            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
+            userOrganisationUnitLinkStore,
+            organisationUnitProgramLinkLinkStore,
         )
         bundleFactory = EventQueryBundleFactory(
             programStore,
             programSettingsObjectRepository,
             lastUpdatedManager,
-            commonHelper
+            commonHelper,
         )
     }
 
@@ -171,8 +170,8 @@ class EventQueryBundleFactoryShould {
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
             listOf(
                 OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
-                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build()
-            )
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build(),
+            ),
         )
 
         val bundles = bundleFactory.getQueries(params)

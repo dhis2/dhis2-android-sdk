@@ -27,16 +27,24 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("LongParameterList", "TooManyFunctions")
-internal class TrackedEntityModuleImpl @Inject constructor(
+internal class TrackedEntityModuleImpl(
     private val trackedEntityTypes: TrackedEntityTypeCollectionRepository,
     private val trackedEntityInstances: TrackedEntityInstanceCollectionRepository,
     private val trackedEntityDataValues: TrackedEntityDataValueCollectionRepository,
@@ -47,8 +55,9 @@ internal class TrackedEntityModuleImpl @Inject constructor(
     private val reservedValueManager: TrackedEntityAttributeReservedValueManager,
     private val trackedEntityInstanceDownloader: TrackedEntityInstanceDownloader,
     private val trackedEntityInstanceQuery: TrackedEntityInstanceQueryCollectionRepository,
+    private val trackedEntitySearch: TrackedEntitySearchCollectionRepository,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val ownershipManager: OwnershipManager
+    private val ownershipManager: OwnershipManager,
 ) : TrackedEntityModule {
 
     override fun trackedEntityTypes(): TrackedEntityTypeCollectionRepository {
@@ -81,6 +90,10 @@ internal class TrackedEntityModuleImpl @Inject constructor(
 
     override fun trackedEntityInstanceQuery(): TrackedEntityInstanceQueryCollectionRepository {
         return trackedEntityInstanceQuery
+    }
+
+    override fun trackedEntitySearch(): TrackedEntitySearchCollectionRepository {
+        return trackedEntitySearch
     }
 
     override fun reservedValueManager(): TrackedEntityAttributeReservedValueManager {

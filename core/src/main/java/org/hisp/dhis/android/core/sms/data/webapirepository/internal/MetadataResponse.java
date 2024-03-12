@@ -72,7 +72,7 @@ public abstract class MetadataResponse {
         @JsonPOJOBuilder(withPrefix = "")
         public static abstract class Builder {
 
-            public abstract MetadataSystemInfo.Builder date(Date date);
+            public abstract Builder date(Date date);
 
             public abstract MetadataSystemInfo build();
         }
@@ -87,7 +87,7 @@ public abstract class MetadataResponse {
         @JsonPOJOBuilder(withPrefix = "")
         public static abstract class Builder {
 
-            public abstract MetadataId.Builder id(String id);
+            public abstract Builder id(String id);
 
             public abstract MetadataId build();
         }
@@ -97,21 +97,21 @@ public abstract class MetadataResponse {
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
 
-        public abstract MetadataResponse.Builder system(MetadataSystemInfo systemInfo);
+        public abstract Builder system(MetadataSystemInfo systemInfo);
 
-        public abstract MetadataResponse.Builder categoryOptionCombos(List<MetadataId> ids);
+        public abstract Builder categoryOptionCombos(List<MetadataId> ids);
 
-        public abstract MetadataResponse.Builder organisationUnits(List<MetadataId> ids);
+        public abstract Builder organisationUnits(List<MetadataId> ids);
 
-        public abstract MetadataResponse.Builder dataElements(List<MetadataId> ids);
+        public abstract Builder dataElements(List<MetadataId> ids);
 
-        public abstract MetadataResponse.Builder users(List<MetadataId> ids);
+        public abstract Builder users(List<MetadataId> ids);
 
-        public abstract MetadataResponse.Builder trackedEntityTypes(List<MetadataId> ids);
+        public abstract Builder trackedEntityTypes(List<MetadataId> ids);
 
-        public abstract MetadataResponse.Builder trackedEntityAttributes(List<MetadataId> ids);
+        public abstract Builder trackedEntityAttributes(List<MetadataId> ids);
 
-        public abstract MetadataResponse.Builder programs(List<MetadataId> ids);
+        public abstract Builder programs(List<MetadataId> ids);
 
         public abstract MetadataResponse build();
     }

@@ -36,7 +36,7 @@ internal object EventQueryRepositoryScopeHelper {
     @Suppress("ComplexMethod")
     fun addEventFilter(
         scope: EventQueryRepositoryScope,
-        filter: EventFilter
+        filter: EventFilter,
     ): EventQueryRepositoryScope {
         val builder = scope.toBuilder()
 

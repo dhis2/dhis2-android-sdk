@@ -47,8 +47,8 @@ object MapLayerImageryProviderSamples {
                         .bbox(listOf(90.0, 180.0))
                         .zoomMax(7)
                         .zoomMin(0)
-                        .build()
-                )
+                        .build(),
+                ),
             )
             .build()
     }

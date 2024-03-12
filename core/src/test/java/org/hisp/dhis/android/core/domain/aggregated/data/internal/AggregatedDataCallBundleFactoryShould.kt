@@ -81,8 +81,12 @@ class AggregatedDataCallBundleFactoryShould {
         whenever(periodManager.getPeriodsInRange(any(), any(), any())).doReturn(periods)
 
         bundleFactory = AggregatedDataCallBundleFactory(
-            dataSetRepository, organisationUnitRepository,
-            dataSetSettingsObjectRepository, periodManager, aggregatedDataSyncStore, lastUpdatedCalculator
+            dataSetRepository,
+            organisationUnitRepository,
+            dataSetSettingsObjectRepository,
+            periodManager,
+            aggregatedDataSyncStore,
+            lastUpdatedCalculator,
         )
     }
 
@@ -95,7 +99,10 @@ class AggregatedDataCallBundleFactoryShould {
 
         val bundles = bundleFactory.getBundlesInternal(
             listOf(dataSet1, dataSet2),
-            dataSetSettings, rootOrgUnits, allOrgUnits, emptyMap()
+            dataSetSettings,
+            rootOrgUnits,
+            allOrgUnits,
+            emptyMap(),
         )
 
         assertThat(bundles.size).isEqualTo(1)
@@ -111,7 +118,10 @@ class AggregatedDataCallBundleFactoryShould {
 
         val bundles = bundleFactory.getBundlesInternal(
             listOf(dataSet1, dataSet2),
-            dataSetSettings, rootOrgUnits, allOrgUnits, emptyMap()
+            dataSetSettings,
+            rootOrgUnits,
+            allOrgUnits,
+            emptyMap(),
         )
 
         assertThat(bundles.size).isEqualTo(2)

@@ -57,10 +57,10 @@ class EventFilterShould : BaseObjectShould("event/event_filter.json"), ObjectSho
         assertThat(eventFilter.eventQueryCriteria()!!.ouMode()).isEqualTo(OrganisationUnitMode.ACCESSIBLE)
 
         assertThat(
-            eventFilter.eventQueryCriteria()!!.eventDate()!!.startDate()
+            eventFilter.eventQueryCriteria()!!.eventDate()!!.startDate(),
         ).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2014-05-01"))
         assertThat(
-            eventFilter.eventQueryCriteria()!!.eventDate()!!.endDate()
+            eventFilter.eventQueryCriteria()!!.eventDate()!!.endDate(),
         ).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2014-05-01"))
         assertThat(eventFilter.eventQueryCriteria()!!.eventDate()!!.type()).isEqualTo(DatePeriodType.ABSOLUTE)
 
@@ -80,8 +80,8 @@ class EventFilterShould : BaseObjectShould("event/event_filter.json"), ObjectSho
                 "status",
                 "assignedUser",
                 "qrur9Dvnyt5",
-                "oZg33kd9taw"
-            )
+                "oZg33kd9taw",
+            ),
         )
         assertThat(eventFilter.eventQueryCriteria()!!.events()).isEqualTo(listOf("event1Uid", "event2Uid"))
 

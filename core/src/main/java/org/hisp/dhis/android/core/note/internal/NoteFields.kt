@@ -43,6 +43,6 @@ internal object NoteFields {
             fh.field<String>(UID),
             fh.field<String>(NoteTableInfo.Columns.VALUE),
             fh.field<String>(NoteTableInfo.Columns.STORED_BY),
-            fh.field<String>(NoteTableInfo.Columns.STORED_DATE)
+            fh.field<String>(NoteTableInfo.Columns.STORED_DATE),
         ).build()
 }

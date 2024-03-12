@@ -53,7 +53,7 @@ internal sealed class CommonExpressionVisitorScope(
     val indicatorContext: IndicatorContext? = null,
     val programIndicatorContext: ProgramIndicatorContext? = null,
     val programIndicatorSQLContext: ProgramIndicatorSQLContext? = null,
-    val programIndicatorExecutor: ProgramIndicatorExecutor? = null
+    val programIndicatorExecutor: ProgramIndicatorExecutor? = null,
 ) {
     class Expression(
         constantMap: Map<String, Constant>,
@@ -70,7 +70,7 @@ internal sealed class CommonExpressionVisitorScope(
         dataElementStore = dataElementStore,
         categoryOptionComboStore = categoryOptionComboStore,
         organisationUnitGroupStore = organisationUnitGroupStore,
-        programStageStore = programStageStore
+        programStageStore = programStageStore,
     )
 
     class ProgramIndicator(
@@ -81,7 +81,7 @@ internal sealed class CommonExpressionVisitorScope(
         programIndicatorExecutor: ProgramIndicatorExecutor,
         dataElementStore: IdentifiableObjectStore<DataElement>,
         trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-        programStageStore: IdentifiableObjectStore<ProgramStage>
+        programStageStore: IdentifiableObjectStore<ProgramStage>,
     ) : CommonExpressionVisitorScope(
         constantMap,
         itemMap,
@@ -90,7 +90,7 @@ internal sealed class CommonExpressionVisitorScope(
         programIndicatorExecutor = programIndicatorExecutor,
         dataElementStore = dataElementStore,
         trackedAttributeStore = trackedEntityAttributeStore,
-        programStageStore = programStageStore
+        programStageStore = programStageStore,
     )
 
     class ProgramSQLIndicator(
@@ -99,25 +99,25 @@ internal sealed class CommonExpressionVisitorScope(
         itemMethod: ExpressionItemMethod,
         programIndicatorSQLContext: ProgramIndicatorSQLContext,
         dataElementStore: IdentifiableObjectStore<DataElement>,
-        trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>
+        trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     ) : CommonExpressionVisitorScope(
         constantMap,
         itemMap,
         itemMethod,
         programIndicatorSQLContext = programIndicatorSQLContext,
         dataElementStore = dataElementStore,
-        trackedAttributeStore = trackedEntityAttributeStore
+        trackedAttributeStore = trackedEntityAttributeStore,
     )
 
     class AnalyticsIndicator(
         constantMap: Map<String, Constant>,
         itemMap: Map<Int, ExpressionItem>,
         itemMethod: ExpressionItemMethod,
-        indicatorContext: IndicatorContext
+        indicatorContext: IndicatorContext,
     ) : CommonExpressionVisitorScope(
         constantMap,
         itemMap,
         itemMethod,
-        indicatorContext = indicatorContext
+        indicatorContext = indicatorContext,
     )
 }

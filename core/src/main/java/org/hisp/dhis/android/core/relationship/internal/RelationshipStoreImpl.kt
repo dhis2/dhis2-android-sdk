@@ -28,31 +28,34 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl
-import org.hisp.dhis.android.core.relationship.*
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
+import org.koin.core.annotation.Singleton
 
-internal class RelationshipStoreImpl private constructor(
+@Singleton
+internal class RelationshipStoreImpl(
     databaseAdapter: DatabaseAdapter,
-    statementBuilder: SQLStatementBuilderImpl
-) : IdentifiableDeletableDataObjectStoreImpl<Relationship>(
-    databaseAdapter,
-    statementBuilder,
-    BINDER,
-    { cursor: Cursor -> Relationship.create(cursor) }
-),
-    RelationshipStore {
+) : RelationshipStore,
+    IdentifiableDeletableDataObjectStoreImpl<Relationship>(
+        databaseAdapter,
+        RelationshipTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> Relationship.create(cursor) },
+    ) {
 
     override fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 "RelationshipItem." + relationshipItem.elementType(),
-                relationshipItem.elementUid()
+                relationshipItem.elementUid(),
             )
             .build()
 
@@ -68,7 +71,7 @@ internal class RelationshipStoreImpl private constructor(
 
     override fun getRelationshipsByItem(
         relationshipItem: RelationshipItem,
-        type: RelationshipConstraintType?
+        type: RelationshipConstraintType?,
     ): List<Relationship> {
         val relationshipTable = RelationshipTableInfo.TABLE_INFO.name()
         val itemTable = RelationshipItemTableInfo.TABLE_INFO.name()
@@ -76,7 +79,7 @@ internal class RelationshipStoreImpl private constructor(
         val builder = WhereClauseBuilder()
             .appendKeyStringValue(
                 "$itemTable.${relationshipItem.elementType()}",
-                relationshipItem.elementUid()
+                relationshipItem.elementUid(),
             )
 
         val whereClause =
@@ -85,7 +88,7 @@ internal class RelationshipStoreImpl private constructor(
             } else {
                 builder.appendKeyStringValue(
                     "$itemTable.${RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE}",
-                    type.name
+                    type.name,
                 ).build()
             }
 
@@ -101,7 +104,7 @@ internal class RelationshipStoreImpl private constructor(
     }
 
     companion object {
-        private val BINDER = StatementBinder { o: Relationship, w: StatementWrapper ->
+        private val BINDER = StatementBinder<Relationship> { o: Relationship, w: StatementWrapper ->
             w.bind(1, o.uid())
             w.bind(2, o.name())
             w.bind(3, o.created())
@@ -109,12 +112,6 @@ internal class RelationshipStoreImpl private constructor(
             w.bind(5, o.relationshipType())
             w.bind(6, o.syncState())
             w.bind(7, o.deleted())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): RelationshipStore {
-            val statementBuilder = SQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO)
-            return RelationshipStoreImpl(databaseAdapter, statementBuilder)
         }
     }
 }

@@ -52,5 +52,5 @@ enum class AggregationType(val sql: String?) {
     CUSTOM(null),
 
     @JsonEnumDefaultValue
-    DEFAULT(null)
+    DEFAULT(null),
 }

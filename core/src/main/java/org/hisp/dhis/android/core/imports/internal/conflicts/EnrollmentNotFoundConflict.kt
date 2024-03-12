@@ -47,7 +47,7 @@ internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return getEnrollment(conflict)?.let { enrollmentUid ->
             description(enrollmentUid)

@@ -31,7 +31,11 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
@@ -41,7 +45,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 internal abstract class IdentifiableDataHandlerImpl<O>(
     val store: IdentifiableDataObjectStore<O>,
     private val relationshipVersionManager: RelationshipDHISVersionManager,
-    private val relationshipHandler: RelationshipHandler
+    private val relationshipHandler: RelationshipHandler,
 ) : IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
 
     @JvmSuppressWildcards
@@ -49,7 +53,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O?,
         transformer: (O) -> O,
         oTransformedCollection: MutableList<O>,
-        params: IdentifiableDataHandlerParams
+        params: IdentifiableDataHandlerParams,
     ) {
         if (o == null) {
             return
@@ -64,7 +68,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         transformer: (O) -> O,
         oTransformedCollection: MutableList<O>,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (o == null) {
             return
@@ -85,7 +89,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O,
         transformer: (O) -> O,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ): O {
         val o2 = beforeObjectHandled(o, params)
         val o3 = transformer(o2)
@@ -98,7 +102,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     override fun handleMany(
         oCollection: Collection<O>?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         if (oCollection == null) {
             return
@@ -132,17 +136,20 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     protected fun handleRelationships(
         relationships: Collection<Relationship>,
         parent: ObjectWithUidInterface,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     ) {
         val ownedRelationships = relationshipVersionManager.getOwnedRelationships(relationships, parent.uid())
 
         if (relatives != null) {
             relationshipVersionManager.saveRelativesIfNotExist(
-                ownedRelationships, parent.uid(), relatives, relationshipHandler
+                ownedRelationships,
+                parent.uid(),
+                relatives,
+                relationshipHandler,
             )
         }
         relationshipHandler.handleMany(
-            ownedRelationships
+            ownedRelationships,
         ) { relationship: Relationship ->
             relationship.toBuilder()
                 .syncState(State.SYNCED)
@@ -180,31 +187,31 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         o: O,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives?
+        relatives: RelationshipItemRelatives?,
     )
 
     protected fun beforeCollectionHandled(
         oCollection: Collection<O>,
-        params: IdentifiableDataHandlerParams
+        params: IdentifiableDataHandlerParams,
     ): Collection<O> {
         return when {
             params.overwrite -> {
                 oCollection
             }
             params.asRelationship -> {
-                removeAllowedExistingObjects(
+                filterExistingObjectsByState(
                     oCollection,
-                    listOf(State.RELATIONSHIP.name)
+                    listOf(State.RELATIONSHIP.name),
                 )
             }
             else -> {
-                removeAllowedExistingObjects(
+                filterExistingObjectsByState(
                     oCollection,
                     listOf(
                         State.SYNCED.name,
                         State.RELATIONSHIP.name,
-                        State.SYNCED_VIA_SMS.name
-                    )
+                        State.SYNCED_VIA_SMS.name,
+                    ),
                 )
             }
         }
@@ -216,18 +223,15 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
          */
     }
 
-    private fun removeAllowedExistingObjects(os: Collection<O>, allowedStates: List<String>): Collection<O> {
+    private fun filterExistingObjectsByState(os: Collection<O>, allowedStates: List<String>): Collection<O> {
         val storedObjectUids = storedObjectUids(os)
         val allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates)
-        val objectsToStore: MutableList<O> = ArrayList()
-        for (o in os) {
-            if (!storedObjectUids.contains(o.uid()) || allowedObjectUids.contains(o.uid()) ||
+
+        return os.filter { o ->
+            !storedObjectUids.contains(o.uid()) ||
+                allowedObjectUids.contains(o.uid()) ||
                 CollectionsHelper.isDeleted(o)
-            ) {
-                objectsToStore.add(o)
-            }
         }
-        return objectsToStore
     }
 
     private fun storedObjectUids(os: Collection<O>): List<String> {

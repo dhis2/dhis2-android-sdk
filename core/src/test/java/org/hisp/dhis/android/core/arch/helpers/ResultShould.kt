@@ -64,7 +64,7 @@ class ResultShould {
             },
             onFailure = {
                 fail()
-            }
+            },
         )
     }
 

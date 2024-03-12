@@ -51,12 +51,10 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 

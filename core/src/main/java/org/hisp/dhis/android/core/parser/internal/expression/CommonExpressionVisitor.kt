@@ -31,6 +31,7 @@ import org.antlr.v4.runtime.ParserRuleContext
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorContext
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
@@ -46,7 +47,7 @@ import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class CommonExpressionVisitor constructor(
-    val scope: CommonExpressionVisitorScope
+    val scope: CommonExpressionVisitorScope,
 ) : AntlrExpressionVisitor() {
 
     /**
@@ -118,7 +119,7 @@ internal class CommonExpressionVisitor constructor(
         if (ctx.it != null) {
             val item = itemMap[ctx.it.type]
                 ?: throw ParserExceptionWithoutContext(
-                    "Item " + ctx.it.text + " not supported for this type of expression"
+                    "Item " + ctx.it.text + " not supported for this type of expression",
                 )
             return itemMethod.apply(item, ctx, this)
         }
@@ -173,11 +174,15 @@ internal class CommonExpressionVisitor constructor(
      * @param value the (possibly null) value
      * @return the value we should return.
      */
-    fun handleNulls(value: Any?): Any? {
+    fun handleNulls(value: Any?, valueType: ValueType?): Any? {
         if (state.replaceNulls) {
             state.itemsFound = state.itemsFound + 1
             if (value == null) {
-                return ParserUtils.DOUBLE_VALUE_IF_NULL
+                return if ((valueType ?: ValueType.NUMBER).isNumeric) {
+                    ParserUtils.DOUBLE_VALUE_IF_NULL
+                } else {
+                    ParserUtils.TEXT_VALUE_IF_NULL
+                }
             } else {
                 state.itemValuesFound = state.itemValuesFound + 1
                 if (isZeroOrPositive(value.toString())) {

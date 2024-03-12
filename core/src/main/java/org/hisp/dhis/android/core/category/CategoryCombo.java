@@ -46,7 +46,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_CategoryCombo.Builder.class)
 public abstract class CategoryCombo extends BaseIdentifiableObject implements CoreObject {
 
     public static final String DEFAULT_UID = "p0KPaWEg3cf";
@@ -72,7 +72,7 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Co
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_CategoryCombo.Builder();
+        return new $$AutoValue_CategoryCombo.Builder();
     }
 
     @AutoValue.Builder

@@ -49,7 +49,7 @@ object MapLayerImageryProviderTableInfo {
                 listOf(
                     MAP_LAYER,
                     ATTRIBUTION,
-                    COVERAGE_AREAS
+                    COVERAGE_AREAS,
                 )
         }
 

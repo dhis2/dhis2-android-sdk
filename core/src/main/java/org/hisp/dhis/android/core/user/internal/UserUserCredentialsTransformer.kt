@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserUserCredentialsTransformer : TwoWayTransformer<User, UserCredentials> {
     override fun transform(o: User): UserCredentials {
         return UserCredentials.builder()

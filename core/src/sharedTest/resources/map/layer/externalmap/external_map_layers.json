@@ -50,7 +50,6 @@
       "lastUpdated": "2016-10-05T16:49:13.324",
       "mapService": "WMS",
       "url": "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
-      "attribution": "<a href=\"http://stamen.com\">Stamen Design</a>, <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
       "imageFormat": "PNG",
       "mapLayerPosition": "BASEMAP",
       "displayName": "Terrain basemap",

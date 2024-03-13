@@ -67,12 +67,14 @@ internal class ExternalMapLayerCallFactory(
                     .external(true)
                     .imageUrl(externalMapLayer.url)
                     .imageryProviders(
-                        listOf(
-                            MapLayerImageryProvider.builder()
-                                .mapLayer(externalMapLayer.id)
-                                .attribution(externalMapLayer.attribution)
-                                .build(),
-                        ),
+                        externalMapLayer.attribution?.let { attribution ->
+                            listOf(
+                                MapLayerImageryProvider.builder()
+                                    .mapLayer(externalMapLayer.id)
+                                    .attribution(attribution)
+                                    .build(),
+                            )
+                        } ?: emptyList(),
                     )
                     .build()
             }

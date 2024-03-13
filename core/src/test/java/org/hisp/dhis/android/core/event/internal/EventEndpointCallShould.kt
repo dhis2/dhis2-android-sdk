@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.junit.AfterClass

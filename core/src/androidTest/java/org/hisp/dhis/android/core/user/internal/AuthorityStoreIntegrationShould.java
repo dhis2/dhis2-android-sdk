@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class AuthorityStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Authority> {
 
     public AuthorityStoreIntegrationShould() {
-        super(AuthorityStore.create(TestDatabaseAdapterFactory.get()), AuthorityTableInfo.TABLE_INFO,
+        super(new AuthorityStoreImpl(TestDatabaseAdapterFactory.get()), AuthorityTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

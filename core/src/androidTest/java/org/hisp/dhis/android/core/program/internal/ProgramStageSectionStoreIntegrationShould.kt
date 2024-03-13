@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class ProgramStageSectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection>(
-    create(TestDatabaseAdapterFactory.get()),
+    ProgramStageSectionStoreImpl(TestDatabaseAdapterFactory.get()),
     ProgramStageSectionTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
 ) {

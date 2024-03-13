@@ -41,7 +41,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
         val summaries = d2.dataSetModule().dataSetInstanceSummaries()
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
         summaries
             .filter { it.dataSetUid() == "lyLU2wR22tC" }
             .forEach {
@@ -56,7 +56,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
             .byDataSetUid().eq("lyLU2wR22tC")
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
         summaries
             .filter { it.dataSetUid() == "lyLU2wR22tC" }
             .forEach {
@@ -71,7 +71,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
             .byPeriod().eq("2018")
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
         summaries
             .filter { it.dataSetUid() == "lyLU2wR22tC" }
             .forEach {
@@ -86,7 +86,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
             .byPeriodType().eq(PeriodType.Yearly)
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
     }
 
     @Test
@@ -95,7 +95,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
             .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
     }
 
     @Test
@@ -104,7 +104,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
             .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
     }
 
     @Test
@@ -113,7 +113,7 @@ class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould :
             .byOrganisationUnitUid().eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(summaries.size).isEqualTo(2)
+        assertThat(summaries.size).isEqualTo(3)
         summaries
             .filter { it.dataSetUid() == "lyLU2wR22tC" }
             .forEach {

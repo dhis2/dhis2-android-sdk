@@ -41,7 +41,7 @@ public class CategoryOptionComboCategoryOptionLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<CategoryOptionComboCategoryOptionLink> {
 
     public CategoryOptionComboCategoryOptionLinkStoreIntegrationShould() {
-        super(CategoryOptionComboCategoryOptionLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new CategoryOptionComboCategoryOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }

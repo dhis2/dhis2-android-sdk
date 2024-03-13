@@ -34,8 +34,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import java.lang.Exception
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingSamples
@@ -43,7 +41,7 @@ import org.junit.Before
 import org.junit.Test
 
 class ProgramConfigurationSettingHandlerShould {
-    private val programConfigurationSettingStore: ObjectWithoutUidStore<ProgramConfigurationSetting> = mock()
+    private val programConfigurationSettingStore: ProgramConfigurationSettingStore = mock()
 
     private val programConfigurationSetting = ProgramConfigurationSettingSamples.get()
     private lateinit var programConfigurationSettingHandler: ProgramConfigurationSettingHandler

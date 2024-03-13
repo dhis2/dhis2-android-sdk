@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -63,7 +64,7 @@ class SystemInfoCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     private fun isSystemInfoInDb(si: SystemInfo) {
-        val siDb = systemInfoRepository.blockingGet()
+        val siDb = systemInfoRepository.blockingGet()!!
         assertThat(si.toBuilder().id(null).build()).isEqualTo(siDb.toBuilder().id(null).build())
     }
 

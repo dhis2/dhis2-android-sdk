@@ -33,6 +33,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.junit.Before
 
 internal open class BaseConflictShould {

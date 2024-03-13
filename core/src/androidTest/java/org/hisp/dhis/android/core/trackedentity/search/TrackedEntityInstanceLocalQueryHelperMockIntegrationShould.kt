@@ -37,12 +37,13 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
 
     private val calendarProvider = CalendarProviderFactory.calendarProvider
     private val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -50,7 +50,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
     @Test
     public void update_organisation_unit() throws D2Error {
         String orgUnitUid = "new_org_unit";
-        OrganisationUnitStore.create(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build());
+        new OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build());
 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
@@ -58,7 +58,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         assertThat(repository.blockingGet().organisationUnit()).isEqualTo(orgUnitUid);
 
         repository.blockingDelete();
-        OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
+        new OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid);
     }
 
     @Test(expected = D2Error.class)

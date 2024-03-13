@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.data.dataset
 
+import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
+
 internal object SectionIndicatorLinkSamples {
     fun getSectionIndicatorLink(): SectionIndicatorLink {
         return SectionIndicatorLink.builder()

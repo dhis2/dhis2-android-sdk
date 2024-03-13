@@ -108,7 +108,7 @@ class CategoryOptionComboCollectionRepositoryMockIntegrationShould :
         val categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
             .withCategoryOptions()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryOptionCombo.categoryOptions()!![0].name()).isEqualTo("At PHU")
     }
@@ -125,7 +125,7 @@ class CategoryOptionComboCollectionRepositoryMockIntegrationShould :
         val categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
             .withCategoryOptions()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryOptionCombo.categoryOptions()!![0].name()).isEqualTo("At PHU")
     }
@@ -135,7 +135,7 @@ class CategoryOptionComboCollectionRepositoryMockIntegrationShould :
         val categoryOption = d2.categoryModule().categoryOptions()
             .withOrganisationUnits()
             .uid("as6ygGvUGNg")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryOption.organisationUnits()!!.size).isEqualTo(1)
         assertThat(categoryOption.organisationUnits()!![0].uid()).isEqualTo("DiszpKrYNg8")
@@ -146,7 +146,7 @@ class CategoryOptionComboCollectionRepositoryMockIntegrationShould :
         val categoryOption = d2.categoryModule().categoryOptions()
             .withOrganisationUnits()
             .uid("TXGfLxZlInA")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryOption.organisationUnits()).isNull()
     }
@@ -156,7 +156,7 @@ class CategoryOptionComboCollectionRepositoryMockIntegrationShould :
         val categoryOption = d2.categoryModule().categoryOptions()
             .withOrganisationUnits()
             .uid("apsOixVZlf1")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(categoryOption.organisationUnits()).isEmpty()
     }

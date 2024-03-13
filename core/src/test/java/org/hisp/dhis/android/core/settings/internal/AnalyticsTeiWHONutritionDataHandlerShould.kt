@@ -28,20 +28,17 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.junit.Before
 import org.junit.Test
 
 class AnalyticsTeiWHONutritionDataHandlerShould {
 
-    private val store: LinkStore<AnalyticsTeiWHONutritionData> = mock()
+    private val store: AnalyticsTeiWHONutritionDataStore = mock()
 
-    private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> = mock()
-    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> = mock()
+    private val teiDataElementHandler: AnalyticsTeiDataElementHandler = mock()
+    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler = mock()
 
     private val whoData: AnalyticsTeiWHONutritionData = mock()
 

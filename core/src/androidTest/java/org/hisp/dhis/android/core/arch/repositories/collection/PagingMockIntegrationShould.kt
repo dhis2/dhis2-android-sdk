@@ -32,9 +32,9 @@ import androidx.paging.PagedList
 import com.jraska.livedata.TestObserver
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Before
 import org.junit.Rule
@@ -46,7 +46,7 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
 
-    private lateinit var store: IdentifiableObjectStore<CategoryOption>
+    private lateinit var store: CategoryOptionStore
     private lateinit var allValues: List<CategoryOption>
 
     private val empty = RepositoryScope.empty()

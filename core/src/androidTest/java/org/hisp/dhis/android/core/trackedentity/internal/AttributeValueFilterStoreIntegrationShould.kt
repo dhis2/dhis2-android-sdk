@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class AttributeValueFilterStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AttributeValueFilter>(
-    create(TestDatabaseAdapterFactory.get()),
+    AttributeValueFilterStoreImpl(TestDatabaseAdapterFactory.get()),
     ItemFilterTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
 ) {

@@ -28,13 +28,17 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,21 +49,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class ProgramSectionHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramSection> programSectionStore;
+    private ProgramSectionStore programSectionStore;
 
     @Mock
-    private OrderedLinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
-            programSectionAttributeLinkHandler;
+    private ProgramSectionAttributeLinkHandler programSectionAttributeLinkHandler;
 
     @Mock
     private ProgramSection programSection;
@@ -79,6 +76,8 @@ public class ProgramSectionHandlerShould {
                 TrackedEntityAttribute.builder().uid("attribute_uid").build());
         when(programSection.attributes()).thenReturn(attributes);
         when(programSection.uid()).thenReturn(SECTION_UID);
+
+        when(programSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -91,6 +90,6 @@ public class ProgramSectionHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
-                programSectionStore,null);
+                programSectionStore, programSectionAttributeLinkHandler);
     }
 }

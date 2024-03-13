@@ -41,7 +41,7 @@ public class DataSetSettingStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<DataSetSetting> {
 
     public DataSetSettingStoreIntegrationShould() {
-        super(DataSetSettingStore.create(TestDatabaseAdapterFactory.get()), DataSetSettingTableInfo.TABLE_INFO,
+        super(new DataSetSettingStoreImpl(TestDatabaseAdapterFactory.get()), DataSetSettingTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

@@ -44,6 +44,9 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.junit.Assert
 import org.junit.Before
 import java.util.*

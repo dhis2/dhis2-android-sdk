@@ -25,35 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-package org.hisp.dhis.android.core.legendset.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSamples;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+@RunWith(D2JunitRunner::class)
+class AggregatedDataCallEnqueableMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
-@RunWith(D2JunitRunner.class)
-public class LegendStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Legend> {
+    @Test
+    fun should_rollback_full_bundles_on_error() {
+        val monthlyDataValues = "datavalue/data_values_monthly.json"
+        val weeklyDataValues = "datavalue/data_values_weekly.json"
+        val weeklyCompleteRegistrations = "dataset/data_set_complete_registrations.json"
 
-    public LegendStoreIntegrationShould() {
-        super(new LegendStoreImpl(TestDatabaseAdapterFactory.get()),
-                LegendTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
+        dhis2MockServer.enqueueSystemInfoResponse()
 
-    @Override
-    protected Legend buildObject() {
-        return LegendSamples.getLegend();
-    }
+        dhis2MockServer.enqueueMockResponse(monthlyDataValues)
+        dhis2MockServer.enqueueMockResponse(403)
 
-    @Override
-    protected Legend buildObjectToUpdate() {
-        return LegendSamples.getLegend().toBuilder()
-                .legendSet(ObjectWithUid.create("new_legend_set_uid"))
-                .build();
+        dhis2MockServer.enqueueMockResponse(weeklyDataValues)
+        dhis2MockServer.enqueueMockResponse(weeklyCompleteRegistrations)
+
+        d2.aggregatedModule().data().blockingDownload()
+
+        val monthlyValues = d2.dataSetModule().dataSetInstances()
+            .byPeriodType().eq(PeriodType.Monthly)
+            .blockingGet()
+        assertThat(monthlyValues).isEmpty()
+
+        val weeklyValues = d2.dataSetModule().dataSetInstances()
+            .byPeriodType().eq(PeriodType.Weekly)
+            .blockingGet()
+        assertThat(weeklyValues).isNotEmpty()
     }
 }

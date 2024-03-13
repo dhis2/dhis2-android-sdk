@@ -53,7 +53,7 @@ public class CreateEventUtils {
                                        @NonNull String orgUnit,
                                        @Nullable String enrollmentUid) {
         ContentValues event = new ContentValues();
-        event.put(EventTableInfo.Columns.UID, uid);
+        event.put(Columns.UID, uid);
 
         if (enrollmentUid == null) {
             event.putNull(Columns.ENROLLMENT);

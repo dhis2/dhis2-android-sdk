@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
     @Test
     public void update_organisation_unit() throws D2Error {
         String orgUnitUid = "new_org_unit";
-        OrganisationUnitStore.create(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build());
+        new OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build());
 
         EnrollmentObjectRepository repository = objectRepository();
 
@@ -61,7 +61,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         assertThat(repository.blockingGet().organisationUnit()).isEqualTo(orgUnitUid);
 
         repository.blockingDelete();
-        OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
+        new OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid);
     }
 
     @Test(expected = D2Error.class)

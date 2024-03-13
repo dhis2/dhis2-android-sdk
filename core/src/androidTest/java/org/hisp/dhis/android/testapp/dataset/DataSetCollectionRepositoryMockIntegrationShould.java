@@ -48,7 +48,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void find_all() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(2);
+        assertThat(dataSets.size()).isEqualTo(3);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(1);
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().biggerThan(21)
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(1);
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().biggerThan(22)
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(0);
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -208,7 +208,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(2);
+        assertThat(dataSets.size()).isEqualTo(3);
     }
 
     @Test

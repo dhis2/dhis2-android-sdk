@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 public class NoteStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Note> {
 
     public NoteStoreIntegrationShould() {
-        super(NoteStore.create(TestDatabaseAdapterFactory.get()),
+        super(new NoteStoreImpl(TestDatabaseAdapterFactory.get()),
                 NoteTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

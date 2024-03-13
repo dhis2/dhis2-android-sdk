@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayloadWrapper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterFileResourcesPostCall
 import org.junit.Before
 import org.junit.Test

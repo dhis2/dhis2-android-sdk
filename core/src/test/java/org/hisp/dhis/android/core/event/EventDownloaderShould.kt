@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.internal.EventDownloadCall
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.junit.Before
 import org.junit.Test
 

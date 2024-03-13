@@ -41,7 +41,7 @@ public class ProgramSectionAttributeLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<ProgramSectionAttributeLink> {
 
     public ProgramSectionAttributeLinkStoreIntegrationShould() {
-        super(ProgramSectionAttributeLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ProgramSectionAttributeLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 ProgramSectionAttributeLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

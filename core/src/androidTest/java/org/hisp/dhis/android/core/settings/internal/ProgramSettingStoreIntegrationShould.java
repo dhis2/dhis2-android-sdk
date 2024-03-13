@@ -41,7 +41,7 @@ public class ProgramSettingStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<ProgramSetting> {
 
     public ProgramSettingStoreIntegrationShould() {
-        super(ProgramSettingStore.create(TestDatabaseAdapterFactory.get()), ProgramSettingTableInfo.TABLE_INFO,
+        super(new ProgramSettingStoreImpl(TestDatabaseAdapterFactory.get()), ProgramSettingTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

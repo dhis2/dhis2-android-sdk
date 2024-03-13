@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class OrganisationUnitStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OrganisationUnit> {
 
     public OrganisationUnitStoreIntegrationShould() {
-        super(OrganisationUnitStore.create(TestDatabaseAdapterFactory.get()),
+        super(new OrganisationUnitStoreImpl(TestDatabaseAdapterFactory.get()),
                 OrganisationUnitTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

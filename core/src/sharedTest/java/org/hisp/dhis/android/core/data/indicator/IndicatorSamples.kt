@@ -26,20 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.data.indicator
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties
+import org.hisp.dhis.android.core.indicator.Indicator
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-public class IndicatorSamples {
-
-    public static Indicator getIndicator() {
-        Indicator.Builder indicatorBuilder = Indicator.builder();
-
-        fillNameableProperties(indicatorBuilder);
-        indicatorBuilder
+object IndicatorSamples {
+    val indicator: Indicator
+        get() {
+            val indicatorBuilder = Indicator.builder()
+            fillNameableProperties(indicatorBuilder)
+            indicatorBuilder
                 .id(1L)
                 .annualized(false)
                 .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
@@ -48,7 +47,8 @@ public class IndicatorSamples {
                 .denominator("#{c.d}")
                 .denominatorDescription("den descr")
                 .url("dhis2.org")
-                .decimals(2);
-        return indicatorBuilder.build();
-    }
+                .decimals(2)
+                .style(ObjectStyle.builder().color("#FF0000").icon("circle").build())
+            return indicatorBuilder.build()
+        }
 }

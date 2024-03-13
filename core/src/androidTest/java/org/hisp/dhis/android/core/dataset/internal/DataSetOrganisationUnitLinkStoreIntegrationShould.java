@@ -41,7 +41,7 @@ public class DataSetOrganisationUnitLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataSetOrganisationUnitLink> {
 
     public DataSetOrganisationUnitLinkStoreIntegrationShould() {
-        super(DataSetOrganisationUnitLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new DataSetOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 DataSetOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

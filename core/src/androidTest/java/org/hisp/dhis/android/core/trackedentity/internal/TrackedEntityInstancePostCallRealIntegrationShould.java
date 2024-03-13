@@ -107,11 +107,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     public void setUp() {
         super.setUp();
 
-        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter());
-        enrollmentStore = EnrollmentStoreImpl.create(d2.databaseAdapter());
-        eventStore = EventStoreImpl.create(d2.databaseAdapter());
-        trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(d2.databaseAdapter());
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
+        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(d2.databaseAdapter());
+        enrollmentStore = new EnrollmentStoreImpl(d2.databaseAdapter());
+        eventStore = new EventStoreImpl(d2.databaseAdapter());
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(d2.databaseAdapter());
+        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(d2.databaseAdapter());
 
         uidGenerator = new UidGeneratorImpl();
         orgUnitUid = "DiszpKrYNg8";
@@ -135,9 +135,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     }
 
     /*
-    * If you want run this test you need config the correct uids in the server side.
-    * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
-    * */
+     * If you want run this test you need config the correct uids in the server side.
+     * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
+     * */
     //@Test
     public void response_true_when_data_sync() throws Exception {
         downloadMetadata();
@@ -207,9 +207,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
 
     /*
-    * If you want run this test you need config the correct uids in the server side.
-    * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
-    * */
+     * If you want run this test you need config the correct uids in the server side.
+     * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
+     * */
 
     //@Test
     public void pull_event_after_push_tracked_entity_instance_with_that_event() throws Exception {
@@ -290,7 +290,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload();
 
-        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet();
+        List<TrackedEntityInstance> teiList = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet();
 
         assertThat(teiList.size() == 1).isTrue();
     }
@@ -315,7 +315,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload();
 
-        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet();
+        List<TrackedEntityInstance> teiList = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet();
 
         assertThat(teiList.size() == 1).isTrue();
 
@@ -345,7 +345,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).blockingDownload();
 
-        List<TrackedEntityInstance> response =  d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid).blockingGet();
+        List<TrackedEntityInstance> response = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid).blockingGet();
 
         assertThat(response.size()).isEqualTo(1);
 
@@ -504,7 +504,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                                        String trackedEntityUid, String coordinates, Geometry geometry,
                                        String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
                                        String trackedEntityAttributeUid, String dataElementUid) {
-        
+
         Date refDate = getCurrentDateMinusTwoHoursTenMinutes();
 
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder()
@@ -573,19 +573,19 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     private TrackedEntityInstance getTrackedEntityInstanceFromDB(String trackedEntityInstanceUid) {
         TrackedEntityInstance trackedEntityInstance = null;
         TrackedEntityInstance storedTrackedEntityInstance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid);
-        if(storedTrackedEntityInstance.uid().equals(trackedEntityInstanceUid)) {
+        if (storedTrackedEntityInstance.uid().equals(trackedEntityInstanceUid)) {
             trackedEntityInstance = storedTrackedEntityInstance;
         }
         return trackedEntityInstance;
     }
 
     private Enrollment getEnrollmentsByTrackedEntityInstanceFromDb(String trackedEntityInstanceUid) {
-        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(d2.databaseAdapter());
+        EnrollmentStore enrollmentStore = new EnrollmentStoreImpl(d2.databaseAdapter());
         Enrollment enrollment = null;
         List<Enrollment> storedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build());
         for (Enrollment storedEnrollment : storedEnrollments) {
-            if(storedEnrollment.uid().equals(enrollmentUid)) {
+            if (storedEnrollment.uid().equals(enrollmentUid)) {
                 enrollment = storedEnrollment;
             }
         }
@@ -595,8 +595,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     private Event getEventsFromDb(String eventUid) {
         Event event = null;
         List<Event> storedEvents = eventStore.selectAll();
-        for(Event storedEvent : storedEvents) {
-            if(storedEvent.uid().equals(eventUid)) {
+        for (Event storedEvent : storedEvents) {
+            if (storedEvent.uid().equals(eventUid)) {
                 event = storedEvent;
             }
         }

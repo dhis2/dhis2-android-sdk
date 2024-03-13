@@ -28,10 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+
 import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
 import org.junit.After;
 import org.junit.Before;
@@ -42,9 +45,6 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends BaseIntegrationTestWithDatabase {
@@ -59,20 +59,20 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends B
     private final String ownerUid = "owUid";
 
     // object to test
-    private TrackedEntityAttributeReservedValueStoreInterface store;
-    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private TrackedEntityAttributeReservedValueStore store;
+    private OrganisationUnitStore organisationUnitStore;
 
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter());
+        store = new TrackedEntityAttributeReservedValueStoreImpl(databaseAdapter());
 
         serverDate = parseDate("2018-05-13T12:35:36.743");
         Date expiredDate = parseDate("2018-05-12T12:35:36.743");
         Date notExpiredDate = parseDate("2018-05-17T12:35:36.743");
 
         OrganisationUnit organisationUnit = OrganisationUnit.builder().uid(orgUnitUid).build();
-        organisationUnitStore = OrganisationUnitStore.create(databaseAdapter());
+        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
         organisationUnitStore.insert(organisationUnit);
 
         TrackedEntityAttributeReservedValue.Builder builder = TrackedEntityAttributeReservedValue.builder()

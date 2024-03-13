@@ -33,22 +33,20 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Test
 
 class AnalyticsOrganisationUnitHelperShould {
 
     private val userOrganisationUnitStore: UserOrganisationUnitLinkStore = mock()
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
-    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
-    private val organisationUnitOrganisationUnitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink> =
-        mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
+    private val organisationUnitLevelStore: OrganisationUnitLevelStore = mock()
+    private val organisationUnitOrganisationUnitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore = mock()
 
     private val helper = AnalyticsOrganisationUnitHelper(
         userOrganisationUnitStore,

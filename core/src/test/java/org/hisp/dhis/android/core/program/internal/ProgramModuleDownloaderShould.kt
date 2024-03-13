@@ -48,6 +48,9 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageW
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

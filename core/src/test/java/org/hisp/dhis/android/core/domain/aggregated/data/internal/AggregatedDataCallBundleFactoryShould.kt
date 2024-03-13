@@ -32,7 +32,6 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
@@ -53,7 +52,7 @@ class AggregatedDataCallBundleFactoryShould {
     private val organisationUnitRepository: OrganisationUnitCollectionRepository = mock()
     private val dataSetSettingsObjectRepository: DataSetSettingsObjectRepository = mock()
     private val periodManager: PeriodForDataSetManager = mock()
-    private val aggregatedDataSyncStore: ObjectWithoutUidStore<AggregatedDataSync> = mock()
+    private val aggregatedDataSyncStore: AggregatedDataSyncStore = mock()
     private val lastUpdatedCalculator: AggregatedDataSyncLastUpdatedCalculator = mock()
     private val dataSetSettings: DataSetSettings = mock()
 

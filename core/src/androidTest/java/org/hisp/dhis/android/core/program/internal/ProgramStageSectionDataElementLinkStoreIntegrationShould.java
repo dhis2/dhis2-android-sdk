@@ -41,7 +41,7 @@ public class ProgramStageSectionDataElementLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<ProgramStageSectionDataElementLink> {
 
     public ProgramStageSectionDataElementLinkStoreIntegrationShould() {
-        super(ProgramStageSectionDataElementLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ProgramStageSectionDataElementLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

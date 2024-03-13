@@ -41,7 +41,7 @@ public class TrackerImportConflictStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<TrackerImportConflict> {
 
     public TrackerImportConflictStoreIntegrationShould() {
-        super(TrackerImportConflictStoreImpl.create(TestDatabaseAdapterFactory.get()),
+        super(new TrackerImportConflictStoreImpl(TestDatabaseAdapterFactory.get()),
                 TrackerImportConflictTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

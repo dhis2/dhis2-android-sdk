@@ -34,7 +34,7 @@ import org.junit.Test
 class SystemInfoModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_system_info_user() {
-        val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()
+        val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()!!
         assertThat(systemInfo.version()).isEqualTo("2.40.0")
         assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }

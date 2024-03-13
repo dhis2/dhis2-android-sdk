@@ -32,7 +32,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.Access
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -78,7 +78,7 @@ class EnrollmentServiceShould {
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageCollectionRepository: ProgramStageCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-    private val programTempOwnerStore: ObjectWithoutUidStore<ProgramTempOwner> = mock()
+    private val programTempOwnerStore: ProgramTempOwnerStore = mock()
 
     private lateinit var enrollmentService: EnrollmentService
 

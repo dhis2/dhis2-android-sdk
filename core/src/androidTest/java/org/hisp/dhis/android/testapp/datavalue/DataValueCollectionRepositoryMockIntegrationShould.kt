@@ -40,7 +40,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val dataValues = d2.dataValueModule().dataValues()
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -50,7 +50,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("g9eOBujte1U")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -70,7 +70,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -80,7 +80,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("Gmbgme7z9BF")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -149,7 +149,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byFollowUp().isFalse
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(6)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -158,7 +158,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -167,7 +167,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byDeleted().isFalse
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -191,6 +191,6 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()
-        assertThat(objectRepository.blockingGet().value()).isEqualTo("10")
+        assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("10")
     }
 }

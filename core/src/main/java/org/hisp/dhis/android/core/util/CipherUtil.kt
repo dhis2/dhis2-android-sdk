@@ -28,63 +28,41 @@
 
 package org.hisp.dhis.android.core.util
 
+import net.lingala.zip4j.ZipFile
+import net.lingala.zip4j.model.ZipParameters
+import net.lingala.zip4j.model.enums.AesKeyStrength
+import net.lingala.zip4j.model.enums.EncryptionMethod
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import java.io.File
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-import java.security.spec.KeySpec
-import javax.crypto.Cipher
-import javax.crypto.SecretKey
-import javax.crypto.SecretKeyFactory
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.PBEKeySpec
-import javax.crypto.spec.SecretKeySpec
 
-@Suppress("NestedBlockDepth", "MagicNumber")
 internal object CipherUtil {
-    fun encryptFileUsingCredentials(input: File, output: File, username: String, password: String) {
-        val cipher = getCipher(Cipher.ENCRYPT_MODE, username, password)
-        applyCipher(cipher, input, output)
+    fun createEncryptedZipFile(input: File, output: File, password: String) {
+        val zipParameters = ZipParameters()
+        zipParameters.isEncryptFiles = true
+        zipParameters.encryptionMethod = EncryptionMethod.AES
+        zipParameters.aesKeyStrength = AesKeyStrength.KEY_STRENGTH_256
+
+        val filesToAdd = listOf(input)
+
+        val zipFile = ZipFile(output, password.toCharArray())
+        zipFile.addFiles(filesToAdd, zipParameters)
     }
 
-    fun decryptFileUsingCredentials(input: File, output: File, username: String, password: String) {
-        val cipher = getCipher(Cipher.DECRYPT_MODE, username, password)
-        applyCipher(cipher, input, output)
-    }
+    fun extractEncryptedZipFile(input: File, output: File, password: String) {
+        val zipFile = ZipFile(input, password.toCharArray())
+        val allFiles = zipFile.fileHeaders
 
-    private fun applyCipher(cipher: Cipher, input: File, output: File) {
-        input.inputStream().use { inputStream ->
-            output.outputStream().use { outputStream ->
-                val buffer = ByteArray(64)
-                var bytesRead: Int
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    cipher.update(buffer, 0, bytesRead)?.let { outputStream.write(it) }
-                }
-                cipher.doFinal()?.let { outputStream.write(it) }
-            }
+        if (allFiles.size == 1) {
+            val targetFile = allFiles.first()
+            zipFile.extractFile(targetFile, output.parent, output.name)
+        } else {
+            throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorDescription("Database zip file must contain a single file")
+                .errorCode(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
+                .build()
         }
-    }
-
-    private fun getCipher(mode: Int, username: String, password: String): Cipher {
-        val iv: ByteArray = getSalt(username)
-        val aesKey: SecretKey = getAESKeyFromPassword(password, iv)
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
-        cipher.init(mode, aesKey, IvParameterSpec(iv))
-
-        return cipher
-    }
-
-    internal fun getSalt(string: String): ByteArray {
-        val md = MessageDigest.getInstance("MD5")
-        md.reset()
-        md.update(string.toByteArray((StandardCharsets.UTF_8)))
-        return md.digest().slice(IntRange(0, 15)).toByteArray()
-    }
-
-    private fun getAESKeyFromPassword(password: String, salt: ByteArray?): SecretKey {
-        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-        val iterationCount = 10000
-        val keyLength = 256
-        val spec: KeySpec = PBEKeySpec(password.toCharArray(), salt, iterationCount, keyLength)
-        return SecretKeySpec(factory.generateSecret(spec).encoded, "AES")
     }
 }

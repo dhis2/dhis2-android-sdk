@@ -131,7 +131,7 @@ internal class MultiUserDatabaseManager(
         val dbPath = context.getDatabasePath(account.databaseName())
         val tempDbPath = context.filesDir.resolve("temp.db").also { it.deleteIfExists() }
         try {
-            CipherUtil.decryptFileUsingCredentials(protectedDbPath, tempDbPath, account.username(), password)
+            CipherUtil.extractEncryptedZipFile(protectedDbPath, tempDbPath, password)
             protectedDbPath.deleteIfExists()
 
             if (account.encrypted()) {

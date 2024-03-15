@@ -58,7 +58,7 @@ internal class DatabaseImportExportImpl(
 
     companion object {
         const val ExportDatabase = "export-database.db"
-        const val ExportDatabaseProtected = "export-database-protected.db"
+        const val ExportDatabaseProtected = "export-database-protected.db.zip"
         const val ExportMetadata = "export-metadata.json"
         const val ExportZip = "-database.zip"
     }
@@ -155,10 +155,9 @@ internal class DatabaseImportExportImpl(
             databaseFile.copyTo(copiedDatabase)
         }
 
-        CipherUtil.encryptFileUsingCredentials(
+        CipherUtil.createEncryptedZipFile(
             input = copiedDatabase,
             output = protectedDatabase,
-            username = credentials.username,
             password = credentials.password!!,
         )
 

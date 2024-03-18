@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -191,5 +192,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
 
         d2.userModule().accountManager().deleteCurrentAccount()
+
+        exportedFile.deleteIfExists()
     }
 }

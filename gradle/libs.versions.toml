@@ -26,6 +26,7 @@ rxJava = "2.2.21"
 rxAndroid = "2.1.1"
 sqlCipher = "4.5.5"
 sqlLite = "2.2.0"
+zip4j = "2.11.5"
 smsCompression = "0.2.0"
 expressionParser = "1.0.36"
 
@@ -101,6 +102,8 @@ dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expres
 
 sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
 sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlLite" }
+
+zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j"}
 
 openid-appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
 listenablefuture-empty = { group = "com.google.guava", name = "listenablefuture", version.ref = "listenablefuture" }

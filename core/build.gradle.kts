@@ -162,6 +162,8 @@ dependencies {
     // From SQLCipher 4.5.5, it depends on androidx.sqlite:sqlite
     api(libs.sqlite)
 
+    implementation(libs.zip4j)
+
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
 

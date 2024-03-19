@@ -1,3 +1,5 @@
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
@@ -26,15 +28,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply(plugin = "jacoco")
-
 tasks.register("jacocoReport", JacocoReport::class) {
     group = "Coverage"
     description = "Generate XML/HTML code coverage reports for coverage.ec"
 
     sourceDirectories.setFrom("${project.projectDir}/src/main/java")
 
-    val excludes = mutableSetOf<String>(
+    val excludes = mutableSetOf(
         // data binding
         "android/databinding/**/*.class",
         "**/android/databinding/*Binding.class",
@@ -84,10 +84,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*AutoValue_*.*"
     )
 
-    val javaClasses = fileTree("${buildDir}/intermediates/javac/debug") {
+    val javaClasses = fileTree("${layout.buildDirectory}/intermediates/javac/debug") {
         exclude(excludes)
     }
-    val kotlinClasses = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+    val kotlinClasses = fileTree("${layout.buildDirectory}/tmp/kotlin-classes/debug") {
         exclude(excludes)
     }
 
@@ -100,10 +100,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         )
     )
 
-    val unitTestsData = fileTree("${buildDir}/jacoco") {
+    val unitTestsData = fileTree("${layout.buildDirectory}/jacoco") {
         include("*.exec")
     }
-    val androidTestsData = fileTree("${buildDir}/outputs/code_coverage") {
+    val androidTestsData = fileTree("${layout.buildDirectory}/outputs/code_coverage") {
         include(listOf("**/*.ec"))
     }
 
@@ -118,10 +118,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     fun JacocoReportsContainer.reports() {
         xml.required.set(true)
-        xml.outputLocation.set(file("${buildDir}/coverage-report/jacocoTestReport.xml"))
+        xml.outputLocation.set(file("${layout.buildDirectory}/coverage-report/jacocoTestReport.xml"))
 
         html.required.set(true)
-        html.outputLocation.set(file("${buildDir}/coverage-report"))
+        html.outputLocation.set(file("${layout.buildDirectory}/coverage-report"))
     }
 
     reports {

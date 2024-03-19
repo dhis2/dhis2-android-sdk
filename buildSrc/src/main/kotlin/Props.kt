@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("com.android.application")
-    id("jacoco-conventions")
-    kotlin("android")
-}
-
-android {
-    compileSdk = libs.versions.targetSdkVersion.get().toInt()
-
-    defaultConfig {
-        applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-    }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        getByName("debug") {
-            enableAndroidTestCoverage = true
-        }
-    }
-    namespace = "org.hisp.dhis.android.instrumentedTestApp"
-}
-
-dependencies {
-    coreLibraryDesugaring(libs.desugaring)
-
-    implementation(project(":core"))
+object Props {
+    val GROUP = "org.hisp.dhis"
+    val POM_NAME = "Core"
+    val POM_ARTIFACT_ID = "android-core"
+    val POM_PACKAGING = "aar"
+    val POM_DESCRIPTION = "Android SDK for DHIS 2."
+    val POM_URL = "https://github.com/dhis2/dhis2-android-sdk"
+    val POM_SCM_URL = "https://github.com/dhis2/dhis2-android-sdk"
+    val POM_SCM_CONNECTION = "scm:git:git://github.com/dhis2/dhis2-android-sdk.git"
+    val POM_SCM_DEV_CONNECTION = "scm:git:ssh://git@github.com/dhis2/dhis2-android-sdk.git"
+    val POM_LICENCE_NAME = "BSD"
+    val POM_LICENCE_URL = "https://opensource.org/licenses/BSD-3-Clause"
+    val POM_LICENCE_DIST = "repo"
+    val POM_DEVELOPER_ID = "DHIS 2"
+    val POM_DEVELOPER_NAME = "DHIS 2"
 }

@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.event.EventStatus
 
 sealed class TrackerLineListItem(val id: String) {
 
+    data class ToRemove(val uid: String) : TrackerLineListItem("To remove")
+
     data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter> = emptyList()) :
         TrackerLineListItem(Label.OrganisationUnit)
 

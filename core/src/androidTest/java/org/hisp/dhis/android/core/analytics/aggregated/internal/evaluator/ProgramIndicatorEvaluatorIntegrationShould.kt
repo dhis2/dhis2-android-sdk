@@ -106,6 +106,23 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(overrideValue).isEqualTo("15.0")
     }
 
+    @Test
+    fun should_not_crash_when_expression_contains_a_long_list_of_operators() {
+        val numberOfOperators = 1000
+        createSampleData()
+
+        val expression = generateSequence { de(programStage1.uid(), dataElement1.uid()) }
+            .take(numberOfOperators).toList().joinToString(" + ")
+
+        val defaultValue = evaluateIndicator(
+            setProgramIndicator(
+                expression = expression,
+            ),
+        )
+
+        assertThat(defaultValue).isEqualTo((numberOfOperators * 30).toDouble().toString())
+    }
+
     private fun createSampleData() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()

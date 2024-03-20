@@ -67,6 +67,9 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "45")
 
+        val toRemove = TrackerLineListItem.ToRemove("uid").concatenateIds()
+        println(toRemove)
+
         val result = d2.analyticsModule().trackerLineList()
             .withEnrollmentOutput(program.uid())
             .withColumn(TrackerLineListItem.OrganisationUnitItem())

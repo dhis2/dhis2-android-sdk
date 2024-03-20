@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 internal class NotSupportedEvaluator : TrackerLineListEvaluator() {
 
     override fun getCommonSelectSQL(): String {
-        return "Not supported"
+        return "'Not supported'"
     }
 
     override fun getCommonWhereSQL(): String {

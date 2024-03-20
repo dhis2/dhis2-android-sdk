@@ -131,14 +131,14 @@ sealed class DataFilter {
 }
 
 internal object Label {
-    const val OrganisationUnit = "ou"
-    const val LastUpdated = "lastUpdated"
-    const val IncidentDate = "incidentDate"
-    const val EnrollmentDate = "enrollmentDate"
-    const val ScheduledDate = "scheduledDate"
-    const val EventDate = "eventDate"
-    const val CreatedBy = "createdBy"
-    const val LastUpdatedBy = "lastUpdatedBy"
-    const val ProgramStatus = "programStatus"
-    const val EventStatus = "eventStatus"
+    const val OrganisationUnit = "ouItem"
+    const val LastUpdated = "lastUpdatedItem"
+    const val IncidentDate = "incidentDateItem"
+    const val EnrollmentDate = "enrollmentDateItem"
+    const val ScheduledDate = "scheduledDateItem"
+    const val EventDate = "eventDateItem"
+    const val CreatedBy = "createdByItem"
+    const val LastUpdatedBy = "lastUpdatedByItem"
+    const val ProgramStatus = "programStatusItem"
+    const val EventStatus = "eventStatusItem"
 }

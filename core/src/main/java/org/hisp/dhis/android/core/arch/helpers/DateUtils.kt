@@ -112,4 +112,16 @@ object DateUtils {
 
         return "$year$month$day-$hour$minute$seconds"
     }
+
+    fun getCurrentDate() {
+        val date = Date()
+        val time = date.time
+        println(time)
+    }
+
+    fun getPreviousDate() {
+        val date = Date()
+        val time = date.time
+        println(time)
+    }
 }

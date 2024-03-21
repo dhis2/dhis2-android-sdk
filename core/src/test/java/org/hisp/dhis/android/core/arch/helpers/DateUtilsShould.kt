@@ -61,4 +61,10 @@ class DateUtilsShould {
     }
 
     data class OffsetCase(val periods: Int, val type: PeriodType, val expected: String)
+
+    @Test
+    fun testOneClass() {
+        val current = DateUtils.getCurrentDate()
+        assertThat(current).isNotNull()
+    }
 }

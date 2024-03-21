@@ -51,7 +51,6 @@ internal object TrackerLineListEvaluatorMapper {
 
             is TrackerLineListItem.CreatedBy -> NotSupportedEvaluator()
             is TrackerLineListItem.LastUpdatedBy -> NotSupportedEvaluator()
-            is TrackerLineListItem.ToRemove -> TODO()
         }
     }
 }

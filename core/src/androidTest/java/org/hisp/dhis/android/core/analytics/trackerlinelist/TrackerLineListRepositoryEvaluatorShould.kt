@@ -296,6 +296,35 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
+    fun evaluate_shared_properties() {
+        val event1 = generator.generate()
+        helper.createSingleEvent(
+            event1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            lastUpdated = DateUtils.SIMPLE_DATE_FORMAT.parse("2024-01-04"),
+        )
+
+        val result = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(
+                TrackerLineListItem.LastUpdated(
+                    filters = listOf(
+                        DateFilter.Range(startDate = "2024-01-01", endDate = "2024-01-31"),
+                    ),
+                ),
+            )
+            .withColumn(TrackerLineListItem.LastUpdatedBy)
+            .withColumn(TrackerLineListItem.CreatedBy)
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
+            .blockingEvaluate()
+
+        val rows = result.getOrThrow().rows
+        assertThat(rows.size).isEqualTo(1)
+    }
+
+    @Test
     fun evaluate_paging() {
         val event1 = generator.generate()
         helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())

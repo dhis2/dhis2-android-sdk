@@ -42,7 +42,7 @@ class TrackerLineListParamsShould {
     fun should_add_two_params() {
         val toRemove = TrackerLineListItem.ToRemove("uid").concatenateIds()
         println(toRemove)
-        
+
         val params1 = TrackerLineListParams(
             trackerVisualization = null,
             outputType = TrackerLineListOutputType.EVENT,

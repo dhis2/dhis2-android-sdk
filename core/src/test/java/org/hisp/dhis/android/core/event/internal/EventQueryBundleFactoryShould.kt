@@ -32,11 +32,11 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.settings.*
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
@@ -50,12 +50,12 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class EventQueryBundleFactoryShould {
     private val resourceHandler: ResourceHandler = mock()
-    private val programStore: ProgramStoreInterface = mock()
+    private val programStore: ProgramStore = mock()
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository = mock()
     private val programSettings: ProgramSettings = mock()
     private val lastUpdatedManager: EventLastUpdatedManager = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
-    private val organisationUnitProgramLinkLinkStore: LinkStore<OrganisationUnitProgramLink> = mock()
+    private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
 
     private val p1 = "program1"
     private val p2 = "program2"
@@ -84,13 +84,14 @@ class EventQueryBundleFactoryShould {
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
-            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
+            userOrganisationUnitLinkStore,
+            organisationUnitProgramLinkLinkStore,
         )
         bundleFactory = EventQueryBundleFactory(
             programStore,
             programSettingsObjectRepository,
             lastUpdatedManager,
-            commonHelper
+            commonHelper,
         )
     }
 
@@ -171,8 +172,8 @@ class EventQueryBundleFactoryShould {
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
             listOf(
                 OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
-                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build()
-            )
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build(),
+            ),
         )
 
         val bundles = bundleFactory.getQueries(params)

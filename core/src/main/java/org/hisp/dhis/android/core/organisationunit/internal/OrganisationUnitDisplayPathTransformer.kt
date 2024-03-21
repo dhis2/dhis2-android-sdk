@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 internal class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
 
     override operator fun invoke(organisationUnit: OrganisationUnit): OrganisationUnit {

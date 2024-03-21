@@ -38,10 +38,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class AnalyticsTeiWHONutritionDataStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<AnalyticsTeiWHONutritionData>(
-
-        AnalyticsTeiWHONutritionDataStore.create(TestDatabaseAdapterFactory.get()),
+        AnalyticsTeiWHONutritionDataStoreImpl(TestDatabaseAdapterFactory.get()),
         AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): AnalyticsTeiWHONutritionData {
         return AnalyticsSettingsSamples.analyticsTeiWHONutritionData

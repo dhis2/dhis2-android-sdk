@@ -46,7 +46,7 @@ public class FileResourceTableInfo {
 
         @Override
         public CoreColumns columns() {
-            return new FileResourceTableInfo.Columns();
+            return new Columns();
         }
     };
 

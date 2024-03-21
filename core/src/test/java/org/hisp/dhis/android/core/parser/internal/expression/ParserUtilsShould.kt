@@ -69,7 +69,7 @@ class ParserUtilsShould {
             "2022Q4" to 4,
             "2022BiW13" to 13,
             "2022S2" to 2,
-            "2022NovS1" to 1
+            "2022NovS1" to 1,
         ).forEach { (periodId, trailingDigits) ->
             assertThat(ParserUtils.getTrailingDigits(periodId)).isEqualTo(trailingDigits)
         }

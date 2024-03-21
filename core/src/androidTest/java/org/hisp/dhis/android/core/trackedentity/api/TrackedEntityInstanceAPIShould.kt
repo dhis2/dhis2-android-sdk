@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.api
 
 import com.google.common.truth.Truth.assertThat
-import java.util.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -40,6 +41,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
@@ -47,36 +49,34 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.junit.Assert
 import org.junit.Before
+import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class TrackedEntityInstanceAPIShould internal constructor(
     // API version dependant parameters
     private val serverUrl: String,
-    private val strategy: String
+    private val strategy: String,
 ) : BaseRealIntegrationTest() {
-    private lateinit var executor: APICallExecutor
+    private lateinit var executor: CoroutineAPICallExecutor
     private lateinit var trackedEntityInstanceService: TrackedEntityInstanceService
 
     @Before
     override fun setUp() {
         super.setUp()
-        executor = APICallExecutorImpl.create(d2.databaseAdapter(), null)
+        executor = d2.coroutineAPICallExecutor()
         trackedEntityInstanceService = d2.retrofit().create(
-            TrackedEntityInstanceService::class.java
+            TrackedEntityInstanceService::class.java,
         )
     }
 
     // @Test
     @Throws(Exception::class)
-    fun tei_with_invalid_tracked_entity_attribute() {
+    fun tei_with_invalid_tracked_entity_attribute() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidAttribute()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -89,22 +89,9 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         }
 
         // Check server status
-        val serverValidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(),
-                    TrackedEntityInstanceFields.allFields,
-                    true,
-                    true
-                )
-        )
+        val serverValidTEI = getTrackedEntity(validTEI.uid())
         try {
-            executor.executeObjectCall(
-                trackedEntityInstanceService.getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(),
-                    TrackedEntityInstanceFields.allFields, true, true
-                )
-            )
+            getTrackedEntity(invalidTEI.uid())
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
             assertThat(e.httpErrorCode()).isEqualTo(404)
@@ -114,16 +101,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun tei_with_invalid_orgunit() {
+    fun tei_with_invalid_orgunit() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidOrgunit()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -136,20 +119,9 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         }
 
         // Check server status
-        val serverValidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI = getTrackedEntity(validTEI.uid())
         try {
-            executor.executeObjectCall(
-                trackedEntityInstanceService.getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(),
-                    TrackedEntityInstanceFields.allFields, true, true
-                )
-            )
+            getTrackedEntity(invalidTEI.uid())
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
             assertThat(e.httpErrorCode()).isEqualTo(404)
@@ -159,16 +131,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun enrollment_with_valid_values() {
+    fun enrollment_with_valid_values() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -179,34 +147,18 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         }
 
         // TODO Check server status
-        val serverValidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverInvalidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI = getTrackedEntity(validTEI.uid())
+        val serverInvalidTEI = getTrackedEntity(invalidTEI.uid())
     }
 
     // @Test
     @Throws(Exception::class)
-    fun enrollment_future_date() {
+    fun enrollment_future_date() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val invalidTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -217,36 +169,20 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.ERROR)
             }
         }
-        val serverValidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverInvalidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI = getTrackedEntity(validTEI.uid())
+        val serverInvalidTEI = getTrackedEntity(invalidTEI.uid())
         assertThat(getEnrollments(serverValidTEI.items()[0])).isNotEmpty()
         assertThat(getEnrollments(serverInvalidTEI.items()[0])).isEmpty()
     }
 
     // @Test
     @Throws(Exception::class)
-    fun already_active_enrollment() {
+    fun already_active_enrollment() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceAndTwoActiveEnrollment()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -259,36 +195,20 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 assertThat(importSummary.enrollments()!!.ignored()).isEqualTo(1)
             }
         }
-        val serverValidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverInvalidTEI = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI = getTrackedEntity(validTEI.uid())
+        val serverInvalidTEI = getTrackedEntity(invalidTEI.uid())
         assertThat(getEnrollments(serverValidTEI.items()[0]).size).isEqualTo(1)
         assertThat(getEnrollments(serverInvalidTEI.items()[0]).size).isEqualTo(1)
     }
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_valid_values() {
+    fun event_with_valid_values() = runTest {
         login()
         val validTEI1 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val validTEI2 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI1, validTEI2))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI1.uid() == importSummary.reference()) {
@@ -300,20 +220,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
             }
         }
-        val serverValidTEI1 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI1.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverValidTEI2 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI2.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI1 = getTrackedEntity(validTEI1.uid())
+        val serverValidTEI2 = getTrackedEntity(validTEI2.uid())
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0]).size).isEqualTo(1)
@@ -322,16 +230,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     // IMPORTANT: check the programStage is set to "NO WRITE ACCESS" before running the test
     // @Test
     @Throws(Exception::class)
-    fun event_with_no_write_access() {
+    fun event_with_no_write_access() = runTest {
         login()
         val validTEI1 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val validTEI2 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI1, validTEI2))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI1.uid() == importSummary.reference()) {
@@ -343,20 +247,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.ERROR)
             }
         }
-        val serverValidTEI1 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI1.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverValidTEI2 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI2.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI1 = getTrackedEntity(validTEI1.uid())
+        val serverValidTEI2 = getTrackedEntity(validTEI2.uid())
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0])).isEmpty()
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
@@ -365,16 +257,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_future_event_date_does_not_fail() {
+    fun event_with_future_event_date_does_not_fail() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithEnrollmentAndFutureEvent()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -387,20 +275,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
             }
         }
-        val serverValidTEI1 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverValidTEI2 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI1 = getTrackedEntity(validTEI.uid())
+        val serverValidTEI2 = getTrackedEntity(invalidTEI.uid())
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
@@ -409,16 +285,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_invalid_data_element() {
+    fun event_with_invalid_data_element() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidDataElement()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -431,46 +303,30 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.WARNING)
             }
         }
-        val serverValidTEI1 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverValidTEI2 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI1 = getTrackedEntity(validTEI.uid())
+        val serverValidTEI2 = getTrackedEntity(invalidTEI.uid())
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI1.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI2.items()[0])[0])[0]!!
-                .trackedEntityDataValues()
+                .trackedEntityDataValues(),
         ).isEmpty()
     }
 
     // @Test
     @Throws(Exception::class)
-    fun event_with_valid_and_invalid_data_value() {
+    fun event_with_valid_and_invalid_data_value() = runTest {
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithValidAndInvalidDataValue()
         val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -483,47 +339,31 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.WARNING)
             }
         }
-        val serverValidTEI1 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    validTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
-        val serverValidTEI2 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    invalidTEI.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI1 = getTrackedEntity(validTEI.uid())
+        val serverValidTEI2 = getTrackedEntity(invalidTEI.uid())
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI1.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
         assertThat(getEnrollments(serverValidTEI2.items()[0]).size).isEqualTo(1)
         assertThat(getEvents(getEnrollments(serverValidTEI2.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI2.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
     }
 
     // This test is failing
     // @Test
     @Throws(Exception::class)
-    fun event_in_completed_enrollment() {
+    fun event_in_completed_enrollment() = runTest {
         login()
         val completedEnrollment =
             TrackedEntityInstanceUtils.createTrackedEntityInstanceWithCompletedEnrollmentAndEvent()
         val payload = TrackedEntityInstancePayload.create(listOf(completedEnrollment))
-        val response = executor.executeObjectCallWithAcceptedErrorCodes(
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+        val response = executePostCall(payload)
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (completedEnrollment.uid() == importSummary.reference()) {
@@ -532,46 +372,40 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
             }
         }
-        val serverValidTEI1 = executor.executeObjectCall(
-            trackedEntityInstanceService
-                .getTrackedEntityInstanceAsCall(
-                    completedEnrollment.uid(), TrackedEntityInstanceFields.allFields,
-                    true, true
-                )
-        )
+        val serverValidTEI1 = getTrackedEntity(completedEnrollment.uid())
         assertThat(getEnrollments(serverValidTEI1.items()[0]).size).isEqualTo(1)
         assertThat(
             getEnrollments(serverValidTEI1.items()[0])[0]!!
-                .status()
+                .status(),
         ).isEqualTo(EnrollmentStatus.COMPLETED)
         assertThat(getEvents(getEnrollments(serverValidTEI1.items()[0])[0]).size).isEqualTo(1)
         assertThat(
             getEvents(getEnrollments(serverValidTEI1.items()[0])[0])[0]!!
-                .trackedEntityDataValues()!!.size
+                .trackedEntityDataValues()!!.size,
         ).isEqualTo(1)
         assertThat(
             getEvents(
-                getEnrollments(serverValidTEI1.items()[0])[0]
-            )[0]!!.status()
+                getEnrollments(serverValidTEI1.items()[0])[0],
+            )[0]!!.status(),
         ).isEqualTo(EventStatus.COMPLETED)
     }
 
     // @Test
     @Throws(D2Error::class)
-    fun tracked_entity_deletion_returns_deleted_equals_1() {
+    fun tracked_entity_deletion_returns_deleted_equals_1() = runTest {
         login()
         syncMetadata()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload()
         val instance = instanceWithOneEnrollmentAndOneEvent
         val deletedEvents = setEventsToDelete(instance)
         val deletedEventsPayload = TrackedEntityInstancePayload.create(listOf(deletedEvents))
-        val deletedEventsResponse = executePostCall(deletedEventsPayload, strategy)
+        val deletedEventsResponse = executePostCall(deletedEventsPayload)
         assertThat(deletedEventsResponse.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (teiImportSummaries in deletedEventsResponse.response()!!.importSummaries()!!) {
             assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1)
             for (
-                enrollmentImportSummary in teiImportSummaries.enrollments()!!
-                    .importSummaries()!!
+            enrollmentImportSummary in teiImportSummaries.enrollments()!!
+                .importSummaries()!!
             ) {
                 assertThat(enrollmentImportSummary.importCount().updated()).isEqualTo(1)
                 for (eventImportSummary in enrollmentImportSummary.events()!!.importSummaries()!!) {
@@ -590,12 +424,27 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     }
 
     @Throws(D2Error::class)
-    private fun executePostCall(payload: TrackedEntityInstancePayload, strategy: String): TEIWebResponse {
-        return executor.executeObjectCallWithAcceptedErrorCodes(
+    private suspend fun executePostCall(payload: TrackedEntityInstancePayload): TEIWebResponse {
+        return executor.wrap(
+            storeError = false,
+            acceptedErrorCodes = listOf(409),
+            errorClass = TEIWebResponse::class.java,
+        ) {
+            trackedEntityInstanceService.postTrackedEntityInstances(payload, strategy)
+        }.getOrThrow()
+    }
+
+    private suspend fun getTrackedEntity(teiUid: String): Payload<TrackedEntityInstance> {
+        return executor.wrap {
             trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, strategy),
-            listOf(409), TEIWebResponse::class.java
-        )
+                .getTrackedEntityInstance(
+                    teiUid,
+                    OrganisationUnitMode.ACCESSIBLE.name,
+                    TrackedEntityInstanceFields.allFields,
+                    includeAllAttributes = true,
+                    includeDeleted = true,
+                )
+        }.getOrThrow()
     }
 
     private val instanceWithOneEnrollmentAndOneEvent: TrackedEntityInstance

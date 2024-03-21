@@ -27,16 +27,34 @@
  */
 package org.hisp.dhis.android.core.parser.internal.expression
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.regex.Pattern
-import kotlin.math.pow
-import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.parser.internal.expression.function.*
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionFirstNonNull
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionGreatest
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIf
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIs
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIsNotNull
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIsNull
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionLeast
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionLog
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionLog10
 import org.hisp.dhis.android.core.parser.internal.expression.literal.NullLiteral
-import org.hisp.dhis.android.core.parser.internal.expression.operator.*
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareEqual
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareGreaterThan
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareGreaterThanOrEqual
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareLessThan
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareLessThanOrEqual
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareNotEqual
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorGroupingParentheses
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorLogicalAnd
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorLogicalNot
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorLogicalOr
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorMathDivide
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorMathMinus
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorMathModulus
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorMathMultiply
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorMathPlus
+import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorMathPower
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemConstant
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemDays
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.ItemOrgUnitGroup
@@ -44,9 +62,15 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.regex.Pattern
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 internal object ParserUtils {
     const val DOUBLE_VALUE_IF_NULL = 0.0
+    const val TEXT_VALUE_IF_NULL = ""
     private const val NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$"
     private val NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP)
     private const val DEFAULT_DATE_FORMAT = "yyyy-MM-dd"
@@ -176,12 +200,14 @@ internal object ParserUtils {
         return when (period.periodType()!!) {
             PeriodType.Daily -> LocalDate.parse(periodIsoDate).dayOfYear
             PeriodType.Monthly,
-            PeriodType.BiMonthly -> period.periodId()!!.substring(4, 6).toInt()
+            PeriodType.BiMonthly,
+            -> period.periodId()!!.substring(4, 6).toInt()
             PeriodType.Yearly,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
             PeriodType.FinancialNov,
-            PeriodType.FinancialOct -> 1
+            PeriodType.FinancialOct,
+            -> 1
             else -> getTrailingDigits(period.periodId()!!) ?: 0
         }
     }

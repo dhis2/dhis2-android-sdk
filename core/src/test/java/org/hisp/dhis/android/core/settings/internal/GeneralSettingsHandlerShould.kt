@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.GeneralSettings
@@ -38,7 +37,7 @@ import org.mockito.Mockito
 
 class GeneralSettingsHandlerShould {
 
-    private val generalSettingStore: ObjectWithoutUidStore<GeneralSettings> = mock()
+    private val generalSettingStore: GeneralSettingStore = mock()
 
     private val generalSettings: GeneralSettings = mock()
 

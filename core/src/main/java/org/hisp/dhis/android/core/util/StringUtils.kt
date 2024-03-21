@@ -35,18 +35,27 @@ object StringUtils {
         return str?.let {
             val positiveEnd = end
                 .run {
-                    if (this < 0) this + str.length
-                    else this
+                    if (this < 0) {
+                        this + str.length
+                    } else {
+                        this
+                    }
                 }
                 .run {
-                    if (this > str.length) str.length
-                    else this
+                    if (this > str.length) {
+                        str.length
+                    } else {
+                        this
+                    }
                 }
 
             val positiveStart = start
                 .run {
-                    if (this < 0) this + str.length
-                    else this
+                    if (this < 0) {
+                        this + str.length
+                    } else {
+                        this
+                    }
                 }
 
             if (positiveStart > positiveEnd) {

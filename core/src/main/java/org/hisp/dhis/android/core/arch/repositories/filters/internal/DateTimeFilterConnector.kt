@@ -35,5 +35,5 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 class DateTimeFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
-    key: String
+    key: String,
 ) : DateFilterConnector<R>(repositoryFactory, scope, key, DateUtils.DATE_FORMAT)

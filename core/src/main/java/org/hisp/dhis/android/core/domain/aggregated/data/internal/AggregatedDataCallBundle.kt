@@ -34,5 +34,5 @@ data class AggregatedDataCallBundle(
     val dataSets: List<DataSet>,
     val periodIds: List<String>,
     val rootOrganisationUnitUids: Collection<String>,
-    val allOrganisationUnitUidsSet: Collection<String>
+    val allOrganisationUnitUidsSet: Collection<String>,
 )

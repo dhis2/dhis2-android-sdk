@@ -44,7 +44,7 @@ interface ValidationEngine {
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<ValidationResult>
 
     /**
@@ -63,6 +63,6 @@ interface ValidationEngine {
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): ValidationResult
 }

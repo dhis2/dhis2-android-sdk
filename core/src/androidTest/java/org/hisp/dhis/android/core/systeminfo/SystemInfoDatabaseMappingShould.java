@@ -55,7 +55,7 @@ public class SystemInfoDatabaseMappingShould {
     @Test
     public void map_cursor_to_object() {
         String[] columnsWithId = CollectionsHelper.appendInNewArray(SystemInfoTableInfo.TABLE_INFO.columns().all(),
-                SystemInfoTableInfo.Columns.ID);
+                Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
 
         cursor.addRow(new Object[]{dateString, systemInfo.dateFormat(),

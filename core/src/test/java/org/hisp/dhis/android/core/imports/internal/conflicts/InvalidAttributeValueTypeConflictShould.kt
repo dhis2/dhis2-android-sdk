@@ -49,7 +49,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
             .isTrue()
         assertThat(
             InvalidAttributeValueTypeConflict
-                .getTrackedEntityAttribute(TrackedImportConflictSamples.invalidFileAttribute(value)).isNullOrBlank()
+                .getTrackedEntityAttribute(TrackedImportConflictSamples.invalidFileAttribute(value)).isNullOrBlank(),
         ).isTrue()
     }
 

@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 
 internal class IndicatorLegendSetChildrenAppender(
-    private val linkChildStore: ObjectWithUidChildStore<Indicator>
+    private val linkChildStore: ObjectWithUidChildStore<Indicator>,
 ) : ChildrenAppender<Indicator>() {
 
     override fun appendChildren(indicator: Indicator): Indicator {
@@ -51,8 +51,8 @@ internal class IndicatorLegendSetChildrenAppender(
                 StoreFactory.objectWithUidChildStore(
                     databaseAdapter,
                     IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                    IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
-                )
+                    IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION,
+                ),
             )
         }
     }

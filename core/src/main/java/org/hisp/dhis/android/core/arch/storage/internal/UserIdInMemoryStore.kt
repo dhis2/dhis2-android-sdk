@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import org.koin.core.annotation.Single
+
+@Single
 class UserIdInMemoryStore : ObjectKeyValueStore<String> {
     private var userId: String? = null
 

@@ -41,7 +41,7 @@ public class DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataSetCompulsoryDataElementOperandLink> {
 
     public DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould() {
-        super(DataSetCompulsoryDataElementOperandLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new DataSetCompulsoryDataElementOperandLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import java.util.*
 
 object EventLineListSamples {
 
@@ -81,8 +81,8 @@ object EventLineListSamples {
                 Legend.builder().uid(generator.generate()).name("60 - 80").startValue(60.0).endValue(80.0)
                     .color("#fecc5c").build(),
                 Legend.builder().uid(generator.generate()).name("80 - 100").startValue(80.0).endValue(100.0)
-                    .color("#bd0026").build()
-            )
+                    .color("#bd0026").build(),
+            ),
         ).build()
 
     val legendSet2: LegendSet = LegendSet.builder()
@@ -93,8 +93,8 @@ object EventLineListSamples {
                 Legend.builder().uid(generator.generate()).name("0 - 50").startValue(0.0).endValue(50.0)
                     .color("#ffffff").build(),
                 Legend.builder().uid(generator.generate()).name("50 - 100").startValue(50.0).endValue(100.0)
-                    .color("#000000").build()
-            )
+                    .color("#000000").build(),
+            ),
         ).build()
 
     val program1: Program = Program.builder()

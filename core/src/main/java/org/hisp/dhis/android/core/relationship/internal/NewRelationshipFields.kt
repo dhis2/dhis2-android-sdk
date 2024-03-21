@@ -50,6 +50,6 @@ internal object NewRelationshipFields {
         fh.field<String>(CREATED_AT),
         fh.field<String>(UPDATED_AT),
         fh.nestedField<NewTrackerImporterRelationshipItem>(FROM).with(NewRelationshipItemFields.allFields),
-        fh.nestedField<NewTrackerImporterRelationshipItem>(TO).with(NewRelationshipItemFields.allFields)
+        fh.nestedField<NewTrackerImporterRelationshipItem>(TO).with(NewRelationshipItemFields.allFields),
     ).build()
 }

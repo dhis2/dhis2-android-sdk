@@ -30,18 +30,19 @@ package org.hisp.dhis.android.core.parser.internal.expression
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
-import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.junit.Assert.fail
 import org.junit.Before
@@ -56,7 +57,7 @@ class ExpressionServiceShould {
     private val orgunitGroupId = "RAL7YE4KJ58"
     private val days = "[days]"
 
-    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+    private val dataElementStore: DataElementStore = mock()
     private val dataElement1: DataElement = mock()
     private val dataElement2: DataElement = mock()
 
@@ -64,10 +65,10 @@ class ExpressionServiceShould {
     private val categoryOptionCombo1: CategoryOptionCombo = mock()
     private val categoryOptionCombo2: CategoryOptionCombo = mock()
 
-    private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
+    private val organisationUnitGroupStore: OrganisationUnitGroupStore = mock()
     private val organisationUnitGroup: OrganisationUnitGroup = mock()
 
-    private val programStageStore: IdentifiableObjectStore<ProgramStage> = mock()
+    private val programStageStore: ProgramStageStore = mock()
 
     private val constant: Constant = mock()
 
@@ -80,7 +81,7 @@ class ExpressionServiceShould {
             dataElementStore,
             categoryOptionComboStore,
             organisationUnitGroupStore,
-            programStageStore
+            programStageStore,
         )
         constantMap = mapOf(constantId to constant)
 
@@ -95,17 +96,17 @@ class ExpressionServiceShould {
     fun evaluate_dataelements() {
         val expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " + deOperand(
             dataElementId2,
-            categoryOptionComboId2
+            categoryOptionComboId2,
         )
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
             DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0,
-            DataElementOperandObject(dataElementId2, categoryOptionComboId2) to 3.0
+            DataElementOperandObject(dataElementId2, categoryOptionComboId2) to 3.0,
         )
 
         val result = service.getExpressionValue(
             expression,
             ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10),
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double?
 
         assertThat(result).isEqualTo(8.0)
@@ -115,14 +116,14 @@ class ExpressionServiceShould {
     fun evaluate_constants() {
         val expression = de(dataElementId1) + " + " + constant(constantId)
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
-            DataElementOperandObject(dataElementId1, null) to 5.0
+            DataElementOperandObject(dataElementId1, null) to 5.0,
         )
         whenever(constant.value()).thenReturn(4.0)
 
         val result = service.getExpressionValue(
             expression,
             ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10),
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double?
 
         assertThat(result).isEqualTo(9.0)
@@ -133,12 +134,12 @@ class ExpressionServiceShould {
         val expression = de(dataElementId1) + " + " + de(dataElementId2)
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
             DataElementOperandObject(dataElementId1, null) to 5.0,
-            DataElementOperandObject(dataElementId2, null) to 3.0
+            DataElementOperandObject(dataElementId2, null) to 3.0,
         )
         val result = service.getExpressionValue(
             expression,
             ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10),
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double?
 
         assertThat(result).isEqualTo(8.0)
@@ -148,12 +149,12 @@ class ExpressionServiceShould {
     fun evaluate_days() {
         val expression = de(dataElementId1) + " + " + days
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
-            DataElementOperandObject(dataElementId1, null) to 5.0
+            DataElementOperandObject(dataElementId1, null) to 5.0,
         )
         val result = service.getExpressionValue(
             expression,
             ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10),
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double?
 
         assertThat(result).isEqualTo(15.0)
@@ -163,15 +164,15 @@ class ExpressionServiceShould {
     fun evaluate_orgunit_groups() {
         val expression = de(dataElementId1) + " + " + oug(orgunitGroupId)
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
-            DataElementOperandObject(dataElementId1, null) to 5.0
+            DataElementOperandObject(dataElementId1, null) to 5.0,
         )
         val orgunitMap: Map<String, Int> = mapOf(
-            orgunitGroupId to 20
+            orgunitGroupId to 20,
         )
         val result = service.getExpressionValue(
             expression,
             ExpressionServiceContext(valueMap, constantMap, orgunitMap, 10),
-            MissingValueStrategy.NEVER_SKIP
+            MissingValueStrategy.NEVER_SKIP,
         ) as Double?
 
         assertThat(result).isEqualTo(25.0)
@@ -181,18 +182,18 @@ class ExpressionServiceShould {
     fun evaluate_missing_strategies_with_some_missing_values() {
         val expression = de(dataElementId1) + " + " + de(dataElementId2)
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
-            DataElementOperandObject(dataElementId1, null) to 5.0
+            DataElementOperandObject(dataElementId1, null) to 5.0,
         )
 
         mapOf(
             MissingValueStrategy.NEVER_SKIP to 5.0,
             MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING to null,
-            MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING to 5.0
+            MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING to 5.0,
         ).forEach { (strategy, expected) ->
             val result = service.getExpressionValue(
                 expression,
                 ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10),
-                strategy
+                strategy,
             ) as Double?
 
             assertThat(result).isEqualTo(expected)
@@ -207,12 +208,12 @@ class ExpressionServiceShould {
         mapOf(
             MissingValueStrategy.NEVER_SKIP to 0.0,
             MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING to null,
-            MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING to null
+            MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING to null,
         ).forEach { (strategy, expected) ->
             val result = service.getExpressionValue(
                 expression,
                 ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10),
-                strategy
+                strategy,
             ) as Double?
 
             assertThat(result).isEqualTo(expected)
@@ -295,7 +296,7 @@ class ExpressionServiceShould {
     fun get_dataelement_operands_ids() {
         val expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " + deOperand(
             dataElementId2,
-            categoryOptionComboId2
+            categoryOptionComboId2,
         )
         val dataElementOperands = service.getDataElementOperands(expression)
         assertThat(dataElementOperands.size).isEqualTo(2)
@@ -368,10 +369,10 @@ class ExpressionServiceShould {
             days
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
             DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0,
-            DataElementObject(dataElementId2) to 3.0
+            DataElementObject(dataElementId2) to 3.0,
         )
         val orgunitMap: Map<String, Int> = mapOf(
-            orgunitGroupId to 20
+            orgunitGroupId to 20,
         )
         val context = ExpressionServiceContext(valueMap, constantMap, orgunitMap, 10)
         whenever(constant.value()).thenReturn(3.14)
@@ -385,7 +386,7 @@ class ExpressionServiceShould {
     fun regenerate_expression_with_missing_items() {
         val expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " + de(dataElementId2)
         val valueMap: Map<DimensionalItemObject, Double> = mapOf(
-            DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0
+            DataElementOperandObject(dataElementId1, categoryOptionComboId1) to 5.0,
         )
         val context = ExpressionServiceContext(valueMap, constantMap, emptyMap(), 10)
 

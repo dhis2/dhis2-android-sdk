@@ -57,7 +57,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     fun parse_query_in_api_format() {
         val scope = queryBuilder
             .query(
-                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("filter").build()
+                RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("filter").build(),
             )
             .build()
         val onlineQueries = onlineHelper.fromScope(scope)
@@ -70,15 +70,15 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     fun parse_filters_using_in_operator() {
         val list = listOf(
             "nom,app",
-            "nom-app"
+            "nom-app",
         )
 
         val scope = queryBuilder
             .filter(
                 listOf(
                     RepositoryScopeFilterItem.builder()
-                        .key("filterItem1").operator(FilterItemOperator.IN).value(listToStr(list)).build()
-                )
+                        .key("filterItem1").operator(FilterItemOperator.IN).value(listToStr(list)).build(),
+                ),
             ).build()
 
         val onlineQueries = onlineHelper.fromScope(scope)
@@ -93,7 +93,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
         val list = listOf(
             "nom,app",
             "nom:app",
-            "nom;app"
+            "nom;app",
         )
 
         val expectedList = listOf(
@@ -113,8 +113,8 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
                     RepositoryScopeFilterItem.builder()
                         .key("filterItemLIKE2").operator(FilterItemOperator.LIKE).value(list[1]).build(),
                     RepositoryScopeFilterItem.builder()
-                        .key("filterItemLIKE3").operator(FilterItemOperator.LIKE).value(list[2]).build()
-                )
+                        .key("filterItemLIKE3").operator(FilterItemOperator.LIKE).value(list[2]).build(),
+                ),
             ).build()
 
         val formattedQueries = toAPIFilterFormat(scope.filter(), false)

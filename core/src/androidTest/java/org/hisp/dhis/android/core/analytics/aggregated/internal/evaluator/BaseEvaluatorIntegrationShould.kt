@@ -69,32 +69,43 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipTypeFrom
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipTypeTo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
-import org.hisp.dhis.android.core.category.internal.*
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryStoreImpl
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.constant.internal.ConstantStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.constant.internal.ConstantStoreImpl
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
-import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
-import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
-import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStoreImpl
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStoreImpl
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStageStore
-import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.relationship.internal.*
+import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.*
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.After
 import org.junit.Before
@@ -102,49 +113,49 @@ import org.junit.Before
 internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     // Data stores
-    protected val dataValueStore = DataValueStore.create(databaseAdapter)
-    protected val eventStore = EventStoreImpl.create(databaseAdapter)
-    protected val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
-    protected val trackedEntityStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
-    protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
-    protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter)
+    protected val dataValueStore = DataValueStoreImpl(databaseAdapter)
+    protected val eventStore = EventStoreImpl(databaseAdapter)
+    protected val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
+    protected val trackedEntityStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+    protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
+    protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
 
     // Metadata stores
-    protected val categoryStore = CategoryStore.create(databaseAdapter)
-    protected val categoryOptionStore = CategoryOptionStore.create(databaseAdapter)
-    protected val categoryCategoryOptionStore = CategoryCategoryOptionLinkStore.create(databaseAdapter)
-    protected val categoryComboStore = CategoryComboStore.create(databaseAdapter)
-    protected val categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter)
-    protected val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter)
-    protected val categoryOptionComboCategoryOptionLinkStore = CategoryOptionComboCategoryOptionLinkStore.create(
-        databaseAdapter
+    protected val categoryStore = CategoryStoreImpl(databaseAdapter)
+    protected val categoryOptionStore = CategoryOptionStoreImpl(databaseAdapter)
+    protected val categoryCategoryOptionStore = CategoryCategoryOptionLinkStoreImpl(databaseAdapter)
+    protected val categoryComboStore = CategoryComboStoreImpl(databaseAdapter)
+    protected val categoryOptionComboStore = CategoryOptionComboStoreImpl(databaseAdapter)
+    protected val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStoreImpl(databaseAdapter)
+    protected val categoryOptionComboCategoryOptionLinkStore = CategoryOptionComboCategoryOptionLinkStoreImpl(
+        databaseAdapter,
     )
-    protected val dataElementStore = DataElementStore.create(databaseAdapter)
-    protected val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
-    protected val organisationUnitLevelStore = OrganisationUnitLevelStore.create(databaseAdapter)
-    protected val organisationUnitGroupStore = OrganisationUnitGroupStore.create(databaseAdapter)
-    protected val periodStore = PeriodStoreImpl.create(databaseAdapter)
+    protected val dataElementStore = DataElementStoreImpl(databaseAdapter)
+    protected val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
+    protected val organisationUnitLevelStore = OrganisationUnitLevelStoreImpl(databaseAdapter)
+    protected val organisationUnitGroupStore = OrganisationUnitGroupStoreImpl(databaseAdapter)
+    protected val periodStore = PeriodStoreImpl(databaseAdapter)
 
-    protected val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
-    protected val trackedEntityAttributeStore = TrackedEntityAttributeStore.create(databaseAdapter)
-    protected val programStore = ProgramStore.create(databaseAdapter)
-    protected val programStageStore = ProgramStageStore.create(databaseAdapter)
+    protected val trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
+    protected val trackedEntityAttributeStore = TrackedEntityAttributeStoreImpl(databaseAdapter)
+    protected val programStore = ProgramStoreImpl(databaseAdapter)
+    protected val programStageStore = ProgramStageStoreImpl(databaseAdapter)
 
-    protected val indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter)
-    protected val indicatorStore = IndicatorStore.create(databaseAdapter)
+    protected val indicatorTypeStore = IndicatorTypeStoreImpl(databaseAdapter)
+    protected val indicatorStore = IndicatorStoreImpl(databaseAdapter)
 
-    protected val relationshipTypeStore = RelationshipTypeStore.create(databaseAdapter)
-    protected val relationshipConstraintStore = RelationshipConstraintStore.create(databaseAdapter)
+    protected val relationshipTypeStore = RelationshipTypeStoreImpl(databaseAdapter)
+    protected val relationshipConstraintStore = RelationshipConstraintStoreImpl(databaseAdapter)
 
-    protected val constantStore = ConstantStore.create(databaseAdapter)
+    protected val constantStore = ConstantStoreImpl(databaseAdapter)
 
-    protected val expressionDimensionItemStore = ExpressionDimensionItemStore.create(databaseAdapter)
+    protected val expressionDimensionItemStore = ExpressionDimensionItemStoreImpl(databaseAdapter)
 
     protected val expressionService = ExpressionService(
         dataElementStore,
         categoryOptionComboStore,
         organisationUnitGroupStore,
-        programStageStore
+        programStageStore,
     )
 
     protected val metadata: Map<String, MetadataItem> = mapOf(
@@ -154,18 +165,18 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         level1.uid() to MetadataItem.OrganisationUnitLevelItem(level1, listOf(orgunitParent.uid())),
         level2.uid() to MetadataItem.OrganisationUnitLevelItem(
             level2,
-            listOf(orgunitChild1.uid(), orgunitChild2.uid())
+            listOf(orgunitChild1.uid(), orgunitChild2.uid()),
         ),
         organisationUnitGroup.uid() to MetadataItem.OrganisationUnitGroupItem(
             organisationUnitGroup,
-            listOf(orgunitParent.uid())
+            listOf(orgunitParent.uid()),
         ),
         dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
         dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
         dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(
             dataElementOperand,
             dataElement1.displayName()!!,
-            categoryOptionCombo.displayName()
+            categoryOptionCombo.displayName(),
         ),
         period2019SunW25.periodId()!! to MetadataItem.PeriodItem(period2019SunW25),
         period201910.periodId()!! to MetadataItem.PeriodItem(period201910),
@@ -176,29 +187,28 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         period2019Q4.periodId()!! to MetadataItem.PeriodItem(period2019Q4),
         RelativeOrganisationUnit.USER_ORGUNIT.name to MetadataItem.OrganisationUnitRelativeItem(
             RelativeOrganisationUnit.USER_ORGUNIT,
-            listOf(orgunitParent.uid())
+            listOf(orgunitParent.uid()),
         ),
         RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name to MetadataItem.OrganisationUnitRelativeItem(
             RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN,
-            listOf(orgunitChild1.uid(), orgunitChild2.uid())
+            listOf(orgunitChild1.uid(), orgunitChild2.uid()),
         ),
         RelativePeriod.THIS_MONTH.name to MetadataItem.RelativePeriodItem(
             RelativePeriod.THIS_MONTH,
-            listOf(period201912)
+            listOf(period201912),
         ),
         RelativePeriod.LAST_MONTH.name to MetadataItem.RelativePeriodItem(
             RelativePeriod.LAST_MONTH,
-            listOf(period201911)
+            listOf(period201911),
         ),
         category.uid() to MetadataItem.CategoryItem(category),
         categoryOption.uid() to MetadataItem.CategoryOptionItem(categoryOption),
         attribute.uid() to MetadataItem.CategoryItem(attribute),
-        attributeOption.uid() to MetadataItem.CategoryOptionItem(attributeOption)
+        attributeOption.uid() to MetadataItem.CategoryOptionItem(attributeOption),
     )
 
     @Before
     fun setUpBase() {
-        println("AAAA setUpBase")
         organisationUnitLevelStore.insert(level1)
         organisationUnitLevelStore.insert(level2)
 
@@ -251,7 +261,6 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @After
     fun tearDown() {
-        println("AAAA tearDown")
         organisationUnitLevelStore.delete()
         organisationUnitStore.delete()
         organisationUnitGroupStore.delete()
@@ -282,7 +291,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         orgunitUid: String = orgunitParent.uid(),
         periodId: String = period201912.periodId()!!,
         categoryOptionComboUid: String = categoryOptionCombo.uid(),
-        attributeOptionComboUid: String = attributeOptionCombo.uid()
+        attributeOptionComboUid: String = attributeOptionCombo.uid(),
     ) {
         val dataValue = DataValue.builder()
             .value(value)
@@ -299,7 +308,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected fun createEventAndValue(
         value: String,
         dataElementUid: String,
-        enrollmentUid: String? = null
+        enrollmentUid: String? = null,
     ) {
         val event = Event.builder()
             .uid(BaseEvaluatorSamples.generator.generate())
@@ -324,7 +333,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     protected fun createTEIAndAttribute(
         value: String?,
-        attributeUid: String
+        attributeUid: String,
     ) {
         val tei = TrackedEntityInstance.builder()
             .uid(BaseEvaluatorSamples.generator.generate())

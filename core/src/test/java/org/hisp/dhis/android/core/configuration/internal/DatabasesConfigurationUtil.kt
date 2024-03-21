@@ -32,7 +32,7 @@ object DatabasesConfigurationUtil {
     fun buildUserConfiguration(
         username: String,
         creationDate: String,
-        serverUrl: String = "server"
+        serverUrl: String = "server",
     ): DatabaseAccount {
         return DatabaseAccount.builder()
             .username(username)

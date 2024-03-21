@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.common.BaseObject;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_SystemInfo.Builder.class)
 public abstract class SystemInfo extends BaseObject {
 
     @Nullable
@@ -69,14 +69,14 @@ public abstract class SystemInfo extends BaseObject {
     }
 
     public static Builder builder() {
-        return new AutoValue_SystemInfo.Builder();
+        return new $$AutoValue_SystemInfo.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<SystemInfo.Builder> {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder serverDate(Date serverDate);
 
         public abstract Builder dateFormat(String dateFormat);

@@ -50,7 +50,7 @@ class TrackedEntityAttributeLegendSetLinkTableInfo {
         val CHILD_PROJECTION = LinkTableChildProjection(
             LegendSetTableInfo.TABLE_INFO,
             Columns.TRACKED_ENTITY_ATTRIBUTE,
-            Columns.LEGEND_SET
+            Columns.LEGEND_SET,
         )
     }
 
@@ -60,7 +60,7 @@ class TrackedEntityAttributeLegendSetLinkTableInfo {
                 super.all(),
                 TRACKED_ENTITY_ATTRIBUTE,
                 LEGEND_SET,
-                SORT_ORDER
+                SORT_ORDER,
             )
         }
 
@@ -69,7 +69,7 @@ class TrackedEntityAttributeLegendSetLinkTableInfo {
                 super.all(),
                 TRACKED_ENTITY_ATTRIBUTE,
                 LEGEND_SET,
-                SORT_ORDER
+                SORT_ORDER,
             )
         }
 

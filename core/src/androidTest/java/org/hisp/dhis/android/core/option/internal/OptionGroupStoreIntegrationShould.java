@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
 
     public OptionGroupStoreIntegrationShould() {
-        super(OptionGroupStore.create(TestDatabaseAdapterFactory.get()),
+        super(new OptionGroupStoreImpl(TestDatabaseAdapterFactory.get()),
                 OptionGroupTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

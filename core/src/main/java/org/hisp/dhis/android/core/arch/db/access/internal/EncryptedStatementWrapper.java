@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
-import net.sqlcipher.database.SQLiteStatement;
+
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;

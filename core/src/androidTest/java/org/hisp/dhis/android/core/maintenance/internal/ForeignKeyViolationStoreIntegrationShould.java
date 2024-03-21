@@ -41,7 +41,7 @@ public class ForeignKeyViolationStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
 
     public ForeignKeyViolationStoreIntegrationShould() {
-        super(ForeignKeyViolationStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ForeignKeyViolationStoreImpl(TestDatabaseAdapterFactory.get()),
                 ForeignKeyViolationTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

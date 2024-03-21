@@ -38,7 +38,7 @@ internal object NotClosedObjectsDetector {
                 .detectLeakedClosableObjects()
                 .penaltyLog()
                 .penaltyDeath()
-                .build()
+                .build(),
         )
     }
 }

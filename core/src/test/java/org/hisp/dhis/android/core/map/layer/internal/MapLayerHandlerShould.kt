@@ -28,12 +28,9 @@
 package org.hisp.dhis.android.core.map.layer.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,8 +39,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class MapLayerHandlerShould {
 
-    private val store: IdentifiableObjectStore<MapLayer> = mock()
-    private val providerHandler: LinkHandler<MapLayerImageryProvider, MapLayerImageryProvider> = mock()
+    private val store: MapLayerStore = mock()
+    private val providerHandler: MapLayerImageryProviderHandler = mock()
     private val mapLayer: MapLayer = mock()
 
     private lateinit var mapLayerHandler: Handler<MapLayer>

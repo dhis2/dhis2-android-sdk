@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-internal interface HandlerWithTransformer<O> : Handler<O> {
+interface HandlerWithTransformer<O> : Handler<O> {
     fun handle(o: O?, transformer: (O) -> O)
 
     @JvmSuppressWildcards

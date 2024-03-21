@@ -32,7 +32,6 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
@@ -53,7 +52,7 @@ class AggregatedDataCallBundleFactoryShould {
     private val organisationUnitRepository: OrganisationUnitCollectionRepository = mock()
     private val dataSetSettingsObjectRepository: DataSetSettingsObjectRepository = mock()
     private val periodManager: PeriodForDataSetManager = mock()
-    private val aggregatedDataSyncStore: ObjectWithoutUidStore<AggregatedDataSync> = mock()
+    private val aggregatedDataSyncStore: AggregatedDataSyncStore = mock()
     private val lastUpdatedCalculator: AggregatedDataSyncLastUpdatedCalculator = mock()
     private val dataSetSettings: DataSetSettings = mock()
 
@@ -81,8 +80,12 @@ class AggregatedDataCallBundleFactoryShould {
         whenever(periodManager.getPeriodsInRange(any(), any(), any())).doReturn(periods)
 
         bundleFactory = AggregatedDataCallBundleFactory(
-            dataSetRepository, organisationUnitRepository,
-            dataSetSettingsObjectRepository, periodManager, aggregatedDataSyncStore, lastUpdatedCalculator
+            dataSetRepository,
+            organisationUnitRepository,
+            dataSetSettingsObjectRepository,
+            periodManager,
+            aggregatedDataSyncStore,
+            lastUpdatedCalculator,
         )
     }
 
@@ -95,7 +98,10 @@ class AggregatedDataCallBundleFactoryShould {
 
         val bundles = bundleFactory.getBundlesInternal(
             listOf(dataSet1, dataSet2),
-            dataSetSettings, rootOrgUnits, allOrgUnits, emptyMap()
+            dataSetSettings,
+            rootOrgUnits,
+            allOrgUnits,
+            emptyMap(),
         )
 
         assertThat(bundles.size).isEqualTo(1)
@@ -111,7 +117,10 @@ class AggregatedDataCallBundleFactoryShould {
 
         val bundles = bundleFactory.getBundlesInternal(
             listOf(dataSet1, dataSet2),
-            dataSetSettings, rootOrgUnits, allOrgUnits, emptyMap()
+            dataSetSettings,
+            rootOrgUnits,
+            allOrgUnits,
+            emptyMap(),
         )
 
         assertThat(bundles.size).isEqualTo(2)

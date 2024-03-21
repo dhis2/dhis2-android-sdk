@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.realservertests.apischema
 
 internal data class ApiSchema(
-    val properties: List<SchemaProperty>
+    val properties: List<SchemaProperty>,
 ) {
     internal companion object {
         internal data class SchemaProperty(
             val propertyType: String,
             val klass: String,
-            val constants: List<String>?
+            val constants: List<String>?,
         )
     }
 }

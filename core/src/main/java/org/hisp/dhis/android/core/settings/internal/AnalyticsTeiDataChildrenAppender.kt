@@ -27,20 +27,24 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
-    private val analyticsTeiDataElementStore: LinkStore<AnalyticsTeiDataElement>,
-    private val analyticsTeiIndicatorStore: LinkStore<AnalyticsTeiIndicator>,
-    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>,
-    private val analyticsTeiWHONutritionDataStore: LinkStore<AnalyticsTeiWHONutritionData>
+@Singleton
+internal class AnalyticsTeiDataChildrenAppender(
+    databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<AnalyticsTeiSetting>() {
+    private val analyticsTeiDataElementStore = AnalyticsTeiDataElementStoreImpl(databaseAdapter)
+    private val analyticsTeiIndicatorStore = AnalyticsTeiIndicatorStoreImpl(databaseAdapter)
+    private val analyticsTeiAttributeStore = AnalyticsTeiAttributeStoreImpl(databaseAdapter)
+    private val analyticsTeiWHONutritionDataStore = AnalyticsTeiWHONutritionDataStoreImpl(databaseAdapter)
 
     companion object {
         const val KEY = "DATA"
@@ -58,13 +62,13 @@ internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
         whoNutritionData = analyticsTeiWHONutritionDataStore.selectAll()
     }
 
-    override fun appendChildren(analyticsTeiSetting: AnalyticsTeiSetting): AnalyticsTeiSetting {
+    override fun appendChildren(m: AnalyticsTeiSetting): AnalyticsTeiSetting {
         return buildAnalyticsTeiSetting(
-            analyticsTeiSetting,
+            m,
             dataElements!!,
             indicators!!,
             attributes!!,
-            whoNutritionData!!
+            whoNutritionData!!,
         )
     }
 }

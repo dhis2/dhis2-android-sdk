@@ -41,7 +41,7 @@ internal object BadAttributePatternConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
+        context: TrackerImportConflictItemContext,
     ): String {
         return conflict.value()
     }

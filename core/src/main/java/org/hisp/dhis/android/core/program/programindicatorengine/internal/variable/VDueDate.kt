@@ -48,7 +48,7 @@ internal class VDueDate : ProgramExpressionItem() {
                 "$event.${EventTableInfo.Columns.DUE_DATE}"
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
-                    column = EventTableInfo.Columns.DUE_DATE
+                    column = EventTableInfo.Columns.DUE_DATE,
                 )
         }
     }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
 internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<TrackedEntityAttributeValue> {
@@ -35,19 +36,21 @@ internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<Trac
     fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue>
     fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
-        trackedEntityAttributeUids: List<String>
+        trackedEntityAttributeUids: List<String>,
     )
     fun deleteByInstanceAndNotInProgramAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
-        program: String
+        program: String,
     )
     fun deleteByInstanceAndNotInAccessibleAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         teiType: String,
-        programs: List<String>
+        programs: List<String>,
     )
 
     fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)
+
+    fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State)
 }

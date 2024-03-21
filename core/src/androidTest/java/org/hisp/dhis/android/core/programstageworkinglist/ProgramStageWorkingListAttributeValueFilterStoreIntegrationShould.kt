@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.programstageworkinglist
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterSamples
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterStore
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -38,9 +38,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class ProgramStageWorkingListAttributeValueFilterStoreIntegrationShould :
     ObjectStoreAbstractIntegrationShould<ProgramStageWorkingListAttributeValueFilter>(
-        ProgramStageWorkingListAttributeValueFilterStore.create(TestDatabaseAdapterFactory.get()),
+        ProgramStageWorkingListAttributeValueFilterStoreImpl(TestDatabaseAdapterFactory.get()),
         ItemFilterTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
     override fun buildObject(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilterSamples.get()

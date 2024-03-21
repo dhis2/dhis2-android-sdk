@@ -88,7 +88,7 @@ internal object ProgramIndicatorParserUtils {
         ExpressionParser.HASH_BRACE to ProgramItemStageElement(),
         ExpressionParser.A_BRACE to ProgramItemAttribute(),
         ExpressionParser.PS_EVENTDATE to ProgramItemPsEventdate(), // Program variables
-        ExpressionParser.V_BRACE to ProgramVariableItem()
+        ExpressionParser.V_BRACE to ProgramVariableItem(),
     )
 
     @JvmField
@@ -107,7 +107,7 @@ internal object ProgramIndicatorParserUtils {
                 ExpressionParser.D2_ROUND to D2Round(),
                 ExpressionParser.D2_SPLIT to D2Split(),
                 ExpressionParser.D2_SUBSTRING to D2Substring(),
-                ExpressionParser.D2_VALIDATE_PATTERN to D2ValidatePattern()
+                ExpressionParser.D2_VALIDATE_PATTERN to D2ValidatePattern(),
             )
 
     @JvmField

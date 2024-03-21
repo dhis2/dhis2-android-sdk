@@ -60,6 +60,7 @@ public final class GeneralSettingTableInfo {
         public static final String MATOMO_URL = "matomoURL";
         public static final String ALLOW_SCREEN_CAPTURE = "allowScreenCapture";
         public static final String MESSAGE_OF_THE_DAY = "messageOfTheDay";
+        public static final String EXPERIMENTAL_FEATURES = "experimentalFeatures";
 
         @Override
         public String[] all() {
@@ -72,7 +73,8 @@ public final class GeneralSettingTableInfo {
                     MATOMO_ID,
                     MATOMO_URL,
                     ALLOW_SCREEN_CAPTURE,
-                    MESSAGE_OF_THE_DAY
+                    MESSAGE_OF_THE_DAY,
+                    EXPERIMENTAL_FEATURES
             );
         }
     }

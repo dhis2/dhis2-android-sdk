@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.internal.ProgramStore;
+import org.hisp.dhis.android.core.program.internal.ProgramRuleStoreImpl;
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,9 +98,9 @@ public class PerformanceHintsService {
                                                  int organisationUnitThreshold,
                                                  int programRulesPerProgramThreshold) {
         return new PerformanceHintsService(
-                OrganisationUnitStore.create(databaseAdapter),
-                ProgramStore.create(databaseAdapter),
-                ProgramRuleStore.create(databaseAdapter),
+                new OrganisationUnitStoreImpl(databaseAdapter),
+                new ProgramStoreImpl(databaseAdapter),
+                new ProgramRuleStoreImpl(databaseAdapter),
                 organisationUnitThreshold,
                 programRulesPerProgramThreshold);
     }

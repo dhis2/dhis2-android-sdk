@@ -32,10 +32,10 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWith
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
+internal open class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OrphanCleaner<P, C> {
 
     override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {
@@ -44,10 +44,10 @@ internal class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidIn
         }
         val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(children)
         val clause = (
-            parentColumn + "='" + parent.uid() + "'" +
-                " AND " +
-                IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
-            )
+                parentColumn + "='" + parent.uid() + "'" +
+                        " AND " +
+                        IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
+                )
         return databaseAdapter.delete(tableName, clause, null) > 0
     }
 }

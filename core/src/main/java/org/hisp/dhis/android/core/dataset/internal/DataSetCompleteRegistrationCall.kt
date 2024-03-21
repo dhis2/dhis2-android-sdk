@@ -27,21 +27,17 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import io.reactivex.Single
-import java.util.ArrayList
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class DataSetCompleteRegistrationCall @Inject constructor(
+@Singleton
+internal class DataSetCompleteRegistrationCall(
     private val service: DataSetCompleteRegistrationService,
     private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
-    private val processor: DataSetCompleteRegistrationCallProcessor
+    private val processor: DataSetCompleteRegistrationCallProcessor,
 ) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
 
     companion object {
@@ -51,29 +47,29 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
             ).length
     }
 
-    override fun download(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
-        return downloadInternal(query).doOnSuccess { registrations -> processor.process(registrations, query) }
+    override suspend fun download(query: DataSetCompleteRegistrationQuery): List<DataSetCompleteRegistration> {
+        return downloadInternal(query)
+            .also { processor.process(it, query) }
     }
 
-    private fun downloadInternal(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
+    private suspend fun downloadInternal(query: DataSetCompleteRegistrationQuery): List<DataSetCompleteRegistration> {
         val partitions = multiDimensionalPartitioner.partitionForSize(
             QUERY_WITHOUT_UIDS_LENGTH,
-            query.dataSetUids(),
-            query.periodIds(),
-            query.rootOrgUnitUids()
+            query.dataSetUids,
+            query.periodIds,
+            query.rootOrgUnitUids,
         )
 
-        return Observable.fromIterable(partitions).flatMapSingle { part ->
+        return partitions.flatMap { part ->
             service.getDataSetCompleteRegistrations(
-                DataSetCompleteRegistrationFields.allFields,
-                query.lastUpdatedStr(),
-                commaSeparatedCollectionValues(part[0]),
-                commaSeparatedCollectionValues(part[1]),
-                commaSeparatedCollectionValues(part[2]),
-                true,
-                false
-            )
-        }.map { it.dataSetCompleteRegistrations }
-            .reduce(ArrayList(), { t1, t2 -> t1 + t2 })
+                fields = DataSetCompleteRegistrationFields.allFields,
+                lastUpdated = query.lastUpdatedStr,
+                dataSetUids = commaSeparatedCollectionValues(part[0]),
+                periodIds = commaSeparatedCollectionValues(part[1]),
+                organisationUnitIds = commaSeparatedCollectionValues(part[2]),
+                children = true,
+                paging = false,
+            ).dataSetCompleteRegistrations
+        }
     }
 }

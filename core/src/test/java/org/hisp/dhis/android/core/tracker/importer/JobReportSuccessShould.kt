@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
@@ -39,6 +37,8 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
 class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-success.json"), ObjectShould {
 
@@ -58,29 +58,29 @@ class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-succ
             JobTypeReport(
                 "TRACKED_ENTITY",
                 JobImportCount(3, 3, 2, 2, 10),
-                emptyList()
-            )
+                emptyList(),
+            ),
         )
         assertThat(bundleReport.typeReportMap.event).isEqualTo(
             JobTypeReport(
                 "EVENT",
                 JobImportCount(2, 2, 2, 2, 8),
-                listOf(JobObjectReport(emptyList(), 0, TrackerImporterObjectType.EVENT, "UavzrupW3lZ"))
-            )
+                listOf(JobObjectReport(emptyList(), 0, TrackerImporterObjectType.EVENT, "UavzrupW3lZ")),
+            ),
         )
         assertThat(bundleReport.typeReportMap.relationship).isEqualTo(
             JobTypeReport(
                 "RELATIONSHIP",
                 JobImportCount(1, 1, 1, 1, 4),
-                emptyList()
-            )
+                emptyList(),
+            ),
         )
         assertThat(bundleReport.typeReportMap.enrollment).isEqualTo(
             JobTypeReport(
                 "ENROLLMENT",
                 JobImportCount(0, 0, 0, 0, 0),
-                emptyList()
-            )
+                emptyList(),
+            ),
         )
     }
 }

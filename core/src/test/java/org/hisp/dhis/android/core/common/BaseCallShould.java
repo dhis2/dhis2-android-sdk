@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.common;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
@@ -40,12 +37,10 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
-import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -94,22 +89,5 @@ public abstract class BaseCallShould {
         errorResponse = Response.error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
-    }
-
-    protected void whenEndpointCallFails(Callable<?> endpointCall) throws Exception {
-        when(endpointCall.call()).thenThrow(new Exception());
-    }
-
-    protected void verifyNoTransactionCompleted() {
-        verify(databaseAdapter, never()).beginNewTransaction();
-        verify(transaction, never()).setSuccessful();
-        verify(transaction, never()).end();
-    }
-
-    protected void verifyTransactionComplete() {
-        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).setSuccessful();
-        verify(transaction).end();
     }
 }

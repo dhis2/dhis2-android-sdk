@@ -42,7 +42,7 @@ public class DataElementOperandStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand> {
 
     public DataElementOperandStoreIntegrationShould() {
-        super(DataElementOperandStore.create(TestDatabaseAdapterFactory.get()), DataElementOperandTableInfo.TABLE_INFO,
+        super(new DataElementOperandStoreImpl(TestDatabaseAdapterFactory.get()), DataElementOperandTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

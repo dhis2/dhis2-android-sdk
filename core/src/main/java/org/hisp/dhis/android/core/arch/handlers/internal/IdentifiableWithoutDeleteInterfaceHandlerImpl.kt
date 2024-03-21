@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal open class IdentifiableWithoutDeleteInterfaceHandlerImpl<O : ObjectWithUidInterface>(
-    val store: IdentifiableObjectStore<O>
+    val store: IdentifiableObjectStore<O>,
 ) :
     HandlerBaseImpl<O>() {
 

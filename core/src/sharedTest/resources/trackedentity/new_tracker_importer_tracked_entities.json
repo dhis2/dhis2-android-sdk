@@ -65,7 +65,7 @@
         {
           "createdAt": "2019-01-10T13:40:28.322",
           "orgUnit": "DiszpKrYNg8",
-          "program": "lxAQ7Zs9VYR",
+          "program": "IpHINAT79UW",
           "enrollment": "enroll1",
           "trackedEntity": "nWrB0TfWlvh",
           "updatedAt": "2019-01-10T13:40:28.718",
@@ -117,7 +117,7 @@
               "storedBy": "system",
               "orgUnit": "DiszpKrYNg8",
               "scheduledAt": "2015-05-01T00:00:00.000",
-              "program": "lxAQ7Zs9VYR",
+              "program": "IpHINAT79UW",
               "href": "https://play.dhis2.org/demo/api/events/hnaWBxMw5j3",
               "event": "event1",
               "status": "COMPLETED",
@@ -167,7 +167,7 @@
       "programOwners": [
         {
           "orgUnit": "DiszpKrYNg8",
-          "program": "lxAQ7Zs9VYR",
+          "program": "IpHINAT79UW",
           "trackedEntity": "nWrB0TfWlvh"
         }
       ]
@@ -237,7 +237,7 @@
         {
           "createdAt": "2018-01-10T13:40:28.322",
           "orgUnit": "DiszpKrYNg8",
-          "program": "lxAQ7Zs9VYR",
+          "program": "IpHINAT79UW",
           "enrollment": "enroll2",
           "trackedEntity": "nWrB0TfWlvD",
           "updatedAt": "2018-01-10T13:40:28.718",
@@ -275,7 +275,7 @@
               "storedBy": "system",
               "orgUnit": "DiszpKrYNg8",
               "scheduledAt": "2016-05-01T00:00:00.000",
-              "program": "lxAQ7Zs9VYR",
+              "program": "IpHINAT79UW",
               "href": "https://play.dhis2.org/demo/api/events/hnaWBxMw5j3",
               "event": "event2",
               "status": "SCHEDULE",
@@ -309,7 +309,7 @@
       "programOwners": [
         {
           "orgUnit": "DiszpKrYNg8",
-          "program": "lxAQ7Zs9VYR",
+          "program": "IpHINAT79UW",
           "trackedEntity": "nWrB0TfWlvD"
         }
       ]

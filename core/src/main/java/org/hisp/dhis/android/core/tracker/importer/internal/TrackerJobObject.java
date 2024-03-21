@@ -40,7 +40,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.BaseObject;import org.hisp.dhis.android.core.tracker.importer.internal.$$AutoValue_TrackerJobObject;import org.hisp.dhis.android.core.tracker.importer.internal.AutoValue_TrackerJobObject;
 
 import java.util.Date;
 import java.util.List;

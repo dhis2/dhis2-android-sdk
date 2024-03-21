@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.internal
 
-import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
+import java.io.IOException
 
 internal class ServerURLVersionRedirectionInterceptor : Interceptor {
 

@@ -42,6 +42,6 @@ class DataValueImportSummaryWebResponseShould :
     @Test
     override fun map_from_json_string() {
         val webResponse = objectMapper.readValue(jsonStream, DataValueImportSummaryWebResponse::class.java)
-        assertThat(webResponse.response()!!.importStatus()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(webResponse.response.importStatus()).isEqualTo(ImportStatus.SUCCESS)
     }
 }

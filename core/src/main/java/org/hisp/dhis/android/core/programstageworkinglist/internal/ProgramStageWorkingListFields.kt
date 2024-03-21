@@ -49,7 +49,7 @@ object ProgramStageWorkingListFields {
             fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM),
             fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM_STAGE),
             fh.nestedField<ProgramStageQueryCriteria>(PROGRAM_STAGE_QUERY_CRITERIA)
-                .with(ProgramStageQueryCriteriaFields.allFields)
+                .with(ProgramStageQueryCriteriaFields.allFields),
         )
         .build()
 }

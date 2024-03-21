@@ -31,17 +31,12 @@ package org.hisp.dhis.android.core.common
 object FilterOperatorsHelper {
 
     private const val strListSeparator = "%%%<>%%%"
-    private const val strListSeparatorAlt = ";"
 
     fun listToStr(list: Collection<String>): String {
         return list.joinToString(separator = strListSeparator)
     }
 
     fun strToList(string: String): Collection<String> {
-        if (string.contains(strListSeparatorAlt)){
-            return string.split(strListSeparatorAlt)
-        } else {
-            return string.split(strListSeparator)
-        }
+        return string.split(strListSeparator)
     }
 }

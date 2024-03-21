@@ -186,6 +186,58 @@
       ],
       "dataInputPeriods": [
       ]
+    },
+    {
+      "lastUpdated": "2014-08-09T12:35:36.743",
+      "id": "TaMAefItzgt",
+      "created": "2012-06-10T00:36:10.036",
+      "name": "Child Health Weekly",
+      "shortName": "Child Health",
+      "validCompleteOnly": true,
+      "skipOffline": true,
+      "version": 25,
+      "timelyDays": 5,
+      "dataElementDecoration": false,
+      "displayName": "Child Health",
+      "notifyCompletingUser": true,
+      "noValueRequiresComment": false,
+      "displayShortName": "Child Health",
+      "fieldCombinationRequired": true,
+      "renderHorizontally": true,
+      "renderAsTabs": false,
+      "mobile": true,
+      "periodType": "Weekly",
+      "openFuturePeriods": 2,
+      "expiryDays": 2,
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "dataSetElements": [
+        {
+          "dataSet": {
+            "id": "TaMAefItzgt"
+          },
+          "dataElement": {
+            "id": "g9eOBujte1U"
+          },
+          "categoryCombo": {
+            "id": "m2jTvAj5kkm"
+          }
+        }
+      ],
+      "indicators": [
+      ],
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
+      "sections": [
+      ],
+      "compulsoryDataElementOperands": [
+      ],
+      "dataInputPeriods": [
+      ]
     }
   ]
 }

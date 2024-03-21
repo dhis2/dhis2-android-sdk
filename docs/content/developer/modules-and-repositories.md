@@ -140,6 +140,7 @@ Big block modules:
 
 Concrete modules:
 
+- attributeModule
 - categoryModule
 - constantModule
 - dataElementModule

@@ -18,6 +18,8 @@
 - Program rule engine: "@github(dhis2/dhis2-android-sdk, docs/content/developer/program-rule-engine.md, master"
 - Program indicator engine: "@github(dhis2/dhis2-android-sdk, docs/content/developer/program-indicator-engine.md, master)"
 - Validation rule engine: "@github(dhis2/dhis2-android-sdk, docs/content/developer/validation-rule-engine.md, master)"
+- Use case configuration: "@github(dhis2/dhis2-android-sdk, docs/content/developer/use-case-configuration.md, master)"
+- APK distribution: "@github(dhis2/dhis2-android-sdk, docs/content/developer/apk-distribution.md, master)"
 - Debugging: "@github(dhis2/dhis2-android-sdk, docs/content/developer/debugging.md, master)"
 - Known issues: "@github(dhis2/dhis2-android-sdk, docs/content/developer/known-issues.md, master)"
 

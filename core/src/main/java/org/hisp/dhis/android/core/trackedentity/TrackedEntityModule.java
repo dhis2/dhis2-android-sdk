@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository;
 
 public interface TrackedEntityModule {
 
@@ -43,6 +44,7 @@ public interface TrackedEntityModule {
     TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
 
     TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    TrackedEntitySearchCollectionRepository trackedEntitySearch();
 
     TrackedEntityAttributeReservedValueManager reservedValueManager();
 

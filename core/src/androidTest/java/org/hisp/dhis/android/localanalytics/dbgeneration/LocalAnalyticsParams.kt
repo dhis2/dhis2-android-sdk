@@ -35,7 +35,7 @@ internal data class LocalAnalyticsMetadataParams(
     val dataElementsTracker: Int,
     val programStagesWithRegistration: Int,
     val programStagesWithoutRegistration: Int,
-    val trackedEntityAttributes: Int
+    val trackedEntityAttributes: Int,
 ) {
 
     companion object LocalAnalyticsMetadataParams {
@@ -47,7 +47,7 @@ internal data class LocalAnalyticsMetadataParams(
             dataElementsTracker = 10,
             programStagesWithRegistration = 3,
             programStagesWithoutRegistration = 1,
-            trackedEntityAttributes = 10
+            trackedEntityAttributes = 10,
         )
     }
 }
@@ -56,14 +56,14 @@ internal data class LocalAnalyticsDataParams(
     val dataValues: Int,
     val trackedEntityInstances: Int,
     val eventsWithoutRegistration: Int,
-    val eventsWithRegistrationPerEnrollmentAndPS: Int
+    val eventsWithRegistrationPerEnrollmentAndPS: Int,
 ) {
     companion object LocalAnalyticsDataParams {
         fun get(f: Int) = LocalAnalyticsDataParams(
             dataValues = 3000 * f,
             trackedEntityInstances = 500 * f,
             eventsWithoutRegistration = 500 * f,
-            eventsWithRegistrationPerEnrollmentAndPS = 1
+            eventsWithRegistrationPerEnrollmentAndPS = 1,
         )
 
         const val DefaultFactor = 1

@@ -29,25 +29,23 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Completable
-import java.io.IOException
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserTableInfo
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
+import org.hisp.dhis.android.core.user.internal.UserStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
@@ -55,15 +53,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     // The return of the organisationUnitCall to be tested:
-    private lateinit var organisationUnitCall: Completable
+    private lateinit var organisationUnitCall: suspend () -> Unit
     private val expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic()
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
 
     @Before
-    @Throws(IOException::class)
     fun setUp() {
         dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json")
         val orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build()
@@ -74,10 +72,10 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         // Create a user with the root as assigned organisation unit (for the test):
         val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
-            .uid("user_uid").build()
+            .uid(userId).build()
         databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues())
         val userContentValues = ContentValues()
-        userContentValues.put(IdentifiableColumns.UID, "user_uid")
+        userContentValues.put(IdentifiableColumns.UID, userId)
         databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues)
 
         // inserting programs for creating OrgUnitProgramLinks
@@ -86,26 +84,28 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         // inserting dataSets for creating OrgUnitDataSetLinks
         insertDataSet()
-        val organisationUnitHandler = OrganisationUnitHandlerImpl(
-            OrganisationUnitStore.create(databaseAdapter),
-            LinkHandlerImpl(UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)),
-            LinkHandlerImpl(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
-            LinkHandlerImpl(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-            IdentifiableHandlerImpl(OrganisationUnitGroupStore.create(databaseAdapter)),
-            LinkHandlerImpl(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter))
+        val organisationUnitHandler = OrganisationUnitHandler(
+            OrganisationUnitStoreImpl(databaseAdapter),
+            UserOrganisationUnitLinkHandler(UserOrganisationUnitLinkStoreImpl(databaseAdapter)),
+            OrganisationUnitProgramLinkHandler(OrganisationUnitProgramLinkStoreImpl(databaseAdapter)),
+            DataSetOrganisationUnitLinkHandler(DataSetOrganisationUnitLinkStoreImpl(databaseAdapter)),
+            OrganisationUnitGroupHandler(OrganisationUnitGroupStoreImpl(databaseAdapter)),
+            OrganisationUnitOrganisationUnitGroupLinkHandler(
+                OrganisationUnitOrganisationUnitGroupLinkStoreImpl(databaseAdapter),
+            ),
         )
-        val organisationUnitCollectionCleaner: CollectionCleaner<OrganisationUnit> =
-            CollectionCleanerImpl(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter)
+        val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
         val pathTransformer = OrganisationUnitDisplayPathTransformer()
-        organisationUnitCall = OrganisationUnitCall(
-            organisationUnitService,
-            organisationUnitHandler,
-            pathTransformer,
-            UserOrganisationUnitLinkStoreImpl.create(databaseAdapter),
-            OrganisationUnitStore.create(databaseAdapter),
-            organisationUnitCollectionCleaner
-        )
-            .download(user)
+        organisationUnitCall = {
+            OrganisationUnitCall(
+                organisationUnitService,
+                organisationUnitHandler,
+                pathTransformer,
+                UserOrganisationUnitLinkStoreImpl(databaseAdapter),
+                OrganisationUnitStoreImpl(databaseAdapter),
+                organisationUnitCollectionCleaner,
+            ).download(user)
+        }
     }
 
     private fun insertObjectWithUid(uid: String, tableInfo: TableInfo) {
@@ -125,9 +125,9 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     }
 
     @Test
-    fun persist_organisation_unit_tree() {
-        organisationUnitCall.blockingAwait()
-        val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
+    fun persist_organisation_unit_tree() = runTest {
+        organisationUnitCall.invoke()
+        val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
         val dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid())
         val dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid())
 
@@ -136,9 +136,9 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     }
 
     @Test
-    fun persist_organisation_unit_user_links() {
-        organisationUnitCall.blockingAwait()
-        val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
+    fun persist_organisation_unit_user_links() = runTest {
+        organisationUnitCall.invoke()
+        val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl(databaseAdapter)
         val userOrganisationUnitLinks = userOrganisationUnitStore.selectAll()
         val linkOrganisationUnits: MutableSet<String> = HashSet(2)
 
@@ -151,12 +151,15 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     }
 
     companion object {
+        private const val userId = "user_uid"
+
         @AfterClass
         @JvmStatic
-        fun tearDown() {
+        fun tearDownClass() {
             d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())
+            UserStoreImpl(d2.databaseAdapter()).delete(userId)
         }
     }
 }

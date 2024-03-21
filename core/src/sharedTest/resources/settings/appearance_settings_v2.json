@@ -129,16 +129,25 @@
   },
   "programConfiguration": {
     "globalSettings": {
-      "completionSpinner": "true"
+      "completionSpinner": "true",
+      "disableReferrals": "true",
+      "disableCollapsibleSections": "false"
     },
     "specificSettings": {
       "IpHINAT79UW": {
         "completionSpinner": "true",
-        "optionalSearch": "true"
+        "optionalSearch": "true",
+        "disableReferrals": "true",
+        "disableCollapsibleSections": "false",
+        "itemHeader": {
+          "programIndicator": "kALwOyvVvdT"
+        }
       },
       "IpHINAT79UQ": {
         "completionSpinner": "true",
-        "optionalSearch": "true"
+        "optionalSearch": "true",
+        "disableReferrals": "false",
+        "disableCollapsibleSections": "true"
       }
     }
   }

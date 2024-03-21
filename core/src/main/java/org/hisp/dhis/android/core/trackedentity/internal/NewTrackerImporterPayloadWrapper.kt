@@ -33,5 +33,5 @@ internal data class NewTrackerImporterPayloadWrapper(
     val deleted: NewTrackerImporterPayload = NewTrackerImporterPayload(),
     val updated: NewTrackerImporterPayload = NewTrackerImporterPayload(),
 
-    val programOwners: Map<String, List<ProgramOwner>> = emptyMap()
+    val programOwners: Map<String, List<ProgramOwner>> = emptyMap(),
 )

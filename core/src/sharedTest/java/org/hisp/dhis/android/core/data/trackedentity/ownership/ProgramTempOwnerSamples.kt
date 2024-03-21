@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.data.trackedentity.ownership
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
+import java.util.*
 
 object ProgramTempOwnerSamples {
 

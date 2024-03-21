@@ -27,15 +27,20 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.core.category.CategoryTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryModuleWiper @Inject constructor(
-    private val tableWiper: TableWiper
+@Singleton
+internal class CategoryModuleWiper(
+    private val tableWiper: TableWiper,
 ) : ModuleWiper {
     override fun wipeMetadata() {
         tableWiper.wipeTables(
@@ -45,7 +50,7 @@ internal class CategoryModuleWiper @Inject constructor(
             CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
             CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
             CategoryComboTableInfo.TABLE_INFO,
-            CategoryCategoryComboLinkTableInfo.TABLE_INFO
+            CategoryCategoryComboLinkTableInfo.TABLE_INFO,
         )
     }
 

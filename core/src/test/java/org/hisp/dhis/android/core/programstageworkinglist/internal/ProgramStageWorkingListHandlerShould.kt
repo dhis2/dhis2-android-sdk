@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
@@ -52,10 +50,9 @@ class ProgramStageWorkingListHandlerShould {
     private lateinit var eventDataFilters: List<ProgramStageWorkingListEventDataFilter>
     private lateinit var attributeValueFilters: List<ProgramStageWorkingListAttributeValueFilter>
 
-    private val programStageWorkingListStore: IdentifiableObjectStore<ProgramStageWorkingList> = mock()
-    private val eventDataFilterHandler: HandlerWithTransformer<ProgramStageWorkingListEventDataFilter> = mock()
-    private val attributeValueFilterHandler: HandlerWithTransformer<ProgramStageWorkingListAttributeValueFilter> =
-        mock()
+    private val programStageWorkingListStore: ProgramStageWorkingListStore = mock()
+    private val eventDataFilterHandler: ProgramStageWorkingListEventDataFilterHandler = mock()
+    private val attributeValueFilterHandler: ProgramStageWorkingListAttributeValueFilterHandler = mock()
 
     private lateinit var handler: ProgramStageWorkingListHandler
 
@@ -64,7 +61,7 @@ class ProgramStageWorkingListHandlerShould {
         handler = ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,
-            attributeValueFilterHandler
+            attributeValueFilterHandler,
         )
 
         eventDataFilters = listOf(eventDataFilter)
@@ -91,7 +88,7 @@ class ProgramStageWorkingListHandlerShould {
         ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,
-            attributeValueFilterHandler
+            attributeValueFilterHandler,
         )
     }
 

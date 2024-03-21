@@ -39,6 +39,8 @@ class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrati
     fun emit_progress() {
         val testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().download().test()
 
+        testObserver.awaitTerminalEvent()
+
         testObserver.assertValueCount(5)
 
         testObserver.assertValueAt(0) { v: TrackerD2Progress ->

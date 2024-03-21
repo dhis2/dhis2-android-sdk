@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.io.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
@@ -44,6 +42,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.io.IOException
 
 @RunWith(D2JunitRunner::class)
 class DatabaseConfigurationMigrationIntegrationShould {
@@ -66,18 +66,23 @@ class DatabaseConfigurationMigrationIntegrationShould {
         .build()
 
     private lateinit var migration: DatabaseConfigurationMigration
-    private lateinit var databasesConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>
+    private lateinit var databasesConfigurationStore: DatabaseConfigurationInsecureStore
     private lateinit var credentialsSecureStore: CredentialsSecureStore
 
     @Before
     @Throws(IOException::class)
     fun setUp() {
-        databasesConfigurationStore = DatabaseConfigurationInsecureStore[insecureStore]
+        databasesConfigurationStore = DatabaseConfigurationInsecureStoreImpl(insecureStore)
         credentialsSecureStore = CredentialsSecureStoreImpl(chunkedSecureStore)
 
         migration = DatabaseConfigurationMigration(
-            context, databasesConfigurationStore,
-            credentialsSecureStore, insecureStore, nameGenerator, renamer, databaseAdapterFactory
+            context,
+            databasesConfigurationStore,
+            credentialsSecureStore,
+            insecureStore,
+            nameGenerator,
+            renamer,
+            databaseAdapterFactory,
         )
 
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
@@ -138,10 +143,10 @@ class DatabaseConfigurationMigrationIntegrationShould {
                                     .databaseName(newName)
                                     .databaseCreationDate("2014-06-06T20:44:21.375")
                                     .encrypted(false)
-                                    .build()
-                            )
-                        ).build()
-                )
+                                    .build(),
+                            ),
+                        ).build(),
+                ),
             ).build()
 
         DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(oldDatabaseConfiguration)
@@ -181,7 +186,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
         databaseAdapter.execSQL("CREATE TABLE UserCredentials (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT)")
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
         databaseAdapter.execSQL("INSERT INTO UserCredentials (username) VALUES ('${credentials.username()}')")
-        val configurationStore = ConfigurationStore.create(databaseAdapter)
+        val configurationStore = ConfigurationStoreImpl(databaseAdapter)
         configurationStore.insert(Configuration.forServerUrl(serverUrl))
     }
 

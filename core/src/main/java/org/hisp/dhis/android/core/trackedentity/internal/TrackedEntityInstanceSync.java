@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityInstanceSync.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_TrackedEntityInstanceSync.Builder.class)
 abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
 
     @NonNull
@@ -46,7 +46,7 @@ abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
     }
 
     static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceSync.Builder();
+        return new $$AutoValue_TrackedEntityInstanceSync.Builder();
     }
 
     abstract Builder toBuilder();

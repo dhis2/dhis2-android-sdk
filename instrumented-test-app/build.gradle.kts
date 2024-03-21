@@ -31,18 +31,24 @@ plugins {
     kotlin("android")
 }
 
-apply(from = project.file("../core/plugins/jacoco.gradle"))
+apply(from = project.file("../core/plugins/jacoco.gradle.kts"))
 
 android {
-    compileSdk = 33
-    buildToolsVersion = "30.0.3"
+    compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
     defaultConfig {
         applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = 21
-        targetSdk = 33
+        minSdk = libs.versions.minSdkVersion.get().toInt()
+        targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1
         versionName = "1.0"
+    }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {
@@ -54,5 +60,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugaring)
+
     implementation(project(":core"))
 }

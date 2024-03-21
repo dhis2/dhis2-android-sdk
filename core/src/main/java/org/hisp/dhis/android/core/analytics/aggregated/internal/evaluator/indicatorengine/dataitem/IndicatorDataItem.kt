@@ -48,7 +48,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 getEvaluator(visitor).evaluate(
                     evaluationItem = evaluationItem,
                     metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
-                    queryMods = visitor.state.queryMods
+                    queryMods = visitor.state.queryMods,
                 )
             }
         } ?: ParserUtils.DOUBLE_VALUE_IF_NULL
@@ -60,7 +60,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 getEvaluator(visitor).getSql(
                     evaluationItem = evaluationItem,
                     metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
-                    queryMods = visitor.state.queryMods
+                    queryMods = visitor.state.queryMods,
                 )?.let { "($it)" }
             }
         }
@@ -72,13 +72,13 @@ internal interface IndicatorDataItem : ExpressionItem {
 
     private fun getEvaluationItem(
         ctx: ExprContext,
-        visitor: CommonExpressionVisitor
+        visitor: CommonExpressionVisitor,
     ): AnalyticsServiceEvaluationItem? {
         return getDataItem(ctx, visitor)?.let { dataItem ->
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(dataItem),
                 filters = visitor.indicatorContext!!.evaluationItem.allDimensionItems,
-                aggregationType = visitor.indicatorContext.evaluationItem.aggregationType
+                aggregationType = visitor.indicatorContext.evaluationItem.aggregationType,
             )
         }
     }
@@ -86,7 +86,7 @@ internal interface IndicatorDataItem : ExpressionItem {
     @Suppress("ThrowsCount")
     private fun getMetadataEntry(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        visitor: CommonExpressionVisitor
+        visitor: CommonExpressionVisitor,
     ): Pair<String, MetadataItem>? {
         return when (val dataItem = evaluationItem.dimensionItems.first()) {
             is DimensionItem.DataItem.DataElementOperandItem -> {
@@ -107,7 +107,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 dataElementOperandId to MetadataItem.DataElementOperandItem(
                     dataElementOperand,
                     dataElement.displayName()!!,
-                    coc.displayName()
+                    coc.displayName(),
                 )
             }
             is DimensionItem.DataItem.DataElementItem -> {

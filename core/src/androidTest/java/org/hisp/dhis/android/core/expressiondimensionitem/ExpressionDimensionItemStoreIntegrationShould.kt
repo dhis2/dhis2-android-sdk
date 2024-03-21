@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.expressiondimensionitem
 
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.expressiondimensionitem.ExpressionDimensionItemSamples
-import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
@@ -37,9 +37,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class ExpressionDimensionItemStoreIntegrationShould :
     IdentifiableObjectStoreAbstractIntegrationShould<ExpressionDimensionItem>(
-        ExpressionDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
+        ExpressionDimensionItemStoreImpl(TestDatabaseAdapterFactory.get()),
         ExpressionDimensionItemTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
 
     override fun buildObject(): ExpressionDimensionItem {

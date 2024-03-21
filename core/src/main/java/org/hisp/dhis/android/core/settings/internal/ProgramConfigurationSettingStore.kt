@@ -28,40 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
 
-@Suppress("MagicNumber")
-internal object ProgramConfigurationSettingStore {
-
-    private val BINDER =
-        StatementBinder<ProgramConfigurationSetting> { o: ProgramConfigurationSetting, w: StatementWrapper ->
-            w.bind(1, o.uid())
-            w.bind(2, o.completionSpinner())
-            w.bind(3, o.optionalSearch())
-        }
-
-    private val WHERE_UPDATE_BINDER =
-        WhereStatementBinder<ProgramConfigurationSetting> { _: ProgramConfigurationSetting, _: StatementWrapper ->
-        }
-
-    private val WHERE_DELETE_BINDER =
-        WhereStatementBinder<ProgramConfigurationSetting> { _: ProgramConfigurationSetting, _: StatementWrapper ->
-        }
-
-    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<ProgramConfigurationSetting> {
-        return StoreFactory.objectWithoutUidStore(
-            databaseAdapter!!, ProgramConfigurationSettingTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> ProgramConfigurationSetting.create(cursor) }
-    }
-}
+internal interface ProgramConfigurationSettingStore : ObjectWithoutUidStore<ProgramConfigurationSetting>

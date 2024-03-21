@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataSet> {
 
     public DataSetStoreIntegrationShould() {
-        super(DataSetStore.create(TestDatabaseAdapterFactory.get()), DataSetTableInfo.TABLE_INFO,
+        super(new DataSetStoreImpl(TestDatabaseAdapterFactory.get()), DataSetTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

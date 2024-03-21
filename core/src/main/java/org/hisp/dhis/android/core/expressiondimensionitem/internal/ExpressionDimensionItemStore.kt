@@ -25,33 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo
 
-@Suppress("MagicNumber")
-internal object ExpressionDimensionItemStore {
-    private val BINDER: StatementBinder<ExpressionDimensionItem> =
-        object : IdentifiableStatementBinder<ExpressionDimensionItem>() {
-            override fun bindToStatement(o: ExpressionDimensionItem, w: StatementWrapper) {
-                super.bindToStatement(o, w)
-                w.bind(7, o.expression())
-            }
-        }
-
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ExpressionDimensionItem> {
-        return objectWithUidStore(
-            databaseAdapter,
-            ExpressionDimensionItemTableInfo.TABLE_INFO,
-            BINDER
-        ) { cursor: Cursor -> ExpressionDimensionItem.create(cursor) }
-    }
-}
+internal interface ExpressionDimensionItemStore : IdentifiableObjectStore<ExpressionDimensionItem>

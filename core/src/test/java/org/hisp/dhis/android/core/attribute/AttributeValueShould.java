@@ -52,45 +52,5 @@ public class AttributeValueShould extends BaseObjectShould implements ObjectShou
 
         assertThat(attributeValue.value()).isEqualTo("value_test");
         assertThat(attributeValue.attribute().uid()).isEqualTo("r6KOit2qCGw");
-        assertThat(attributeValue.attribute().uid()).isEqualTo("r6KOit2qCGw");
-        assertThat(attributeValue.attribute().name()).isEqualTo("Name Pattern");
-        assertThat(attributeValue.attribute().displayName()).isEqualTo("Name Pattern");
-        assertThat(attributeValue.attribute().lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2020-07-06T06:27:19.164"));
-        assertThat(attributeValue.attribute().created()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2020-07-06T06:27:19.164"));
-        assertThat(attributeValue.attribute().valueType()).isEqualTo(ValueType.TEXT);
-        assertThat(attributeValue.attribute().unique()).isEqualTo(false);
-        assertThat(attributeValue.attribute().mandatory()).isEqualTo(false);
-        assertThat(attributeValue.attribute().programStageAttribute()).isEqualTo(true);
-        assertThat(attributeValue.attribute().indicatorAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().indicatorGroupAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().userGroupAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().dataElementAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().constantAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().categoryOptionAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().optionSetAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().sqlViewAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().legendSetAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().trackedEntityAttributeAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().organisationUnitAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().dataSetAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().documentAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().validationRuleGroupAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().dataElementGroupAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().sectionAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().trackedEntityTypeAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().userAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().categoryOptionGroupAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().programAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().categoryAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().categoryOptionComboAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().categoryOptionGroupSetAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().validationRuleAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().programIndicatorAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().organisationUnitGroupAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().dataElementGroupSetAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().organisationUnitGroupSetAttribute()).isEqualTo(false);
-        assertThat(attributeValue.attribute().optionAttribute()).isEqualTo(false);
     }
 }

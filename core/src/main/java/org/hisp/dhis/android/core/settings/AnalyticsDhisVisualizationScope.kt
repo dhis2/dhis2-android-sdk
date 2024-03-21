@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.settings
 enum class AnalyticsDhisVisualizationScope {
     HOME,
     PROGRAM,
-    DATA_SET
+    DATA_SET,
 }

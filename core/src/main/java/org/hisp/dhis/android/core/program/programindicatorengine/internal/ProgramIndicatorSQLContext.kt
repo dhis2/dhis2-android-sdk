@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 
 data class ProgramIndicatorSQLContext(
     val programIndicator: ProgramIndicator,
-    val periods: List<Period>?
+    val periods: List<Period>?,
 )

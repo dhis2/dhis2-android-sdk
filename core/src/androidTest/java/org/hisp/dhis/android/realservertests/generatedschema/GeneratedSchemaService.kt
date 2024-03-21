@@ -37,6 +37,6 @@ internal interface GeneratedSchemaService {
     @GET("{instanceVersion}/{schemaName}.json")
     fun getSchema(
         @Path("instanceVersion") instanceVersion: String,
-        @Path("schemaName") schemaName: String
+        @Path("schemaName") schemaName: String,
     ): Single<GeneratedSchema>
 }

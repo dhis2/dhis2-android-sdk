@@ -27,29 +27,26 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
-    private val handler: LinkHandler<CategoryOptionRestriction, CategoryOptionOrganisationUnitLink>,
+@Singleton
+internal class CategoryOptionOrganisationUnitsCall(
+    private val handler: CategoryOptionOrganisationUnitLinkHandler,
     private val service: CategoryOptionService,
     private val dhisVersionManager: DHISVersionManager,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
 ) {
 
     companion object {
         private const val QUERY_WITHOUT_UIDS_LENGTH = ("categoryOptions/orgUnits?categoryOptions=").length
     }
 
-    fun download(uids: Set<String>): Single<Map<String, List<String>>> {
+    suspend fun download(uids: Set<String>): Map<String, List<String>> {
         return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
             apiDownloader.downloadPartitionedMap(
                 uids = uids,
@@ -60,18 +57,17 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
                 },
                 pageDownloader = { partitionUids: Set<String> ->
                     service.getCategoryOptionOrgUnits(partitionUids.joinToString(","))
-                }
+                },
             )
         } else {
-            Single.just(emptyMap())
+            emptyMap()
         }
     }
 
     private fun getUpdatedEntries(
         uids: Set<String>,
-        data: Map<String, List<String?>>
+        data: Map<String, List<String?>>,
     ): Map<String, List<CategoryOptionRestriction>> {
-
         val updatedEntries = mutableMapOf<String, List<CategoryOptionRestriction>>()
         for (uid in uids) {
             if (!data.keys.contains(uid)) {
@@ -104,22 +100,22 @@ internal class CategoryOptionOrganisationUnitsCall @Inject constructor(
                     .categoryOption(entry.key)
                     .restriction(o.label)
                     .build()
-            }
+            },
         )
     }
 
     sealed class CategoryOptionRestriction(open val label: String) {
         data class Restricted(
             val uid: String,
-            override val label: String = RESTRICTED
+            override val label: String = RESTRICTED,
         ) : CategoryOptionRestriction(label)
 
         class NotRestricted(
-            override val label: String = NOT_RESTRICTED
+            override val label: String = NOT_RESTRICTED,
         ) : CategoryOptionRestriction(label)
 
         class NotAccessibleToUser(
-            override val label: String = NOT_ACCESSIBLE_TO_USER
+            override val label: String = NOT_ACCESSIBLE_TO_USER,
         ) : CategoryOptionRestriction(label)
 
         companion object {

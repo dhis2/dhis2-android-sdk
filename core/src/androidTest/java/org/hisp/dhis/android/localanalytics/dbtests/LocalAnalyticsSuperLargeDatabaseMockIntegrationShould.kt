@@ -46,7 +46,7 @@ internal class LocalAnalyticsSuperLargeDatabaseMockIntegrationShould :
         fun setUpClass() {
             setUpClass(
                 LocalAnalyticsDataParams.SuperLargeFactor,
-                MockIntegrationTestDatabaseContent.LocalAnalyticsSuperLargeDispatcher
+                MockIntegrationTestDatabaseContent.LocalAnalyticsSuperLargeDispatcher,
             )
         }
     }

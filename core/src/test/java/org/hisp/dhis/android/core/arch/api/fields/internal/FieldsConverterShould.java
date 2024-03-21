@@ -144,11 +144,14 @@ public class FieldsConverterShould {
                 Fields.builder().fields(id, programsWithChildrenWithChildren).build());
         String queryStringFive = fieldsConverter.convert(
                 Fields.builder().fields(id, programsWithChildrenWithChildren, displayName).build());
+        String queryStringSix = fieldsConverter.convert(
+                Fields.builder().fields(id, programs, displayName).build());
 
         assertThat(queryStringOne).isEqualTo("id,displayName,programs");
         assertThat(queryStringTwo).isEqualTo("id,displayName,programs[id,displayName]");
         assertThat(queryStringThree).isEqualTo("id,programs[id,displayName],displayName");
         assertThat(queryStringFour).isEqualTo("id,programs[id,displayName,programs[id,displayName]]");
         assertThat(queryStringFive).isEqualTo("id,programs[id,displayName,programs[id,displayName]],displayName");
+        assertThat(queryStringSix).isEqualTo("id,programs,displayName");
     }
 }

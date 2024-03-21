@@ -25,41 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
-import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
 
-@Suppress("MagicNumber")
-internal object StockUseCaseTransactionLinkStore {
-    private val BINDER: StatementBinder<InternalStockUseCaseTransaction> =
-        StatementBinder<InternalStockUseCaseTransaction> { o: InternalStockUseCaseTransaction, w: StatementWrapper ->
-            w.bind(1, o.programUid())
-            w.bind(2, o.sortOrder())
-            w.bind(3, o.transactionType())
-            w.bind(4, o.distributedTo())
-            w.bind(5, o.stockDistributed())
-            w.bind(6, o.stockDiscarded())
-            w.bind(7, o.stockCount())
-        }
-
-    val CHILD_PROJECTION: SingleParentChildProjection = SingleParentChildProjection(
-        StockUseCaseTransactionTableInfo.TABLE_INFO, StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID
-    )
-
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<InternalStockUseCaseTransaction> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            StockUseCaseTransactionTableInfo.TABLE_INFO,
-            StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID,
-            BINDER
-        ) { cursor: Cursor -> InternalStockUseCaseTransaction.create(cursor) }
-    }
-}
+internal interface StockUseCaseTransactionLinkStore : LinkStore<InternalStockUseCaseTransaction>

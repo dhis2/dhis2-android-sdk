@@ -52,9 +52,9 @@ public abstract class AppearanceSettings {
     @JsonProperty
     public abstract CompletionSpinnerSetting completionSpinner();
 
-    public abstract AppearanceSettings.Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    public static AppearanceSettings.Builder builder() {
+    public static Builder builder() {
         return new AutoValue_AppearanceSettings.Builder();
     }
 

@@ -46,7 +46,7 @@ public class DataValueTableInfo {
 
         @Override
         public CoreColumns columns() {
-            return new DataValueTableInfo.Columns();
+            return new Columns();
         }
     };
 

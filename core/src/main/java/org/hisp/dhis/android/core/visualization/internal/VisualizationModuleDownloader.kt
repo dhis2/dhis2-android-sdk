@@ -27,27 +27,20 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationModuleDownloader @Inject internal constructor(
-    private val visualizationCall: UidsCall<Visualization>,
-    private val analyticsDhisVisualizationStore: ObjectWithoutUidStore<AnalyticsDhisVisualization>
+@Singleton
+internal class VisualizationModuleDownloader internal constructor(
+    private val visualizationCall: VisualizationCall,
+    private val analyticsDhisVisualizationStore: AnalyticsDhisVisualizationStore,
 ) :
     TypedModuleDownloader<List<Visualization>> {
 
-    override fun downloadMetadata(): Single<List<Visualization>> {
-        return Single.fromCallable {
-            analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
-        }.flatMap {
-            visualizationCall.download(it)
-        }
+    override suspend fun downloadMetadata(): List<Visualization> {
+        val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
+        return visualizationCall.download(visualizations)
     }
 }

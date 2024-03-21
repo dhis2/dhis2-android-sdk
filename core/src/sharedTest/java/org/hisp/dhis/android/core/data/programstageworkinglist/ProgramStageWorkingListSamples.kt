@@ -55,45 +55,45 @@ object ProgramStageWorkingListSamples {
                             .startDate(parseDate("2014-05-01"))
                             .endDate(parseDate("2014-05-01"))
                             .type(DatePeriodType.ABSOLUTE)
-                            .build()
+                            .build(),
                     )
                     .eventOccurredAt(
                         DateFilterPeriod.builder()
                             .period(RelativePeriod.LAST_10_FINANCIAL_YEARS)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
                     .eventScheduledAt(
                         DateFilterPeriod.builder()
                             .startBuffer(-5)
                             .endBuffer(5)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
                     .enrollmentStatus(EnrollmentStatus.ACTIVE)
                     .enrolledAt(
                         DateFilterPeriod.builder()
                             .period(RelativePeriod.TODAY)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
                     .enrollmentOccurredAt(
                         DateFilterPeriod.builder()
                             .period(RelativePeriod.LAST_2_SIXMONTHS)
                             .type(DatePeriodType.RELATIVE)
-                            .build()
+                            .build(),
                     )
                     .order("order")
                     .displayColumnOrder(
                         listOf(
                             "column1",
-                            "column2"
-                        )
+                            "column2",
+                        ),
                     )
                     .orgUnit("orgunit")
                     .ouMode(OrganisationUnitMode.ACCESSIBLE)
                     .assignedUserMode(AssignedUserMode.CURRENT)
-                    .build()
+                    .build(),
             )
             .build()
     }

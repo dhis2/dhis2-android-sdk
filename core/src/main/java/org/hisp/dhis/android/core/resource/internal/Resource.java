@@ -64,7 +64,7 @@ public abstract class Resource implements CoreObject {
 
     @Nullable
     @ColumnAdapter(ResourceTypeColumnAdapter.class)
-    public abstract Resource.Type resourceType();
+    public abstract Type resourceType();
 
     @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -84,7 +84,7 @@ public abstract class Resource implements CoreObject {
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder resourceType(Resource.Type resourceType);
+        public abstract Builder resourceType(Type resourceType);
 
         public abstract Builder lastSynced(Date lastSynced);
 

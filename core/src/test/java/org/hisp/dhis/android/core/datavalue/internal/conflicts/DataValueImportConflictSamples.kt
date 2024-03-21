@@ -34,17 +34,17 @@ object DataValueImportConflictSamples {
 
     fun invalidDataElementType(): ImportConflict = ImportConflict.create(
         "40L",
-        "Data value is not a positive integer, must match data element type: vANAXwtLwcT"
+        "Data value is not a positive integer, must match data element type: vANAXwtLwcT",
     )
 
     fun pastExpiryDate(): ImportConflict = ImportConflict.create(
         "202104",
-        "Current date is past expiry days for period 202104 and data set: BfMAe6Itzgt"
+        "Current date is past expiry days for period 202104 and data set: BfMAe6Itzgt",
     )
 
     fun periodAfterLatestOpenFuture(): ImportConflict = ImportConflict.create(
         "202111",
-        "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6"
+        "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6",
     )
 
     fun indexedImportConflict(): ImportConflict = ImportConflict.create(
@@ -52,6 +52,6 @@ object DataValueImportConflictSamples {
         "Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric",
         "E7619",
         "value",
-        listOf(1, 3)
+        listOf(1, 3),
     )
 }

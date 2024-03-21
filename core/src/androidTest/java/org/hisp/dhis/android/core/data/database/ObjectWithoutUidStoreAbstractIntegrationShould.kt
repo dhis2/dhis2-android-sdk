@@ -41,7 +41,7 @@ import org.junit.Test
 abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
     internal val store: ObjectWithoutUidStore<M>,
     tableInfo: TableInfo,
-    databaseAdapter: DatabaseAdapter
+    databaseAdapter: DatabaseAdapter,
 ) : ObjectStoreAbstractIntegrationShould<M>(store, tableInfo, databaseAdapter) {
 
     private val objectToUpdate: M

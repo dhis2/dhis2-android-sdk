@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -44,13 +45,10 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class OptionHandlerShould {
     @Mock
-    private IdentifiableObjectStore<Option> optionStore;
+    private OptionStore optionStore;
 
     @Mock
     private Option option;
@@ -59,7 +57,7 @@ public class OptionHandlerShould {
     private ObjectStyle style;
 
     @Mock
-    private SubCollectionCleaner<Option> optionCleaner;
+    private OptionSubCollectionCleaner optionCleaner;
 
     private List<Option> options;
 
@@ -84,6 +82,6 @@ public class OptionHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(optionStore, null);
+        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(optionStore, optionCleaner);
     }
 }

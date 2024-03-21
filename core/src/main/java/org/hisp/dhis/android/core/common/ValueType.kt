@@ -27,7 +27,26 @@
  */
 package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.BooleanValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.CoordinateValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.DateTimeValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.DateValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.EmailValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerNegativeValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerPositiveValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerZeroOrPositiveValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.LetterValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.LongTextValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.NumberValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.PercentageValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.PhoneNumberValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.TextValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.TimeValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.TrueOnlyValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.UidValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.UnitIntervalValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.ValueTypeValidator
 
 enum class ValueType(val validator: ValueTypeValidator<*>) {
     TEXT(TextValidator),
@@ -57,7 +76,8 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
     FILE_RESOURCE(UidValidator),
     IMAGE(UidValidator),
     GEOJSON(TextValidator),
-    MULTI_TEXT(TextValidator);
+    MULTI_TEXT(TextValidator),
+    ;
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)

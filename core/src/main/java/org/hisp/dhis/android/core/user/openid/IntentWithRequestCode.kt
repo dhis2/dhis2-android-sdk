@@ -32,5 +32,5 @@ import android.content.Intent
 
 data class IntentWithRequestCode(
     val intent: Intent,
-    val requestCode: Int
+    val requestCode: Int,
 )

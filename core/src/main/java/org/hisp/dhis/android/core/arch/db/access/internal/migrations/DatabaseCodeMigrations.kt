@@ -41,6 +41,6 @@ internal class DatabaseCodeMigrations(databaseAdapter: DatabaseAdapter) {
 
     @Suppress("MagicNumber")
     val map: Map<Int, DatabaseCodeMigration> = mapOf(
-        133 to DatabaseCodeMigration133(databaseAdapter)
+        133 to DatabaseCodeMigration133(databaseAdapter),
     )
 }

@@ -59,7 +59,7 @@ internal object D2ConfigurationValidator {
                     .errorCode(D2ErrorCode.APP_VERSION_NOT_SET)
                     .errorDescription(
                         "The version number was not passed and the SDK was not able to get it " +
-                            "from the Android System"
+                            "from the Android System",
                     )
                     .build()
         } else {

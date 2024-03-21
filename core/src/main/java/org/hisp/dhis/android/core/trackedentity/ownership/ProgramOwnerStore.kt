@@ -25,41 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-@Suppress("MagicNumber")
-internal object ProgramOwnerStore {
-    private val BINDER = StatementBinder<ProgramOwner> { o, w ->
-        w.bind(1, o.program())
-        w.bind(2, o.trackedEntityInstance())
-        w.bind(3, o.ownerOrgUnit())
-        w.bind(4, o.syncState())
-    }
-
-    private val WHERE_UPDATE_BINDER =
-        WhereStatementBinder<ProgramOwner> { o, w ->
-            w.bind(5, o.program())
-            w.bind(6, o.trackedEntityInstance())
-        }
-
-    private val WHERE_DELETE_BINDER =
-        WhereStatementBinder<ProgramOwner> { o, w ->
-            w.bind(1, o.program())
-            w.bind(2, o.trackedEntityInstance())
-        }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<ProgramOwner> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            ProgramOwnerTableInfo.TABLE_INFO,
-            BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { ProgramOwner.create(it) }
-    }
-}
+internal interface ProgramOwnerStore : ObjectWithoutUidStore<ProgramOwner>

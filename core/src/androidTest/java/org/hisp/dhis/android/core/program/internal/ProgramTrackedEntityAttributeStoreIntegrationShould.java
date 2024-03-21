@@ -41,7 +41,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramTrackedEntityAttribute> {
 
     public ProgramTrackedEntityAttributeStoreIntegrationShould() {
-        super(ProgramTrackedEntityAttributeStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ProgramTrackedEntityAttributeStoreImpl(TestDatabaseAdapterFactory.get()),
                 ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

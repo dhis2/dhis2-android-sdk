@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.visualization
 
 enum class LegendStrategy {
     FIXED,
-    BY_DATA_ITEM
+    BY_DATA_ITEM,
 }

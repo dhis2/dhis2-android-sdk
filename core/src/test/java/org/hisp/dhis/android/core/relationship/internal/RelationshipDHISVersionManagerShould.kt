@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.relationship.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.junit.Before
 import org.junit.Test
 
 class RelationshipDHISVersionManagerShould {
-    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType> = mock()
+    private val relationshipTypeStore: RelationshipTypeStore = mock()
 
     private val relationshipType: RelationshipType = mock()
 

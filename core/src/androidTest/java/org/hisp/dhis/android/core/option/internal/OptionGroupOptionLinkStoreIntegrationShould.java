@@ -41,7 +41,7 @@ public class OptionGroupOptionLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<OptionGroupOptionLink> {
 
     public OptionGroupOptionLinkStoreIntegrationShould() {
-        super(OptionGroupOptionLinkStore.create(TestDatabaseAdapterFactory.get()),
+        super(new OptionGroupOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
                 OptionGroupOptionLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

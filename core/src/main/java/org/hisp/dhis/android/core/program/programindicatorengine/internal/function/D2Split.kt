@@ -46,7 +46,9 @@ internal class D2Split : ExpressionItem {
 
             if (tokens.size > index && index >= 0) {
                 wrap(tokens[index])
-            } else ""
+            } else {
+                ""
+            }
         }
     }
 }

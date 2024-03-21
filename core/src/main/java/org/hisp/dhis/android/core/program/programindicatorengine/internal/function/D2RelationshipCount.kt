@@ -45,7 +45,6 @@ internal class D2RelationshipCount : ExpressionItem {
     private val rAlias = "r"
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-
         val rTypeUid = ctx.uid0?.text
 
         val queries = getQueries(visitor.programIndicatorSQLContext!!.programIndicator)
@@ -73,7 +72,7 @@ internal class D2RelationshipCount : ExpressionItem {
                         "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
                         "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT})",
                     enrollmentQuery = "= $event.${EventTableInfo.Columns.ENROLLMENT}",
-                    eventQuery = "= $event.${EventTableInfo.Columns.UID}"
+                    eventQuery = "= $event.${EventTableInfo.Columns.UID}",
                 )
             AnalyticsType.ENROLLMENT, null ->
                 RelationshipCountQueries(
@@ -82,7 +81,7 @@ internal class D2RelationshipCount : ExpressionItem {
                     eventQuery = "IN (SELECT ${EventTableInfo.Columns.UID} " +
                         "FROM ${EventTableInfo.TABLE_INFO.name()} " +
                         "WHERE ${EventTableInfo.Columns.ENROLLMENT} = " +
-                        "$enrollment.${EnrollmentTableInfo.Columns.UID})"
+                        "$enrollment.${EnrollmentTableInfo.Columns.UID})",
                 )
         }
     }
@@ -90,6 +89,6 @@ internal class D2RelationshipCount : ExpressionItem {
     internal data class RelationshipCountQueries(
         val teiQuery: String,
         val enrollmentQuery: String,
-        val eventQuery: String
+        val eventQuery: String,
     )
 }

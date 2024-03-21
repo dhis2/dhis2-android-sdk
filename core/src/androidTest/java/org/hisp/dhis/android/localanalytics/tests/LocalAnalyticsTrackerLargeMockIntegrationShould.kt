@@ -46,7 +46,7 @@ internal class LocalAnalyticsTrackerLargeMockIntegrationShould :
         fun setUpClass() {
             setUpClass(
                 LocalAnalyticsDataParams.LargeFactor,
-                MockIntegrationTestDatabaseContent.LocalAnalyticsLargeDispatcher
+                MockIntegrationTestDatabaseContent.LocalAnalyticsLargeDispatcher,
             )
         }
     }

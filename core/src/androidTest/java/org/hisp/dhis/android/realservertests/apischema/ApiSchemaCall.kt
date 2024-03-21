@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import retrofit2.Retrofit
 
 internal class ApiSchemaCall internal constructor(
-    private val retrofit: Retrofit
+    private val retrofit: Retrofit,
 ) : ListCall<ApiSchema> {
     override fun download(): Single<List<ApiSchema>> {
         return retrofit.create(ApiSchemaService::class.java).getSchema(ApiSchemaFields.allFields).map { it.items() }

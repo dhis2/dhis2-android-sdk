@@ -25,31 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.map.layer.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.MapLayerImagerProviderAreaListColumnAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
 
-@Suppress("MagicNumber")
-internal object MapLayerImageryProviderStore {
-    private val BINDER = StatementBinder { o: MapLayerImageryProvider, w: StatementWrapper ->
-        w.bind(1, o.mapLayer())
-        w.bind(2, o.attribution())
-        w.bind(3, MapLayerImagerProviderAreaListColumnAdapter.serialize(o.coverageAreas()))
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<MapLayerImageryProvider> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            MapLayerImageryProviderTableInfo.TABLE_INFO,
-            MapLayerImageryProviderTableInfo.Columns.MAP_LAYER,
-            BINDER
-        ) { cursor -> MapLayerImageryProvider.create(cursor) }
-    }
-}
+internal interface MapLayerImageryProviderStore : LinkStore<MapLayerImageryProvider>

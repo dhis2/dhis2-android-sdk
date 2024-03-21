@@ -51,7 +51,7 @@ object AnalyticsPeriodBoundaryTableInfo {
                 BOUNDARY_TARGET,
                 ANALYTICS_PERIOD_BOUNDARY_TYPE,
                 OFFSET_PERIODS,
-                OFFSET_PERIOD_TYPE
+                OFFSET_PERIOD_TYPE,
             )
         }
 

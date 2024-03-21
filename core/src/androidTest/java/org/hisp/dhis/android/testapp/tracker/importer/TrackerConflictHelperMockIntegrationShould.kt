@@ -33,23 +33,20 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerConflictHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
     fun generate_correct_display_descriptions_if_passing_correct_error_report() {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector()
+            objects.d2DIComponent.interpreterSelector,
         ).getConflictBuilder(errorReport).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo(
                 "The Antenatal care visit - Program rules demo event was not found in the server." +
-                    " (Event: event1)"
+                    " (Event: event1)",
             )
     }
 
@@ -57,7 +54,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     fun return_default_message_when_passing_wrong_error_report() {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector()
+            objects.d2DIComponent.interpreterSelector,
         ).getConflictBuilder(wrongCodeErrorReport).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo("Event: `event1`, Enrollment value is NULL.")
@@ -67,7 +64,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     fun generate_correct_display_descriptions_for_E1000_error() {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
-            objects.d2DIComponent.interpreterSelector()
+            objects.d2DIComponent.interpreterSelector,
         ).getConflictBuilder(errorReportE1000).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo("You do not have access to Ngelehun CHC")
@@ -78,14 +75,14 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
             "event1",
             TrackerImporterObjectType.EVENT,
             "E1032",
-            "Event: `event1`, Enrollment value is NULL."
+            "Event: `event1`, Enrollment value is NULL.",
         )
 
         private val errorReportE1000 = JobValidationError(
             "teiUid",
             TrackerImporterObjectType.TRACKED_ENTITY,
             "E1000",
-            "User: `User (DXyJmlo9rge)`, has no write access to OrganisationUnit: `OrganisationUnit (DiszpKrYNg8)`."
+            "User: `User (DXyJmlo9rge)`, has no write access to OrganisationUnit: `OrganisationUnit (DiszpKrYNg8)`.",
         )
         private val wrongCodeErrorReport = errorReport.copy(errorCode = "WrongCode")
     }

@@ -61,14 +61,14 @@ internal object DataValueByDataSetQueryHelper {
     val dataValueKey = buildKey(
         DataValueTableInfo.Columns.DATA_ELEMENT,
         DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
-        DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO
+        DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
     )
 
     @JvmStatic
     val dataValueConflictKey = buildKey(
         DataValueConflictTableInfo.Columns.DATA_ELEMENT,
         DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO,
-        DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO
+        DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
     )
 
     @JvmStatic
@@ -103,7 +103,7 @@ internal object DataValueByDataSetQueryHelper {
     private fun buildKey(
         dataElementTag: String,
         categoryOptionComboTag: String,
-        attributeOptionComboTag: String
+        attributeOptionComboTag: String,
     ): String {
         return "$dataElementTag || '.' || $categoryOptionComboTag || '.' || $attributeOptionComboTag"
     }

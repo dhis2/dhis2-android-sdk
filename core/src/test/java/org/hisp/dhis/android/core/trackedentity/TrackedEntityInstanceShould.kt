@@ -41,10 +41,10 @@ class TrackedEntityInstanceShould : BaseObjectShould("trackedentity/tracked_enti
         val trackedEntityInstance = objectMapper.readValue(jsonStream, TrackedEntityInstance::class.java)
 
         assertThat(trackedEntityInstance.lastUpdated()).isEqualTo(
-            DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242")
+            DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242"),
         )
         assertThat(trackedEntityInstance.created()).isEqualTo(
-            DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375")
+            DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"),
         )
 
         assertThat(trackedEntityInstance.uid()).isEqualTo("PgmUFEQYZdt")

@@ -28,20 +28,16 @@
 
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ExpressionDimensionItemModuleDownloader @Inject internal constructor(
+@Singleton
+internal class ExpressionDimensionItemModuleDownloader internal constructor(
     private val expressionDimensionItemUidsSeeker: ExpressionDimensionItemUidsSeeker,
-    private val expressionDimensionItemCall: ExpressionDimensionItemCall
-) : UntypedModuleDownloader {
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { expressionDimensionItemUidsSeeker.seekUids() }
-            .flatMap { expressionDimensionItemCall.download(it) }
-            .ignoreElement()
+    private val expressionDimensionItemCall: ExpressionDimensionItemCall,
+) : UntypedModuleDownloaderCoroutines {
+    override suspend fun downloadMetadata() {
+        val uids = expressionDimensionItemUidsSeeker.seekUids()
+        expressionDimensionItemCall.download(uids)
     }
 }

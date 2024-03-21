@@ -36,7 +36,7 @@ internal class EnumTestHelper {
             } else {
                 val errorList = listOfNotNull(
                     constantsContained(sdkEnumEntry.value, generateConstants, sdkEnumEntry.key, "SDK"),
-                    constantsContained(generateConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server")
+                    constantsContained(generateConstants, sdkEnumEntry.value, sdkEnumEntry.key, "server"),
                 )
                 if (errorList.isNotEmpty()) errorList.joinToString() else null
             }
@@ -46,13 +46,15 @@ internal class EnumTestHelper {
             containerList: List<String>,
             containedList: List<String>,
             enumKey: String,
-            containerKey: String
+            containerKey: String,
         ): String? {
             val notContainedValues = containedList.filter { !containerList.contains(it) }
             return if (notContainedValues.isNotEmpty()) {
                 "Constants ${notContainedValues.joinToString()} from enum " +
                     "$enumKey does not exist in the $containerKey"
-            } else null
+            } else {
+                null
+            }
         }
 
         inline fun <reified E : Enum<E>> entry(apiKey: String): Pair<String, List<String>> {

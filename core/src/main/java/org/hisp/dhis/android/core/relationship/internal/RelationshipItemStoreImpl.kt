@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -40,19 +38,20 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
+import org.koin.core.annotation.Singleton
 
-internal class RelationshipItemStoreImpl private constructor(
+@Singleton
+internal class RelationshipItemStoreImpl(
     databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl
-) : ObjectWithoutUidStoreImpl<RelationshipItem>(
-    databaseAdapter,
-    builder,
-    BINDER,
-    WHERE_UPDATE_BINDER,
-    WHERE_DELETE_BINDER,
-    { cursor: Cursor -> RelationshipItem.create(cursor) }
-),
-    RelationshipItemStore {
+) : RelationshipItemStore,
+    ObjectWithoutUidStoreImpl<RelationshipItem>(
+        databaseAdapter,
+        RelationshipItemTableInfo.TABLE_INFO,
+        BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
+        { cursor: Cursor -> RelationshipItem.create(cursor) },
+    ) {
 
     @Suppress("NestedBlockDepth")
     override fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
@@ -76,7 +75,7 @@ internal class RelationshipItemStoreImpl private constructor(
 
     override fun getForRelationshipUidAndConstraintType(
         uid: String,
-        constraintType: RelationshipConstraintType
+        constraintType: RelationshipConstraintType,
     ): RelationshipItem? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, uid)
@@ -96,11 +95,11 @@ internal class RelationshipItemStoreImpl private constructor(
         val whereFromClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUids
+                trackedEntityInstanceUids,
             )
             .appendKeyStringValue(
                 RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
-                RelationshipConstraintType.FROM
+                RelationshipConstraintType.FROM,
             )
             .build()
 
@@ -111,7 +110,7 @@ internal class RelationshipItemStoreImpl private constructor(
             .appendInKeyStringValues(RelationshipItemTableInfo.Columns.RELATIONSHIP, relationshipUids)
             .appendKeyStringValue(
                 RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE,
-                RelationshipConstraintType.TO
+                RelationshipConstraintType.TO,
             )
             .appendIsNotNullValue(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
             .build()
@@ -159,9 +158,13 @@ internal class RelationshipItemStoreImpl private constructor(
     }
 
     companion object {
-        private val BINDER = StatementBinder { o: RelationshipItem, w: StatementWrapper ->
-            val trackedEntityInstance = if (o.trackedEntityInstance() == null) null else o.trackedEntityInstance()!!
-                .trackedEntityInstance()
+        private val BINDER = StatementBinder<RelationshipItem> { o: RelationshipItem, w: StatementWrapper ->
+            val trackedEntityInstance = if (o.trackedEntityInstance() == null) {
+                null
+            } else {
+                o.trackedEntityInstance()!!
+                    .trackedEntityInstance()
+            }
             val enrollment = if (o.enrollment() == null) null else o.enrollment()!!.enrollment()
             val event = if (o.event() == null) null else o.event()!!.event()
             w.bind(1, getUidOrNull(o.relationship()))
@@ -170,24 +173,13 @@ internal class RelationshipItemStoreImpl private constructor(
             w.bind(4, enrollment)
             w.bind(5, event)
         }
-        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: RelationshipItem, w: StatementWrapper ->
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder<RelationshipItem> { o: RelationshipItem, w: StatementWrapper ->
             w.bind(6, getUidOrNull(o.relationship()))
             w.bind(7, o.relationshipItemType())
         }
-        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: RelationshipItem, w: StatementWrapper ->
+        private val WHERE_DELETE_BINDER = WhereStatementBinder<RelationshipItem> { o: RelationshipItem, w: StatementWrapper ->
             w.bind(1, getUidOrNull(o.relationship()))
             w.bind(2, o.relationshipItemType())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): RelationshipItemStore {
-            val statementBuilder = SQLStatementBuilderImpl(
-                RelationshipItemTableInfo.TABLE_INFO.name(), RelationshipItemTableInfo.Columns()
-            )
-            return RelationshipItemStoreImpl(
-                databaseAdapter,
-                statementBuilder
-            )
         }
     }
 }

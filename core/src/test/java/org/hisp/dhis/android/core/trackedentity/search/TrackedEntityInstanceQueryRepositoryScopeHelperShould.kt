@@ -77,9 +77,9 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                         DateFilterPeriod.builder()
                             .startBuffer(-2)
                             .endBuffer(5)
-                            .build()
+                            .build(),
                     )
-                    .build()
+                    .build(),
             )
             .build()
 
@@ -106,8 +106,8 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                         .programStage(programStage1).eventStatus(EventStatus.ACTIVE).build(),
                     TrackedEntityInstanceEventFilter.builder()
                         .programStage(programStage2).assignedUserMode(AssignedUserMode.CURRENT)
-                        .eventCreatedPeriod(FilterPeriod.create(-5, 2)).build()
-                )
+                        .eventCreatedPeriod(FilterPeriod.create(-5, 2)).build(),
+                ),
             )
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
@@ -137,8 +137,8 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .enrollmentStatus(listOf(EnrollmentStatus.ACTIVE))
             .eventFilters(
                 listOf(
-                    TrackedEntityInstanceQueryEventFilter.builder().assignedUserMode(AssignedUserMode.CURRENT).build()
-                )
+                    TrackedEntityInstanceQueryEventFilter.builder().assignedUserMode(AssignedUserMode.CURRENT).build(),
+                ),
             )
             .build()
 
@@ -147,8 +147,8 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .program(ObjectWithUid.create(programId))
             .eventFilters(
                 listOf(
-                    TrackedEntityInstanceEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build()
-                )
+                    TrackedEntityInstanceEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build(),
+                ),
             )
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
@@ -180,9 +180,9 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                                 .attribute("attribute2")
                                 .eq("eq_str")
                                 .build(),
-                        )
+                        ),
                     )
-                    .build()
+                    .build(),
             )
             .build()
 
@@ -193,12 +193,12 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
         assertThat(
             filters.any {
                 it.operator() == FilterItemOperator.LIKE && it.key() == "attribute1" && it.value() == "like_str"
-            }
+            },
         ).isTrue()
         assertThat(
             filters.any {
                 it.operator() == FilterItemOperator.EQ && it.key() == "attribute2" && it.value() == "eq_str"
-            }
+            },
         ).isTrue()
     }
 }

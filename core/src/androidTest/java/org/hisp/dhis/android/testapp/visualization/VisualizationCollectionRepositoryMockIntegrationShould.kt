@@ -29,14 +29,12 @@ package org.hisp.dhis.android.testapp.visualization
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
 import org.hisp.dhis.android.core.visualization.VisualizationType
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class VisualizationCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class VisualizationCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
         val visualizations = d2.visualizationModule().visualizations()
@@ -175,7 +173,7 @@ class VisualizationCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         val visualization = d2.visualizationModule().visualizations()
             .withColumnsRowsAndFilters()
             .uid("PYBH8ZaAQnC")
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(visualization.columns()!![0].id()).isEqualTo("dx")
         assertThat(visualization.columns()!![0].items()!!.size).isEqualTo(3)

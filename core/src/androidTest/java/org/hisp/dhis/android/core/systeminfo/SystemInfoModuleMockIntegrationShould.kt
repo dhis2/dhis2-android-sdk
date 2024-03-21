@@ -29,15 +29,12 @@ package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class SystemInfoModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_system_info_user() {
-        val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()
+        val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()!!
         assertThat(systemInfo.version()).isEqualTo("2.40.0")
         assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }

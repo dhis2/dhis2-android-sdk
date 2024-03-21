@@ -29,22 +29,26 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import org.koin.core.annotation.Singleton
 
-internal class FileResourceStoreImpl private constructor(
+@Singleton
+internal class FileResourceStoreImpl(
     databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl,
-    binder: StatementBinder<FileResource>,
-    objectFactory: Function1<Cursor, FileResource>
-) : IdentifiableDataObjectStoreImpl<FileResource>(databaseAdapter, builder, binder, objectFactory) {
+) : FileResourceStore,
+    IdentifiableDataObjectStoreImpl<FileResource>(
+        databaseAdapter,
+        FileResourceTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> FileResource.create(cursor) },
+    ) {
 
     companion object {
-        private val BINDER = StatementBinder { o: FileResource, w: StatementWrapper ->
+        private val BINDER = StatementBinder<FileResource> { o: FileResource, w: StatementWrapper ->
             w.bind(1, o.uid())
             w.bind(2, o.name())
             w.bind(3, o.created())
@@ -54,19 +58,6 @@ internal class FileResourceStoreImpl private constructor(
             w.bind(7, o.path())
             w.bind(8, o.syncState())
             w.bind(9, o.domain())
-        }
-
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): IdentifiableDataObjectStoreImpl<FileResource> {
-            val statementBuilder = SQLStatementBuilderImpl(
-                FileResourceTableInfo.TABLE_INFO.name(),
-                FileResourceTableInfo.TABLE_INFO.columns()
-            )
-            return FileResourceStoreImpl(
-                databaseAdapter,
-                statementBuilder,
-                BINDER
-            ) { cursor: Cursor -> FileResource.create(cursor) }
         }
     }
 }

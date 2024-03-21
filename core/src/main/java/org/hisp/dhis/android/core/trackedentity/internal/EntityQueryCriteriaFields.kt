@@ -63,6 +63,6 @@ internal object EntityQueryCriteriaFields {
                 .with(DateFilterPeriodFields.allFields),
             fh.nestedField<DateFilterPeriod>(Columns.ENROLLMENT_CREATED_DATE)
                 .with(DateFilterPeriodFields.allFields),
-            fh.nestedField<AttributeValueFilter>(ATTRIBUTE_VALUE_FILTER).with(AttributeValueFilterFields.allFields)
+            fh.nestedField<AttributeValueFilter>(ATTRIBUTE_VALUE_FILTER).with(AttributeValueFilterFields.allFields),
         ).build()
 }

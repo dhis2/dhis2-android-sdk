@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(D2JunitRunner::class)
 internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationShould() {
@@ -46,7 +46,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
             fileResourceStore = fileResourceStore,
             trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes(),
             trackedEntityAttributeValueCollectionRepository = d2.trackedEntityModule().trackedEntityAttributeValues(),
-            trackedEntityDataValueCollectionRepository = d2.trackedEntityModule().trackedEntityDataValues()
+            trackedEntityDataValueCollectionRepository = d2.trackedEntityModule().trackedEntityDataValues(),
         )
     }
 

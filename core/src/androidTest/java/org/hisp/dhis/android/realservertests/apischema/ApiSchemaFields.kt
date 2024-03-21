@@ -43,14 +43,14 @@ internal object ApiSchemaFields {
             .fields(
                 ApiSchemaPropertyFh.field<String>(KLASS),
                 ApiSchemaPropertyFh.field<String>(PROPERTY_TYPE),
-                ApiSchemaPropertyFh.field<String>(CONSTANTS)
+                ApiSchemaPropertyFh.field<String>(CONSTANTS),
             ).build()
 
     val allFields: Fields<ApiSchema> = Fields.builder<ApiSchema>()
         .fields(
             ApiSchemaFh.nestedField<ApiSchema.Companion.SchemaProperty>(
-                PROPERTIES
+                PROPERTIES,
             )
-                .with(propertyFields)
+                .with(propertyFields),
         ).build()
 }

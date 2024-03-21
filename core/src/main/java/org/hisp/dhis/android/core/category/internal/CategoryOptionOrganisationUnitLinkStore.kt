@@ -25,30 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
 
-@Suppress("MagicNumber")
-internal object CategoryOptionOrganisationUnitLinkStore {
-    private val BINDER = StatementBinder { o: CategoryOptionOrganisationUnitLink, w: StatementWrapper ->
-        w.bind(1, o.categoryOption())
-        w.bind(2, o.organisationUnit())
-        w.bind(3, o.restriction())
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionOrganisationUnitLink> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
-            CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-            BINDER
-        ) { CategoryOptionOrganisationUnitLink.create(it) }
-    }
-}
+internal interface CategoryOptionOrganisationUnitLinkStore : LinkStore<CategoryOptionOrganisationUnitLink>

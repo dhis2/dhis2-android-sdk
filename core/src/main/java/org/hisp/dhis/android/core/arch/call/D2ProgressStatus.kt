@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.call
 
 data class D2ProgressStatus(
     val isComplete: Boolean = false,
-    val syncStatus: D2ProgressSyncStatus? = null
+    val syncStatus: D2ProgressSyncStatus? = null,
 ) {
     fun addSyncStatus(syncStatus: D2ProgressSyncStatus): D2ProgressStatus {
         val newStatus = when {
@@ -47,5 +47,5 @@ data class D2ProgressStatus(
 enum class D2ProgressSyncStatus {
     SUCCESS,
     ERROR,
-    PARTIAL_ERROR
+    PARTIAL_ERROR,
 }

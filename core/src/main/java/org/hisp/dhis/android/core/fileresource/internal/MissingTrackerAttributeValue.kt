@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
 internal data class MissingTrackerAttributeValue(
     val value: TrackedEntityAttributeValue,
-    val valueType: ValueType
+    val valueType: ValueType,
 )

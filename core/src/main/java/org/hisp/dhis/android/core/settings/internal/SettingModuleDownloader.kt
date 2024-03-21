@@ -27,39 +27,31 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import android.annotation.SuppressLint
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class SettingModuleDownloader @Inject constructor(
+@Singleton
+internal class SettingModuleDownloader(
     private val systemSettingCall: SystemSettingCall,
     private val generalSettingCall: GeneralSettingCall,
     private val synchronizationSettingCall: SynchronizationSettingCall,
     private val analyticsSettingCall: AnalyticsSettingCall,
     private val userSettingsCall: UserSettingsCall,
     private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall
-) : UntypedModuleDownloader {
+    private val latestAppVersionCall: LatestAppVersionCall,
+) : UntypedModuleDownloaderCoroutines {
 
-    @SuppressLint("CheckResult")
-    override fun downloadMetadata(): Completable {
-        return Completable.fromAction {
-            downloadFromSettingsApp().blockingAwait()
-            userSettingsCall.download().blockingGet()
-            systemSettingCall.download().blockingGet()
-            latestAppVersionCall.getCompletable(false).blockingAwait()
-        }
+    override suspend fun downloadMetadata() {
+        downloadFromSettingsApp()
+        userSettingsCall.download()
+        systemSettingCall.download()
+        latestAppVersionCall.download(false)
     }
 
-    private fun downloadFromSettingsApp(): Completable {
-        return Completable.fromAction {
-            generalSettingCall.getCompletable(false).blockingAwait()
-            synchronizationSettingCall.getCompletable(false).blockingAwait()
-            appearanceSettingCall.getCompletable(false).blockingAwait()
-            analyticsSettingCall.getCompletable(false).blockingAwait()
-        }
+    private suspend fun downloadFromSettingsApp() {
+        generalSettingCall.download(false)
+        synchronizationSettingCall.download(false)
+        appearanceSettingCall.download(false)
+        analyticsSettingCall.download(false)
     }
 }

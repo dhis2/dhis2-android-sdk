@@ -52,7 +52,7 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Section.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_Section.Builder.class)
 public abstract class Section extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable

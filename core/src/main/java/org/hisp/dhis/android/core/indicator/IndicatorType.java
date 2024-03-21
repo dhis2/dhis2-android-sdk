@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_IndicatorType.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_IndicatorType.Builder.class)
 public abstract class IndicatorType extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable

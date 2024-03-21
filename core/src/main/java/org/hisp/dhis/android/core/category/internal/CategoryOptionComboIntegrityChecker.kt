@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryOptionComboIntegrityChecker @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
+@Singleton
+internal class CategoryOptionComboIntegrityChecker(
+    private val databaseAdapter: DatabaseAdapter,
 ) {
     /**
      * Sharing access is applied to CategoryOption level, so it might happen that a CategoryOptionCombo is missing
@@ -66,7 +65,7 @@ internal class CategoryOptionComboIntegrityChecker @Inject constructor(
         databaseAdapter.delete(
             CategoryOptionComboTableInfo.TABLE_INFO.name(),
             whereClause,
-            emptyArray()
+            emptyArray(),
         )
     }
 }

@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import org.koin.core.annotation.Singleton
 
-internal class ProgramConfigurationSettingHandler(store: ObjectWithoutUidStore<ProgramConfigurationSetting>) :
-    ObjectWithoutUidHandlerImpl<ProgramConfigurationSetting>(store) {
+@Singleton
+internal class ProgramConfigurationSettingHandler(
+    store: ProgramConfigurationSettingStore,
+) : ObjectWithoutUidHandlerImpl<ProgramConfigurationSetting>(store) {
 
     override fun beforeCollectionHandled(
-        oCollection: Collection<ProgramConfigurationSetting>
+        oCollection: Collection<ProgramConfigurationSetting>,
     ): Collection<ProgramConfigurationSetting> {
         store.delete()
         return oCollection

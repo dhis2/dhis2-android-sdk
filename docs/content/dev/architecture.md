@@ -4,10 +4,10 @@
 
 ## Frameworks and auxiliary libraries
 
-- [Dagger](https://google.github.io/dagger/)
+- [Koin](https://insert-koin.io/)
 - [Autovalue](https://github.com/google/auto/blob/master/value/userguide/index.md)
 - [Retrofit](https://square.github.io/retrofit/)/[OkHttp3](https://github.com/square/okhttp)
-- [SQLBrite](https://github.com/square/sqlbrite)
+- [SQLCipher](https://www.zetetic.net/sqlcipher/)
 
 ## Public API overview
 
@@ -38,4 +38,4 @@ Feature packages contain at least:
 
 ## Local database
 
-SQLBrite library is used for migrations. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `assets/migrations`.
+The SDK runs the DB migrations itself. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `assets/migrations`.

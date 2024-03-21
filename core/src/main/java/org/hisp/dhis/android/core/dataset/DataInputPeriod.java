@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataInputPeriod.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_DataInputPeriod.Builder.class)
 public abstract class DataInputPeriod extends BaseObject {
 
     @Nullable
@@ -75,16 +75,16 @@ public abstract class DataInputPeriod extends BaseObject {
         return $AutoValue_DataInputPeriod.createFromCursor(cursor);
     }
 
-    public abstract DataInputPeriod.Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    public static DataInputPeriod.Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_DataInputPeriod.Builder();
     }
 
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<DataInputPeriod.Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 

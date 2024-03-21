@@ -33,7 +33,7 @@ import org.mockito.ArgumentMatcher
 internal class QueryPageUserModeMatcher(
     private val page: Int,
     private val pageSize: Int,
-    private val assignedUserMode: AssignedUserMode
+    private val assignedUserMode: AssignedUserMode,
 ) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
 
     override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {

@@ -27,32 +27,29 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class VisualizationCall @Inject constructor(
-    private val handler: Handler<Visualization>,
+@Singleton
+internal class VisualizationCall(
+    private val handler: VisualizationHandler,
     private val service: VisualizationService,
     private val dhis2VersionManager: DHISVersionManager,
-    private val apiDownloader: APIDownloader
-) : UidsCall<Visualization> {
+    private val apiDownloader: APIDownloader,
+) : UidsCallCoroutines<Visualization> {
 
     companion object {
         // Workaround for DHIS2-15322. Force queries to entity endpoint instead of list endpoint.
         private const val MAX_UID_LIST_SIZE = 1
     }
 
-    override fun download(uids: Set<String>): Single<List<Visualization>> {
+    override suspend fun download(uids: Set<String>): List<Visualization> {
         val accessFilter = "access." + AccessFields.read.eq(true).generateString()
 
         return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
@@ -60,35 +57,41 @@ internal class VisualizationCall @Inject constructor(
                 apiDownloader.downloadPartitioned(
                     uids,
                     MAX_UID_LIST_SIZE,
-                    handler
+                    handler,
                 ) { partitionUids: Set<String> ->
-                    service.getSingleVisualization(
-                        partitionUids.first(),
-                        VisualizationFields.allFields,
-                        accessFilter = accessFilter,
-                        paging = false
-                    )
-                        .map { Payload(listOf(it)) }
-                        .onErrorReturnItem(Payload())
+                    try {
+                        val visualization = service.getSingleVisualization(
+                            partitionUids.first(),
+                            VisualizationFields.allFields,
+                            accessFilter = accessFilter,
+                            paging = false,
+                        )
+                        Payload(listOf(visualization))
+                    } catch (ignored: Exception) {
+                        Payload()
+                    }
                 }
             } else {
                 apiDownloader.downloadPartitioned(
                     uids,
                     MAX_UID_LIST_SIZE,
-                    handler
+                    handler,
                 ) { partitionUids: Set<String> ->
-                    service.getSingleVisualizations36(
-                        partitionUids.first(),
-                        VisualizationFields.allFieldsAPI36,
-                        accessFilter = accessFilter,
-                        paging = false
-                    )
-                        .map { Payload(listOf(it.toVisualization())) }
-                        .onErrorReturnItem(Payload())
+                    try {
+                        val visualization36 = service.getSingleVisualizations36(
+                            partitionUids.first(),
+                            VisualizationFields.allFieldsAPI36,
+                            accessFilter = accessFilter,
+                            paging = false,
+                        )
+                        Payload(listOf(visualization36.toVisualization()))
+                    } catch (ignored: Exception) {
+                        Payload()
+                    }
                 }
             }
         } else {
-            Single.just(listOf())
+            emptyList()
         }
     }
 }

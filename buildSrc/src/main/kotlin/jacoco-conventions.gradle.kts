@@ -28,6 +28,10 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+plugins {
+    jacoco
+}
+
 tasks.register("jacocoReport", JacocoReport::class) {
     group = "Coverage"
     description = "Generate XML/HTML code coverage reports for coverage.ec"

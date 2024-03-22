@@ -32,6 +32,10 @@ plugins {
     jacoco
 }
 
+jacoco {
+    toolVersion = "0.8.11"
+}
+
 tasks.register("jacocoReport", JacocoReport::class) {
     group = "Coverage"
     description = "Generate XML/HTML code coverage reports for coverage.ec"
@@ -88,10 +92,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*AutoValue_*.*"
     )
 
-    val javaClasses = fileTree("${layout.buildDirectory}/intermediates/javac/debug") {
+    val javaClasses = fileTree("${buildDir}/intermediates/javac/debug") {
         exclude(excludes)
     }
-    val kotlinClasses = fileTree("${layout.buildDirectory}/tmp/kotlin-classes/debug") {
+    val kotlinClasses = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
         exclude(excludes)
     }
 
@@ -104,10 +108,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         )
     )
 
-    val unitTestsData = fileTree("${layout.buildDirectory}/jacoco") {
+    val unitTestsData = fileTree("${buildDir}/jacoco") {
         include("*.exec")
     }
-    val androidTestsData = fileTree("${layout.buildDirectory}/outputs/code_coverage") {
+    val androidTestsData = fileTree("${buildDir}/outputs/code_coverage") {
         include(listOf("**/*.ec"))
     }
 
@@ -122,10 +126,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     fun JacocoReportsContainer.reports() {
         xml.required.set(true)
-        xml.outputLocation.set(file("${layout.buildDirectory}/coverage-report/jacocoTestReport.xml"))
+        xml.outputLocation.set(file("${buildDir}/coverage-report/jacocoTestReport.xml"))
 
         html.required.set(true)
-        html.outputLocation.set(file("${layout.buildDirectory}/coverage-report"))
+        html.outputLocation.set(file("${buildDir}/coverage-report"))
     }
 
     reports {

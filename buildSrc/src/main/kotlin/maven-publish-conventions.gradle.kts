@@ -46,7 +46,7 @@ gradle.taskGraph.whenReady(closureOf<TaskExecutionGraph> {
 
 tasks.dokkaJavadoc.configure {
     dependsOn("kaptReleaseKotlin")
-    outputDirectory = file("${layout.buildDirectory}/dokkaJavadoc")
+    outputDirectory = file("${buildDir}/dokkaJavadoc")
 
     dokkaSourceSets {
         configureEach {
@@ -67,53 +67,56 @@ val androidJavadocsJar = tasks.register("androidJavadocsJar", Jar::class) {
 
 afterEvaluate {
     publishing {
-        publications.withType<MavenPublication> {
-            artifact(androidJavadocsJar)
+        publications {
+            create<MavenPublication>("maven") {
+                from(components["release"])
+                artifact(androidJavadocsJar)
 
-            groupId = Props.GROUP
-            artifactId = Props.POM_ARTIFACT_ID
-            version = VERSION_NAME
+                groupId = Props.GROUP
+                artifactId = Props.POM_ARTIFACT_ID
+                version = VERSION_NAME
 
-            pom {
-                name = Props.POM_NAME
-                packaging = Props.POM_PACKAGING
-                description = Props.POM_DESCRIPTION
-                url = Props.POM_URL
-                licenses {
-                    license {
-                        name = Props.POM_LICENCE_NAME
-                        url = Props.POM_LICENCE_URL
-                        distribution = Props.POM_LICENCE_DIST
+                pom {
+                    name = Props.POM_NAME
+                    packaging = Props.POM_PACKAGING
+                    description = Props.POM_DESCRIPTION
+                    url = Props.POM_URL
+                    licenses {
+                        license {
+                            name = Props.POM_LICENCE_NAME
+                            url = Props.POM_LICENCE_URL
+                            distribution = Props.POM_LICENCE_DIST
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = Props.POM_DEVELOPER_ID
+                            name = Props.POM_DEVELOPER_NAME
+                        }
+                    }
+                    scm {
+                        connection = Props.POM_SCM_CONNECTION
+                        developerConnection = Props.POM_SCM_DEV_CONNECTION
+                        url = Props.POM_SCM_URL
                     }
                 }
-                developers {
-                    developer {
-                        id = Props.POM_DEVELOPER_ID
-                        name = Props.POM_DEVELOPER_NAME
+            }
+
+            repositories {
+                maven {
+                    url = if (isReleaseBuild()) URI(releaseRepositoryUrl) else URI(snapshotRepositoryUrl)
+
+                    credentials {
+                        username = getRepositoryUsername()
+                        password = getRepositoryPassword()
                     }
-                }
-                scm {
-                    connection = Props.POM_SCM_CONNECTION
-                    developerConnection = Props.POM_SCM_DEV_CONNECTION
-                    url = Props.POM_SCM_URL
                 }
             }
         }
 
-        repositories {
-            maven {
-                url = if (isReleaseBuild()) URI(releaseRepositoryUrl) else URI(snapshotRepositoryUrl)
-
-                credentials {
-                    username = getRepositoryUsername()
-                    password = getRepositoryPassword()
-                }
-            }
+        signing {
+            setRequired({ isReleaseBuild() && gradle.taskGraph.hasTask("publishing") })
+            sign(publishing.publications)
         }
-    }
-
-    signing {
-        setRequired({ isReleaseBuild() && gradle.taskGraph.hasTask("publishing") })
-        sign(publishing.publications)
     }
 }

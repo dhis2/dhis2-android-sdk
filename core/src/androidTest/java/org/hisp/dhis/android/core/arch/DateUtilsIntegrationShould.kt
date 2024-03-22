@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,41 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch
 
-plugins {
-    id("com.android.application")
-    id("jacoco-conventions")
-    kotlin("android")
-}
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-android {
-    compileSdk = libs.versions.targetSdkVersion.get().toInt()
+@RunWith(D2JunitRunner::class)
+class DateUtilsIntegrationShould {
 
-    defaultConfig {
-        applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+    @Test
+    fun testOneClass() {
+        val current = DateUtils.getStrDate()
+        assertThat(current).isNotNull()
     }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        getByName("debug") {
-            enableAndroidTestCoverage = true
-        }
-    }
-    namespace = "org.hisp.dhis.android.instrumentedTestApp"
-}
-
-dependencies {
-    coreLibraryDesugaring(libs.desugaring)
-
-    implementation(project(":core"))
 }

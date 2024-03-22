@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("com.android.application")
-    id("jacoco-conventions")
-    kotlin("android")
-}
-
-android {
-    compileSdk = libs.versions.targetSdkVersion.get().toInt()
-
-    defaultConfig {
-        applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-    }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        getByName("debug") {
-            enableAndroidTestCoverage = true
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
         }
     }
-    namespace = "org.hisp.dhis.android.instrumentedTestApp"
-}
-
-dependencies {
-    coreLibraryDesugaring(libs.desugaring)
-
-    implementation(project(":core"))
 }

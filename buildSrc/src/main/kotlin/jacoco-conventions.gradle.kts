@@ -1,3 +1,5 @@
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
@@ -26,7 +28,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply(plugin = "jacoco")
+plugins {
+    jacoco
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
 
 tasks.register("jacocoReport", JacocoReport::class) {
     group = "Coverage"
@@ -34,7 +42,7 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     sourceDirectories.setFrom("${project.projectDir}/src/main/java")
 
-    val excludes = mutableSetOf<String>(
+    val excludes = mutableSetOf(
         // data binding
         "android/databinding/**/*.class",
         "**/android/databinding/*Binding.class",

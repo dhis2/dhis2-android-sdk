@@ -31,14 +31,13 @@ plugins {
     id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.16"
     id("kotlin-android")
     id("kotlin-kapt")
+    id("maven-publish-conventions")
+    id("jacoco-conventions")
     alias(libs.plugins.detekt)
-    alias(libs.plugins.dokka) apply false
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
 apply(from = project.file("plugins/android-pmd.gradle"))
-apply(from = project.file("plugins/jacoco.gradle.kts"))
-apply(from = project.file("plugins/gradle-mvn-push.gradle"))
 
 repositories {
     mavenCentral()

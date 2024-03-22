@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.util.simpleDateFormat
 import java.util.*
 
 object DateUtils {
@@ -111,5 +112,16 @@ object DateUtils {
         val seconds = dateTime.second.zeroPrefixed()
 
         return "$year$month$day-$hour$minute$seconds"
+    }
+
+    fun getCurrentDate() {
+        val date = Date()
+        val time = date.time
+        println(time)
+    }
+
+    fun getStrDate() {
+        val dateStr = Date().simpleDateFormat()
+        println(dateStr)
     }
 }

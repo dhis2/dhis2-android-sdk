@@ -12,7 +12,6 @@ buildscript {
         classpath(libs.gradle)
         classpath(libs.kotlin)
         classpath(libs.ktlint)
-        classpath(libs.jacoco)
     }
 }
 

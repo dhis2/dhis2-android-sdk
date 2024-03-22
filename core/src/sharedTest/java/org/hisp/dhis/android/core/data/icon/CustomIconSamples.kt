@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.icon
 
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.icon.CustomIcon
 
 object CustomIconSamples {
@@ -36,7 +37,7 @@ object CustomIconSamples {
         return CustomIcon.builder()
             .id(1L)
             .key("childIcon")
-            .fileResourceUid("lNrwSpIy1Q9")
+            .fileResource(ObjectWithUid.create("lNrwSpIy1Q9"))
             .href("https://play.im.dhis2.org/dev/api/icons/childIcon/icon")
             .build()
     }

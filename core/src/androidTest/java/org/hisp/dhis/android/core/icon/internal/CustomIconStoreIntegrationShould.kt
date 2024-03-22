@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.icon.internal
 
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.icon.CustomIconSamples
 import org.hisp.dhis.android.core.icon.CustomIcon
@@ -48,7 +49,7 @@ class CustomIconStoreIntegrationShould :
 
     override fun buildObjectToUpdate(): CustomIcon {
         return CustomIconSamples.getCustomIcon().toBuilder()
-            .fileResourceUid("otherResourceUid")
+            .fileResource(ObjectWithUid.create("otherResourceUid"))
             .build()
     }
 }

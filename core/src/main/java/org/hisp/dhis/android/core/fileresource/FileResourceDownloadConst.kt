@@ -46,5 +46,5 @@ enum class FileResourceDataDomainType {
 
 enum class FileResourceDomainType(internal val domainType: FileResourceDomain) {
     DATA_VALUE(FileResourceDomain.DATA_VALUE),
-    CUSTOM_ICON(FileResourceDomain.CUSTOM_ICON),
+    ICON(FileResourceDomain.ICON),
 }

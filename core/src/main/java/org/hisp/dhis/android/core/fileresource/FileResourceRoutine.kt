@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
-import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
@@ -92,14 +91,14 @@ internal class FileResourceRoutine(
         val fileResourceUids = dataValues.map(DataValue::value) +
             trackedEntityAttributeValues.map(TrackedEntityAttributeValue::value) +
             trackedEntityDataValues.map(TrackedEntityDataValue::value) +
-            customIcons.map(CustomIcon::fileResourceUid)
+            customIcons.map { it.fileResource().uid() }
 
         val calendar = Calendar.getInstance().apply {
             add(Calendar.HOUR_OF_DAY, -2)
         }
         val fileResources = fileResourceCollectionRepository
             .byUid().notIn(fileResourceUids.mapNotNull { it })
-            .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.CUSTOM_ICON)
+            .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.ICON)
             .byLastUpdated().before(after ?: calendar.time)
             .blockingGet()
 

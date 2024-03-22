@@ -1,5 +1,7 @@
 {
   "key": "childIcon",
-  "fileResourceUid": "lNrwSpIy1Q9",
+  "fileResource": {
+    "id": "lNrwSpIy1Q9"
+  },
   "href": "https://play.im.dhis2.org/dev/api/icons/childIcon/icon"
 }

@@ -41,7 +41,7 @@ class CustomIconShould :
         val icon = objectMapper.readValue(jsonStream, CustomIcon::class.java)
 
         assertThat(icon.key()).isEqualTo("childIcon")
-        assertThat(icon.fileResourceUid()).isEqualTo("lNrwSpIy1Q9")
+        assertThat(icon.fileResource().uid()).isEqualTo("lNrwSpIy1Q9")
         assertThat(icon.href()).isEqualTo("https://play.im.dhis2.org/dev/api/icons/childIcon/icon")
     }
 }

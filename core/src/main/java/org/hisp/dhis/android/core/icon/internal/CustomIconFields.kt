@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 
 internal object CustomIconFields {
     private const val KEY = "key"
-    private const val FILE_RESOURCE_UID = "fileResourceUid"
+    private const val FILE_RESOURCE = "fileResource"
     private const val HREF = "href"
 
     private val fh = FieldsHelper<CustomIcon>()
@@ -42,7 +42,7 @@ internal object CustomIconFields {
         Fields.builder<CustomIcon>()
             .fields(
                 fh.field<String>(KEY),
-                fh.field<String>(FILE_RESOURCE_UID),
+                fh.nestedFieldWithUid(FILE_RESOURCE),
                 fh.field<String>(HREF),
             )
             .build()

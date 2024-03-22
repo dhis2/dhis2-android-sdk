@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.CustomIconTableInfo
 import org.koin.core.annotation.Singleton
@@ -62,7 +63,7 @@ internal class CustomIconStoreImpl(
     companion object {
         private val BINDER = StatementBinder { o: CustomIcon, w: StatementWrapper ->
             w.bind(1, o.key())
-            w.bind(2, o.fileResourceUid())
+            w.bind(2, getUidOrNull(o.fileResource()))
             w.bind(3, o.href())
         }
 

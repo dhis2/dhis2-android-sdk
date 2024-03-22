@@ -126,7 +126,7 @@ internal class FileResourceDownloadCallHelper(
         existingFileResources: List<String>,
     ): List<CustomIcon> {
         val customIconsWhereClause = WhereClauseBuilder()
-            .appendNotInKeyStringValues(CustomIconTableInfo.Columns.FILE_RESOURCE_UID, existingFileResources)
+            .appendNotInKeyStringValues(CustomIconTableInfo.Columns.FILE_RESOURCE, existingFileResources)
             .build()
         return customIconStore.selectWhere(customIconsWhereClause)
     }

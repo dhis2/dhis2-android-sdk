@@ -51,8 +51,8 @@ class IconCollectionRepository internal constructor(
                     Icon.Default(key)
                 } else {
                     customIconStore.selectByKey(key)?.let { customIcon ->
-                        val fileResource = fileResourceStore.selectByUid(customIcon.fileResourceUid())
-                        Icon.Custom(customIcon.key(), customIcon.fileResourceUid(), fileResource?.path())
+                        val fileResource = fileResourceStore.selectByUid(customIcon.fileResource().uid())
+                        Icon.Custom(customIcon.key(), customIcon.fileResource().uid(), fileResource?.path())
                     }
                 }
             }

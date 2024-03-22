@@ -163,7 +163,7 @@ internal class FileResourceDownloadCall(
     }
 
     private suspend fun downloadCustomIcons(params: FileResourceDownloadParams, existingFileResources: List<String>) {
-        if (params.domainTypes.contains(FileResourceDomainType.CUSTOM_ICON)) {
+        if (params.domainTypes.contains(FileResourceDomainType.ICON)) {
             val iconKeys: List<CustomIcon> = helper.getMissingCustomIcons(existingFileResources)
 
             downloadAndPersistFiles(
@@ -172,7 +172,7 @@ internal class FileResourceDownloadCall(
                 download = { v ->
                     fileResourceService.getCustomIcon(v.href())
                 },
-                getUid = { v -> v.fileResourceUid() },
+                getUid = { v -> v.fileResource().uid() },
             )
         }
     }

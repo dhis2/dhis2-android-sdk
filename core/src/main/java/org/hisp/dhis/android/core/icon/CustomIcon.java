@@ -35,9 +35,12 @@ import androidx.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_CustomIcon.Builder.class)
@@ -49,7 +52,8 @@ public abstract class CustomIcon implements CoreObject {
 
     @NonNull
     @JsonProperty
-    public abstract String fileResourceUid();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid fileResource();
 
     @NonNull
     @JsonProperty
@@ -74,7 +78,7 @@ public abstract class CustomIcon implements CoreObject {
 
         public abstract Builder key(String key);
 
-        public abstract Builder fileResourceUid(String fileResourceUid);
+        public abstract Builder fileResource(ObjectWithUid fileResource);
 
         public abstract Builder href(String href);
 

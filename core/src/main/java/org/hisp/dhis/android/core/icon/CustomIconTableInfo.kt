@@ -50,7 +50,7 @@ object CustomIconTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 KEY,
-                FILE_RESOURCE_UID,
+                FILE_RESOURCE,
                 HREF,
             )
         }
@@ -64,7 +64,7 @@ object CustomIconTableInfo {
 
         companion object {
             const val KEY = "key"
-            const val FILE_RESOURCE_UID = "fileResourceUid"
+            const val FILE_RESOURCE = "fileResource"
             const val HREF = "href"
         }
     }

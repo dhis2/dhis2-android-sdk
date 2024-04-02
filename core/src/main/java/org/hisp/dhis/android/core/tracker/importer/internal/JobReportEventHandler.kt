@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -38,42 +35,30 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class JobReportEventHandler @Inject internal constructor(
+@Singleton
+internal class JobReportEventHandler internal constructor(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: IdentifiableObjectStore<Note>,
+    private val noteStore: NoteStore,
     private val conflictStore: TrackerImportConflictStore,
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val conflictHelper: TrackerConflictHelper,
-    relationshipStore: RelationshipStore
+    relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
-
-    fun handleEventNotes(eventUid: String, state: State) {
-        val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
-        val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
-            )
-            .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
-        for (note in noteStore.selectWhere(whereClause)) {
-            noteStore.update(note.toBuilder().syncState(newNoteState).build())
-        }
-    }
 
     override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
         if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
-            handleEventNotes(uid, state)
-            trackedEntityDataValueStore.removeDeletedDataValuesByEvent(uid)
+            handleSyncedEvent(uid)
         }
 
         return handleAction
@@ -93,7 +78,7 @@ internal class JobReportEventHandler @Inject internal constructor(
                         .trackedEntityInstance(trackedEntityInstanceUid)
                         .enrollment(event.enrollment())
                         .event(errorReport.uid)
-                        .build()
+                        .build(),
                 )
             }
         }
@@ -101,5 +86,25 @@ internal class JobReportEventHandler @Inject internal constructor(
 
     override fun getRelatedRelationships(uid: String): List<String> {
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
+    }
+
+    fun handleSyncedEvent(eventUid: String) {
+        handleEventNotes(eventUid, State.SYNCED)
+        trackedEntityDataValueStore.setSyncStateByEvent(eventUid, State.SYNCED)
+        trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
+        trackedEntityDataValueStore.removeUnassignedDataValuesByEvent(eventUid)
+    }
+
+    private fun handleEventNotes(eventUid: String, state: State) {
+        val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
+        val whereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.SYNC_STATE,
+                State.uploadableStatesIncludingError().map { it.name },
+            )
+            .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
+        for (note in noteStore.selectWhere(whereClause)) {
+            noteStore.update(note.toBuilder().syncState(newNoteState).build())
+        }
     }
 }

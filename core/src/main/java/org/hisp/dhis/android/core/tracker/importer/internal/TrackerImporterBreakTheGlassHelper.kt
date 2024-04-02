@@ -27,28 +27,27 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.program.AccessLevel
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
+@Singleton
+internal class TrackerImporterBreakTheGlassHelper(
     private val conflictStore: TrackerImportConflictStore,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val enrollmentStore: EnrollmentStore,
-    private val programStore: ProgramStoreInterface,
-    private val ownershipManagerImpl: OwnershipManagerImpl
+    private val programStore: ProgramStore,
+    private val ownershipManagerImpl: OwnershipManagerImpl,
 ) {
 
     /**
@@ -56,7 +55,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
      */
     fun getGlassErrors(
         summary: TEIWebResponseHandlerSummary,
-        instances: List<TrackedEntityInstance>
+        instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
         return summary.enrollments.ignored.filter { enrollment ->
             isProtectedInSearchScope(enrollment.program(), enrollment.organisationUnit())
@@ -106,12 +105,12 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
                 glassErrors.trackedEntities.addAll(
                     payload.trackedEntities.filter {
                         it.uid() == enrollment.trackedEntity()
-                    }
+                    },
                 )
                 glassErrors.events.addAll(
                     payload.events.filter {
                         it.enrollment() == enrollment.uid()
-                    }
+                    },
                 )
             }
 
@@ -133,11 +132,12 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     /**
      * Fake break the glass for importer V1
      */
-    fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
+    suspend fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
         instances.forEach { instance ->
             TrackedEntityInstanceInternalAccessor.accessEnrollments(instance).forEach { enrollment ->
-                if (instance.uid() != null && enrollment.program() != null)
+                if (instance.uid() != null && enrollment.program() != null) {
                     ownershipManagerImpl.fakeBreakGlass(instance.uid()!!, enrollment.program()!!)
+                }
             }
         }
     }
@@ -145,7 +145,7 @@ internal class TrackerImporterBreakTheGlassHelper @Inject constructor(
     /**
      * Fake break the glass for importer V2
      */
-    fun fakeBreakGlass(payload: NewTrackerImporterPayload) {
+    suspend fun fakeBreakGlass(payload: NewTrackerImporterPayload) {
         val teiProgramForEnrollment = payload.enrollments.mapNotNull {
             if (it.trackedEntity() != null && it.program() != null) {
                 Pair(it.trackedEntity()!!, it.program()!!)

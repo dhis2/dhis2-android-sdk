@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.period.PeriodType
 import org.junit.Assert.fail
 import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
 class AnalyticsSettingV1Should : BaseObjectShould("settings/analytics_settings.json"), ObjectShould {
 
@@ -59,13 +59,13 @@ class AnalyticsSettingV1Should : BaseObjectShould("settings/analytics_settings.j
                     assertThat(
                         tei.data()?.dataElements()?.any { dataElement ->
                             dataElement.dataElement() == "sWoqcoByYmD" && dataElement.programStage() == "dBwrot7S420"
-                        }
+                        },
                     ).isTrue()
 
                     assertThat(
                         tei.data()?.dataElements()?.any { dataElement ->
                             dataElement.dataElement() == "Ok9OQpitjQr" && dataElement.programStage() == "dBwrot7S421"
-                        }
+                        },
                     ).isTrue()
                 }
                 "XQUhloISaQJ" -> {
@@ -75,7 +75,7 @@ class AnalyticsSettingV1Should : BaseObjectShould("settings/analytics_settings.j
                     assertThat(
                         tei.data()?.indicators()?.first()?.let {
                             it.indicator() == "GSae40Fyppf" && it.programStage() == "dBwrot7S420"
-                        }
+                        },
                     ).isTrue()
 
                     assertThat(tei.data()?.attributes()?.size).isEqualTo(1)

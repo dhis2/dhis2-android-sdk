@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.datastore.internal
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 
 internal data class DataStoreDownloadParams(
-    val namespaces: List<String> = emptyList()
+    val namespaces: List<String> = emptyList(),
 ) : BaseScope

@@ -27,26 +27,24 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import java.util.concurrent.Callable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
+@Singleton
+internal class OldTrackedEntityEndpointCallFactory(
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val queryCallFactory: TrackedEntityInstanceQueryCallFactory
+    private val queryCallFactory: TrackedEntityInstanceQueryCallFactory,
 ) : TrackedEntityEndpointCallFactory() {
 
-    override fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>> {
+    override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             fields = TrackedEntityInstanceFields.allFields,
             trackedEntityInstances = getUidStr(query),
@@ -55,13 +53,13 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
-            order = TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER.toAPIString(),
+            order = DEFAULT_TRACKER_ORDER.toAPIString(TrackerExporterVersion.V1),
             paging = true,
             page = query.page,
             pageSize = query.pageSize,
             lastUpdatedStartDate = query.lastUpdatedStr,
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         )
     }
 
@@ -74,21 +72,21 @@ internal class OldTrackedEntityEndpointCallFactory @Inject constructor(
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         )
     }
 
-    override fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>> {
+    override suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstance(
             fields = TrackedEntityInstanceFields.asRelationshipFields,
             trackedEntityInstance = uid,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
             includeAllAttributes = true,
-            includeDeleted = true
+            includeDeleted = true,
         )
     }
 
-    override fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult> {
+    override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
         return queryCallFactory.getCall(query)
     }
 }

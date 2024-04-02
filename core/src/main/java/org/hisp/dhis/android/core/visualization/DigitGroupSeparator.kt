@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.visualization
 enum class DigitGroupSeparator {
     COMMA,
     SPACE,
-    NONE
+    NONE,
 }

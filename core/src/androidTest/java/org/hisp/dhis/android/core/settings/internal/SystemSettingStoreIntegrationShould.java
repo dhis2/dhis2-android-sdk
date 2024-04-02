@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
 
     public SystemSettingStoreIntegrationShould() {
-        super(SystemSettingStore.create(TestDatabaseAdapterFactory.get()), SystemSettingTableInfo.TABLE_INFO,
+        super(new SystemSettingStoreImpl(TestDatabaseAdapterFactory.get()), SystemSettingTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

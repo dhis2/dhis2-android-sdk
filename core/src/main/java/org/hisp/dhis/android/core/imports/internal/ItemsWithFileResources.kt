@@ -29,5 +29,5 @@ package org.hisp.dhis.android.core.imports.internal
 
 internal data class ItemsWithFileResources<T> (
     val items: List<T>,
-    val fileResources: List<String>
+    val fileResources: List<String>,
 )

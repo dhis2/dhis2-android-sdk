@@ -66,12 +66,12 @@ internal class DimItemDataElementAndOperand : DimensionalItem() {
                 dimensionalItemType = DimensionalItemType.DATA_ELEMENT_OPERAND,
                 id0 = ctx.uid0.text,
                 id1 = ctx.uid1?.text,
-                id2 = ctx.uid2?.text
+                id2 = ctx.uid2?.text,
             )
         } else {
             DimensionalItemId(
                 dimensionalItemType = DimensionalItemType.DATA_ELEMENT,
-                id0 = ctx.uid0.text
+                id0 = ctx.uid0.text,
             )
         }
     }

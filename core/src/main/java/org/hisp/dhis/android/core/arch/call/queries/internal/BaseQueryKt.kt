@@ -30,9 +30,15 @@ package org.hisp.dhis.android.core.arch.call.queries.internal
 internal open class BaseQueryKt(
     open val page: Int,
     open val pageSize: Int,
-    open val paging: Boolean
+    open val paging: Boolean,
 ) {
     companion object {
         const val DEFAULT_PAGE_SIZE = 50
     }
 }
+
+internal open class BaseQueryKtJavaCompatible(
+    page: Int = 1,
+    pageSize: Int = DEFAULT_PAGE_SIZE,
+    paging: Boolean = false,
+) : BaseQueryKt(page, pageSize, paging)

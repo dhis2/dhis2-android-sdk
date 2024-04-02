@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where
@@ -39,9 +38,9 @@ import retrofit2.http.Query
 
 internal interface CategoryComboService {
     @GET("categoryCombos")
-    fun getCategoryCombos(
+    suspend fun getCategoryCombos(
         @Query("fields") @Which fields: Fields<CategoryCombo>,
         @Query("filter") @Where uids: Filter<CategoryCombo, String>,
-        @Query("paging") paging: Boolean?
-    ): Single<Payload<CategoryCombo>>
+        @Query("paging") paging: Boolean?,
+    ): Payload<CategoryCombo>
 }

@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_LegendSet.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_LegendSet.Builder.class)
 public abstract class LegendSet extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -64,7 +64,7 @@ public abstract class LegendSet extends BaseIdentifiableObject implements CoreOb
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_LegendSet.Builder();
+        return new $$AutoValue_LegendSet.Builder();
     }
 
     @AutoValue.Builder

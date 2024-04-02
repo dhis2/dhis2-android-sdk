@@ -27,12 +27,9 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
@@ -40,21 +37,30 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("TooManyFunctions")
-internal class FileResourceHelper @Inject constructor(
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+internal class FileResourceHelper(
+    private val dataElementStore: DataElementStore,
+    private val attributeStore: TrackedEntityAttributeStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val eventStore: EventStore,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val dataValueStore: DataValueStore,
-    private val fileResourceStore: IdentifiableDataObjectStore<FileResource>
+    private val fileResourceStore: FileResourceStore,
 ) {
 
     fun getUploadableFileResources(): List<FileResource> {
@@ -69,7 +75,7 @@ internal class FileResourceHelper @Inject constructor(
 
     fun isPresentInAttributeValues(
         fileResourceUid: String,
-        attributeValues: Collection<TrackedEntityAttributeValue>?
+        attributeValues: Collection<TrackedEntityAttributeValue>?,
     ): Boolean {
         return attributeValues?.any {
             fileResourceUid == it.value() && isFileAttribute(it.trackedEntityAttribute())
@@ -78,7 +84,7 @@ internal class FileResourceHelper @Inject constructor(
 
     fun findAttributeFileResource(
         attributeValue: NewTrackerImporterTrackedEntityAttributeValue,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): FileResource? {
         return fileResources.find {
             it.uid() == attributeValue.value() && isFileAttribute(attributeValue.trackedEntityAttribute())
@@ -87,7 +93,7 @@ internal class FileResourceHelper @Inject constructor(
 
     fun findAttributeFileResource(
         attributeValue: TrackedEntityAttributeValue,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): FileResource? {
         return fileResources.find {
             it.uid() == attributeValue.value() && isFileAttribute(attributeValue.trackedEntityAttribute())
@@ -96,7 +102,7 @@ internal class FileResourceHelper @Inject constructor(
 
     fun findDataValueFileResource(
         dataValue: NewTrackerImporterTrackedEntityDataValue,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): FileResource? {
         return fileResources.find {
             it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
@@ -105,7 +111,7 @@ internal class FileResourceHelper @Inject constructor(
 
     fun findDataValueFileResource(
         dataValue: TrackedEntityDataValue,
-        fileResources: List<FileResource>
+        fileResources: List<FileResource>,
     ): FileResource? {
         return fileResources.find {
             it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
@@ -114,7 +120,7 @@ internal class FileResourceHelper @Inject constructor(
 
     fun findDataValueFileResource(
         dataValue: DataValue,
-        fileResource: List<FileResource>
+        fileResource: List<FileResource>,
     ): FileResource? {
         return fileResource.find {
             it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
@@ -145,7 +151,7 @@ internal class FileResourceHelper @Inject constructor(
         val candidates = trackedEntityDataValueStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResourceUid)
-                .build()
+                .build(),
         )
         val dataValue = candidates.find { isFileDataElement(it.dataElement()) }
 
@@ -156,7 +162,7 @@ internal class FileResourceHelper @Inject constructor(
         val candidates = trackedEntityAttributeValueStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResourceUid)
-                .build()
+                .build(),
         )
         val attributeValue = candidates.find { isFileAttribute(it.trackedEntityAttribute()) }
 
@@ -167,7 +173,7 @@ internal class FileResourceHelper @Inject constructor(
         val candidates = dataValueStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResourceUid)
-                .build()
+                .build(),
         )
         return candidates.find { isFileDataElement(it.dataElement()) }
     }

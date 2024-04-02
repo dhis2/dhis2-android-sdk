@@ -1,8 +1,6 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
-    val kotlinVersion = "1.7.21"
-
     repositories {
         google()
         mavenLocal()
@@ -11,15 +9,15 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
-        classpath("org.jacoco:org.jacoco.core:0.8.8")
+        classpath(libs.gradle)
+        classpath(libs.kotlin)
+        classpath(libs.ktlint)
+        classpath(libs.jacoco)
     }
 }
 
 plugins {
-    id("org.sonarqube") version "3.3"
+    alias(libs.plugins.sonarqube)
 }
 
 sonarqube {
@@ -66,7 +64,7 @@ subprojects {
     //version = VERSION_NAME
 
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        version.set("0.45.2")
+        version.set("0.50.0")
         android.set(true)
         outputColorName.set("RED")
         reporters {

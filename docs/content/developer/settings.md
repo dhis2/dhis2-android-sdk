@@ -32,6 +32,7 @@ It gives additional information about app settings:
 - Matomo configuration: if you have your own Matomo instance, you can expose this information to the app in order to configure its Matomo client.
 - AllowScreenCapture: parameter to determine if the application should allow screen capture or not.
 - MessageOfTheDay: a message to show to the users.
+- ExperimentalFeatures: list of experimental features enabled.
 
 ### Synchronization settings { #android_sdk_synchronization_settings }
 
@@ -58,8 +59,11 @@ These settings give control over the appearance of the data entry form.
 - ProgramConfiguration: it defines two properties for programs.
     - CompletionSpinner: show/hide the completion spinner.
     - OptionalSearch: it defines if searching is mandatory or not before creating data.
+    - DisableReferrals: whether referrals must be enabled or not for this program.
+    - DisableCollapsibleSections: whether the sections must be collapsible or not for this program.
+    - ItemHeader: it defines the element (programIndicator) to be used to generate a header for the TEI. This property is automatically consumed by the SDK when using the `TrackedEntitySearchCollectionRepository`.
 
-These settings refer to visual components so they must be consumed by the app.
+Most of the settings refer to visual components so they are usually consumed by the app.
 
 ### Analytic settings { #android_sdk_analytic_settings }
 

@@ -50,7 +50,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators()
                         .blockingGet();
 
-        assertThat(indicators.size()).isEqualTo(2);
+        assertThat(indicators.size()).isEqualTo(3);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq(2)
                         .blockingGet();
 
-        assertThat(indicators.size()).isEqualTo(1);
+        assertThat(indicators.size()).isEqualTo(2);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("AVERAGE")
                         .blockingGet();
 
-        assertThat(indicators.size()).isEqualTo(2);
+        assertThat(indicators.size()).isEqualTo(3);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(indicators.size()).isEqualTo(2);
+        assertThat(indicators.size()).isEqualTo(3);
     }
 
     @Test

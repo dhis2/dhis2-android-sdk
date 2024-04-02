@@ -39,7 +39,7 @@ internal class IndexedDataValueConflict : DataValueImportConflictItem {
             getConflictBuilder(
                 dataValue = dataValues[it],
                 conflict = conflict,
-                displayDescription = conflict.value() // TODO Add interpreters for translations
+                displayDescription = conflict.value(), // TODO Add interpreters for translations
             ).build()
         }.orEmpty()
     }

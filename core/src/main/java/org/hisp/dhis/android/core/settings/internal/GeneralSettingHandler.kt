@@ -27,11 +27,12 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.koin.core.annotation.Singleton
 
-internal class GeneralSettingHandler(store: ObjectWithoutUidStore<GeneralSettings>) :
+@Singleton
+internal class GeneralSettingHandler(store: GeneralSettingStore) :
     ObjectWithoutUidHandlerImpl<GeneralSettings>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<GeneralSettings>): Collection<GeneralSettings> {

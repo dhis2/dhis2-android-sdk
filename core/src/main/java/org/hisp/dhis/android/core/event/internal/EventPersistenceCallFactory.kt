@@ -27,53 +27,45 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class EventPersistenceCallFactory @Inject constructor(
-    private val eventHandler: IdentifiableDataHandler<Event>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
-    private val organisationUnitDownloader: OrganisationUnitModuleDownloader
+@Singleton
+internal class EventPersistenceCallFactory(
+    private val eventHandler: EventHandler,
+    private val organisationUnitStore: OrganisationUnitStore,
+    private val organisationUnitDownloader: OrganisationUnitModuleDownloader,
 ) {
-    fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?): Completable {
-        return persistEventsInternal(events, asRelationship = false, relatives)
+    suspend fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?) {
+        persistEventsInternal(events, asRelationship = false, relatives)
     }
 
-    fun persistAsRelationships(events: List<Event>): Completable {
-        return persistEventsInternal(events, asRelationship = true, relatives = null)
+    suspend fun persistAsRelationships(events: List<Event>) {
+        persistEventsInternal(events, asRelationship = true, relatives = null)
     }
 
-    private fun persistEventsInternal(
+    private suspend fun persistEventsInternal(
         events: Collection<Event>,
         asRelationship: Boolean,
-        relatives: RelationshipItemRelatives?
-    ): Completable {
-        return Completable.defer {
-            val params = IdentifiableDataHandlerParams(
-                hasAllAttributes = false,
-                overwrite = false,
-                asRelationship = asRelationship
-            )
-            eventHandler.handleMany(events, params, relatives)
-            if (hasMissingOrganisationUnitUids(events)) {
-                organisationUnitDownloader.refreshOrganisationUnits()
-            } else {
-                Completable.complete()
-            }
+        relatives: RelationshipItemRelatives?,
+    ) {
+        val params = IdentifiableDataHandlerParams(
+            hasAllAttributes = false,
+            overwrite = false,
+            asRelationship = asRelationship,
+        )
+        eventHandler.handleMany(events, params, relatives)
+        if (hasMissingOrganisationUnitUids(events)) {
+            organisationUnitDownloader.refreshOrganisationUnits()
         }
     }
 
     private fun hasMissingOrganisationUnitUids(events: Collection<Event>): Boolean {
         val uids = events.mapNotNull { it.organisationUnit() }.toSet()
-        return (uids - organisationUnitStore.selectUids()).isNotEmpty()
+        return (uids - organisationUnitStore.selectUids().toSet()).isNotEmpty()
     }
 }

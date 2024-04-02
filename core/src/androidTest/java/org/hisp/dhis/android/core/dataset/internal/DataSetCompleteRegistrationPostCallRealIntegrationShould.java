@@ -47,7 +47,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     @Before
     public void setUp() {
         super.setUp();
-        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(d2.databaseAdapter());
+        dataSetCompleteRegistrationStore = new DataSetCompleteRegistrationStoreImpl(d2.databaseAdapter());
     }
 
     // commented out since it is a flaky test that works against a real server.

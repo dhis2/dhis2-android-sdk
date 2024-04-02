@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OptionGroup.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_OptionGroup.Builder.class)
 public abstract class OptionGroup extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable

@@ -27,17 +27,24 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.user.*
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.user.AccountManager
+import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
+import org.hisp.dhis.android.core.user.AuthorityCollectionRepository
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
+import org.hisp.dhis.android.core.user.UserModule
+import org.hisp.dhis.android.core.user.UserObjectRepository
+import org.hisp.dhis.android.core.user.UserRoleCollectionRepository
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
+import org.koin.core.annotation.Singleton
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions", "LongParameterList")
-internal class UserModuleImpl @Inject constructor(
+internal class UserModuleImpl(
     private val isUserLoggedInCallFactory: IsUserLoggedInCallableFactory,
     private val logoutCallCallFactory: LogOutCall,
     private val logInCall: LogInCall,
@@ -47,7 +54,7 @@ internal class UserModuleImpl @Inject constructor(
     private val userCredentials: UserCredentialsObjectRepository,
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
-    private val openIDConnectHandler: OpenIDConnectHandlerImpl
+    private val openIDConnectHandler: OpenIDConnectHandlerImpl,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {
@@ -72,7 +79,7 @@ internal class UserModuleImpl @Inject constructor(
     }
 
     override fun logIn(username: String, password: String, serverUrl: String): Single<User> {
-        return logInCall.logIn(username, password, serverUrl)
+        return rxSingle { logInCall.logIn(username, password, serverUrl) }
     }
 
     override fun blockingLogIn(username: String, password: String, serverUrl: String): User {

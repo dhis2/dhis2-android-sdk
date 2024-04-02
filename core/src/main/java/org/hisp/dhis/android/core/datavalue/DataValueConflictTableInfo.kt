@@ -59,7 +59,7 @@ object DataValueConflictTableInfo {
                 ERROR_CODE,
                 DISPLAY_DESCRIPTION,
                 STATUS,
-                CREATED
+                CREATED,
             )
         }
 

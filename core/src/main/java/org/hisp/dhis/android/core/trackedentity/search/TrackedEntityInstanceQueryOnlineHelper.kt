@@ -30,28 +30,31 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
-import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.koin.core.annotation.Singleton
+import java.util.Date
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
-import javax.inject.Inject
 
-internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
-    private val dateFilterPeriodHelper: DateFilterPeriodHelper
+@Singleton
+internal class TrackedEntityInstanceQueryOnlineHelper(
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper,
 ) {
 
+    @Suppress("ComplexMethod")
     fun fromScope(scope: TrackedEntityInstanceQueryRepositoryScope): List<TrackedEntityInstanceQueryOnline> {
-        return if (scope.eventFilters().isEmpty()) {
+        val queries = if (scope.eventFilters().isEmpty()) {
             listOf(getBaseQuery(scope))
         } else {
             scope.eventFilters().map { eventFilter ->
                 getBaseQuery(scope)
                     .run {
                         eventFilter.eventStatus()
-                            ?.let { copy(eventStatus = getEventStatus(it, eventFilter.eventDate())) } ?: this
+                            ?.let { copy(eventStatus = getEventStatus(it)) } ?: this
                     }
                     .run {
                         eventFilter.assignedUserMode()?.let { copy(assignedUserMode = it) } ?: this
@@ -63,41 +66,26 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                         eventFilter.eventDate()?.let {
                             copy(
                                 eventStartDate = dateFilterPeriodHelper.getStartDate(it),
-                                eventEndDate = dateFilterPeriodHelper.getEndDate(it)
+                                eventEndDate = dateFilterPeriodHelper.getEndDate(it),
                             )
                         } ?: this
                     }
             }
         }
-    }
 
-    @Throws(D2Error::class, Exception::class)
-    fun queryOnlineBlocking(
-        trackerParentCallFactory: TrackerParentCallFactory,
-        scope: TrackedEntityInstanceQueryRepositoryScope
-    ): List<TrackedEntityInstance> {
-        return fromScope(scope).foldRight(emptyList()) { queryOnline, acc ->
-            val noPagingQuery = queryOnline.copy(paging = false)
-            val pageInstances = trackerParentCallFactory.getTrackedEntityCall()
-                .getQueryCall(noPagingQuery)
-                .call()
-
-            val validInstances = pageInstances.trackedEntities.filter { tei ->
-                val isExcluded = scope.excludedUids()?.contains(tei.uid()) ?: false
-                val isAlreadyReturned = acc.any { it.uid() == tei.uid() }
-
-                !isExcluded && !isAlreadyReturned
+        return queries.map { query ->
+            if (query.eventStatus == EventStatus.SCHEDULE && query.dueStartDate == null) {
+                query.copy(dueStartDate = Date())
+            } else {
+                query
             }
-
-            acc + validInstances
         }
     }
 
     @Suppress("ComplexMethod")
     private fun getBaseQuery(
-        scope: TrackedEntityInstanceQueryRepositoryScope
+        scope: TrackedEntityInstanceQueryRepositoryScope,
     ): TrackedEntityInstanceQueryOnline {
-
         val query = scope.query()?.let { query -> query.operator().apiUpperOperator + ":" + query.value() }
 
         // EnrollmentStatus does not accepts a list of status but a single value in web API.
@@ -119,7 +107,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
             followUp = scope.followUp(),
             includeDeleted = scope.includeDeleted(),
             trackedEntityType = scope.trackedEntityType(),
-            order = toAPIOrderFormat(scope.order()),
+            order = scope.order(),
             uids = scope.uids()
         ).run {
             scope.program()?.let {
@@ -128,7 +116,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                     programEndDate = scope.programDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
                     incidentStartDate = scope.incidentDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
                     incidentEndDate = scope.incidentDate()?.let { dateFilterPeriodHelper.getEndDate(it) },
-                    eventStatus = scope.eventStatus()?.let { getEventStatus(it, scope.eventDate()) },
+                    eventStatus = scope.eventStatus()?.let { getEventStatus(it) },
                     assignedUserMode = assignedUserMode,
                     programStage = scope.programStage(),
                     eventStartDate = scope.eventDate()?.let { dateFilterPeriodHelper.getStartDate(it) },
@@ -140,24 +128,42 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
         }
     }
 
-    private fun getEventStatus(eventStatus: List<EventStatus>, eventDate: DateFilterPeriod?): EventStatus? {
+    private fun getEventStatus(eventStatus: List<EventStatus>): EventStatus? {
         // EventStatus does not accepts a list of status but a single value in web API.
-        // Additionally, it requires that eventStartDate and eventEndDate are defined.
-        val hasEventDate = eventDate?.startDate() != null && eventDate.endDate() != null
-        return if (eventStatus.isNotEmpty() && hasEventDate) {
-            eventStatus[0]
-        } else null
-    }
-
-    private fun toAPIOrderFormat(orders: List<TrackedEntityInstanceQueryScopeOrderByItem>): String? {
-        return if (orders.isNotEmpty()) {
-            orders.mapNotNull { it.toAPIString() }.joinToString(",")
-        } else {
-            null
-        }
+        return eventStatus.firstOrNull()
     }
 
     companion object {
+
+        fun toAPIOrderFormat(
+            orders: List<TrackedEntityInstanceQueryScopeOrderByItem>,
+            version: TrackerExporterVersion,
+        ): String? {
+            val apiOrders = orders.mapNotNull { it.toAPIString(version) }
+            return if (apiOrders.isNotEmpty()) {
+                apiOrders.joinToString(",")
+            } else {
+                null
+            }
+        }
+
+        fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
+            // Compatibility for the new Tracker (old Tracker will ignore this format)
+            // Following characters need to be escaped escaped with a "/" for backend functionality
+
+            return items
+                .groupBy { it.key() }
+                .map { (key, items) ->
+                    val clause = items.map { item ->
+                        val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
+
+                        ":" + operator + ":" + getAPIValue(item)
+                    }
+
+                    key + clause.joinToString(separator = "")
+                }
+        }
+
         fun toAPIFilterFormatWithDeleteValue(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
             return items
                 .groupBy { it.key() }
@@ -177,27 +183,20 @@ internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
                     key + clause.joinToString(separator = "")
                 }
         }
-        fun toAPIFilterFormat(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
-            return items
-                .groupBy { it.key() }
-                .map { (key, items) ->
-                    val clause = items.map { item ->
-                        val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
-
-                        ":" + operator + ":" + getAPIValue(item)
-                    }
-
-                    key + clause.joinToString(separator = "")
-                }
-        }
 
         private fun getAPIValue(item: RepositoryScopeFilterItem): String {
             return if (item.operator() == FilterItemOperator.IN) {
-                val list = FilterOperatorsHelper.strToList(item.value())
+                val list = FilterOperatorsHelper.strToList(item.value()).map { escapeChars(it) }
                 list.joinToString(";")
             } else {
-                item.value()
+                escapeChars(item.value())
             }
+        }
+
+        private fun escapeChars(targetString: String): String {
+            val charsToEscape = "[;,:]".toRegex()
+            val escapingChar = "/\$0"
+            return targetString.replace(charsToEscape, escapingChar)
         }
     }
 }

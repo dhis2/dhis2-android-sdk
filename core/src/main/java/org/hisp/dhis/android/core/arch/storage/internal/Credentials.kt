@@ -34,10 +34,10 @@ data class Credentials(
     val username: String,
     val serverUrl: String,
     val password: String?,
-    val openIDConnectState: AuthState?
+    val openIDConnectState: AuthState?,
 ) {
     fun getHash(): String? {
-        return password.let { UserHelper.md5(username, it) }
+        return password?.let { UserHelper.md5(username, it) }
     }
 
     override fun equals(other: Any?) =

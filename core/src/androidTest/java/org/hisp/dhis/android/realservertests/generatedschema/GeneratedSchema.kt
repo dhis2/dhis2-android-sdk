@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.realservertests.generatedschema
 
 internal data class GeneratedSchema(
-    val enum: List<String>?
+    val enum: List<String>?,
 )

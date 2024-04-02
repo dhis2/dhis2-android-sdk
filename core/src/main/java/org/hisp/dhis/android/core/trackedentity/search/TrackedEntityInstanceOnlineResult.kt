@@ -34,5 +34,5 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 data class TrackedEntityInstanceOnlineResult(
     val items: List<Result<TrackedEntityInstance, D2Error>>,
-    val exhausted: Boolean
+    val exhausted: Boolean,
 )

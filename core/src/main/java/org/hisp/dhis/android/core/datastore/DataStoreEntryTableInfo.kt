@@ -54,7 +54,7 @@ object DataStoreEntryTableInfo {
                 KEY,
                 VALUE,
                 SYNC_STATE,
-                DELETED
+                DELETED,
             )
         }
 

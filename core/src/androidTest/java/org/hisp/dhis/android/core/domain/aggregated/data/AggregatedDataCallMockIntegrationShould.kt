@@ -27,27 +27,44 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data
 
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(D2JunitRunner::class)
 class AggregatedDataCallMockIntegrationShould : BaseMockIntegrationTestMetadataDispatcher() {
 
     @Test
     fun emit_progress() {
         val testObserver = d2.aggregatedModule().data().download().test()
 
-        testObserver.assertValueCount(3)
+        testObserver.awaitTerminalEvent()
+
+        testObserver.assertValueCount(4)
 
         testObserver.assertValueAt(0) { v: AggregatedD2Progress ->
-            !v.isComplete && v.dataSets().all { (_, progress) -> !progress.isComplete }
+            !v.isComplete && hasNCompletedDataSets(v.dataSets(), number = 0)
         }
         testObserver.assertValueAt(1) { v: AggregatedD2Progress ->
-            !v.isComplete && v.dataSets().all { (_, progress) -> progress.isComplete }
+            !v.isComplete && hasNCompletedDataSets(v.dataSets(), number = 2)
         }
         testObserver.assertValueAt(2) { v: AggregatedD2Progress ->
-            v.isComplete && v.dataSets().all { (_, progress) -> progress.isComplete }
+            !v.isComplete && hasNCompletedDataSets(v.dataSets(), number = 3)
+        }
+        testObserver.assertValueAt(3) { v: AggregatedD2Progress ->
+            v.isComplete && hasAllCompletedDataSets(v.dataSets())
         }
 
         testObserver.dispose()
+    }
+
+    private fun hasNCompletedDataSets(dataSets: Map<String, D2ProgressStatus>, number: Int): Boolean {
+        return dataSets.filter { (_, progress) -> progress.isComplete }.size == number
+    }
+
+    private fun hasAllCompletedDataSets(dataSets: Map<String, D2ProgressStatus>): Boolean {
+        return dataSets.all { (_, progress) -> progress.isComplete }
     }
 }

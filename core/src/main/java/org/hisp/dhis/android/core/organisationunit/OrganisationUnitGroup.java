@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OrganisationUnitGroup.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_OrganisationUnitGroup.Builder.class)
 public abstract class OrganisationUnitGroup extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -54,7 +54,7 @@ public abstract class OrganisationUnitGroup extends BaseIdentifiableObject imple
     public abstract String displayShortName();
 
     public static Builder builder() {
-        return new AutoValue_OrganisationUnitGroup.Builder();
+        return new $$AutoValue_OrganisationUnitGroup.Builder();
     }
 
     @NonNull

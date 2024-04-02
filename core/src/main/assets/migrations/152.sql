@@ -1,0 +1,11 @@
+# Add ON CASCADE to Period references
+
+ALTER TABLE DataValue RENAME TO DataValue_Old;
+CREATE TABLE DataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataElement TEXT NOT NULL, period TEXT NOT NULL, organisationUnit TEXT NOT NULL, categoryOptionCombo TEXT NOT NULL, attributeOptionCombo TEXT NOT NULL, value TEXT, storedBy TEXT, created TEXT, lastUpdated TEXT, comment TEXT, followUp INTEGER, syncState TEXT, deleted INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (period) REFERENCES Period (periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo));
+INSERT INTO DataValue(_id, dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, value, storedBy, created, lastUpdated, comment, followUp, syncState, deleted) SELECT _id, dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, value, storedBy, created, lastUpdated, comment, followUp, syncState, deleted FROM DataValue_Old;
+DROP TABLE IF EXISTS DataValue_Old;
+
+ALTER TABLE DataApproval RENAME TO DataApproval_Old;
+CREATE TABLE DataApproval (_id INTEGER PRIMARY KEY AUTOINCREMENT, workflow TEXT NOT NULL, organisationUnit TEXT NOT NULL, period TEXT NOT NULL, attributeOptionCombo TEXT NOT NULL, state TEXT, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (period) REFERENCES Period (periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (attributeOptionCombo, period, organisationUnit, workflow));
+INSERT INTO DataApproval(_id, workflow, organisationUnit, period, attributeOptionCombo, state) SELECT _id, workflow, organisationUnit, period, attributeOptionCombo, state FROM DataApproval_Old;
+DROP TABLE IF EXISTS DataApproval_Old;

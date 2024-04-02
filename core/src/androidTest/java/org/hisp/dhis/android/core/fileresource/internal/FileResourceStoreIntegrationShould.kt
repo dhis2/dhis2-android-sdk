@@ -37,8 +37,9 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class FileResourceStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<FileResource>(
-    FileResourceStoreImpl.create(TestDatabaseAdapterFactory.get()),
-    FileResourceTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    FileResourceStoreImpl(TestDatabaseAdapterFactory.get()),
+    FileResourceTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): FileResource {
         return FileResourceSamples.get()

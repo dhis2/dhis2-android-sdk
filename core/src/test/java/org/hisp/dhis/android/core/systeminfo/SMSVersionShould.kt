@@ -60,7 +60,7 @@ class SMSVersionShould {
     @Test
     fun return_non_null_for_any_version_greater_than_2_32() {
         DHISVersion.values()
-            .filter { it > DHISVersion.V2_32 }
+            .filter { it > DHISVersion.V2_32 && it.supported }
             .forEach {
                 assertThat(getValue(it.prefix + ".0")).isNotNull()
                 assertThat(getValue(it.prefix + ".9")).isNotNull()

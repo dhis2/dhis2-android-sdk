@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -43,24 +40,24 @@ import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
+import org.koin.core.annotation.Singleton
+import java.util.Date
 
-@Reusable
-internal class EventImportHandler @Inject constructor(
+@Singleton
+internal class EventImportHandler constructor(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEventHandler: JobReportEventHandler,
     private val dataStatePropagator: DataStatePropagator,
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore
 ) {
 
     @Suppress("NestedBlockDepth")
     fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>
+        events: List<Event>,
     ): TEIWebResponseHandlerSummary {
         val summary = TEIWebResponseHandlerSummary()
 
@@ -82,13 +79,14 @@ internal class EventImportHandler @Inject constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeEventImportConflicts(eventImportSummary, enrollmentUid)
-                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
-                }
 
-                if (state == State.SYNCED &&
-                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
-                ) {
-                    handleIfSynced(eventUid, state)
+                    if (state == State.SYNCED &&
+                        (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
+                    ) {
+                        jobReportEventHandler.handleSyncedEvent(eventUid)
+                    }
+
+                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
                 }
             }
         }
@@ -112,7 +110,7 @@ internal class EventImportHandler @Inject constructor(
 
     private fun processIgnoredEvents(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>
+        events: List<Event>,
     ): List<Event> {
         val processedEvents = getReferences(eventImportSummaries)
 
@@ -123,17 +121,9 @@ internal class EventImportHandler @Inject constructor(
         }
     }
 
-    private fun handleIfSynced(
-        eventUid: String,
-        state: State
-    ) {
-        jobReportEventHandler.handleEventNotes(eventUid, state)
-        trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
-    }
-
     private fun storeEventImportConflicts(
         importSummary: EventImportSummary,
-        enrollmentUid: String?
+        enrollmentUid: String?,
     ) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
 
@@ -143,14 +133,14 @@ internal class EventImportHandler @Inject constructor(
                     .conflict(importSummary.description())
                     .displayDescription(importSummary.description())
                     .value(importSummary.reference())
-                    .build()
+                    .build(),
             )
         }
 
         importSummary.conflicts()?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
-                    .getEventConflict(importConflict, getConflictBuilder(enrollmentUid, importSummary))
+                    .getEventConflict(importConflict, getConflictBuilder(enrollmentUid, importSummary)),
             )
         }
 
@@ -159,7 +149,7 @@ internal class EventImportHandler @Inject constructor(
 
     private fun getConflictBuilder(
         enrollmentUid: String?,
-        eventImportSummary: EventImportSummary
+        eventImportSummary: EventImportSummary,
     ): TrackerImportConflict.Builder {
         val trackedEntityInstanceUid = enrollmentUid?.let {
             enrollmentStore.selectByUid(it)?.trackedEntityInstance()

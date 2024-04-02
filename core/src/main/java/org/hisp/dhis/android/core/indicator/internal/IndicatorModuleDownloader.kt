@@ -27,32 +27,25 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class IndicatorModuleDownloader @Inject internal constructor(
-    private val indicatorCallFactory: UidsCallFactory<Indicator>,
-    private val indicatorTypeCallFactory: UidsCallFactory<IndicatorType>,
-    private val indicatorUidsSeeker: IndicatorUidsSeeker
-) : UntypedModuleDownloader {
+@Singleton
+class IndicatorModuleDownloader internal constructor(
+    private val indicatorCallFactory: IndicatorEndpointCallFactory,
+    private val indicatorTypeCallFactory: IndicatorTypeEndpointCallFactory,
+    private val indicatorUidsSeeker: IndicatorUidsSeeker,
+) : UntypedModuleDownloaderCoroutines {
 
-    override fun downloadMetadata(): Completable {
-        return Completable.fromCallable {
-            val indicatorUids = indicatorUidsSeeker.seekUids()
+    override suspend fun downloadMetadata() {
+        val indicatorUids = indicatorUidsSeeker.seekUids()
 
-            if (!indicatorUids.isNullOrEmpty()) {
-                val indicators = indicatorCallFactory.create(indicatorUids).call()
+        if (!indicatorUids.isNullOrEmpty()) {
+            val indicators = indicatorCallFactory.create(indicatorUids)
 
-                val typeUids = indicators.mapNotNull { it.indicatorType()?.uid() }.toSet()
+            val typeUids = indicators.mapNotNull { it.indicatorType()?.uid() }.toSet()
 
-                indicatorTypeCallFactory.create(typeUids).call()
-            }
+            indicatorTypeCallFactory.create(typeUids)
         }
     }
 }

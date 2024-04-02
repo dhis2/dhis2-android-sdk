@@ -59,6 +59,8 @@ internal abstract class ProgramExpressionItem : ExpressionItem {
     protected fun formatValue(value: String?, valueType: ValueType?): String? {
         return if (valueType === ValueType.BOOLEAN) {
             if ("true" == value) "1" else "0"
-        } else value
+        } else {
+            value
+        }
     }
 }

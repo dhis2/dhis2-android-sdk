@@ -29,21 +29,21 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
 @Suppress("UnnecessaryAbstractClass")
 internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
-    private val programStore: ProgramStoreInterface,
+    private val programStore: ProgramStore,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackerSyncLastUpdatedManager<S>,
     private val commonHelper: TrackerQueryFactoryCommonHelper,
     private val programType: ProgramType,
     private val internalFactoryCreator: (
         params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?
-    ) -> TrackerQueryInternalFactory<T>
+        programSettings: ProgramSettings?,
+    ) -> TrackerQueryInternalFactory<T>,
 ) {
 
     @Suppress("NestedBlockDepth")

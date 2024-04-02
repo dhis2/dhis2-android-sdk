@@ -28,26 +28,24 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.settings.*
 import org.junit.Before
 import org.junit.Test
 
 class AnalyticsTeiSettingHandlerShould {
 
-    private val analyticsTeiSettingStore: ObjectWithoutUidStore<AnalyticsTeiSetting> = mock()
+    private val analyticsTeiSettingStore: AnalyticsTeiSettingStore = mock()
 
     private val analyticsTeiSetting: AnalyticsTeiSetting = mock()
 
     private lateinit var analyticsTeiSettingHandler: Handler<AnalyticsTeiSetting>
 
-    private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> = mock()
-    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> = mock()
-    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> = mock()
-    private val whoDataHandler: LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData> = mock()
+    private val teiDataElementHandler: AnalyticsTeiDataElementHandler = mock()
+    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler = mock()
+    private val teiAttributeHandler: AnalyticsTeiAttributeHandler = mock()
+    private val whoDataHandler: AnalyticsTeiWHONutritionDataHandler = mock()
 
     private val analyticsTeiSettingList: List<AnalyticsTeiSetting> = listOf(analyticsTeiSetting)
 
@@ -58,8 +56,11 @@ class AnalyticsTeiSettingHandlerShould {
         whenever(analyticsTeiSetting.uid()) doReturn "tei_setting_uid"
 
         analyticsTeiSettingHandler = AnalyticsTeiSettingHandler(
-            analyticsTeiSettingStore, teiDataElementHandler,
-            teiIndicatorHandler, teiAttributeHandler, whoDataHandler
+            analyticsTeiSettingStore,
+            teiDataElementHandler,
+            teiIndicatorHandler,
+            teiAttributeHandler,
+            whoDataHandler,
         )
     }
 

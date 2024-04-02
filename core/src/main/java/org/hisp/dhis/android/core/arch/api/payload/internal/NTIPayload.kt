@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.arch.api.payload.internal
 data class NTIPayload<T>(
     val page: Int,
     val pageSize: Int,
-    val instances: List<T>
+    val instances: List<T>,
 )

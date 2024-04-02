@@ -38,8 +38,6 @@ class DateValidatorShould : ValidatorShouldHelper<DateFailure>(DateValidator) {
         valueShouldSuccess("2021-04-14")
         valueShouldSuccess("0001-01-01")
         valueShouldSuccess("9999-12-31")
-        valueShouldSuccess("0001-01-1")
-        valueShouldSuccess("0001-1-1")
     }
 
     @Test
@@ -53,5 +51,7 @@ class DateValidatorShould : ValidatorShouldHelper<DateFailure>(DateValidator) {
         valueShouldFail("2021-33-04", DateFailure.ParseException)
         valueShouldFail("2021-00-04", DateFailure.ParseException)
         valueShouldFail("2021-02-00", DateFailure.ParseException)
+        valueShouldFail("0001-01-1", DateFailure.ParseException)
+        valueShouldFail("0001-1-1", DateFailure.ParseException)
     }
 }

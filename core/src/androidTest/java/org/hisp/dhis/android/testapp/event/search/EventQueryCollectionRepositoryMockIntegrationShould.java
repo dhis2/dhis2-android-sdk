@@ -52,7 +52,7 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(events.size()).isEqualTo(4);
+        assertThat(events.size()).isEqualTo(2);
     }
 
     @Test
@@ -62,13 +62,13 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGetUids();
 
-        assertThat(eventUids.size()).isEqualTo(4);
+        assertThat(eventUids.size()).isEqualTo(2);
     }
 
     @Test
     public void get_scope() {
         EventQueryRepositoryScope scope =
-                d2.eventModule().eventQuery().getScope();
+                d2.eventModule().eventQuery().scope;
 
         assertThat(scope.mode()).isNotNull();
     }

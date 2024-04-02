@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.testapp.dataelement;
 
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -136,4 +140,32 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMo
                 .blockingGet();
         assertThat(dataElements.size()).isEqualTo(1);
     }
+
+    @Test
+    public void include_legends_as_children() {
+        DataElement dataElementWithLegendSets = d2.dataElementModule().dataElements()
+                .withLegendSets()
+                .blockingGet()
+                .get(4);
+
+        List<ObjectWithUid> legendSets = dataElementWithLegendSets.legendSets();
+        assertThat(legendSets.size()).isEqualTo(1);
+        assertThat(legendSets.get(0).uid()).isEqualTo("TiOkbpGEud4");
+    }
+
+    @Test
+    public void include_attributeValues_as_children() {
+        DataElement dataElementWithAttributeValues = d2.dataElementModule().dataElements()
+                .withAttributes()
+                .blockingGet().get(4);
+
+        List<AttributeValue> attributeValues = dataElementWithAttributeValues.attributeValues();
+        assertThat(attributeValues.size()).isEqualTo(2);
+        assertThat(attributeValues.get(0).attribute().uid()).isEqualTo("b0vcadVrn08");
+        assertThat(attributeValues.get(0).value()).isEqualTo("Direct 2");
+        assertThat(attributeValues.get(1).attribute().uid()).isEqualTo("qXS2NDUEAOS");
+        assertThat(attributeValues.get(1).value()).isEqualTo("Direct");
+
+    }
+
 }

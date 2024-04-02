@@ -34,47 +34,47 @@ internal data class JobImportCount(
     val updated: Int,
     val deleted: Int,
     val ignored: Int,
-    val total: Int
+    val total: Int,
 )
 
 internal data class JobValidationError(
     val uid: String,
     val trackerType: TrackerImporterObjectType,
     val errorCode: String,
-    val message: String
+    val message: String,
 )
 
 internal data class JobValidationReport(
-    val errorReports: List<JobValidationError>
+    val errorReports: List<JobValidationError>,
 )
 
 internal data class JobObjectReport(
     val errorReports: List<String>,
     val index: Int,
     val trackerType: TrackerImporterObjectType,
-    val uid: String
+    val uid: String,
 )
 
 internal data class JobTypeReport(
     val trackerType: String,
     val stats: JobImportCount,
-    val objectReports: List<JobObjectReport>
+    val objectReports: List<JobObjectReport>,
 )
 
 internal data class JobTypeReportMap(
     @JsonProperty("TRACKED_ENTITY") val trackedEntity: JobTypeReport,
     @JsonProperty("EVENT") val event: JobTypeReport,
     @JsonProperty("RELATIONSHIP") val relationship: JobTypeReport,
-    @JsonProperty("ENROLLMENT") val enrollment: JobTypeReport
+    @JsonProperty("ENROLLMENT") val enrollment: JobTypeReport,
 )
 
 internal data class JobBundleReport(
-    val typeReportMap: JobTypeReportMap
+    val typeReportMap: JobTypeReportMap,
 )
 
 internal data class JobReport(
     val status: String,
     val validationReport: JobValidationReport,
     val stats: JobImportCount?,
-    val bundleReport: JobBundleReport?
+    val bundleReport: JobBundleReport?,
 )

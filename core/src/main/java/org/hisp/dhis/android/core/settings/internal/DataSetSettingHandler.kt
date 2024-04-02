@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.koin.core.annotation.Singleton
 
-internal class DataSetSettingHandler(store: ObjectWithoutUidStore<DataSetSetting>) :
-    ObjectWithoutUidHandlerImpl<DataSetSetting>(store) {
+@Singleton
+internal class DataSetSettingHandler(
+    store: DataSetSettingStore,
+) : ObjectWithoutUidHandlerImpl<DataSetSetting>(store) {
 
     override fun beforeCollectionHandled(oCollection: Collection<DataSetSetting>): Collection<DataSetSetting> {
         store.delete()

@@ -35,13 +35,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 
-@Singleton
 public class PeriodHelper {
 
     private final PeriodStore periodStore;
@@ -50,12 +46,11 @@ public class PeriodHelper {
     private final PeriodParser periodParser;
     private final CalendarProvider calendarProvider;
 
-    @Inject
-    PeriodHelper(PeriodStore periodStore,
-                 PeriodForDataSetManager periodForDataSetManager,
-                 ParentPeriodGenerator parentPeriodGenerator,
-                 PeriodParser periodParser,
-                 CalendarProvider calendarProvider) {
+    public PeriodHelper(PeriodStore periodStore,
+                        PeriodForDataSetManager periodForDataSetManager,
+                        ParentPeriodGenerator parentPeriodGenerator,
+                        PeriodParser periodParser,
+                        CalendarProvider calendarProvider) {
         this.periodStore = periodStore;
         this.periodForDataSetManager = periodForDataSetManager;
         this.parentPeriodGenerator = parentPeriodGenerator;
@@ -73,9 +68,8 @@ public class PeriodHelper {
      * If the period does not exist in the database, it is inserted.
      *
      * @param periodType Period type
-     * @param date Date contained in the period
+     * @param date       Date contained in the period
      * @return Period
-     *
      * @deprecated Use {@link #getPeriodForPeriodTypeAndDate(PeriodType, Date)} instead.
      */
     @Deprecated
@@ -88,7 +82,7 @@ public class PeriodHelper {
      * If the period does not exist in the database, it is inserted.
      *
      * @param periodType Period type
-     * @param date Date contained in the period
+     * @param date       Date contained in the period
      * @return Period
      */
     public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
@@ -100,8 +94,7 @@ public class PeriodHelper {
      * If the period does not exist in the database, it is inserted.
      *
      * @param periodType Period type
-     * @param date Date contained in the period
-     *
+     * @param date       Date contained in the period
      * @return {@code Single} with the generated period.
      */
     public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
@@ -112,8 +105,8 @@ public class PeriodHelper {
      * Get a period object specifying a periodType and a date in the period.
      * If the period does not exist in the database, it is inserted.
      *
-     * @param periodType Period type
-     * @param date Date contained in the period
+     * @param periodType   Period type
+     * @param date         Date contained in the period
      * @param periodOffset Number of periods backwards or forwards relative to 'date'
      * @return Period
      */
@@ -132,10 +125,9 @@ public class PeriodHelper {
      * Get a period object specifying a periodType and a date in the period.
      * If the period does not exist in the database, it is inserted.
      *
-     * @param periodType Period type
-     * @param date Date contained in the period
+     * @param periodType   Period type
+     * @param date         Date contained in the period
      * @param periodOffset Number of periods backwards or forwards relative to 'date'
-     *
      * @return {@code Single} with the generated period.
      */
     public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date,
@@ -148,8 +140,8 @@ public class PeriodHelper {
      * If the periodId does not exist in the database, it is inserted.
      *
      * @param periodId Period id.
-     * @throws IllegalArgumentException if the periodId does not match any period
      * @return Period
+     * @throws IllegalArgumentException if the periodId does not match any period
      */
     public Period blockingGetPeriodForPeriodId(@NonNull String periodId) throws IllegalArgumentException {
         PeriodType periodType = PeriodType.periodTypeFromPeriodId(periodId);
@@ -163,9 +155,8 @@ public class PeriodHelper {
      * If the periodId does not exist in the database, it is inserted.
      *
      * @param periodId Period id.
-     * @throws IllegalArgumentException if the periodId does not match any period
-     *
      * @return {@code Single} with the generated period.
+     * @throws IllegalArgumentException if the periodId does not match any period
      */
     public Single<Period> getPeriodForPeriodId(@NonNull String periodId) throws IllegalArgumentException {
         return Single.just(blockingGetPeriodForPeriodId(periodId));
@@ -177,6 +168,7 @@ public class PeriodHelper {
 
     /**
      * Get a calendar instance
+     *
      * @return a calendar instance
      */
     public Calendar getCalendar() {

@@ -31,15 +31,15 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.program.ProgramSectionSamples
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
-import org.hisp.dhis.android.core.program.internal.ProgramSectionStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class ProgramSectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramSection>(
-    create(TestDatabaseAdapterFactory.get()),
-    ProgramSectionTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ProgramSectionStoreImpl(TestDatabaseAdapterFactory.get()),
+    ProgramSectionTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): ProgramSection {
         return ProgramSectionSamples.programSection

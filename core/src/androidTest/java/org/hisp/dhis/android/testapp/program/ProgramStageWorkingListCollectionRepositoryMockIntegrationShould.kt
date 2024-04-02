@@ -33,12 +33,10 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class ProgramStageWorkingListCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class ProgramStageWorkingListCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
         val lists = d2.programModule().programStageWorkingLists()
@@ -142,7 +140,7 @@ class ProgramStageWorkingListCollectionRepositoryMockIntegrationShould : BaseMoc
         val lists = d2.programModule().programStageWorkingLists()
             .withDataFilters()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(lists.programStageQueryCriteria()?.dataFilters()?.size).isEqualTo(1)
     }
@@ -152,7 +150,7 @@ class ProgramStageWorkingListCollectionRepositoryMockIntegrationShould : BaseMoc
         val lists = d2.programModule().programStageWorkingLists()
             .withAttributeValueFilters()
             .one()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(lists.programStageQueryCriteria()?.attributeValueFilters()?.size).isEqualTo(1)
     }

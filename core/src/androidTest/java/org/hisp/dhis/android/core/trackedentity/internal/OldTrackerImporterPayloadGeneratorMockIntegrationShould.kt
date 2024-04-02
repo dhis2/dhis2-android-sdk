@@ -40,6 +40,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGeneratorMockIntegration() {
 
+    private val oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator
+
     @Test
     fun build_tracked_entity_instance_payload_with_nested_elements() {
         storeTrackerData()
@@ -84,7 +86,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(teiId),
-            to = RelationshipHelper.eventItem(singleEventId)
+            to = RelationshipHelper.eventItem(singleEventId),
         )
         val instance = teiStore.selectByUid(teiId)!!
 
@@ -106,7 +108,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(fromTeiUid),
-            to = RelationshipHelper.eventItem(event1Id)
+            to = RelationshipHelper.eventItem(event1Id),
         )
         val instance = teiStore.selectByUid(fromTeiUid)!!
 
@@ -124,7 +126,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(fromTeiUid),
-            to = RelationshipHelper.enrollmentItem(enrollment1Id)
+            to = RelationshipHelper.enrollmentItem(enrollment1Id),
         )
         val instance = teiStore.selectByUid(fromTeiUid)!!
 
@@ -142,7 +144,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.teiItem(fromTeiUid),
-            to = RelationshipHelper.teiItem(teiId)
+            to = RelationshipHelper.teiItem(teiId),
         )
         val instance = teiStore.selectByUid(fromTeiUid)!!
 
@@ -172,7 +174,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.eventItem(singleEventId),
-            to = RelationshipHelper.teiItem(teiId)
+            to = RelationshipHelper.teiItem(teiId),
         )
         val event = eventStore.selectByUid(singleEventId)!!
 
@@ -193,7 +195,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         storeRelationship(
             relationshipUid = "relationship1",
             from = RelationshipHelper.enrollmentItem(enrollment1Id),
-            to = RelationshipHelper.enrollmentItem(enrollment1Id)
+            to = RelationshipHelper.enrollmentItem(enrollment1Id),
         )
         val instance = teiStore.selectByUid(teiId)!!
 
@@ -205,7 +207,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_with_non_accessible_adta() {
+    fun build_payload_with_non_accessible_data() {
         storeTrackerData()
         val previousTrackedEntityType = trackedEntityTypeStore.selectFirst()!!
         val previousProgram = programStore.selectFirst()!!
@@ -227,5 +229,23 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
 
         trackedEntityTypeStore.update(previousTrackedEntityType)
         programStore.update(previousProgram)
+    }
+
+    @Test
+    fun do_not_include_data_values_not_assigned_to_program_stage() {
+        storeTrackerData()
+        d2.trackedEntityModule().trackedEntityDataValues()
+            .value(event1Id, unassignedDataElementId)
+            .blockingSet("value")
+
+        val instance = teiStore.selectByUid(teiId)!!
+        val payload = oldTrackerPayloadGenerator.getTrackedEntityInstancePayload(listOf(instance))
+
+        val events = getEvents(getEnrollments(payload.trackedEntityInstances.first()).first())
+        val event1 = events.find { it.uid() == event1Id }
+        assertThat(event1).isNotNull()
+
+        val eventValues = event1!!.trackedEntityDataValues()!!
+        assertThat(eventValues.any { it.dataElement() == unassignedDataElementId }).isFalse()
     }
 }

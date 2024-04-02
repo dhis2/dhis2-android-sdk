@@ -28,10 +28,15 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityAttributeValueHandler(
-    trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore
-) : ObjectWithoutUidHandlerImpl<TrackedEntityAttributeValue>(
-    trackedEntityAttributeValueStore
-)
+    store: TrackedEntityAttributeValueStore,
+) : ObjectWithoutUidHandlerImpl<TrackedEntityAttributeValue>(store) {
+    override fun beforeObjectHandled(o: TrackedEntityAttributeValue): TrackedEntityAttributeValue {
+        return o.toBuilder().syncState(State.SYNCED).build()
+    }
+}

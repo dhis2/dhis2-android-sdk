@@ -31,32 +31,27 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 import android.util.Log;
 
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteDatabaseHook;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabaseHook;
 
+import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
 
 import java.io.File;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.functions.Action;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-@Reusable
 public class DatabaseExport {
 
     private final Context context;
     private final DatabaseEncryptionPasswordManager passwordManager;
     private final DatabaseConfigurationHelper configurationHelper;
 
-
-    @Inject
-    DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager,
-                   DatabaseConfigurationHelper configurationHelper) {
+    public DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager,
+                          DatabaseConfigurationHelper configurationHelper) {
         this.context = context;
         this.passwordManager = passwordManager;
         this.configurationHelper = configurationHelper;
@@ -82,10 +77,9 @@ public class DatabaseExport {
             File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());
             File newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName());
 
-
-            SQLiteDatabase.loadLibs(context);
+            NativeLibraryLoader.INSTANCE.loadSQLCipher();
             SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null,
-                    oldHook);
+                    null, oldHook);
             oldDatabase.rawExecSQL(String.format(
                     "ATTACH DATABASE '%s' as alias KEY '%s';", newDatabaseFile.getAbsolutePath(), newPassword));
             if (newHook != null) {
@@ -97,7 +91,7 @@ public class DatabaseExport {
 
             int version = oldDatabase.getVersion();
             SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, newPassword, null,
-                    newHook);
+                    null, newHook);
             newDatabase.setVersion(version);
 
             newDatabase.close();

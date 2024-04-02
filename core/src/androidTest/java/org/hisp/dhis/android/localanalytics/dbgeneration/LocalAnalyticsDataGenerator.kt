@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.localanalytics.dbgeneration
 
-import java.util.*
-import kotlin.random.Random
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
@@ -46,6 +44,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.util.*
+import kotlin.random.Random
 
 internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
 
@@ -74,8 +74,12 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                     (0 until iterations).map {
                         val (period, ou) = periodOrgUnits[it]
                         DataValueSamples.getDataValue(
-                            ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
-                            metadata.categoryOptionCombos.first().uid(), random.nextDouble().toString()
+                            ou.uid(),
+                            dataElement.uid(),
+                            period.periodId()!!,
+                            categoryOptionCombo.uid(),
+                            metadata.categoryOptionCombos.first().uid(),
+                            random.nextDouble().toString(),
                         )
                     }
                 }
@@ -94,8 +98,11 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
         return teis.map { tei ->
             EnrollmentSamples.get(
-                uidGenerator.generate(), tei.organisationUnit(), program.uid(), tei.uid(),
-                getRandomDateInLastYear()
+                uidGenerator.generate(),
+                tei.organisationUnit(),
+                program.uid(),
+                tei.uid(),
+                getRandomDateInLastYear(),
             )
         }
     }
@@ -109,8 +116,13 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
             val ou = level3OrgUnits[i % level3OrgUnits.size]
             val programStage = programStages[i % programStages.size]
             EventSamples.get(
-                uidGenerator.generate(), null, ou.uid(), programStage.program()!!.uid(), programStage.uid(),
-                metadata.categoryOptionCombos.first().uid(), getRandomDateInLastYear()
+                uidGenerator.generate(),
+                null,
+                ou.uid(),
+                programStage.program()!!.uid(),
+                programStage.uid(),
+                metadata.categoryOptionCombos.first().uid(),
+                getRandomDateInLastYear(),
             )
         }
     }
@@ -123,9 +135,13 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
             programStages.flatMap { ps ->
                 (1..params.eventsWithRegistrationPerEnrollmentAndPS).map {
                     EventSamples.get(
-                        uidGenerator.generate(), enrollment.uid(), enrollment.organisationUnit(),
-                        enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
-                        getRandomDateInLastYear()
+                        uidGenerator.generate(),
+                        enrollment.uid(),
+                        enrollment.organisationUnit(),
+                        enrollment.program(),
+                        ps.uid(),
+                        metadata.categoryOptionCombos.first().uid(),
+                        getRandomDateInLastYear(),
                     )
                 }
             }
@@ -134,7 +150,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
 
     fun generateTrackedEntityAttributeValues(
         trackedEntityAttributes: List<TrackedEntityAttribute>,
-        teis: List<TrackedEntityInstance>
+        teis: List<TrackedEntityInstance>,
     ): List<TrackedEntityAttributeValue> {
         return trackedEntityAttributes.flatMap { tea ->
             teis.map { tei ->
@@ -145,7 +161,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
 
     fun generateTrackedEntityDataValues(
         dataElements: List<DataElement>,
-        events: List<Event>
+        events: List<Event>,
     ): List<TrackedEntityDataValue> {
         return dataElements.flatMap { de ->
             events.map { event ->

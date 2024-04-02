@@ -48,7 +48,7 @@ abstract class FunctionGreatestOrLeast : ExpressionItem {
     protected fun greatestOrLeast(
         contexts: List<ExprContext?>,
         visitor: AntlrExpressionVisitor,
-        greatestLeast: Double
+        greatestLeast: Double,
     ): Double? {
         var returnVal: Double? = null
         for (c in contexts) {

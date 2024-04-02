@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
+import android.R
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
@@ -36,15 +37,16 @@ import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.OrganisationUnitFilter
 import org.hisp.dhis.android.core.event.EventDataFilter
 
+
 internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
-    private val repositoryFactory: ScopedRepositoryFactory<R, S>
+    private val repositoryFactory: ScopedRepositoryFactory<R, S>,
 ) {
-    fun <T> eqConnector(baseScopeFactory: BaseScopeFactory<S, T>): EqFilterConnector<R, T> {
-        return EqFilterConnector { value: T -> repositoryFactory.updated(baseScopeFactory.updated(value)) }
+    fun <T> eqConnector(baseScopeFactory: BaseScopeFactory<S, T?>): EqFilterConnector<R, T> {
+        return EqFilterConnector { value: T? -> repositoryFactory.updated(baseScopeFactory.updated(value)) }
     }
 
     fun <T> listConnector(baseScopeFactory: BaseScopeFactory<S, List<T>>): ListFilterConnector<R, T> {
-        return ListFilterConnector { list: List<T>? -> repositoryFactory.updated(baseScopeFactory.updated(list)) }
+        return ListFilterConnector { list: List<T> -> repositoryFactory.updated(baseScopeFactory.updated(list)) }
     }
 
     fun booleanConnector(baseScopeFactory: BaseScopeFactory<S, Boolean>): BoolFilterConnector<R> {
@@ -53,22 +55,20 @@ internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
 
     fun eqLikeItemC(
         key: String,
-        baseScopeFactory: BaseScopeFactory<S, RepositoryScopeFilterItem>
+        baseScopeFactory: BaseScopeFactory<S, RepositoryScopeFilterItem>,
     ): EqLikeItemFilterConnector<R> {
         return EqLikeItemFilterConnector(key) { item: RepositoryScopeFilterItem ->
             repositoryFactory.updated(
-                baseScopeFactory.updated(item)
+                baseScopeFactory.updated(item),
             )
         }
     }
 
     fun eqLikeInItemC(
-        key: String?,
-        baseScopeFactory: BaseScopeFactory<S, RepositoryScopeFilterItem?>
-    ): EqLikeInItemFilterConnector<R>? {
-        return EqLikeInItemFilterConnector(
-            key
-        ) { item: RepositoryScopeFilterItem? ->
+        key: String,
+        baseScopeFactory: BaseScopeFactory<S, RepositoryScopeFilterItem>
+    ): EqLikeInItemFilterConnector<R> {
+        return EqLikeInItemFilterConnector(key) { item: RepositoryScopeFilterItem ->
             repositoryFactory.updated(
                 baseScopeFactory.updated(item)
             )
@@ -79,8 +79,8 @@ internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
         return PeriodFilterConnector { filter: DateFilterPeriod ->
             repositoryFactory.updated(
                 baseScopeFactory.updated(
-                    filter
-                )
+                    filter,
+                ),
             )
         }
     }
@@ -89,29 +89,29 @@ internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
         return PeriodsFilterConnector { filter: List<DateFilterPeriod> ->
             repositoryFactory.updated(
                 baseScopeFactory.updated(
-                    filter
-                )
+                    filter,
+                ),
             )
         }
     }
 
     fun organisationUnitConnector(
-        baseScopeFactory: BaseScopeFactory<S, List<OrganisationUnitFilter>>
+        baseScopeFactory: BaseScopeFactory<S, List<OrganisationUnitFilter>>,
     ): OrganisationUnitFilterConnector<R> {
         return OrganisationUnitFilterConnector { filter: List<OrganisationUnitFilter> ->
             repositoryFactory.updated(
-                baseScopeFactory.updated(filter)
+                baseScopeFactory.updated(filter),
             )
         }
     }
 
     fun eventDataFilterConnector(
         key: String,
-        baseScopeFactory: BaseScopeFactory<S, EventDataFilter>
+        baseScopeFactory: BaseScopeFactory<S, EventDataFilter>,
     ): EventDataFilterConnector<R> {
         return EventDataFilterConnector(key) { item: EventDataFilter ->
             repositoryFactory.updated(
-                baseScopeFactory.updated(item)
+                baseScopeFactory.updated(item),
             )
         }
     }

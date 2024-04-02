@@ -101,6 +101,6 @@ object RelationshipTypeSamples {
     val typeMap: Map<String, RelationshipType> = mapOf(
         RELATIONSHIP_TYPE_UID_1 to RELATIONSHIP_TYPE_1,
         RELATIONSHIP_TYPE_UID_2 to RELATIONSHIP_TYPE_2,
-        RELATIONSHIP_TYPE_UID_3 to RELATIONSHIP_TYPE_3
+        RELATIONSHIP_TYPE_UID_3 to RELATIONSHIP_TYPE_3,
     )
 }

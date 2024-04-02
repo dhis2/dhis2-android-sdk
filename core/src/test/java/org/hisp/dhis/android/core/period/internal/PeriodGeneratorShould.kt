@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.period.internal
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.util.*
 
 @RunWith(JUnit4::class)
 class PeriodGeneratorShould {

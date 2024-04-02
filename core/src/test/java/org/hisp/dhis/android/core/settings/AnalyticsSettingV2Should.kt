@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.period.PeriodType
 import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
 class AnalyticsSettingV2Should : BaseObjectShould("settings/analytics_settings_v2.json"), ObjectShould {
 

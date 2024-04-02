@@ -38,7 +38,7 @@ internal class SectionRenderingColumnAdapter : ColumnTypeAdapter<SectionRenderin
     override fun fromCursor(cursor: Cursor, columnName: String): SectionRendering {
         return SectionRendering.create(
             getFromCursor(cursor, DESKTOP_RENDER_TYPE),
-            getFromCursor(cursor, MOBILE_RENDER_TYPE)
+            getFromCursor(cursor, MOBILE_RENDER_TYPE),
         )
     }
 

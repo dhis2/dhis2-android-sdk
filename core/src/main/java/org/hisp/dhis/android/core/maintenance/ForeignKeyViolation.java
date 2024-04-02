@@ -75,7 +75,7 @@ public abstract class ForeignKeyViolation extends BaseObject {
     }
 
     public static Builder builder() {
-        return new AutoValue_ForeignKeyViolation.Builder();
+        return new $$AutoValue_ForeignKeyViolation.Builder();
     }
 
     public abstract Builder toBuilder();

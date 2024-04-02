@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipConstraint.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_RelationshipConstraint.Builder.class)
 public abstract class RelationshipConstraint extends BaseObject {
 
     @Nullable
@@ -79,7 +79,7 @@ public abstract class RelationshipConstraint extends BaseObject {
     }
 
     public static Builder builder() {
-        return new AutoValue_RelationshipConstraint.Builder();
+        return new $$AutoValue_RelationshipConstraint.Builder();
     }
 
     public abstract Builder toBuilder();

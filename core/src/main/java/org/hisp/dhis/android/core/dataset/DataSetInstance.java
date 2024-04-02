@@ -112,9 +112,9 @@ public abstract class DataSetInstance implements CoreObject {
         return AutoValue_DataSetInstance.createFromCursor(cursor);
     }
 
-    public abstract DataSetInstance.Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    public static DataSetInstance.Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_DataSetInstance.Builder();
     }
 

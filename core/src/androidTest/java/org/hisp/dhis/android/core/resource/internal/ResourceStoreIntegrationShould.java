@@ -46,9 +46,9 @@ public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstrac
     private ResourceStore store;
 
     public ResourceStoreIntegrationShould() {
-        super(ResourceStoreImpl.create(TestDatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
+        super(new ResourceStoreImpl(TestDatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
-        this.store = ResourceStoreImpl.create(TestDatabaseAdapterFactory.get());
+        this.store = new ResourceStoreImpl(TestDatabaseAdapterFactory.get());
     }
 
     @Override

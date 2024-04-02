@@ -46,7 +46,7 @@ public final class DataSetCompleteRegistrationTableInfo {
 
         @Override
         public CoreColumns columns() {
-            return new DataSetCompleteRegistrationTableInfo.Columns();
+            return new Columns();
         }
     };
 

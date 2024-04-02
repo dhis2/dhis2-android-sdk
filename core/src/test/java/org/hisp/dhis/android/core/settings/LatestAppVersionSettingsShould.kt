@@ -40,7 +40,7 @@ class LatestAppVersionSettingsShould : BaseObjectShould("settings/latest_app_ver
 
         Truth.assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1")
         Truth.assertThat(latestAppVersion.downloadURL()).isEqualTo(
-            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk"
+            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk",
         )
     }
 }

@@ -27,21 +27,20 @@
  */
 package org.hisp.dhis.android.core.usecase.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
 import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class UseCaseModuleWiper @Inject internal constructor(
-    private val tableWiper: TableWiper
+@Singleton
+class UseCaseModuleWiper internal constructor(
+    private val tableWiper: TableWiper,
 ) : ModuleWiper {
     override fun wipeMetadata() {
         tableWiper.wipeTables(
             StockUseCaseTableInfo.TABLE_INFO,
-            StockUseCaseTransactionTableInfo.TABLE_INFO
+            StockUseCaseTransactionTableInfo.TABLE_INFO,
         )
     }
 

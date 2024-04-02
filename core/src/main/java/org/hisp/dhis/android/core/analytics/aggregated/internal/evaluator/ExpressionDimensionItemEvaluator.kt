@@ -27,15 +27,16 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.expressiondimensionitemengine.ExpressionDimensionItemEngine
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.koin.core.annotation.Singleton
 
-internal class ExpressionDimensionItemEvaluator @Inject constructor(
-    private val expressionDimensionItemEngine: ExpressionDimensionItemEngine
+@Singleton
+internal class ExpressionDimensionItemEvaluator(
+    private val expressionDimensionItemEngine: ExpressionDimensionItemEngine,
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
@@ -50,7 +51,7 @@ internal class ExpressionDimensionItemEvaluator @Inject constructor(
         return expressionDimensionItemEngine.evaluateIndicator(
             expressionDimensionItem = item,
             contextEvaluationItem = contextEvaluationItem,
-            contextMetadata = metadata
+            contextMetadata = metadata,
         )
     }
 

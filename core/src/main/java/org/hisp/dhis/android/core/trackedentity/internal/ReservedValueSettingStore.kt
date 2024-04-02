@@ -25,25 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSettingTableInfo
 
-internal object ReservedValueSettingStore {
-    private val BINDER = StatementBinder<ReservedValueSetting> { o, w ->
-        w.bind(1, o.uid())
-        w.bind(2, o.numberOfValuesToReserve())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ReservedValueSetting> {
-        return StoreFactory.objectWithUidStore(
-            databaseAdapter, ReservedValueSettingTableInfo.TABLE_INFO, BINDER
-        ) { ReservedValueSetting.create(it) }
-    }
-}
+internal interface ReservedValueSettingStore : IdentifiableObjectStore<ReservedValueSetting>

@@ -37,7 +37,7 @@ object DataValueUtils {
 
     val dataSets: List<DataSet> = listOf(
         DataSetSamples.getDataSet(),
-        DataSetSamples.getDataSet().toBuilder().uid("TuL8IOPzpHh").build()
+        DataSetSamples.getDataSet().toBuilder().uid("TuL8IOPzpHh").build(),
     )
 
     val periodIds: List<String> = listOf("201712", "2017")

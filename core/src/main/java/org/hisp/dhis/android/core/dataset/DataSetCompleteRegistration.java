@@ -91,7 +91,7 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
 
         public Builder() {
             syncState(State.SYNCED);

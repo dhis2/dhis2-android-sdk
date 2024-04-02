@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 public class ValidationRuleStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ValidationRule> {
 
     public ValidationRuleStoreIntegrationShould() {
-        super(ValidationRuleStore.create(TestDatabaseAdapterFactory.get()),
+        super(new ValidationRuleStoreImpl(TestDatabaseAdapterFactory.get()),
                 ValidationRuleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
 
     public RelationshipStoreIntegrationShould() {
-        super(RelationshipStoreImpl.create(TestDatabaseAdapterFactory.get()),
+        super(new RelationshipStoreImpl(TestDatabaseAdapterFactory.get()),
                 RelationshipTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

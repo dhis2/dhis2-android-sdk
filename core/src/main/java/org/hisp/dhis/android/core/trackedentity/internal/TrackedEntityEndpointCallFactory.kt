@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import io.reactivex.Single
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -38,13 +36,13 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
 internal abstract class TrackedEntityEndpointCallFactory {
 
-    abstract fun getCollectionCall(query: TrackerAPIQuery): Single<Payload<TrackedEntityInstance>>
+    abstract suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance>
 
     abstract suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
 
-    abstract fun getRelationshipEntityCall(uid: String): Single<Payload<TrackedEntityInstance>>
+    abstract suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance>
 
-    abstract fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Callable<TrackerQueryResult>
+    abstract suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult
 
     protected fun getUidStr(query: TrackerAPIQuery): String? {
         return if (query.uids.isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids, ";")

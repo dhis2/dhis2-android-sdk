@@ -28,29 +28,30 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import android.util.Log
-import dagger.Reusable
-import java.io.IOException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import javax.inject.Inject
-import javax.net.ssl.SSLException
 import okhttp3.Request
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.koin.core.annotation.Singleton
 import retrofit2.Call
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.net.ssl.SSLException
 
-@Reusable
+@Singleton
 @Suppress("TooManyFunctions")
-internal class APIErrorMapper @Inject constructor() {
+internal class APIErrorMapper {
 
     fun mapRetrofitException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
         return when (throwable) {
             is SocketTimeoutException -> socketTimeoutException(errorBuilder, throwable)
             is UnknownHostException -> unknownHostException(errorBuilder, throwable)
+            is ConnectException -> connectException(errorBuilder, throwable)
             is HttpException -> httpException(errorBuilder, throwable)
             is SSLException -> sslException(errorBuilder, throwable)
             is IOException -> ioException(errorBuilder, throwable)
@@ -78,6 +79,13 @@ internal class APIErrorMapper @Inject constructor() {
             .build()
     }
 
+    private fun connectException(errorBuilder: D2Error.Builder, e: ConnectException): D2Error {
+        return logAndAppendOriginal(errorBuilder, e)
+            .errorCode(D2ErrorCode.SERVER_CONNECTION_ERROR)
+            .errorDescription("API call failed due to a ConnectException.")
+            .build()
+    }
+
     private fun sslException(errorBuilder: D2Error.Builder, sslException: SSLException): D2Error {
         return logAndAppendOriginal(errorBuilder, sslException)
             .errorDescription(sslException.message)
@@ -95,7 +103,7 @@ internal class APIErrorMapper @Inject constructor() {
 
     private fun httpException(errorBuilder: D2Error.Builder, e: HttpException): D2Error {
         return logAndAppendOriginal(errorBuilder, e)
-            .url(e.response()?.raw()?.request()?.url()?.toString())
+            .url(e.response()?.raw()?.request?.url?.toString())
             .httpErrorCode(e.response()!!.code())
             .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
             .errorDescription("API call threw HttpException")
@@ -116,7 +124,7 @@ internal class APIErrorMapper @Inject constructor() {
 
     fun getBaseErrorBuilder(response: Response<*>): D2Error.Builder {
         return getBaseErrorBuilder()
-            .url(getUrl(response.raw().request()))
+            .url(getUrl(response.raw().request))
     }
 
     fun getBaseErrorBuilder(): D2Error.Builder {
@@ -125,29 +133,29 @@ internal class APIErrorMapper @Inject constructor() {
     }
 
     private fun getUrl(request: Request?): String? {
-        return request?.url()?.toString()?.let {
+        return request?.url?.toString()?.let {
             DynamicServerURLInterceptor.transformUrl(it)
         }
     }
 
-    @JvmOverloads
     fun responseException(
         errorBuilder: D2Error.Builder,
         response: Response<*>,
-        errorCode: D2ErrorCode? = D2ErrorCode.API_UNSUCCESSFUL_RESPONSE,
-        errorBody: String?
+        errorCode: D2ErrorCode?,
+        errorBody: String?,
     ): D2Error {
+        val code = errorCode ?: D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
         val serverMessage = errorBody ?: getServerMessage(response)
         Log.e(this.javaClass.simpleName, serverMessage)
         return errorBuilder
-            .errorCode(errorCode)
+            .errorCode(code)
             .httpErrorCode(response.code())
             .errorDescription("API call failed, server message: $serverMessage")
             .build()
     }
 
     private fun getIfNotEmpty(message: String?): String? {
-        return if (message != null && message.isNotEmpty()) message else null
+        return if (!message.isNullOrEmpty()) message else null
     }
 
     private fun getServerMessage(response: Response<*>): String {

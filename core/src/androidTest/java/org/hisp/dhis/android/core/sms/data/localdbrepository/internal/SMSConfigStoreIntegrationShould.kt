@@ -36,9 +36,9 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SMSConfigStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<KeyValuePair>(
-    SMSConfigStoreImpl.create(TestDatabaseAdapterFactory.get()),
+    SMSConfigStoreImpl(TestDatabaseAdapterFactory.get()),
     SMSConfigTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): KeyValuePair {
         return keyValuePairSample

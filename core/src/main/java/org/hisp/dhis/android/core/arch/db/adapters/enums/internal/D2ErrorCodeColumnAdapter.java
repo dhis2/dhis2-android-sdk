@@ -28,11 +28,29 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 public class D2ErrorCodeColumnAdapter extends EnumColumnAdapter<D2ErrorCode> {
     @Override
     protected Class<D2ErrorCode> getEnumClass() {
         return D2ErrorCode.class;
+    }
+
+    @Override
+    public D2ErrorCode fromCursor(Cursor cursor, String columnName) {
+        D2ErrorCode d2ErrorCode = super.fromCursor(cursor, columnName);
+        return d2ErrorCode == null ? D2ErrorCode.UNEXPECTED : d2ErrorCode;
+    }
+
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, D2ErrorCode enumValue) {
+        if (enumValue == null) {
+            contentValues.put(columnName, D2ErrorCode.UNEXPECTED.name());
+        } else {
+            contentValues.put(columnName, enumValue.name());
+        }
     }
 }

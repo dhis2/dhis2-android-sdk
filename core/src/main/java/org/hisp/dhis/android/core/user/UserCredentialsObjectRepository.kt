@@ -27,35 +27,43 @@
  */
 package org.hisp.dhis.android.core.user
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
+import org.hisp.dhis.android.core.user.internal.UserRoleChildrenAppender
+import org.hisp.dhis.android.core.user.internal.UserStore
+import org.hisp.dhis.android.core.user.internal.UserUserCredentialsTransformer
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class UserCredentialsObjectRepository @Inject internal constructor(
-    store: IdentifiableObjectStore<User>,
-    childrenAppenders: MutableMap<String, ChildrenAppender<User>>,
+@Singleton(binds = [UserCredentialsObjectRepository::class])
+class UserCredentialsObjectRepository internal constructor(
+    store: UserStore,
+    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
-    transformer: TwoWayTransformer<User, UserCredentials>
+    transformer: UserUserCredentialsTransformer,
 ) : ReadOnlyObjectRepository<UserCredentials> by ReadOnlyWithTransformerObjectRepositoryImpl(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
-    transformer
+    transformer,
 ) {
 
     private val cf: FilterConnectorFactory<UserCredentialsObjectRepository> = FilterConnectorFactory(scope) { s ->
-        UserCredentialsObjectRepository(store, childrenAppenders, s, transformer)
+        UserCredentialsObjectRepository(store, databaseAdapter, s, transformer)
     }
 
     fun withUserRoles(): UserCredentialsObjectRepository {
         return cf.withChild(UserCredentialsFields.USER_ROLES)
+    }
+
+    internal companion object {
+        val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
+            UserCredentialsFields.USER_ROLES to ::UserRoleChildrenAppender,
+        )
     }
 }

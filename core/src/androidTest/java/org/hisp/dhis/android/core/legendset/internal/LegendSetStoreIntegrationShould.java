@@ -40,7 +40,8 @@ import org.junit.runner.RunWith;
 public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<LegendSet> {
 
     public LegendSetStoreIntegrationShould() {
-        super(LegendSetStore.create(TestDatabaseAdapterFactory.get()), LegendSetTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+        super(new LegendSetStoreImpl(TestDatabaseAdapterFactory.get()),
+                LegendSetTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

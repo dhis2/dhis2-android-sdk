@@ -74,7 +74,7 @@ class TrackerConflictHelperShould {
             "PXi7gfVIk1p",
             TrackerImporterObjectType.EVENT,
             "E1032",
-            "Event: `PXi7gfVIk1p`, do not exist."
+            "Event: `PXi7gfVIk1p`, do not exist.",
         )
         private val wrongCodeErrorReport = errorReport.copy(errorCode = "WrongCode")
     }

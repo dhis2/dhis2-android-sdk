@@ -37,9 +37,9 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class AnalyticsTeiIndicatorStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AnalyticsTeiIndicator>(
-    AnalyticsTeiIndicatorStore.create(TestDatabaseAdapterFactory.get()),
+    AnalyticsTeiIndicatorStoreImpl(TestDatabaseAdapterFactory.get()),
     AnalyticsTeiIndicatorTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): AnalyticsTeiIndicator {
         return AnalyticsSettingsSamples.analyticsTeiIndicator

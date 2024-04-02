@@ -39,8 +39,8 @@ interface FileResourceModule {
                 "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
                 "            .download()",
             "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
-            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
-        )
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType",
+        ),
     )
     fun download(): Observable<D2Progress>
 
@@ -52,8 +52,8 @@ interface FileResourceModule {
                 "            .byValueType().eq(FileResourceValueType.IMAGE)\n" +
                 "            .blockingDownload()",
             "org.hisp.dhis.android.core.fileresource.FileResourceDomainType",
-            "org.hisp.dhis.android.core.fileresource.FileResourceValueType"
-        )
+            "org.hisp.dhis.android.core.fileresource.FileResourceValueType",
+        ),
     )
     fun blockingDownload()
 

@@ -37,7 +37,7 @@ data class StockUseCase(
     val programType: String,
     val description: String,
     val stockOnHand: String,
-    val transactions: List<StockUseCaseTransaction>
+    val transactions: List<StockUseCaseTransaction>,
 ) : ObjectWithUidInterface {
     override fun uid(): String {
         return programUid

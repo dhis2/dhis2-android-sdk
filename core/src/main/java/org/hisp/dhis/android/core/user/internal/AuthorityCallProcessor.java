@@ -49,7 +49,7 @@ class AuthorityCallProcessor implements CallProcessor<Authority> {
 
     @Override
     public final void process(final List<Authority> objectList) throws D2Error {
-        AuthorityStore.create(databaseAdapter).delete();
+        new AuthorityStoreImpl(databaseAdapter).delete();
 
         if (objectList != null && !objectList.isEmpty()) {
             D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {

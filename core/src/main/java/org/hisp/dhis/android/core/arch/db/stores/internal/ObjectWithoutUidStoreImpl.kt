@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
@@ -43,8 +45,29 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     binder: StatementBinder<O>,
     private val whereUpdateBinder: WhereStatementBinder<O>,
     private val whereDeleteBinder: WhereStatementBinder<O>,
-    objectFactory: (Cursor) -> O
+    objectFactory: (Cursor) -> O,
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), ObjectWithoutUidStore<O> {
+
+    constructor(
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
+        whereUpdateBinder: WhereStatementBinder<O>,
+        whereDeleteBinder: WhereStatementBinder<O>,
+        objectFactory: (Cursor) -> O,
+    ) : this(
+        databaseAdapter,
+        SQLStatementBuilderImpl(
+            tableInfo.name(),
+            tableInfo.columns().all(),
+            tableInfo.columns().whereUpdate(),
+        ),
+        binder,
+        whereUpdateBinder,
+        whereDeleteBinder,
+        objectFactory,
+    )
+
     private var updateWhereStatement: StatementWrapper? = null
     private var deleteWhereStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null

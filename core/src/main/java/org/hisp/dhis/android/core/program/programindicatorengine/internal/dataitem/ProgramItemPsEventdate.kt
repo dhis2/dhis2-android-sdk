@@ -58,7 +58,7 @@ internal class ProgramItemPsEventdate : ProgramExpressionItem() {
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
                     column = EventTableInfo.Columns.EVENT_DATE,
-                    programStageId = programStageId
+                    programStageId = programStageId,
                 )
         }
     }

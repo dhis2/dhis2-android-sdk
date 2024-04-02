@@ -41,7 +41,7 @@ public class TrackedEntityTypeStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityType> {
 
     public TrackedEntityTypeStoreIntegrationShould() {
-        super(TrackedEntityTypeStore.create(TestDatabaseAdapterFactory.get()),
+        super(new TrackedEntityTypeStoreImpl(TestDatabaseAdapterFactory.get()),
                 TrackedEntityTypeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

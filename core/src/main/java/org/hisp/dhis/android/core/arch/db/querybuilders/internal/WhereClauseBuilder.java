@@ -133,6 +133,10 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, subQuery, AND, IN, PARENTHESES_END);
     }
 
+    public WhereClauseBuilder appendNotInSubQuery(String column, String subQuery) {
+        return appendKeyValue(column, subQuery, AND, NOT_IN, PARENTHESES_END);
+    }
+
     public WhereClauseBuilder appendOrInSubQuery(String column, String subQuery) {
         return appendKeyValue(column, subQuery, OR, IN, PARENTHESES_END);
     }

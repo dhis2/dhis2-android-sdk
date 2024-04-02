@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.visualization
 
 enum class LegendStyle {
     FILL,
-    TEXT
+    TEXT,
 }

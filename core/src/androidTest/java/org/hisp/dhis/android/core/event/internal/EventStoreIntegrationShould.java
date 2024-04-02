@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
 public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
 
     public EventStoreIntegrationShould() {
-        super(EventStoreImpl.create(TestDatabaseAdapterFactory.get()),
+        super(new EventStoreImpl(TestDatabaseAdapterFactory.get()),
                 EventTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

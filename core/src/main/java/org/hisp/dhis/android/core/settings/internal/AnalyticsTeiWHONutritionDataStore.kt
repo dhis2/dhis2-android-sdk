@@ -25,32 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo
 
-@Suppress("MagicNumber")
-internal object AnalyticsTeiWHONutritionDataStore {
-
-    private val BINDER = StatementBinder { o: AnalyticsTeiWHONutritionData, w: StatementWrapper ->
-        w.bind(1, o.teiSetting())
-        w.bind(2, o.chartType())
-        w.bind(3, o.gender().attribute())
-        w.bind(4, o.gender().values().female())
-        w.bind(5, o.gender().values().male())
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiWHONutritionData> {
-        return linkStore(
-            databaseAdapter, AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,
-            AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING, BINDER
-        ) { cursor: Cursor -> AnalyticsTeiWHONutritionData.create(cursor) }
-    }
-}
+internal interface AnalyticsTeiWHONutritionDataStore : LinkStore<AnalyticsTeiWHONutritionData>

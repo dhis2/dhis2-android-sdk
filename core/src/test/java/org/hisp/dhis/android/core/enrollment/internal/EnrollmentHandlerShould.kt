@@ -28,19 +28,18 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.internal.EventHandler
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
+import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.internal.EnrollmentRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -53,8 +52,8 @@ import org.mockito.ArgumentMatchers
 @RunWith(JUnit4::class)
 class EnrollmentHandlerShould {
     private val enrollmentStore: EnrollmentStore = mock()
-    private val eventHandler: IdentifiableDataHandler<Event> = mock()
-    private val noteHandler: Handler<Note> = mock()
+    private val eventHandler: EventHandler = mock()
+    private val noteHandler: NoteHandler = mock()
     private val noteUniquenessManager: NoteUniquenessManager = mock()
     private val enrollment: Enrollment = mock()
     private val event: Event = mock()
@@ -64,8 +63,8 @@ class EnrollmentHandlerShould {
     private val enrollmentBuilder: Enrollment.Builder = mock()
     private val relationshipVersionManager: RelationshipDHISVersionManager = mock()
     private val relationshipHandler: RelationshipHandler = mock()
-    private val relationshipOrphanCleaner: OrphanCleaner<Enrollment, Relationship> = mock()
-    private val eventCleaner: OrphanCleaner<Enrollment, Event> = mock()
+    private val relationshipOrphanCleaner: EnrollmentRelationshipOrphanCleaner = mock()
+    private val eventCleaner: EventOrphanCleaner = mock()
 
     // object to test
     private lateinit var enrollmentHandler: EnrollmentHandler
@@ -85,7 +84,7 @@ class EnrollmentHandlerShould {
         enrollmentHandler = EnrollmentHandler(
             relationshipVersionManager, relationshipHandler, noteVersionManager,
             enrollmentStore, eventHandler, eventCleaner, noteHandler, noteUniquenessManager,
-            relationshipOrphanCleaner
+            relationshipOrphanCleaner,
         )
     }
 

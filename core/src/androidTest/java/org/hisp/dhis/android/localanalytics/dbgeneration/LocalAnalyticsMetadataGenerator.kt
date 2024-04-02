@@ -56,8 +56,9 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
     private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
         return (1..params.organisationUnitChildren).map { i ->
             OrganisationUnitSamples.getOrganisationUnit(
-                "${parent.name()} $i", parent.level()!! + 1,
-                parent
+                "${parent.name()} $i",
+                parent.level()!! + 1,
+                parent,
             )
         }
     }
@@ -86,8 +87,10 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
         return categoryCombos.flatMap { categoryCombo ->
             (1..params.dataElementsAggregated).map { i ->
                 DataElementSamples.getDataElement(
-                    "DE Aggr $i", null,
-                    ObjectWithUid.create(categoryCombo.uid()), "AGGREGATE"
+                    "DE Aggr $i",
+                    null,
+                    ObjectWithUid.create(categoryCombo.uid()),
+                    "AGGREGATE",
                 )
             }
         }
@@ -96,8 +99,10 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
     fun getDataElementsTracker(categoryCombo: CategoryCombo): List<DataElement> {
         return (1..params.dataElementsTracker).map { i ->
             DataElementSamples.getDataElement(
-                "DE Tracker $i", null,
-                ObjectWithUid.create(categoryCombo.uid()), "TRACKER"
+                "DE Tracker $i",
+                null,
+                ObjectWithUid.create(categoryCombo.uid()),
+                "TRACKER",
             )
         }
     }
@@ -105,11 +110,13 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
     fun getPrograms(categoryCombo: CategoryCombo): List<Program> {
         val withReg = ProgramSamples.getProgram(
             "Program with registration",
-            ProgramType.WITH_REGISTRATION, categoryCombo
+            ProgramType.WITH_REGISTRATION,
+            categoryCombo,
         )
         val withoutReg = ProgramSamples.getProgram(
             "Program without registration",
-            ProgramType.WITHOUT_REGISTRATION, categoryCombo
+            ProgramType.WITHOUT_REGISTRATION,
+            categoryCombo,
         )
         return listOf(withReg, withoutReg)
     }

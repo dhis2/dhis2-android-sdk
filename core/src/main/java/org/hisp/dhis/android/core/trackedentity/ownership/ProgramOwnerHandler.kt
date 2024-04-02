@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramOwnerHandler(
-    programOwnerStore: ObjectWithoutUidStore<ProgramOwner>
-) : ObjectWithoutUidHandlerImpl<ProgramOwner>(
-    programOwnerStore
-)
+    store: ProgramOwnerStore,
+) : ObjectWithoutUidHandlerImpl<ProgramOwner>(store)

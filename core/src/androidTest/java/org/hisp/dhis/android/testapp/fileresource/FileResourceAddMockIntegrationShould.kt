@@ -29,8 +29,6 @@ package org.hisp.dhis.android.testapp.fileresource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.io.InputStream
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
@@ -39,6 +37,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.io.InputStream
 
 @RunWith(D2JunitRunner::class)
 class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
@@ -48,17 +48,15 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatc
         val file = storeFile()
         assertThat(file.exists()).isTrue()
 
-        val fileResources1 = d2.fileResourceModule().fileResources().blockingGet()
-
-        assertThat(fileResources1.size).isEqualTo(0)
+        val initialFileResources = d2.fileResourceModule().fileResources().blockingGet()
 
         val fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file)
-        val fileResources2 = d2.fileResourceModule().fileResources().blockingGet()
-        assertThat(fileResources2.size).isEqualTo(1)
+        val finalFileResources = d2.fileResourceModule().fileResources().blockingGet()
+        assertThat(finalFileResources.size).isEqualTo(initialFileResources.size + 1)
 
         val fileResource = d2.fileResourceModule().fileResources()
             .uid(fileResourceUid)
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(fileResource.uid()).isEqualTo(fileResourceUid)
 
@@ -66,7 +64,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatc
         assertThat(savedFile.exists()).isTrue()
 
         savedFile.delete()
-        FileResourceStoreImpl.create(databaseAdapter).delete(fileResource.uid()!!)
+        FileResourceStoreImpl(databaseAdapter).delete(fileResource.uid()!!)
     }
 
     private fun storeFile(): File {

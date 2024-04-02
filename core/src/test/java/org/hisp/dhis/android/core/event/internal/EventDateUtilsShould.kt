@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import java.util.Calendar
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Before
 import org.junit.Test
+import java.util.Calendar
 
 class EventDateUtilsShould {
 
@@ -59,9 +59,10 @@ class EventDateUtilsShould {
         whenever(periodHelper.calendar) doReturn getCalendar()
         whenever(
             periodHelper.blockingGetPeriodForPeriodTypeAndDate(
-                PeriodType.Monthly, thirdJanuary,
-                1
-            )
+                PeriodType.Monthly,
+                thirdJanuary,
+                1,
+            ),
         ) doReturn february
         whenever(february.startDate()) doReturn firstFebruary
     }

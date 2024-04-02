@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -37,10 +39,13 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 @AutoValue
 public abstract class RepositoryScopeOrderByItem {
 
+    @NonNull
     public abstract String column();
 
+    @NonNull
     public abstract RepositoryScope.OrderByDirection direction();
 
+    @NonNull
     public abstract RepositoryScopeKeyOrderExtractor keyExtractor();
 
     public String getKey(ContentValues contentValues) {
@@ -62,11 +67,11 @@ public abstract class RepositoryScopeOrderByItem {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder column(String column);
+        public abstract Builder column(@NonNull String column);
 
-        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
+        public abstract Builder direction(@NonNull RepositoryScope.OrderByDirection direction);
 
-        public abstract Builder keyExtractor(RepositoryScopeKeyOrderExtractor keyExtractor);
+        public abstract Builder keyExtractor(@NonNull RepositoryScopeKeyOrderExtractor keyExtractor);
 
         public abstract RepositoryScopeOrderByItem build();
     }

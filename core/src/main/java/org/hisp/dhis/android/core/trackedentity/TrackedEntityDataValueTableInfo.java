@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DataColumns;
 
 public final class TrackedEntityDataValueTableInfo {
 
@@ -58,6 +59,7 @@ public final class TrackedEntityDataValueTableInfo {
         public final static String CREATED = "created";
         public final static String LAST_UPDATED = "lastUpdated";
         public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
+        public final static String SYNC_STATE = DataColumns.SYNC_STATE;
 
         @Override
         public String[] all() {
@@ -68,7 +70,8 @@ public final class TrackedEntityDataValueTableInfo {
                     DATA_ELEMENT,
                     STORED_BY,
                     VALUE,
-                    PROVIDED_ELSEWHERE
+                    PROVIDED_ELSEWHERE,
+                    SYNC_STATE
             );
         }
 

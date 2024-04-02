@@ -29,11 +29,13 @@
 package org.hisp.dhis.android.testapp.program;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -354,5 +356,21 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         Program program = d2.programModule().programs()
                 .withTrackedEntityType().one().blockingGet();
         assertThat(program.trackedEntityType().name()).isEqualTo("Person");
+    }
+
+    @Test
+    public void include_attributeValues_as_children() {
+        Program programWithAttributeValues = d2.programModule().programs()
+                .withAttributes()
+                .one()
+                .blockingGet();
+
+        List<AttributeValue> attributeValues = programWithAttributeValues.attributeValues();
+        assertThat(attributeValues.size()).isEqualTo(2);
+        assertThat(attributeValues.get(0).attribute().uid()).isEqualTo("b0vcadVrn08");
+        assertThat(attributeValues.get(0).value()).isEqualTo("Direct 2");
+        assertThat(attributeValues.get(1).attribute().uid()).isEqualTo("qXS2NDUEAOS");
+        assertThat(attributeValues.get(1).value()).isEqualTo("Direct");
+
     }
 }

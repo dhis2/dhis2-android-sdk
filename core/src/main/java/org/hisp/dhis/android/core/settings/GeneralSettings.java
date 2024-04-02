@@ -39,11 +39,13 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMetadataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_GeneralSettings.Builder.class)
@@ -110,6 +112,10 @@ public abstract class GeneralSettings implements CoreObject {
     @Nullable
     public abstract String messageOfTheDay();
 
+    @Nullable
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> experimentalFeatures();
+
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
@@ -149,6 +155,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder allowScreenCapture(Boolean allowScreenCapture);
 
         public abstract Builder messageOfTheDay(String messageOfTheDay);
+
+        public abstract Builder experimentalFeatures(List<String> experimentalFeatures);
 
         public abstract GeneralSettings build();
     }

@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
-import org.hisp.dhis.android.core.common.AggregationType
 
 internal class ProgramItemStageElement : ProgramExpressionItem() {
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
@@ -54,39 +53,16 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
 
         if (eventList != null) {
             val candidates = getCandidates(eventList, dataElementId)
-
-            val aggregationType: AggregationType? = visitor.programIndicatorContext.programIndicator.aggregationType()
-
             if (candidates.isNotEmpty()) {
-                value =candidates.last().value()
-                    if (AggregationType.LAST == aggregationType || AggregationType.LAST_AVERAGE_ORG_UNIT == aggregationType) {
-                        candidates.last().value()
-                    } else if (AggregationType.AVERAGE == aggregationType) {
-                        val candidatesValues = candidates.map { it.value()!!.toDouble() }
-                        avg(candidatesValues).toString()
-                    } else if (AggregationType.SUM == aggregationType) {
-                        val candidatesValues = candidates.map { it.value()!!.toDouble() }
-                        sum(candidatesValues).toString()
-                    } else {
-                        candidates.last().value()
-                    }
+                value = candidates.last().value()
             }
         }
 
         val dataElement = getDataElement(visitor, dataElementId)
-        val handledValue = visitor.handleNulls(value)
+        val handledValue = visitor.handleNulls(value, dataElement.valueType())
         val strValue = handledValue?.toString()
 
         return formatValue(strValue, dataElement.valueType())
-    }
-
-    private fun sum(values: List<Double>): Double {
-        return  values.reduce { acc, value -> acc + value }
-    }
-
-    private fun avg(values: List<Double>): Double {
-        val sum = sum(values)
-        return sum / values.size
     }
 
     private fun getCandidates(events: List<Event>, dataElement: String): List<TrackedEntityDataValue> {
@@ -116,14 +92,14 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityDataValueTableInfo.Columns.VALUE,
-            dataElement.valueType()
+            dataElement.valueType(),
         )
 
         val selectExpression = ProgramIndicatorSQLUtils.getTrackerDataValueWhereClause(
             column = valueCastExpression,
             programStageUid = programStageId,
             dataElementUid = dataElementId,
-            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator
+            programIndicator = visitor.programIndicatorSQLContext!!.programIndicator,
         )
 
         return if (visitor.state.replaceNulls) {
@@ -141,8 +117,8 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             DimensionalItemId(
                 dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_DATA_VALUE,
                 id0 = stageId,
-                id1 = dataElementId
-            )
+                id1 = dataElementId,
+            ),
         )
     }
 

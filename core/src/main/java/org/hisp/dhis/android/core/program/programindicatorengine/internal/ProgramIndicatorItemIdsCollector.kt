@@ -54,8 +54,8 @@ internal class ProgramIndicatorItemIdsCollector : ExpressionBaseListener() {
                         DimensionalItemId(
                             dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_DATA_VALUE,
                             id0 = stageId,
-                            id1 = dataElementId
-                        )
+                            id1 = dataElementId,
+                        ),
                     )
                 }
 
@@ -67,8 +67,8 @@ internal class ProgramIndicatorItemIdsCollector : ExpressionBaseListener() {
                     itemIds.add(
                         DimensionalItemId(
                             dimensionalItemType = DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE,
-                            id0 = attributeId
-                        )
+                            id0 = attributeId,
+                        ),
                     )
                 }
             }

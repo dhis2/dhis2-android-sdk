@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine
 
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -38,7 +37,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStoreImpl
 import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
@@ -48,11 +47,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import java.util.*
 
 open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: DatabaseAdapter) {
 
     fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
-        val teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
+        val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
         val trackedEntityInstance = TrackedEntityInstance.builder()
             .uid(teiUid)
             .created(Date())
@@ -72,12 +72,12 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         incidentDate: Date? = null,
         created: Date? = null,
         lastUpdated: Date? = null,
-        status: EnrollmentStatus? = EnrollmentStatus.ACTIVE
+        status: EnrollmentStatus? = EnrollmentStatus.ACTIVE,
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
             .created(created).lastUpdated(lastUpdated).status(status).build()
-        EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment)
+        EnrollmentStoreImpl(databaseAdapter).insert(enrollment)
     }
 
     fun createEvent(
@@ -90,12 +90,12 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         eventDate: Date?,
         created: Date? = null,
         lastUpdated: Date? = null,
-        status: EventStatus? = EventStatus.ACTIVE
+        status: EventStatus? = EventStatus.ACTIVE,
     ) {
         val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
             .eventDate(eventDate).deleted(deleted).status(status).build()
-        EventStoreImpl.create(databaseAdapter).insert(event)
+        EventStoreImpl(databaseAdapter).insert(event)
     }
 
     fun createTrackerEvent(
@@ -108,7 +108,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         eventDate: Date? = null,
         created: Date? = null,
         lastUpdated: Date? = null,
-        status: EventStatus? = EventStatus.ACTIVE
+        status: EventStatus? = EventStatus.ACTIVE,
     ) {
         createEvent(
             eventUid = eventUid,
@@ -120,7 +120,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             created = created,
             lastUpdated = lastUpdated,
             eventDate = eventDate,
-            status = status
+            status = status,
         )
     }
 
@@ -132,7 +132,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         deleted: Boolean = false,
         eventDate: Date? = null,
         lastUpdated: Date? = null,
-        status: EventStatus? = EventStatus.ACTIVE
+        status: EventStatus? = EventStatus.ACTIVE,
     ) {
         createEvent(
             eventUid = eventUid,
@@ -143,14 +143,14 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             deleted = deleted,
             eventDate = eventDate,
             lastUpdated = lastUpdated,
-            status = status
+            status = status,
         )
     }
 
     fun setProgramIndicatorExpression(
         programIndicatorUid: String,
         programUid: String,
-        expression: String
+        expression: String,
     ) {
         insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE)
     }
@@ -159,7 +159,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         programIndicatorUid: String,
         programUid: String,
         expression: String,
-        aggregationType: AggregationType
+        aggregationType: AggregationType,
     ) {
         val programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
             .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build()
@@ -167,7 +167,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
     }
 
     fun setProgramIndicator(programIndicator: ProgramIndicator) {
-        ProgramIndicatorStore.create(databaseAdapter).updateOrInsert(programIndicator)
+        ProgramIndicatorStoreImpl(databaseAdapter).updateOrInsert(programIndicator)
     }
 
     fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
@@ -175,32 +175,32 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             .event(eventUid)
             .dataElement(dataElementUid)
             .value(value).build()
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
+        TrackedEntityDataValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
     }
 
     fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
         val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
             .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
-        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
+        TrackedEntityAttributeValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
     }
 
     fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
         val relationship = RelationshipHelper.teiToTeiRelationship(fromTei, toTei, typeUid)
 
-        RelationshipStoreImpl.create(databaseAdapter).insert(relationship)
-        RelationshipItemStoreImpl.create(databaseAdapter).let {
+        RelationshipStoreImpl(databaseAdapter).insert(relationship)
+        RelationshipItemStoreImpl(databaseAdapter).let {
             val r = ObjectWithUid.create(relationship.uid())
             it.insert(
                 relationship.from()!!.toBuilder()
                     .relationshipItemType(RelationshipConstraintType.FROM)
                     .relationship(r)
-                    .build()
+                    .build(),
             )
             it.insert(
                 relationship.to()!!.toBuilder()
                     .relationshipItemType(RelationshipConstraintType.TO)
                     .relationship(r)
-                    .build()
+                    .build(),
             )
         }
     }

@@ -41,7 +41,7 @@ public class TrackedEntityInstanceEventFilterStoreIntegrationShould
         extends ObjectStoreAbstractIntegrationShould<TrackedEntityInstanceEventFilter> {
 
     public TrackedEntityInstanceEventFilterStoreIntegrationShould() {
-        super(TrackedEntityInstanceEventFilterStore.create(TestDatabaseAdapterFactory.get()),
+        super(new TrackedEntityInstanceEventFilterStoreImpl(TestDatabaseAdapterFactory.get()),
                 TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 

@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
 internal data class BingServerResponse(
-    val resourceSets: List<ResourceSet>
+    val resourceSets: List<ResourceSet>,
 )
 
 internal data class ResourceSet(
     val estimatedTotal: Int,
-    val resources: List<Resource>
+    val resources: List<Resource>,
 )
 
 internal data class Resource(
@@ -44,16 +44,16 @@ internal data class Resource(
     val imageUrlSubdomains: List<String>,
     val zoomMax: Int,
     val zoomMin: Int,
-    val imageryProviders: List<ImageryProvider>
+    val imageryProviders: List<ImageryProvider>,
 )
 
 internal data class ImageryProvider(
     val attribution: String,
-    val coverageAreas: List<CoverageArea>
+    val coverageAreas: List<CoverageArea>,
 )
 
 internal data class CoverageArea(
     val bbox: List<Double>,
     val zoomMax: Int,
-    val zoomMin: Int
+    val zoomMin: Int,
 )

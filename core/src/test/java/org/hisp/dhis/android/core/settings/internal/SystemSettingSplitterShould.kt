@@ -39,7 +39,7 @@ class SystemSettingSplitterShould {
     private val settings: SystemSettings = SystemSettings(
         keyFlag = "aFlag",
         keyStyle = "aStyle",
-        keyBingMapsApiKey = null
+        keyBingMapsApiKey = null,
     )
 
     private val systemSettingsSplitter = SystemSettingsSplitter()

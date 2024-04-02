@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity
 
-import java.util.*
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.FilterPeriod
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import java.util.Date
 
 internal data class TrackedEntityInstanceFilterAPI37(
     val id: String,
@@ -46,7 +49,7 @@ internal data class TrackedEntityInstanceFilterAPI37(
     val enrollmentStatus: EnrollmentStatus?,
     val followup: Boolean?,
     val enrollmentCreatedPeriod: FilterPeriod?,
-    val eventFilters: List<TrackedEntityInstanceEventFilter>?
+    val eventFilters: List<TrackedEntityInstanceEventFilter>?,
 ) {
     fun toTrackedEntityInstanceFilter(): TrackedEntityInstanceFilter =
         TrackedEntityInstanceFilter.builder()
@@ -71,9 +74,9 @@ internal data class TrackedEntityInstanceFilterAPI37(
                                 .endBuffer(it.periodTo())
                                 .type(DatePeriodType.RELATIVE)
                                 .build()
-                        }
+                        },
                     )
-                    .build()
+                    .build(),
             )
             .eventFilters(eventFilters)
             .build()

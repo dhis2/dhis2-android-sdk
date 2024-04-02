@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Category.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_Category.Builder.class)
 public abstract class Category extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -64,7 +64,7 @@ public abstract class Category extends BaseIdentifiableObject implements CoreObj
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_Category.Builder();
+        return new $$AutoValue_Category.Builder();
     }
 
     @AutoValue.Builder

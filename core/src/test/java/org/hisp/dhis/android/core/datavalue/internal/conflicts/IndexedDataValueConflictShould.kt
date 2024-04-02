@@ -58,7 +58,7 @@ internal class IndexedDataValueConflictShould {
     fun `Should return no data value conflicts`() {
         val result = indexedDataValueConflict.getDataValues(
             conflict.toBuilder().indexes(emptyList()).build(),
-            dataValues
+            dataValues,
         )
         assert(result.isEmpty())
     }

@@ -33,7 +33,7 @@ object LatestAppVersionSamples {
     val latestAppVersion: LatestAppVersion = LatestAppVersion.builder()
         .id(1L)
         .downloadURL(
-            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk"
+            "https://github.com/dhis2/dhis2-android-capture-app/releases/download/2.7.1.1/dhis2-v2.7.1.1.apk",
         )
         .version("v2.7.1.1")
         .build()

@@ -36,11 +36,11 @@ internal interface CoroutineAPICallExecutor {
         acceptedErrorCodes: List<Int>? = null,
         errorCatcher: APICallErrorCatcher? = null,
         errorClass: Class<P>? = null,
-        block: suspend () -> P
+        block: suspend () -> P,
     ): Result<P, D2Error>
 
     suspend fun <P> wrapTransactionally(
         cleanForeignKeyErrors: Boolean = true,
-        block: suspend () -> P
+        block: suspend () -> P,
     ): P
 }

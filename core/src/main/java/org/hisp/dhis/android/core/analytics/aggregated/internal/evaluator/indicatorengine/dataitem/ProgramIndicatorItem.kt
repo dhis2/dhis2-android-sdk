@@ -37,7 +37,7 @@ internal class ProgramIndicatorItem : IndicatorDataItem {
 
     override fun getDataItem(
         ctx: ExprContext,
-        visitor: CommonExpressionVisitor
+        visitor: CommonExpressionVisitor,
     ): AbsoluteDimensionItem? {
         return ctx.uid0?.text?.let { uid ->
             DimensionItem.DataItem.ProgramIndicatorItem(uid)

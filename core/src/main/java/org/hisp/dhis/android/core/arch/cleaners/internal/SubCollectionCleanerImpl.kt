@@ -34,11 +34,11 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByParentUid
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
+internal open class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
     private val databaseAdapter: DatabaseAdapter,
-    private val keyExtractor: Transformer<P, String>
+    private val keyExtractor: Transformer<P, String>,
 ) : SubCollectionCleaner<P> {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {
@@ -50,10 +50,10 @@ internal class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
         for ((key, value) in subLists) {
             val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(value)
             val clause = (
-                parentColumn + "='" + key + "'" +
-                    " AND " +
-                    IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
-                )
+                    parentColumn + "='" + key + "'" +
+                            " AND " +
+                            IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
+                    )
             result = result || databaseAdapter.delete(tableName, clause, null) > 0
         }
         return result

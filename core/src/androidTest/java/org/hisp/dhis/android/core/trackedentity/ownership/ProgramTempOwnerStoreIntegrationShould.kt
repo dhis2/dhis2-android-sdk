@@ -29,16 +29,15 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramTempOwnerSamples
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class ProgramTempOwnerStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<ProgramTempOwner>(
-    create(TestDatabaseAdapterFactory.get()),
+    ProgramTempOwnerStoreImpl(TestDatabaseAdapterFactory.get()),
     ProgramTempOwnerTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): ProgramTempOwner {
         return ProgramTempOwnerSamples.programTempOwner

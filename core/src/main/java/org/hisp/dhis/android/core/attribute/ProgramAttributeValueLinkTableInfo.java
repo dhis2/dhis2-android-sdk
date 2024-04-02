@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.attribute;
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
@@ -48,10 +48,9 @@ public final class ProgramAttributeValueLinkTableInfo {
         }
     };
 
-    public static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            AttributeTableInfo.TABLE_INFO,
-            Columns.PROGRAM,
-            Columns.ATTRIBUTE);
+    public static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramAttributeValueLinkTableInfo.TABLE_INFO,
+            Columns.PROGRAM);
 
     private ProgramAttributeValueLinkTableInfo() {
     }

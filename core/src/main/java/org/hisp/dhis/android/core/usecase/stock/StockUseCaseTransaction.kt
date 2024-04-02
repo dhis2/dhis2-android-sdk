@@ -35,34 +35,36 @@ sealed class StockUseCaseTransaction {
         override val sortOrder: Int,
         override val transactionType: TransactionType,
         val distributedTo: String,
-        val stockDistributed: String
+        val stockDistributed: String,
     ) : StockUseCaseTransaction()
 
     data class Discarded(
         override val sortOrder: Int,
         override val transactionType: TransactionType,
-        val stockDiscarded: String
+        val stockDiscarded: String,
     ) : StockUseCaseTransaction()
 
     data class Correction(
         override val sortOrder: Int,
         override val transactionType: TransactionType,
-        val stockCount: String
+        val stockCount: String,
     ) : StockUseCaseTransaction()
 
     companion object {
         enum class TransactionType {
             DISTRIBUTED,
             DISCARDED,
-            CORRECTED
+            CORRECTED,
         }
 
         internal fun transformFrom(t: InternalStockUseCaseTransaction): StockUseCaseTransaction {
             return when (val type = TransactionType.valueOf(t.transactionType())) {
                 TransactionType.DISTRIBUTED ->
                     Distributed(
-                        t.sortOrder(), type, t.distributedTo()!!,
-                        t.stockDistributed()!!
+                        t.sortOrder(),
+                        type,
+                        t.distributedTo()!!,
+                        t.stockDistributed()!!,
                     )
                 TransactionType.DISCARDED -> Discarded(t.sortOrder(), type, t.stockDiscarded()!!)
                 TransactionType.CORRECTED -> Correction(t.sortOrder(), type, t.stockCount()!!)

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import retrofit2.Call
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
@@ -36,18 +35,18 @@ import retrofit2.http.Query
 internal interface OwnershipService {
 
     @POST("$OWNERSHIP_URL/override")
-    fun breakGlass(
+    suspend fun breakGlass(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(PROGRAM) program: String,
-        @Query(REASON) reason: String
-    ): Call<HttpMessageResponse>
+        @Query(REASON) reason: String,
+    ): HttpMessageResponse
 
     @PUT("$OWNERSHIP_URL/transfer")
-    fun transfer(
+    suspend fun transfer(
         @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
         @Query(PROGRAM) program: String,
-        @Query(ORG_UNIT) ou: String
-    ): Call<HttpMessageResponse>
+        @Query(ORG_UNIT) ou: String,
+    ): HttpMessageResponse
 
     companion object {
         const val OWNERSHIP_URL = "tracker/ownership"

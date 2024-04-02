@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class ExpressionDimensionItemModuleWiper @Inject constructor(
-    private val tableWiper: TableWiper
+@Singleton
+internal class ExpressionDimensionItemModuleWiper(
+    private val tableWiper: TableWiper,
 ) : ModuleWiper {
     override fun wipeMetadata() {
         tableWiper.wipeTable(ExpressionDimensionItemTableInfo.TABLE_INFO)

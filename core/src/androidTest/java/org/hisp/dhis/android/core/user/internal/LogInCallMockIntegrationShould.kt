@@ -55,15 +55,15 @@ class LogInCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     @Test
     fun persist_user_in_data_base_when_call() {
         login()
-        val user = d2.userModule().user().blockingGet()
+        val user = d2.userModule().user().blockingGet()!!
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
         assertThat(user.name()).isEqualTo("John Barnes")
         assertThat(user.username()).isEqualTo("android")
 
-        val userCredentials = d2.userModule().userCredentials().blockingGet()
+        val userCredentials = d2.userModule().userCredentials().blockingGet()!!
         assertThat(userCredentials.username()).isEqualTo("android")
 
-        val authenticatedUser = d2.userModule().authenticatedUser().blockingGet()
+        val authenticatedUser = d2.userModule().authenticatedUser().blockingGet()!!
         assertThat(authenticatedUser.user()).isEqualTo("DXyJmlo9rge")
     }
 

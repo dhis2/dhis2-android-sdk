@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.data.fileresource
 
-import java.text.ParseException
-import java.util.*
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
+import java.text.ParseException
+import java.util.*
 
 object FileResourceSamples {
     fun get(): FileResource {

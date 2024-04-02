@@ -42,7 +42,7 @@ public class DataSetDataElementLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<DataSetElement> {
 
     public DataSetDataElementLinkStoreIntegrationShould() {
-        super(DataSetDataElementLinkStore.create(TestDatabaseAdapterFactory.get()), DataSetElementLinkTableInfo.TABLE_INFO,
+        super(new DataSetElementStoreImpl(TestDatabaseAdapterFactory.get()), DataSetElementLinkTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 

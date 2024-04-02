@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
 
+
 final class IndicatorTypeFields {
 
     private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();

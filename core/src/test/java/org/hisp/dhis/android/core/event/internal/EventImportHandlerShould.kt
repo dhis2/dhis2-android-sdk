@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
 import org.junit.Before
 import org.junit.Test
@@ -60,8 +59,6 @@ class EventImportHandlerShould {
 
     private val trackerImportConflictParser: TrackerImportConflictParser = mock()
 
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore = mock()
-
     private val events: List<Event> = ArrayList()
 
     private val event: Event = mock()
@@ -75,8 +72,12 @@ class EventImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
 
         eventImportHandler = EventImportHandler(
-            eventStore, enrollmentStore, trackerImportConflictStore, trackerImportConflictParser, jobReportEventHandler,
-            dataStatePropagator, trackedEntityDataValueStore
+            eventStore,
+            enrollmentStore,
+            trackerImportConflictStore,
+            trackerImportConflictParser,
+            jobReportEventHandler,
+            dataStatePropagator,
         )
     }
 

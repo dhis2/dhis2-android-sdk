@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.koin.core.annotation.Singleton
 
-@Reusable
-class VisualizationModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
+@Singleton
+class VisualizationModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
     override fun wipeMetadata() {
         tableWiper.wipeTables(
             VisualizationTableInfo.TABLE_INFO,

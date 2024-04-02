@@ -85,13 +85,13 @@ class DatabasesConfigurationHelperShould {
         nameGenerator,
         object : DateProvider {
             override val dateStr: String = DATE
-        }
+        },
     )
 
     @Test
     fun get_logged_configuration_when_one_server_user() {
         assertThat(
-            DatabaseConfigurationHelper.getLoggedAccount(singleServerSingleUserConfig, username1, url1)
+            DatabaseConfigurationHelper.getLoggedAccount(singleServerSingleUserConfig, username1, url1),
         ).isSameInstanceAs(userConfig11)
     }
 
@@ -139,7 +139,7 @@ class DatabasesConfigurationHelperShould {
         val config = helper.addAccount(singleServerSingleUserConfig, url2, username2, false)
         assertThat(
             DatabaseConfigurationHelper
-                .getLoggedAccount(config, username2, url2)
+                .getLoggedAccount(config, username2, url2),
         ).isEqualTo(userConfig22)
     }
 
@@ -149,7 +149,7 @@ class DatabasesConfigurationHelperShould {
             buildUserConfiguration("user1", "2021-06-01T00:01:04.000"),
             buildUserConfiguration("user2", "2021-09-02T00:01:04.000"),
             buildUserConfiguration("user3", "2020-08-05T00:01:04.000"),
-            buildUserConfiguration("user4", "2020-08-09T00:01:04.000")
+            buildUserConfiguration("user4", "2020-08-09T00:01:04.000"),
         )
 
         val keepFiveAccounts = DatabaseConfigurationHelper.getOldestAccounts(accounts, 5)

@@ -72,15 +72,15 @@ internal object NewTrackerImporterRelationshipTransformer :
                 item.hasTrackedEntityInstance() ->
                     builder.trackedEntity(
                         NewTrackerImporterRelationshipItemTrackedEntity.builder().trackedEntity(item.elementUid())
-                            .build()
+                            .build(),
                     ).build()
                 item.hasEnrollment() ->
                     builder.enrollment(
-                        NewTrackerImporterRelationshipItemEnrollment.builder().enrollment(item.elementUid()).build()
+                        NewTrackerImporterRelationshipItemEnrollment.builder().enrollment(item.elementUid()).build(),
                     ).build()
                 item.hasEvent() ->
                     builder.event(
-                        NewTrackerImporterRelationshipItemEvent.builder().event(item.elementUid()).build()
+                        NewTrackerImporterRelationshipItemEvent.builder().event(item.elementUid()).build(),
                     ).build()
                 else -> null
             }
@@ -98,19 +98,19 @@ internal object NewTrackerImporterRelationshipTransformer :
                     builder.trackedEntityInstance(
                         RelationshipItemTrackedEntityInstance.builder()
                             .trackedEntityInstance(item.trackedEntity()?.trackedEntity())
-                            .build()
+                            .build(),
                     ).build()
                 item.enrollment() != null ->
                     builder.enrollment(
                         RelationshipItemEnrollment.builder()
                             .enrollment(item.enrollment()?.enrollment())
-                            .build()
+                            .build(),
                     ).build()
                 item.event() != null ->
                     builder.event(
                         RelationshipItemEvent.builder()
                             .event(item.event()?.event())
-                            .build()
+                            .build(),
                     ).build()
                 else -> null
             }

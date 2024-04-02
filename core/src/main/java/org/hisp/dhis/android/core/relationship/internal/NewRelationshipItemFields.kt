@@ -47,6 +47,6 @@ internal object NewRelationshipItemFields {
             fh.nestedField<NewTrackerImporterRelationshipItemEnrollment>(ENROLLMENT)
                 .with(NewRelationshipItemEnrollmentFields.enrollment),
             fh.nestedField<NewTrackerImporterRelationshipItemEvent>(EVENT)
-                .with(NewRelationshipItemEventFields.event)
+                .with(NewRelationshipItemEventFields.event),
         ).build()
 }

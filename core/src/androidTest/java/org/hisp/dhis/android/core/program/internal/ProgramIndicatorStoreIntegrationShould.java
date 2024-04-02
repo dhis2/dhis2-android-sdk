@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class ProgramIndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramIndicator> {
 
     public ProgramIndicatorStoreIntegrationShould() {
-        super(ProgramIndicatorStore.create(TestDatabaseAdapterFactory.get()), ProgramIndicatorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+        super(new ProgramIndicatorStoreImpl(TestDatabaseAdapterFactory.get()), ProgramIndicatorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

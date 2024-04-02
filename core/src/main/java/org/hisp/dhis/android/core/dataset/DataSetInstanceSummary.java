@@ -72,9 +72,9 @@ public abstract class DataSetInstanceSummary implements CoreObject {
         return AutoValue_DataSetInstanceSummary.createFromCursor(cursor);
     }
 
-    public abstract DataSetInstanceSummary.Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    public static DataSetInstanceSummary.Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_DataSetInstanceSummary.Builder();
     }
 

@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OrganisationUnitLevel.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_OrganisationUnitLevel.Builder.class)
 public abstract class OrganisationUnitLevel extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -57,7 +57,7 @@ public abstract class OrganisationUnitLevel extends BaseIdentifiableObject imple
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_OrganisationUnitLevel.Builder();
+        return new $$AutoValue_OrganisationUnitLevel.Builder();
     }
 
     @AutoValue.Builder

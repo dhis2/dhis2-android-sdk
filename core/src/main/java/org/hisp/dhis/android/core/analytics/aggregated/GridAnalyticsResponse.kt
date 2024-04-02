@@ -34,27 +34,27 @@ data class GridAnalyticsResponse(
     val dimensions: GridDimension,
     val dimensionItems: Map<Dimension, List<DimensionItem>>,
     val filters: List<String>,
-    val values: List<List<GridResponseValue>>
+    val values: List<List<GridResponseValue>>,
 )
 
 data class GridHeader(
     val columns: List<List<GridHeaderItem>>,
-    val rows: List<List<GridHeaderItem>>
+    val rows: List<List<GridHeaderItem>>,
 )
 
 data class GridHeaderItem(
     val id: String,
-    val weight: Int
+    val weight: Int,
 )
 
 data class GridDimension(
     val columns: List<Dimension>,
-    val rows: List<Dimension>
+    val rows: List<Dimension>,
 )
 
 data class GridResponseValue(
     val columns: List<String>,
     val rows: List<String>,
     val value: String?,
-    val legend: String?
+    val legend: String?,
 )

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -37,10 +36,10 @@ import retrofit2.http.Query
 
 interface EnrollmentService {
     @GET("$ENROLLMENTS/{$ENROLLMENT_UID}")
-    fun getEnrollmentSingle(
+    suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT_UID) enrollmentUid: String?,
-        @Query(FIELDS) @Which fields: Fields<Enrollment>
-    ): Single<Enrollment>
+        @Query(FIELDS) @Which fields: Fields<Enrollment>,
+    ): Enrollment
 
     companion object {
         const val ENROLLMENTS = "enrollments"

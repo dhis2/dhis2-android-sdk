@@ -41,10 +41,10 @@ class ProgramIndicatorShould : BaseObjectShould("program/program_indicator.json"
     override fun map_from_json_string() {
         val programIndicator = objectMapper.readValue(jsonStream, ProgramIndicator::class.java)
         Truth.assertThat(programIndicator.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945"),
         )
         Truth.assertThat(programIndicator.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820"),
         )
         Truth.assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf")
         Truth.assertThat(programIndicator.name()).isEqualTo("Age at visit")

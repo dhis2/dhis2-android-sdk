@@ -33,7 +33,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;

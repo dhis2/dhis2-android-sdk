@@ -155,10 +155,10 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_program() {
         List<Event> events =
                 d2.eventModule().events()
-                        .byProgramUid().eq("lxAQ7Zs9VYR")
+                        .byProgramUid().eq("IpHINAT79UW")
                         .blockingGet();
 
-        assertThat(events.size()).isEqualTo(4);
+        assertThat(events.size()).isEqualTo(2);
     }
 
     @Test
@@ -232,6 +232,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events()
                         .bySyncState().eq(State.SYNCED)
+                        .blockingGet();
+
+        assertThat(events.size()).isEqualTo(4);
+    }
+
+    @Test
+    public void filter_by_aggregated_sync_state() {
+        List<Event> events =
+                d2.eventModule().events()
+                        .byAggregatedSyncState().eq(State.SYNCED)
                         .blockingGet();
 
         assertThat(events.size()).isEqualTo(4);

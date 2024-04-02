@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
@@ -36,17 +34,18 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.koin.core.annotation.Singleton
 
-@Reusable
-internal class CategoryComboUidsSeeker @Inject constructor(
-    databaseAdapter: DatabaseAdapter
+@Singleton
+internal class CategoryComboUidsSeeker(
+    databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
     fun seekUids(): Set<String> {
         val tableNames = listOf(
             ProgramTableInfo.TABLE_INFO.name(),
             DataSetTableInfo.TABLE_INFO.name(),
             DataElementTableInfo.TABLE_INFO.name(),
-            DataSetElementLinkTableInfo.TABLE_INFO.name()
+            DataSetElementLinkTableInfo.TABLE_INFO.name(),
         )
         val query = MultipleTableQueryBuilder()
             .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build()

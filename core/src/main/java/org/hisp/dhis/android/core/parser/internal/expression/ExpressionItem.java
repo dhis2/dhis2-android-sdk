@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.parser.internal.expression;
 import static org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor.DEFAULT_DOUBLE_VALUE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.antlr.AntlrExprItem;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserException;

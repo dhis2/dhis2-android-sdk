@@ -34,7 +34,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.junit.Before
@@ -42,7 +41,7 @@ import org.junit.Test
 
 class FilterSettingHandlerShould {
 
-    private val filterSettingStore: ObjectWithoutUidStore<FilterSetting> = mock()
+    private val filterSettingStore: FilterSettingStore = mock()
 
     private val filterSetting: FilterSetting = FilterSetting.builder().build()
     private lateinit var filterSettingsHandler: FilterSettingHandler

@@ -74,7 +74,7 @@ gradle.taskGraph.whenReady(closureOf<TaskExecutionGraph> {
 
 tasks.dokkaJavadoc.configure {
     dependsOn("kaptReleaseKotlin")
-    outputDirectory = file("${buildDir}/dokkaJavadoc")
+    outputDirectory = layout.buildDirectory.file("dokkaJavadoc").get().asFile
 
     dokkaSourceSets {
         configureEach {

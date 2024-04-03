@@ -120,10 +120,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*AutoValue_*.*"
     )
 
-    val javaClasses = fileTree("${buildDir}/intermediates/javac/debug") {
+    val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {
         exclude(excludes)
     }
-    val kotlinClasses = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+    val kotlinClasses = fileTree(layout.buildDirectory.file("tmp/kotlin-classes/debug")) {
         exclude(excludes)
     }
 
@@ -136,10 +136,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         )
     )
 
-    val unitTestsData = fileTree("${buildDir}/jacoco") {
+    val unitTestsData = fileTree(layout.buildDirectory.file("jacoco")) {
         include("*.exec")
     }
-    val androidTestsData = fileTree("${buildDir}/outputs/code_coverage") {
+    val androidTestsData = fileTree(layout.buildDirectory.file("outputs/code_coverage")) {
         include(listOf("**/*.ec"))
     }
 
@@ -154,10 +154,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     fun JacocoReportsContainer.reports() {
         xml.required.set(true)
-        xml.outputLocation.set(file("${buildDir}/coverage-report/jacocoTestReport.xml"))
+        xml.outputLocation.set(layout.buildDirectory.file("coverage-report/jacocoTestReport.xml"))
 
         html.required.set(true)
-        html.outputLocation.set(file("${buildDir}/coverage-report"))
+        html.outputLocation.set(layout.buildDirectory.file("coverage-report").get().asFile)
     }
 
     reports {

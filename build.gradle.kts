@@ -12,7 +12,6 @@ buildscript {
         classpath(libs.gradle)
         classpath(libs.kotlin)
         classpath(libs.ktlint)
-        classpath(libs.jacoco)
     }
 }
 
@@ -53,7 +52,7 @@ allprojects {
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 

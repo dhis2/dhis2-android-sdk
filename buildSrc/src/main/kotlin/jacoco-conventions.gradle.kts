@@ -1,4 +1,34 @@
 /*
+ *  Copyright (c) 2004-2024, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
+/*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
@@ -26,7 +56,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply(plugin = "jacoco")
+plugins {
+    jacoco
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
 
 tasks.register("jacocoReport", JacocoReport::class) {
     group = "Coverage"
@@ -34,7 +70,7 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     sourceDirectories.setFrom("${project.projectDir}/src/main/java")
 
-    val excludes = mutableSetOf<String>(
+    val excludes = mutableSetOf(
         // data binding
         "android/databinding/**/*.class",
         "**/android/databinding/*Binding.class",
@@ -84,10 +120,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*AutoValue_*.*"
     )
 
-    val javaClasses = fileTree("${buildDir}/intermediates/javac/debug") {
+    val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {
         exclude(excludes)
     }
-    val kotlinClasses = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+    val kotlinClasses = fileTree(layout.buildDirectory.file("tmp/kotlin-classes/debug")) {
         exclude(excludes)
     }
 
@@ -100,10 +136,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
         )
     )
 
-    val unitTestsData = fileTree("${buildDir}/jacoco") {
+    val unitTestsData = fileTree(layout.buildDirectory.file("jacoco")) {
         include("*.exec")
     }
-    val androidTestsData = fileTree("${buildDir}/outputs/code_coverage") {
+    val androidTestsData = fileTree(layout.buildDirectory.file("outputs/code_coverage")) {
         include(listOf("**/*.ec"))
     }
 
@@ -118,10 +154,10 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     fun JacocoReportsContainer.reports() {
         xml.required.set(true)
-        xml.outputLocation.set(file("${buildDir}/coverage-report/jacocoTestReport.xml"))
+        xml.outputLocation.set(layout.buildDirectory.file("coverage-report/jacocoTestReport.xml"))
 
         html.required.set(true)
-        html.outputLocation.set(file("${buildDir}/coverage-report"))
+        html.outputLocation.set(layout.buildDirectory.file("coverage-report").get().asFile)
     }
 
     reports {

@@ -206,3 +206,16 @@ detekt {
     parallel = true
     buildUponDefaultConfig = false
 }
+
+tasks.dokkaJavadoc.configure {
+    dependsOn("kaptReleaseKotlin")
+
+    dokkaSourceSets {
+        configureEach {
+            perPackageOption {
+                matchingRegex.set(".*.internal.*")
+                suppress.set(true)
+            }
+        }
+    }
+}

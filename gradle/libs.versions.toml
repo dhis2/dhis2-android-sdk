@@ -4,7 +4,7 @@ kotlin = "1.9.21"
 ktlint = "11.5.1"
 sonarqube = "3.3"
 detekt = "1.18.0"
-dokka = "1.9.10"
+dokka = "1.9.20"
 
 targetSdkVersion = "34"
 minSdkVersion = "21"
@@ -59,7 +59,6 @@ listenablefuture = "9999.0-empty-to-avoid-conflict-with-guava"
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
 kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ktlint = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
-dokka = { group = "org.jetbrains.dokka", name="dokka-gradle-plugin", version.ref = "dokka" }
 
 desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "libraryDesugaring" }
 
@@ -125,5 +124,6 @@ facebook-soloader = { group = "com.facebook.soloader", name = "soloader", versio
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [bundles]

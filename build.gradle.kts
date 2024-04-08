@@ -17,6 +17,7 @@ buildscript {
 
 plugins {
     alias(libs.plugins.sonarqube)
+    alias(libs.plugins.dokka)
 }
 
 sonarqube {
@@ -58,6 +59,7 @@ tasks.register("clean", Delete::class) {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.dokka")
 
     //group = GROUP
     //version = VERSION_NAME

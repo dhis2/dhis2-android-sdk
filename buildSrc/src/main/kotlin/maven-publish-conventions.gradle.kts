@@ -31,7 +31,6 @@ import java.net.URI
 plugins {
     `maven-publish`
     signing
-    id("org.jetbrains.dokka")
 }
 
 val VERSION_NAME: String by project
@@ -72,24 +71,10 @@ gradle.taskGraph.whenReady(closureOf<TaskExecutionGraph> {
     }
 })
 
-tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
-    outputDirectory = layout.buildDirectory.file("dokkaJavadoc").get().asFile
-
-    dokkaSourceSets {
-        configureEach {
-            perPackageOption {
-                matchingRegex.set(".*.internal.*")
-                suppress.set(true)
-            }
-        }
-    }
-}
-
-val dokkaHtml = tasks.findByName("dokkaJavadoc")!!
-
 val androidJavadocsJar = tasks.register("androidJavadocsJar", Jar::class) {
     archiveClassifier.set("javadoc")
+
+    val dokkaHtml = tasks.findByName("dokkaJavadoc")!!
     from(dokkaHtml.outputs)
 }
 

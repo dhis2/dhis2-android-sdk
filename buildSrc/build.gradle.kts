@@ -34,7 +34,3 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
 }
-
-dependencies {
-    implementation(libs.dokka)
-}

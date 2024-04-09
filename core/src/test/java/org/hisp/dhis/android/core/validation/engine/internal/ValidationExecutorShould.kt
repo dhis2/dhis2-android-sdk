@@ -28,33 +28,30 @@
 package org.hisp.dhis.android.core.validation.engine.internal
 
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class ValidationExecutorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
+class ValidationExecutorShould {
 
-    private val dataElementStore = DataElementStoreImpl(databaseAdapter)
-    private val categoryOptionComboStore = CategoryOptionComboStoreImpl(databaseAdapter)
-    private val organisationUnitGroupStore = OrganisationUnitGroupStoreImpl(databaseAdapter)
-    private val programStageStore = ProgramStageStoreImpl(databaseAdapter)
+    private val dataElementStore = mock<DataElementStore>()
+    private val categoryOptionComboStore = mock<CategoryOptionComboStore>()
+    private val organisationUnitGroupStore = mock<OrganisationUnitGroupStore>()
+    private val programStageStore = mock<ProgramStageStore>()
 
     private val uidGenerator = UidGeneratorImpl()
     private val samplePeriod = Period.builder().periodId("202405").build()
@@ -64,7 +61,7 @@ class ValidationExecutorIntegrationShould : BaseMockIntegrationTestEmptyDispatch
         dataElementStore,
         categoryOptionComboStore,
         organisationUnitGroupStore,
-        programStageStore
+        programStageStore,
     )
     private val executor = ValidationExecutor(expressionService)
 
@@ -78,14 +75,14 @@ class ValidationExecutorIntegrationShould : BaseMockIntegrationTestEmptyDispatch
                     .expression("5")
                     .missingValueStrategy(MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING)
                     .description("Valid expression")
-                    .build()
+                    .build(),
             )
             .rightSide(
                 ValidationRuleExpression.builder()
                     .expression("AVG((#{eY5ehpbEsB7})*1.5)")
                     .missingValueStrategy(MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING)
                     .description("Invalid expression")
-                    .build()
+                    .build(),
             )
             .importance(ValidationRuleImportance.HIGH)
             .periodType(PeriodType.Daily)
@@ -98,7 +95,7 @@ class ValidationExecutorIntegrationShould : BaseMockIntegrationTestEmptyDispatch
             organisationUnit = sampleOrgunit,
             context = ExpressionServiceContext(),
             period = samplePeriod,
-            attributeOptionComboId = uidGenerator.generate()
+            attributeOptionComboId = uidGenerator.generate(),
         )
 
         assertThat(result).isNull()

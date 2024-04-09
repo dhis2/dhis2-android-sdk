@@ -123,6 +123,7 @@ internal class ExpressionService(
         expression: String?,
         context: ExpressionServiceContext,
         missingValueStrategy: MissingValueStrategy,
+        ignoreParseErrors: Boolean = true,
     ): Any? {
         return expression?.let {
             val visitor = newVisitor(
@@ -138,7 +139,11 @@ internal class ExpressionService(
             val value = try {
                 visit(expression, visitor)
             } catch (e: ParserException) {
-                null
+                if (ignoreParseErrors) {
+                    null
+                } else {
+                    throw e
+                }
             }
 
             val itemsFound = visitor.state.itemsFound
@@ -152,6 +157,7 @@ internal class ExpressionService(
                         getHandledValue(value)
                     }
                 }
+
                 MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING -> {
                     if (itemsFound != 0 && itemValuesFound == 0) {
                         null
@@ -159,6 +165,7 @@ internal class ExpressionService(
                         getHandledValue(value)
                     }
                 }
+
                 MissingValueStrategy.NEVER_SKIP -> getHandledValue(value)
             }
         }

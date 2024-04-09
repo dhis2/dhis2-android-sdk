@@ -1,5 +1,5 @@
 [versions]
-gradle = "8.3.0"
+gradle = "8.3.1"
 kotlin = "1.9.21"
 ktlint = "11.5.1"
 sonarqube = "3.3"

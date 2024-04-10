@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal
+package org.hisp.dhis.android.core.systeminfo
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
-import org.koin.core.annotation.Singleton
+import io.reactivex.Single
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-@Singleton
-internal class PingCall internal constructor(
-    private val pingService: PingService,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : DownloadProvider {
+interface Ping {
 
-    override suspend fun download(storeError: Boolean) {
-        coroutineAPICallExecutor.wrap(storeError = storeError) {
-            pingService.getPing()
-        }
-    }
+    fun get(): Single<String>
+
+    @Throws(D2Error::class)
+    fun blockingGet(): String
 }

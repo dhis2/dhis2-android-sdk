@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,46 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.systeminfo.Ping
 import org.koin.core.annotation.Singleton
+import java.io.IOException
 
 @Singleton
-internal class PingCall internal constructor(
+class PingImpl internal constructor(
     private val pingService: PingService,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : DownloadProvider {
+) : Ping {
 
-    override suspend fun download(storeError: Boolean) {
-        coroutineAPICallExecutor.wrap(storeError = storeError) {
-            pingService.getPing()
+    override fun get(): Single<String> {
+        return rxSingle { checkPing() }
+    }
+
+    @Throws(D2Error::class)
+    override fun blockingGet(): String {
+        return get().blockingGet()
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun checkPing(): String {
+        try {
+            val response = pingService.getPing()
+            return response.takeIf { it.isSuccessful }?.body()?.string().takeIf { it == "pong" }
+                ?: throw IOException("Ping to the server failed with status code: ${response.code()}")
+        } catch (e: Exception) {
+            throw toD2Error(e)
         }
+    }
+
+    private fun toD2Error(e: Exception): D2Error {
+        return D2Error.builder()
+            .originalException(e)
+            .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
+            .errorDescription("Unable to ping the server.")
+            .errorComponent(D2ErrorComponent.Server)
+            .build()
     }
 }

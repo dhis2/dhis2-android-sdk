@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.Ping
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoObjectRepository
 import org.koin.core.annotation.Singleton
@@ -36,6 +37,7 @@ import org.koin.core.annotation.Singleton
 internal class SystemInfoModuleImpl(
     private val versionManager: DHISVersionManager,
     private val systemInfo: SystemInfoObjectRepository,
+    private val ping: PingImpl,
 ) : SystemInfoModule {
     override fun versionManager(): DHISVersionManager {
         return versionManager
@@ -43,5 +45,9 @@ internal class SystemInfoModuleImpl(
 
     override fun systemInfo(): SystemInfoObjectRepository {
         return systemInfo
+    }
+
+    override fun ping(): Ping {
+        return ping
     }
 }

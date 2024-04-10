@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.core.validation.engine.ValidationResultSideEvaluation
 import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation
+import org.hisp.dhis.antlr.ParserException
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -51,32 +52,37 @@ internal class ValidationExecutor(private val expressionService: ExpressionServi
         return if (shouldSkipOrgunitLevel(rule, organisationUnit)) {
             null
         } else {
-            val leftSideValue = expressionService.getExpressionValue(
-                rule.leftSide().expression(),
-                context,
-                rule.leftSide().missingValueStrategy(),
-            ) as Double?
-            val rightSideValue = expressionService.getExpressionValue(
-                rule.rightSide().expression(),
-                context,
-                rule.rightSide().missingValueStrategy(),
-            ) as Double?
+            try {
+                val leftSideValue = evaluateSide(rule.leftSide(), context)
+                val rightSideValue = evaluateSide(rule.rightSide(), context)
 
-            if (isViolation(rule, leftSideValue, rightSideValue)) {
-                val leftSide = buildSideResult(leftSideValue, rule.leftSide(), context)
-                val rightSide = buildSideResult(rightSideValue, rule.rightSide(), context)
-                ValidationResultViolation.builder()
-                    .period(period.periodId())
-                    .organisationUnitUid(organisationUnit!!.uid())
-                    .attributeOptionComboUid(attributeOptionComboId)
-                    .validationRule(rule)
-                    .leftSideEvaluation(leftSide)
-                    .rightSideEvaluation(rightSide)
-                    .build()
-            } else {
+                if (isViolation(rule, leftSideValue, rightSideValue)) {
+                    val leftSide = buildSideResult(leftSideValue, rule.leftSide(), context)
+                    val rightSide = buildSideResult(rightSideValue, rule.rightSide(), context)
+                    ValidationResultViolation.builder()
+                        .period(period.periodId())
+                        .organisationUnitUid(organisationUnit!!.uid())
+                        .attributeOptionComboUid(attributeOptionComboId)
+                        .validationRule(rule)
+                        .leftSideEvaluation(leftSide)
+                        .rightSideEvaluation(rightSide)
+                        .build()
+                } else {
+                    null
+                }
+            } catch (e: ParserException) {
                 null
             }
         }
+    }
+
+    private fun evaluateSide(side: ValidationRuleExpression, context: ExpressionServiceContext): Double? {
+        return expressionService.getExpressionValue(
+            expression = side.expression(),
+            context = context,
+            missingValueStrategy = side.missingValueStrategy(),
+            ignoreParseErrors = false,
+        ) as Double?
     }
 
     private fun isViolation(rule: ValidationRule, leftSide: Double?, rightSide: Double?): Boolean {

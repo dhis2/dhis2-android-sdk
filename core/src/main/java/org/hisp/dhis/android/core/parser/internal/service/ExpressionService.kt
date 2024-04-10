@@ -67,13 +67,17 @@ internal class ExpressionService(
             )
     }
 
-    fun getDimensionalItemIds(expression: String?): Set<DimensionalItemId> {
+    private fun getDimensionalItemIds(expression: String?): Set<DimensionalItemId> {
         return if (expression == null) {
             emptySet()
         } else {
-            val visitor = newVisitor(ITEM_GET_IDS, emptyMap())
-            visit(expression, visitor)
-            visitor.itemIds
+            try {
+                val visitor = newVisitor(ITEM_GET_IDS, emptyMap())
+                visit(expression, visitor)
+                visitor.itemIds
+            } catch (e: ParserException) {
+                emptySet()
+            }
         }
     }
 
@@ -95,10 +99,14 @@ internal class ExpressionService(
         return if (expression == null) {
             ""
         } else {
-            val visitor = newVisitor(ITEM_GET_DESCRIPTIONS, constantMap)
-            visit(expression, visitor)
-            visitor.itemDescriptions.entries.fold(expression) { acc, (key, value) ->
-                acc.replace(key, value)
+            try {
+                val visitor = newVisitor(ITEM_GET_DESCRIPTIONS, constantMap)
+                visit(expression, visitor)
+                visitor.itemDescriptions.entries.fold(expression) { acc, (key, value) ->
+                    acc.replace(key, value)
+                }
+            } catch (e: ParserException) {
+                ""
             }
         }
     }
@@ -115,6 +123,7 @@ internal class ExpressionService(
         expression: String?,
         context: ExpressionServiceContext,
         missingValueStrategy: MissingValueStrategy,
+        ignoreParseErrors: Boolean = true,
     ): Any? {
         return expression?.let {
             val visitor = newVisitor(
@@ -130,7 +139,11 @@ internal class ExpressionService(
             val value = try {
                 visit(expression, visitor)
             } catch (e: ParserException) {
-                null
+                if (ignoreParseErrors) {
+                    null
+                } else {
+                    throw e
+                }
             }
 
             val itemsFound = visitor.state.itemsFound
@@ -144,6 +157,7 @@ internal class ExpressionService(
                         getHandledValue(value)
                     }
                 }
+
                 MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING -> {
                     if (itemsFound != 0 && itemValuesFound == 0) {
                         null
@@ -151,6 +165,7 @@ internal class ExpressionService(
                         getHandledValue(value)
                     }
                 }
+
                 MissingValueStrategy.NEVER_SKIP -> getHandledValue(value)
             }
         }
@@ -163,17 +178,21 @@ internal class ExpressionService(
         return if (expression == null) {
             ""
         } else {
-            val visitor = newVisitor(
-                ITEM_REGENERATE,
-                context.constantMap,
-            )
+            try {
+                val visitor = newVisitor(
+                    ITEM_REGENERATE,
+                    context.constantMap,
+                )
 
-            val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
-            visitor.itemValueMap = itemValueMap
-            visitor.orgUnitCountMap = context.orgUnitCountMap
-            visitor.setExpressionLiteral(RegenerateLiteral())
-            visitor.days = context.days?.toDouble()
-            visit(expression, visitor) as String
+                val itemValueMap = context.valueMap.map { it.key.dimensionItem to it.value }.toMap()
+                visitor.itemValueMap = itemValueMap
+                visitor.orgUnitCountMap = context.orgUnitCountMap
+                visitor.setExpressionLiteral(RegenerateLiteral())
+                visitor.days = context.days?.toDouble()
+                visit(expression, visitor) as String
+            } catch (e: ParserException) {
+                ""
+            }
         }
     }
     // -------------------------------------------------------------------------

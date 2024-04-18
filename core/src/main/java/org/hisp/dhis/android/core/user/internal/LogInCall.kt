@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.koin.core.annotation.Singleton
-import java.util.logging.Logger
 
 @Singleton
 @Suppress("LongParameterList")

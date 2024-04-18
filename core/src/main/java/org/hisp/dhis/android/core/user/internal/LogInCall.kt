@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.koin.core.annotation.Singleton
+import java.util.logging.Logger
 
 @Singleton
 @Suppress("LongParameterList")
@@ -92,6 +93,9 @@ internal class LogInCall(
             if (d2Error.isOffline) {
                 tryLoginOffline(credentials, d2Error)
             } else {
+                println(d2Error.originalException()?.message)
+                println(d2Error.errorCode())
+                println(d2Error.message)
                 throw handleOnlineException(d2Error, credentials)
             }
         }

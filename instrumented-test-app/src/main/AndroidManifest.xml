@@ -8,8 +8,7 @@
         android:icon="@android:drawable/sym_def_app_icon"
         android:label="@string/title"
         android:theme="@android:style/Theme.DeviceDefault"
-        android:requestLegacyExternalStorage="true"
-        android:usesCleartextTraffic="true">
+        android:requestLegacyExternalStorage="true">
         <activity android:name=".TestLabActivity"
             android:exported="true">
             <intent-filter>

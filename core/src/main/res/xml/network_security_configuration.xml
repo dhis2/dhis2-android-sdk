@@ -28,7 +28,7 @@
   -->
 
 <network-security-config>
-    <base-config>
+    <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="@raw/isrgrootx1" />
             <certificates src="@raw/isrgrootx2" />

@@ -530,14 +530,6 @@ Data whose state is `ERROR` or `WARNING` cannot be uploaded. It is required to s
 
 As of version 2.37, a new tracker importer was introduced (`/api/tracker` endpoint). The default tracker importer is still the legacy one (`/api/trackedEntityInstances`), but you can opt-in to use this new tracker importer by using the Android Settings webapp (see [Synchronization](#android_sdk_synchronization_settings)). This is internal to the SDK; the API exposed to the app does not change.
 
-File resources must be uploaded in a different post call before tracker data upload. The query to post file resources is:
-
-```java
-d2.fileResourceModule().fileResources().upload();
-```
-
-More information about file resources in the section [*Dealing with FileResources*](#android_sdk_file_resources).
-
 #### Tracker conflicts
 
 Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
@@ -781,13 +773,14 @@ This module contains methods to download the file resources associated with the 
 - **File resources download**.
 The `fileResourceDownloader()` offers methods to filter the fileResources we want to download. It will search for values that match the filters and whose file resource has not been previously downloaded.
 
-  ```java
+  ```kt
   d2.fileResourceModule().fileResourceDownloader()
-      .byDomainType().eq(FileResourceDomainType.TRACKER)
-      .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
-      .byValueType().in(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
-      .byMaxContentLength().eq(2000000)
-      .download();
+    .byDomainType().eq(FileResourceDomainType.DATA_VALUE)
+    .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
+    .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
+    .byValueType().in(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
+    .byMaxContentLength().eq(2000000)
+    .download()
   ```
 
   The SDK has a default maxContentLength of 6000000.

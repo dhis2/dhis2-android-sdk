@@ -29,12 +29,15 @@ The number of maximum allowed accounts can be configured by the app (it defaults
 // Get the account list
 d2.userModule().accountManager().getAccounts();
 
-// Get/set the maximum number of accounts
-d2.userModule().accountManager().getMaxAccounts();
-d2.userModule().accountManager().setMaxAccounts();
+// Get the account for current user, or null if the user is not authenticated yet
+d2.userModule().accountManager().getCurrentAccount();
 
 // Delete account for current user
 d2.userModule().accountManager().deleteCurrentAccount();
+
+// Get/set the maximum number of accounts
+d2.userModule().accountManager().getMaxAccounts();
+d2.userModule().accountManager().setMaxAccounts();
 ```
 
 The accountManager exposes an observable that emits an event when the current account is deleted. It includes the reason why the account was deleted.

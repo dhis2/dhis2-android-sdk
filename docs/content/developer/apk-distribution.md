@@ -11,12 +11,12 @@ The app can get this version by using the LatestAppVersion repository:
 d2.settingModule().latestAppVersion().get()
 ```
 
-This version is updated on every metadata sync. If you want to check for updates without triggering a whole metadata sync, you can use this method:
+This version is updated with each metadata sync. To check for updates without triggering a full metadata sync, this method can be used:
 
 ```kt
 d2.settingModule().latestAppVersion().download()
 ```
 
-Once the download is finished, you can read the version from the database as usual.
+Once the download is completed, the version can be read from the database as usual.
 
 Check more information about the app in the [docs](https://docs.dhis2.org/en/use/android-app/apk-distribution.html).

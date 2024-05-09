@@ -620,6 +620,16 @@ d2.trackedEntityModule().trackedEntityInstanceService()
     .inheritAttributes("fromTeiUid", "toTeiUid", "programUid");
 ```
 
+In order to access the `dataElements` and `attributes` associated to a `relationshipConstraint`, they can be accessed through the `trackerDataView` property as in the following examples:
+
+```java
+relationshipType.toConstraint().trackerDataView().attributes();
+```
+
+```java
+relationshipType.toConstraint().trackerDataView().dataElements();
+```
+
 ## Aggregated data { #android_sdk_aggregated_data }
 
 ### Aggregated data download

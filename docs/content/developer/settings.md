@@ -28,6 +28,7 @@ It gives additional information about app settings:
 
 - **Encrypt database**: whether or not to encrypt local database.
 - **Reserved values**: number of attribute values to reserve. It might be overridden by the app.
+- **Bypass DHIS2 version**: if true, the SDK will try to connect to the instance no matter the DHIS2 version installed.
 - Mobile configuration: gateway number, result sender number. They must be consumed by the application and used to configure the SMS module in the SDK.
 - Matomo configuration: if you have your own Matomo instance, you can expose this information to the app in order to configure its Matomo client.
 - AllowScreenCapture: parameter to determine if the application should allow screen capture or not.

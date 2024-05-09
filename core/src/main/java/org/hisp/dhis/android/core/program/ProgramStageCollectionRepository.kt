@@ -167,6 +167,14 @@ class ProgramStageCollectionRepository internal constructor(
         return cf.enumC(ProgramStageTableInfo.Columns.VALIDATION_STRATEGY)
     }
 
+    fun byProgramStageLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.PROGRAM_STAGE_LABEL)
+    }
+
+    fun byEventLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
+        return cf.string(ProgramStageTableInfo.Columns.EVENT_LABEL)
+    }
+
     fun byColor(): StringFilterConnector<ProgramStageCollectionRepository> {
         return cf.string(ProgramStageTableInfo.Columns.COLOR)
     }

@@ -63,9 +63,16 @@ public class RelationshipType32Should extends BaseObjectShould implements Object
         assertThat(relationshipType.fromConstraint()).isNotNull();
         assertThat(relationshipType.fromConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.TRACKED_ENTITY_INSTANCE);
         assertThat(relationshipType.fromConstraint().trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
+        assertThat(relationshipType.fromConstraint().trackerDataView().attributes().get(0)).isEqualTo("b0vcadVrn08");
+        assertThat(relationshipType.fromConstraint().trackerDataView().dataElements().isEmpty()).isTrue();
         assertThat(relationshipType.toConstraint()).isNotNull();
         assertThat(relationshipType.toConstraint().relationshipEntity()).isEqualTo(RelationshipEntityType.PROGRAM_INSTANCE);
         assertThat(relationshipType.toConstraint().program().uid()).isEqualTo("WSGAb5XwJ3Y");
+        assertThat(relationshipType.toConstraint().trackerDataView().attributes().get(0)).isEqualTo("b0vcadVrn08");
+        assertThat(relationshipType.toConstraint().trackerDataView().attributes().get(1)).isEqualTo("qXS2NDUEAOS");
+        assertThat(relationshipType.toConstraint().trackerDataView().dataElements().get(0)).isEqualTo("ciWE5jde1ax");
+        assertThat(relationshipType.toConstraint().trackerDataView().dataElements().get(1)).isEqualTo("hB9F8vKFmlk");
+        assertThat(relationshipType.toConstraint().trackerDataView().dataElements().get(2)).isEqualTo("uFAQYm3UgBL");
         assertThat(relationshipType.bidirectional()).isTrue();
         assertThat(relationshipType.access().data().read()).isTrue();
         assertThat(relationshipType.access().data().write()).isFalse();

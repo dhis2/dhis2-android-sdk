@@ -75,8 +75,8 @@ internal interface TrackedEntityInstanceService {
         @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
         @Query(ORDER) order: String?,
         @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE) page: Int?,
+        @Query(PAGE_SIZE) pageSize: Int?,
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
         @Query(INCLUDE_DELETED) includeDeleted: Boolean,
@@ -99,15 +99,14 @@ internal interface TrackedEntityInstanceService {
         @Query(EVENT_END_DATE) eventEndDate: String?,
         @Query(EVENT_STATUS) eventStatus: String?,
         @Query(TRACKED_ENTITY_TYPE) trackedEntityType: String?,
-        @Query(QUERY) query: String?,
         @Query(FILTER) filter: List<String?>?,
         @Query(ASSIGNED_USER_MODE) assignedUserMode: String?,
         @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
         @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String?,
         @Query(ORDER) order: String?,
         @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE) page: Int?,
+        @Query(PAGE_SIZE) pageSize: Int?,
     ): SearchGrid
 
     companion object {
@@ -116,7 +115,6 @@ internal interface TrackedEntityInstanceService {
         const val OU = "ou"
         const val OU_MODE = "ouMode"
         const val FIELDS = "fields"
-        const val QUERY = "query"
         const val PAGING = "paging"
         const val PAGE = "page"
         const val PAGE_SIZE = "pageSize"

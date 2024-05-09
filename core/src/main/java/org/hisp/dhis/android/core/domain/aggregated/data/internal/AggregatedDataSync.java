@@ -84,7 +84,7 @@ abstract class AggregatedDataSync extends BaseObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    static abstract class Builder extends BaseObject.Builder<Builder> {
+    abstract static class Builder extends BaseObject.Builder<Builder> {
 
         abstract Builder dataSet(String dataSet);
 

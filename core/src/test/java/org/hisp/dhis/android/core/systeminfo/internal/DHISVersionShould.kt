@@ -28,19 +28,38 @@
 
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.junit.Test
 
 class DHISVersionShould {
     @Test
     fun return_null_for_unsupported_versions() {
-        val supportedVersions = listOf("2.29", "2.41")
-        DHISVersion.values()
-            .filter { supportedVersions.contains(it.prefix) }
+        DHISVersion.entries
             .forEach {
-                Truth.assertThat(DHISVersion.getValue(it.prefix + ".0")).isNull()
-                Truth.assertThat(DHISVersion.getValue(it.prefix + ".9")).isNull()
+                if (it.supported) {
+                    assertThat(DHISVersion.getValue(it.prefix + ".0")).isNotNull()
+                    assertThat(DHISVersion.getValue(it.prefix + ".9")).isNotNull()
+                } else {
+                    assertThat(DHISVersion.getValue(it.prefix + ".0")).isNull()
+                    assertThat(DHISVersion.getValue(it.prefix + ".9")).isNull()
+                }
+            }
+    }
+
+    @Test
+    fun return_unknown_when_bypassing_version_for_unsupported_versions() {
+        DHISVersion.entries
+            .forEach {
+                if (it.supported) {
+                    assertThat(DHISVersion.getValue(it.prefix + ".0", true)).isNotNull()
+                    assertThat(DHISVersion.getValue(it.prefix + ".9", true)).isNotNull()
+                } else {
+                    assertThat(DHISVersion.getValue(it.prefix + ".0", true))
+                        .isEqualTo(DHISVersion.UNKNOWN)
+                    assertThat(DHISVersion.getValue(it.prefix + ".9", true))
+                        .isEqualTo(DHISVersion.UNKNOWN)
+                }
             }
     }
 }

@@ -44,6 +44,7 @@ object GeneralSettingsSamples {
             .allowScreenCapture(true)
             .messageOfTheDay("Message of the day")
             .experimentalFeatures(listOf("newFormLayout"))
+            .bypassDHIS2VersionCheck(true)
             .build()
     }
 }

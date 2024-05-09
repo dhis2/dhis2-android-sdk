@@ -36,6 +36,8 @@ import kotlin.jvm.Throws
 interface AccountManager {
     fun getAccounts(): List<DatabaseAccount>
 
+    fun getCurrentAccount(): DatabaseAccount?
+
     fun setMaxAccounts(maxAccounts: Int?)
 
     fun getMaxAccounts(): Int?

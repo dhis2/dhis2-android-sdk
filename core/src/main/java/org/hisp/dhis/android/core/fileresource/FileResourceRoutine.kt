@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -54,6 +55,7 @@ internal class FileResourceRoutine(
     private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
     private val trackedEntityDataValueCollectionRepository: TrackedEntityDataValueCollectionRepository,
     private val fileResourceStore: FileResourceStore,
+    private val customIconStore: CustomIconStore,
     private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository,
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {
@@ -84,16 +86,19 @@ internal class FileResourceRoutine(
             .byDataElementUid().`in`(dataElementsUids)
             .blockingGet()
 
+        val customIcons = customIconStore.selectAll()
+
         val fileResourceUids = dataValues.map(DataValue::value) +
             trackedEntityAttributeValues.map(TrackedEntityAttributeValue::value) +
-            trackedEntityDataValues.map(TrackedEntityDataValue::value)
+            trackedEntityDataValues.map(TrackedEntityDataValue::value) +
+            customIcons.map { it.fileResource().uid() }
 
         val calendar = Calendar.getInstance().apply {
             add(Calendar.HOUR_OF_DAY, -2)
         }
         val fileResources = fileResourceCollectionRepository
             .byUid().notIn(fileResourceUids.mapNotNull { it })
-            .byDomain().eq(FileResourceDomain.DATA_VALUE)
+            .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.ICON)
             .byLastUpdated().before(after ?: calendar.time)
             .blockingGet()
 

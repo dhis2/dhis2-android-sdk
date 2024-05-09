@@ -1,0 +1,45 @@
+{
+  "versions": [
+    {
+      "androidOSVersion": {
+        "min": "5",
+        "recommended": "7"
+      },
+      "dhis2Version": {
+        "min": "2.29",
+        "recommended": "2.40"
+      },
+      "downloadURL": "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.3/dhis2-40.3.apk",
+      "version": "40.3",
+      "isDefault": true
+    },
+    {
+      "androidOSVersion": {
+        "min": "5",
+        "recommended": "7"
+      },
+      "dhis2Version": {
+        "min": "2.29",
+        "recommended": "2.40"
+      },
+      "downloadURL": "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.2/dhis2-40.2.apk",
+      "version": "40.2",
+      "isDefault": false,
+      "userGroups": ["Kk12LkEWtXp"]
+    },
+    {
+      "androidOSVersion": {
+        "min": "5",
+        "recommended": "7"
+      },
+      "dhis2Version": {
+        "min": "2.29",
+        "recommended": "2.40"
+      },
+      "downloadURL": "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.1/dhis2-40.1.apk",
+      "version": "40.1",
+      "isDefault": false,
+      "userGroups": ["Kk12LkEWtXp"]
+    }
+  ]
+}

@@ -12,12 +12,12 @@ buildscript {
         classpath(libs.gradle)
         classpath(libs.kotlin)
         classpath(libs.ktlint)
-        classpath(libs.jacoco)
     }
 }
 
 plugins {
     alias(libs.plugins.sonarqube)
+    alias(libs.plugins.dokka)
 }
 
 sonarqube {
@@ -53,12 +53,13 @@ allprojects {
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.dokka")
 
     //group = GROUP
     //version = VERSION_NAME

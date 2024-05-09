@@ -81,17 +81,20 @@ class EventDateUtils(
                 false
             }
 
-        val expiredBecauseOfPeriod = programPeriodType?.let { periodType ->
-            var nextPeriod = periodHelper
-                .blockingGetPeriodForPeriodTypeAndDate(periodType, event.eventDate()!!, 1).startDate()!!
-            val currentDate: Date = getCalendar().time
-            if (expiryDays > 0) {
-                val calendar: Calendar = getCalendar()
-                calendar.time = nextPeriod
-                calendar.add(Calendar.DAY_OF_YEAR, expiryDays)
-                nextPeriod = calendar.time
+        val expiredBecauseOfPeriod = (event.eventDate() ?: event.dueDate())?.let { eventDateOrDueDate ->
+            programPeriodType?.let { periodType ->
+
+                var nextPeriod = periodHelper
+                    .blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1).startDate()!!
+                val currentDate: Date = getCalendar().time
+                if (expiryDays > 0) {
+                    val calendar: Calendar = getCalendar()
+                    calendar.time = nextPeriod
+                    calendar.add(Calendar.DAY_OF_YEAR, expiryDays)
+                    nextPeriod = calendar.time
+                }
+                nextPeriod <= currentDate
             }
-            nextPeriod <= currentDate
         } ?: false
 
         return expiredBecauseOfCompletion || expiredBecauseOfPeriod

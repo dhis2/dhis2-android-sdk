@@ -83,8 +83,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
     private fun getBaseQuery(
         scope: TrackedEntityInstanceQueryRepositoryScope,
     ): TrackedEntityInstanceQueryOnline {
-        val query = scope.query()?.let { query -> query.operator().apiUpperOperator + ":" + query.value() }
-
         // EnrollmentStatus does not accepts a list of status but a single value in web API.
         val enrollmentStatus = scope.enrollmentStatus()?.getOrNull(0)
 
@@ -95,7 +93,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
             orgUnits = scope.orgUnits(),
             orgUnitMode = scope.orgUnitMode(),
             program = scope.program(),
-            query = query,
             attributeFilter = scope.filter(),
             dataValueFilter = scope.dataValue(),
             lastUpdatedStartDate = scope.lastUpdatedDate()?.let { dateFilterPeriodHelper.getStartDate(it) },

@@ -61,6 +61,7 @@ internal class AnalyticsDhisVisualizationStoreImpl(
             w.bind(5, o.groupName())
             w.bind(6, o.name())
             w.bind(7, o.timestamp())
+            w.bind(8, o.type())
         }
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AnalyticsDhisVisualization, _: StatementWrapper ->

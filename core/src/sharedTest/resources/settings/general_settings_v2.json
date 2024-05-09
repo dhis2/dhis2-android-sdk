@@ -9,5 +9,6 @@
   "messageOfTheDay": "Message of the day",
   "experimentalFeatures": [
     "newFormLayout"
-  ]
+  ],
+  "bypassDHIS2VersionCheck": true
 }

@@ -44,6 +44,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
             dataValueCollectionRepository = d2.dataValueModule().dataValues(),
             fileResourceCollectionRepository = d2.fileResourceModule().fileResources(),
             fileResourceStore = fileResourceStore,
+            customIconStore = customIconStore,
             trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes(),
             trackedEntityAttributeValueCollectionRepository = d2.trackedEntityModule().trackedEntityAttributeValues(),
             trackedEntityDataValueCollectionRepository = d2.trackedEntityModule().trackedEntityDataValues(),

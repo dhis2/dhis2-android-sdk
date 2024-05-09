@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.event.EventModule
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import org.hisp.dhis.android.core.icon.IconModule
 import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
 import org.hisp.dhis.android.core.legendset.LegendSetModule
@@ -76,6 +77,7 @@ internal class D2Modules(
     val expressionDimensionItem: ExpressionDimensionItemModule,
     val fileResource: FileResourceModule,
     val importModule: ImportModule,
+    val icon: IconModule,
     val indicator: IndicatorModule,
     val legendSet: LegendSetModule,
     val dataStore: DataStoreModule,

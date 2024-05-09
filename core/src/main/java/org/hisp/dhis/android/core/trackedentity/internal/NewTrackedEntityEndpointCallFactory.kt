@@ -28,11 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.NTIPayload
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.internal.NewEventFields
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -44,22 +47,27 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class NewTrackedEntityEndpointCallFactory(
     private val trackedExporterService: TrackerExporterService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
+    private val parameterManager: TrackerExporterParameterManager,
 ) : TrackedEntityEndpointCallFactory() {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
         return trackedExporterService.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
-            trackedEntityInstances = getUidStr(query),
-            orgUnits = query.orgUnit,
-            orgUnitMode = query.commonParams.ouMode.name,
+            trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
+            orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
+            orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
@@ -68,7 +76,6 @@ internal class NewTrackedEntityEndpointCallFactory(
             page = query.page,
             pageSize = query.pageSize,
             lastUpdatedStartDate = query.lastUpdatedStr,
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { mapPayload(it) }
     }
@@ -77,23 +84,24 @@ internal class NewTrackedEntityEndpointCallFactory(
         return trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstanceUid = uid,
-            orgUnitMode = query.commonParams.ouMode.name,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
             programStatus = getProgramStatus(query),
             programStartDate = getProgramStartDate(query),
-            includeAllAttributes = true,
             includeDeleted = true,
         ).let { NewTrackerImporterTrackedEntityTransformer.deTransform(it) }
     }
 
-    override suspend fun getRelationshipEntityCall(uid: String): Payload<TrackedEntityInstance> {
-        return trackedExporterService.getTrackedEntityInstance(
-            trackedEntityInstance = uid,
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {
+        return trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
-            includeAllAttributes = true,
+            trackedEntityInstanceUid = item.itemUid,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
+            program = getRelatedProgramUid(item),
+            programStatus = null,
+            programStartDate = null,
             includeDeleted = true,
-        ).let { mapPayload(it) }
+        ).let { Payload(listOf(NewTrackerImporterTrackedEntityTransformer.deTransform(it))) }
     }
 
     override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
@@ -109,14 +117,14 @@ internal class NewTrackedEntityEndpointCallFactory(
                 val instances = getTrackedEntityQuery(teiQuery)
                 TrackerQueryResult(
                     trackedEntities = instances,
-                    exhausted = events.size < query.pageSize,
+                    exhausted = events.size < query.pageSize || !query.paging,
                 )
             }
         } else {
             val instances = getTrackedEntityQuery(query)
             TrackerQueryResult(
                 trackedEntities = instances,
-                exhausted = instances.size < query.pageSize,
+                exhausted = instances.size < query.pageSize || !query.paging,
             )
         }
     }
@@ -139,7 +147,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             trackedExporterService.getEvents(
                 fields = NewEventFields.teiQueryFields,
                 orgUnit = orgunit,
-                orgUnitMode = query.orgUnitMode?.toString(),
+                orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
                 status = query.eventStatus?.toString(),
                 program = query.program,
                 programStage = query.programStage,
@@ -158,26 +166,24 @@ internal class NewTrackedEntityEndpointCallFactory(
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
-                pageSize = query.pageSize,
-                page = query.page,
+                pageSize = query.pageSize.takeIf { query.paging },
+                page = query.page.takeIf { query.paging },
                 updatedAfter = query.lastUpdatedStartDate.simpleDateFormat(),
                 updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted,
             )
-        }.getOrThrow().instances
+        }.getOrThrow().items()
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
         return coroutineAPICallExecutor.wrap(
             errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
         ) {
-            val uidsStr = query.uids?.joinToString(";")
-
             val payload = trackedExporterService.getTrackedEntityInstances(
                 fields = NewTrackedEntityInstanceFields.asRelationshipFields,
-                trackedEntityInstances = uidsStr,
-                orgUnits = getOrgunits(query.orgUnits),
-                orgUnitMode = query.orgUnitMode?.toString(),
+                trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
+                orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
+                orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
                 program = query.program,
                 programStage = query.programStage,
                 programStartDate = query.programStartDate.simpleDateFormat(),
@@ -190,16 +196,14 @@ internal class NewTrackedEntityEndpointCallFactory(
                 eventEndDate = query.eventEndDate.simpleDateFormat(),
                 eventStatus = query.eventStatus?.toString(),
                 trackedEntityType = query.trackedEntityType,
-                query = query.query,
                 filter = toAPIFilterFormat(query.attributeFilter, upper = true),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V2),
                 paging = query.paging,
-                page = query.page,
-                pageSize = query.pageSize,
-                includeAllAttributes = true,
+                page = query.page.takeIf { query.paging },
+                pageSize = query.pageSize.takeIf { query.paging },
             )
 
             mapPayload(payload)
@@ -218,24 +222,28 @@ internal class NewTrackedEntityEndpointCallFactory(
             orgUnitMode = query.orgUnitMode,
             program = query.program,
             uids = events.mapNotNull { it.trackedEntity() }.distinct(),
-            query = query.query,
-            attributeFilter = query.attributeFilter,
             order = query.order,
             trackedEntityType = query.trackedEntityType,
             includeDeleted = query.includeDeleted,
         )
     }
 
-    private fun mapPayload(payload: NTIPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
-        val newItems = payload.instances.map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
+    private fun mapPayload(payload: TrackerPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
+        val newItems = payload.items().map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
         return Payload(newItems)
     }
 
-    private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) {
-            null
-        } else {
-            orgUnits.joinToString(";")
+    private fun getRelatedProgramUid(item: RelationshipItemRelative): String? {
+        val relationshipType = relationshipTypeRepository
+            .withConstraints()
+            .uid(item.relationshipTypeUid)
+            .blockingGet()
+
+        val constraint = when (item.constraintType) {
+            RelationshipConstraintType.FROM -> relationshipType?.fromConstraint()
+            RelationshipConstraintType.TO -> relationshipType?.toConstraint()
         }
+
+        return constraint?.program()?.uid()
     }
 }

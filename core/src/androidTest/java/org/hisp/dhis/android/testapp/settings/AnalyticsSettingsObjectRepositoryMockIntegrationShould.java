@@ -68,7 +68,7 @@ public class AnalyticsSettingsObjectRepositoryMockIntegrationShould extends Base
 
         for (AnalyticsDhisVisualizationsGroup analyticsDhisVisualizationsGroup : analyticsSettings.dhisVisualizations().home()) {
             if (analyticsDhisVisualizationsGroup.id().equals("12345678910")) {
-                assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(2);
+                assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(3);
             } else if (analyticsDhisVisualizationsGroup.id().equals("12345678911")) {
                 assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(1);
             }

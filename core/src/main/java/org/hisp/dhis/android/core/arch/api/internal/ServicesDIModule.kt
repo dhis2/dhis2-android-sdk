@@ -15,10 +15,12 @@ import org.hisp.dhis.android.core.event.internal.EventFilterService
 import org.hisp.dhis.android.core.event.internal.EventService
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemService
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceService
+import org.hisp.dhis.android.core.icon.internal.IconService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeService
 import org.hisp.dhis.android.core.legendset.internal.LegendSetService
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingService
+import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerService
 import org.hisp.dhis.android.core.option.internal.OptionGroupService
 import org.hisp.dhis.android.core.option.internal.OptionService
 import org.hisp.dhis.android.core.option.internal.OptionSetService
@@ -47,6 +49,7 @@ import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
 import org.hisp.dhis.android.core.user.internal.AuthorityService
 import org.hisp.dhis.android.core.user.internal.UserService
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleService
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationService
 import org.hisp.dhis.android.core.visualization.internal.VisualizationService
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -68,7 +71,9 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(EventFilterService::class.java) }
     single { get<Retrofit>().create(EventService::class.java) }
     single { get<Retrofit>().create(ExpressionDimensionItemService::class.java) }
+    single { get<Retrofit>().create(ExternalMapLayerService::class.java) }
     single { get<Retrofit>().create(FileResourceService::class.java) }
+    single { get<Retrofit>().create(IconService::class.java) }
     single { get<Retrofit>().create(IndicatorService::class.java) }
     single { get<Retrofit>().create(IndicatorTypeService::class.java) }
     single { get<Retrofit>().create(LegendSetService::class.java) }
@@ -97,6 +102,7 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(TrackedEntityTypeService::class.java) }
     single { get<Retrofit>().create(TrackerExporterService::class.java) }
     single { get<Retrofit>().create(TrackerImporterService::class.java) }
+    single { get<Retrofit>().create(TrackerVisualizationService::class.java) }
     single { get<Retrofit>().create(UserService::class.java) }
     single { get<Retrofit>().create(ValidationRuleService::class.java) }
     single { get<Retrofit>().create(VisualizationService::class.java) }

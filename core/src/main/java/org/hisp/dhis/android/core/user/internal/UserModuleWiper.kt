@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.hisp.dhis.android.core.user.AuthorityTableInfo
+import org.hisp.dhis.android.core.user.UserGroupTableInfo
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.user.UserRoleTableInfo
 import org.hisp.dhis.android.core.user.UserTableInfo
@@ -47,6 +48,7 @@ internal class UserModuleWiper(
             AuthenticatedUserTableInfo.TABLE_INFO,
             AuthorityTableInfo.TABLE_INFO,
             UserRoleTableInfo.TABLE_INFO,
+            UserGroupTableInfo.TABLE_INFO,
         )
     }
 

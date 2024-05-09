@@ -65,7 +65,7 @@ class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-succ
             JobTypeReport(
                 "EVENT",
                 JobImportCount(2, 2, 2, 2, 8),
-                listOf(JobObjectReport(emptyList(), 0, TrackerImporterObjectType.EVENT, "UavzrupW3lZ")),
+                listOf(JobObjectReport(emptyList(), TrackerImporterObjectType.EVENT, "UavzrupW3lZ")),
             ),
         )
         assertThat(bundleReport.typeReportMap.relationship).isEqualTo(

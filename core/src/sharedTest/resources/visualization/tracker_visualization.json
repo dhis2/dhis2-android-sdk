@@ -1,0 +1,74 @@
+{
+  "name": "TB program",
+  "created": "2024-02-07T07:37:41.116",
+  "lastUpdated": "2024-02-07T07:43:25.556",
+  "description": "Line list for TB program",
+  "type": "LINE_LIST",
+  "program": {
+    "id": "ur1Edk5Oe2n"
+  },
+  "outputType": "ENROLLMENT",
+  "filters": [
+    {
+      "dimensionType": "PERIOD",
+      "items": [
+        {
+          "id": "LAST_5_YEARS"
+        }
+      ],
+      "dimension": "enrollmentDate"
+    }
+  ],
+  "columns": [
+    {
+      "dimensionType": "ORGANISATION_UNIT",
+      "items": [
+        {
+          "id": "USER_ORGUNIT"
+        }
+      ],
+      "dimension": "ou"
+    },
+    {
+      "dimensionType": "PROGRAM_ATTRIBUTE",
+      "items": [],
+      "dimension": "w75KJ2mc4zz"
+    },
+    {
+      "dimensionType": "DATA_X",
+      "items": [
+        {
+          "id": "COMPLETED"
+        },
+        {
+          "id": "ACTIVE"
+        }
+      ],
+      "dimension": "programStatus"
+    },
+    {
+      "dimensionType": "PROGRAM_DATA_ELEMENT",
+      "items": [],
+      "programStage": {
+        "id": "EPEcjy3FWmI"
+      },
+      "program": {
+        "id": "ur1Edk5Oe2n"
+      },
+      "filter": "IN:1",
+      "dimension": "fCXKBdc27Bt",
+      "repetition": {
+        "indexes": [
+          1,
+          2,
+          -2,
+          -1,
+          0
+        ]
+      }
+    }
+  ],
+  "displayName": "TB program",
+  "displayDescription": "Line list for TB program",
+  "id": "s85urBIkN0z"
+}

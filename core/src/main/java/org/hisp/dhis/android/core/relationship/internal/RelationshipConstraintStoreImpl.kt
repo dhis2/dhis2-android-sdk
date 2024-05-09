@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -59,10 +60,12 @@ internal class RelationshipConstraintStoreImpl(
             w.bind(4, getUidOrNull(o.trackedEntityType()))
             w.bind(5, getUidOrNull(o.program()))
             w.bind(6, getUidOrNull(o.programStage()))
+            w.bind(7, StringListColumnAdapter.serialize(o.trackerDataView()?.attributes()))
+            w.bind(8, StringListColumnAdapter.serialize(o.trackerDataView()?.dataElements()))
         }
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: RelationshipConstraint, w: StatementWrapper ->
-            w.bind(7, getUidOrNull(o.relationshipType()))
-            w.bind(8, o.constraintType())
+            w.bind(9, getUidOrNull(o.relationshipType()))
+            w.bind(10, o.constraintType())
         }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { o: RelationshipConstraint, w: StatementWrapper ->
             w.bind(1, getUidOrNull(o.relationshipType()))

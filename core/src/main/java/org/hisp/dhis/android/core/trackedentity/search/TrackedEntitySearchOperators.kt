@@ -111,19 +111,7 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
         }.eq(null)
     }
 
-    /**
-     * Add an "attribute" filter to the query. If this method is called several times, conditions are appended with
-     * AND connector.
-     *
-     *
-     * For example,
-     * <pre><br></br>.byAttribute("uid1").eq("value1")<br></br>.byAttribute("uid2").eq("value2")<br></br></pre>
-     * means that the instance must have attribute "uid1" with value "value1" **AND** attribute "uid2" with
-     * value "value2".
-     *
-     * @param attributeId Attribute uid to use in the filter
-     * @return Repository connector
-     */
+    @Deprecated(message = "Use byFilter()", replaceWith = ReplaceWith("byFilter(attributeId)"))
     fun byAttribute(attributeId: String): EqLikeItemFilterConnector<R> {
         return byFilter(attributeId)
     }
@@ -147,11 +135,10 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
         }
     }
 
-    /**
-     * Search tracked entity instances with **any** attribute matching the query.
-     *
-     * @return Repository connector
-     */
+    @Deprecated(
+        message = "This property is ignored for online queries and will be ignored in offline queries soon. " +
+            "Please use byFilter to achieve a similar functionality.",
+    )
     fun byQuery(): EqLikeItemFilterConnector<R> {
         return connectorFactory.eqLikeItemC("") { filterItem: RepositoryScopeFilterItem ->
             scope.toBuilder().query(filterItem).build()

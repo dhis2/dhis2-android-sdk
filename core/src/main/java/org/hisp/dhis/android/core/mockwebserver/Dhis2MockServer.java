@@ -63,8 +63,9 @@ public class Dhis2MockServer {
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
     private static final String SYNCHRONIZATION_SETTTINGS_JSON = "settings/synchronization_settings.json";
     private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings_v2.json";
-    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v2.json";
+    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v3.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
+    private static final String VERSIONS_JSON = "settings/versions.json";
     private static final String LATEST_APP_VERSION_JSON = "settings/latest_app_version.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAMS_INDICATORS_JSON = "program/program_indicators.json";
@@ -95,6 +96,7 @@ public class Dhis2MockServer {
     private static final String CATEGORY_OPTION_ORGUNITS_JSON = "category/category_option_orgunits.json";
     private static final String VISUALIZATIONS_1_JSON = "visualization/visualizations_1.json";
     private static final String VISUALIZATIONS_2_JSON = "visualization/visualizations_2.json";
+    private static final String TRACKER_VISUALIZATIONS_1_JSON = "visualization/tracker_visualizations_1.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user38.json";
@@ -102,6 +104,7 @@ public class Dhis2MockServer {
     private static final String NEW_EVENTS_JSON = "event/new_tracker_importer_events.json";
     private static final String LEGEND_SETS_JSON = "legendset/legend_sets.json";
     private static final String EXPRESSION_DIMENSION_ITEMS = "expressiondimensionitem/expression_dimension_items.json";
+    private static final String CUSTOM_ICONS_JSON = "icon/custom_icons.json";
     private static final String TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json";
     private static final String NEW_TRACKED_ENTITY_INSTANCES_JSON =
             "trackedentity/new_tracker_importer_tracked_entities.json";
@@ -220,7 +223,9 @@ public class Dhis2MockServer {
                     return createMockResponse(ANALYTICS_SETTINGS_JSON);
                 } else if (path.startsWith("/api/userSettings?")) {
                     return createMockResponse(USER_SETTINGS_JSON);
-                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
+                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/versions")) {
+                    return createMockResponse(VERSIONS_JSON);
+                }  else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
                     return createMockResponse(LATEST_APP_VERSION_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
@@ -274,6 +279,8 @@ public class Dhis2MockServer {
                     return createMockResponse(VISUALIZATIONS_1_JSON);
                 } else if (path.startsWith("/api/visualizations/FAFa11yFeFe?")) {
                     return createMockResponse(VISUALIZATIONS_2_JSON);
+                } else if (path.startsWith("/api/eventVisualizations/s85urBIkN0z?")) {
+                    return createMockResponse(TRACKER_VISUALIZATIONS_1_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -298,6 +305,8 @@ public class Dhis2MockServer {
                     return createMockResponse(LEGEND_SETS_JSON);
                 } else if (path.startsWith("/api/expressionDimensionItems?")) {
                     return createMockResponse(EXPRESSION_DIMENSION_ITEMS);
+                } else if (path.startsWith("/api/icons?")) {
+                    return createMockResponse(CUSTOM_ICONS_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else if (path.startsWith("/api/metadata")) {
@@ -343,7 +352,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON);
         enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
-        enqueueMockResponse(LATEST_APP_VERSION_JSON);
+        enqueueMockResponse(VERSIONS_JSON);
         enqueueMockResponse(STOCK_USE_CASES_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
@@ -374,6 +383,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON);
         enqueueMockResponse(VISUALIZATIONS_1_JSON);
         enqueueMockResponse(VISUALIZATIONS_2_JSON);
+        enqueueMockResponse(404);
+        enqueueMockResponse(TRACKER_VISUALIZATIONS_1_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
@@ -381,6 +392,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(LEGEND_SETS_JSON);
         enqueueMockResponse(ATTRIBUTES_JSON);
         enqueueMockResponse(EXPRESSION_DIMENSION_ITEMS);
+        enqueueMockResponse(CUSTOM_ICONS_JSON);
     }
 
     private MockResponse createMockResponse(String fileName) {

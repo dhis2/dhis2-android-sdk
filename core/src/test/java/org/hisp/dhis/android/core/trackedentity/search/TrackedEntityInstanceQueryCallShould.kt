@@ -91,7 +91,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         query = TrackedEntityInstanceQueryOnline(
             uids = listOf("uid1", "uid2"),
             orgUnits = orgUnits,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE,
+            orgUnitMode = OrganisationUnitMode.DESCENDANTS,
             program = "program",
             programStartDate = Date(),
             programEndDate = Date(),
@@ -100,7 +100,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             incidentStartDate = Date(),
             incidentEndDate = Date(),
             trackedEntityType = "teiTypeStr",
-            query = "queryStr",
             attributeFilter = attribute,
             includeDeleted = false,
             lastUpdatedStartDate = Date(),
@@ -233,7 +232,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     ) = runBlocking {
         verify(trackedEntityService).query(
             eq(query.uids?.joinToString(";")),
-            eq(query.orgUnits.joinToString(";")),
+            getExpectedOrgunit(query.orgUnits, query.orgUnitMode),
             eq(query.orgUnitMode.toString()),
             eq(query.program),
             eq(query.programStage),
@@ -247,15 +246,14 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             eq(query.eventEndDate.simpleDateFormat()),
             eq(expectedStatus?.toString()),
             eq(query.trackedEntityType),
-            eq(query.query),
             any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
             any(),
             eq(query.paging),
-            eq(query.page),
-            eq(query.pageSize),
+            eq(query.page.takeIf { query.paging }),
+            eq(query.pageSize.takeIf { query.paging }),
         )
     }
 
@@ -274,7 +272,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
         verify(eventService).getEvents(
             eq(EventFields.teiQueryFields),
-            eq(orgunit),
+            getExpectedOrgunit(orgunit?.let { listOf(it) }, query.orgUnitMode),
             eq(query.orgUnitMode?.toString()),
             eq(query.eventStatus?.toString()),
             eq(query.program),
@@ -289,8 +287,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             any(),
             eq(query.assignedUserMode?.toString()),
             eq(query.paging),
-            eq(query.page),
-            eq(query.pageSize),
+            eq(query.page.takeIf { query.paging }),
+            eq(query.pageSize.takeIf { query.paging }),
             eq(query.lastUpdatedStartDate.simpleDateFormat()),
             eq(query.lastUpdatedEndDate.simpleDateFormat()),
             eq(query.includeDeleted),
@@ -298,11 +296,21 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
     }
 
+    private fun getExpectedOrgunit(orgUnits: List<String>?, mode: OrganisationUnitMode?): String? {
+        return if (mode == OrganisationUnitMode.ALL ||
+            mode == OrganisationUnitMode.ACCESSIBLE ||
+            mode == OrganisationUnitMode.CAPTURE
+        ) {
+            eq(null)
+        } else {
+            eq(orgUnits?.joinToString(";"))
+        }
+    }
+
     private fun whenServiceQuery(answer: (InvocationOnMock) -> SearchGrid?) {
         trackedEntityService.stub {
             onBlocking {
                 query(
-                    anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),

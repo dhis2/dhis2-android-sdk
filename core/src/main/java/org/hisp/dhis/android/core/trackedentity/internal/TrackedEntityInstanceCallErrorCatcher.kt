@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
 import java.io.IOException
+import javax.net.ssl.HttpsURLConnection
 import kotlin.Throws
 
 internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
@@ -45,7 +46,11 @@ internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
         val parsed = objectMapper().readValue(errorBody, HttpMessageResponse::class.java)
 
         @Suppress("MagicNumber")
-        return if (parsed.httpStatusCode() == 401) {
+        return if (
+            parsed.httpStatusCode() == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+            parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT ||
+            parsed.httpStatusCode() == HttpsURLConnection.HTTP_FORBIDDEN
+        ) {
             when (parsed.message()) {
                 "OWNERSHIP_ACCESS_DENIED" -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
                 "PROGRAM_ACCESS_CLOSED" -> D2ErrorCode.PROGRAM_ACCESS_CLOSED

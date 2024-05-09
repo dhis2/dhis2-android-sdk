@@ -37,5 +37,6 @@ public enum MockIntegrationTestDatabaseContent {
     MethodScopedEmptyEnqueable,
     LocalAnalyticsDefaultDispatcher,
     LocalAnalyticsLargeDispatcher,
-    LocalAnalyticsSuperLargeDispatcher
+    LocalAnalyticsSuperLargeDispatcher,
+    DatabaseImportExport,
 }

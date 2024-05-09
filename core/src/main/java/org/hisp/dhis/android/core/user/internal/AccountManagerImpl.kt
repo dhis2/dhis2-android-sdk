@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -48,7 +49,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
-internal class AccountManagerImpl constructor(
+internal class AccountManagerImpl(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
@@ -60,6 +61,12 @@ internal class AccountManagerImpl constructor(
 
     override fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
+    }
+
+    override fun getCurrentAccount(): DatabaseAccount? {
+        return credentialsSecureStore.get()
+            ?.let { multiUserDatabaseManager.getAccount(it.serverUrl, it.username) }
+            ?.let { updateSyncState(it) }
     }
 
     override fun setMaxAccounts(maxAccounts: Int?) {
@@ -128,12 +135,16 @@ internal class AccountManagerImpl constructor(
     }
 
     private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
-        val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account)
-        val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
+        return if (account.importDB()?.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
+            val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account)
+            val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
 
-        return account.toBuilder()
-            .syncState(syncState)
-            .build()
+            account.toBuilder()
+                .syncState(syncState)
+                .build()
+        } else {
+            account
+        }
     }
 
     override fun accountDeletionObservable(): Observable<AccountDeletionReason> {

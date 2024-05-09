@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.hisp.dhis.android.core.settings.DataSetSettings
@@ -77,6 +78,10 @@ internal class SettingAppService(
 
     suspend fun latestAppVersion(): LatestAppVersion {
         return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
+    }
+
+    suspend fun versions(): Payload<ApkDistributionVersion> {
+        return settingService.versions("$APK_DISTRIBUTION_NAMESPACE/versions")
     }
 
     private fun getNamespace(version: SettingsAppDataStoreVersion): String {

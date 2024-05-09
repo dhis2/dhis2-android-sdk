@@ -37,7 +37,9 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImageFormatColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapLayerPositionColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapServiceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMapLayerImageryProviderColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -83,6 +85,20 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     @ColumnAdapter(IgnoreMapLayerImageryProviderColumnAdapter.class)
     public abstract List<MapLayerImageryProvider> imageryProviders();
 
+    @Nullable
+    public abstract String code();
+
+    @Nullable
+    @ColumnAdapter(MapServiceColumnAdapter.class)
+    public abstract MapService mapService();
+
+    @Nullable
+    @ColumnAdapter(ImageFormatColumnAdapter.class)
+    public abstract ImageFormat imageFormat();
+
+    @Nullable
+    public abstract String layers();
+
     public static MapLayer create(Cursor cursor) {
         return $AutoValue_MapLayer.createFromCursor(cursor);
     }
@@ -102,6 +118,8 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
 
         public abstract Builder displayName(String displayName);
 
+        public abstract Builder code(String code);
+
         public abstract Builder external(Boolean external);
 
         public abstract Builder mapLayerPosition(MapLayerPosition mapLayerPosition);
@@ -115,6 +133,12 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
         public abstract Builder subdomainPlaceholder(String subdomainPlaceholder);
 
         public abstract Builder imageryProviders(List<MapLayerImageryProvider> imageryProviders);
+
+        public abstract Builder mapService(MapService mapService);
+
+        public abstract Builder imageFormat(ImageFormat imageFormat);
+
+        public abstract Builder layers(String layers);
 
         public abstract MapLayer build();
     }

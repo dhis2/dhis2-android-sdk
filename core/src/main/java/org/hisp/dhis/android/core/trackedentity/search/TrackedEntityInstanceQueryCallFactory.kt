@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSe
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 import java.text.ParseException
@@ -101,7 +102,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
         return coroutineAPICallExecutor.wrap(storeError = false) {
             eventService.getEvents(
                 fields = EventFields.teiQueryFields,
-                orgUnit = orgunit,
+                orgUnit = getOrgunits(orgunit, query.orgUnitMode)?.firstOrNull(),
                 orgUnitMode = query.orgUnitMode?.toString(),
                 status = query.eventStatus?.toString(),
                 program = query.program,
@@ -116,8 +117,8 @@ internal class TrackedEntityInstanceQueryCallFactory(
                 order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
                 assignedUserMode = query.assignedUserMode?.toString(),
                 paging = query.paging,
-                pageSize = query.pageSize,
-                page = query.page,
+                pageSize = query.pageSize.takeIf { query.paging },
+                page = query.page.takeIf { query.paging },
                 lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                 lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                 includeDeleted = query.includeDeleted,
@@ -126,16 +127,14 @@ internal class TrackedEntityInstanceQueryCallFactory(
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
-        val uidsStr = query.uids?.joinToString(";")
-
         return try {
             coroutineAPICallExecutor.wrap(
                 storeError = false,
                 errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
             ) {
                 trackedEntityService.query(
-                    trackedEntityInstance = uidsStr,
-                    orgUnit = getOrgunits(query.orgUnits),
+                    trackedEntityInstance = query.uids?.joinToString(";"),
+                    orgUnit = getOrgunits(query)?.joinToString(";"),
                     orgUnitMode = query.orgUnitMode?.toString(),
                     program = query.program,
                     programStage = query.programStage,
@@ -149,15 +148,14 @@ internal class TrackedEntityInstanceQueryCallFactory(
                     eventEndDate = query.eventEndDate.simpleDateFormat(),
                     eventStatus = getEventStatus(query),
                     trackedEntityType = query.trackedEntityType,
-                    query = query.query,
                     filter = toAPIFilterFormat(query.attributeFilter, upper = true),
                     assignedUserMode = query.assignedUserMode?.toString(),
                     lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                     lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
                     order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
                     paging = query.paging,
-                    pageSize = query.pageSize,
-                    page = query.page,
+                    pageSize = query.pageSize.takeIf { query.paging },
+                    page = query.page.takeIf { query.paging },
                 )
             }.getOrThrow().let { mapper.transform(it) }
         } catch (pe: ParseException) {
@@ -177,14 +175,6 @@ internal class TrackedEntityInstanceQueryCallFactory(
             EventStatus.VISITED.toString()
         } else {
             query.eventStatus.toString()
-        }
-    }
-
-    private fun getOrgunits(orgUnits: List<String>): String? {
-        return if (orgUnits.isEmpty()) {
-            null
-        } else {
-            orgUnits.joinToString(";")
         }
     }
 

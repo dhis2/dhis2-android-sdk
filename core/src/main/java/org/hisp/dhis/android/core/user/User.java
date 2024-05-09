@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserGroupListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -111,6 +112,11 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     @ColumnAdapter(IgnoreUserRoleListColumnAdapter.class)
     public abstract List<UserRole> userRoles();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreUserGroupListColumnAdapter.class)
+    public abstract List<UserGroup> userGroups();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -124,7 +130,7 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 
@@ -163,6 +169,8 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
         public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
 
         public abstract Builder userRoles(List<UserRole> userRoles);
+
+        public abstract Builder userGroups(List<UserGroup> userGroups);
 
         public abstract User build();
     }

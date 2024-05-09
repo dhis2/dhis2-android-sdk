@@ -35,13 +35,13 @@ class SystemInfoModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatc
     @Test
     fun allow_access_to_system_info_user() {
         val systemInfo = d2.systemInfoModule().systemInfo().blockingGet()!!
-        assertThat(systemInfo.version()).isEqualTo("2.40.0")
+        assertThat(systemInfo.version()).isEqualTo("2.41.0")
         assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
     }
 
     @Test
     fun allow_access_to_version_manager() {
         val version = d2.systemInfoModule().versionManager().getVersion()
-        assertThat(version).isEqualTo(DHISVersion.V2_40)
+        assertThat(version).isEqualTo(DHISVersion.V2_41)
     }
 }

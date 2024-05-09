@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager
 import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFactory
 import org.hisp.dhis.android.core.dataset.internal.DataSetEndpointCallFactory
@@ -108,4 +109,7 @@ internal class D2DIComponent(
 
     @get:VisibleForTesting
     val interpreterSelector: InterpreterSelector,
+
+    @get:VisibleForTesting
+    val multiUserDatabaseManager: MultiUserDatabaseManager,
 )

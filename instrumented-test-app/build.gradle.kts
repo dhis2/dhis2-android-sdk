@@ -28,10 +28,9 @@
 
 plugins {
     id("com.android.application")
+    id("jacoco-conventions")
     kotlin("android")
 }
-
-apply(from = project.file("../core/plugins/jacoco.gradle.kts"))
 
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()

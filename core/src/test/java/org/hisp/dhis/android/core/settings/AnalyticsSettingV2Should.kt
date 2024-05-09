@@ -31,73 +31,21 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.period.PeriodType
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class AnalyticsSettingV2Should : BaseObjectShould("settings/analytics_settings_v2.json"), ObjectShould {
 
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val analyticsSettings = objectMapper.readValue(jsonStream, AnalyticsSettings::class.java)
 
-        assertThat(analyticsSettings.tei().size).isEqualTo(3)
+        AnalyticsSettingAsserts.assertTeiAnalytics(analyticsSettings.tei())
 
-        analyticsSettings.tei().forEach { tei ->
-            when (tei.uid()) {
-                "fqEx2avRp1L" -> {
-                    assertThat(tei.name()).isEqualTo("Height evolution")
-                    assertThat(tei.shortName()).isEqualTo("H. evolution")
-                    assertThat(tei.program()).isEqualTo("IpHINAT79UW")
-                    assertThat(tei.programStage()).isEqualTo("dBwrot7S420")
-                    assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Monthly)
-                    assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
-                }
-                "XQUhloISaQJ" -> {
-                    assertThat(tei.data()?.indicators()?.size).isEqualTo(1)
-                    assertThat(tei.data()?.indicators()?.first()?.programStage()).isEqualTo("dBwrot7S420")
-                    assertThat(tei.data()?.indicators()?.first()?.indicator()).isEqualTo("GSae40Fyppf")
-                }
-                "yEdtdG7ql9K" -> {
-                    assertThat(tei.whoNutritionData()?.y()?.indicators()?.size).isEqualTo(1)
-                    assertThat(tei.whoNutritionData()?.y()?.indicators()?.first()?.indicator()).isEqualTo("GSae40Fyppf")
-                }
-            }
-        }
+        AnalyticsSettingAsserts.assertDhisVisualizations(analyticsSettings.dhisVisualizations())
 
-        assertThat(analyticsSettings.dhisVisualizations().home().size).isEqualTo(2)
-        analyticsSettings.dhisVisualizations().home().forEach { group ->
-            when (group.id()) {
-                "12345678910" -> {
-                    assertThat(group.name()).isEqualTo("Ejemplo")
-                    assertThat(group.visualizations().size).isEqualTo(2)
-                }
-                "12345678911" -> {
-                    assertThat(group.name()).isEqualTo("Otro ejemplo")
-                    assertThat(group.visualizations().size).isEqualTo(1)
-                }
-            }
-        }
-
-        assertThat(analyticsSettings.dhisVisualizations().dataSet().size).isEqualTo(1)
-        analyticsSettings.dhisVisualizations().dataSet().forEach { map ->
-            when (map.key) {
-                "BfMAe6Itzgt" -> {
-                    assertThat(map.value.size).isEqualTo(1)
-                    assertThat(map.value[0].visualizations().size).isEqualTo(1)
-                }
-            }
-        }
-
-        assertThat(analyticsSettings.dhisVisualizations().program().size).isEqualTo(1)
-        analyticsSettings.dhisVisualizations().program().forEach { map ->
-            when (map.key) {
-                "IpHINAT79UW" -> {
-                    assertThat(map.value.size).isEqualTo(1)
-                    assertThat(map.value[0].visualizations().size).isEqualTo(2)
-                }
+        analyticsSettings.dhisVisualizations().home().forEach {
+            it.visualizations().forEach {
+                assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
             }
         }
     }

@@ -75,6 +75,15 @@
           {
             "id": "PYBH8ZaAQnC",
             "timestamp": "2021-07-01T03:02:16.8770"
+          },
+          {
+            "id": "s85urBIkN0z",
+            "timestamp": "2021-07-01T03:02:16.8770"
+          },
+          {
+            "id": "invalid_uid",
+            "type": "VISUALIZATION",
+            "timestamp": "2021-07-01T03:02:16.8770"
           }
         ]
       },
@@ -109,10 +118,6 @@
           "id": "0000000001",
           "name": "default",
           "visualizations": [
-            {
-              "id": "PYBH8ZaAQnC",
-              "timestamp": "2021-07-01T02:55:16.8770"
-            },
             {
               "id": "PYBH8ZaAQnC",
               "timestamp": "2021-07-01T02:55:16.8770"

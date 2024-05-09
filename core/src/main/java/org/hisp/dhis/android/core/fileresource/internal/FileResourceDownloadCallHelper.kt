@@ -34,6 +34,9 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
+import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.icon.CustomIconTableInfo
+import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
@@ -52,6 +55,7 @@ internal class FileResourceDownloadCallHelper(
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val dataValueStore: DataValueStore,
+    private val customIconStore: CustomIconStore,
     private val dhisVersionManager: DHISVersionManager,
 ) {
 
@@ -116,5 +120,14 @@ internal class FileResourceDownloadCallHelper(
             .appendNotInKeyStringValues(DataValueTableInfo.Columns.VALUE, existingFileResources)
             .build()
         return dataValueStore.selectWhere(dataValuesWhereClause)
+    }
+
+    fun getMissingCustomIcons(
+        existingFileResources: List<String>,
+    ): List<CustomIcon> {
+        val customIconsWhereClause = WhereClauseBuilder()
+            .appendNotInKeyStringValues(CustomIconTableInfo.Columns.FILE_RESOURCE, existingFileResources)
+            .build()
+        return customIconStore.selectWhere(customIconsWhereClause)
     }
 }

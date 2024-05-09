@@ -94,7 +94,7 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseDeletableDataObject.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(NoteFields.UID)

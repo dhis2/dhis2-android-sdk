@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeAttributeComboLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeAttributeOptionLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeCombo
@@ -248,6 +249,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
         trackedEntityTypeStore.insert(trackedEntityType)
         trackedEntityAttributeStore.insert(attribute1)
+        trackedEntityAttributeStore.insert(attribute2)
         programStore.insert(program)
         programStageStore.insert(programStage1)
         programStageStore.insert(programStage2)

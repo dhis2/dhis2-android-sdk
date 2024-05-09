@@ -96,7 +96,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     @Test
     fun create_new_db_when_no_previous_configuration_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
         val encrypt = false
-        whenever(configurationHelper.addAccount(null, serverUrl, username, encrypt))
+        whenever(configurationHelper.addOrUpdateAccount(null, serverUrl, username, encrypt))
             .doReturn(unencryptedConfiguration)
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
@@ -108,7 +108,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     fun copy_database_when_changing_encryption_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
         val encrypt = true
         whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.addAccount(unencryptedConfiguration, serverUrl, username, encrypt))
+        whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
             .doReturn(encryptedConfiguration)
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
@@ -127,7 +127,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     @Test
     fun open_database_when_existing_when_calling_loadExistingKeepingEncryption() {
         whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.addAccount(unencryptedConfiguration, serverUrl, username, false))
+        whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, false))
             .doReturn(unencryptedConfiguration)
 
         manager.loadExistingKeepingEncryption(serverUrl, username)
@@ -154,7 +154,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         val newUsername = "new_username"
         val newServerUrl = "new_server_url"
         val newConfiguration = buildUserConfiguration(newUsername, "2021-06-01T00:01:04.000", newServerUrl)
-        whenever(configurationHelper.addAccount(configuration, newServerUrl, newUsername, false))
+        whenever(configurationHelper.addOrUpdateAccount(configuration, newServerUrl, newUsername, false))
             .doReturn(DatabasesConfiguration.builder().accounts(listOf(newConfiguration)).build())
 
         manager.createNew(newServerUrl, newUsername, false)

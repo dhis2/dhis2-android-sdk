@@ -41,6 +41,7 @@ import java.util.*
 class MockIntegrationTestObjects(
     val d2: D2,
     val content: MockIntegrationTestDatabaseContent,
+    port: Int,
 ) {
     val databaseAdapter: DatabaseAdapter = d2.databaseAdapter()
 
@@ -49,7 +50,7 @@ class MockIntegrationTestObjects(
 
     @JvmField
     internal val d2DIComponent: D2DIComponent = d2.d2DIComponent
-    val dhis2MockServer: Dhis2MockServer = Dhis2MockServer(0)
+    val dhis2MockServer: Dhis2MockServer = Dhis2MockServer(port)
 
     @Throws(IOException::class)
     fun tearDown() {

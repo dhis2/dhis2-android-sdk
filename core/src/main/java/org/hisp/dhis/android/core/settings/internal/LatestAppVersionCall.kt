@@ -32,17 +32,36 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.LatestAppVersion
+import org.hisp.dhis.android.core.user.UserModule
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LatestAppVersionCall(
     private val latestAppVersionHandler: LatestAppVersionHandler,
     private val settingAppService: SettingAppService,
+    private val userModule: UserModule,
+    private val versionComparator: LatestAppVersionComparator,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<LatestAppVersion>(coroutineAPICallExecutor) {
 
     override suspend fun tryFetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.latestAppVersion() }
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val userGroupUids = userModule.userGroups().blockingGetUids()
+
+            val versions = settingAppService.versions().items()
+
+            val filteredVersions = versions.filter { version ->
+                version.userGroups?.any { userGroupUid ->
+                    userGroupUids.contains(userGroupUid)
+                } ?: false
+            }
+
+            val version = filteredVersions.maxWithOrNull(versionComparator.comparator)
+                ?: versions.find { it.isDefault == true }
+
+            version?.let { LatestAppVersion.builder().version(it.version).downloadURL(it.downloadURL).build() }
+                ?: settingAppService.latestAppVersion()
+        }
     }
 
     override fun process(item: LatestAppVersion?) {

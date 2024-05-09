@@ -38,6 +38,8 @@ internal class UserHandler(
     userStore: UserStore,
     private val userRoleHandler: UserRoleHandler,
     private val userRoleCollectionCleaner: UserRoleCollectionCleaner,
+    private val userGroupHandler: UserGroupHandler,
+    private val userGroupCollectionCleaner: UserGroupCollectionCleaner,
 ) : IdentifiableHandlerImpl<User>(userStore) {
 
     override fun beforeObjectHandled(o: User): User {
@@ -58,5 +60,7 @@ internal class UserHandler(
     override fun afterObjectHandled(o: User, action: HandleAction) {
         userRoleCollectionCleaner.deleteNotPresent(o.userRoles())
         userRoleHandler.handleMany(o.userRoles())
+        userGroupCollectionCleaner.deleteNotPresent(o.userGroups())
+        userGroupHandler.handleMany(o.userGroups())
     }
 }

@@ -44,12 +44,12 @@ internal object MockIntegrationTestObjectsFactory {
         d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
     }
 
-    fun getObjects(content: MockIntegrationTestDatabaseContent): IntegrationTestObjectsWithIsNewInstance {
+    fun getObjects(content: MockIntegrationTestDatabaseContent, port: Int): IntegrationTestObjectsWithIsNewInstance {
         val instance = instances[content]
         return if (instance != null) {
             IntegrationTestObjectsWithIsNewInstance(instance, false)
         } else {
-            val newInstance = MockIntegrationTestObjects(d2, content)
+            val newInstance = MockIntegrationTestObjects(d2, content, port)
             instances[content] = newInstance
             IntegrationTestObjectsWithIsNewInstance(newInstance, true)
         }

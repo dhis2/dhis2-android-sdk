@@ -60,6 +60,10 @@ internal class MapLayerStoreImpl(
             w.bind(7, o.imageUrl())
             w.bind(8, StringListColumnAdapter.serialize(o.subdomains()))
             w.bind(9, o.subdomainPlaceholder())
+            w.bind(10, o.code())
+            w.bind(11, o.mapService())
+            w.bind(12, o.imageFormat())
+            w.bind(13, o.layers())
         }
     }
 }

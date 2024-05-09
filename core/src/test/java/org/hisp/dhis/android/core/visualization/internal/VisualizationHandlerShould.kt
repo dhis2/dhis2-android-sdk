@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.junit.Before
@@ -41,6 +42,7 @@ class VisualizationHandlerShould {
 
     private val visualizationStore: VisualizationStore = mock()
     private val visualizationCollectionCleaner: VisualizationCollectionCleaner = mock()
+    private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner = mock()
     private val visualizationDimensionItemHandler: VisualizationDimensionItemHandler = mock()
     private val visualizationDimension: VisualizationDimension = mock()
     private val visualization: Visualization = mock()
@@ -53,6 +55,7 @@ class VisualizationHandlerShould {
         visualizationHandler = VisualizationHandler(
             visualizationStore,
             visualizationCollectionCleaner,
+            analyticsDhisVisualizationCleaner,
             visualizationDimensionItemHandler,
         )
 

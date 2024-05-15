@@ -164,10 +164,10 @@ internal class TrackedEntityInstanceLocalQueryHelper(
             )
         }
 
-        if (scope.states() == null) {
+        scope.states()?.let {
+            where.appendInKeyEnumValues(dot(teiAlias, DataColumns.AGGREGATED_SYNC_STATE), it)
+        } ?: run {
             where.appendNotKeyStringValue(dot(teiAlias, DataColumns.AGGREGATED_SYNC_STATE), State.RELATIONSHIP.name)
-        } else {
-            where.appendInKeyEnumValues(dot(teiAlias, DataColumns.AGGREGATED_SYNC_STATE), scope.states())
         }
 
         if (!scope.includeDeleted()) {
@@ -222,11 +222,8 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                 dateFilterPeriod = scope.incidentDate()!!,
             )
         }
-        if (scope.enrollmentStatus() != null) {
-            where.appendInKeyEnumValues(
-                dot(enrollmentAlias, EnrollmentTableInfo.Columns.STATUS),
-                scope.enrollmentStatus(),
-            )
+        scope.enrollmentStatus()?.let {
+            where.appendInKeyEnumValues(dot(enrollmentAlias, EnrollmentTableInfo.Columns.STATUS), it)
         }
         if (!scope.includeDeleted()) {
             where.appendKeyOperatorValue(dot(enrollmentAlias, EnrollmentTableInfo.Columns.DELETED), "!=", "1")

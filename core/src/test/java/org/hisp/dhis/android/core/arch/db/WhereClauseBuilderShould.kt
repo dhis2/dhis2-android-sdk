@@ -25,191 +25,188 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db
 
-package org.hisp.dhis.android.core.arch.db;
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.junit.Test
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class WhereClauseBuilderShould {
-
+class WhereClauseBuilderShould {
     @Test
-    public void build_where_statement_for_one_key_value_pair_with_string_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyStringValue("COL", "VAL")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL = 'VAL'");
+    fun build_where_statement_for_one_key_value_pair_with_string_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyStringValue("COL", "VAL")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL = 'VAL'")
     }
 
     @Test
-    public void build_where_statement_for_one_key_value_pair_with_int_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyNumberValue("COL", 2)
-                .build();
-        assertThat(whereStatement).isEqualTo("COL = 2");
+    fun build_where_statement_for_one_key_value_pair_with_int_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyNumberValue("COL", 2)
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL = 2")
     }
 
     @Test
-    public void build_where_statement_for_one_key_value_pair_with_greater_or_eq_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyGreaterOrEqStringValue("COL", "VAL")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL >= 'VAL'");
+    fun build_where_statement_for_one_key_value_pair_with_greater_or_eq_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyGreaterOrEqStringValue("COL", "VAL")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL >= 'VAL'")
     }
 
     @Test
-    public void build_where_statement_for_one_key_value_pair_with_less_than_or_eq_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyLessThanOrEqStringValue("COL", "VAL")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL <= 'VAL'");
+    fun build_where_statement_for_one_key_value_pair_with_less_than_or_eq_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyLessThanOrEqStringValue("COL", "VAL")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL <= 'VAL'")
     }
 
     @Test
-    public void build_where_statement_for_one_key_value_pair_with_greater_or_eq_and_less_than_or_eq_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
-                .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' AND COL2 <= 'VAL2'");
+    fun build_where_statement_for_one_key_value_pair_with_greater_or_eq_and_less_than_or_eq_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
+            .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' AND COL2 <= 'VAL2'")
     }
 
     @Test
-    public void build_where_statement_for_one_key_value_pair_with_like_string_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyLikeStringValue("COL", "VAL")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL LIKE 'VAL'");
+    fun build_where_statement_for_one_key_value_pair_with_like_string_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyLikeStringValue("COL", "VAL")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL LIKE 'VAL'")
     }
 
     @Test
-    public void build_where_statement_for_two_key_value_pairs() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyStringValue("COL1", "VAL1")
-                .appendKeyStringValue("COL2", "VAL2")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 = 'VAL1' AND COL2 = 'VAL2'");
+    fun build_where_statement_for_two_key_value_pairs() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyStringValue("COL1", "VAL1")
+            .appendKeyStringValue("COL2", "VAL2")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 = 'VAL1' AND COL2 = 'VAL2'")
     }
 
     @Test
-    public void build_where_statement_for_two_key_value_pairs_with_or_logic_gate() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendOrKeyStringValue("COL1", "VAL1")
-                .appendOrKeyStringValue("COL2", "VAL2")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 = 'VAL1' OR COL2 = 'VAL2'");
+    fun build_where_statement_for_two_key_value_pairs_with_or_logic_gate() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendOrKeyStringValue("COL1", "VAL1")
+            .appendOrKeyStringValue("COL2", "VAL2")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 = 'VAL1' OR COL2 = 'VAL2'")
     }
 
     @Test
-    public void build_where_statement_for_not_in_key_values() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendNotInKeyStringValues("COL1", Lists.newArrayList("VAL1", "VAL2"))
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 NOT IN ('VAL1', 'VAL2')");
+    fun build_where_statement_for_not_in_key_values() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendNotInKeyStringValues("COL1", Lists.newArrayList("VAL1", "VAL2"))
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 NOT IN ('VAL1', 'VAL2')")
     }
 
     @Test
-    public void build_where_statement_for_in_key_values() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendInKeyStringValues("COL1", Lists.newArrayList("VAL1", "VAL2"))
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 IN ('VAL1', 'VAL2')");
+    fun build_where_statement_for_in_key_values() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendInKeyStringValues("COL1", Lists.newArrayList("VAL1", "VAL2"))
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 IN ('VAL1', 'VAL2')")
     }
 
     @Test
-    public void build_where_statement_for_in_subquery() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendInSubQuery("COL1", "SELECT uid FROM table")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 IN (SELECT uid FROM table)");
+    fun build_where_statement_for_in_subquery() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendInSubQuery("COL1", "SELECT uid FROM table")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 IN (SELECT uid FROM table)")
     }
 
     @Test
-    public void build_where_statement_for_is_null_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendIsNullValue("COL1")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 IS NULL");
+    fun build_where_statement_for_is_null_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendIsNullValue("COL1")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 IS NULL")
     }
 
     @Test
-    public void build_where_statement_for_is_not_null_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendIsNotNullValue("COL1")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 IS NOT NULL");
+    fun build_where_statement_for_is_not_null_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendIsNotNullValue("COL1")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 IS NOT NULL")
     }
 
     @Test
-    public void build_where_statement_for_is_null_or_value() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendIsNullOrValue("COL1", "value")
-                .build();
-        assertThat(whereStatement).isEqualTo("(COL1 IS NULL OR COL1 = 'value')");
+    fun build_where_statement_for_is_null_or_value() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendIsNullOrValue("COL1", "value")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("(COL1 IS NULL OR COL1 = 'value')")
     }
 
     @Test
-    public void build_where_statement_for_complex_queries() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendComplexQuery("COL1 = 'VAL1' OR COL2 = 'VAL2'")
-                .build();
-        assertThat(whereStatement).isEqualTo("(COL1 = 'VAL1' OR COL2 = 'VAL2')");
+    fun build_where_statement_for_complex_queries() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendComplexQuery("COL1 = 'VAL1' OR COL2 = 'VAL2'")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("(COL1 = 'VAL1' OR COL2 = 'VAL2')")
     }
 
     @Test
-    public void build_where_statement_appending_complex_queries_between_others() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendIsNullValue("COL1")
-                .appendComplexQuery("COL2 = 'VAL2' OR COL3 = 'VAL3'")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 IS NULL AND (COL2 = 'VAL2' OR COL3 = 'VAL3')");
+    fun build_where_statement_appending_complex_queries_between_others() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendIsNullValue("COL1")
+            .appendComplexQuery("COL2 = 'VAL2' OR COL3 = 'VAL3'")
+            .build()
+        Truth.assertThat(whereStatement)
+            .isEqualTo("COL1 IS NULL AND (COL2 = 'VAL2' OR COL3 = 'VAL3')")
     }
 
     @Test
-    public void build_where_statement_appending_or_complex_queries_between_others() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendIsNullValue("COL1")
-                .appendOrComplexQuery("COL2 = 'VAL2' OR COL3 = 'VAL3'")
-                .build();
-        assertThat(whereStatement).isEqualTo("COL1 IS NULL OR (COL2 = 'VAL2' OR COL3 = 'VAL3')");
+    fun build_where_statement_appending_or_complex_queries_between_others() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendIsNullValue("COL1")
+            .appendOrComplexQuery("COL2 = 'VAL2' OR COL3 = 'VAL3'")
+            .build()
+        Truth.assertThat(whereStatement)
+            .isEqualTo("COL1 IS NULL OR (COL2 = 'VAL2' OR COL3 = 'VAL3')")
     }
 
     @Test
-    public void build_where_statement_appending_operator() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        String whereStatement = builder
-                .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
-                .appendOperator(" OR ")
-                .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
-                .build();
-
-        assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' OR COL2 <= 'VAL2'");
+    fun build_where_statement_appending_operator() {
+        val builder = WhereClauseBuilder()
+        val whereStatement = builder
+            .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
+            .appendOperator(" OR ")
+            .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
+            .build()
+        Truth.assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' OR COL2 <= 'VAL2'")
     }
 
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_for_no_pairs() {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        builder.build();
+    @Test(expected = RuntimeException::class)
+    fun throw_exception_for_no_pairs() {
+        val builder = WhereClauseBuilder()
+        builder.build()
     }
 }

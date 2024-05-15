@@ -94,10 +94,10 @@ internal class OrganisationUnitEvaluator(
             }
 
             is OrganisationUnitFilter.Level -> {
-                val level = orgunitLevelStore.selectByUid(filter.uid)
+                val level = orgunitLevelStore.selectByUid(filter.uid)!!
                 val orgunits = orgunitLevelStore.selectUidsWhere(
                     WhereClauseBuilder()
-                        .appendKeyStringValue(OrganisationUnitTableInfo.Columns.LEVEL, level?.level()?.toString())
+                        .appendKeyStringValue(OrganisationUnitTableInfo.Columns.LEVEL, level.level()!!.toString())
                         .build(),
                 )
 

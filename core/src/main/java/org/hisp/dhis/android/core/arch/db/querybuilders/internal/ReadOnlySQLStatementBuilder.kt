@@ -25,27 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-
-public interface ReadOnlySQLStatementBuilder {
-    String selectWhere(String whereClause);
-
-    String selectWhere(String whereClause, int limit);
-
-    String selectWhere(String whereClause, String orderByClause);
-
-    String selectWhere(String whereClause, String orderByClause, int limit);
-
-    String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    String selectAll();
-
-    String count();
-
-    String countWhere(String whereClause);
-
-    String countAndGroupBy(String column);
+internal interface ReadOnlySQLStatementBuilder {
+    fun selectWhere(whereClause: String): String
+    fun selectWhere(whereClause: String, limit: Int): String
+    fun selectWhere(whereClause: String, orderByClause: String): String
+    fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String
+    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): String?
+    fun selectAll(): String
+    fun count(): String?
+    fun countWhere(whereClause: String): String?
+    fun countAndGroupBy(column: String): String?
 }

@@ -25,206 +25,194 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.common.CoreColumns;
+// TODO save TableInfo instead of separate files when architecture 1.0 is ready
+class SQLStatementBuilderImpl internal constructor(
+    private val tableName: String,
+    columns: Array<String>,
+    updateWhereColumns: Array<String>,
+    private val hasSortOrder: Boolean
+) : SQLStatementBuilder {
+    private val columns = columns.clone()
+    private val whereColumns = updateWhereColumns.clone()
 
-import static org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo.SORT_ORDER;
-import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaAndSpaceSeparatedArrayValues;
-import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
+    constructor(
+        tableName: String,
+        columns: Array<String>,
+        updateWhereColumns: Array<String>
+    ) : this(tableName, columns, updateWhereColumns, false)
 
-public class SQLStatementBuilderImpl implements SQLStatementBuilder {
-    // TODO save TableInfo instead of separate files when architecture 1.0 is ready
-    private final String tableName;
-    private final String[] columns;
-    private final String[] whereColumns;
-    private final boolean hasSortOrder;
+    constructor(tableInfo: TableInfo) : this(
+        tableInfo.name(),
+        tableInfo.columns().all().clone(),
+        tableInfo.columns().whereUpdate().clone(),
+        tableInfo.hasSortOrder()
+    )
 
-    private final static String WHERE = " WHERE ";
-    private final static String LIMIT = " LIMIT ";
-    private final static String FROM = " FROM ";
-    private final static String SELECT = "SELECT ";
-    private final static String AND = " AND ";
-    private final static String ORDER_BY = " ORDER BY ";
-
-    @SuppressWarnings("PMD.UseVarargs")
-    SQLStatementBuilderImpl(String tableName, String[] columns, String[] updateWhereColumns, boolean hasSortOrder) {
-        this.tableName = tableName;
-        this.columns = columns.clone();
-        this.whereColumns = updateWhereColumns.clone();
-        this.hasSortOrder = hasSortOrder;
+    private fun commaSeparatedColumns(): String {
+        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(columns)
     }
 
-    @SuppressWarnings("PMD.UseVarargs")
-    public SQLStatementBuilderImpl(String tableName, String[] columns, String[] updateWhereColumns) {
-        this(tableName, columns, updateWhereColumns, false);
-    }
-
-    public SQLStatementBuilderImpl(TableInfo tableInfo) {
-        this(tableInfo.name(), tableInfo.columns().all().clone(), tableInfo.columns().whereUpdate().clone(),
-                tableInfo.hasSortOrder());
-    }
-
-    private String commaSeparatedColumns() {
-        return commaAndSpaceSeparatedArrayValues(columns);
-    }
-
-    private String commaSeparatedInterrogationMarks() {
-        String[] array = new String[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            array[i] = "?";
+    private fun commaSeparatedInterrogationMarks(): String {
+        val array = arrayOfNulls<String>(columns.size)
+        for (i in columns.indices) {
+            array[i] = "?"
         }
-        return commaAndSpaceSeparatedArrayValues(array);
+        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(array)
     }
 
-    private String commaSeparatedColumnEqualInterrogationMark(String... cols) {
-        String[] array = new String[cols.length];
-        for (int i = 0; i < cols.length; i++) {
-            array[i] = cols[i] + "=?";
+    private fun commaSeparatedColumnEqualInterrogationMark(vararg cols: String): String {
+        val array = arrayOfNulls<String>(cols.size)
+        for (i in cols.indices) {
+            array[i] = cols[i] + "=?"
         }
-        return commaAndSpaceSeparatedArrayValues(array);
+        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(array)
     }
 
-    private String andSeparatedColumnEqualInterrogationMark(String... cols) {
-        return commaSeparatedColumnEqualInterrogationMark(cols)
-                .replace(",", " AND");
+    private fun andSeparatedColumnEqualInterrogationMark(vararg cols: String): String {
+        return commaSeparatedColumnEqualInterrogationMark(*cols)
+            .replace(",", " AND")
     }
 
-    @Override
-    public String getTableName() {
-        return tableName;
+    override fun getTableName(): String {
+        return tableName
     }
 
-    @Override
-    public String[] getColumns() {
-        return columns.clone();
+    override fun getColumns(): Array<String> {
+        return columns.clone()
     }
 
-    @Override
-    public String insert() {
+    override fun insert(): String {
         return "INSERT INTO " + tableName + " (" + commaSeparatedColumns() + ") " +
-                "VALUES (" + commaSeparatedInterrogationMarks() + ");";
+            "VALUES (" + commaSeparatedInterrogationMarks() + ");"
     }
 
-    @Override
-    public String deleteById() {
-        return "DELETE" + FROM + tableName + WHERE + UID + "=?;";
+    override fun deleteById(): String {
+        return "DELETE" + FROM + tableName + WHERE + IdentifiableColumns.UID + "=?;"
     }
 
-    @Override
-    public String selectUids() {
-        return SELECT + UID + FROM + tableName;
+    override fun selectUids(): String {
+        return SELECT + IdentifiableColumns.UID + FROM + tableName
     }
 
-    @Override
-    public String selectUidsWhere(String whereClause) {
-        return SELECT + UID + FROM + tableName + WHERE + whereClause + ";";
+    override fun selectUidsWhere(whereClause: String): String {
+        return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ";"
     }
 
-    @Override
-    public String selectUidsWhere(String whereClause, String orderByClause) {
-        return SELECT + UID + FROM + tableName + WHERE + whereClause + ORDER_BY + orderByClause + ";";
+    override fun selectUidsWhere(whereClause: String, orderByClause: String): String {
+        return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ORDER_BY + orderByClause + ";"
     }
 
-    @Override
-    public String selectColumnWhere(String column, String whereClause) {
-        return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
+    override fun selectColumnWhere(column: String, whereClause: String): String {
+        return SELECT + column + FROM + tableName + WHERE + whereClause + ";"
     }
 
-    public String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
-
+    override fun selectOneOrderedBy(
+        orderingColumName: String,
+        orderingType: SQLOrderType
+    ): String {
         return SELECT + "*" +
-                FROM + tableName +
-                ORDER_BY + orderingColumName + " " + orderingType.name() +
-                LIMIT + "1;";
+            FROM + tableName +
+            ORDER_BY + orderingColumName + " " + orderingType.name +
+            LIMIT + "1;"
     }
 
-    public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid,
-                                              String whereClause) {
-        String whereClauseStr = whereClause == null ? "" : AND + whereClause;
+    override fun selectChildrenWithLinkTable(
+        projection: LinkTableChildProjection,
+        parentUid: String,
+        whereClause: String?
+    ): String {
+        val whereClauseStr = if (whereClause == null) "" else AND + whereClause
 
         return SELECT + "c.*" + FROM + tableName + " AS l, " +
-                projection.childTableInfo.name() + " AS c" +
-                WHERE + "l." + projection.childColumn + "=" + "c." + UID +
-                AND + "l." + projection.parentColumn + "='" + parentUid + "'" +
-                whereClauseStr +
-                orderBySortOrderClause() + ";";
+            projection.childTableInfo.name() + " AS c" +
+            WHERE + "l." + projection.childColumn + "=" + "c." + IdentifiableColumns.UID +
+            AND + "l." + projection.parentColumn + "='" + parentUid + "'" +
+            whereClauseStr +
+            orderBySortOrderClause() + ";"
     }
 
-    private String orderBySortOrderClause() {
-        return hasSortOrder ? ORDER_BY + SORT_ORDER : "";
+    private fun orderBySortOrderClause(): String {
+        return if (hasSortOrder) ORDER_BY + TableInfo.SORT_ORDER else ""
     }
 
-    @Override
-    public String selectByUid() {
-        return selectWhere(andSeparatedColumnEqualInterrogationMark(UID));
+    override fun selectByUid(): String {
+        return selectWhere(andSeparatedColumnEqualInterrogationMark(IdentifiableColumns.UID))
     }
 
-    @Override
-    public String selectDistinct(String column) {
-        return SELECT + "DISTINCT " + column + FROM + tableName;
+    override fun selectDistinct(column: String): String {
+        return SELECT + "DISTINCT " + column + FROM + tableName
     }
 
-    @Override
-    public String selectWhere(String whereClause) {
-        return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
+    override fun selectWhere(whereClause: String): String {
+        return "$SELECT*$FROM$tableName$WHERE$whereClause;"
     }
 
-    @Override
-    public String selectWhere(String whereClause, int limit) {
-        return selectWhere(whereClause + LIMIT + limit);
+    override fun selectWhere(whereClause: String, limit: Int): String {
+        return selectWhere(whereClause + LIMIT + limit)
     }
 
-    @Override
-    public String selectWhere(String whereClause, String orderByClause) {
-        return selectWhere(whereClause + ORDER_BY + orderByClause);
+    override fun selectWhere(whereClause: String, orderByClause: String): String {
+        return selectWhere(whereClause + ORDER_BY + orderByClause)
     }
 
-    @Override
-    public String selectWhere(String whereClause, String orderByClause, int limit) {
-        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
+    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String {
+        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit)
     }
 
-    @Override
-    public String selectAll() {
-        return  SELECT + "*" + FROM + tableName;
+    override fun selectAll(): String {
+        return SELECT + "*" + FROM + tableName
     }
 
-    @Override
-    public String count() {
-        return SELECT + "COUNT(*)" + FROM + tableName + ";";
+    override fun count(): String {
+        return SELECT + "COUNT(*)" + FROM + tableName + ";"
     }
 
-    @Override
-    public String countWhere(String whereClause) {
-        return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
+    override fun countWhere(whereClause: String): String {
+        return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";"
     }
 
-    @Override
-    public String countAndGroupBy(String column) {
-        return SELECT + column + " , COUNT(*)" + FROM + tableName + " GROUP BY " + column + ";";
+    override fun countAndGroupBy(column: String): String {
+        return SELECT + column + " , COUNT(*)" + FROM + tableName + " GROUP BY " + column + ";"
     }
 
-    public String update() {
-        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                WHERE + UID + "=?;";
+    override fun update(): String {
+        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(*columns) +
+            WHERE + IdentifiableColumns.UID + "=?;"
     }
 
-    public String updateWhere() {
+    override fun updateWhere(): String {
         // TODO refactor to only generate for object without uids store.
-        String whereClause = whereColumns.length == 0 ? CoreColumns.ID + " = -1" :
-                andSeparatedColumnEqualInterrogationMark(whereColumns);
-        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                WHERE + whereClause + ";";
+        val whereClause =
+            if (whereColumns.isEmpty()) CoreColumns.ID + " = -1" else andSeparatedColumnEqualInterrogationMark(
+                *whereColumns
+            )
+        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(*columns) +
+            WHERE + whereClause + ";"
     }
 
-    public String deleteWhere() {
-        String whereClause = whereColumns.length == 0 ? CoreColumns.ID + " = -1" :
-                andSeparatedColumnEqualInterrogationMark(whereColumns);
-        return "DELETE" + FROM + tableName + WHERE + whereClause + ";";
+    override fun deleteWhere(): String {
+        val whereClause =
+            if (whereColumns.isEmpty()) CoreColumns.ID + " = -1" else andSeparatedColumnEqualInterrogationMark(
+                *whereColumns
+            )
+        return "DELETE" + FROM + tableName + WHERE + whereClause + ";"
+    }
+
+    companion object {
+        private const val WHERE = " WHERE "
+        private const val LIMIT = " LIMIT "
+        private const val FROM = " FROM "
+        private const val SELECT = "SELECT "
+        private const val AND = " AND "
+        private const val ORDER_BY = " ORDER BY "
     }
 }

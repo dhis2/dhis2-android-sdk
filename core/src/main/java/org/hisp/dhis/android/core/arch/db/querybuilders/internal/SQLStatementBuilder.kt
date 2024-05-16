@@ -25,38 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
+//    val tableName: String
+//    val columns: Array<String>
+    fun getTableName(): String
+    fun getColumns(): Array<String>
+    fun selectUids(): String?
+    fun selectUidsWhere(whereClause: String): String?
+    fun selectUidsWhere(whereClause: String, orderByClause: String): String?
+    fun selectColumnWhere(column: String, whereClause: String): String?
+    fun selectChildrenWithLinkTable(
+        projection: LinkTableChildProjection,
+        parentUid: String,
+        whereClause: String?
+    ): String?
 
-public interface SQLStatementBuilder extends ReadOnlySQLStatementBuilder {
-
-    String getTableName();
-
-    String[] getColumns();
-
-    String selectUids();
-
-    String selectUidsWhere(String whereClause);
-
-    String selectUidsWhere(String whereClause, String orderByClause);
-
-    String selectColumnWhere(String column, String whereClause);
-
-    String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid, String whereClause);
-
-    String selectByUid();
-
-    String selectDistinct(String column);
-
-    String insert();
-
-    String update();
-
-    String updateWhere();
-
-    String deleteById();
-
-    String deleteWhere();
+    fun selectByUid(): String?
+    fun selectDistinct(column: String): String?
+    fun insert(): String?
+    fun update(): String?
+    fun updateWhere(): String?
+    fun deleteById(): String?
+    fun deleteWhere(): String?
 }

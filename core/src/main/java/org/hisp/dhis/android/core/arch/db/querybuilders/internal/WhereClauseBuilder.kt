@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import kotlin.IllegalArgumentException
 
 @Suppress("TooManyFunctions")
 class WhereClauseBuilder {
@@ -178,14 +177,11 @@ class WhereClauseBuilder {
     }
 
     val isEmpty: Boolean
-        get() = whereClause.length == 0
+        get() = whereClause.isEmpty()
 
     fun build(): String {
-        return if (isEmpty) {
-            throw IllegalArgumentException("No columns added")
-        } else {
-            whereClause.toString()
-        }
+        require(!isEmpty) { "No columns added" }
+        return whereClause.toString()
     }
 
     companion object {

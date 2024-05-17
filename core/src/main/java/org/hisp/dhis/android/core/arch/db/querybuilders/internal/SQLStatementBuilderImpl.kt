@@ -35,11 +35,12 @@ import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 // TODO save TableInfo instead of separate files when architecture 1.0 is ready
+@Suppress("SpreadOperator", "TooManyFunctions")
 class SQLStatementBuilderImpl internal constructor(
     private val tableName: String,
     columns: Array<String>,
     updateWhereColumns: Array<String>,
-    private val hasSortOrder: Boolean
+    private val hasSortOrder: Boolean,
 ) : SQLStatementBuilder {
     private val columns = columns.clone()
     private val whereColumns = updateWhereColumns.clone()
@@ -47,14 +48,14 @@ class SQLStatementBuilderImpl internal constructor(
     constructor(
         tableName: String,
         columns: Array<String>,
-        updateWhereColumns: Array<String>
+        updateWhereColumns: Array<String>,
     ) : this(tableName, columns, updateWhereColumns, false)
 
     constructor(tableInfo: TableInfo) : this(
         tableInfo.name(),
         tableInfo.columns().all().clone(),
         tableInfo.columns().whereUpdate().clone(),
-        tableInfo.hasSortOrder()
+        tableInfo.hasSortOrder(),
     )
 
     private fun commaSeparatedColumns(): String {
@@ -108,7 +109,8 @@ class SQLStatementBuilderImpl internal constructor(
     }
 
     override fun selectUidsWhere(whereClause: String, orderByClause: String): String {
-        return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ORDER_BY + orderByClause + ";"
+        return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause +
+            ORDER_BY + orderByClause + ";"
     }
 
     override fun selectColumnWhere(column: String, whereClause: String): String {
@@ -117,7 +119,7 @@ class SQLStatementBuilderImpl internal constructor(
 
     override fun selectOneOrderedBy(
         orderingColumName: String,
-        orderingType: SQLOrderType
+        orderingType: SQLOrderType,
     ): String {
         return SELECT + "*" +
             FROM + tableName +
@@ -128,7 +130,7 @@ class SQLStatementBuilderImpl internal constructor(
     override fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,
         parentUid: String,
-        whereClause: String?
+        whereClause: String?,
     ): String {
         val whereClauseStr = if (whereClause == null) "" else AND + whereClause
 
@@ -181,7 +183,7 @@ class SQLStatementBuilderImpl internal constructor(
     }
 
     override fun countAndGroupBy(column: String): String {
-        return SELECT + column + " , COUNT(*)" + FROM + tableName + " GROUP BY " + column + ";"
+        return "$SELECT$column , COUNT(*)$FROM$tableName GROUP BY $column;"
     }
 
     override fun update(): String {
@@ -192,19 +194,27 @@ class SQLStatementBuilderImpl internal constructor(
     override fun updateWhere(): String {
         // TODO refactor to only generate for object without uids store.
         val whereClause =
-            if (whereColumns.isEmpty()) CoreColumns.ID + " = -1" else andSeparatedColumnEqualInterrogationMark(
-                *whereColumns
-            )
+            if (whereColumns.isEmpty()) {
+                CoreColumns.ID + " = -1"
+            } else {
+                andSeparatedColumnEqualInterrogationMark(
+                    *whereColumns,
+                )
+            }
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(*columns) +
             WHERE + whereClause + ";"
     }
 
     override fun deleteWhere(): String {
         val whereClause =
-            if (whereColumns.isEmpty()) CoreColumns.ID + " = -1" else andSeparatedColumnEqualInterrogationMark(
-                *whereColumns
-            )
-        return "DELETE" + FROM + tableName + WHERE + whereClause + ";"
+            if (whereColumns.isEmpty()) {
+                CoreColumns.ID + " = -1"
+            } else {
+                andSeparatedColumnEqualInterrogationMark(
+                    *whereColumns,
+                )
+            }
+        return "DELETE$FROM$tableName$WHERE$whereClause;"
     }
 
     companion object {

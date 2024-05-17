@@ -29,9 +29,8 @@ package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 
+@Suppress("TooManyFunctions")
 internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
-//    val tableName: String
-//    val columns: Array<String>
     fun getTableName(): String
     fun getColumns(): Array<String>
     fun selectUids(): String?
@@ -41,7 +40,7 @@ internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
     fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,
         parentUid: String,
-        whereClause: String?
+        whereClause: String?,
     ): String?
 
     fun selectByUid(): String?

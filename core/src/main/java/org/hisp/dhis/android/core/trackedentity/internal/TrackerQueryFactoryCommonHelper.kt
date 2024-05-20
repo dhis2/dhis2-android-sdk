@@ -58,7 +58,7 @@ internal class TrackerQueryFactoryCommonHelper(
             .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
     }
 
-    fun getLinkedCaptureOrgUnitUids(programUid: String?): List<String> {
+    fun getLinkedCaptureOrgUnitUids(programUid: String): List<String> {
         val ous = getCaptureOrgUnitUids()
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
@@ -175,7 +175,7 @@ internal class TrackerQueryFactoryCommonHelper(
             val scope = settings.value.settingDownload()
             val hasLimitByOrgUnit = if (scope != null) scope == LimitScope.PER_ORG_UNIT else false
             val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
-                getLinkedCaptureOrgUnitUids(settings.value.uid())
+                getLinkedCaptureOrgUnitUids(settings.value.uid()!!)
             }.second
             downloadExtractor.invoke(settings.value)?.times(orgUnits.size)
         }?.filterNotNull()?.sum() ?: 0

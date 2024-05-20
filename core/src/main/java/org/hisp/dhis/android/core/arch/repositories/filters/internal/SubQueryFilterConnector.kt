@@ -53,17 +53,17 @@ class SubQueryFilterConnector<R : BaseRepository> internal constructor(
         children: List<String>,
     ): R {
         val clauseBuilder = WhereClauseBuilder().appendInKeyStringValues(linkChild, children)
-        return inTableWhere(linkTable, linkParent, clauseBuilder)
+        return inTableWhere(linkTable, linkParent, clauseBuilder.build())
     }
 
     fun inTableWhere(
         linkTable: String,
         linkParent: String,
-        clauseBuilder: WhereClauseBuilder,
+        whereClause: String,
     ): R {
         return newWithWrappedScope(
             FilterItemOperator.IN,
-            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${clauseBuilder.build()})",
+            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${whereClause})",
         )
     }
 

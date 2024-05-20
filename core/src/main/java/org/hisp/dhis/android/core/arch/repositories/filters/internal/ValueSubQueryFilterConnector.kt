@@ -120,9 +120,10 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
     }
 
     private fun inLinkTable(operator: FilterItemOperator, value: String): R {
-        val clauseBuilder = WhereClauseBuilder()
+        val whereClause = WhereClauseBuilder()
             .appendKeyOperatorValue(linkChild, operator.sqlOperator, value)
             .appendKeyStringValue(dataElementColumn, dataElementId)
-        return inTableWhere(clauseBuilder)
+            .build()
+        return inTableWhere(whereClause)
     }
 }

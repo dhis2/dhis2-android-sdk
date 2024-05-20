@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 
 @Suppress("TooManyFunctions")
-class WhereClauseBuilder {
+internal class WhereClauseBuilder {
     private val whereClause = StringBuilder()
     private var addOperator = false
     fun appendKeyStringValue(column: String, value: Any): WhereClauseBuilder {
@@ -95,11 +95,8 @@ class WhereClauseBuilder {
         return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END)
     }
 
-    fun <E : Enum<*>?> appendInKeyEnumValues(column: String, values: List<E>): WhereClauseBuilder {
-        val strValues: MutableList<String> = ArrayList(values.size)
-        for (e in values) {
-            strValues.add(e!!.name)
-        }
+    fun <E: Enum<*>> appendInKeyEnumValues(column: String, values: List<E>): WhereClauseBuilder {
+        val strValues: List<String> = values.map { it.name }
         return appendInKeyStringValues(column, strValues)
     }
 

@@ -42,7 +42,7 @@ abstract class BaseSubQueryFilterConnector<R : BaseRepository> internal construc
     protected fun inTableWhere(whereClause: String): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
-            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${whereClause})",
+            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE $whereClause)",
         )
     }
 }

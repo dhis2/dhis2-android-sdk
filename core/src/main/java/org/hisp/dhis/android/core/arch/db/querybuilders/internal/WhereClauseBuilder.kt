@@ -95,7 +95,7 @@ internal class WhereClauseBuilder {
         return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END)
     }
 
-    fun <E: Enum<*>> appendInKeyEnumValues(column: String, values: List<E>): WhereClauseBuilder {
+    fun <E : Enum<*>> appendInKeyEnumValues(column: String, values: List<E>): WhereClauseBuilder {
         val strValues: List<String> = values.map { it.name }
         return appendInKeyStringValues(column, strValues)
     }

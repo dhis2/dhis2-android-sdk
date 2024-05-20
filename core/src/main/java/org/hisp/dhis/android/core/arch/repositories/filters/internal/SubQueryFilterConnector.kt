@@ -63,7 +63,7 @@ class SubQueryFilterConnector<R : BaseRepository> internal constructor(
     ): R {
         return newWithWrappedScope(
             FilterItemOperator.IN,
-            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${whereClause})",
+            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE $whereClause)",
         )
     }
 

@@ -25,115 +25,119 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
+package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
-import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.category.CategoryTableInfo
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import java.io.IOException;
+@RunWith(JUnit4::class)
+class SQLStatementBuilderShould {
+    private val builder = SQLStatementBuilderImpl(TABLE_NAME, columns, columns, false)
 
-import static com.google.common.truth.Truth.assertThat;
+    @Test
+    fun generate_insert_statement() {
+        Truth.assertThat(builder.insert()).isEqualTo(
+            "INSERT INTO Test_Table (Test_Column_Name1, Test_Column_Name2) VALUES (?, ?);",
+        )
+    }
 
-@RunWith(JUnit4.class)
-public class SQLStatementBuilderShould {
+    @Test
+    fun generate_update_statement() {
+        Truth.assertThat(builder.update()).isEqualTo(
+            "UPDATE Test_Table SET Test_Column_Name1=?, Test_Column_Name2=? WHERE uid=?;",
+        )
+    }
 
-    private final static String TABLE_NAME = "Test_Table";
-    private final static String COL_1 = "Test_Column_Name1";
-    private final static String COL_2 = "Test_Column_Name2";
+    @Test
+    fun generate_delete_statement() {
+        Truth.assertThat(builder.deleteById()).isEqualTo(
+            "DELETE FROM Test_Table WHERE uid=?;",
+        )
+    }
 
-    private final static String[] columns = new String[]{COL_1, COL_2};
+    @Test
+    fun generate_select_where_statement() {
+        Truth.assertThat(builder.selectWhere("WH_CLAUSE")).isEqualTo(
+            "SELECT * FROM Test_Table WHERE WH_CLAUSE;",
+        )
+    }
 
-    private SQLStatementBuilderImpl builder = new SQLStatementBuilderImpl(TABLE_NAME, columns, columns, false);
+    @Test
+    fun generate_select_where_with_limit_statement() {
+        Truth.assertThat(builder.selectWhere("WH_CLAUSE", 3)).isEqualTo(
+            "SELECT * FROM Test_Table WHERE WH_CLAUSE LIMIT 3;",
+        )
+    }
 
-    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+    @Test
+    fun generate_count_where_statement() {
+        Truth.assertThat(builder.countWhere("WH_CLAUSE")).isEqualTo(
+            "SELECT COUNT(*) FROM Test_Table WHERE WH_CLAUSE;",
+        )
+    }
+
+    @Test
+    fun generate_count_statement() {
+        Truth.assertThat(builder.count()).isEqualTo(
+            "SELECT COUNT(*) FROM Test_Table;",
+        )
+    }
+
+    @Test
+    fun generate_select_by_uid_statement() {
+        Truth.assertThat(builder.selectByUid()).isEqualTo(
+            "SELECT * FROM Test_Table WHERE uid=?;",
+        )
+    }
+
+    @Test
+    fun generate_select_children_with_link_table() {
+        Truth.assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", null))
+            .isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 +
+                    "=c.uid AND l." + COL_1 + "='UID';",
+            )
+    }
+
+    @Test
+    fun generate_select_children_with_link_table_and_where_clause() {
+        Truth.assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", "l.bla=1"))
+            .isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 +
+                    "=c.uid AND l." + COL_1 + "='UID' AND l.bla=1;",
+            )
+    }
+
+    @Test
+    fun generate_select_children_with_link_table_with_sort_order() {
+        val builderWithSortOrder = SQLStatementBuilderImpl(TABLE_NAME, columns, columns, true)
+        Truth.assertThat(
+            builderWithSortOrder.selectChildrenWithLinkTable(
+                CHILD_PROJECTION,
+                "UID",
+                null,
+            ),
+        ).isEqualTo(
+            "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 +
+                "=c.uid AND l." + COL_1 + "='UID' ORDER BY sortOrder;",
+        )
+    }
+
+    companion object {
+        private const val TABLE_NAME = "Test_Table"
+        private const val COL_1 = "Test_Column_Name1"
+        private const val COL_2 = "Test_Column_Name2"
+
+        private val columns = arrayOf(COL_1, COL_2)
+
+        private val CHILD_PROJECTION = LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,
             COL_1,
-            COL_2);
-
-    @Before
-    public void setUp() throws IOException {
-
-    }
-
-    @Test
-    public void generate_insert_statement() {
-        assertThat(builder.insert()).isEqualTo(
-                "INSERT INTO Test_Table (Test_Column_Name1, Test_Column_Name2) VALUES (?, ?);"
-        );
-    }
-
-    @Test
-    public void generate_update_statement() {
-        assertThat(builder.update()).isEqualTo(
-                "UPDATE Test_Table SET Test_Column_Name1=?, Test_Column_Name2=? WHERE uid=?;"
-        );
-    }
-
-    @Test
-    public void generate_delete_statement() {
-        assertThat(builder.deleteById()).isEqualTo(
-                "DELETE FROM Test_Table WHERE uid=?;"
-        );
-    }
-
-    @Test
-    public void generate_select_where_statement() {
-        assertThat(builder.selectWhere("WH_CLAUSE")).isEqualTo(
-                "SELECT * FROM Test_Table WHERE WH_CLAUSE;"
-        );
-    }
-
-    @Test
-    public void generate_select_where_with_limit_statement() {
-        assertThat(builder.selectWhere("WH_CLAUSE", 3)).isEqualTo(
-                "SELECT * FROM Test_Table WHERE WH_CLAUSE LIMIT 3;"
-        );
-    }
-
-    @Test
-    public void generate_count_where_statement() {
-        assertThat(builder.countWhere("WH_CLAUSE")).isEqualTo(
-                "SELECT COUNT(*) FROM Test_Table WHERE WH_CLAUSE;"
-        );
-    }
-
-    @Test
-    public void generate_count_statement() {
-        assertThat(builder.count()).isEqualTo(
-                "SELECT COUNT(*) FROM Test_Table;"
-        );
-    }
-
-    @Test
-    public void generate_select_by_uid_statement() {
-        assertThat(builder.selectByUid()).isEqualTo(
-                "SELECT * FROM Test_Table WHERE uid=?;"
-        );
-    }
-
-    @Test
-    public void generate_select_children_with_link_table() {
-        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", null)).isEqualTo(
-                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID';"
-        );
-    }
-
-    @Test
-    public void generate_select_children_with_link_table_and_where_clause() {
-        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", "l.bla=1")).isEqualTo(
-                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' AND l.bla=1;"
-        );
-    }
-
-    @Test
-    public void generate_select_children_with_link_table_with_sort_order() {
-        SQLStatementBuilderImpl builderWithSortOrder = new SQLStatementBuilderImpl(TABLE_NAME, columns, columns, true);
-        assertThat(builderWithSortOrder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", null)).isEqualTo(
-                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' ORDER BY sortOrder;"
-        );
+            COL_2,
+        )
     }
 }

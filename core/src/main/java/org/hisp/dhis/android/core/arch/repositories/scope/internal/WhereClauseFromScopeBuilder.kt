@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-class WhereClauseFromScopeBuilder(private val builder: WhereClauseBuilder) {
+internal class WhereClauseFromScopeBuilder(private val builder: WhereClauseBuilder) {
     fun getWhereClause(scope: RepositoryScope): String {
         if (!scope.hasFilters() && builder.isEmpty) {
             return "1"

@@ -25,56 +25,62 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import java.util.Collections
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-
-import java.util.Collections;
-import java.util.Iterator;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-@AutoValue
-public abstract class SingleValueFilter<T, K> implements Filter<T, K> {
-
-    private static <T, K> Filter<T, K> create(@NonNull Field<T, K> field,
-                                              @NonNull String operator,
-                                              @Nullable String value) {
-        //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
-        if (value == null || value.equals("")) {
-            return null;
-        }
-        return new AutoValue_SingleValueFilter<>(field, operator,
-                Collections.unmodifiableCollection(Collections.singletonList(value)));
-    }
-
-    public static <T, K> Filter<T, K> gt(@NonNull Field<T, K> field, @Nullable String value) {
-        return create(field, "gt", value);
-    }
-
-    public static <T, K> Filter<T, K> eq(@NonNull Field<T, K> field, @Nullable String value) {
-        return create(field, "eq", value);
-    }
-
-    public static <T, K> Filter<T, K> like(@NonNull Field<T, K> field, @Nullable String value) {
-        return create(field, "like", value);
-    }
-
-    @Override
-    public String generateString() {
-        StringBuilder builder = new StringBuilder();
+class SingleValueFilter<T, K> (
+    private val field: Field<T, K>,
+    private val operator: String,
+    private val values: Collection<String>
+): Filter<T, K> {
+    override fun field(): Field<T, K> = field
+    override fun operator(): String = operator
+    override fun values(): Collection<String> = values
+    override fun generateString(): String {
+        val builder = StringBuilder()
         builder.append(field().name())
-                .append(':')
-                .append(operator())
-                .append(':');
+            .append(':')
+            .append(operator())
+            .append(':')
 
-        Iterator<String> valuesIterator = values().iterator();
-        builder.append(valuesIterator.next());
-        return builder.toString();
+        val valuesIterator: Iterator<String> = values().iterator()
+        builder.append(valuesIterator.next())
+        return builder.toString()
+    }
+
+    companion object {
+        private fun <T, K> create(
+            field: Field<T, K>,
+            operator: String,
+            value: String?
+        ): Filter<T, K>? {
+            //If the filter is incomplete, return null so the filter is not included in the request.
+            if (value.isNullOrEmpty()) {
+                return null
+            }
+            return SingleValueFilter(
+                field,
+                operator,
+                Collections.unmodifiableCollection(listOf(value)                )
+            )
+        }
+
+        @JvmStatic
+        fun <T, K> gt(field: Field<T, K>, value: String?): Filter<T, K>? {
+            return create(field, "gt", value)
+        }
+
+        @JvmStatic
+        fun <T, K> eq(field: Field<T, K>, value: String?): Filter<T, K>? {
+            return create(field, "eq", value)
+        }
+
+        @JvmStatic
+        fun <T, K> like(field: Field<T, K>, value: String?): Filter<T, K>? {
+            return create(field, "like", value)
+        }
     }
 }
 

@@ -25,17 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-import java.util.Collection;
+interface Filter<T, K> {
+    fun field(): Field<T, K>
+    fun operator(): String
 
-public interface Filter<T, K> {
-
-    Field<T, K> field();
-    String operator();
-
-    Collection<String> values();
-    String generateString();
+    fun values(): Collection<String>?
+    fun generateString(): String
 }

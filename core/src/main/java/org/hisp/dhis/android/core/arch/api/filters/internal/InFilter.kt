@@ -25,48 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import java.util.Collections
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-@AutoValue
-public abstract class InFilter<T, K> implements Filter<T, K> {
-
-    public static <T, K> Filter<T, K> create(@NonNull Field<T, K> field,
-                                             @Nullable Collection<String> values) {
-        //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
-        if (values == null) {
-            return null;
-        }
-        return new AutoValue_InFilter<>(field, "in", Collections.unmodifiableCollection(values));
-    }
-
-    @Override
-    public String generateString() {
-        StringBuilder builder = new StringBuilder();
+class InFilter<T, K>(
+    private val field: Field<T, K>,
+    private val operator: String,
+    private val values: Collection<String>
+) : Filter<T, K> {
+    override fun field(): Field<T, K> = field
+    override fun operator(): String = operator
+    override fun values(): Collection<String> = values
+    override fun generateString(): String {
+        val builder = StringBuilder()
         builder.append(field().name())
-                .append(':')
-                .append(operator())
-                .append(":[");
+            .append(':')
+            .append(operator())
+            .append(":[")
         //a list of values:
-        Iterator<String> valuesIterator = values().iterator();
+        val valuesIterator: Iterator<String> = values().iterator()
         while (valuesIterator.hasNext()) {
-            builder.append(valuesIterator.next());
+            builder.append(valuesIterator.next())
             if (valuesIterator.hasNext()) {
-                builder.append(',');
+                builder.append(',')
             }
         }
-        builder.append(']');
-        return builder.toString();
+        builder.append(']')
+        return builder.toString()
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T, K> create(
+            field: Field<T, K>,
+            values: Collection<String>?
+        ): Filter<T, K>? {
+            //If the filter is incomplete, return null so the filter is not included in the request.
+            if (values.isNullOrEmpty()) {
+                return null
+            }
+            return InFilter(
+                field,
+                "in",
+                Collections.unmodifiableCollection(values)
+            )
+        }
     }
 }

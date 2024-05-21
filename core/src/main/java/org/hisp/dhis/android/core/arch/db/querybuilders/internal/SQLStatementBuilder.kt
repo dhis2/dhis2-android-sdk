@@ -34,20 +34,20 @@ internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
     fun getTableName(): String
     fun getColumns(): Array<String>
     fun selectUids(): String?
-    fun selectUidsWhere(whereClause: String): String?
-    fun selectUidsWhere(whereClause: String, orderByClause: String): String?
-    fun selectColumnWhere(column: String, whereClause: String): String?
+    fun selectUidsWhere(whereClause: String): String
+    fun selectUidsWhere(whereClause: String, orderByClause: String): String
+    fun selectColumnWhere(column: String, whereClause: String): String
     fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,
         parentUid: String,
         whereClause: String?,
-    ): String?
+    ): String
 
-    fun selectByUid(): String?
-    fun selectDistinct(column: String): String?
-    fun insert(): String?
-    fun update(): String?
-    fun updateWhere(): String?
-    fun deleteById(): String?
-    fun deleteWhere(): String?
+    fun selectByUid(): String
+    fun selectDistinct(column: String): String
+    fun insert(): String
+    fun update(): String
+    fun updateWhere(): String
+    fun deleteById(): String
+    fun deleteWhere(): String
 }

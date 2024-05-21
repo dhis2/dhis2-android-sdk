@@ -34,9 +34,9 @@ internal interface ReadOnlySQLStatementBuilder {
     fun selectWhere(whereClause: String, limit: Int): String
     fun selectWhere(whereClause: String, orderByClause: String): String
     fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String
-    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): String?
+    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): String
     fun selectAll(): String
-    fun count(): String?
-    fun countWhere(whereClause: String): String?
-    fun countAndGroupBy(column: String): String?
+    fun count(): String
+    fun countWhere(whereClause: String): String
+    fun countAndGroupBy(column: String): String
 }

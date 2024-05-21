@@ -63,18 +63,12 @@ class SQLStatementBuilderImpl internal constructor(
     }
 
     private fun commaSeparatedInterrogationMarks(): String {
-        val array = arrayOfNulls<String>(columns.size)
-        for (i in columns.indices) {
-            array[i] = "?"
-        }
+        val array = Array(columns.size) { "?" }
         return CollectionsHelper.commaAndSpaceSeparatedArrayValues(array)
     }
 
     private fun commaSeparatedColumnEqualInterrogationMark(vararg cols: String): String {
-        val array = arrayOfNulls<String>(cols.size)
-        for (i in cols.indices) {
-            array[i] = cols[i] + "=?"
-        }
+        val array = cols.map { "$it=?" }.toTypedArray()
         return CollectionsHelper.commaAndSpaceSeparatedArrayValues(array)
     }
 

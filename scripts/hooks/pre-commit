@@ -29,15 +29,13 @@
 #
 
 echo "Formatting code with ktlint"
-./gradlew ktlintFormat --daemon
-if [ $? -ne 0 ]; then
+if ! ./gradlew ktlintFormat --daemon; then
     echo "ktlintFormat failed. Commit aborted."
     exit 1
 fi
 
 echo "Running detekt for static code analysis"
-./gradlew detekt --daemon
-if [ $? -ne 0 ]; then
+if ! ./gradlew detekt --daemon; then
     echo "detekt analysis failed. Commit aborted."
     exit 1
 fi

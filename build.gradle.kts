@@ -56,6 +56,25 @@ tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }
 
+tasks.register("installGitHooks") {
+    group = "git hooks"
+    description = "Installs the pre-commit git hook."
+
+    doLast {
+        val hooksDir = File(rootDir, ".git/hooks")
+        if (!hooksDir.exists()) {
+            hooksDir.mkdirs()
+        }
+
+        val preCommitHook = File(rootDir, "scripts/hooks/pre-commit")
+        val destination = File(hooksDir, "pre-commit")
+
+        preCommitHook.copyTo(destination, overwrite = true)
+        destination.setExecutable(true)
+
+        println("Pre-commit hook installed successfully.")
+    }
+}
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

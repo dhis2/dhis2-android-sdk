@@ -45,14 +45,13 @@ internal class SingleValueFilter<T, K> (
             value: String?,
         ): Filter<T, K>? {
             // If the filter is incomplete, return null so the filter is not included in the request.
-            if (value.isNullOrEmpty()) {
-                return null
+            return value.takeIf { !it.isNullOrEmpty() }?.let {
+                return SingleValueFilter(
+                    field,
+                    operator,
+                    listOf(it),
+                )
             }
-            return SingleValueFilter(
-                field,
-                operator,
-                listOf(value),
-            )
         }
 
         fun <T, K> gt(field: Field<T, K>, value: String?): Filter<T, K>? {

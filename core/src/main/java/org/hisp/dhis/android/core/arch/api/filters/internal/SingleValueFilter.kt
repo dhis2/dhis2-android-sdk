@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,15 +35,7 @@ internal class SingleValueFilter<T, K> (
     override val values: Collection<String>,
 ) : Filter<T, K> {
     override fun generateString(): String {
-        val builder = StringBuilder()
-        builder.append(field.name())
-            .append(':')
-            .append(operator)
-            .append(':')
-
-        val valuesIterator: Iterator<String> = values.iterator()
-        builder.append(valuesIterator.next())
-        return builder.toString()
+        return "${field.name()}:$operator:${values.first()}"
     }
 
     companion object {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,21 +35,8 @@ internal class InFilter<T, K>(
     override val values: Collection<String>,
 ) : Filter<T, K> {
     override fun generateString(): String {
-        val builder = StringBuilder()
-        builder.append(field.name())
-            .append(':')
-            .append(operator)
-            .append(":[")
-        // a list of values:
-        val valuesIterator: Iterator<String> = values.iterator()
-        while (valuesIterator.hasNext()) {
-            builder.append(valuesIterator.next())
-            if (valuesIterator.hasNext()) {
-                builder.append(',')
-            }
-        }
-        builder.append(']')
-        return builder.toString()
+        val valuesString = values.joinToString(",")
+        return "${field.name()}:$operator:[$valuesString]"
     }
 
     companion object {

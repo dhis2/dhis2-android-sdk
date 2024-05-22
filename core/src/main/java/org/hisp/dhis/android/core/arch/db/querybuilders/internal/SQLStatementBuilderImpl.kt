@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 // TODO save TableInfo instead of separate files when architecture 1.0 is ready
 @Suppress("SpreadOperator", "TooManyFunctions")
-class SQLStatementBuilderImpl internal constructor(
+internal class SQLStatementBuilderImpl internal constructor(
     private val tableName: String,
     columns: Array<String>,
     updateWhereColumns: Array<String>,

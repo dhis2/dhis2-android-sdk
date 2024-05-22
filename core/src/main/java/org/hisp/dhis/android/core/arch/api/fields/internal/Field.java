@@ -42,19 +42,19 @@ import androidx.annotation.NonNull;
 public abstract class Field<Parent, Child> implements Property<Parent, Child> {
 
     public <V> Filter<Parent, Child> eq(V value) {
-        return SingleValueFilter.eq(this, value.toString());
+        return SingleValueFilter.Companion.eq(this, value.toString());
     }
 
     public Filter<Parent, Child> gt(String value) {
-        return SingleValueFilter.gt(this, value);
+        return SingleValueFilter.Companion.gt(this, value);
     }
 
     public Filter<Parent, Child> like(String value) {
-        return SingleValueFilter.like(this, value);
+        return SingleValueFilter.Companion.like(this, value);
     }
 
     public Filter<Parent, Child> in(Collection<String> values) {
-        return InFilter.create(this, values);
+        return InFilter.Companion.create(this, values);
     }
 
     public static <T, K> Field<T, K> create(@NonNull String name) {

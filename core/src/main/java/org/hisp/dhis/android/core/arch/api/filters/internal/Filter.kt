@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
 interface Filter<T, K> {
-    fun field(): Field<T, K>
-    fun operator(): String
-
-    fun values(): Collection<String>?
+    val field: Field<T, K>
+    val operator: String
+    val values: Collection<String>?
     fun generateString(): String
 }

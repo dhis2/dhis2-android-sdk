@@ -30,22 +30,19 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import java.util.Collections
 
-class InFilter<T, K>(
-    private val field: Field<T, K>,
-    private val operator: String,
-    private val values: Collection<String>
+internal class InFilter<T, K>(
+    override val field: Field<T, K>,
+    override val operator: String,
+    override val values: Collection<String>
 ) : Filter<T, K> {
-    override fun field(): Field<T, K> = field
-    override fun operator(): String = operator
-    override fun values(): Collection<String> = values
     override fun generateString(): String {
         val builder = StringBuilder()
-        builder.append(field().name())
+        builder.append(field.name())
             .append(':')
-            .append(operator())
+            .append(operator)
             .append(":[")
         //a list of values:
-        val valuesIterator: Iterator<String> = values().iterator()
+        val valuesIterator: Iterator<String> = values.iterator()
         while (valuesIterator.hasNext()) {
             builder.append(valuesIterator.next())
             if (valuesIterator.hasNext()) {
@@ -57,20 +54,18 @@ class InFilter<T, K>(
     }
 
     companion object {
-        @JvmStatic
         fun <T, K> create(
             field: Field<T, K>,
             values: Collection<String>?
         ): Filter<T, K>? {
             //If the filter is incomplete, return null so the filter is not included in the request.
-            if (values.isNullOrEmpty()) {
-                return null
+            return values?.let {
+                 InFilter(
+                    field,
+                    "in",
+                    values
+                )
             }
-            return InFilter(
-                field,
-                "in",
-                Collections.unmodifiableCollection(values)
-            )
         }
     }
 }

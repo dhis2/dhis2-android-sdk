@@ -28,24 +28,20 @@
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import java.util.Collections
 
-class SingleValueFilter<T, K> (
-    private val field: Field<T, K>,
-    private val operator: String,
-    private val values: Collection<String>
-): Filter<T, K> {
-    override fun field(): Field<T, K> = field
-    override fun operator(): String = operator
-    override fun values(): Collection<String> = values
+internal class SingleValueFilter<T, K> (
+    override val field: Field<T, K>,
+    override val operator: String,
+    override val values: Collection<String>
+) : Filter<T, K> {
     override fun generateString(): String {
         val builder = StringBuilder()
-        builder.append(field().name())
+        builder.append(field.name())
             .append(':')
-            .append(operator())
+            .append(operator)
             .append(':')
 
-        val valuesIterator: Iterator<String> = values().iterator()
+        val valuesIterator: Iterator<String> = values.iterator()
         builder.append(valuesIterator.next())
         return builder.toString()
     }
@@ -63,24 +59,20 @@ class SingleValueFilter<T, K> (
             return SingleValueFilter(
                 field,
                 operator,
-                Collections.unmodifiableCollection(listOf(value)                )
+                listOf(value)
             )
         }
 
-        @JvmStatic
         fun <T, K> gt(field: Field<T, K>, value: String?): Filter<T, K>? {
             return create(field, "gt", value)
         }
 
-        @JvmStatic
         fun <T, K> eq(field: Field<T, K>, value: String?): Filter<T, K>? {
             return create(field, "eq", value)
         }
 
-        @JvmStatic
         fun <T, K> like(field: Field<T, K>, value: String?): Filter<T, K>? {
             return create(field, "like", value)
         }
     }
 }
-

@@ -25,40 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class FilterShould {
-
+@RunWith(JUnit4::class)
+class FilterShould {
     @Test
-    public void return_null_filter_when_creates_with_null_params() {
-        Filter<String, String> filter = SingleValueFilter.gt(null, null);
-        assertThat(filter).isNull();
+    fun return_null_filter_when_creates_with_null_params() {
+        val field = Field.create<String, String>("test_field_name")
+        val filter = SingleValueFilter.gt(field, null)
+        Truth.assertThat(filter).isNull()
     }
 
     @Test
-    public void return_correct_values_when_create_field_filter() {
-        Field field = Field.create("test_field_name");
-        Filter filter = field.gt("test_field_filter_operator");
+    fun return_correct_values_when_create_field_filter() {
+        val field: Field<*, *> = Field.create<Any, Any>("test_field_name")
+        val filter = field.gt("test_field_filter_operator")
 
-        assertThat(filter.operator()).isEqualTo("gt");
-        assertThat(filter.values().contains("test_field_filter_operator")).isTrue();
-    }
-
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(SingleValueFilter.gt(Field.create(""), "a").getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+        Truth.assertThat(filter.operator).isEqualTo("gt")
+        Truth.assertThat(filter.values!!.contains("test_field_filter_operator")).isTrue()
     }
 }

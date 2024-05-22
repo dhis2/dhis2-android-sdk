@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Test
 
 class InFilterShould {
 
@@ -45,7 +45,7 @@ class InFilterShould {
 
     @Test
     fun create_returns_InFilter_instance_with_empty_values() {
-        val filter = InFilter.create(dummyField, emptyList() )
+        val filter = InFilter.create(dummyField, emptyList())
         assertNotNull(filter)
         filter as InFilter
         assertTrue(filter.values.isEmpty())
@@ -54,7 +54,7 @@ class InFilterShould {
     @Test
     fun create_returns_InFilter_instance_with_correct_parameters() {
         val values = listOf("oneValue", "otherValue")
-        val filter = InFilter.create(dummyField, values )
+        val filter = InFilter.create(dummyField, values)
         assertNotNull(filter)
         filter as InFilter
         assertEquals(dummyField, filter.field)
@@ -65,7 +65,7 @@ class InFilterShould {
     @Test
     fun generateString_creates_correct_string() {
         val values = listOf("oneValue", "otherValue")
-        val filter = InFilter.create(dummyField, values )
+        val filter = InFilter.create(dummyField, values)
 
         val actualGeneratedString = filter!!.generateString()
         val expectedGeneratedString = "test_field_name:in:[oneValue,otherValue]"
@@ -73,4 +73,3 @@ class InFilterShould {
         assertEquals(expectedGeneratedString, actualGeneratedString)
     }
 }
-

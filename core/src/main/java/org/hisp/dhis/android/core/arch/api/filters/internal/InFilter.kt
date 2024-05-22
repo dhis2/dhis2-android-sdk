@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import java.util.Collections
 
 internal class InFilter<T, K>(
     override val field: Field<T, K>,
     override val operator: String,
-    override val values: Collection<String>
+    override val values: Collection<String>,
 ) : Filter<T, K> {
     override fun generateString(): String {
         val builder = StringBuilder()
@@ -41,7 +40,7 @@ internal class InFilter<T, K>(
             .append(':')
             .append(operator)
             .append(":[")
-        //a list of values:
+        // a list of values:
         val valuesIterator: Iterator<String> = values.iterator()
         while (valuesIterator.hasNext()) {
             builder.append(valuesIterator.next())
@@ -56,14 +55,14 @@ internal class InFilter<T, K>(
     companion object {
         fun <T, K> create(
             field: Field<T, K>,
-            values: Collection<String>?
+            values: Collection<String>?,
         ): Filter<T, K>? {
-            //If the filter is incomplete, return null so the filter is not included in the request.
+            // If the filter is incomplete, return null so the filter is not included in the request.
             return values?.let {
-                 InFilter(
+                InFilter(
                     field,
                     "in",
-                    values
+                    values,
                 )
             }
         }

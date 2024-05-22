@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 internal class SingleValueFilter<T, K> (
     override val field: Field<T, K>,
     override val operator: String,
-    override val values: Collection<String>
+    override val values: Collection<String>,
 ) : Filter<T, K> {
     override fun generateString(): String {
         val builder = StringBuilder()
@@ -50,16 +50,16 @@ internal class SingleValueFilter<T, K> (
         private fun <T, K> create(
             field: Field<T, K>,
             operator: String,
-            value: String?
+            value: String?,
         ): Filter<T, K>? {
-            //If the filter is incomplete, return null so the filter is not included in the request.
+            // If the filter is incomplete, return null so the filter is not included in the request.
             if (value.isNullOrEmpty()) {
                 return null
             }
             return SingleValueFilter(
                 field,
                 operator,
-                listOf(value)
+                listOf(value),
             )
         }
 

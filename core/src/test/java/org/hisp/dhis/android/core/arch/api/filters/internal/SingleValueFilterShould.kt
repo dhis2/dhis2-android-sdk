@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Test
 class SingleValueFilterShould {
 
     private val dummyFieldName = "test_field_name"
@@ -96,21 +96,23 @@ class SingleValueFilterShould {
     fun gt_generateString_returns_correct_string() {
         val filter = SingleValueFilter.gt(dummyField, dummyValue)
         val actualString = filter!!.generateString()
-        val expectedString =  "$dummyFieldName:gt:$dummyValue"
+        val expectedString = "$dummyFieldName:gt:$dummyValue"
         assertEquals(expectedString, actualString)
     }
+
     @Test
     fun eq_generateString_returns_correct_string() {
         val filter = SingleValueFilter.eq(dummyField, dummyValue)
         val actualString = filter!!.generateString()
-        val expectedString =  "$dummyFieldName:eq:$dummyValue"
+        val expectedString = "$dummyFieldName:eq:$dummyValue"
         assertEquals(expectedString, actualString)
     }
+
     @Test
     fun like_generateString_returns_correct_string() {
         val filter = SingleValueFilter.like(dummyField, dummyValue)
         val actualString = filter!!.generateString()
-        val expectedString =  "$dummyFieldName:like:$dummyValue"
+        val expectedString = "$dummyFieldName:like:$dummyValue"
         assertEquals(expectedString, actualString)
     }
 }

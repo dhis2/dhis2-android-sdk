@@ -58,7 +58,11 @@ tasks.register("clean", Delete::class) {
 
 tasks.register("installGitHooks") {
     group = "git hooks"
-    description = "Installs the pre-commit git hook."
+
+    doFirst {
+        val hooks = project.fileTree("scripts/hooks").files.map { it.name }
+        description = "Installs the following git hooks: ${hooks.joinToString(", ")}."
+    }
 
     doLast {
         val hooksDir = File(rootDir, ".git/hooks")
@@ -66,13 +70,16 @@ tasks.register("installGitHooks") {
             hooksDir.mkdirs()
         }
 
-        val preCommitHook = File(rootDir, "scripts/hooks/pre-commit")
-        val destination = File(hooksDir, "pre-commit")
+        val hooks = project.fileTree("scripts/hooks")
 
-        preCommitHook.copyTo(destination, overwrite = true)
-        destination.setExecutable(true)
+        hooks.forEach { file ->
+            val destination = File(hooksDir, file.name)
+            file.copyTo(destination, overwrite = true)
+            destination.setExecutable(true)
+            println("Installed hook: ${file.name}")
+        }
 
-        println("Pre-commit hook installed successfully.")
+        println("All hooks installed successfully.")
     }
 }
 

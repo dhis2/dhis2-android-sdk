@@ -92,8 +92,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -109,8 +109,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -131,8 +131,8 @@ public class FilterConverterShould {
                         Field.create("id"), Field.create("code"),
                         Field.create("name"), Field.create("displayName")
                 ).build(),
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -150,8 +150,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), null)
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), null)
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -168,8 +168,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -184,8 +184,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "")
         ).execute();
 
         RecordedRequest request = server.takeRequest();

@@ -69,7 +69,7 @@ class SingleValueFilterShould {
         filter as SingleValueFilter
         assertEquals(dummyField, filter.field)
         assertEquals("gt", filter.operator)
-        assertEquals(dummyValue, filter.values)
+        assertEquals(listOf(dummyValue), filter.values)
     }
 
     @Test
@@ -79,7 +79,7 @@ class SingleValueFilterShould {
         filter as SingleValueFilter
         assertEquals(dummyField, filter.field)
         assertEquals("eq", filter.operator)
-        assertEquals(dummyValue, filter.values)
+        assertEquals(listOf(dummyValue), filter.values)
     }
 
     @Test
@@ -89,7 +89,7 @@ class SingleValueFilterShould {
         filter as SingleValueFilter
         assertEquals(dummyField, filter.field)
         assertEquals("like", filter.operator)
-        assertEquals(dummyValue, filter.values)
+        assertEquals(listOf(dummyValue), filter.values)
     }
 
     @Test

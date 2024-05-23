@@ -53,7 +53,7 @@ internal class IndicatorTypeEndpointCallFactory(
             override suspend fun getCall(query: UidsQuery): Payload<IndicatorType> {
                 return service.getIndicatorTypes(
                     IndicatorTypeFields.allFields,
-                    IndicatorTypeFields.lastUpdated.gt(null),
+                    null,
                     IndicatorTypeFields.uid.`in`(query.uids()),
                     false,
                 )

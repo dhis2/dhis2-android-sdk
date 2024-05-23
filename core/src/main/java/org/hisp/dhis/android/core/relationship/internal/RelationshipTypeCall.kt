@@ -49,7 +49,7 @@ internal class RelationshipTypeCall(
             val accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
             service.getRelationshipTypes(
                 RelationshipTypeFields.allFields,
-                RelationshipTypeFields.lastUpdated.gt(lastUpdated),
+                lastUpdated?.let { RelationshipTypeFields.lastUpdated.gt(lastUpdated) },
                 accessDataFilter,
                 false,
             )

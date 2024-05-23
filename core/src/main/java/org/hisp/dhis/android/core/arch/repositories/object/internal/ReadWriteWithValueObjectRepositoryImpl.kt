@@ -143,6 +143,10 @@ internal constructor(
         }
     }
 
+    protected fun <T> shouldUpdateObject(currentValue: T, newValue: T, block: () -> Unit) {
+        if (currentValue != newValue) block()
+    }
+
     protected open fun propagateState(m: M?) {
         // Method is empty because is the default action.
     }

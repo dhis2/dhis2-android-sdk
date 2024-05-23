@@ -124,6 +124,11 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
         return Unit()
     }
 
+    protected fun <T> shouldUpdateObject(currentValue: T, newValue: T, block: () -> Unit): Unit {
+        if (currentValue != newValue) block()
+        return Unit()
+    }
+
     protected abstract fun propagateState(m: M, action: HandleAction)
     protected abstract fun deleteObject(m: M)
 }

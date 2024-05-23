@@ -68,39 +68,53 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build())
+        return shouldUpdateObject(updateBuilder().build().organisationUnit(), organisationUnitUid) {
+            updateObject(updateBuilder().organisationUnit(organisationUnitUid).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setEnrollmentDate(enrollmentDate: Date?): Unit {
-        return updateObject(updateBuilder().enrollmentDate(enrollmentDate).build())
+        return shouldUpdateObject(updateBuilder().build().enrollmentDate(), enrollmentDate) {
+            updateObject(updateBuilder().enrollmentDate(enrollmentDate).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setIncidentDate(incidentDate: Date?): Unit {
-        return updateObject(updateBuilder().incidentDate(incidentDate).build())
+        return shouldUpdateObject(updateBuilder().build().incidentDate(), incidentDate) {
+            updateObject(updateBuilder().incidentDate(incidentDate).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
-        return updateObject(updateBuilder().completedDate(completedDate).build())
+        return shouldUpdateObject(updateBuilder().build().completedDate(), completedDate) {
+            updateObject(updateBuilder().completedDate(completedDate).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean?): Unit {
-        return updateObject(updateBuilder().followUp(followUp).build())
+        return shouldUpdateObject(updateBuilder().build().followUp(), followUp) {
+            updateObject(updateBuilder().followUp(followUp).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setStatus(enrollmentStatus: EnrollmentStatus): Unit {
-        val completedDate = if (enrollmentStatus == EnrollmentStatus.COMPLETED) Date() else null
-        return updateObject(updateBuilder().status(enrollmentStatus).completedDate(completedDate).build())
+        return shouldUpdateObject(updateBuilder().build().status(), enrollmentStatus) {
+            val completedDate = if (enrollmentStatus == EnrollmentStatus.COMPLETED) Date() else null
+            updateObject(updateBuilder().status(enrollmentStatus).completedDate(completedDate).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
-        return updateObject(updateBuilder().geometry(geometry).build())
+        return shouldUpdateObject(updateBuilder().build().geometry(), geometry) {
+            updateObject(updateBuilder().geometry(geometry).build())
+        }
     }
 
     private fun updateBuilder(): Enrollment.Builder {

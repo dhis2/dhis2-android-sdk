@@ -70,13 +70,17 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build())
+        return shouldUpdateObject(updateBuilder().build().organisationUnit(), organisationUnitUid) {
+            updateObject(updateBuilder().organisationUnit(organisationUnitUid).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
-        return updateObject(updateBuilder().geometry(geometry).build())
+        return shouldUpdateObject(updateBuilder().build().geometry(), geometry) {
+            updateObject(updateBuilder().geometry(geometry).build())
+        }
     }
 
     @Throws(D2Error::class)

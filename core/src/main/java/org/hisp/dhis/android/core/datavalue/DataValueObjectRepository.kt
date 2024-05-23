@@ -75,18 +75,24 @@ class DataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        val objectWithValue = setBuilder().value(value).deleted(false).build()
-        setObject(objectWithValue)
+        shouldUpdateObject(setBuilder().build().value(), value) {
+            val objectWithValue = setBuilder().value(value).deleted(false).build()
+            setObject(objectWithValue)
+        }
     }
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean) {
-        setObject(setBuilder().followUp(followUp).build())
+        shouldUpdateObject(setBuilder().build().followUp(), followUp) {
+            setObject(setBuilder().followUp(followUp).build())
+        }
     }
 
     @Throws(D2Error::class)
     fun setComment(comment: String?) {
-        setObject(setBuilder().comment(comment).build())
+        shouldUpdateObject(setBuilder().build().comment(), comment) {
+            setObject(setBuilder().comment(comment).build())
+        }
     }
 
     override fun delete(): Completable {

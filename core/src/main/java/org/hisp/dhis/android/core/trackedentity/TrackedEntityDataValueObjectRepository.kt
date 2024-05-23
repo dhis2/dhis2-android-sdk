@@ -72,7 +72,9 @@ class TrackedEntityDataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        setObject(setBuilder().value(value).build())
+        shouldUpdateObject(setBuilder().build().value(), value) {
+            setObject(setBuilder().value(value).build())
+        }
     }
 
     @Throws(D2Error::class)

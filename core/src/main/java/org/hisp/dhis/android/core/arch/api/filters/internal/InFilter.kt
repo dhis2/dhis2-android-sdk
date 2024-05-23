@@ -42,16 +42,10 @@ internal class InFilter<T, K>(
     companion object {
         fun <T, K> create(
             field: Field<T, K>,
-            values: Collection<String>?,
-        ): Filter<T, K>? {
+            values: Collection<String>,
+        ): Filter<T, K> {
             // If the filter is incomplete, return null so the filter is not included in the request.
-            return values?.let {
-                InFilter(
-                    field,
-                    "in",
-                    values,
-                )
-            }
+            return InFilter(field, "in", values)
         }
     }
 }

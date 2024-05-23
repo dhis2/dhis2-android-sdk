@@ -42,27 +42,21 @@ internal class SingleValueFilter<T, K> (
         private fun <T, K> create(
             field: Field<T, K>,
             operator: String,
-            value: String?,
-        ): Filter<T, K>? {
+            value: String,
+        ): Filter<T, K> {
             // If the filter is incomplete, return null so the filter is not included in the request.
-            return value.takeIf { !it.isNullOrEmpty() }?.let {
-                return SingleValueFilter(
-                    field,
-                    operator,
-                    listOf(it),
-                )
-            }
+            return SingleValueFilter(field, operator, listOf(value))
         }
 
-        fun <T, K> gt(field: Field<T, K>, value: String?): Filter<T, K>? {
+        fun <T, K> gt(field: Field<T, K>, value: String): Filter<T, K> {
             return create(field, "gt", value)
         }
 
-        fun <T, K> eq(field: Field<T, K>, value: String?): Filter<T, K>? {
+        fun <T, K> eq(field: Field<T, K>, value: String): Filter<T, K> {
             return create(field, "eq", value)
         }
 
-        fun <T, K> like(field: Field<T, K>, value: String?): Filter<T, K>? {
+        fun <T, K> like(field: Field<T, K>, value: String): Filter<T, K> {
             return create(field, "like", value)
         }
     }

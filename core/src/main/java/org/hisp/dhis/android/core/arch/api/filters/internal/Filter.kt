@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 interface Filter<T, K> {
     val field: Field<T, K>
     val operator: String
-    val values: Collection<String>?
+    val values: Collection<String>
     fun generateString(): String
 }

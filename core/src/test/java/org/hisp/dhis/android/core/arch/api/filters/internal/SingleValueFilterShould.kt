@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.junit.Assert.*
 import org.junit.Test
@@ -37,30 +36,6 @@ class SingleValueFilterShould {
     private val dummyFieldName = "test_field_name"
     private val dummyField = Field.create<String, String>(dummyFieldName)
     private val dummyValue = "test_value"
-
-    @Test
-    fun gt_method_returns_null_when_values_is_null_or_empty() {
-        val filterNullValue = SingleValueFilter.gt(dummyField, null)
-        Truth.assertThat(filterNullValue).isNull()
-        val filterEmptyValue = SingleValueFilter.gt(dummyField, "")
-        Truth.assertThat(filterEmptyValue).isNull()
-    }
-
-    @Test
-    fun eq_method_returns_null_when_values_is_null() {
-        val filterNullValue = SingleValueFilter.eq(dummyField, null)
-        Truth.assertThat(filterNullValue).isNull()
-        val filterEmptyValue = SingleValueFilter.eq(dummyField, "")
-        Truth.assertThat(filterEmptyValue).isNull()
-    }
-
-    @Test
-    fun like_method_returns_null_when_values_is_null() {
-        val filterNullValue = SingleValueFilter.like(dummyField, null)
-        Truth.assertThat(filterNullValue).isNull()
-        val filterEmptyValue = SingleValueFilter.like(dummyField, "")
-        Truth.assertThat(filterEmptyValue).isNull()
-    }
 
     @Test
     fun gt_methods_returns_correct_instance() {
@@ -95,7 +70,7 @@ class SingleValueFilterShould {
     @Test
     fun gt_generateString_returns_correct_string() {
         val filter = SingleValueFilter.gt(dummyField, dummyValue)
-        val actualString = filter!!.generateString()
+        val actualString = filter.generateString()
         val expectedString = "$dummyFieldName:gt:$dummyValue"
         assertEquals(expectedString, actualString)
     }
@@ -103,7 +78,7 @@ class SingleValueFilterShould {
     @Test
     fun eq_generateString_returns_correct_string() {
         val filter = SingleValueFilter.eq(dummyField, dummyValue)
-        val actualString = filter!!.generateString()
+        val actualString = filter.generateString()
         val expectedString = "$dummyFieldName:eq:$dummyValue"
         assertEquals(expectedString, actualString)
     }
@@ -111,7 +86,7 @@ class SingleValueFilterShould {
     @Test
     fun like_generateString_returns_correct_string() {
         val filter = SingleValueFilter.like(dummyField, dummyValue)
-        val actualString = filter!!.generateString()
+        val actualString = filter.generateString()
         val expectedString = "$dummyFieldName:like:$dummyValue"
         assertEquals(expectedString, actualString)
     }

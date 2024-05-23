@@ -35,12 +35,6 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class FilterShould {
-    @Test
-    fun return_null_filter_when_creates_with_null_params() {
-        val field = Field.create<String, String>("test_field_name")
-        val filter = SingleValueFilter.gt(field, null)
-        Truth.assertThat(filter).isNull()
-    }
 
     @Test
     fun return_correct_values_when_create_field_filter() {
@@ -48,6 +42,6 @@ class FilterShould {
         val filter = field.gt("test_field_filter_operator")
 
         Truth.assertThat(filter.operator).isEqualTo("gt")
-        Truth.assertThat(filter.values!!.contains("test_field_filter_operator")).isTrue()
+        Truth.assertThat(filter.values.contains("test_field_filter_operator")).isTrue()
     }
 }

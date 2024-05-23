@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.junit.Assert.*
 import org.junit.Test
@@ -36,12 +35,6 @@ import org.junit.Test
 class InFilterShould {
 
     private val dummyField = Field.create<String, String>("test_field_name")
-
-    @Test
-    fun create_returns_null_when_values_is_null() {
-        val filter = InFilter.create(dummyField, null)
-        Truth.assertThat(filter).isNull()
-    }
 
     @Test
     fun create_returns_InFilter_instance_with_empty_values() {
@@ -67,7 +60,7 @@ class InFilterShould {
         val values = listOf("oneValue", "otherValue")
         val filter = InFilter.create(dummyField, values)
 
-        val actualGeneratedString = filter!!.generateString()
+        val actualGeneratedString = filter.generateString()
         val expectedGeneratedString = "test_field_name:in:[oneValue,otherValue]"
 
         assertEquals(expectedGeneratedString, actualGeneratedString)

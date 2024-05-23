@@ -68,7 +68,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     private var setStateStatement: StatementWrapper? = null
     private var setStateIfUploadingStatement: StatementWrapper? = null
 
-    val tableName: String = builder.tableName
+    val tableName: String = builder.getTableName()
     private var adapterHashCode: Int? = null
 
     companion object {

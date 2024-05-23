@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteW
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import java.util.Date
@@ -72,8 +73,8 @@ class TrackedEntityDataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        shouldUpdateObject(setBuilder().build().value(), value) {
-            setObject(setBuilder().value(value).build())
+        updateIfChanged(value, { it?.value() }) { trackedEntityDataValue: TrackedEntityDataValue?, newValue ->
+            setBuilder(trackedEntityDataValue).value(newValue).build()
         }
     }
 
@@ -91,9 +92,8 @@ class TrackedEntityDataValueObjectRepository internal constructor(
         return if (value == null) false else value.deleted() == null || !value.deleted()
     }
 
-    private fun setBuilder(): TrackedEntityDataValue.Builder {
+    private fun setBuilder(value: TrackedEntityDataValue?): TrackedEntityDataValue.Builder {
         val date = Date()
-        val value = blockingGetWithoutChildren()
 
         return if (value != null) {
             val state =

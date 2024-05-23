@@ -72,8 +72,8 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        shouldUpdateObject(setBuilder().build().value(), value) {
-            setObject(setBuilder().value(value).build())
+        updateIfChanged(value, { it?.value() }) { trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
+            setBuilder(trackedEntityAttributeValue).value(newValue).build()
         }
     }
 
@@ -91,10 +91,8 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
         return if (value == null) false else value.deleted() == null || !value.deleted()
     }
 
-    private fun setBuilder(): TrackedEntityAttributeValue.Builder {
+    private fun setBuilder(value: TrackedEntityAttributeValue?): TrackedEntityAttributeValue.Builder {
         val date = Date()
-        val value = blockingGetWithoutChildren()
-
         return if (value != null) {
             val state =
                 if (value.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE

@@ -75,23 +75,22 @@ class DataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        shouldUpdateObject(setBuilder().build().value(), value) {
-            val objectWithValue = setBuilder().value(value).deleted(false).build()
-            setObject(objectWithValue)
+        updateIfChanged(value, { it?.value() }) { dataValue: DataValue?, newValue ->
+            setBuilder(dataValue).value(newValue).deleted(false).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean) {
-        shouldUpdateObject(setBuilder().build().followUp(), followUp) {
-            setObject(setBuilder().followUp(followUp).build())
+        updateIfChanged(followUp, { it?.followUp() }) { dataValue: DataValue?, newValue ->
+            setBuilder(dataValue).followUp(newValue).deleted(false).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setComment(comment: String?) {
-        shouldUpdateObject(setBuilder().build().comment(), comment) {
-            setObject(setBuilder().comment(comment).build())
+        updateIfChanged(comment, { it?.comment() }) { dataValue: DataValue?, newValue ->
+            setBuilder(dataValue).comment(newValue).deleted(false).build()
         }
     }
 
@@ -110,10 +109,8 @@ class DataValueObjectRepository internal constructor(
         }
     }
 
-    private fun setBuilder(): DataValue.Builder {
+    private fun setBuilder(dataValue: DataValue? = null): DataValue.Builder {
         val date = Date()
-        val dataValue = blockingGetWithoutChildren()
-
         return if (dataValue != null) {
             val state =
                 if (dataValue.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE

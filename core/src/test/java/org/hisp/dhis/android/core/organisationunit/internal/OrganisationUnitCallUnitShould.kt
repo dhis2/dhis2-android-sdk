@@ -151,8 +151,8 @@ class OrganisationUnitCallUnitShould {
         organisationUnitCall.invoke()
 
         assertThat(fieldsCaptor.firstValue).isEqualTo(OrganisationUnitFields.allFields)
-        assertThat(filtersCaptor.firstValue.operator()).isEqualTo("like")
-        assertThat(filtersCaptor.firstValue.field()).isEqualTo(OrganisationUnitFields.path)
+        assertThat(filtersCaptor.firstValue.operator).isEqualTo("like")
+        assertThat(filtersCaptor.firstValue.field).isEqualTo(OrganisationUnitFields.path)
         assertThat(orderCaptor.firstValue).isEqualTo(OrganisationUnitFields.ASC_ORDER)
         assertThat(pagingCaptor.firstValue).isTrue()
         assertThat(pageCaptor.firstValue).isEqualTo(1)

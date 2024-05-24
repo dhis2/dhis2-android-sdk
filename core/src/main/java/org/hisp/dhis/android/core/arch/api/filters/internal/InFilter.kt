@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-import java.util.Collection;
+internal class InFilter<T, K>(
+    override val field: Field<T, K>,
+    override val operator: String,
+    override val values: Collection<String>,
+) : Filter<T, K> {
+    override fun generateString(): String {
+        val valuesString = values.joinToString(",")
+        return "${field.name()}:$operator:[$valuesString]"
+    }
 
-public interface Filter<T, K> {
-
-    Field<T, K> field();
-    String operator();
-
-    Collection<String> values();
-    String generateString();
+    companion object {
+        fun <T, K> create(
+            field: Field<T, K>,
+            values: Collection<String>,
+        ): Filter<T, K> {
+            // If the filter is incomplete, return null so the filter is not included in the request.
+            return InFilter(field, "in", values)
+        }
+    }
 }

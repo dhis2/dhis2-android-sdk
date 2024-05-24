@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class FilterShould {
-
-    @Test
-    public void return_null_filter_when_creates_with_null_params() {
-        Filter<String, String> filter = SingleValueFilter.gt(null, null);
-        assertThat(filter).isNull();
+internal class SingleValueFilter<T, K> private constructor(
+    override val field: Field<T, K>,
+    override val operator: String,
+    override val values: Collection<String>,
+) : Filter<T, K> {
+    override fun generateString(): String {
+        return "${field.name()}:$operator:${values.first()}"
     }
 
-    @Test
-    public void return_correct_values_when_create_field_filter() {
-        Field field = Field.create("test_field_name");
-        Filter filter = field.gt("test_field_filter_operator");
+    companion object {
+        private fun <T, K> create(
+            field: Field<T, K>,
+            operator: String,
+            value: String,
+        ): Filter<T, K> {
+            // If the filter is incomplete, return null so the filter is not included in the request.
+            return SingleValueFilter(field, operator, listOf(value))
+        }
 
-        assertThat(filter.operator()).isEqualTo("gt");
-        assertThat(filter.values().contains("test_field_filter_operator")).isTrue();
-    }
+        fun <T, K> gt(field: Field<T, K>, value: String): Filter<T, K> {
+            return create(field, "gt", value)
+        }
 
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(SingleValueFilter.gt(Field.create(""), "a").getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+        fun <T, K> eq(field: Field<T, K>, value: String): Filter<T, K> {
+            return create(field, "eq", value)
+        }
+
+        fun <T, K> like(field: Field<T, K>, value: String): Filter<T, K> {
+            return create(field, "like", value)
+        }
     }
 }

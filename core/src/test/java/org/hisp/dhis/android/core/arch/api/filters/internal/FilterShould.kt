@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,39 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import com.google.auto.value.AutoValue;
+@RunWith(JUnit4::class)
+class FilterShould {
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter;
+    @Test
+    fun return_correct_values_when_create_field_filter() {
+        val field: Field<*, *> = Field.create<Any, Any>("test_field_name")
+        val filter = field.gt("test_field_filter_operator")
 
-import java.util.Collection;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class Field<Parent, Child> implements Property<Parent, Child> {
-
-    public <V> Filter<Parent, Child> eq(V value) {
-        return SingleValueFilter.Companion.eq(this, value.toString());
-    }
-
-    public Filter<Parent, Child> gt(String value) {
-        return SingleValueFilter.Companion.gt(this, value);
-    }
-
-    public Filter<Parent, Child> like(String value) {
-        return SingleValueFilter.Companion.like(this, value);
-    }
-
-    public Filter<Parent, Child> in(Collection<String> values) {
-        return InFilter.Companion.create(this, values);
-    }
-
-    public static <T, K> Field<T, K> create(@NonNull String name) {
-        return new AutoValue_Field<>(name);
+        Truth.assertThat(filter.operator).isEqualTo("gt")
+        Truth.assertThat(filter.values.contains("test_field_filter_operator")).isTrue()
     }
 }

@@ -54,7 +54,7 @@ internal class DataElementEndpointCallFactory(
                 return service.getDataElements(
                     DataElementFields.allFields,
                     DataElementFields.uid.`in`(query.uids()),
-                    DataElementFields.lastUpdated.gt(null),
+                    null,
                     accessReadFilter,
                     query.paging(),
                 )

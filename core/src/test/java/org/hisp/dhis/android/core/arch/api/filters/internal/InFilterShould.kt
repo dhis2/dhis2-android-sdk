@@ -65,4 +65,15 @@ class InFilterShould {
 
         assertEquals(expectedGeneratedString, actualGeneratedString)
     }
+
+    @Test
+    fun generateString_creates_correct_string_when_with_empty_values() {
+        val values = emptyList<String>()
+        val filter = InFilter.create(dummyField, values)
+
+        val actualGeneratedString = filter.generateString()
+        val expectedGeneratedString = "test_field_name:in:[]"
+
+        assertEquals(expectedGeneratedString, actualGeneratedString)
+    }
 }

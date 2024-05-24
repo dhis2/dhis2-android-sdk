@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-internal class SingleValueFilter<T, K> (
+internal class SingleValueFilter<T, K> private constructor(
     override val field: Field<T, K>,
     override val operator: String,
     override val values: Collection<String>,

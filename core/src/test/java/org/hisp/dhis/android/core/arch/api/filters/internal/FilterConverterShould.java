@@ -141,6 +141,24 @@ public class FilterConverterShould {
                 "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
     }
 
+    @Test
+    public void returns_correct_path_when_create_a_retrofit_request_ignoring_null_filter() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList<>(2);
+        values.add("uid1");
+        values.add("uid2");
+
+        TestService service = testService(server);
+
+        service.test(
+                InFilter.Companion.create(Field.create("id"), values),
+                null
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
+    }
+
     private TestService testService(MockWebServer mockWebServer) {
         return RetrofitFactory.fromMockWebServer(mockWebServer).create(TestService.class);
     }

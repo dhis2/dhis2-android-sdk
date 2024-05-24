@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -131,6 +132,26 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "bRowv6yZOF2",
                 ).blockingExists(),
         ).isTrue()
+    }
+
+    @Test
+    @Throws(D2Error::class)
+    fun not_update_status_when_passing_same_value() {
+        val repository = objectRepository()
+        repository.blockingSet("test_value")
+        repository.setComment("Hey!")
+        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.SYNCED)
+
+        repository.setComment("Hey!")
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.SYNCED)
+
+        repository.setComment("Hello!")
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
+
+        // Set to TO_POST state to truly delete de data value
+        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.TO_POST)
+        repository.blockingDelete()
+        assertThat(repository.blockingExists()).isFalse()
     }
 
     private fun objectRepository(): DataValueObjectRepository {

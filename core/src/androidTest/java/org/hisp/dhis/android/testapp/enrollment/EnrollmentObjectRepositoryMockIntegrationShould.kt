@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.enrollment
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
@@ -124,7 +125,7 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
 
         d2.databaseAdapter().delete(
             EnrollmentTableInfo.TABLE_INFO.name(),
-            "uid = ?",
+            "${IdentifiableColumns.UID} = ?",
             arrayOf(enrollmentUid),
         )
 

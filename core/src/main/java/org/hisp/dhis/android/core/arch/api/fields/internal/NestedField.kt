@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 
 internal data class NestedField<Parent, Child> private constructor(
     override val name: String,
-    val children: List<Property<Child, *>> = emptyList()
+    val children: List<Property<Child, *>> = emptyList(),
 ) : Property<Parent, Child> {
     @SafeVarargs
     fun with(vararg properties: Property<Child, *>): NestedField<Parent, Child> {
@@ -47,7 +47,8 @@ internal data class NestedField<Parent, Child> private constructor(
     }
 
     companion object {
-        internal fun <T, K> create(name: String): NestedField<T, K> {
+        @JvmStatic
+        fun <T, K> create(name: String): NestedField<T, K> {
             return NestedField(name, emptyList())
         }
     }

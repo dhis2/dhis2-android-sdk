@@ -50,12 +50,13 @@ internal data class Fields<T>(val fields: List<Property<T, *>>) {
         }
     }
 
-
     companion object {
+        @JvmStatic
         fun <K> builder(): Builder<K> {
             return Builder()
         }
 
+        @Suppress("NestedBlockDepth")
         fun append(builder: StringBuilder, properties: List<Property<*, *>>) {
             properties.iterator().let { propertyIterator ->
                 while (propertyIterator.hasNext()) {

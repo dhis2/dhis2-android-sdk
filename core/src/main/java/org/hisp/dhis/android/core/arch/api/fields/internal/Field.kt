@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Co
 import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.gt
 import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.like
 
-internal data class Field<Parent, Child> private constructor (override val name: String) : Property<Parent, Child> {
+internal data class Field<Parent, Child> private constructor(override val name: String) : Property<Parent, Child> {
 
     fun <V> eq(value: V): Filter<Parent, Child> {
         return eq(this, value.toString())
@@ -52,7 +52,8 @@ internal data class Field<Parent, Child> private constructor (override val name:
     }
 
     companion object {
-        internal fun <T, K> create(name: String): Field<T, K> {
+        @JvmStatic
+        fun <T, K> create(name: String): Field<T, K> {
             return Field(name)
         }
     }

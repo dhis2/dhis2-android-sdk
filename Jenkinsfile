@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Check style and quality'
-                    sh './gradlew runChecks'
+                    sh './gradlew runChecks --no-daemon'
                 }
             }
         }
@@ -91,6 +91,15 @@ pipeline {
             steps {
                 echo 'Deploy to Sonatype nexus'
                 sh './gradlew :core:publish'
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                echo 'Cleaning up Gradle daemons'
+                sh './gradlew --stop'
             }
         }
     }

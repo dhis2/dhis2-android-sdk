@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
 
-object ProgramIndicatorFields {
+internal object ProgramIndicatorFields {
     const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
     const val LEGEND_SETS = "legendSets"
     private val fh = FieldsHelper<ProgramIndicator>()

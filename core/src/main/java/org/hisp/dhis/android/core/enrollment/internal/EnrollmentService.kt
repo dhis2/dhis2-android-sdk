@@ -34,7 +34,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface EnrollmentService {
+internal interface EnrollmentService {
     @GET("$ENROLLMENTS/{$ENROLLMENT_UID}")
     suspend fun getEnrollmentSingle(
         @Path(ENROLLMENT_UID) enrollmentUid: String?,

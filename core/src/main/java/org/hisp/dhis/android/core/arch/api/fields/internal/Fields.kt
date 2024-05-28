@@ -25,58 +25,59 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+internal data class Fields<T>(val fields: List<Property<T, *>>) {
 
-import com.google.auto.value.AutoValue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class Fields<T> {
-
-    @NonNull
-    public abstract List<Property<T, ?>> fields();
-
-    @NonNull
-    public static <K> Fields.Builder<K> builder() {
-        return new Builder<>();
-    }
-
-    public static class Builder<T> {
-        private final List<Property<T, ?>> fields;
-
-        Builder() {
-            this.fields = new ArrayList<>();
-        }
+    class Builder<T> internal constructor() {
+        val fields: MutableList<Property<T, *>> = mutableListOf()
 
         @SafeVarargs
-        public final Builder<T> fields(@NonNull Property<T, ?>... properties) {
-            if (properties == null || properties.length == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
-            }
-
-            fields.addAll(Arrays.asList(properties));
-            return this;
+        fun fields(vararg properties: Property<T, *>): Builder<T> {
+            require(properties.isNotEmpty()) { "properties should not be empty" }
+            fields.addAll(properties)
+            return this
         }
 
-        public final Builder<T> fields(@NonNull Collection<Property<T, ?>> properties) {
-            if (properties == null || properties.isEmpty()) {
-                throw new IllegalArgumentException("properties null or empty collection");
-            }
-
-            fields.addAll(properties);
-            return this;
+        fun fields(properties: Collection<Property<T, *>>): Builder<T> {
+            require(properties.isNotEmpty()) { "properties should not be empty" }
+            fields.addAll(properties)
+            return this
         }
 
-        public final Fields<T> build() {
-            return new AutoValue_Fields<>(Collections.unmodifiableList(fields));
+        fun build(): Fields<T> {
+            return Fields(fields.toList())
+        }
+    }
+
+
+    companion object {
+        fun <K> builder(): Builder<K> {
+            return Builder()
+        }
+
+        fun append(builder: StringBuilder, properties: List<Property<*, *>>) {
+            properties.iterator().let { propertyIterator ->
+                while (propertyIterator.hasNext()) {
+                    val property = propertyIterator.next()
+
+                    if (property !is Field<*, *> && property !is NestedField<*, *>) {
+                        throw IllegalArgumentException("Unsupported type of Property: ${property.javaClass}")
+                    }
+
+                    builder.append(property.name)
+
+                    if (property is NestedField<*, *>) {
+                        property.children.takeIf { it.isNotEmpty() }?.let { children ->
+                            builder.append('[')
+                            append(builder, children)
+                            builder.append(']')
+                        }
+                    }
+
+                    propertyIterator.takeIf { it.hasNext() }?.let { builder.append(',') }
+                }
+            }
         }
     }
 }

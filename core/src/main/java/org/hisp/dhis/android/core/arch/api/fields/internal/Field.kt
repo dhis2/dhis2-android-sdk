@@ -25,39 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter.Companion.create
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.eq
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.gt
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.like
 
-import com.google.auto.value.AutoValue;
+internal data class Field<Parent, Child> private constructor (override val name: String) : Property<Parent, Child> {
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter;
-
-import java.util.Collection;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class Field<Parent, Child> implements Property<Parent, Child> {
-
-    public <V> Filter<Parent, Child> eq(V value) {
-        return SingleValueFilter.Companion.eq(this, value.toString());
+    fun <V> eq(value: V): Filter<Parent, Child> {
+        return eq(this, value.toString())
     }
 
-    public Filter<Parent, Child> gt(String value) {
-        return SingleValueFilter.Companion.gt(this, value);
+    fun gt(value: String): Filter<Parent, Child> {
+        return gt(this, value)
     }
 
-    public Filter<Parent, Child> like(String value) {
-        return SingleValueFilter.Companion.like(this, value);
+    fun like(value: String): Filter<Parent, Child> {
+        return like(this, value)
     }
 
-    public Filter<Parent, Child> in(Collection<String> values) {
-        return InFilter.Companion.create(this, values);
+    fun `in`(values: Collection<String>): Filter<Parent, Child> {
+        return create(this, values)
     }
 
-    public static <T, K> Field<T, K> create(@NonNull String name) {
-        return new AutoValue_Field<>(name);
+    companion object {
+        internal fun <T, K> create(name: String): Field<T, K> {
+            return Field(name)
+        }
     }
 }

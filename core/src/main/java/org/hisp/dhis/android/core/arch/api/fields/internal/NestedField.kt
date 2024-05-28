@@ -25,39 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
-
-import com.google.auto.value.AutoValue;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class NestedField<Parent, Child> implements Property<Parent, Child> {
-    public abstract List<Property<Child, ?>> children();
-
-    public static <T, K> NestedField<T, K> create(@NonNull String name) {
-        return new AutoValue_NestedField<>(name, Collections.emptyList());
-    }
-
+internal data class NestedField<Parent, Child> private constructor(
+    override val name: String,
+    val children: List<Property<Child, *>> = emptyList()
+) : Property<Parent, Child> {
     @SafeVarargs
-    public final NestedField<Parent, ?> with(Property<Child, ?>... properties) {
-        return with(Arrays.asList(properties));
+    fun with(vararg properties: Property<Child, *>): NestedField<Parent, Child> {
+        return with(listOf(*properties))
     }
 
-    public final NestedField<Parent, ?> with(List<Property<Child, ?>> properties) {
-        if (properties != null) {
-            return new AutoValue_NestedField<>(name(), properties);
+    fun with(properties: List<Property<Child, *>>?): NestedField<Parent, Child> {
+        return properties?.let {
+            NestedField(name, it)
+        } ?: create(name)
+    }
+
+    fun with(childFields: Fields<Child>): NestedField<Parent, Child> {
+        return with(childFields.fields)
+    }
+
+    companion object {
+        internal fun <T, K> create(name: String): NestedField<T, K> {
+            return NestedField(name, emptyList())
         }
-
-        return create(name());
-    }
-
-    public final NestedField<Parent, ?> with(Fields<Child> childFields) {
-        return with(childFields.fields());
     }
 }

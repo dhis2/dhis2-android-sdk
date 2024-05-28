@@ -37,7 +37,6 @@ import java.util.Set;
 @AutoValue
 public abstract class UidsQuery extends BaseQuery {
 
-    @Nullable
     public abstract Set<String> uids();
 
     public static UidsQuery create(Set<String> uids) {

@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Check style and quality'
-                    sh './gradlew runChecks --no-daemon'
+                    sh './gradlew runChecks'
                 }
             }
         }

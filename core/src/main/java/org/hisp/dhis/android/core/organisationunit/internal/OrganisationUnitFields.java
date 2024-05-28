@@ -55,7 +55,7 @@ public final class OrganisationUnitFields {
     private static final Field<OrganisationUnit, String> openingDate = Field.create(Columns.OPENING_DATE);
     private static final Field<OrganisationUnit, String> closedDate = Field.create(Columns.CLOSED_DATE);
 
-    public static final String ASC_ORDER = uid.name() + ":" + RepositoryScope.OrderByDirection.ASC.getApi();
+    public static final String ASC_ORDER = uid.getName() + ":" + RepositoryScope.OrderByDirection.ASC.getApi();
 
     public static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder()
             .fields(fh.getNameableFields())

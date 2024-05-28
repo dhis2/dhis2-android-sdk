@@ -28,6 +28,8 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
+                    echo 'Stopping any running Gradle daemons'
+                    sh './gradlew --stop'
                     echo 'Running unit tests'
                     sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
                 }

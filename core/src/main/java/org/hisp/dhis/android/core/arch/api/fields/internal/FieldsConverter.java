@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 import retrofit2.Converter;
 
@@ -46,45 +44,8 @@ class FieldsConverter implements Converter<Fields, String> {
 
         // recursive function which processes
         // properties and builds query string
-        append(builder, (List<Property>) fields.fields());
+        Fields.Companion.append(builder, fields.getFields());
 
         return builder.toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static void append(StringBuilder builder, List<Property> properties) {
-        Iterator<Property> propertyIterator = properties.iterator();
-
-        while (propertyIterator.hasNext()) {
-            Property property = propertyIterator.next();
-
-            // we need to append property name first
-            builder.append(property.name());
-
-            if (property instanceof Field) {
-                if (propertyIterator.hasNext()) {
-                    builder.append(',');
-                }
-            } else if (property instanceof NestedField) {
-                List<Property> children = ((NestedField) property).children();
-
-                if (!children.isEmpty()) {
-                    // open property array
-                    builder.append('[');
-
-                    // recursive call to method
-                    append(builder, children);
-
-                    // close property array
-                    builder.append(']');
-                }
-                if (propertyIterator.hasNext()) {
-                    builder.append(',');
-                }
-            } else {
-                throw new IllegalArgumentException("Unsupported type of Property: " +
-                        property.getClass());
-            }
-        }
     }
 }

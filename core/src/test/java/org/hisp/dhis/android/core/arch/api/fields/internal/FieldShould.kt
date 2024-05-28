@@ -25,80 +25,77 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import com.google.common.truth.Truth
+import nl.jqno.equalsverifier.EqualsVerifier
+import nl.jqno.equalsverifier.Warning
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+@RunWith(JUnit4::class)
+class FieldShould {
+//    @Test(expected = NullPointerException::class)
+//    fun throw_null_pointer_exception_on_null_field_name() {
+//        Field.create<Any, Any>(null)
+//    }
+//
+//    @Test(expected = NullPointerException::class)
+//    fun throw_null_pointer_exception_on_null_nested_field_name() {
+//        NestedField.create<Any, Any>(null)
+//    }
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class FieldShould {
-
-    @Test(expected = NullPointerException.class)
-    public void throw_null_pointer_exception_on_null_field_name() {
-        Field.create(null);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void throw_null_pointer_exception_on_null_nested_field_name() {
-        NestedField.create(null);
+    @Test
+    fun return_field_name_given_in_constructor() {
+        val field: Field<*, *> = Field.create<Any, Any>("test_field_name")
+        Truth.assertThat(field.name).isEqualTo("test_field_name")
     }
 
     @Test
-    public void return_field_name_given_in_constructor() {
-        Field field = Field.create("test_field_name");
-        assertThat(field.name()).isEqualTo("test_field_name");
+    fun have_the_equals_method_conform_to_contract() {
+        EqualsVerifier.forClass(Field.create<Any, Any>("").javaClass)
+            .suppress(Warning.NULL_FIELDS)
+            .verify()
     }
 
     @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(Field.create("").getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    fun conform_nested_field_to_contract() {
+        EqualsVerifier.forClass(NestedField.create<Any, Any>("").javaClass)
+            .suppress(Warning.NULL_FIELDS)
+            .verify()
     }
 
     @Test
-    public void conform_nested_field_to_contract() {
-        EqualsVerifier.forClass(NestedField.create("").getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    fun return_nested_field_children_when_they_are_added_in_a_new_variable() {
+        val fieldOne = Field.create<String, String?>("fieldOne")
+        val fieldTwo = Field.create<String, String?>("fieldTwo")
+
+        val nestedField = NestedField.create<String, String>("test_nested_field")
+        val nestedFieldWithChildren: NestedField<String, *> = nestedField.with(fieldOne, fieldTwo)
+
+        Truth.assertThat(nestedField.children).isEmpty()
+        Truth.assertThat(nestedField).isNotEqualTo(nestedFieldWithChildren)
+        Truth.assertThat(
+            nestedFieldWithChildren.children.contains(fieldOne) &&
+                nestedFieldWithChildren.children.contains(fieldTwo),
+        ).isTrue()
     }
+
+//    @Test(expected = UnsupportedOperationException::class)
+//    fun throw_unsupported_operation_exception_when_try_to_modify_a_immutable_nested_field() {
+//        val fieldOne = Field.create<String, String?>("test_field_one")
+//
+//        val nestedField = NestedField.create<String, String>("test_nested_field")
+//        val nestedFieldWithChildren: NestedField<String, *> = nestedField.with(fieldOne)
+//
+//        nestedFieldWithChildren.children.remove(0)
+//    }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void return_nested_field_children_when_they_are_added_in_a_new_variable() {
-        Field<String, String> fieldOne = Field.create("fieldOne");
-        Field<String, String> fieldTwo = Field.create("fieldTwo");
-
-        NestedField<String, String> nestedField = NestedField.create("test_nested_field");
-        NestedField<String, ?> nestedFieldWithChildren = nestedField.with(fieldOne, fieldTwo);
-
-        assertThat(nestedField.children()).isEmpty();
-        assertThat(nestedField).isNotEqualTo(nestedFieldWithChildren);
-        assertThat(nestedFieldWithChildren.children().contains(fieldOne) &&
-                nestedFieldWithChildren.children().contains(fieldTwo)).isTrue();
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    @SuppressWarnings("unchecked")
-    public void throw_unsupported_operation_exception_when_try_to_modify_a_immutable_nested_field() {
-        Field<String, String> fieldOne = Field.create("test_field_one");
-
-        NestedField<String, String> nestedField = NestedField.create("test_nested_field");
-        NestedField<String, ?> nestedFieldWithChildren = nestedField.with(fieldOne);
-
-        nestedFieldWithChildren.children().remove(0);
-    }
-
-    @Test
-    public void no_throw_exceptions_when_nested_fields_have_null_arguments() {
-        NestedField<String, ?> nestedField = NestedField.create("test_nested_field");
-        assertThat(nestedField.with().children()).isEmpty();
+    fun no_throw_exceptions_when_nested_fields_have_null_arguments() {
+        val nestedField: NestedField<String, *> =
+            NestedField.create<String, Any>("test_nested_field")
+        Truth.assertThat(nestedField.with().children).isEmpty()
     }
 }

@@ -25,55 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import nl.jqno.equalsverifier.EqualsVerifier
+import nl.jqno.equalsverifier.Warning
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
-import static org.junit.Assert.fail;
-
-@RunWith(JUnit4.class)
-public class FieldsShould {
-
+@RunWith(JUnit4::class)
+class FieldsShould {
     @Test
-    public void throw_illegal_argument_exception_on_null_arguments() {
+    fun throw_illegal_argument_exception_on_null_arguments() {
         try {
-            Fields.builder().fields().build();
+            builder<Any>().fields().build()
 
-            fail("IllegalArgumentException was expected but was not thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
+            Assert.fail("IllegalArgumentException was expected but was not thrown")
+        } catch (illegalArgumentException: IllegalArgumentException) {
             // swallow exception
         }
     }
 
+//    @Test
+//    fun throw_unsupported_operation_exception_when_try_to_modify_a_immutable_field() {
+//        val fields: Fields<*> = builder<Any>()
+//            .fields(
+//                Field.create<Any, Any?>("one"),
+//                Field.create<Any, Any?>("two"),
+//                Field.create<Any, Any?>("three")
+//            )
+//            .build()
+//
+//        try {
+//            fields.fields.add(Field.create<Any, Any>("four"))
+//
+//            Assert.fail("UnsupportedOperationException was expected but nothing was thrown")
+//        } catch (unsupportedOperationException: UnsupportedOperationException) {
+//            // swallow exception
+//        }
+//    }
+
     @Test
-    @SuppressWarnings("unchecked")
-    public void throw_unsupported_operation_exception_when_try_to_modify_a_immutable_field() {
-        Fields fields = Fields.builder()
-                .fields(
-                        Field.create("one"),
-                        Field.create("two"),
-                        Field.create("three"))
-                .build();
-
-        try {
-            fields.fields().add(Field.create("four"));
-
-            fail("UnsupportedOperationException was expected but nothing was thrown");
-        } catch (UnsupportedOperationException unsupportedOperationException) {
-            // swallow exception
-        }
-    }
-
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(Fields.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    fun have_the_equals_method_conform_to_contract() {
+        EqualsVerifier.forClass(builder<Any>().build().javaClass)
+            .suppress(Warning.NULL_FIELDS)
+            .verify()
     }
 }

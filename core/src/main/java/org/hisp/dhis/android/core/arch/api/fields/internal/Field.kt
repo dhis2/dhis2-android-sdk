@@ -28,27 +28,26 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter.Companion.create
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.eq
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.gt
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.like
+import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter
+
 
 internal data class Field<Parent, Child> private constructor(override val name: String) : Property<Parent, Child> {
 
     fun <V> eq(value: V): Filter<Parent, Child> {
-        return eq(this, value.toString())
+        return SingleValueFilter.eq(this, value.toString())
     }
 
     fun gt(value: String): Filter<Parent, Child> {
-        return gt(this, value)
+        return SingleValueFilter.gt(this, value)
     }
 
     fun like(value: String): Filter<Parent, Child> {
-        return like(this, value)
+        return SingleValueFilter.like(this, value)
     }
 
     fun `in`(values: Collection<String>): Filter<Parent, Child> {
-        return create(this, values)
+        return InFilter.create(this, values)
     }
 
     companion object {

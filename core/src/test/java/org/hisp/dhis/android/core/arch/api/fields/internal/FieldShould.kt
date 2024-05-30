@@ -36,15 +36,6 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class FieldShould {
-//    @Test(expected = NullPointerException::class)
-//    fun throw_null_pointer_exception_on_null_field_name() {
-//        Field.create<Any, Any>(null)
-//    }
-//
-//    @Test(expected = NullPointerException::class)
-//    fun throw_null_pointer_exception_on_null_nested_field_name() {
-//        NestedField.create<Any, Any>(null)
-//    }
 
     @Test
     fun return_field_name_given_in_constructor() {
@@ -81,16 +72,6 @@ class FieldShould {
                 nestedFieldWithChildren.children.contains(fieldTwo),
         ).isTrue()
     }
-
-//    @Test(expected = UnsupportedOperationException::class)
-//    fun throw_unsupported_operation_exception_when_try_to_modify_a_immutable_nested_field() {
-//        val fieldOne = Field.create<String, String?>("test_field_one")
-//
-//        val nestedField = NestedField.create<String, String>("test_nested_field")
-//        val nestedFieldWithChildren: NestedField<String, *> = nestedField.with(fieldOne)
-//
-//        nestedFieldWithChildren.children.remove(0)
-//    }
 
     @Test
     fun no_throw_exceptions_when_nested_fields_have_null_arguments() {

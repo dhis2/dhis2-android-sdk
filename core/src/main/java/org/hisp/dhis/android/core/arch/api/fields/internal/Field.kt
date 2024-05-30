@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter
 import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter
 
-
 internal data class Field<Parent, Child> private constructor(override val name: String) : Property<Parent, Child> {
 
     fun <V> eq(value: V): Filter<Parent, Child> {

@@ -50,35 +50,25 @@ internal data class Fields<T>(val fields: List<Property<T, *>>) {
         }
     }
 
+    fun generateString(properties: List<Property<*, *>>?): String {
+        val inputFields = properties ?: fields.toList()
+        val fieldsStringList = inputFields.map { field ->
+            when (field) {
+                is Field<*, *> -> field.name
+                is NestedField<*, *> ->
+                    field.name +
+                        if (field.children.isNotEmpty()) "[${generateString(field.children)}]" else ""
+                else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
+            }
+        }
+        val fieldsString = fieldsStringList.joinToString(",")
+        return fieldsString
+    }
+
     companion object {
         @JvmStatic
         fun <K> builder(): Builder<K> {
             return Builder()
-        }
-
-        @Suppress("NestedBlockDepth")
-        fun append(builder: StringBuilder, properties: List<Property<*, *>>) {
-            properties.iterator().let { propertyIterator ->
-                while (propertyIterator.hasNext()) {
-                    val property = propertyIterator.next()
-
-                    if (property !is Field<*, *> && property !is NestedField<*, *>) {
-                        throw IllegalArgumentException("Unsupported type of Property: ${property.javaClass}")
-                    }
-
-                    builder.append(property.name)
-
-                    if (property is NestedField<*, *>) {
-                        property.children.takeIf { it.isNotEmpty() }?.let { children ->
-                            builder.append('[')
-                            append(builder, children)
-                            builder.append(']')
-                        }
-                    }
-
-                    propertyIterator.takeIf { it.hasNext() }?.let { builder.append(',') }
-                }
-            }
         }
     }
 }

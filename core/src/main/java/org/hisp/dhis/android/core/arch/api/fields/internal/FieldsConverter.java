@@ -40,12 +40,6 @@ class FieldsConverter implements Converter<Fields, String> {
     @Override
     @SuppressWarnings("unchecked")
     public String convert(Fields fields) throws IOException {
-        StringBuilder builder = new StringBuilder();
-
-        // recursive function which processes
-        // properties and builds query string
-        Fields.Companion.append(builder, fields.getFields());
-
-        return builder.toString();
+        return fields.generateString(null);
     }
 }

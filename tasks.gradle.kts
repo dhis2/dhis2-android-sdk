@@ -29,16 +29,13 @@ tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }
 
-tasks.register("runChecks") {
+tasks.register<Exec>("runChecks") {
     group = "verification"
     description = "Cleans the project, runs lint checks, and code quality checks."
 
-    dependsOn(
-        ":core:clean",
-        ":core:ktlintCheck",
-        ":core:detekt",
-        ":core:checkstyleDebug",
-        ":core:pmdDebug",
-        ":core:lintDebug"
+    workingDir = project.file("core")
+
+    commandLine = listOf(
+        "sh", "-c", "./gradlew clean ktlintCheck detekt checkstyleDebug pmdDebug lintDebug"
     )
 }

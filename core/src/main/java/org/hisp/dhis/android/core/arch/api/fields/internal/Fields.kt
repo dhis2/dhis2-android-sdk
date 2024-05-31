@@ -60,8 +60,7 @@ internal data class Fields<T>(val fields: List<Property<T, *>>) {
             return Builder()
         }
 
-        @JvmStatic
-        fun generateStringFromFields(properties: List<Property<*, *>>): String {
+        private fun generateStringFromFields(properties: List<Property<*, *>>): String {
             val fieldsStringList = properties.map { field ->
                 when (field) {
                     is Field<*, *> -> field.name

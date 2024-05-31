@@ -50,25 +50,29 @@ internal data class Fields<T>(val fields: List<Property<T, *>>) {
         }
     }
 
-    fun generateString(properties: List<Property<*, *>>?): String {
-        val inputFields = properties ?: fields.toList()
-        val fieldsStringList = inputFields.map { field ->
-            when (field) {
-                is Field<*, *> -> field.name
-                is NestedField<*, *> ->
-                    field.name +
-                        if (field.children.isNotEmpty()) "[${generateString(field.children)}]" else ""
-                else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
-            }
-        }
-        val fieldsString = fieldsStringList.joinToString(",")
-        return fieldsString
+    fun generateString(): String {
+        return generateStringFromFields(fields.toList())
     }
 
     companion object {
         @JvmStatic
         fun <K> builder(): Builder<K> {
             return Builder()
+        }
+
+        @JvmStatic
+        fun generateStringFromFields(properties: List<Property<*, *>>): String {
+            val fieldsStringList = properties.map { field ->
+                when (field) {
+                    is Field<*, *> -> field.name
+                    is NestedField<*, *> ->
+                        field.name +
+                            if (field.children.isNotEmpty()) "[${generateStringFromFields(field.children)}]" else ""
+                    else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
+                }
+            }
+            val fieldsString = fieldsStringList.joinToString(",")
+            return fieldsString
         }
     }
 }

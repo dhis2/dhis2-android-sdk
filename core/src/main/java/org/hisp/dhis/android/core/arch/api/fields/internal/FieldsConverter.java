@@ -40,6 +40,6 @@ class FieldsConverter implements Converter<Fields, String> {
     @Override
     @SuppressWarnings("unchecked")
     public String convert(Fields fields) throws IOException {
-        return fields.generateString(null);
+        return fields.generateString();
     }
 }

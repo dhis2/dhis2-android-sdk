@@ -61,18 +61,18 @@ class FieldsShould {
     fun respect_the_field_order() {
         val queryStringOne: String = Fields.builder<Any>().fields(
             Field.create<Any, Any?>(""),
-        ).build().generateString(null)
+        ).build().generateString()
 
         val queryStringTwo: String = Fields.builder<Any>().fields(
             Field.create<Any, Any?>("*"),
-        ).build().generateString(null)
+        ).build().generateString()
 
         val queryStringThree: String = Fields.builder<Any>().fields(
             Field.create<Any, Any?>("name"),
             Field.create<Any, Any?>("displayName"),
             Field.create<Any, Any?>("created"),
             Field.create<Any, Any?>("lastUpdated"),
-        ).build().generateString(null)
+        ).build().generateString()
 
         Truth.assertThat(queryStringOne).isEqualTo("")
         Truth.assertThat(queryStringTwo).isEqualTo("*")
@@ -92,31 +92,31 @@ class FieldsShould {
             id,
             displayName,
             programs,
-        ).build().generateString(null)
+        ).build().generateString()
         val queryStringTwo: String = Fields.builder<Any>().fields(
             id,
             displayName,
             programsWithChildren,
-        ).build().generateString(null)
+        ).build().generateString()
         val queryStringThree: String = Fields.builder<Any>().fields(
             id,
             programsWithChildren,
             displayName,
-        ).build().generateString(null)
+        ).build().generateString()
         val queryStringFour: String = Fields.builder<Any>().fields(
             id,
             programsWithChildrenWithChildren,
-        ).build().generateString(null)
+        ).build().generateString()
         val queryStringFive: String = Fields.builder<Any>().fields(
             id,
             programsWithChildrenWithChildren,
             displayName,
-        ).build().generateString(null)
+        ).build().generateString()
         val queryStringSix: String = Fields.builder<Any>().fields(
             id,
             programs,
             displayName,
-        ).build().generateString(null)
+        ).build().generateString()
 
         Truth.assertThat(queryStringOne).isEqualTo("id,displayName,programs")
         Truth.assertThat(queryStringTwo).isEqualTo("id,displayName,programs[id,displayName]")

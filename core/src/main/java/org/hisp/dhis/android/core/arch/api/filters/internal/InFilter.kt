@@ -36,7 +36,7 @@ internal class InFilter<T, K>(
 ) : Filter<T, K> {
     override fun generateString(): String {
         val valuesString = values.joinToString(",")
-        return "${field.name()}:$operator:[$valuesString]"
+        return "${field.name}:$operator:[$valuesString]"
     }
 
     companion object {

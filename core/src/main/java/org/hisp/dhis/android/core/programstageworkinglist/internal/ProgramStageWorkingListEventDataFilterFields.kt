@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
-object ProgramStageWorkingListEventDataFilterFields {
+internal object ProgramStageWorkingListEventDataFilterFields {
     private const val API_IN = "in"
     private val fh = FieldsHelper<ProgramStageWorkingListEventDataFilter>()
 

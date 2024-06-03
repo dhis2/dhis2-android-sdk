@@ -25,58 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
-
-import com.google.auto.value.AutoValue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class Fields<T> {
-
-    @NonNull
-    public abstract List<Property<T, ?>> fields();
-
-    @NonNull
-    public static <K> Fields.Builder<K> builder() {
-        return new Builder<>();
+internal data class NestedField<Parent, Child> private constructor(
+    override val name: String,
+    val children: List<Property<Child, *>> = emptyList(),
+) : Property<Parent, Child> {
+    @SafeVarargs
+    fun with(vararg properties: Property<Child, *>): NestedField<Parent, Child> {
+        return with(listOf(*properties))
     }
 
-    public static class Builder<T> {
-        private final List<Property<T, ?>> fields;
+    fun with(properties: List<Property<Child, *>>?): NestedField<Parent, Child> {
+        return properties?.let {
+            NestedField(name, it)
+        } ?: create(name)
+    }
 
-        Builder() {
-            this.fields = new ArrayList<>();
-        }
+    fun with(childFields: Fields<Child>): NestedField<Parent, Child> {
+        return with(childFields.fields)
+    }
 
-        @SafeVarargs
-        public final Builder<T> fields(@NonNull Property<T, ?>... properties) {
-            if (properties == null || properties.length == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
-            }
-
-            fields.addAll(Arrays.asList(properties));
-            return this;
-        }
-
-        public final Builder<T> fields(@NonNull Collection<Property<T, ?>> properties) {
-            if (properties == null || properties.isEmpty()) {
-                throw new IllegalArgumentException("properties null or empty collection");
-            }
-
-            fields.addAll(properties);
-            return this;
-        }
-
-        public final Fields<T> build() {
-            return new AutoValue_Fields<>(Collections.unmodifiableList(fields));
+    companion object {
+        @JvmStatic
+        fun <T, K> create(name: String): NestedField<T, K> {
+            return NestedField(name, emptyList())
         }
     }
 }

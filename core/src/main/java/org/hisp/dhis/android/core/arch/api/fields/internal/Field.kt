@@ -25,39 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter
 
-import com.google.auto.value.AutoValue;
+internal data class Field<Parent, Child> private constructor(override val name: String) : Property<Parent, Child> {
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class NestedField<Parent, Child> implements Property<Parent, Child> {
-    public abstract List<Property<Child, ?>> children();
-
-    public static <T, K> NestedField<T, K> create(@NonNull String name) {
-        return new AutoValue_NestedField<>(name, Collections.emptyList());
+    fun <V> eq(value: V): Filter<Parent, Child> {
+        return SingleValueFilter.eq(this, value.toString())
     }
 
-    @SafeVarargs
-    public final NestedField<Parent, ?> with(Property<Child, ?>... properties) {
-        return with(Arrays.asList(properties));
+    fun gt(value: String): Filter<Parent, Child> {
+        return SingleValueFilter.gt(this, value)
     }
 
-    public final NestedField<Parent, ?> with(List<Property<Child, ?>> properties) {
-        if (properties != null) {
-            return new AutoValue_NestedField<>(name(), properties);
+    fun like(value: String): Filter<Parent, Child> {
+        return SingleValueFilter.like(this, value)
+    }
+
+    fun `in`(values: Collection<String>): Filter<Parent, Child> {
+        return InFilter.create(this, values)
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T, K> create(name: String): Field<T, K> {
+            return Field(name)
         }
-
-        return create(name());
-    }
-
-    public final NestedField<Parent, ?> with(Fields<Child> childFields) {
-        return with(childFields.fields());
     }
 }

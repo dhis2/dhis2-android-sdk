@@ -35,7 +35,7 @@ internal class SingleValueFilter<T, K> private constructor(
     override val values: Collection<String>,
 ) : Filter<T, K> {
     override fun generateString(): String {
-        return "${field.name()}:$operator:${values.first()}"
+        return "${field.name}:$operator:${values.first()}"
     }
 
     companion object {

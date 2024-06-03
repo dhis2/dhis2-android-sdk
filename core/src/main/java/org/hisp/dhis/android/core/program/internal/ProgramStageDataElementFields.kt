@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
 
-object ProgramStageDataElementFields {
+internal object ProgramStageDataElementFields {
     const val RENDER_TYPE = "renderType"
 
     private val fh = FieldsHelper<ProgramStageDataElement>()

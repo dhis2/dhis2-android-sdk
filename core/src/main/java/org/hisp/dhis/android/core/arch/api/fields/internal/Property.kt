@@ -25,39 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter;
-
-import java.util.Collection;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-public abstract class Field<Parent, Child> implements Property<Parent, Child> {
-
-    public <V> Filter<Parent, Child> eq(V value) {
-        return SingleValueFilter.Companion.eq(this, value.toString());
-    }
-
-    public Filter<Parent, Child> gt(String value) {
-        return SingleValueFilter.Companion.gt(this, value);
-    }
-
-    public Filter<Parent, Child> like(String value) {
-        return SingleValueFilter.Companion.like(this, value);
-    }
-
-    public Filter<Parent, Child> in(Collection<String> values) {
-        return InFilter.Companion.create(this, values);
-    }
-
-    public static <T, K> Field<T, K> create(@NonNull String name) {
-        return new AutoValue_Field<>(name);
-    }
+internal interface Property<Parent, Child> {
+    val name: String
 }

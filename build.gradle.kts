@@ -1,5 +1,16 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
+group = "org.hisp.dhis"
+version = libs.versions.dhis2AndroidSdkVersion.get()
+
+/**
+ * Property from the Gradle command line. To remove the snapshot suffix from the version.
+ */
+if (project.hasProperty("removeSnapshotSuffix")) {
+    val mainVersion = (version as String).split("-SNAPSHOT")[0]
+    version = mainVersion
+}
+
 buildscript {
     repositories {
         google()
@@ -18,6 +29,7 @@ buildscript {
 plugins {
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.nexus.publish)
 }
 
 sonarqube {
@@ -61,9 +73,6 @@ subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.jetbrains.dokka")
 
-    //group = GROUP
-    //version = VERSION_NAME
-
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version.set("0.50.0")
         android.set(true)
@@ -71,6 +80,18 @@ subprojects {
         reporters {
             reporter(ReporterType.PLAIN)
             reporter(ReporterType.CHECKSTYLE)
+        }
+    }
+}
+
+val nexusUsername: String? = System.getenv("NEXUS_USERNAME")
+val nexusPassword: String? = System.getenv("NEXUS_PASSWORD")
+
+nexusPublishing {
+    this.repositories {
+        sonatype {
+            username.set(nexusUsername)
+            password.set(nexusPassword)
         }
     }
 }

@@ -141,8 +141,9 @@ object CollectionsHelper {
      * @param values Array with the values to concatenate.
      * @return A [String] with the concatenated values.
      */
+    @SafeVarargs
     private fun commaSeparatedArrayValues(vararg values: String): String {
-        return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",")
+        return commaAndSpaceSeparatedArrayValues(arrayOf(*values)).replace(", ", ",")
     }
 
     /**
@@ -161,8 +162,8 @@ object CollectionsHelper {
      * @param objectsWithUid Collection with the objects to concatenate.
      * @return A [String] with the concatenated uids.
      */
-    fun <O : ObjectWithUidInterface?> commaSeparatedUids(objectsWithUid: Collection<O>?): String {
-        return commaSeparatedCollectionValues(getUids<O>(objectsWithUid))
+    fun <O : ObjectWithUidInterface> commaSeparatedUids(objectsWithUid: Collection<O>): String {
+        return commaSeparatedCollectionValues(getUids(objectsWithUid))
     }
 
     /**

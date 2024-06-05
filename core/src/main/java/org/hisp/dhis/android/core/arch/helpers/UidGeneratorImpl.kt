@@ -25,37 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import java.util.Random
 
 
-import java.util.Random;
+class UidGeneratorImpl : UidGenerator {
+    override fun generate(): String {
+        val sr = Random()
 
-import androidx.annotation.NonNull;
-
-public final class UidGeneratorImpl implements UidGenerator {
-    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    private static final String ALLOWED_CHARS = "0123456789" + LETTERS;
-    private static final int NUMBER_OF_CODEPOINTS = ALLOWED_CHARS.length();
-    private static final int CODESIZE = 11;
-
-    @NonNull
-    @Override
-    public String generate() {
-        Random sr = new Random();
-
-        char[] randomChars = new char[CODESIZE];
+        val randomChars = CharArray(CODESIZE)
 
         // First char should be a letter
-        randomChars[0] = LETTERS.charAt(sr.nextInt(LETTERS.length()));
+        randomChars[0] = LETTERS[sr.nextInt(LETTERS.length)]
 
-        for (int i = 1; i < CODESIZE; ++i) {
-            randomChars[i] = ALLOWED_CHARS.charAt(
-                    sr.nextInt(NUMBER_OF_CODEPOINTS));
+        for (i in 1 until CODESIZE) {
+            randomChars[i] = ALLOWED_CHARS[sr.nextInt(NUMBER_OF_CODEPOINTS)]
         }
 
-        return new String(randomChars);
+        return String(randomChars)
+    }
+
+    companion object {
+        private const val LETTERS = ("abcdefghijklmnopqrstuvwxyz"
+            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+        private const val ALLOWED_CHARS = "0123456789" + LETTERS
+        private const val NUMBER_OF_CODEPOINTS = ALLOWED_CHARS.length
+        private const val CODESIZE = 11
     }
 }

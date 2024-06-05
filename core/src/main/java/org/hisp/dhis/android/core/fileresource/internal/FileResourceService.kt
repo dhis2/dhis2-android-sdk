@@ -29,6 +29,11 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.fileresource.FileResource
 import retrofit2.http.*
 
@@ -40,6 +45,13 @@ internal interface FileResourceService {
 
     @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
     suspend fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): FileResource
+
+    @GET(FILE_RESOURCES)
+    suspend fun getFileResources(
+        @Query("fields") @Which fields: Fields<FileResource>,
+        @Query("filter") @Where fileResources: Filter<FileResource, String>,
+        @Query("paging") paging: Boolean,
+    ): Payload<FileResource>
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
     suspend fun getImageFromTrackedEntityAttribute(

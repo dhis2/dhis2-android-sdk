@@ -1,0 +1,43 @@
+{
+  "FileResource": [
+    {
+      "name": "profile.png",
+      "created": "2022-12-12T04:22:49.229",
+      "lastUpdated": "2022-12-12T04:22:49.454",
+      "translations": [],
+      "externalAccess": false,
+      "createdBy": {
+        "id": "xE7jOejl9FI",
+        "code": null,
+        "name": "John Traore",
+        "displayName": "John Traore",
+        "username": "admin"
+      },
+      "userGroupAccesses": [],
+      "userAccesses": [],
+      "favorites": [],
+      "sharing": {
+        "external": false,
+        "users": {},
+        "userGroups": {}
+      },
+      "contentType": "image/png",
+      "contentLength": 9270,
+      "contentMd5": "c20a12625f68dedcd1172157e3a8734c",
+      "domain": "DATA_VALUE",
+      "hasMultipleStorageFiles": true,
+      "storageStatus": "STORED",
+      "displayName": "profile.png",
+      "user": {
+        "id": "xE7jOejl9FI",
+        "code": null,
+        "name": "John Traore",
+        "displayName": "John Traore",
+        "username": "admin"
+      },
+      "favorite": false,
+      "id": "befryEfXge5",
+      "attributeValues": []
+    }
+  ]
+}

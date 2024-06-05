@@ -49,7 +49,7 @@ object CoordinateHelper {
             val coordinateTokens: List<Double>
             try {
                 coordinateTokens = mapper.readValue<List<Double>>(geometry.coordinates(),
-                    object : TypeReference<List<Double?>?>() {})
+                    object : TypeReference<List<Double>?>() {})
             } catch (e: IOException) {
                 return null
             }

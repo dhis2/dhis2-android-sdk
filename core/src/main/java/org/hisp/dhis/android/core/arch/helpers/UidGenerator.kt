@@ -25,17 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
-
-import androidx.annotation.NonNull;
-
-public interface UidGenerator {
-
+interface UidGenerator {
     /**
      * Generates a pseudo random string using the allowed characters. Uid is
      * 11 characters long.
      */
-    @NonNull
-    String generate();
+    fun generate(): String
 }

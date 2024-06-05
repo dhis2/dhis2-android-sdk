@@ -82,7 +82,8 @@ object GeometryHelper {
             geometry,
             FeatureType.POINT,
             object : TypeReference<List<Double>>() {
-            })
+            },
+        )
     }
 
     /**
@@ -99,7 +100,8 @@ object GeometryHelper {
             geometry,
             FeatureType.POLYGON,
             object : TypeReference<List<List<List<Double>>>>() {
-            })
+            },
+        )
     }
 
     /**
@@ -112,10 +114,12 @@ object GeometryHelper {
     @JvmStatic
     @Throws(D2Error::class)
     fun getMultiPolygon(geometry: Geometry): List<List<List<List<Double>>>> {
-        return getGeometryObject(geometry,
+        return getGeometryObject(
+            geometry,
             FeatureType.MULTI_POLYGON,
             object : TypeReference<List<List<List<List<Double>>>>>() {
-            })
+            },
+        )
     }
 
     /**
@@ -225,7 +229,7 @@ object GeometryHelper {
     private fun <T> getGeometryObject(
         geometry: Geometry,
         type: FeatureType,
-        typeReference: TypeReference<T>
+        typeReference: TypeReference<T>,
     ): T {
         if (geometry.type() != type) {
             throw d2Error(null, "The given geometry has not " + type.geometryType + " type.")
@@ -239,8 +243,9 @@ object GeometryHelper {
             return ObjectMapper().readValue(geometry.coordinates(), typeReference)
         } catch (e: IOException) {
             throw d2Error(
-                e, "It has not been possible to generate a " + type.geometryType +
-                    " from geometry coordinates: " + geometry.coordinates() + "."
+                e,
+                "It has not been possible to generate a " + type.geometryType +
+                    " from geometry coordinates: " + geometry.coordinates() + ".",
             )
         }
     }

@@ -48,8 +48,10 @@ object CoordinateHelper {
             val mapper = ObjectMapper()
             val coordinateTokens: List<Double>
             try {
-                coordinateTokens = mapper.readValue<List<Double>>(geometry.coordinates(),
-                    object : TypeReference<List<Double>?>() {})
+                coordinateTokens = mapper.readValue<List<Double>>(
+                    geometry.coordinates(),
+                    object : TypeReference<List<Double>?>() {},
+                )
             } catch (e: IOException) {
                 return null
             }

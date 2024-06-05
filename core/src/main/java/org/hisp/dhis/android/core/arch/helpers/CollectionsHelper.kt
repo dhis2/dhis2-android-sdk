@@ -43,6 +43,7 @@ object CollectionsHelper {
      * @param list
      * @return
      */
+    @JvmStatic
     fun <T> safeUnmodifiableList(list: List<T>?): List<T>? {
         if (list != null) {
             return Collections.unmodifiableList(list)
@@ -79,12 +80,11 @@ object CollectionsHelper {
      */
     @JvmStatic
     @SafeVarargs
-    fun <T> appendInNewArray(first: Array<T>, vararg rest: T): Array<T?> {
+    fun appendInNewArray(first: Array<String>, vararg rest: String): Array<String> {
         val totalLength = first.size + rest.size
-
-        val result = first.copyOf(totalLength)
-        val offset = first.size
-        System.arraycopy(rest, 0, result, offset, rest.size)
+        val result = Array(totalLength) { "" }
+        System.arraycopy(first, 0, result, 0, first.size)
+        System.arraycopy(rest, 0, result, first.size, rest.size)
         return result
     }
 
@@ -95,7 +95,7 @@ object CollectionsHelper {
      * @return A [String] with the concatenated values.
      */
     @JvmStatic
-    fun commaAndSpaceSeparatedArrayValues(values: Array<String>): String {
+    fun commaAndSpaceSeparatedArrayValues(values: Array<String>?): String {
         val withBrackets = values.contentToString()
         return withBrackets.substring(1, withBrackets.length - 1)
     }
@@ -106,8 +106,9 @@ object CollectionsHelper {
      * @param values Collection with the values to concatenate.
      * @return A [String] with the concatenated values.
      */
-    fun commaAndSpaceSeparatedCollectionValues(values: Collection<String>): String {
-        return commaAndSpaceSeparatedArrayValues(values.toTypedArray<String>())
+    @JvmStatic
+    fun commaAndSpaceSeparatedCollectionValues(values: Collection<String>?): String {
+        return commaAndSpaceSeparatedArrayValues(values?.toTypedArray<String>())
     }
 
     /**
@@ -116,13 +117,8 @@ object CollectionsHelper {
      * @param objects Collection with the values to put in single quotes.
      * @return A [String[]] with the single quoted values.
      */
-    fun withSingleQuotationMarksArray(objects: Collection<String>): Array<String?> {
-        val withSingleQuotationMarksArray = arrayOfNulls<String>(objects.size)
-        var i = 0
-        for (o in objects) {
-            withSingleQuotationMarksArray[i++] = "'$o'"
-        }
-        return withSingleQuotationMarksArray
+    fun withSingleQuotationMarksArray(objects: Collection<String>?): Array<String> {
+        return objects?.map { "'$it'" }?.toTypedArray() ?: emptyArray()
     }
 
     /**
@@ -131,8 +127,8 @@ object CollectionsHelper {
      * @param value Value to put in single quotes.
      * @return The single quote [String] value.
      */
-    fun withSingleQuotationMarks(value: String): String {
-        return "'$value'"
+    fun withSingleQuotationMarks(value: String?): String {
+        return "'${value ?: ""}'"
     }
 
     /**
@@ -194,6 +190,7 @@ object CollectionsHelper {
      * @param size The maximum size of the partitions.
      * @return A [List] with the partitions of the given collection.
      */
+    @JvmStatic
     fun <T> setPartition(originalSet: Collection<T>, size: Int): List<MutableSet<T>> {
         val setCount = ceil(originalSet.size.toDouble() / size).toInt()
         val sets: MutableList<MutableSet<T>> = ArrayList(setCount)

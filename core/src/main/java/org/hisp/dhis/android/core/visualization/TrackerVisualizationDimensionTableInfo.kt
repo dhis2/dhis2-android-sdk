@@ -61,7 +61,7 @@ object TrackerVisualizationDimensionTableInfo {
             )
         }
 
-        override fun whereUpdate(): Array<String?> {
+        override fun whereUpdate(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 TRACKER_VISUALIZATION,

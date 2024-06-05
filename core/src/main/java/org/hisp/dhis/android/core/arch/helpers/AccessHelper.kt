@@ -25,36 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-
-public final class AccessHelper {
-
-    private AccessHelper() {}
-
+object AccessHelper {
     /**
      * Give access to the default access that has full access to read and write.
      *
-     * @return The default {@link Access} object.
+     * @return The default [Access] object.
      */
-    public static Access defaultAccess() {
-        return createForDataWrite(Boolean.TRUE);
+    @JvmStatic
+    fun defaultAccess(): Access {
+        return createForDataWrite(java.lang.Boolean.TRUE)
     }
 
     /**
-     * Creates an {@link Access} object with access to write and read metadata, access to read data and a customizable
+     * Creates an [Access] object with access to write and read metadata, access to read data and a customizable
      * access to write data.
      *
      * @param accessDataWrite Access to write data.
-     * @return An {@link Access} object.
+     * @return An [Access] object.
      */
-    public static Access createForDataWrite(@NonNull Boolean accessDataWrite) {
-        return Access.builder().read(Boolean.TRUE).write(Boolean.TRUE)
-                .data(DataAccess.builder().read(Boolean.TRUE).write(accessDataWrite).build()).build();
+    @JvmStatic
+    fun createForDataWrite(accessDataWrite: Boolean): Access {
+        return Access.builder().read(java.lang.Boolean.TRUE).write(java.lang.Boolean.TRUE)
+            .data(DataAccess.builder().read(java.lang.Boolean.TRUE).write(accessDataWrite).build())
+            .build()
     }
 }

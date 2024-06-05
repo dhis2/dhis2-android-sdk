@@ -25,45 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import java.util.Collections
+import kotlin.math.ceil
 
 /**
  * A collection of utility abstractions
  */
-public final class CollectionsHelper {
-
-    private CollectionsHelper() {
-        // no instances
-    }
-
+object CollectionsHelper {
     /**
      * A Null-safe safeUnmodifiableList.
      *
      * @param list
      * @return
      */
-    @Nullable
-    public static <T> List<T> safeUnmodifiableList(@Nullable List<T> list) {
+    fun <T> safeUnmodifiableList(list: List<T>?): List<T>? {
         if (list != null) {
-            return Collections.unmodifiableList(list);
+            return Collections.unmodifiableList(list)
         }
 
-        return null;
+        return null
     }
 
     /**
@@ -72,8 +57,8 @@ public final class CollectionsHelper {
      * @param object object with deleted() method.
      * @return A boolean with the response of the deleted() method.
      */
-    public static boolean isDeleted(@NonNull ObjectWithDeleteInterface object) {
-        return object.deleted() != null && object.deleted();
+    fun isDeleted(`object`: ObjectWithDeleteInterface): Boolean {
+        return `object`.deleted() != null && `object`.deleted()
     }
 
     /**
@@ -81,10 +66,8 @@ public final class CollectionsHelper {
      *
      * @param object Object to validate.
      */
-    public static <T> void isNull(T object) {
-        if (object == null) {
-            throw new IllegalArgumentException("Object must not be null");
-        }
+    fun <T> isNull(`object`: T?) {
+        requireNotNull(`object`) { "Object must not be null" }
     }
 
     /**
@@ -94,136 +77,135 @@ public final class CollectionsHelper {
      * @param rest Objects to append.
      * @return An new array with the all the objects.
      */
+    @JvmStatic
     @SafeVarargs
-    public static <T> T[] appendInNewArray(T[] first, T... rest) {
-        int totalLength = first.length + rest.length;
+    fun <T> appendInNewArray(first: Array<T>, vararg rest: T): Array<T?> {
+        val totalLength = first.size + rest.size
 
-        T[] result = Arrays.copyOf(first, totalLength);
-        int offset = first.length;
-        System.arraycopy(rest, 0, result, offset, rest.length);
-        return result;
+        val result = first.copyOf(totalLength)
+        val offset = first.size
+        System.arraycopy(rest, 0, result, offset, rest.size)
+        return result
     }
 
     /**
-     * Build a {@link String} with the values separated by commas and spaces.
+     * Build a [String] with the values separated by commas and spaces.
      *
      * @param values Array with the values to concatenate.
-     * @return A {@link String} with the concatenated values.
+     * @return A [String] with the concatenated values.
      */
-    @SuppressWarnings("PMD.UseVarargs")
-    public static String commaAndSpaceSeparatedArrayValues(String[] values) {
-        String withBrackets = Arrays.toString(values);
-        return withBrackets.substring(1, withBrackets.length() - 1);
+    @JvmStatic
+    fun commaAndSpaceSeparatedArrayValues(values: Array<String>): String {
+        val withBrackets = values.contentToString()
+        return withBrackets.substring(1, withBrackets.length - 1)
     }
 
     /**
-     * Build a {@link String} with the values separated by commas and spaces.
+     * Build a [String] with the values separated by commas and spaces.
      *
      * @param values Collection with the values to concatenate.
-     * @return A {@link String} with the concatenated values.
+     * @return A [String] with the concatenated values.
      */
-    @SuppressWarnings("PMD.OptimizableToArrayCall")
-    public static String commaAndSpaceSeparatedCollectionValues(Collection<String> values) {
-        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[0]));
+    fun commaAndSpaceSeparatedCollectionValues(values: Collection<String>): String {
+        return commaAndSpaceSeparatedArrayValues(values.toTypedArray<String>())
     }
 
     /**
      * Put in single quotes the string values inside a collection.
      *
      * @param objects Collection with the values to put in single quotes.
-     * @return A {@link String[]} with the single quoted values.
+     * @return A [String[]] with the single quoted values.
      */
-    public static String[] withSingleQuotationMarksArray(Collection<String> objects) {
-        String[] withSingleQuotationMarksArray = new String[objects.size()];
-        int i = 0;
-        for (String o: objects) {
-            withSingleQuotationMarksArray[i++] = "'" + o + "'";
+    fun withSingleQuotationMarksArray(objects: Collection<String>): Array<String?> {
+        val withSingleQuotationMarksArray = arrayOfNulls<String>(objects.size)
+        var i = 0
+        for (o in objects) {
+            withSingleQuotationMarksArray[i++] = "'$o'"
         }
-        return withSingleQuotationMarksArray;
+        return withSingleQuotationMarksArray
     }
 
     /**
      * Put in single quotes a value.
      *
      * @param value Value to put in single quotes.
-     * @return The single quote {@link String} value.
+     * @return The single quote [String] value.
      */
-    public static String withSingleQuotationMarks(String value) {
-        return "'" + value + "'";
+    fun withSingleQuotationMarks(value: String): String {
+        return "'$value'"
     }
 
     /**
-     * Build a {@link String} with the values separated by commas.
+     * Build a [String] with the values separated by commas.
      *
      * @param values Array with the values to concatenate.
-     * @return A {@link String} with the concatenated values.
+     * @return A [String] with the concatenated values.
      */
-    private static String commaSeparatedArrayValues(String... values) {
-        return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",");
+    private fun commaSeparatedArrayValues(vararg values: String): String {
+        return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",")
     }
 
     /**
-     * Build a {@link String} with the values separated by commas.
+     * Build a [String] with the values separated by commas.
      *
      * @param values Collection with the values to concatenate.
-     * @return A {@link String} with the concatenated values.
+     * @return A [String] with the concatenated values.
      */
-    public static String commaSeparatedCollectionValues(Collection<String> values) {
-        return commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    fun commaSeparatedCollectionValues(values: Collection<String>): String {
+        return commaSeparatedArrayValues(*values.toTypedArray<String>())
     }
 
     /**
-     * Build a {@link String} with the uids of the objects separated by commas.
+     * Build a [String] with the uids of the objects separated by commas.
      *
      * @param objectsWithUid Collection with the objects to concatenate.
-     * @return A {@link String} with the concatenated uids.
+     * @return A [String] with the concatenated uids.
      */
-    public static <O extends ObjectWithUidInterface> String commaSeparatedUids(Collection<O> objectsWithUid) {
-        return commaSeparatedCollectionValues(UidsHelper.getUids(objectsWithUid));
+    fun <O : ObjectWithUidInterface?> commaSeparatedUids(objectsWithUid: Collection<O>?): String {
+        return commaSeparatedCollectionValues(getUids<O>(objectsWithUid))
     }
 
     /**
-     * Build a {@link String} with the values separated by semicolons.
+     * Build a [String] with the values separated by semicolons.
      *
      * @param values Collection with the values to concatenate.
-     * @return A {@link String} with the concatenated values.
+     * @return A [String] with the concatenated values.
      */
-    public static String semicolonSeparatedCollectionValues(Collection<String> values) {
-        return joinCollectionWithSeparator(values, ";");
+    fun semicolonSeparatedCollectionValues(values: Collection<String>): String {
+        return joinCollectionWithSeparator(values, ";")
     }
 
     /**
-     * Build a {@link String} with the values separated by custom separators.
+     * Build a [String] with the values separated by custom separators.
      *
      * @param values    Collection with the values to concatenate.
      * @param separator Customizable separator.
-     * @return A {@link String} with the concatenated values.
+     * @return A [String] with the concatenated values.
      */
-    public static String joinCollectionWithSeparator(Collection<String> values, String separator) {
-        return commaSeparatedCollectionValues(values).replace(",", separator);
+    fun joinCollectionWithSeparator(values: Collection<String>, separator: String?): String {
+        return commaSeparatedCollectionValues(values).replace(",", separator!!)
     }
 
     /**
-     * Divide a {@link Collection} in a {@link List} of sets with a maximum size.
+     * Divide a [Collection] in a [List] of sets with a maximum size.
      *
      * @param originalSet The collection to divide.
      * @param size The maximum size of the partitions.
-     * @return A {@link List} with the partitions of the given collection.
+     * @return A [List] with the partitions of the given collection.
      */
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    public static <T> List<Set<T>> setPartition(Collection<T> originalSet, int size) {
-        int setCount = (int) Math.ceil((double) originalSet.size() / size);
-        List<Set<T>> sets = new ArrayList<>(setCount);
-        for (int i = 0; i < setCount; i++) {
-            Set<T> setI = new HashSet<>(size);
-            sets.add(setI);
+    fun <T> setPartition(originalSet: Collection<T>, size: Int): List<MutableSet<T>> {
+        val setCount = ceil(originalSet.size.toDouble() / size).toInt()
+        val sets: MutableList<MutableSet<T>> = ArrayList(setCount)
+        for (i in 0 until setCount) {
+            val setI: MutableSet<T> = HashSet(size)
+            sets.add(setI)
         }
 
-        int index = 0;
-        for (T object : originalSet) {
-            sets.get(index++ % setCount).add(object);
+        var index = 0
+        for (`object` in originalSet) {
+            sets[index++ % setCount].add(`object`)
         }
 
-        return sets;
+        return sets
     }
 }

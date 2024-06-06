@@ -69,7 +69,6 @@ class UtilsShould {
         Truth.assertThat(containsElementsInList(partition, list)).isTrue()
     }
 
-
     // Auxiliary methods
     private fun <T> containsElementsInList(partition: List<Set<T>>, list: Set<T>): Boolean {
         val flattenPartitions: MutableSet<T> = HashSet()

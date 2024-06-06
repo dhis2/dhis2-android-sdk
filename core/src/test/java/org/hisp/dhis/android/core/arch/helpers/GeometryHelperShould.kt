@@ -73,8 +73,8 @@ class GeometryHelperShould {
         val coordinates: List<List<List<Double?>?>?> = listOf(
             Arrays.asList<List<Double?>?>(
                 Lists.newArrayList(longitude1, latitude1),
-                Lists.newArrayList(longitude2, latitude2)
-            )
+                Lists.newArrayList(longitude2, latitude2),
+            ),
         )
 
         val geometry = createPolygonGeometry(coordinates)
@@ -92,17 +92,17 @@ class GeometryHelperShould {
                 Arrays.asList(
                     Arrays.asList<List<Double?>?>(
                         Lists.newArrayList(longitude1, latitude1),
-                        Lists.newArrayList(longitude2, latitude2)
+                        Lists.newArrayList(longitude2, latitude2),
                     ),
                     listOf<List<Double?>>(
-                        Lists.newArrayList(longitude1, latitude2)
-                    )
+                        Lists.newArrayList(longitude1, latitude2),
+                    ),
                 ),
                 listOf<List<List<Double?>?>>(
                     listOf<List<Double?>>(
-                        Lists.newArrayList(longitude2, latitude1)
-                    )
-                )
+                        Lists.newArrayList(longitude2, latitude1),
+                    ),
+                ),
             )
 
         val geometry = createMultiPolygonGeometry(coordinates)

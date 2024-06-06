@@ -203,35 +203,47 @@ internal class FileResourceDownloadCall(
         getUid: (V) -> String?,
     ): List<Pair<FileResource, V>> {
         val valueMap = values.associateBy { value -> getUid(value) }
-        return try {
-            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
-                val responseBody = coroutineAPICallExecutor.wrap {
-                    fileResourceService.getFileResources(
-                        FileResourceFields.allFields,
-                        FileResourceFields.uid.`in`(valueMap.keys.filterNotNull()),
-                        false,
+        return if (valueMap.isEmpty()) {
+            emptyList()
+        } else {
+            try {
+                if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+                    getIdsValuePairsInBulk(valueMap)
+                } else {
+                    getIdsValuePairsSequentially(valueMap)
+                }
+            } catch (d2Error: D2Error) {
+                Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
+                emptyList()
+            }
+        }
+    }
+
+    private suspend fun <V> getIdsValuePairsInBulk(valueMap: Map<String?, V>): List<Pair<FileResource, V>> {
+        val responseBody = coroutineAPICallExecutor.wrap {
+            fileResourceService.getFileResources(
+                FileResourceFields.allFields,
+                FileResourceFields.uid.`in`(valueMap.keys.filterNotNull()),
+                false,
+            )
+        }.getOrThrow()
+        return responseBody.items().mapNotNull { fileResource ->
+            valueMap[fileResource.uid()]?.let { value ->
+                Pair(fileResource, value)
+            }
+        }
+    }
+
+    private suspend fun <V> getIdsValuePairsSequentially(valueMap: Map<String?, V>): List<Pair<FileResource, V>> {
+        return valueMap.mapNotNull { (uid, value) ->
+            uid?.let {
+                val fileResource = coroutineAPICallExecutor.wrap {
+                    fileResourceService.getFileResource(
+                        uid,
                     )
                 }.getOrThrow()
-                responseBody.items().mapNotNull { fileResource ->
-                    valueMap[fileResource.uid()]?.let { value ->
-                        Pair(fileResource, value)
-                    }
-                }
-            } else {
-                values.mapNotNull { value ->
-                    getUid(value)?.let { uid ->
-                        val fileResource = coroutineAPICallExecutor.wrap {
-                            fileResourceService.getFileResource(
-                                uid,
-                            )
-                        }.getOrThrow()
-                        Pair(fileResource, value)
-                    }
-                }
+                Pair(fileResource, value)
             }
-        } catch (d2Error: D2Error) {
-            Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
-            return emptyList()
         }
     }
 

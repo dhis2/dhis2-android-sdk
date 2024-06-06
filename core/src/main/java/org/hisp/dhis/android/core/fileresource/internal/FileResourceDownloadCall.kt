@@ -62,7 +62,7 @@ internal class FileResourceDownloadCall(
     private val synchronizationSettingsStore: SynchronizationSettingStore,
     private val context: Context,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) {
 
     fun download(params: FileResourceDownloadParams): Flow<D2Progress> = flow {
@@ -186,7 +186,6 @@ internal class FileResourceDownloadCall(
         download: suspend (V) -> ResponseBody?,
         getUid: (V) -> String?,
     ) {
-
         val fileResources = getFileResources(values, getUid)
         val storedFileResources = fileResources.mapNotNull { (fileResource, value) ->
             downloadFile(value, maxContentLength, download, fileResource)
@@ -203,40 +202,36 @@ internal class FileResourceDownloadCall(
         values: List<V>,
         getUid: (V) -> String?,
     ): List<Pair<FileResource, V>> {
-        if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
-            val valueMap = values.associateBy { value -> getUid(value)}
-
-            try {
+        val valueMap = values.associateBy { value -> getUid(value) }
+        return try {
+            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
                 val responseBody = coroutineAPICallExecutor.wrap {
                     fileResourceService.getFileResources(
                         FileResourceFields.allFields,
                         FileResourceFields.uid.`in`(valueMap.keys.filterNotNull()),
-                        false
+                        false,
                     )
                 }.getOrThrow()
-                return responseBody.items().mapNotNull { fileResource ->
+                responseBody.items().mapNotNull { fileResource ->
                     valueMap[fileResource.uid()]?.let { value ->
                         Pair(fileResource, value)
                     }
                 }
-
-            } catch (d2Error: D2Error) {
-                Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
-                return emptyList()
-            }
-
-        } else {
-            return values.mapNotNull { value ->
-                getUid(value)?.let { uid ->
-                    try {
-                        val fileResource = coroutineAPICallExecutor.wrap { fileResourceService.getFileResource(uid) }.getOrThrow()
+            } else {
+                values.mapNotNull { value ->
+                    getUid(value)?.let { uid ->
+                        val fileResource = coroutineAPICallExecutor.wrap {
+                            fileResourceService.getFileResource(
+                                uid,
+                            )
+                        }.getOrThrow()
                         Pair(fileResource, value)
-                    } catch (d2Error: D2Error) {
-                        Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
-                        null
                     }
                 }
             }
+        } catch (d2Error: D2Error) {
+            Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
+            return emptyList()
         }
     }
 
@@ -245,30 +240,28 @@ internal class FileResourceDownloadCall(
         value: V,
         maxContentLength: Int?,
         download: suspend (V) -> ResponseBody?,
-        fileResource: FileResource
+        fileResource: FileResource,
     ): FileResource? {
+        val acceptedContentLength = (maxContentLength == null) ||
+            (fileResource.contentLength() == null) ||
+            (fileResource.contentLength()!! <= maxContentLength)
+
         return try {
-            val acceptedContentLength = (maxContentLength == null) ||
-                (fileResource.contentLength() == null) ||
-                (fileResource.contentLength()!! <= maxContentLength)
-
-            if (!acceptedContentLength || !FileResourceInternalAccessor.isStored(fileResource)) {
-                return null
+            if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
+                val responseBody = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
+                responseBody?.let {
+                    val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)
+                    fileResource.toBuilder().path(file.absolutePath).build()
+                }
+            } else {
+                null
             }
-            val responseBody = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
-
-            responseBody ?: return null
-
-            val file = FileResourceUtil.saveFileFromResponse(responseBody, fileResource, context)
-            fileResource.toBuilder().path(file.absolutePath).build()
-
         } catch (d2Error: D2Error) {
             fileResource.uid()?.let { fileResourceStore.deleteIfExists(it) }
             Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
             null
         }
     }
-
 
     companion object {
         const val defaultDownloadMaxContentLength: Int = 6000000

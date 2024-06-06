@@ -52,6 +52,4 @@ internal object FileResourceFields {
             fh.field<FileResourceDomain>(FileResourceTableInfo.Columns.DOMAIN),
             fh.field<FileResourceStorageStatus>(STORAGE_STATUS),
         ).build()
-
-
 }

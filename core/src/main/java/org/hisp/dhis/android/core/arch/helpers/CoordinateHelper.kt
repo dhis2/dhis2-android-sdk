@@ -43,21 +43,20 @@ object CoordinateHelper {
      */
     @JvmStatic
     fun getCoordinatesFromGeometry(geometry: Geometry): Coordinates? {
-        if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
-            val mapper = ObjectMapper()
-            val coordinateTokens: List<Double>
+        val mapper = ObjectMapper()
+        val coordinateTokens: List<Double>
+        return if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
             try {
                 coordinateTokens = mapper.readValue<List<Double>>(
                     geometry.coordinates(),
                     object : TypeReference<List<Double>?>() {},
                 )
+                Coordinates.create(coordinateTokens[1], coordinateTokens[0])
             } catch (e: IOException) {
-                return null
+                null
             }
-
-            return Coordinates.create(coordinateTokens[1], coordinateTokens[0])
         } else {
-            return null
+            null
         }
     }
 

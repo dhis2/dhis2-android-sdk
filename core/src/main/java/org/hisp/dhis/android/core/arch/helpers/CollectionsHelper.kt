@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.arch.helpers
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import kotlin.math.ceil
 
 /**
  * A collection of utility abstractions
  */
+@Suppress("TooManyFunctions")
 object CollectionsHelper {
     /**
      * A Null-safe safeUnmodifiableList.
@@ -53,8 +53,8 @@ object CollectionsHelper {
      * @param object object with deleted() method.
      * @return A boolean with the response of the deleted() method.
      */
-    fun isDeleted(`object`: ObjectWithDeleteInterface): Boolean {
-        return `object`.deleted() != null && `object`.deleted()
+    fun isDeleted(obj: ObjectWithDeleteInterface): Boolean {
+        return obj.deleted() ?: false
     }
 
     /**
@@ -62,8 +62,8 @@ object CollectionsHelper {
      *
      * @param object Object to validate.
      */
-    fun <T> isNull(`object`: T?) {
-        requireNotNull(`object`) { "Object must not be null" }
+    fun <T> isNull(obj: T?) {
+        requireNotNull(obj) { "Object must not be null" }
     }
 
     /**
@@ -139,6 +139,7 @@ object CollectionsHelper {
      * @param values Collection with the values to concatenate.
      * @return A [String] with the concatenated values.
      */
+    @Suppress("SpreadOperator")
     fun commaSeparatedCollectionValues(values: Collection<String>): String {
         return commaSeparatedArrayValues(*values.toTypedArray<String>())
     }

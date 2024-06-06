@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import java.io.IOException
 
+@Suppress("TooManyFunctions")
 object GeometryHelper {
     /**
      * Checks if the geometry contains a point.
@@ -222,6 +223,7 @@ object GeometryHelper {
         }
     }
 
+    @Suppress("ThrowsCount")
     @Throws(D2Error::class)
     private fun <T> getGeometryObject(
         geometry: Geometry,

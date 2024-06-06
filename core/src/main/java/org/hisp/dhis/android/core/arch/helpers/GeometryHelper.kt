@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import java.io.IOException
-import java.util.Collections
 
 object GeometryHelper {
     /**
@@ -131,9 +130,7 @@ object GeometryHelper {
      */
     @JvmStatic
     fun createPointGeometry(longitude: Double, latitude: Double): Geometry {
-        val point = ArrayList<Double>()
-        Collections.addAll(point, longitude, latitude)
-        return createPointGeometry(point)
+        return createPointGeometry(listOf(longitude, latitude))
     }
 
     /**

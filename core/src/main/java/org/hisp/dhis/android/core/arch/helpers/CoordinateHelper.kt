@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.Coordinates
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import java.io.IOException
-import java.util.Arrays
 
 object CoordinateHelper {
     /**
@@ -73,7 +72,7 @@ object CoordinateHelper {
         if (coordinates?.longitude() == null || coordinates.latitude() == null) {
             return null
         } else {
-            val coordinatesList = Arrays.asList(coordinates.longitude(), coordinates.latitude())
+            val coordinatesList = listOf(coordinates.longitude(), coordinates.latitude())
 
             return Geometry.builder()
                 .type(FeatureType.POINT)

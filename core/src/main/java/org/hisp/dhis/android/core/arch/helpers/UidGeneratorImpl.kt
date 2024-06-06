@@ -27,21 +27,15 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
-import java.util.Random
-
 class UidGeneratorImpl : UidGenerator {
     override fun generate(): String {
-        val sr = Random()
-
-        val randomChars = CharArray(CODESIZE)
-
-        // First char should be a letter
-        randomChars[0] = LETTERS[sr.nextInt(LETTERS.length)]
-
-        for (i in 1 until CODESIZE) {
-            randomChars[i] = ALLOWED_CHARS[sr.nextInt(NUMBER_OF_CODEPOINTS)]
+        val randomChars = CharArray(CODESIZE) {
+            if (it == 0) {
+                LETTERS.random()
+            } else {
+                ALLOWED_CHARS.random()
+            }
         }
-
         return String(randomChars)
     }
 
@@ -51,8 +45,7 @@ class UidGeneratorImpl : UidGenerator {
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             )
 
-        private const val ALLOWED_CHARS = "0123456789" + LETTERS
-        private const val NUMBER_OF_CODEPOINTS = ALLOWED_CHARS.length
-        private const val CODESIZE = 11
+        internal const val ALLOWED_CHARS = "0123456789" + LETTERS
+        internal const val CODESIZE = 11
     }
 }

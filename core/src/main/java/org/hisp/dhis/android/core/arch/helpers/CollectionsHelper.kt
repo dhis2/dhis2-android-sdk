@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.helpers
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import java.util.Collections
 import kotlin.math.ceil
 
 /**
@@ -44,12 +43,8 @@ object CollectionsHelper {
      * @return
      */
     @JvmStatic
-    fun <T> safeUnmodifiableList(list: List<T>?): List<T>? {
-        if (list != null) {
-            return Collections.unmodifiableList(list)
-        }
-
-        return null
+    fun <T> safeUnmodifiableList(list: MutableList<T>?): List<T>? {
+        return list?.toList()
     }
 
     /**
@@ -80,12 +75,8 @@ object CollectionsHelper {
      */
     @JvmStatic
     @SafeVarargs
-    fun appendInNewArray(first: Array<String>, vararg rest: String): Array<String> {
-        val totalLength = first.size + rest.size
-        val result = Array(totalLength) { "" }
-        System.arraycopy(first, 0, result, 0, first.size)
-        System.arraycopy(rest, 0, result, first.size, rest.size)
-        return result
+    fun <T> appendInNewArray(first: Array<T>, vararg rest: T): Array<T> {
+        return first + rest
     }
 
     /**
@@ -95,7 +86,7 @@ object CollectionsHelper {
      * @return A [String] with the concatenated values.
      */
     @JvmStatic
-    fun commaAndSpaceSeparatedArrayValues(values: Array<String>?): String {
+    fun commaAndSpaceSeparatedArrayValues(values: Array<String>): String {
         val withBrackets = values.contentToString()
         return withBrackets.substring(1, withBrackets.length - 1)
     }
@@ -107,8 +98,8 @@ object CollectionsHelper {
      * @return A [String] with the concatenated values.
      */
     @JvmStatic
-    fun commaAndSpaceSeparatedCollectionValues(values: Collection<String>?): String {
-        return commaAndSpaceSeparatedArrayValues(values?.toTypedArray<String>())
+    fun commaAndSpaceSeparatedCollectionValues(values: Collection<String>): String {
+        return commaAndSpaceSeparatedArrayValues(values.toTypedArray<String>())
     }
 
     /**
@@ -191,19 +182,7 @@ object CollectionsHelper {
      * @return A [List] with the partitions of the given collection.
      */
     @JvmStatic
-    fun <T> setPartition(originalSet: Collection<T>, size: Int): List<MutableSet<T>> {
-        val setCount = ceil(originalSet.size.toDouble() / size).toInt()
-        val sets: MutableList<MutableSet<T>> = ArrayList(setCount)
-        for (i in 0 until setCount) {
-            val setI: MutableSet<T> = HashSet(size)
-            sets.add(setI)
-        }
-
-        var index = 0
-        for (`object` in originalSet) {
-            sets[index++ % setCount].add(`object`)
-        }
-
-        return sets
+    fun <T> setPartition(originalSet: Collection<T>, size: Int): List<Set<T>> {
+        return originalSet.chunked(size).map { it.toSet() }
     }
 }

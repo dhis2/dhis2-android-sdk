@@ -25,43 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper.getCoordinatesFromGeometry
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper.getGeometryFromCoordinates
+import org.hisp.dhis.android.core.common.Coordinates
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import org.junit.Test
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CoordinateHelperShould {
-
-    private final static Double longitude = 43.34532;
-    private final static Double latitude = -23.98234;
-
+class CoordinateHelperShould {
     @Test
-    public void get_coordinates_from_geometry() {
-        Geometry geometry = Geometry.builder()
-                .type(FeatureType.POINT)
-                .coordinates(Lists.newArrayList(longitude, latitude).toString())
-                .build();
+    fun get_coordinates_from_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates(Lists.newArrayList(longitude, latitude).toString())
+            .build()
 
-        Coordinates coordinates = CoordinateHelper.getCoordinatesFromGeometry(geometry);
+        val coordinates = getCoordinatesFromGeometry(geometry)
 
-        assertThat(coordinates.longitude()).isEqualTo(longitude);
-        assertThat(coordinates.latitude()).isEqualTo(latitude);
+        Truth.assertThat(coordinates!!.longitude()).isEqualTo(longitude)
+        Truth.assertThat(coordinates.latitude()).isEqualTo(latitude)
     }
 
     @Test
-    public void get_geometry_from_coordinates() {
-        Coordinates coordinates = Coordinates.create(latitude, longitude);
+    fun get_geometry_from_coordinates() {
+        val coordinates = Coordinates.create(latitude, longitude)
 
-        Geometry geometry = CoordinateHelper.getGeometryFromCoordinates(coordinates);
+        val geometry = getGeometryFromCoordinates(coordinates)
 
-        assertThat(geometry.type()).isEqualTo(FeatureType.POINT);
-        assertThat(geometry.coordinates()).isEqualTo("[43.34532, -23.98234]");
+        Truth.assertThat(geometry!!.type()).isEqualTo(FeatureType.POINT)
+        Truth.assertThat(geometry.coordinates()).isEqualTo("[43.34532, -23.98234]")
+    }
+
+    companion object {
+        private const val longitude = 43.34532
+        private const val latitude = -23.98234
     }
 }

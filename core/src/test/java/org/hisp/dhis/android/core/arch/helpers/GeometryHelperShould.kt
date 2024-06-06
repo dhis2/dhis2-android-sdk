@@ -25,135 +25,148 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.createMultiPolygonGeometry
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.createPointGeometry
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.createPolygonGeometry
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.getMultiPolygon
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.getPoint
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.getPolygon
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.isDefinedAndValid
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.isValid
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.junit.Test
+import java.util.Arrays
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class GeometryHelperShould {
-
-    private final static Double longitude1 = 43.34532;
-    private final static Double latitude1 = -23.98234;
-    private final static Double longitude2 = -10.02322;
-    private final static Double latitude2 = 3.74597;
-
+class GeometryHelperShould {
     @Test
-    public void get_point_from_geometry_from_list() throws D2Error {
-        List<Double> coordinates = Lists.newArrayList(longitude1, latitude1);
+    @Throws(D2Error::class)
+    fun get_point_from_geometry_from_list() {
+        val coordinates: List<Double> = Lists.newArrayList(longitude1, latitude1)
 
-        Geometry geometry = GeometryHelper.createPointGeometry(coordinates);
+        val geometry = createPointGeometry(coordinates)
 
-        List<Double> point = GeometryHelper.getPoint(geometry);
+        val point: List<Double?> = getPoint(geometry)
 
-        assertThat(point).isEqualTo(coordinates);
+        Truth.assertThat(point).isEqualTo(coordinates)
     }
 
     @Test
-    public void get_point_from_geometry_from_longitude_and_latitude() throws D2Error {
-        Geometry geometry = GeometryHelper.createPointGeometry(longitude1, latitude1);
+    @Throws(D2Error::class)
+    fun get_point_from_geometry_from_longitude_and_latitude() {
+        val geometry = createPointGeometry(longitude1, latitude1)
 
-        List<Double> point = GeometryHelper.getPoint(geometry);
+        val point = getPoint(geometry)
 
-        assertThat(point.get(0)).isEqualTo(longitude1);
-        assertThat(point.get(1)).isEqualTo(latitude1);
+        Truth.assertThat(point[0]).isEqualTo(longitude1)
+        Truth.assertThat(point[1]).isEqualTo(latitude1)
     }
 
     @Test
-    public void get_polygon_from_geometry() throws D2Error {
-        List<List<List<Double>>> coordinates =
-                Collections.singletonList(Arrays.asList(
+    @Throws(D2Error::class)
+    fun get_polygon_from_geometry() {
+        val coordinates: List<List<List<Double?>?>?> = listOf(
+            Arrays.asList<List<Double?>?>(
+                Lists.newArrayList(longitude1, latitude1),
+                Lists.newArrayList(longitude2, latitude2)
+            )
+        )
+
+        val geometry = createPolygonGeometry(coordinates)
+
+        val polygon: List<List<List<Double>>?> = getPolygon(geometry)
+
+        Truth.assertThat(polygon).isEqualTo(coordinates)
+    }
+
+    @Test
+    @Throws(D2Error::class)
+    fun get_multipolygon_from_geometry() {
+        val coordinates =
+            Arrays.asList(
+                Arrays.asList(
+                    Arrays.asList<List<Double?>?>(
                         Lists.newArrayList(longitude1, latitude1),
                         Lists.newArrayList(longitude2, latitude2)
-                ));
+                    ),
+                    listOf<List<Double?>>(
+                        Lists.newArrayList(longitude1, latitude2)
+                    )
+                ),
+                listOf<List<List<Double?>?>>(
+                    listOf<List<Double?>>(
+                        Lists.newArrayList(longitude2, latitude1)
+                    )
+                )
+            )
 
-        Geometry geometry = GeometryHelper.createPolygonGeometry(coordinates);
+        val geometry = createMultiPolygonGeometry(coordinates)
 
-        List<List<List<Double>>> polygon = GeometryHelper.getPolygon(geometry);
+        val multiPolygon: List<List<List<List<Double>>>?> = getMultiPolygon(geometry)
 
-        assertThat(polygon).isEqualTo(coordinates);
+        Truth.assertThat(multiPolygon).isEqualTo(coordinates)
     }
 
     @Test
-    public void get_multipolygon_from_geometry() throws D2Error {
-        List<List<List<List<Double>>>> coordinates =
-                Arrays.asList(
-                        Arrays.asList(
-                                Arrays.asList(
-                                        Lists.newArrayList(longitude1, latitude1),
-                                        Lists.newArrayList(longitude2, latitude2)
-                                ),
-                                Collections.singletonList(
-                                        Lists.newArrayList(longitude1, latitude2)
-                                )),
-                        Collections.singletonList(Collections.singletonList(
-                                Lists.newArrayList(longitude2, latitude1)
-                        )));
+    fun should_build_coordinates_without_spaces() {
+        val coordinates: List<Double> = Lists.newArrayList(longitude1, latitude1)
 
-        Geometry geometry = GeometryHelper.createMultiPolygonGeometry(coordinates);
+        val geometry = createPointGeometry(coordinates)
 
-        List<List<List<List<Double>>>> multiPolygon = GeometryHelper.getMultiPolygon(geometry);
-
-        assertThat(multiPolygon).isEqualTo(coordinates);
+        val expectedCoordinates = "[" + longitude1 + "," + latitude1 + "]"
+        Truth.assertThat(geometry.coordinates()).isEqualTo(expectedCoordinates)
     }
 
     @Test
-    public void should_build_coordinates_without_spaces() {
-        List<Double> coordinates = Lists.newArrayList(longitude1, latitude1);
+    fun should_return_invalid_or_empty_geometry() {
+        Truth.assertThat(isDefinedAndValid(null)).isFalse()
 
-        Geometry geometry = GeometryHelper.createPointGeometry(coordinates);
+        val empty = Geometry.builder().build()
+        Truth.assertThat(isDefinedAndValid(empty)).isFalse()
 
-        String expectedCoordinates = "[" + longitude1 + "," + latitude1 + "]";
-        assertThat(geometry.coordinates()).isEqualTo(expectedCoordinates);
+        val incomplete = Geometry.builder().type(FeatureType.POINT).build()
+        Truth.assertThat(isDefinedAndValid(incomplete)).isFalse()
+
+        val invalid =
+            Geometry.builder().type(FeatureType.POINT).coordinates("invalid_coordinates").build()
+        Truth.assertThat(isDefinedAndValid(invalid)).isFalse()
+
+        val invalid2 = Geometry.builder().type(FeatureType.NONE).coordinates("[2.4, 4.5]").build()
+        Truth.assertThat(isDefinedAndValid(invalid2)).isFalse()
     }
 
     @Test
-    public void should_return_invalid_or_empty_geometry() {
-        assertThat(GeometryHelper.isDefinedAndValid(null)).isFalse();
+    fun should_return_valid_empty_geometry() {
+        val point = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates("[2.4, 4.5]").build()
+        Truth.assertThat(isDefinedAndValid(point)).isTrue()
 
-        Geometry empty = Geometry.builder().build();
-        assertThat(GeometryHelper.isDefinedAndValid(empty)).isFalse();
+        val polygon = Geometry.builder()
+            .type(FeatureType.POLYGON)
+            .coordinates("[[[2.4, 4.5]],[[4.4, 2.5]]]").build()
+        Truth.assertThat(isDefinedAndValid(polygon)).isTrue()
 
-        Geometry incomplete = Geometry.builder().type(FeatureType.POINT).build();
-        assertThat(GeometryHelper.isDefinedAndValid(incomplete)).isFalse();
-
-        Geometry invalid = Geometry.builder().type(FeatureType.POINT).coordinates("invalid_coordinates").build();
-        assertThat(GeometryHelper.isDefinedAndValid(invalid)).isFalse();
-
-        Geometry invalid2 = Geometry.builder().type(FeatureType.NONE).coordinates("[2.4, 4.5]").build();
-        assertThat(GeometryHelper.isDefinedAndValid(invalid2)).isFalse();
+        val multiPolygon = Geometry.builder()
+            .type(FeatureType.MULTI_POLYGON)
+            .coordinates("[[[[2.4, 4.5]]],[[[4.4, 2.5]]]]").build()
+        Truth.assertThat(isDefinedAndValid(multiPolygon)).isTrue()
     }
 
     @Test
-    public void should_return_valid_empty_geometry() {
-        Geometry point = Geometry.builder()
-                .type(FeatureType.POINT)
-                .coordinates("[2.4, 4.5]").build();
-        assertThat(GeometryHelper.isDefinedAndValid(point)).isTrue();
-
-        Geometry polygon = Geometry.builder()
-                .type(FeatureType.POLYGON)
-                .coordinates("[[[2.4, 4.5]],[[4.4, 2.5]]]").build();
-        assertThat(GeometryHelper.isDefinedAndValid(polygon)).isTrue();
-
-        Geometry multiPolygon = Geometry.builder()
-                .type(FeatureType.MULTI_POLYGON)
-                .coordinates("[[[[2.4, 4.5]]],[[[4.4, 2.5]]]]").build();
-        assertThat(GeometryHelper.isDefinedAndValid(multiPolygon)).isTrue();
+    fun should_return_valid_geometry_if_empty() {
+        Truth.assertThat(isValid(null)).isTrue()
     }
 
-    @Test
-    public void should_return_valid_geometry_if_empty() {
-        assertThat(GeometryHelper.isValid(null)).isTrue();
+    companion object {
+        private const val longitude1 = 43.34532
+        private const val latitude1 = -23.98234
+        private const val longitude2 = -10.02322
+        private const val latitude2 = 3.74597
     }
 }

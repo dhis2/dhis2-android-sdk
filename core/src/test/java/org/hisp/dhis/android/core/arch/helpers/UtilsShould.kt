@@ -25,66 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.setPartition
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.runners.MockitoJUnitRunner
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(MockitoJUnitRunner.class)
-public class UtilsShould {
-
-
+@RunWith(MockitoJUnitRunner::class)
+class UtilsShould {
     @Test
-    public void set_partition_returns_empty_array() {
-        Set<String> list = new HashSet<>();
+    fun set_partition_returns_empty_array() {
+        val list: Set<String> = HashSet()
 
-        List<Set<String>> partition = CollectionsHelper.setPartition(list, 10);
-        assertThat(partition).isEmpty();
+        val partition: List<Set<String>?> = setPartition(list, 10)
+        Truth.assertThat(partition).isEmpty()
     }
 
     @Test
-    public void set_partition_return_single_list() {
-        Set<String> list = new HashSet<>();
-        list.add("first");
-        list.add("second");
+    fun set_partition_return_single_list() {
+        val list: MutableSet<String> = HashSet()
+        list.add("first")
+        list.add("second")
 
-        List<Set<String>> partition = CollectionsHelper.setPartition(list, 10);
-        assertThat(partition.size()).isEqualTo(1);
-        assertThat(partition.get(0).size()).isEqualTo(2);
-        assertThat(containsElementsInList(partition, list)).isTrue();
+        val partition = setPartition(list, 10)
+        Truth.assertThat(partition.size).isEqualTo(1)
+        Truth.assertThat(partition[0].size).isEqualTo(2)
+        Truth.assertThat(containsElementsInList(partition, list)).isTrue()
     }
 
     @Test
-    public void set_partition_splits_list() {
-        Set<String> list = new HashSet<>();
-        for(int i = 0; i < 20; i++) {
-            list.add("element" + i);
+    fun set_partition_splits_list() {
+        val list: MutableSet<String> = HashSet()
+        for (i in 0..19) {
+            list.add("element$i")
         }
 
-        List<Set<String>> partition = CollectionsHelper.setPartition(list, 10);
-        assertThat(partition.size()).isEqualTo(2);
-        assertThat(partition.get(0).size()).isEqualTo(10);
-        assertThat(partition.get(1).size()).isEqualTo(10);
-        assertThat(containsElementsInList(partition, list)).isTrue();
+        val partition = setPartition(list, 10)
+        Truth.assertThat(partition.size).isEqualTo(2)
+        Truth.assertThat(partition[0].size).isEqualTo(10)
+        Truth.assertThat(partition[1].size).isEqualTo(10)
+        Truth.assertThat(containsElementsInList(partition, list)).isTrue()
     }
 
 
     // Auxiliary methods
-
-    private <T> Boolean containsElementsInList(List<Set<T>> partition, Set<T> list) {
-        Set<T> flattenPartitions = new HashSet<>();
-        for(Set<T> item : partition) {
-            flattenPartitions.addAll(item);
+    private fun <T> containsElementsInList(partition: List<Set<T>>, list: Set<T>): Boolean {
+        val flattenPartitions: MutableSet<T> = HashSet()
+        for (item in partition) {
+            flattenPartitions.addAll(item)
         }
 
-        return flattenPartitions.containsAll(list);
+        return flattenPartitions.containsAll(list)
     }
 }

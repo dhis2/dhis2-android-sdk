@@ -58,13 +58,9 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun response_successful_on_sync_meta_data_once() {
-        d2.userModule().logIn(username, password, "https://play.im.dhis2.org/stable-2-41-0/").blockingGet()
+        d2.userModule().logIn(username, password, url).blockingGet()
 
         d2.metadataModule().blockingDownload()
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byProgramUid(
-            "IpHINAT79UW",
-        ).limit(10).blockingDownload()
-        d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
         // TODO: add additional sync + break point.
         // when debugger stops at the new break point manually change metadata online & resume.

@@ -38,7 +38,7 @@ object AccessHelper {
      */
     @JvmStatic
     fun defaultAccess(): Access {
-        return createForDataWrite(java.lang.Boolean.TRUE)
+        return createForDataWrite(true)
     }
 
     /**
@@ -50,8 +50,8 @@ object AccessHelper {
      */
     @JvmStatic
     fun createForDataWrite(accessDataWrite: Boolean): Access {
-        return Access.builder().read(java.lang.Boolean.TRUE).write(java.lang.Boolean.TRUE)
-            .data(DataAccess.builder().read(java.lang.Boolean.TRUE).write(accessDataWrite).build())
+        return Access.builder().read(true).write(true)
+            .data(DataAccess.builder().read(true).write(accessDataWrite).build())
             .build()
     }
 }

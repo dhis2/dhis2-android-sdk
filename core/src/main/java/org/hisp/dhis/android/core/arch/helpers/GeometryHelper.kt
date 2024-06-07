@@ -183,23 +183,23 @@ object GeometryHelper {
         var valid = false
         if (geometry?.type() != null && geometry.coordinates() != null) {
             try {
-                when (geometry.type()) {
+                valid = when (geometry.type()) {
                     FeatureType.POINT -> {
                         getPoint(geometry)
-                        valid = true
+                        true
                     }
 
                     FeatureType.POLYGON -> {
                         getPolygon(geometry)
-                        valid = true
+                        true
                     }
 
                     FeatureType.MULTI_POLYGON -> {
                         getMultiPolygon(geometry)
-                        valid = true
+                        true
                     }
 
-                    else -> {}
+                    else -> false
                 }
             } catch (error: D2Error) {
                 valid = false

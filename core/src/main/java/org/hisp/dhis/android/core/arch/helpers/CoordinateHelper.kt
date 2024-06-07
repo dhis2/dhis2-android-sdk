@@ -68,12 +68,12 @@ object CoordinateHelper {
      */
     @JvmStatic
     fun getGeometryFromCoordinates(coordinates: Coordinates?): Geometry? {
-        if (coordinates?.longitude() == null || coordinates.latitude() == null) {
-            return null
+        return if (coordinates?.longitude() == null || coordinates.latitude() == null) {
+            null
         } else {
             val coordinatesList = listOf(coordinates.longitude(), coordinates.latitude())
 
-            return Geometry.builder()
+            Geometry.builder()
                 .type(FeatureType.POINT)
                 .coordinates(coordinatesList.toString())
                 .build()

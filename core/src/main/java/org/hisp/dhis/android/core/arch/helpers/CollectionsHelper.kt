@@ -43,7 +43,7 @@ object CollectionsHelper {
      * @return
      */
     @JvmStatic
-    fun <T> safeUnmodifiableList(list: MutableList<T>?): List<T>? {
+    fun <T> safeUnmodifiableList(list: List<T>?): List<T>? {
         return list?.toList()
     }
 

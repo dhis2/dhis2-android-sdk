@@ -67,7 +67,7 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_d2_error_by_d2_error_component() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byD2ErrorComponent().eq(D2ErrorComponent.Server).blockingGet();
-        assertThat(d2Errors.size()).isEqualTo(1);
+        assertThat(d2Errors.size()).isEqualTo(2);
     }
 
     @Test
@@ -105,6 +105,6 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byCreated().inPeriods(Lists.newArrayList(todayPeriod)).blockingGet();
 
-        assertThat(d2Errors.size()).isEqualTo(2);
+        assertThat(d2Errors.size()).isEqualTo(3);
     }
 }

@@ -47,8 +47,6 @@ import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 
 @SuppressWarnings("LongParameterList", "MagicNumber")
@@ -62,7 +60,6 @@ internal class FileResourceDownloadCall(
     private val synchronizationSettingsStore: SynchronizationSettingStore,
     private val context: Context,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dhisVersionManager: DHISVersionManager,
 ) {
 
     fun download(params: FileResourceDownloadParams): Flow<D2Progress> = flow {
@@ -206,16 +203,25 @@ internal class FileResourceDownloadCall(
         return if (valueMap.isEmpty()) {
             emptyList()
         } else {
+            val getIdsValuePairsFunction = getIdsValuePairsFactory<V>()
             try {
-                if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
-                    getIdsValuePairsInBulk(valueMap)
-                } else {
-                    getIdsValuePairsSequentially(valueMap)
-                }
+                getIdsValuePairsFunction(valueMap)
             } catch (d2Error: D2Error) {
                 Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
                 emptyList()
             }
+        }
+    }
+
+    private fun <V> getIdsValuePairsFactory(
+        shouldGetFileResourcesInBulk: Boolean = false,
+    ): suspend (Map<String?, V>) -> List<Pair<FileResource, V>> {
+        // request type forced to be sequential while ticket DHIS2-17535 gets resolved
+        // then, use version manager to return inBulk request type from proper version
+        return if (shouldGetFileResourcesInBulk) {
+            ::getIdsValuePairsInBulk
+        } else {
+            ::getIdsValuePairsSequentially
         }
     }
 

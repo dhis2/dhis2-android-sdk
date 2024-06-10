@@ -25,36 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-
-public final class AccessHelper {
-
-    private AccessHelper() {}
-
-    /**
-     * Give access to the default access that has full access to read and write.
-     *
-     * @return The default {@link Access} object.
-     */
-    public static Access defaultAccess() {
-        return createForDataWrite(Boolean.TRUE);
+class UidGeneratorImpl : UidGenerator {
+    override fun generate(): String {
+        val randomChars = CharArray(CODESIZE) {
+            if (it == 0) {
+                LETTERS.random()
+            } else {
+                ALLOWED_CHARS.random()
+            }
+        }
+        return String(randomChars)
     }
 
-    /**
-     * Creates an {@link Access} object with access to write and read metadata, access to read data and a customizable
-     * access to write data.
-     *
-     * @param accessDataWrite Access to write data.
-     * @return An {@link Access} object.
-     */
-    public static Access createForDataWrite(@NonNull Boolean accessDataWrite) {
-        return Access.builder().read(Boolean.TRUE).write(Boolean.TRUE)
-                .data(DataAccess.builder().read(Boolean.TRUE).write(accessDataWrite).build()).build();
+    companion object {
+        private const val LETTERS = (
+            "abcdefghijklmnopqrstuvwxyz" +
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            )
+
+        internal const val ALLOWED_CHARS = "0123456789" + LETTERS
+        internal const val CODESIZE = 11
     }
 }

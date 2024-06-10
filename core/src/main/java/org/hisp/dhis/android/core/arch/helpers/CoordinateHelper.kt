@@ -25,62 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.helpers;
+package org.hisp.dhis.android.core.arch.helpers
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.hisp.dhis.android.core.common.Coordinates
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import java.io.IOException
 
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-public final class CoordinateHelper {
-
-    private CoordinateHelper() {}
-
+object CoordinateHelper {
     /**
-     * Converts a {@link Geometry} object of type point in a {@link Coordinates} object.
+     * Converts a [Geometry] object of type point in a [Coordinates] object.
      *
      * @param geometry Geometry of type point with non null coordinates.
-     * @return The converted {@link Coordinates} object.
+     * @return The converted [Coordinates] object.
      */
-    public static Coordinates getCoordinatesFromGeometry(Geometry geometry) {
-        if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            List<Double> coordinateTokens;
+    @JvmStatic
+    fun getCoordinatesFromGeometry(geometry: Geometry): Coordinates? {
+        val mapper = ObjectMapper()
+        val coordinateTokens: List<Double>
+        return if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
             try {
-                coordinateTokens = mapper.readValue(geometry.coordinates(),
-                        new TypeReference<List<Double>>(){});
-            } catch (IOException e) {
-                return null;
+                coordinateTokens = mapper.readValue<List<Double>>(
+                    geometry.coordinates(),
+                    object : TypeReference<List<Double>?>() {},
+                )
+                Coordinates.create(coordinateTokens[1], coordinateTokens[0])
+            } catch (e: IOException) {
+                null
             }
-
-            return Coordinates.create(coordinateTokens.get(1), coordinateTokens.get(0));
         } else {
-            return null;
+            null
         }
     }
 
     /**
-     * Converts a {@link Coordinates} object in a {@link Geometry} object of type point.
+     * Converts a [Coordinates] object in a [Geometry] object of type point.
      *
      * @param coordinates Coordinates to convert.
-     * @return The converted {@link Geometry} object.
+     * @return The converted [Geometry] object.
      */
-    public static Geometry getGeometryFromCoordinates(Coordinates coordinates) {
-        if (coordinates == null || coordinates.longitude() == null || coordinates.latitude() == null) {
-            return null;
+    @JvmStatic
+    fun getGeometryFromCoordinates(coordinates: Coordinates?): Geometry? {
+        return if (coordinates?.longitude() == null || coordinates.latitude() == null) {
+            null
         } else {
-            List<Double> coordinatesList = Arrays.asList(coordinates.longitude(), coordinates.latitude());
+            val coordinatesList = listOf(coordinates.longitude(), coordinates.latitude())
 
-            return Geometry.builder()
-                    .type(FeatureType.POINT)
-                    .coordinates(coordinatesList.toString())
-                    .build();
+            Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates(coordinatesList.toString())
+                .build()
         }
     }
 }

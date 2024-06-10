@@ -81,7 +81,7 @@ internal class WhereClauseBuilder {
         return appendKeyValue(column, value, AND, " $operator ", "")
     }
 
-    fun appendNotInKeyStringValues(column: String, values: List<String?>?): WhereClauseBuilder {
+    fun appendNotInKeyStringValues(column: String, values: List<String>): WhereClauseBuilder {
         val valuesArray = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
             CollectionsHelper.withSingleQuotationMarksArray(values),
         )

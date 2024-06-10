@@ -25,17 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.arch.helpers;
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
 
-import androidx.annotation.NonNull;
-
-public interface UidGenerator {
+object AccessHelper {
+    /**
+     * Give access to the default access that has full access to read and write.
+     *
+     * @return The default [Access] object.
+     */
+    @JvmStatic
+    fun defaultAccess(): Access {
+        return createForDataWrite(true)
+    }
 
     /**
-     * Generates a pseudo random string using the allowed characters. Uid is
-     * 11 characters long.
+     * Creates an [Access] object with access to write and read metadata, access to read data and a customizable
+     * access to write data.
+     *
+     * @param accessDataWrite Access to write data.
+     * @return An [Access] object.
      */
-    @NonNull
-    String generate();
+    @JvmStatic
+    fun createForDataWrite(accessDataWrite: Boolean): Access {
+        return Access.builder().read(true).write(true)
+            .data(DataAccess.builder().read(true).write(accessDataWrite).build())
+            .build()
+    }
 }

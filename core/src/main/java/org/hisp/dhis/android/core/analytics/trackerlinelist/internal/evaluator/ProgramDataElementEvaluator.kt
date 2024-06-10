@@ -60,7 +60,7 @@ internal class ProgramDataElementEvaluator(
         val eventSelectClause = "IN (SELECT ${EventTableInfo.Columns.UID} " +
             "FROM ${EventTableInfo.TABLE_INFO.name()} " +
             "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
-            (item.programStage?.let { "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' " } ?: "") +
+            (item.programStage.let { "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' " }) +
             "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} ${if (eventIdx <= 0) "DESC" else "ASC"} " +
             "LIMIT 1 " +
             "OFFSET ${

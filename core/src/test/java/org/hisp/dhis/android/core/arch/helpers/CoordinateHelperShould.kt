@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.icon
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper.getCoordinatesFromGeometry
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper.getGeometryFromCoordinates
+import org.hisp.dhis.android.core.common.Coordinates
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
+class CoordinateHelperShould {
+    @Test
+    fun get_coordinates_from_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates(Lists.newArrayList(longitude, latitude).toString())
+            .build()
 
-object CustomIconTableInfo {
+        val coordinates = getCoordinatesFromGeometry(geometry)
 
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "CustomIcon"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
+        Truth.assertThat(coordinates!!.longitude()).isEqualTo(longitude)
+        Truth.assertThat(coordinates.latitude()).isEqualTo(latitude)
     }
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                KEY,
-                FILE_RESOURCE,
-                HREF,
-            )
-        }
+    @Test
+    fun get_geometry_from_coordinates() {
+        val coordinates = Coordinates.create(latitude, longitude)
 
-        override fun whereUpdate(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                KEY,
-            )
-        }
+        val geometry = getGeometryFromCoordinates(coordinates)
 
-        companion object {
-            const val KEY = "key"
-            const val FILE_RESOURCE = "fileResource"
-            const val HREF = "href"
-        }
+        Truth.assertThat(geometry!!.type()).isEqualTo(FeatureType.POINT)
+        Truth.assertThat(geometry.coordinates()).isEqualTo("[43.34532, -23.98234]")
+    }
+
+    companion object {
+        private const val longitude = 43.34532
+        private const val latitude = -23.98234
     }
 }

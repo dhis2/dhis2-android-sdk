@@ -57,7 +57,7 @@ object VisualizationDimensionItemTableInfo {
             )
         }
 
-        override fun whereUpdate(): Array<String?> {
+        override fun whereUpdate(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 VISUALIZATION,

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.helpers;
+package org.hisp.dhis.android.core.arch.helpers
 
-import com.google.common.collect.Lists;
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CoordinateHelperShould {
-
-    private final static Double longitude = 43.34532;
-    private final static Double latitude = -23.98234;
-
+@RunWith(JUnit4::class)
+class UidGeneratorShould {
     @Test
-    public void get_coordinates_from_geometry() {
-        Geometry geometry = Geometry.builder()
-                .type(FeatureType.POINT)
-                .coordinates(Lists.newArrayList(longitude, latitude).toString())
-                .build();
-
-        Coordinates coordinates = CoordinateHelper.getCoordinatesFromGeometry(geometry);
-
-        assertThat(coordinates.longitude()).isEqualTo(longitude);
-        assertThat(coordinates.latitude()).isEqualTo(latitude);
+    fun `generated UID length is correct`() {
+        val generator = UidGeneratorImpl()
+        val uid = generator.generate()
+        assertThat(UidGeneratorImpl.CODESIZE).isEqualTo(uid.length)
     }
 
     @Test
-    public void get_geometry_from_coordinates() {
-        Coordinates coordinates = Coordinates.create(latitude, longitude);
+    fun `generated UID contains only allowed characters`() {
+        val generator = UidGeneratorImpl()
+        val uid = generator.generate()
+        assertThat(uid.all { it in UidGeneratorImpl.ALLOWED_CHARS }).isTrue()
+    }
 
-        Geometry geometry = CoordinateHelper.getGeometryFromCoordinates(coordinates);
-
-        assertThat(geometry.type()).isEqualTo(FeatureType.POINT);
-        assertThat(geometry.coordinates()).isEqualTo("[43.34532, -23.98234]");
+    @Test
+    fun `first character of generated UID is a letter`() {
+        val generator = UidGeneratorImpl()
+        val uid = generator.generate()
+        assertThat(uid.first().isLetter()).isTrue()
     }
 }

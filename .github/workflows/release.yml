@@ -18,16 +18,8 @@ jobs:
       - name: Change wrapper permission
         run: chmod +x ./gradlew
 
-      - name: Publish Snapshot
-        if: github.ref_name != 'main' && github.ref_name != 'master'
-        run: ./gradlew :core:publishToSonatype
-        env:
-          NEXUS_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
-          NEXUS_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
-
-      - name: Publish Release
-        if: github.ref_name == 'main' || github.ref_name == 'master'
-        run: ./gradlew :core:publishToSonatype closeAndReleaseSonatypeStagingRepository -PremoveSnapshotSuffix
+      - name: Publish Maven
+        run: ./.github/workflows/scripts/publish-maven.sh
         env:
           NEXUS_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}

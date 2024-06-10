@@ -79,7 +79,6 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
     public abstract Long contentLength();
 
     @Nullable
-    @JsonProperty
     public abstract String path();
 
     @Nullable

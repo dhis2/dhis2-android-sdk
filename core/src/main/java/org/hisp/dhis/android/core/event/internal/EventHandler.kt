@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
@@ -53,6 +55,7 @@ internal class EventHandler(
     relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     eventStore: EventStore,
+    private val programStore: ProgramStore,
     private val trackedEntityDataValueHandler: TrackedEntityDataValueHandler,
     private val noteHandler: NoteHandler,
     private val noteVersionManager: NoteDHISVersionManager,
@@ -60,13 +63,31 @@ internal class EventHandler(
     private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Event>(eventStore, relationshipVersionManager, relationshipHandler) {
 
-    override fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
-        return if (GeometryHelper.isValid(o.geometry())) {
-            o
-        } else {
-            Log.i(this.javaClass.simpleName, "Event " + o.uid() + " has invalid geometry value")
-            o.toBuilder().geometry(null).build()
+    private var programTypes = mutableMapOf<String, ProgramType?>()
+
+    override fun beforeCollectionHandled(
+        oCollection: Collection<Event>,
+        params: IdentifiableDataHandlerParams,
+    ): Collection<Event> {
+        programStore.selectAll().forEach {
+            programTypes[it.uid()] = it.programType()
         }
+        return super.beforeCollectionHandled(oCollection, params)
+    }
+
+    override fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
+        val builder = o.toBuilder()
+
+        if (programTypes[o.program()] == ProgramType.WITHOUT_REGISTRATION) {
+            builder.enrollment(null)
+        }
+
+        if (!GeometryHelper.isValid(o.geometry())) {
+            Log.i(this.javaClass.simpleName, "Event " + o.uid() + " has invalid geometry value")
+            builder.geometry(null)
+        }
+
+        return builder.build()
     }
 
     override fun afterObjectHandled(
@@ -105,6 +126,10 @@ internal class EventHandler(
                 relationshipOrphanCleaner.deleteOrphan(o, relationships)
             }
         }
+    }
+    override fun afterCollectionHandled(oCollection: Collection<Event>?, params: IdentifiableDataHandlerParams) {
+        programTypes.clear()
+        super.afterCollectionHandled(oCollection, params)
     }
 
     override fun deleteIfCondition(o: Event): Boolean {

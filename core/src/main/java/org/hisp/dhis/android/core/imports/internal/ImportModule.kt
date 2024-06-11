@@ -25,12 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository;
-import org.hisp.dhis.android.core.imports.TrackerJobManager;
+import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository
+import org.hisp.dhis.android.core.imports.TrackerJobManager
 
-public interface ImportModule {
-    TrackerImportConflictCollectionRepository trackerImportConflicts();
-    TrackerJobManager jobManager();
+interface ImportModule {
+    fun trackerImportConflicts(): TrackerImportConflictCollectionRepository
+    fun jobManager(): TrackerJobManager
 }

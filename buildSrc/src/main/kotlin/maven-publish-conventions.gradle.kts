@@ -26,50 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.net.URI
-
 plugins {
     `maven-publish`
     signing
 }
 
-val VERSION_NAME: String by project
-
 fun isReleaseBuild(): Boolean {
-    return !VERSION_NAME.contains("SNAPSHOT")
+    return !version.toString().endsWith("-SNAPSHOT")
 }
 
-val releaseRepositoryUrl: String = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-
-val snapshotRepositoryUrl: String = "https://oss.sonatype.org/content/repositories/snapshots/"
-
-fun getRepositoryUsername(): String? {
-    return System.getenv("NEXUS_USERNAME")
-}
-
-fun getRepositoryPassword(): String? {
-    return System.getenv("NEXUS_PASSWORD")
-}
-
-fun gpgKeyId(): String? {
-    return System.getenv("GPG_KEY_ID")
-}
-
-fun gpgKeyLocation(): String? {
-    return System.getenv("GPG_KEY_LOCATION")
-}
-
-fun gpgPassphrase(): String? {
-    return System.getenv("GPG_PASSPHRASE")
-}
-
-gradle.taskGraph.whenReady(closureOf<TaskExecutionGraph> {
-    if (gradle.taskGraph.allTasks.any { it is Sign }) {
-        allprojects { ext["signing.keyId"] = gpgKeyId() }
-        allprojects { ext["signing.secretKeyRingFile"] = gpgKeyLocation() }
-        allprojects { ext["signing.password"] = gpgPassphrase() }
-    }
-})
+val signingPrivateKey: String? = System.getenv("SIGNING_PRIVATE_KEY")
+val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
 
 val androidJavadocsJar = tasks.register("androidJavadocsJar", Jar::class) {
     archiveClassifier.set("javadoc")
@@ -85,9 +52,7 @@ afterEvaluate {
                 from(components["release"])
                 artifact(androidJavadocsJar)
 
-                groupId = Props.GROUP
                 artifactId = Props.POM_ARTIFACT_ID
-                version = VERSION_NAME
 
                 pom {
                     name = Props.POM_NAME
@@ -114,22 +79,12 @@ afterEvaluate {
                     }
                 }
             }
-
-            repositories {
-                maven {
-                    url = if (isReleaseBuild()) URI(releaseRepositoryUrl) else URI(snapshotRepositoryUrl)
-
-                    credentials {
-                        username = getRepositoryUsername()
-                        password = getRepositoryPassword()
-                    }
-                }
-            }
         }
+    }
 
-        signing {
-            setRequired({ isReleaseBuild() && gradle.taskGraph.hasTask("publishing") })
-            sign(publishing.publications)
-        }
+    signing {
+        setRequired({ isReleaseBuild() && gradle.taskGraph.hasTask("publishing") })
+        useInMemoryPgpKeys(signingPrivateKey, signingPassword)
+        sign(publishing.publications)
     }
 }

@@ -63,31 +63,27 @@ internal class EventHandler(
     private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Event>(eventStore, relationshipVersionManager, relationshipHandler) {
 
-    private var programTypes = mutableMapOf<String, ProgramType?>()
-
     override fun beforeCollectionHandled(
         oCollection: Collection<Event>,
         params: IdentifiableDataHandlerParams,
     ): Collection<Event> {
-        programStore.selectAll().forEach {
-            programTypes[it.uid()] = it.programType()
+        val programTypes = programStore.selectAll().associate { it.uid() to it.programType() }
+
+        val updatedEvents = oCollection.map {
+            it.takeUnless { programTypes[it.program()] == ProgramType.WITHOUT_REGISTRATION }
+                ?: it.toBuilder().enrollment(null).build()
         }
-        return super.beforeCollectionHandled(oCollection, params)
+
+        return super.beforeCollectionHandled(updatedEvents, params)
     }
 
     override fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
-        val builder = o.toBuilder()
-
-        if (programTypes[o.program()] == ProgramType.WITHOUT_REGISTRATION) {
-            builder.enrollment(null)
+        return if (GeometryHelper.isValid(o.geometry())) {
+            o
+        } else {
+            Log.i(this::class.simpleName, "Event ${o.uid()} has an invalid geometry value")
+            o.toBuilder().geometry(null).build()
         }
-
-        if (!GeometryHelper.isValid(o.geometry())) {
-            Log.i(this.javaClass.simpleName, "Event " + o.uid() + " has invalid geometry value")
-            builder.geometry(null)
-        }
-
-        return builder.build()
     }
 
     override fun afterObjectHandled(
@@ -126,10 +122,6 @@ internal class EventHandler(
                 relationshipOrphanCleaner.deleteOrphan(o, relationships)
             }
         }
-    }
-    override fun afterCollectionHandled(oCollection: Collection<Event>?, params: IdentifiableDataHandlerParams) {
-        programTypes.clear()
-        super.afterCollectionHandled(oCollection, params)
     }
 
     override fun deleteIfCondition(o: Event): Boolean {

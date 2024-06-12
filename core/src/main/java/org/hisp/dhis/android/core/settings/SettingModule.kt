@@ -25,33 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+interface SettingModule {
+    fun systemSetting(): SystemSettingCollectionRepository
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+    fun generalSetting(): GeneralSettingObjectRepository
 
-    GeneralSettingObjectRepository generalSetting();
+    @Deprecated("Use {@link #synchronizationSettings()} instead.")
+    fun dataSetSetting(): DataSetSettingsObjectRepository
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    @Deprecated("Use {@link #synchronizationSettings()} instead.")
+    fun programSetting(): ProgramSettingsObjectRepository
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    fun synchronizationSettings(): SynchronizationSettingObjectRepository
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    fun analyticsSetting(): AnalyticsSettingObjectRepository
 
-    AnalyticsSettingObjectRepository analyticsSetting();
+    fun userSettings(): UserSettingsObjectRepository
 
-    UserSettingsObjectRepository userSettings();
+    fun appearanceSettings(): AppearanceSettingsObjectRepository
 
-    AppearanceSettingsObjectRepository appearanceSettings();
-
-    LatestAppVersionObjectRepository latestAppVersion();
+    fun latestAppVersion(): LatestAppVersionObjectRepository
 }

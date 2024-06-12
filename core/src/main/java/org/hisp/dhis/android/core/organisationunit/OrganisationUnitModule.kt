@@ -25,12 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit
 
-package org.hisp.dhis.android.core.organisationunit;
-
-public interface OrganisationUnitModule {
-    OrganisationUnitCollectionRepository organisationUnits();
-    OrganisationUnitGroupCollectionRepository organisationUnitGroups();
-    OrganisationUnitLevelCollectionRepository organisationUnitLevels();
-    OrganisationUnitService organisationUnitService();
+interface OrganisationUnitModule {
+    fun organisationUnits(): OrganisationUnitCollectionRepository
+    fun organisationUnitGroups(): OrganisationUnitGroupCollectionRepository
+    fun organisationUnitLevels(): OrganisationUnitLevelCollectionRepository
+    fun organisationUnitService(): OrganisationUnitService
 }

@@ -25,10 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-public interface RelationshipModule {
-    RelationshipTypeCollectionRepository relationshipTypes();
-    RelationshipCollectionRepository relationships();
-    RelationshipService relationshipService();
+interface RelationshipModule {
+    fun relationshipTypes(): RelationshipTypeCollectionRepository
+    fun relationships(): RelationshipCollectionRepository
+    fun relationshipService(): RelationshipService
 }

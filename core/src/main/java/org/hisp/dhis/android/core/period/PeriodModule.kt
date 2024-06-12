@@ -25,11 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period
 
-import org.hisp.dhis.android.core.period.internal.PeriodHelper;
+import org.hisp.dhis.android.core.period.internal.PeriodHelper
 
-public interface PeriodModule {
-    PeriodHelper periodHelper();
-    PeriodCollectionRepository periods();
+interface PeriodModule {
+    fun periodHelper(): PeriodHelper
+    fun periods(): PeriodCollectionRepository
 }

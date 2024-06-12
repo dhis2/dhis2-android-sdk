@@ -25,13 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation
 
-package org.hisp.dhis.android.core.validation;
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 
-import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+interface ValidationModule {
+    fun validationRules(): ValidationRuleCollectionRepository
 
-public interface ValidationModule {
-    ValidationRuleCollectionRepository validationRules();
-
-    ValidationEngine validationEngine();
+    fun validationEngine(): ValidationEngine
 }

@@ -25,37 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.sms
 
-package org.hisp.dhis.android.testapp.sms;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
-import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
-import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
-
+@RunWith(D2JunitRunner::class)
+class SmsModuleMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     @Test
-    public void access_submit_case() {
-        SmsSubmitCase submitCase = d2.smsModule().smsSubmitCase();
-        assertThat(submitCase).isNotNull();
+    fun access_submit_case() {
+        var submitCase = d2.smsModule().smsSubmitCase()
+        Truth.assertThat(submitCase).isNotNull()
     }
 
     @Test
-    public void access_qr_case() {
-        QrCodeCase qrCodeCase = d2.smsModule().qrCodeCase();
-        assertThat(qrCodeCase).isNotNull();
+    fun access_qr_case() {
+        var qrCodeCase = d2.smsModule().qrCodeCase()
+        Truth.assertThat(qrCodeCase).isNotNull()
     }
 
     @Test
-    public void access_config_case() {
-        ConfigCase configCase = d2.smsModule().configCase();
-        assertThat(configCase).isNotNull();
+    fun access_config_case() {
+        var configCase = d2.smsModule().configCase()
+        Truth.assertThat(configCase).isNotNull()
     }
 }

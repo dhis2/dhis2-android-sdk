@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.modules.internal
 
-package org.hisp.dhis.android.core.arch.modules.internal;
+import kotlin.reflect.KCallable
 
-import java.util.concurrent.Callable;
-
-public interface MetadataModuleDownloader<O> {
-   Callable<O> downloadMetadata();
+interface MetadataModuleDownloader<O> {
+    fun downloadMetadata(): KCallable<O>
 }

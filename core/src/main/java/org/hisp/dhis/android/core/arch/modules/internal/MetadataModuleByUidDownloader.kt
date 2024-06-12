@@ -25,13 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.modules.internal
 
-package org.hisp.dhis.android.core.arch.modules.internal;
+import io.reactivex.Single
 
-import java.util.Set;
-
-import io.reactivex.Single;
-
-public interface MetadataModuleByUidDownloader<O> {
-   Single<O> downloadMetadata(Set<String> uids);
+interface MetadataModuleByUidDownloader<O> {
+    fun downloadMetadata(uids: Set<String>): Single<O>
 }

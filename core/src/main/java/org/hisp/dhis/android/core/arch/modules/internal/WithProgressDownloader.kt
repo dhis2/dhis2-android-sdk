@@ -25,13 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.modules.internal;
+package org.hisp.dhis.android.core.arch.modules.internal
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
 
-import io.reactivex.Observable;
-
-public interface WithProgressDownloader {
-    Observable<D2Progress> download();
-    void blockingDownload();
+interface WithProgressDownloader {
+    fun download(): Observable<D2Progress>
+    fun blockingDownload()
 }

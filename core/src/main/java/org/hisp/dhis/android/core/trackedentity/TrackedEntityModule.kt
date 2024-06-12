@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository
 
+@Suppress("TooManyFunctions")
 interface TrackedEntityModule {
     fun trackedEntityTypes(): TrackedEntityTypeCollectionRepository
     fun trackedEntityInstances(): TrackedEntityInstanceCollectionRepository

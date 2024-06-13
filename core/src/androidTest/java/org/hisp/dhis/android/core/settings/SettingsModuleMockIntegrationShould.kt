@@ -38,38 +38,38 @@ import org.junit.runner.RunWith
 class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_system_setting() {
-        var systemSettings: List<SystemSetting?> = d2.settingModule().systemSetting().blockingGet()
+        val systemSettings: List<SystemSetting?> = d2.settingModule().systemSetting().blockingGet()
         Truth.assertThat(systemSettings.size).isEqualTo(3)
     }
 
     @Test
     fun allow_access_to_system_setting_filtered_by_key() {
-        var systemSettingsFlag = d2.settingModule().systemSetting().byKey()
+        val systemSettingsFlag = d2.settingModule().systemSetting().byKey()
             .eq(SystemSettingKey.FLAG).blockingGet()
         Truth.assertThat(systemSettingsFlag.size).isEqualTo(1)
         Truth.assertThat(systemSettingsFlag.get(0).value()).isEqualTo("sierra_leone")
 
-        var systemSettingsStyle = d2.settingModule().systemSetting().byKey()
+        val systemSettingsStyle = d2.settingModule().systemSetting().byKey()
             .eq(SystemSettingKey.STYLE).blockingGet()
         Truth.assertThat(systemSettingsStyle.get(0).value()).isEqualTo("light_blue/light_blue.css")
 
-        var systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byKey()
+        val systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byKey()
             .eq(SystemSettingKey.DEFAULT_BASE_MAP).blockingGet()
         Truth.assertThat(systemSettingsDefaultBaseMap.get(0).value()).isEqualTo("keyDefaultBaseMap")
     }
 
     @Test
     fun allow_access_to_system_setting_filtered_by_value() {
-        var systemSettingsFlag = d2.settingModule().systemSetting().byValue()
+        val systemSettingsFlag = d2.settingModule().systemSetting().byValue()
             .eq("sierra_leone").blockingGet()
         Truth.assertThat(systemSettingsFlag.size).isEqualTo(1)
         Truth.assertThat(systemSettingsFlag.get(0).key()).isEqualTo(SystemSettingKey.FLAG)
 
-        var systemSettingsStyle = d2.settingModule().systemSetting().byValue()
+        val systemSettingsStyle = d2.settingModule().systemSetting().byValue()
             .eq("light_blue/light_blue.css").blockingGet()
         Truth.assertThat(systemSettingsStyle.get(0).key()).isEqualTo(SystemSettingKey.STYLE)
 
-        var systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byValue()
+        val systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byValue()
             .eq("keyDefaultBaseMap").blockingGet()
         Truth.assertThat(systemSettingsDefaultBaseMap.get(0).key())
             .isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
@@ -77,21 +77,21 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
     @Test
     fun allow_access_to_flag_settings() {
-        var systemSetting = d2.settingModule().systemSetting().flag().blockingGet()
+        val systemSetting = d2.settingModule().systemSetting().flag().blockingGet()
         Truth.assertThat(systemSetting!!.key()).isEqualTo(SystemSettingKey.FLAG)
         Truth.assertThat(systemSetting.value()).isEqualTo("sierra_leone")
     }
 
     @Test
     fun allow_access_to_style_settings() {
-        var systemSetting = d2.settingModule().systemSetting().style().blockingGet()
+        val systemSetting = d2.settingModule().systemSetting().style().blockingGet()
         Truth.assertThat(systemSetting!!.key()).isEqualTo(SystemSettingKey.STYLE)
         Truth.assertThat(systemSetting.value()).isEqualTo("light_blue/light_blue.css")
     }
 
     @Test
     fun allow_access_to_default_base_map_settings() {
-        var systemSetting = d2.settingModule().systemSetting().defaultBaseMap().blockingGet()
+        val systemSetting = d2.settingModule().systemSetting().defaultBaseMap().blockingGet()
         Truth.assertThat(systemSetting!!.key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
         Truth.assertThat(systemSetting.value()).isEqualTo("keyDefaultBaseMap")
     }

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.settings
 
 interface SettingModule {
     fun systemSetting(): SystemSettingCollectionRepository
-
     fun generalSetting(): GeneralSettingObjectRepository
 
     @Deprecated("Use {@link #synchronizationSettings()} instead.")
@@ -37,14 +36,9 @@ interface SettingModule {
 
     @Deprecated("Use {@link #synchronizationSettings()} instead.")
     fun programSetting(): ProgramSettingsObjectRepository
-
     fun synchronizationSettings(): SynchronizationSettingObjectRepository
-
     fun analyticsSetting(): AnalyticsSettingObjectRepository
-
     fun userSettings(): UserSettingsObjectRepository
-
     fun appearanceSettings(): AppearanceSettingsObjectRepository
-
     fun latestAppVersion(): LatestAppVersionObjectRepository
 }

@@ -32,6 +32,5 @@ interface CategoryModule {
     fun categoryOptions(): CategoryOptionCollectionRepository
     fun categoryOptionCombos(): CategoryOptionComboCollectionRepository
     fun categoryCombos(): CategoryComboCollectionRepository
-
     fun categoryOptionComboService(): CategoryOptionComboService
 }

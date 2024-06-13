@@ -37,19 +37,16 @@ import org.junit.runner.RunWith
 class SmsModuleMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     @Test
     fun access_submit_case() {
-        var submitCase = d2.smsModule().smsSubmitCase()
-        Truth.assertThat(submitCase).isNotNull()
+        Truth.assertThat(d2.smsModule().smsSubmitCase()).isNotNull()
     }
 
     @Test
     fun access_qr_case() {
-        var qrCodeCase = d2.smsModule().qrCodeCase()
-        Truth.assertThat(qrCodeCase).isNotNull()
+        Truth.assertThat(d2.smsModule().qrCodeCase()).isNotNull()
     }
 
     @Test
     fun access_config_case() {
-        var configCase = d2.smsModule().configCase()
-        Truth.assertThat(configCase).isNotNull()
+        Truth.assertThat(d2.smsModule().configCase()).isNotNull()
     }
 }

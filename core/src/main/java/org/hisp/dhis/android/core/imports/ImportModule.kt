@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports.internal
-
-import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository
-import org.hisp.dhis.android.core.imports.TrackerJobManager
+package org.hisp.dhis.android.core.imports
 
 interface ImportModule {
     fun trackerImportConflicts(): TrackerImportConflictCollectionRepository

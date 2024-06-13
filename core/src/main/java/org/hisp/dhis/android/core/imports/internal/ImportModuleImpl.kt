@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
+import org.hisp.dhis.android.core.imports.ImportModule
 import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository
 import org.hisp.dhis.android.core.imports.TrackerJobManager
 import org.koin.core.annotation.Singleton

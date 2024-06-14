@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 import org.hisp.dhis.android.core.relationship.TrackerDataView;
 
 final class RelationshipConstraintFields {
@@ -43,7 +42,7 @@ final class RelationshipConstraintFields {
     static final Fields<RelationshipConstraint> allFields = Fields.<RelationshipConstraint>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<RelationshipEntityType>field(Columns.RELATIONSHIP_ENTITY),
+                    fh.field(Columns.RELATIONSHIP_ENTITY),
                     fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(Columns.PROGRAM),
                     fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),

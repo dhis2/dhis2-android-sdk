@@ -32,22 +32,21 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns;
-import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 
 public final class ProgramRuleActionFields {
 
-    private static FieldsHelper<ProgramRuleAction> fh = new FieldsHelper<>();
+    private static final FieldsHelper<ProgramRuleAction> fh = new FieldsHelper<>();
 
     static final Fields<ProgramRuleAction> allFields = Fields.<ProgramRuleAction>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(Columns.DATA),
-                    fh.<String>field(Columns.CONTENT),
-                    fh.<String>field(Columns.LOCATION),
+                    fh.field(Columns.DATA),
+                    fh.field(Columns.CONTENT),
+                    fh.field(Columns.LOCATION),
                     fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
                     fh.nestedFieldWithUid(Columns.PROGRAM_INDICATOR),
                     fh.nestedFieldWithUid(Columns.PROGRAM_STAGE_SECTION),
-                    fh.<ProgramRuleActionType>field(Columns.PROGRAM_RULE_ACTION_TYPE),
+                    fh.field(Columns.PROGRAM_RULE_ACTION_TYPE),
                     fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
                     fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
                     fh.nestedFieldWithUid(Columns.OPTION),

@@ -43,8 +43,8 @@ public final class UserCredentialsFields {
     public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(BaseIdentifiableObject.UUID),
-                    fh.<String>field(USERNAME),
+                    fh.field(BaseIdentifiableObject.UUID),
+                    fh.field(USERNAME),
                     fh.<UserRole>nestedField(USER_ROLES).with(UserRoleFields.allFields)
             ).build();
 

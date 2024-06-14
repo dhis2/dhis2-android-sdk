@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataapproval.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
-import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
 import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo.Columns;
 
 public final class DataApprovalFields {
@@ -41,14 +40,14 @@ public final class DataApprovalFields {
     public static final String PERIOD = "pe";
     public static final String ATTRIBUTE_OPTION_COMBO = "aoc";
 
-    private static FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
+    private static final FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataApproval> allFields = Fields.<DataApproval>builder().fields(
-            fieldsHelper.<String>field(WORKFLOW),
-            fieldsHelper.<String>field(ORGANISATION_UNIT),
-            fieldsHelper.<String>field(PERIOD),
-            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<DataApprovalState>field(Columns.STATE)
+            fieldsHelper.field(WORKFLOW),
+            fieldsHelper.field(ORGANISATION_UNIT),
+            fieldsHelper.field(PERIOD),
+            fieldsHelper.field(ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.field(Columns.STATE)
     ).build();
 
     private DataApprovalFields() {

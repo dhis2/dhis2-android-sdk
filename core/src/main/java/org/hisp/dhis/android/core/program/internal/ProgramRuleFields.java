@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns;
 public final class ProgramRuleFields {
     public static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
+    private static final FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
     static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Integer>field(Columns.PRIORITY),
-                    fh.<String>field(Columns.CONDITION),
+                    fh.field(Columns.PRIORITY),
+                    fh.field(Columns.CONDITION),
                     fh.nestedFieldWithUid(Columns.PROGRAM),
                     fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
                     fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)

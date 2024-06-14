@@ -41,12 +41,12 @@ public final class LegendSetFields {
 
     private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
 
-    public static final Field<LegendSet, String> uid = fh.uid();
+    public static final Field<LegendSet> uid = fh.uid();
 
     public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(Columns.SYMBOLIZER),
+                    fh.field(Columns.SYMBOLIZER),
                     fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
             ).build();
 

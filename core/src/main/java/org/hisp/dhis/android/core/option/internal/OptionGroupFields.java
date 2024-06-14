@@ -40,7 +40,7 @@ public final class OptionGroupFields {
 
     private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
 
-    public static final Field<OptionGroup, String> uid = fh.uid();
+    public static final Field<OptionGroup> uid = fh.uid();
 
     public static final Fields<OptionGroup> allFields = Fields.<OptionGroup>builder()
             .fields(fh.getIdentifiableFields())

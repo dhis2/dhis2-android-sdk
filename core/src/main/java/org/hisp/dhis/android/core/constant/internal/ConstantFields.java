@@ -39,7 +39,7 @@ final class ConstantFields {
 
     static final Fields<Constant> allFields = Fields.<Constant>builder()
             .fields(fh.getIdentifiableFields())
-            .fields(fh.<Double>field(ConstantTableInfo.Columns.VALUE))
+            .fields(fh.field(ConstantTableInfo.Columns.VALUE))
             .build();
 
     private ConstantFields() {

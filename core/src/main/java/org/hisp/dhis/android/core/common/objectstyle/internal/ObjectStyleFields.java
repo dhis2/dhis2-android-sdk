@@ -37,10 +37,10 @@ public final class ObjectStyleFields {
     private static final String COLOR = "color";
     private static final String ICON = "icon";
 
-    private static FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
+    private static final FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
     public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(
-            fh.<String>field(COLOR),
-            fh.<String>field(ICON)
+            fh.field(COLOR),
+            fh.field(ICON)
     ).build();
 
     private ObjectStyleFields() {

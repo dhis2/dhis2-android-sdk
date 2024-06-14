@@ -41,9 +41,9 @@ public final class LegendFields {
     public static final Fields<Legend> allFields = Fields.<Legend>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Double>field(Columns.START_VALUE),
-                    fh.<Double>field(Columns.END_VALUE),
-                    fh.<String>field(Columns.COLOR)
+                    fh.field(Columns.START_VALUE),
+                    fh.field(Columns.END_VALUE),
+                    fh.field(Columns.COLOR)
             ).build();
 
     private LegendFields() {

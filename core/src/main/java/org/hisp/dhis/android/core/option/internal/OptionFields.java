@@ -43,12 +43,12 @@ public final class OptionFields {
 
     private static final FieldsHelper<Option> fh = new FieldsHelper<>();
 
-    public static final Field<Option, String> uid = fh.uid();
+    public static final Field<Option> uid = fh.uid();
 
     public static final Fields<Option> allFields = Fields.<Option>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.field(Columns.SORT_ORDER),
                     fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyleFields.allFields)

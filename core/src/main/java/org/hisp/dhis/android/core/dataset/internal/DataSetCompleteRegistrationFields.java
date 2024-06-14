@@ -37,16 +37,16 @@ final class DataSetCompleteRegistrationFields {
 
     private static final String COMPLETED = "completed";
 
-    private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
+    private static final FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.PERIOD),
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET),
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT),
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.DATE),
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY),
-            fieldsHelper.<String>field(COMPLETED)
+            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.PERIOD),
+            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET),
+            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT),
+            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.DATE),
+            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY),
+            fieldsHelper.field(COMPLETED)
     ).build();
 
     private DataSetCompleteRegistrationFields() {}

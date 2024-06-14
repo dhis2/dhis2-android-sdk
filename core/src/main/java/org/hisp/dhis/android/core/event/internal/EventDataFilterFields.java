@@ -42,15 +42,15 @@ public final class EventDataFilterFields {
 
     public static final Fields<EventDataFilter> allFields = Fields.<EventDataFilter>builder()
             .fields(
-                    fh.<String>field(Columns.DATA_ITEM),
-                    fh.<String>field(Columns.LE),
-                    fh.<String>field(Columns.GE),
-                    fh.<String>field(Columns.GT),
-                    fh.<String>field(Columns.LT),
-                    fh.<String>field(Columns.EQ),
-                    fh.<String>field(API_IN),
-                    fh.<String>field(Columns.LIKE),
-                    fh.<String>field(Columns.DATE_FILTER)
+                    fh.field(Columns.DATA_ITEM),
+                    fh.field(Columns.LE),
+                    fh.field(Columns.GE),
+                    fh.field(Columns.GT),
+                    fh.field(Columns.LT),
+                    fh.field(Columns.EQ),
+                    fh.field(API_IN),
+                    fh.field(Columns.LIKE),
+                    fh.field(Columns.DATE_FILTER)
             ).build();
 
     private EventDataFilterFields() {

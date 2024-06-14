@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-
-import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
 
 public final class DataValueFields {
 
@@ -40,21 +40,21 @@ public final class DataValueFields {
     public static final String FOLLOW_UP = "followup";
     public static final String DELETED = "deleted";
 
-    private static FieldsHelper<DataValue> fieldsHelper = new FieldsHelper<>();
+    private static final FieldsHelper<DataValue> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
-            fieldsHelper.<String>field(Columns.DATA_ELEMENT),
-            fieldsHelper.<String>field(Columns.PERIOD),
-            fieldsHelper.<String>field(ORGANISATION_UNIT),
-            fieldsHelper.<String>field(Columns.CATEGORY_OPTION_COMBO),
-            fieldsHelper.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<String>field(Columns.VALUE),
-            fieldsHelper.<String>field(Columns.STORED_BY),
-            fieldsHelper.<String>field(Columns.CREATED),
-            fieldsHelper.<String>field(Columns.LAST_UPDATED),
-            fieldsHelper.<String>field(Columns.COMMENT),
-            fieldsHelper.<Boolean>field(FOLLOW_UP),
-            fieldsHelper.<Boolean>field(DELETED)
+            fieldsHelper.field(Columns.DATA_ELEMENT),
+            fieldsHelper.field(Columns.PERIOD),
+            fieldsHelper.field(ORGANISATION_UNIT),
+            fieldsHelper.field(Columns.CATEGORY_OPTION_COMBO),
+            fieldsHelper.field(Columns.ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.field(Columns.VALUE),
+            fieldsHelper.field(Columns.STORED_BY),
+            fieldsHelper.field(Columns.CREATED),
+            fieldsHelper.field(Columns.LAST_UPDATED),
+            fieldsHelper.field(Columns.COMMENT),
+            fieldsHelper.field(FOLLOW_UP),
+            fieldsHelper.field(DELETED)
 
     ).build();
 

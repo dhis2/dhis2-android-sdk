@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.user.UserRole;
 
 final class UserRoleFields {
 
-    private static FieldsHelper<UserRole> fh = new FieldsHelper<>();
+    private static final FieldsHelper<UserRole> fh = new FieldsHelper<>();
 
     static final Fields<UserRole> allFields = Fields.<UserRole>builder()
             .fields(fh.getIdentifiableFields())

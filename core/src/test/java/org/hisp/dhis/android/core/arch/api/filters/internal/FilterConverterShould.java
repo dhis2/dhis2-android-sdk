@@ -175,12 +175,12 @@ public class FilterConverterShould {
         Converter.Factory converterFactory = FilterConverterFactory.create();
 
         Converter<?, String> converter = converterFactory
-                .stringConverter(null, new Annotation[]{new Where() {
+                .stringConverter(getClass(), new Annotation[]{new Where() {
                     @Override
                     public Class<? extends Annotation> annotationType() {
                         return Where.class;
                     }
-                }}, null);
+                }}, RetrofitFactory.fromMockWebServer(server));
 
         assertThat(converter).isInstanceOf(FilterConverter.class);
     }

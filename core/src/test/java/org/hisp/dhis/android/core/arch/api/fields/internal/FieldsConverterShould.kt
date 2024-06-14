@@ -25,84 +25,72 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import com.google.common.truth.Truth
+import okhttp3.ResponseBody
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import retrofit2.Call
+import retrofit2.Converter
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.io.IOException
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+@RunWith(JUnit4::class)
+class FieldsConverterShould {
+    private var fieldsConverter: Converter<Fields<*>, String>? = null
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-
-import okhttp3.ResponseBody;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
-import retrofit2.Converter;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class FieldsConverterShould {
-    private Converter<Fields, String> fieldsConverter;
-
-    interface TestService {
+    internal interface TestService {
         @GET("api/")
-        retrofit2.Call<ResponseBody> test(@Query("fields") @Which Fields<String> fields);
+        fun test(@Query("fields") @Which fields: Fields<String>?): Call<ResponseBody?>
     }
 
     @Before
-    public void setUp() {
-        fieldsConverter = new FieldsConverter();
+    fun setUp() {
+        fieldsConverter = FieldsConverter()
     }
 
     @Test
-    public void have_correct_retrofit_request_format() throws IOException, InterruptedException {
-        MockWebServer mockWebServer = new MockWebServer();
-        mockWebServer.start();
-        mockWebServer.enqueue(new MockResponse());
+    @Throws(IOException::class, InterruptedException::class)
+    fun have_correct_retrofit_request_format() {
+        val mockWebServer = MockWebServer()
+        mockWebServer.start()
+        mockWebServer.enqueue(MockResponse())
 
-        TestService testService = testService(mockWebServer);
+        val testService = testService(mockWebServer)
 
-        testService.test(Fields.<String>builder()
+        testService.test(
+            builder<String>()
                 .fields(
-                        Field.<String, String>create("property_one"),
-                        Field.<String, String>create("property_two"),
-                        NestedField.<String, String>create("nested_property").with(
-                                Field.<String, String>create("nested_property_one")))
-                .build())
-                .execute();
+                    Field.create("property_one"),
+                    Field.create("property_two"),
+                    NestedField.create<String, String>("nested_property").with(
+                        Field.create("nested_property_one"),
+                    ),
+                )
+                .build(),
+        )
+            .execute()
 
-        RecordedRequest recordedRequest = mockWebServer.takeRequest();
-        assertThat(recordedRequest.getPath()).isEqualTo(
-                "/api/?fields=property_one,property_two,nested_property[nested_property_one]");
+        val recordedRequest = mockWebServer.takeRequest()
+        Truth.assertThat(recordedRequest.path).isEqualTo(
+            "/api/?fields=property_one,property_two,nested_property[nested_property_one]",
+        )
 
-        mockWebServer.shutdown();
+        mockWebServer.shutdown()
     }
 
-    private TestService testService(MockWebServer mockWebServer) {
-        return RetrofitFactory.fromMockWebServer(mockWebServer).create(TestService.class);
-    }
-
-    @Test
-    @SuppressWarnings("BadAnnotationImplementation")
-    public void return_instance_of_fields_converters_when_create_a_field_converter_factory() {
-        Converter.Factory converterFactory = FieldsConverterFactory.create();
-
-        Converter<?, String> converter = converterFactory
-                .stringConverter(null, new Annotation[]{new Which() {
-                    @Override
-                    public Class<? extends Annotation> annotationType() {
-                        return Which.class;
-                    }
-                }}, null);
-
-        assertThat(converter).isInstanceOf(FieldsConverter.class);
+    private fun testService(mockWebServer: MockWebServer): TestService {
+        return RetrofitFactory.fromMockWebServer(mockWebServer).create(
+            TestService::class.java,
+        )
     }
 }

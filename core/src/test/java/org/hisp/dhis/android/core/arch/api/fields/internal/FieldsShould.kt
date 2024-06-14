@@ -60,18 +60,18 @@ class FieldsShould {
     @Throws(IOException::class)
     fun respect_the_field_order() {
         val queryStringOne: String = Fields.builder<Any>().fields(
-            Field.create<Any, Any?>(""),
+            Field.create(""),
         ).build().generateString()
 
         val queryStringTwo: String = Fields.builder<Any>().fields(
-            Field.create<Any, Any?>("*"),
+            Field.create("*"),
         ).build().generateString()
 
         val queryStringThree: String = Fields.builder<Any>().fields(
-            Field.create<Any, Any?>("name"),
-            Field.create<Any, Any?>("displayName"),
-            Field.create<Any, Any?>("created"),
-            Field.create<Any, Any?>("lastUpdated"),
+            Field.create("name"),
+            Field.create("displayName"),
+            Field.create("created"),
+            Field.create("lastUpdated"),
         ).build().generateString()
 
         Truth.assertThat(queryStringOne).isEqualTo("")
@@ -82,8 +82,8 @@ class FieldsShould {
     @Test
     @Throws(IOException::class)
     fun respect_fields_order_with_nested_fields() {
-        val id: Field<Any, *> = Field.create<Any, Any>("id")
-        val displayName: Field<Any, *> = Field.create<Any, Any>("displayName")
+        val id: Field<Any> = Field.create("id")
+        val displayName: Field<Any> = Field.create("displayName")
         val programs: NestedField<Any, Any> = NestedField.create("programs")
         val programsWithChildren = programs.with(id, displayName)
         val programsWithChildrenWithChildren = programs.with(id, displayName, programsWithChildren)

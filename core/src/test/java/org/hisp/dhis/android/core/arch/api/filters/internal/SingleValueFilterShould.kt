@@ -34,7 +34,7 @@ import org.junit.Test
 class SingleValueFilterShould {
 
     private val dummyFieldName = "test_field_name"
-    private val dummyField = Field.create<String, String>(dummyFieldName)
+    private val dummyField = Field.create<String>(dummyFieldName)
     private val dummyValue = "test_value"
 
     @Test

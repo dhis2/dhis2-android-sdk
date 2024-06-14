@@ -34,7 +34,7 @@ import org.junit.Test
 
 class InFilterShould {
 
-    private val dummyField = Field.create<String, String>("test_field_name")
+    private val dummyField = Field.create<String>("test_field_name")
 
     @Test
     fun create_returns_InFilter_instance_with_empty_values() {

@@ -38,7 +38,7 @@ class FilterShould {
 
     @Test
     fun return_correct_values_when_create_field_filter() {
-        val field: Field<*, *> = Field.create<Any, Any>("test_field_name")
+        val field: Field<*> = Field.create<Any>("test_field_name")
         val filter = field.gt("test_field_filter_operator")
 
         Truth.assertThat(filter.operator).isEqualTo("gt")

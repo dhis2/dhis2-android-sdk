@@ -29,34 +29,34 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-internal class SingleValueFilter<T, K> private constructor(
-    override val field: Field<T, K>,
+internal class SingleValueFilter<T> private constructor(
+    override val field: Field<T>,
     override val operator: String,
     override val values: Collection<String>,
-) : Filter<T, K> {
+) : Filter<T> {
     override fun generateString(): String {
         return "${field.name}:$operator:${values.first()}"
     }
 
     companion object {
-        private fun <T, K> create(
-            field: Field<T, K>,
+        private fun <T> create(
+            field: Field<T>,
             operator: String,
             value: String,
-        ): Filter<T, K> {
+        ): Filter<T> {
             // If the filter is incomplete, return null so the filter is not included in the request.
             return SingleValueFilter(field, operator, listOf(value))
         }
 
-        fun <T, K> gt(field: Field<T, K>, value: String): Filter<T, K> {
+        fun <T> gt(field: Field<T>, value: String): Filter<T> {
             return create(field, "gt", value)
         }
 
-        fun <T, K> eq(field: Field<T, K>, value: String): Filter<T, K> {
+        fun <T> eq(field: Field<T>, value: String): Filter<T> {
             return create(field, "eq", value)
         }
 
-        fun <T, K> like(field: Field<T, K>, value: String): Filter<T, K> {
+        fun <T> like(field: Field<T>, value: String): Filter<T> {
             return create(field, "like", value)
         }
     }

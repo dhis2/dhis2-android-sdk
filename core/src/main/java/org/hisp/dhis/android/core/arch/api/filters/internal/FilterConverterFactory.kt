@@ -25,28 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import retrofit2.Converter
+import retrofit2.Retrofit
+import java.lang.reflect.Type
 
-import retrofit2.Converter;
-import retrofit2.Retrofit;
+class FilterConverterFactory private constructor() : Converter.Factory() {
+    override fun stringConverter(
+        type: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit,
+    ): Converter<*, String>? = annotations.firstOrNull { it is Where }?.let { FilterConverter() }
 
-public final class FilterConverterFactory extends Converter.Factory {
-    public static FilterConverterFactory create() {
-        return new FilterConverterFactory();
-    }
-
-    private FilterConverterFactory() {}
-
-    @Override
-    public Converter<?, String> stringConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Where) {
-                return new FilterConverter();
-            }
+    companion object {
+        @JvmStatic
+        fun create(): FilterConverterFactory {
+            return FilterConverterFactory()
         }
-        return null;
     }
 }

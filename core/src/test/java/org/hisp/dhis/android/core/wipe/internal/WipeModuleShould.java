@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.wipe.internal;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.event.EventModule
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemModule
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
 import org.hisp.dhis.android.core.icon.IconModule
-import org.hisp.dhis.android.core.imports.ImportModule
+import org.hisp.dhis.android.core.imports.internal.ImportModule
 import org.hisp.dhis.android.core.indicator.IndicatorModule
 import org.hisp.dhis.android.core.legendset.LegendSetModule
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule
@@ -67,7 +67,7 @@ import org.hisp.dhis.android.core.usecase.UseCaseModule
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.validation.ValidationModule
 import org.hisp.dhis.android.core.visualization.VisualizationModule
-import org.hisp.dhis.android.core.wipe.WipeModule
+import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import retrofit2.Retrofit
 
 @Suppress("TooManyFunctions")

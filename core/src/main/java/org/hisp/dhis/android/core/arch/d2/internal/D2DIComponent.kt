@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrack
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandler
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
-import org.hisp.dhis.android.core.wipe.WipeModule
+import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import org.koin.core.annotation.Singleton
 import retrofit2.Retrofit
 

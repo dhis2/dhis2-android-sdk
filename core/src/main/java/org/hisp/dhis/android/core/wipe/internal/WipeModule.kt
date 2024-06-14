@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,9 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports
+package org.hisp.dhis.android.core.wipe.internal
 
-interface ImportModule {
-    fun trackerImportConflicts(): TrackerImportConflictCollectionRepository
-    fun jobManager(): TrackerJobManager
+import org.hisp.dhis.android.core.maintenance.D2Error
+
+interface WipeModule {
+    @Throws(D2Error::class)
+    fun wipeEverything()
+
+    @Throws(D2Error::class)
+    fun wipeMetadata()
+
+    @Throws(D2Error::class)
+    fun wipeData()
 }

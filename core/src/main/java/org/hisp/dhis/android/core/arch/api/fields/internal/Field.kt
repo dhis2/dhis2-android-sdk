@@ -31,27 +31,27 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter
 import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter
 
-internal data class Field<Parent, Child> private constructor(override val name: String) : Property<Parent, Child> {
+internal data class Field<Parent> internal constructor(override val name: String) : Property<Parent> {
 
-    fun <V> eq(value: V): Filter<Parent, Child> {
+    fun <V> eq(value: V): Filter<Parent> {
         return SingleValueFilter.eq(this, value.toString())
     }
 
-    fun gt(value: String): Filter<Parent, Child> {
+    fun gt(value: String): Filter<Parent> {
         return SingleValueFilter.gt(this, value)
     }
 
-    fun like(value: String): Filter<Parent, Child> {
+    fun like(value: String): Filter<Parent> {
         return SingleValueFilter.like(this, value)
     }
 
-    fun `in`(values: Collection<String>): Filter<Parent, Child> {
+    fun `in`(values: Collection<String>): Filter<Parent> {
         return InFilter.create(this, values)
     }
 
     companion object {
         @JvmStatic
-        fun <T, K> create(name: String): Field<T, K> {
+        fun <T> create(name: String): Field<T> {
             return Field(name)
         }
     }

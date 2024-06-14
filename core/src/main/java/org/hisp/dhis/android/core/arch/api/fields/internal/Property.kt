@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
-internal interface Property<Parent, Child> {
+internal interface Property<Parent> {
     val name: String
 }

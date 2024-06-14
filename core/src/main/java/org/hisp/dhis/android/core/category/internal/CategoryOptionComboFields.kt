@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
-object CategoryOptionComboFields {
+internal object CategoryOptionComboFields {
     const val CATEGORY_OPTIONS = "categoryOptions"
 
     private val fh = FieldsHelper<CategoryOptionCombo>()

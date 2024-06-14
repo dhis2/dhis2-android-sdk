@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 
-object ProgramStageWorkingListFields {
+internal object ProgramStageWorkingListFields {
     const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
 
     private val fh = FieldsHelper<ProgramStageWorkingList>()

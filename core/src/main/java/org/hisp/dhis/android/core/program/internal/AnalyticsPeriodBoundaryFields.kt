@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 
-object AnalyticsPeriodBoundaryFields {
+internal object AnalyticsPeriodBoundaryFields {
     private val fh = FieldsHelper<AnalyticsPeriodBoundary>()
     val allFields: Fields<AnalyticsPeriodBoundary> = Fields.builder<AnalyticsPeriodBoundary>()
         .fields(

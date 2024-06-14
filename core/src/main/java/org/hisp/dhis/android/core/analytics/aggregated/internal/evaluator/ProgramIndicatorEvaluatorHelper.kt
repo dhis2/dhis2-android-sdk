@@ -178,7 +178,9 @@ internal object ProgramIndicatorEvaluatorHelper {
                     appendOrIsNullValue(EnrollmentTableInfo.Columns.DELETED)
                 }.build(),
             )
-            appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, programIndicator.program()?.uid())
+            programIndicator.program()?.uid()?.let {
+                appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, it)
+            }
 
             items.entries.forEach { entry ->
                 when (entry.key) {

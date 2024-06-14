@@ -114,7 +114,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
         ).download(programUids)
 
         assertThat(fieldsCaptor.firstValue).isEqualTo(ProgramFields.allFields)
-        assertThat(filterCaptor.firstValue.values().iterator().next()).isEqualTo("programUid")
+        assertThat(filterCaptor.firstValue.values?.first()).isEqualTo("programUid")
         assertThat(accesDataReadFilter.firstValue).isEqualTo("access.data.read:eq:true")
     }
 }

@@ -146,7 +146,7 @@ internal class FileResourcePostCall(
 
     private fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid())
+            .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
             .build()
 
@@ -168,7 +168,7 @@ internal class FileResourcePostCall(
         elementUid: String,
     ): Boolean {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid())
+            .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, elementUid)
             .build()
 
@@ -184,7 +184,7 @@ internal class FileResourcePostCall(
 
     private fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
+            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
             .build()
 

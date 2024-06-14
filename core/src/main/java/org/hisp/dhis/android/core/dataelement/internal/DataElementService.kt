@@ -40,7 +40,7 @@ internal fun interface DataElementService {
     @GET("dataElements")
     suspend fun getDataElements(
         @Query("fields") @Which fields: Fields<DataElement>,
-        @Query("filter") @Where uids: Filter<DataElement?, String>,
+        @Query("filter") @Where uids: Filter<DataElement, String>,
         @Query("filter") @Where lastUpdated: Filter<DataElement, String>?,
         @Query("filter") accessReadFilter: String,
         @Query("paging") paging: Boolean,

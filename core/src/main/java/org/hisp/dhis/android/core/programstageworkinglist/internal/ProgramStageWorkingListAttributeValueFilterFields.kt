@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
-object ProgramStageWorkingListAttributeValueFilterFields {
+internal object ProgramStageWorkingListAttributeValueFilterFields {
     private const val API_IN = "in"
     private val fh = FieldsHelper<ProgramStageWorkingListAttributeValueFilter>()
 

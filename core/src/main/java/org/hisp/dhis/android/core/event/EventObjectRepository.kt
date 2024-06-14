@@ -72,56 +72,71 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build())
+        return updateIfChanged(organisationUnitUid, { it.organisationUnit() }) { event: Event, value ->
+            updateBuilder(event).organisationUnit(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setEventDate(eventDate: Date?): Unit {
-        return updateObject(updateBuilder().eventDate(eventDate).build())
+        return updateIfChanged(eventDate, { it.eventDate() }) { event: Event, value ->
+            updateBuilder(event).eventDate(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setStatus(eventStatus: EventStatus): Unit {
-        val completedDate = if (eventStatus == EventStatus.COMPLETED) Date() else null
-        val completedBy = if (eventStatus == EventStatus.COMPLETED) userStore.selectFirst()!!.username() else null
-        return updateObject(
-            updateBuilder().status(eventStatus).completedDate(completedDate).completedBy(completedBy).build(),
-        )
+        return updateIfChanged(eventStatus, { it.status() }) { event: Event, value ->
+            val completedDate = if (value == EventStatus.COMPLETED) Date() else null
+            val completedBy = if (value == EventStatus.COMPLETED) userStore.selectFirst()!!.username() else null
+            updateBuilder(event).status(value).completedDate(completedDate).completedBy(completedBy).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
-        return updateObject(updateBuilder().completedDate(completedDate).build())
+        return updateIfChanged(completedDate, { it.completedDate() }) { event: Event, value ->
+            updateBuilder(event).completedDate(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setCompletedBy(completedBy: String?): Unit {
-        return updateObject(updateBuilder().completedBy(completedBy).build())
+        return updateIfChanged(completedBy, { it.completedBy() }) { event: Event, value ->
+            updateBuilder(event).completedBy(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setDueDate(dueDate: Date?): Unit {
-        return updateObject(updateBuilder().dueDate(dueDate).build())
+        return updateIfChanged(dueDate, { it.dueDate() }) { event: Event, value ->
+            updateBuilder(event).dueDate(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
-        return updateObject(updateBuilder().geometry(geometry).build())
+        return updateIfChanged(geometry, { it.geometry() }) { event: Event, value ->
+            updateBuilder(event).geometry(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setAttributeOptionComboUid(attributeOptionComboUid: String?): Unit {
-        return updateObject(updateBuilder().attributeOptionCombo(attributeOptionComboUid).build())
+        return updateIfChanged(attributeOptionComboUid, { it.attributeOptionCombo() }) { event: Event, value ->
+            updateBuilder(event).attributeOptionCombo(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setAssignedUser(assignedUser: String?): Unit {
-        return updateObject(updateBuilder().assignedUser(assignedUser).build())
+        return updateIfChanged(assignedUser, { it.assignedUser() }) { event: Event, value ->
+            updateBuilder(event).assignedUser(value).build()
+        }
     }
 
-    private fun updateBuilder(): Event.Builder {
-        val event: Event = blockingGetWithoutChildren()!!
+    private fun updateBuilder(event: Event): Event.Builder {
         val updateDate = Date()
         var state = event.syncState()
         state = if (state === State.TO_POST) state else State.TO_UPDATE

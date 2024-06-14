@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
 
-object UserFields {
+internal object UserFields {
     const val USERNAME = "username"
     const val BIRTHDAY = "birthday"
     const val EDUCATION = "education"

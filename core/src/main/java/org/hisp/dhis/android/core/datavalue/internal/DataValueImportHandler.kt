@@ -75,23 +75,23 @@ internal class DataValueImportHandler(
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                    dataValue.attributeOptionCombo(),
+                    dataValue.attributeOptionCombo()!!,
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                    dataValue.categoryOptionCombo(),
+                    dataValue.categoryOptionCombo()!!,
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.DATA_ELEMENT,
-                    dataValue.dataElement(),
+                    dataValue.dataElement()!!,
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.PERIOD,
-                    dataValue.period(),
+                    dataValue.period()!!,
                 )
                 .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.ORG_UNIT,
-                    dataValue.organisationUnit(),
+                    dataValue.organisationUnit()!!,
                 ).build()
             dataValueConflictStore.deleteWhereIfExists(whereClause)
         }

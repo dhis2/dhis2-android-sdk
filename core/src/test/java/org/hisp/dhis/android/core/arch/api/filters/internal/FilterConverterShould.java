@@ -92,8 +92,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -109,8 +109,8 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -131,8 +131,8 @@ public class FilterConverterShould {
                         Field.create("id"), Field.create("code"),
                         Field.create("name"), Field.create("displayName")
                 ).build(),
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
+                InFilter.Companion.create(Field.create("id"), values),
+                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -150,47 +150,13 @@ public class FilterConverterShould {
         TestService service = testService(server);
 
         service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), null)
+                InFilter.Companion.create(Field.create("id"), values),
+                null
         ).execute();
 
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
-    }
-
-    @Test
-    public void returns_correct_path_when_create_a_retrofit_request_ignoring_empty_string_filter() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList<>(2);
-        values.add("uid1");
-        values.add("uid2");
-
-        TestService service = testService(server);
-
-        service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "")
-        ).execute();
-
-        RecordedRequest request = server.takeRequest();
-
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
-    }
-
-    @Test
-    public void returns_correct_path_when_create_a_retrofit_request_with_in_filter_and_empty_values() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList<>(0);
-
-        TestService service = testService(server);
-
-        service.test(
-                InFilter.create(Field.create("id"), values),
-                SingleValueFilter.gt(Field.create("lastUpdated"), "")
-        ).execute();
-
-        RecordedRequest request = server.takeRequest();
-
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[]");
     }
 
     private TestService testService(MockWebServer mockWebServer) {

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
 
-object TrackedEntityInstanceFilterFields {
+internal object TrackedEntityInstanceFilterFields {
     private const val ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod"
     const val FOLLOW_UP = "followup"
     const val EVENT_FILTERS = "eventFilters"

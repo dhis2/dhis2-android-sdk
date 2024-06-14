@@ -41,6 +41,7 @@ import androidx.annotation.Nullable;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.safeUnmodifiableList;
 
+
 @AutoValue
 public abstract class DataValueImportSummary {
 

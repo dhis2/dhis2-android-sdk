@@ -124,6 +124,20 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
         return Unit()
     }
 
+    protected inline fun <V> updateIfChanged(
+        newValue: V?,
+        propertyGetter: (M) -> V?,
+        crossinline updater: (M, V?) -> M,
+    ): Unit {
+        val obj = blockingGetWithoutChildren() as M
+        val currentValue = propertyGetter(obj)
+
+        if (currentValue != newValue) {
+            updateObject(updater(obj, newValue))
+        }
+        return Unit()
+    }
+
     protected abstract fun propagateState(m: M, action: HandleAction)
     protected abstract fun deleteObject(m: M)
 }

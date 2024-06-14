@@ -110,6 +110,7 @@ public class Dhis2MockServer {
             "trackedentity/new_tracker_importer_tracked_entities.json";
     private static final String DATA_VALUES_JSON = "datavalue/data_values.json";
     private static final String TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png";
+    private static final String FILE_RESOURCES = "trackedentity/tracked_entity_attribute_value_image_resources.json";
     private static final String FILE_RESOURCE = "trackedentity/tracked_entity_attribute_value_image_resource.json";
     private static final String DATA_STORE_NAMESPACES = "datastore/namespaces.json";
     private static final String DATA_STORE_NAMESPACE_CAPTURE = "datastore/namespace_capture.json";
@@ -311,7 +312,9 @@ public class Dhis2MockServer {
                     return createMockResponse(RESERVE_VALUES_JSON);
                 } else if (path.startsWith("/api/metadata")) {
                     return createMockResponse(SMS_METADATA);
-                } else if (path.startsWith("/api/fileResources")) {
+                } else if (path.startsWith("/api/fileResources?")) {
+                    return createMockResponse(FILE_RESOURCES);
+               } else if (path.startsWith("/api/fileResources/befryEfXge5")) {
                     return createMockResponse(FILE_RESOURCE);
                 } else if (path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image")) {
                     return createMockResponse(TRACKED_ENTITY_IMAGE);

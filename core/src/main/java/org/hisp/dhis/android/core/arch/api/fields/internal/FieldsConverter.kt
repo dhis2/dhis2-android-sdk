@@ -25,21 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import retrofit2.Converter
+import java.io.IOException
 
-import java.io.IOException;
-
-import retrofit2.Converter;
-
-class FieldsConverter implements Converter<Fields, String> {
-    FieldsConverter() {
-        // explicit empty constructor
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public String convert(Fields fields) throws IOException {
-        return fields.generateString();
+internal class FieldsConverter : Converter<Fields<*>, String> {
+    @Throws(IOException::class)
+    override fun convert(fields: Fields<*>): String {
+        return fields.generateString()
     }
 }

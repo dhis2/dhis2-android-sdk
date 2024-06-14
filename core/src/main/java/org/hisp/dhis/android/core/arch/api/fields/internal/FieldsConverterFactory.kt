@@ -25,32 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import retrofit2.Converter
+import retrofit2.Retrofit
+import java.lang.reflect.Type
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+class FieldsConverterFactory : Converter.Factory() {
+    override fun stringConverter(
+        type: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit,
+    ): Converter<*, String>? = annotations.firstOrNull { it is Which }?.let { FieldsConverter() }
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import retrofit2.Converter;
-import retrofit2.Retrofit;
-
-public final class FieldsConverterFactory extends Converter.Factory {
-    public static FieldsConverterFactory create() {
-        return new FieldsConverterFactory();
-    }
-
-    private FieldsConverterFactory() {}
-
-    @Override
-    public Converter<?, String> stringConverter(Type typef,
-            Annotation[] annotations, Retrofit retrofit) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Which) {
-                return new FieldsConverter();
-            }
+    companion object {
+        @JvmStatic
+        fun create(): FieldsConverterFactory {
+            return FieldsConverterFactory()
         }
-        return null;
     }
 }

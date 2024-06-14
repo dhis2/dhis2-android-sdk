@@ -40,7 +40,7 @@ internal fun interface CategoryService {
     @GET("categories")
     suspend fun getCategories(
         @Query("fields") @Which fields: Fields<Category>,
-        @Query("filter") @Where uids: Filter<Category, String>,
+        @Query("filter") @Where uids: Filter<Category>,
         @Query("paging") paging: Boolean,
     ): Payload<Category>
 }

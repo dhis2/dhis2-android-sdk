@@ -40,7 +40,7 @@ internal fun interface OptionSetService {
     @GET("optionSets")
     suspend fun optionSets(
         @Query("fields") @Which fields: Fields<OptionSet>,
-        @Query("filter") @Where filter: Filter<OptionSet, String>,
+        @Query("filter") @Where filter: Filter<OptionSet>,
         @Query("paging") paging: Boolean,
     ): Payload<OptionSet>
 }

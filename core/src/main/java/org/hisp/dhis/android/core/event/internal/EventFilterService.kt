@@ -39,7 +39,7 @@ import retrofit2.http.Query
 internal fun interface EventFilterService {
     @GET("eventFilters")
     suspend fun getEventFilters(
-        @Query("filter") @Where uids: Filter<EventFilter?, String>,
+        @Query("filter") @Where uids: Filter<EventFilter?>,
         @Query("filter") accessDataReadFilter: String,
         @Query("fields") @Which fields: Fields<EventFilter>,
         @Query("paging") paging: Boolean,

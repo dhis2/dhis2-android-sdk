@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.Geometry
-import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
@@ -76,29 +74,29 @@ internal object NewEventFields {
     val asRelationshipFields: Fields<NewTrackerImporterEvent> = commonFields().build()
 
     val teiQueryFields: Fields<NewTrackerImporterEvent> = commonFields()
-        .fields(fh.field<String>(TRACKED_ENTITY))
+        .fields(fh.field(TRACKED_ENTITY))
         .build()
 
     private fun commonFields(): Fields.Builder<NewTrackerImporterEvent> {
         return Fields.builder<NewTrackerImporterEvent>().fields(
-            fh.field<String>(UID),
-            fh.field<String>(ENROLLMENT),
-            fh.field<String>(CREATED_AT),
-            fh.field<String>(UPDATED_AT),
-            fh.field<String>(CREATED_AT_CLIENT),
-            fh.field<String>(UPDATED_AT_CLIENT),
-            fh.field<EventStatus>(STATUS),
-            fh.field<Geometry>(GEOMETRY),
-            fh.field<String>(PROGRAM),
-            fh.field<String>(PROGRAM_STAGE),
-            fh.field<String>(ORGANISATION_UNIT),
-            fh.field<String>(OCCURRED_AT),
-            fh.field<String>(COMPLETED_AT),
-            fh.field<String>(SCHEDULED_AT),
-            fh.field<Boolean>(DELETED),
-            fh.field<String>(ATTRIBUTE_OPTION_COMBO),
-            fh.field<String>(ASSIGNED_USER),
-            fh.field<String>(COMPLETED_BY),
+            fh.field(UID),
+            fh.field(ENROLLMENT),
+            fh.field(CREATED_AT),
+            fh.field(UPDATED_AT),
+            fh.field(CREATED_AT_CLIENT),
+            fh.field(UPDATED_AT_CLIENT),
+            fh.field(STATUS),
+            fh.field(GEOMETRY),
+            fh.field(PROGRAM),
+            fh.field(PROGRAM_STAGE),
+            fh.field(ORGANISATION_UNIT),
+            fh.field(OCCURRED_AT),
+            fh.field(COMPLETED_AT),
+            fh.field(SCHEDULED_AT),
+            fh.field(DELETED),
+            fh.field(ATTRIBUTE_OPTION_COMBO),
+            fh.field(ASSIGNED_USER),
+            fh.field(COMPLETED_BY),
         )
     }
 }

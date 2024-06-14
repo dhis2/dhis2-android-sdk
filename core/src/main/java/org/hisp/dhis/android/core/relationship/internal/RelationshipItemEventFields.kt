@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 internal object RelationshipItemEventFields {
     private const val EVENT = "event"
 
-    val event: Field<RelationshipItemEvent, String> = Field.create(EVENT)
+    val event: Field<RelationshipItemEvent> = Field.create(EVENT)
 }

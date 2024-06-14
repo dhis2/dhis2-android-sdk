@@ -39,7 +39,7 @@ internal object TrackerVisualizationDimensionRepetitionFields {
     val allFields: Fields<TrackerVisualizationDimensionRepetition> =
         Fields.builder<TrackerVisualizationDimensionRepetition>()
             .fields(
-                fh.field<String>(INDEXES),
+                fh.field(INDEXES),
             )
             .build()
 }

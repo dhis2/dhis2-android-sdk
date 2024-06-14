@@ -43,11 +43,11 @@ internal object ProgramStageSectionFields {
     val allFields: Fields<ProgramStageSection> = Fields.builder<ProgramStageSection>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<Int>(ProgramStageSectionTableInfo.Columns.SORT_ORDER),
+            fh.field(ProgramStageSectionTableInfo.Columns.SORT_ORDER),
             fh.nestedFieldWithUid(PROGRAM_INDICATORS),
             fh.nestedFieldWithUid(DATA_ELEMENTS),
             fh.nestedField<SectionRendering>(RENDER_TYPE),
-            fh.field<String>(ProgramStageSectionTableInfo.Columns.DESCRIPTION),
-            fh.field<Boolean>(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION),
+            fh.field(ProgramStageSectionTableInfo.Columns.DESCRIPTION),
+            fh.field(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION),
         ).build()
 }

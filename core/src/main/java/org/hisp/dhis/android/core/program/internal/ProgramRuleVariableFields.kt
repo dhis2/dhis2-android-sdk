@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
-import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
 
 internal object ProgramRuleVariableFields {
@@ -39,12 +38,12 @@ internal object ProgramRuleVariableFields {
     val allFields: Fields<ProgramRuleVariable> = Fields.builder<ProgramRuleVariable>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<Boolean>(ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET),
+            fh.field(ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET),
             fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.PROGRAM),
             fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE),
             fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT),
             fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE),
-            fh.field<ProgramRuleVariableSourceType>(
+            fh.field(
                 ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE,
             ),
         ).build()

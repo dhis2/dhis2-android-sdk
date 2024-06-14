@@ -39,6 +39,6 @@ internal object ExpressionDimensionItemFields {
 
     val allFields: Fields<ExpressionDimensionItem> = Fields.builder<ExpressionDimensionItem>()
         .fields(fh.getIdentifiableFields())
-        .fields(fh.field<String>(Columns.EXPRESSION))
+        .fields(fh.field(Columns.EXPRESSION))
         .build()
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
@@ -55,7 +54,7 @@ internal object TrackedEntityTypeFields {
             fh.nestedField<TrackedEntityTypeAttribute>(TRACKED_ENTITY_TYPE_ATTRIBUTES)
                 .with(TrackedEntityTypeAttributeFields.allFields),
             fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field<FeatureType>(TrackedEntityTypeTableInfo.Columns.FEATURE_TYPE),
+            fh.field(TrackedEntityTypeTableInfo.Columns.FEATURE_TYPE),
             fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
         ).build()
 }

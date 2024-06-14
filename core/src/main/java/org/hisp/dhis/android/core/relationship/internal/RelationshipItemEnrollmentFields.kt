@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
 
 internal object RelationshipItemEnrollmentFields {
     private const val ENROLLMENT = "enrollment"
-    val enrollment: Field<RelationshipItemEnrollment, String> = Field.create(ENROLLMENT)
+    val enrollment: Field<RelationshipItemEnrollment> = Field.create(ENROLLMENT)
 }

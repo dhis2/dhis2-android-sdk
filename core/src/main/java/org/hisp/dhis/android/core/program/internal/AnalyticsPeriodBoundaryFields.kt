@@ -36,9 +36,9 @@ internal object AnalyticsPeriodBoundaryFields {
     private val fh = FieldsHelper<AnalyticsPeriodBoundary>()
     val allFields: Fields<AnalyticsPeriodBoundary> = Fields.builder<AnalyticsPeriodBoundary>()
         .fields(
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.BOUNDARY_TARGET),
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),
-            fh.field<Int>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIODS),
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIOD_TYPE),
+            fh.field(AnalyticsPeriodBoundaryTableInfo.Columns.BOUNDARY_TARGET),
+            fh.field(AnalyticsPeriodBoundaryTableInfo.Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),
+            fh.field(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIODS),
+            fh.field(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIOD_TYPE),
         ).build()
 }

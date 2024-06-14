@@ -39,12 +39,12 @@ internal object TrackerVisualizationDimensionFields {
     val allFields: Fields<TrackerVisualizationDimension> =
         Fields.builder<TrackerVisualizationDimension>()
             .fields(
-                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION),
-                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION_TYPE),
-                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM),
-                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM_STAGE),
+                fh.field(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION),
+                fh.field(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION_TYPE),
+                fh.field(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM),
+                fh.field(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM_STAGE),
                 fh.nestedFieldWithUid(TrackerVisualizationDimensionTableInfo.Columns.ITEMS),
-                fh.field<String>(TrackerVisualizationDimensionTableInfo.Columns.FILTER),
+                fh.field(TrackerVisualizationDimensionTableInfo.Columns.FILTER),
                 fh.nestedField<TrackerVisualizationDimensionRepetition>(
                     TrackerVisualizationDimensionTableInfo.Columns.REPETITION,
                 )

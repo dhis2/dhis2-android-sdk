@@ -31,8 +31,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.FilterPeriod
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -42,19 +40,19 @@ internal object TrackedEntityInstanceFilterFields {
     private const val ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod"
     const val FOLLOW_UP = "followup"
     const val EVENT_FILTERS = "eventFilters"
-    const val ENTITY_QUERY_CRITERIA = "entityQueryCriteria"
+    private const val ENTITY_QUERY_CRITERIA = "entityQueryCriteria"
 
     private val fh = FieldsHelper<TrackedEntityInstanceFilter>()
 
-    val programUid: Field<TrackedEntityInstanceFilter, String> =
+    val programUid: Field<TrackedEntityInstanceFilter> =
         Field.create(TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
 
     private val commonFields = Fields.builder<TrackedEntityInstanceFilter>()
         .fields(fh.getIdentifiableFields())
         .fields(
             fh.nestedFieldWithUid(TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM),
-            fh.field<String>(TrackedEntityInstanceFilterTableInfo.Columns.DESCRIPTION),
-            fh.field<Int>(TrackedEntityInstanceFilterTableInfo.Columns.SORT_ORDER),
+            fh.field(TrackedEntityInstanceFilterTableInfo.Columns.DESCRIPTION),
+            fh.field(TrackedEntityInstanceFilterTableInfo.Columns.SORT_ORDER),
             fh.nestedField<TrackedEntityInstanceEventFilter>(EVENT_FILTERS)
                 .with(TrackedEntityInstanceEventFilterFields.allFields),
         )
@@ -67,8 +65,8 @@ internal object TrackedEntityInstanceFilterFields {
 
     val allFieldsAPI37: Fields<TrackedEntityInstanceFilter> = commonFields
         .fields(
-            fh.field<EnrollmentStatus>(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_STATUS),
-            fh.field<Boolean>(FOLLOW_UP),
-            fh.field<FilterPeriod>(ENROLLMENT_CREATED_PERIOD),
+            fh.field(TrackedEntityInstanceFilterTableInfo.Columns.ENROLLMENT_STATUS),
+            fh.field(FOLLOW_UP),
+            fh.field(ENROLLMENT_CREATED_PERIOD),
         ).build()
 }

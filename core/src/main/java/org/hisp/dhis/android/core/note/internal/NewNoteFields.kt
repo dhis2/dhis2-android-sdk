@@ -42,9 +42,9 @@ internal object NewNoteFields {
 
     val all: Fields<NewTrackerImporterNote> = Fields.builder<NewTrackerImporterNote>()
         .fields(
-            fh.field<String>(UID),
-            fh.field<String>(VALUE),
-            fh.field<String>(STORED_AT),
-            fh.field<String>(STORED_BY),
+            fh.field(UID),
+            fh.field(VALUE),
+            fh.field(STORED_AT),
+            fh.field(STORED_BY),
         ).build()
 }

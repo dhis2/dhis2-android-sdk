@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -38,18 +37,17 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
-import java.util.*
 
 internal object TrackedEntityInstanceFields {
     const val UID = "trackedEntityInstance"
     const val ORGANISATION_UNIT = "orgUnit"
     const val TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes"
     private const val RELATIONSHIPS = "relationships"
-    const val COORDINATES = "coordinates"
+    private const val COORDINATES = "coordinates"
     const val DELETED = "deleted"
     private const val ENROLLMENTS = "enrollments"
     const val PROGRAM_OWNERS = "programOwners"
-    const val GEOMETRY = "geometry"
+    private const val GEOMETRY = "geometry"
     private val fh = FieldsHelper<TrackedEntityInstance>()
 
     val allFields: Fields<TrackedEntityInstance> = commonFields()
@@ -65,16 +63,16 @@ internal object TrackedEntityInstanceFields {
 
     private fun commonFields(): Fields.Builder<TrackedEntityInstance> {
         return Fields.builder<TrackedEntityInstance>().fields(
-            fh.field<String>(UID),
-            fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.CREATED),
-            fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED),
-            fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT),
-            fh.field<Date>(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
-            fh.field<String>(ORGANISATION_UNIT),
-            fh.field<String>(TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
-            fh.field<String>(COORDINATES),
-            fh.field<Geometry>(GEOMETRY),
-            fh.field<Boolean>(DELETED),
+            fh.field(UID),
+            fh.field(TrackedEntityInstanceTableInfo.Columns.CREATED),
+            fh.field(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED),
+            fh.field(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT),
+            fh.field(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
+            fh.field(ORGANISATION_UNIT),
+            fh.field(TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
+            fh.field(COORDINATES),
+            fh.field(GEOMETRY),
+            fh.field(DELETED),
             fh.nestedField<TrackedEntityAttributeValue>(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                 .with(TrackedEntityAttributeValueFields.allFields),
         )

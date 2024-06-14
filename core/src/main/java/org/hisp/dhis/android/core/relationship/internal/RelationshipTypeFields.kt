@@ -53,11 +53,11 @@ internal object RelationshipTypeFields {
     val allFields: Fields<RelationshipType> = Fields.builder<RelationshipType>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<String>(B_IS_TO_A),
-            fh.field<String>(A_IS_TO_B),
-            fh.field<String>(RelationshipTypeTableInfo.Columns.FROM_TO_NAME),
-            fh.field<String>(RelationshipTypeTableInfo.Columns.TO_FROM_NAME),
-            fh.field<String>(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL),
+            fh.field(B_IS_TO_A),
+            fh.field(A_IS_TO_B),
+            fh.field(RelationshipTypeTableInfo.Columns.FROM_TO_NAME),
+            fh.field(RelationshipTypeTableInfo.Columns.TO_FROM_NAME),
+            fh.field(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL),
             fh.nestedField<RelationshipConstraint>(FROM_CONSTRAINT)
                 .with(RelationshipConstraintFields.allFields),
             fh.nestedField<RelationshipConstraint>(TO_CONSTRAINT)

@@ -40,9 +40,9 @@ internal object NoteFields {
 
     val all: Fields<Note> = Fields.builder<Note>()
         .fields(
-            fh.field<String>(UID),
-            fh.field<String>(NoteTableInfo.Columns.VALUE),
-            fh.field<String>(NoteTableInfo.Columns.STORED_BY),
-            fh.field<String>(NoteTableInfo.Columns.STORED_DATE),
+            fh.field(UID),
+            fh.field(NoteTableInfo.Columns.VALUE),
+            fh.field(NoteTableInfo.Columns.STORED_BY),
+            fh.field(NoteTableInfo.Columns.STORED_DATE),
         ).build()
 }

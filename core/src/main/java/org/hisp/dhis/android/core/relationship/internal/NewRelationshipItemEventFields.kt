@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipIte
 internal object NewRelationshipItemEventFields {
     private const val EVENT = "event"
 
-    val event: Field<NewTrackerImporterRelationshipItemEvent, String> = Field.create(EVENT)
+    val event: Field<NewTrackerImporterRelationshipItemEvent> = Field.create(EVENT)
 }

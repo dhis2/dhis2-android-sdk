@@ -38,16 +38,16 @@ internal object ProgramStageWorkingListAttributeValueFilterFields {
 
     val allFields = Fields.builder<ProgramStageWorkingListAttributeValueFilter>()
         .fields(
-            fh.field<String>(ItemFilterTableInfo.Columns.ATTRIBUTE),
-            fh.field<String>(ItemFilterTableInfo.Columns.SW),
-            fh.field<String>(ItemFilterTableInfo.Columns.EW),
-            fh.field<String>(ItemFilterTableInfo.Columns.LE),
-            fh.field<String>(ItemFilterTableInfo.Columns.GE),
-            fh.field<String>(ItemFilterTableInfo.Columns.GT),
-            fh.field<String>(ItemFilterTableInfo.Columns.LT),
-            fh.field<String>(ItemFilterTableInfo.Columns.EQ),
-            fh.field<String>(API_IN),
-            fh.field<String>(ItemFilterTableInfo.Columns.LIKE),
-            fh.field<String>(ItemFilterTableInfo.Columns.DATE_FILTER),
+            fh.field(ItemFilterTableInfo.Columns.ATTRIBUTE),
+            fh.field(ItemFilterTableInfo.Columns.SW),
+            fh.field(ItemFilterTableInfo.Columns.EW),
+            fh.field(ItemFilterTableInfo.Columns.LE),
+            fh.field(ItemFilterTableInfo.Columns.GE),
+            fh.field(ItemFilterTableInfo.Columns.GT),
+            fh.field(ItemFilterTableInfo.Columns.LT),
+            fh.field(ItemFilterTableInfo.Columns.EQ),
+            fh.field(API_IN),
+            fh.field(ItemFilterTableInfo.Columns.LIKE),
+            fh.field(ItemFilterTableInfo.Columns.DATE_FILTER),
         ).build()
 }

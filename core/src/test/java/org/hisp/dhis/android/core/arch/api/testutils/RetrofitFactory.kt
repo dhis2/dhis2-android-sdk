@@ -25,50 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.testutils
 
-package org.hisp.dhis.android.core.arch.api.testutils;
+import com.fasterxml.jackson.databind.ObjectMapper
+import okhttp3.OkHttpClient
+import okhttp3.OkHttpClient.Builder
+import okhttp3.mockwebserver.MockWebServer
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
-import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
-
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
-public class RetrofitFactory {
-
-    public static Retrofit fromDHIS2MockServer(Dhis2MockServer server) {
-        return fromServerUrl(server.getBaseEndpoint());
+object RetrofitFactory {
+    fun fromDHIS2MockServer(server: Dhis2MockServer): Retrofit {
+        return fromServerUrl(server.baseEndpoint)
     }
 
-    public static Retrofit fromMockWebServer(MockWebServer mockWebServer) {
-        return new Retrofit.Builder()
-                .client(getOkClient())
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(new FieldsConverterFactory())
-                .addConverterFactory(new FilterConverterFactory())
-                .build();
+    fun fromMockWebServer(mockWebServer: MockWebServer): Retrofit {
+        return Retrofit.Builder()
+            .client(okClient)
+            .baseUrl(mockWebServer.url("/"))
+            .addConverterFactory(FieldsConverterFactory())
+            .addConverterFactory(FilterConverterFactory())
+            .build()
     }
 
-    public static Retrofit fromServerUrl(String serverUrl) {
-        return new Retrofit.Builder()
-                .baseUrl(serverUrl)
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(new FilterConverterFactory())
-                .addConverterFactory(new FieldsConverterFactory())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+    @JvmStatic
+    fun fromServerUrl(serverUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(serverUrl)
+            .addConverterFactory(JacksonConverterFactory.create(ObjectMapper()))
+            .addConverterFactory(FilterConverterFactory())
+            .addConverterFactory(FieldsConverterFactory())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
     }
 
-    private static OkHttpClient getOkClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new PreventURLDecodeInterceptor())
-                .build();
-    }
+    private val okClient: OkHttpClient
+        get() = Builder()
+            .addInterceptor(PreventURLDecodeInterceptor())
+            .build()
 }

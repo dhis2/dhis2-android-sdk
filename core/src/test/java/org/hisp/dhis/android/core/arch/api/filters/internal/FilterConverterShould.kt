@@ -74,7 +74,7 @@ class FilterConverterShould {
     @Test
     @Throws(IOException::class, InterruptedException::class)
     fun returns_correct_path_when_create_a_retrofit_request_using_filters() {
-        testService(server).test(
+        testService(server!!).test(
             create(create("id"), listOf("uid1", "uid2")),
             gt(create("lastUpdated"), "updatedDate"),
         ).execute()
@@ -87,7 +87,7 @@ class FilterConverterShould {
     @Test
     @Throws(IOException::class, InterruptedException::class)
     fun returns_correct_path_when_create_a_retrofit_request_using_filters_and_single_value() {
-        testService(server).test(
+        testService(server!!).test(
             create(create("id"), listOf("uid1")),
             gt(create("lastUpdated"), "updatedDate"),
         ).execute()
@@ -100,7 +100,7 @@ class FilterConverterShould {
     @Test
     @Throws(IOException::class, InterruptedException::class)
     fun returns_correct_path_when_create_a_retrofit_request_using_filters_and_values() {
-        mixedTestService(server).test(
+        mixedTestService(server!!).test(
             builder<String>().fields(
                 create("id"),
                 create("code"),
@@ -121,7 +121,7 @@ class FilterConverterShould {
     @Test
     @Throws(IOException::class, InterruptedException::class)
     fun returns_correct_path_when_create_a_retrofit_request_ignoring_null_filter() {
-        testService(server).test(
+        testService(server!!).test(
             create(create("id"), listOf("uid1", "uid2")),
             null,
         ).execute()
@@ -131,13 +131,13 @@ class FilterConverterShould {
         assertThat(request.path).isEqualTo("/api?filter=id:in:[uid1,uid2]")
     }
 
-    private fun testService(mockWebServer: MockWebServer?): TestService {
+    private fun testService(mockWebServer: MockWebServer): TestService {
         return RetrofitFactory.fromMockWebServer(mockWebServer).create(
             TestService::class.java,
         )
     }
 
-    private fun mixedTestService(mockWebServer: MockWebServer?): MixedTestService {
+    private fun mixedTestService(mockWebServer: MockWebServer): MixedTestService {
         return RetrofitFactory.fromMockWebServer(mockWebServer).create(
             MixedTestService::class.java,
         )

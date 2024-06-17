@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import okhttp3.ResponseBody
 import okhttp3.mockwebserver.MockResponse
@@ -82,7 +81,7 @@ class FieldsConverterShould {
             .execute()
 
         val recordedRequest = mockWebServer.takeRequest()
-        Truth.assertThat(recordedRequest.path).isEqualTo(
+        assertThat(recordedRequest.path).isEqualTo(
             "/api/?fields=property_one,property_two,nested_property[nested_property_one]",
         )
 

@@ -31,17 +31,10 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
 
-class FilterConverterFactory private constructor() : Converter.Factory() {
+internal class FilterConverterFactory : Converter.Factory() {
     override fun stringConverter(
         type: Type,
         annotations: Array<Annotation>,
         retrofit: Retrofit,
     ): Converter<*, String>? = annotations.firstOrNull { it is Where }?.let { FilterConverter() }
-
-    companion object {
-        @JvmStatic
-        fun create(): FilterConverterFactory {
-            return FilterConverterFactory()
-        }
-    }
 }

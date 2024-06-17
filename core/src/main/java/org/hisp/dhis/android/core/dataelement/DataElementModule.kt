@@ -25,15 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement
 
-package org.hisp.dhis.android.core.sms;
-
-import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
-import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
-import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
-
-public interface SmsModule {
-    ConfigCase configCase();
-    QrCodeCase qrCodeCase();
-    SmsSubmitCase smsSubmitCase();
+interface DataElementModule {
+    fun dataElements(): DataElementCollectionRepository
 }

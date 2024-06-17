@@ -25,10 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.event
 
-public interface RelationshipModule {
-    RelationshipTypeCollectionRepository relationshipTypes();
-    RelationshipCollectionRepository relationships();
-    RelationshipService relationshipService();
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
+
+interface EventModule {
+    fun events(): EventCollectionRepository
+    fun eventFilters(): EventFilterCollectionRepository
+    fun eventDownloader(): EventDownloader
+    fun eventService(): EventService
+    fun eventQuery(): EventQueryCollectionRepository
 }

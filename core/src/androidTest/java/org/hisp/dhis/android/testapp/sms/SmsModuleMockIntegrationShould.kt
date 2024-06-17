@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.sms
 
-package org.hisp.dhis.android.core.enrollment;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-public interface EnrollmentModule {
-    EnrollmentCollectionRepository enrollments();
-    EnrollmentService enrollmentService();
+@RunWith(D2JunitRunner::class)
+class SmsModuleMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+    @Test
+    fun access_submit_case() {
+        Truth.assertThat(d2.smsModule().smsSubmitCase()).isNotNull()
+    }
+
+    @Test
+    fun access_qr_case() {
+        Truth.assertThat(d2.smsModule().qrCodeCase()).isNotNull()
+    }
+
+    @Test
+    fun access_config_case() {
+        Truth.assertThat(d2.smsModule().configCase()).isNotNull()
+    }
 }

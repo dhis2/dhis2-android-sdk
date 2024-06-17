@@ -25,13 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.imports.internal
 
-public interface CategoryModule {
-    CategoryCollectionRepository categories();
-    CategoryOptionCollectionRepository categoryOptions();
-    CategoryOptionComboCollectionRepository categoryOptionCombos();
-    CategoryComboCollectionRepository categoryCombos();
+import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository
+import org.hisp.dhis.android.core.imports.TrackerJobManager
 
-    CategoryOptionComboService categoryOptionComboService();
+interface ImportModule {
+    fun trackerImportConflicts(): TrackerImportConflictCollectionRepository
+    fun jobManager(): TrackerJobManager
 }

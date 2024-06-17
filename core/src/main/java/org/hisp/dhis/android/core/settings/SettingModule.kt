@@ -25,13 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.indicator;
+interface SettingModule {
+    fun systemSetting(): SystemSettingCollectionRepository
+    fun generalSetting(): GeneralSettingObjectRepository
 
-import org.hisp.dhis.android.core.indicator.datasetindicatorengine.DataSetIndicatorEngine;
+    @Deprecated("Use {@link #synchronizationSettings()} instead.")
+    fun dataSetSetting(): DataSetSettingsObjectRepository
 
-public interface IndicatorModule {
-    IndicatorCollectionRepository indicators();
-    IndicatorTypeCollectionRepository indicatorTypes();
-    DataSetIndicatorEngine dataSetIndicatorEngine();
+    @Deprecated("Use {@link #synchronizationSettings()} instead.")
+    fun programSetting(): ProgramSettingsObjectRepository
+    fun synchronizationSettings(): SynchronizationSettingObjectRepository
+    fun analyticsSetting(): AnalyticsSettingObjectRepository
+    fun userSettings(): UserSettingsObjectRepository
+    fun appearanceSettings(): AppearanceSettingsObjectRepository
+    fun latestAppVersion(): LatestAppVersionObjectRepository
 }

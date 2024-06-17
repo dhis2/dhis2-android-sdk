@@ -25,10 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation
 
-package org.hisp.dhis.android.core.datavalue;
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 
-public interface DataValueModule {
-    DataValueCollectionRepository dataValues();
-    DataValueConflictCollectionRepository dataValueConflicts();
+interface ValidationModule {
+    fun validationRules(): ValidationRuleCollectionRepository
+
+    fun validationEngine(): ValidationEngine
 }

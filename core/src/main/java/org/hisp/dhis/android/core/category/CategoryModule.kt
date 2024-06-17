@@ -25,8 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.note;
+package org.hisp.dhis.android.core.category
 
-public interface NoteModule {
-    NoteCollectionRepository notes();
+interface CategoryModule {
+    fun categories(): CategoryCollectionRepository
+    fun categoryOptions(): CategoryOptionCollectionRepository
+    fun categoryOptionCombos(): CategoryOptionComboCollectionRepository
+    fun categoryCombos(): CategoryComboCollectionRepository
+    fun categoryOptionComboService(): CategoryOptionComboService
 }

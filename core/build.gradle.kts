@@ -44,8 +44,8 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 }
 
-val VERSION_CODE: String by project
-val VERSION_NAME: String by project
+group = rootProject.group
+version = rootProject.version
 
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
@@ -57,8 +57,8 @@ android {
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField("long", "VERSION_CODE", VERSION_CODE)
-        buildConfigField("String", "VERSION_NAME", "\"${VERSION_NAME}\"")
+        buildConfigField("long", "VERSION_CODE", libs.versions.dhis2AndroidSdkCode.get())
+        buildConfigField("String", "VERSION_NAME", "\"$version\"")
     }
 
     compileOptions {

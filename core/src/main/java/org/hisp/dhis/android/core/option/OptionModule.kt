@@ -25,15 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option
 
-package org.hisp.dhis.android.core.event;
-
-import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository;
-
-public interface EventModule {
-    EventCollectionRepository events();
-    EventFilterCollectionRepository eventFilters();
-    EventDownloader eventDownloader();
-    EventService eventService();
-    EventQueryCollectionRepository eventQuery();
+interface OptionModule {
+    fun optionGroups(): OptionGroupCollectionRepository
+    fun optionSets(): OptionSetCollectionRepository
+    fun options(): OptionCollectionRepository
+    fun optionService(): OptionService
 }

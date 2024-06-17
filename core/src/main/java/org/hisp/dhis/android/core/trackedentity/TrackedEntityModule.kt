@@ -25,33 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManager
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntitySearchCollectionRepository
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+@Suppress("TooManyFunctions")
+interface TrackedEntityModule {
+    fun trackedEntityTypes(): TrackedEntityTypeCollectionRepository
+    fun trackedEntityInstances(): TrackedEntityInstanceCollectionRepository
+    fun trackedEntityDataValues(): TrackedEntityDataValueCollectionRepository
+    fun trackedEntityAttributeValues(): TrackedEntityAttributeValueCollectionRepository
+    fun trackedEntityAttributes(): TrackedEntityAttributeCollectionRepository
+    fun trackedEntityTypeAttributes(): TrackedEntityTypeAttributeCollectionRepository
+    fun trackedEntityInstanceFilters(): TrackedEntityInstanceFilterCollectionRepository
 
-    GeneralSettingObjectRepository generalSetting();
+    fun trackedEntityInstanceQuery(): TrackedEntityInstanceQueryCollectionRepository
+    fun trackedEntitySearch(): TrackedEntitySearchCollectionRepository
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    fun reservedValueManager(): TrackedEntityAttributeReservedValueManager
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    fun trackedEntityInstanceDownloader(): TrackedEntityInstanceDownloader
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    fun trackedEntityInstanceService(): TrackedEntityInstanceService
 
-    AnalyticsSettingObjectRepository analyticsSetting();
-
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
-
-    LatestAppVersionObjectRepository latestAppVersion();
+    fun ownershipManager(): OwnershipManager
 }

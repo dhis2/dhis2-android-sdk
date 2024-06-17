@@ -25,10 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator
 
-package org.hisp.dhis.android.core.legendset;
+import org.hisp.dhis.android.core.indicator.datasetindicatorengine.DataSetIndicatorEngine
 
-public interface LegendSetModule {
-    LegendSetCollectionRepository legendSets();
-    LegendCollectionRepository legends();
+interface IndicatorModule {
+    fun indicators(): IndicatorCollectionRepository
+    fun indicatorTypes(): IndicatorTypeCollectionRepository
+    fun dataSetIndicatorEngine(): DataSetIndicatorEngine
 }

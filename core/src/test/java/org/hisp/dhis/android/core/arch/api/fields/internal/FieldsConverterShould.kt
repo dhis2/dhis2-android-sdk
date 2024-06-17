@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import okhttp3.ResponseBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -92,5 +93,23 @@ class FieldsConverterShould {
         return RetrofitFactory.fromMockWebServer(mockWebServer).create(
             TestService::class.java,
         )
+    }
+
+    @Test
+    fun returns_converter_factory_on_correct_annotation() {
+        val retrofit = RetrofitFactory.fromMockWebServer(MockWebServer())
+        val annotations = arrayOf<Annotation>(Which())
+        val converter = FieldsConverterFactory().stringConverter(String::class.java, annotations, retrofit)
+
+        assertThat(converter).isInstanceOf(FieldsConverter::class.java)
+    }
+
+    @Test
+    fun returns_null_on_missing_annotation() {
+        val retrofit = RetrofitFactory.fromMockWebServer(MockWebServer())
+        val annotations = emptyArray<Annotation>()
+        val converter = FieldsConverterFactory().stringConverter(String::class.java, annotations, retrofit)
+
+        assertThat(converter).isNull()
     }
 }

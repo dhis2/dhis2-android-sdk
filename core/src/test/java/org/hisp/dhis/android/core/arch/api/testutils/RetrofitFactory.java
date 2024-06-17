@@ -51,8 +51,8 @@ public class RetrofitFactory {
         return new Retrofit.Builder()
                 .client(getOkClient())
                 .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(new FieldsConverterFactory())
+                .addConverterFactory(new FilterConverterFactory())
                 .build();
     }
 
@@ -60,8 +60,8 @@ public class RetrofitFactory {
         return new Retrofit.Builder()
                 .baseUrl(serverUrl)
                 .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
+                .addConverterFactory(new FilterConverterFactory())
+                .addConverterFactory(new FieldsConverterFactory())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }

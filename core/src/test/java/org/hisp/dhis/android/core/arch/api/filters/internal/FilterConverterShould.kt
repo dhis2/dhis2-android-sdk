@@ -25,163 +25,158 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import com.google.common.truth.Truth.assertThat
+import okhttp3.ResponseBody
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field.Companion.create
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
+import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter.Companion.create
+import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.gt
+import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
+import org.junit.AfterClass
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.io.IOException
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
+class FilterConverterShould {
 
-import okhttp3.ResponseBody;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
-import retrofit2.Converter;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class FilterConverterShould {
-
-    interface TestService {
+    internal interface TestService {
         @GET("api")
-        retrofit2.Call<ResponseBody> test(@Query("filter") @Where Filter idFilter,
-                                          @Query("filter") @Where Filter lastUpdatedFilter);
+        fun test(
+            @Query("filter") @Where idFilter: Filter<String>?,
+            @Query("filter") @Where lastUpdatedFilter: Filter<String>?,
+        ): Call<ResponseBody?>
     }
 
-    interface MixedTestService {
+    internal interface MixedTestService {
         @GET("api")
-        retrofit2.Call<ResponseBody> test(
-                @Query("field") @Which Fields fields,
-                @Query("filter") @Where Filter idFilter,
-                @Query("filter") @Where Filter lastUpdatedFilter);
-    }
-
-    private static MockWebServer server;
-
-    @BeforeClass
-    public static void setUpClass() throws IOException {
-        server = new MockWebServer();
-        server.start();
+        fun test(
+            @Query("field") @Which fields: Fields<String>?,
+            @Query("filter") @Where idFilter: Filter<String>?,
+            @Query("filter") @Where lastUpdatedFilter: Filter<String>?,
+        ): Call<ResponseBody?>
     }
 
     @Before
-    public void setUp() throws IOException {
-        server.enqueue(new MockResponse());
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws IOException {
-        server.shutdown();
+    @Throws(IOException::class)
+    fun setUp() {
+        server!!.enqueue(MockResponse())
     }
 
     @Test
-    public void returns_correct_path_when_create_a_retrofit_request_using_filters() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList<>(2);
-        values.add("uid1");
-        values.add("uid2");
+    @Throws(IOException::class, InterruptedException::class)
+    fun returns_correct_path_when_create_a_retrofit_request_using_filters() {
+        testService(server).test(
+            create(create("id"), listOf("uid1", "uid2")),
+            gt(create("lastUpdated"), "updatedDate"),
+        ).execute()
 
-        TestService service = testService(server);
+        val request = server!!.takeRequest()
 
-        service.test(
-                InFilter.Companion.create(Field.create("id"), values),
-                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
-        ).execute();
-
-        RecordedRequest request = server.takeRequest();
-
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+        assertThat(request.path).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate")
     }
 
     @Test
-    public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_single_value() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList<>(2);
-        values.add("uid1");
+    @Throws(IOException::class, InterruptedException::class)
+    fun returns_correct_path_when_create_a_retrofit_request_using_filters_and_single_value() {
+        testService(server).test(
+            create(create("id"), listOf("uid1")),
+            gt(create("lastUpdated"), "updatedDate"),
+        ).execute()
 
-        TestService service = testService(server);
+        val request = server!!.takeRequest()
 
-        service.test(
-                InFilter.Companion.create(Field.create("id"), values),
-                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
-        ).execute();
-
-        RecordedRequest request = server.takeRequest();
-
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1]&filter=lastUpdated:gt:updatedDate");
+        assertThat(request.path).isEqualTo("/api?filter=id:in:[uid1]&filter=lastUpdated:gt:updatedDate")
     }
 
     @Test
-    public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_values() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList<>(2);
-        values.add("uid1");
-        values.add("uid2");
+    @Throws(IOException::class, InterruptedException::class)
+    fun returns_correct_path_when_create_a_retrofit_request_using_filters_and_values() {
+        mixedTestService(server).test(
+            builder<String>().fields(
+                create("id"),
+                create("code"),
+                create("name"),
+                create("displayName"),
+            ).build(),
+            create(create("id"), listOf("uid1", "uid2")),
+            gt(create("lastUpdated"), "updatedDate"),
+        ).execute()
 
-        MixedTestService service = mixedTestService(server);
+        val request = server!!.takeRequest()
 
-        service.test(
-                Fields.builder().fields(
-                        Field.create("id"), Field.create("code"),
-                        Field.create("name"), Field.create("displayName")
-                ).build(),
-                InFilter.Companion.create(Field.create("id"), values),
-                SingleValueFilter.Companion.gt(Field.create("lastUpdated"), "updatedDate")
-        ).execute();
-
-        RecordedRequest request = server.takeRequest();
-
-        assertThat(request.getPath()).isEqualTo(
-                "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+        assertThat(request.path).isEqualTo(
+            "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate",
+        )
     }
 
     @Test
-    public void returns_correct_path_when_create_a_retrofit_request_ignoring_null_filter() throws IOException, InterruptedException {
-        ArrayList<String> values = new ArrayList<>(2);
-        values.add("uid1");
-        values.add("uid2");
+    @Throws(IOException::class, InterruptedException::class)
+    fun returns_correct_path_when_create_a_retrofit_request_ignoring_null_filter() {
+        testService(server).test(
+            create(create("id"), listOf("uid1", "uid2")),
+            null,
+        ).execute()
 
-        TestService service = testService(server);
+        val request = server!!.takeRequest()
 
-        service.test(
-                InFilter.Companion.create(Field.create("id"), values),
-                null
-        ).execute();
-
-        RecordedRequest request = server.takeRequest();
-
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
+        assertThat(request.path).isEqualTo("/api?filter=id:in:[uid1,uid2]")
     }
 
-    private TestService testService(MockWebServer mockWebServer) {
-        return RetrofitFactory.fromMockWebServer(mockWebServer).create(TestService.class);
+    private fun testService(mockWebServer: MockWebServer?): TestService {
+        return RetrofitFactory.fromMockWebServer(mockWebServer).create(
+            TestService::class.java,
+        )
     }
 
-    private MixedTestService mixedTestService(MockWebServer mockWebServer) {
-        return RetrofitFactory.fromMockWebServer(mockWebServer).create(MixedTestService.class);
+    private fun mixedTestService(mockWebServer: MockWebServer?): MixedTestService {
+        return RetrofitFactory.fromMockWebServer(mockWebServer).create(
+            MixedTestService::class.java,
+        )
     }
-
-    //TODO: test Filter for null input and empty string.
 
     @Test
-    @SuppressWarnings("BadAnnotationImplementation")
-    public void returns_converter_factory_on_correct_annotation() {
-        Converter.Factory converterFactory = FilterConverterFactory.create();
+    fun returns_converter_factory_on_correct_annotation() {
+        val retrofit = RetrofitFactory.fromMockWebServer(MockWebServer())
+        val annotations = arrayOf<Annotation>(Where())
+        val converter = FilterConverterFactory().stringConverter(String::class.java, annotations, retrofit)
 
-        Converter<?, String> converter = converterFactory
-                .stringConverter(getClass(), new Annotation[]{new Where() {
-                    @Override
-                    public Class<? extends Annotation> annotationType() {
-                        return Where.class;
-                    }
-                }}, RetrofitFactory.fromMockWebServer(server));
+        assertThat(converter).isInstanceOf(FilterConverter::class.java)
+    }
 
-        assertThat(converter).isInstanceOf(FilterConverter.class);
+    @Test
+    fun returns_null_on_missing_annotation() {
+        val retrofit = RetrofitFactory.fromMockWebServer(MockWebServer())
+        val annotations = emptyArray<Annotation>()
+        val converter = FilterConverterFactory().stringConverter(String::class.java, annotations, retrofit)
+
+        assertThat(converter).isNull()
+    }
+
+    companion object {
+        private var server: MockWebServer? = null
+
+        @JvmStatic
+        @BeforeClass
+        @Throws(IOException::class)
+        fun setUpClass() {
+            server = MockWebServer()
+            server!!.start()
+        }
+
+        @JvmStatic
+        @AfterClass
+        @Throws(IOException::class)
+        fun tearDownClass() {
+            server!!.shutdown()
+        }
     }
 }

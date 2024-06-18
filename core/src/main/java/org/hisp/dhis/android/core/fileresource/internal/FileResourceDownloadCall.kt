@@ -33,8 +33,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
@@ -226,14 +229,21 @@ internal class FileResourceDownloadCall(
     }
 
     private suspend fun <V> getIdsValuePairsInBulk(valueMap: Map<String?, V>): List<Pair<FileResource, V>> {
-        val responseBody = coroutineAPICallExecutor.wrap {
-            fileResourceService.getFileResources(
-                FileResourceFields.allFields,
-                FileResourceFields.uid.`in`(valueMap.keys.filterNotNull()),
-                false,
-            )
-        }.getOrThrow()
-        return responseBody.items().mapNotNull { fileResource ->
+        val fileResourcesList =
+            object : UidsNoResourceCallFetcher<FileResource>(
+                valueMap.keys.filterNotNull().toSet(),
+                MAX_UID_LIST_SIZE,
+                coroutineAPICallExecutor,
+            ) {
+                override suspend fun getCall(query: UidsQuery): Payload<FileResource> {
+                    return fileResourceService.getFileResources(
+                        FileResourceFields.allFields,
+                        FileResourceFields.uid.`in`(query.uids()),
+                        false,
+                    )
+                }
+            }.fetch()
+        return fileResourcesList.mapNotNull { fileResource ->
             valueMap[fileResource.uid()]?.let { value ->
                 Pair(fileResource, value)
             }
@@ -283,5 +293,6 @@ internal class FileResourceDownloadCall(
 
     companion object {
         const val defaultDownloadMaxContentLength: Int = 6000000
+        private const val MAX_UID_LIST_SIZE = 100
     }
 }

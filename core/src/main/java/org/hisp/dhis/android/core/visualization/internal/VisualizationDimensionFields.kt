@@ -41,7 +41,7 @@ internal object VisualizationDimensionFields {
     val allFields: Fields<VisualizationDimension> =
         Fields.builder<VisualizationDimension>()
             .fields(
-                fh.field<String>(BaseIdentifiableObject.UID),
+                fh.field(BaseIdentifiableObject.UID),
                 fh.nestedField<VisualizationDimensionItem>(ITEMS)
                     .with(VisualizationDimensionItemFields.allFields),
             )

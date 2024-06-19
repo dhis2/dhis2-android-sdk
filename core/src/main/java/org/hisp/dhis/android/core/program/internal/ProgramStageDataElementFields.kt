@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
@@ -44,14 +43,14 @@ internal object ProgramStageDataElementFields {
     val allFields: Fields<ProgramStageDataElement> = Fields.builder<ProgramStageDataElement>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<String>(ProgramStageDataElementTableInfo.Columns.DISPLAY_IN_REPORTS),
+            fh.field(ProgramStageDataElementTableInfo.Columns.DISPLAY_IN_REPORTS),
             fh.nestedField<DataElement>(ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT)
                 .with(DataElementFields.allFields),
-            fh.field<Boolean>(ProgramStageDataElementTableInfo.Columns.COMPULSORY),
-            fh.field<Boolean>(ProgramStageDataElementTableInfo.Columns.ALLOW_PROVIDED_ELSEWHERE),
-            fh.field<Int>(ProgramStageDataElementTableInfo.Columns.SORT_ORDER),
-            fh.field<Boolean>(ProgramStageDataElementTableInfo.Columns.ALLOW_FUTURE_DATE),
-            fh.field<ValueTypeRendering>(RENDER_TYPE),
+            fh.field(ProgramStageDataElementTableInfo.Columns.COMPULSORY),
+            fh.field(ProgramStageDataElementTableInfo.Columns.ALLOW_PROVIDED_ELSEWHERE),
+            fh.field(ProgramStageDataElementTableInfo.Columns.SORT_ORDER),
+            fh.field(ProgramStageDataElementTableInfo.Columns.ALLOW_FUTURE_DATE),
+            fh.field(RENDER_TYPE),
             fh.nestedField<ObjectWithUid>(ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE)
                 .with(ObjectWithUid.uid),
         ).build()

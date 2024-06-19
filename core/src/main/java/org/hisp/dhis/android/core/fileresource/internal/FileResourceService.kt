@@ -49,7 +49,7 @@ internal interface FileResourceService {
     @GET(FILE_RESOURCES)
     suspend fun getFileResources(
         @Query("fields") @Which fields: Fields<FileResource>,
-        @Query("filter") @Where fileResources: Filter<FileResource, String>,
+        @Query("filter") @Where fileResources: Filter<FileResource>,
         @Query("paging") paging: Boolean,
     ): Payload<FileResource>
 

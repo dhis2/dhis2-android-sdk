@@ -41,9 +41,9 @@ internal object ApiSchemaFields {
     private val propertyFields: Fields<ApiSchema.Companion.SchemaProperty> =
         Fields.builder<ApiSchema.Companion.SchemaProperty>()
             .fields(
-                ApiSchemaPropertyFh.field<String>(KLASS),
-                ApiSchemaPropertyFh.field<String>(PROPERTY_TYPE),
-                ApiSchemaPropertyFh.field<String>(CONSTANTS),
+                ApiSchemaPropertyFh.field(KLASS),
+                ApiSchemaPropertyFh.field(PROPERTY_TYPE),
+                ApiSchemaPropertyFh.field(CONSTANTS),
             ).build()
 
     val allFields: Fields<ApiSchema> = Fields.builder<ApiSchema>()

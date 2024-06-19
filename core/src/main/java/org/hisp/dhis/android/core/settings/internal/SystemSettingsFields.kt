@@ -41,13 +41,13 @@ internal object SystemSettingsFields {
 
     val allFields: Fields<SystemSettings> = Fields.builder<SystemSettings>()
         .fields(
-            fh.field<String>(KEY_FLAG),
-            fh.field<String>(KEY_STYLE),
-            fh.field<String>(KEY_DEFAULT_BASE_MAP),
+            fh.field(KEY_FLAG),
+            fh.field(KEY_STYLE),
+            fh.field(KEY_DEFAULT_BASE_MAP),
         ).build()
 
     val bingApiKey: Fields<SystemSettings> = Fields.builder<SystemSettings>()
         .fields(
-            fh.field<Any>(KEY_BING_MAPS_API_KEY),
+            fh.field(KEY_BING_MAPS_API_KEY),
         ).build()
 }

@@ -41,9 +41,9 @@ final class TrackedEntityTypeAttributeFields {
             .fields(
                     fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
-                    fh.<Boolean>field(Columns.DISPLAY_IN_LIST),
-                    fh.<Boolean>field(Columns.MANDATORY),
-                    fh.<Boolean>field(Columns.SEARCHABLE)
+                    fh.field(Columns.DISPLAY_IN_LIST),
+                    fh.field(Columns.MANDATORY),
+                    fh.field(Columns.SEARCHABLE)
             ).build();
 
     private TrackedEntityTypeAttributeFields() {

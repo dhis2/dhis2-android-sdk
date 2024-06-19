@@ -35,13 +35,13 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
 
 final class SystemInfoFields {
 
-    private static FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
+    private static final FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
     static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
-            fh.<String>field(Columns.SERVER_DATE),
-            fh.<String>field(Columns.DATE_FORMAT),
-            fh.<String>field(Columns.VERSION),
-            fh.<String>field(Columns.CONTEXT_PATH),
-            fh.<String>field(Columns.SYSTEM_NAME)
+            fh.field(Columns.SERVER_DATE),
+            fh.field(Columns.DATE_FORMAT),
+            fh.field(Columns.VERSION),
+            fh.field(Columns.CONTEXT_PATH),
+            fh.field(Columns.SYSTEM_NAME)
     ).build();
 
     private SystemInfoFields() {

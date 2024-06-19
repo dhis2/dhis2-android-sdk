@@ -40,7 +40,7 @@ internal fun interface TrackedEntityAttributeService {
     @GET("trackedEntityAttributes")
     suspend fun getTrackedEntityAttributes(
         @Query("fields") @Which fields: Fields<TrackedEntityAttribute>,
-        @Query("filter") @Where idFilter: Filter<TrackedEntityAttribute, String>,
+        @Query("filter") @Where idFilter: Filter<TrackedEntityAttribute>,
         @Query("paging") paging: Boolean,
     ): Payload<TrackedEntityAttribute>
 }

@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipIte
 internal object NewRelationshipItemEnrollmentFields {
     private const val ENROLLMENT = "enrollment"
 
-    val enrollment: Field<NewTrackerImporterRelationshipItemEnrollment, String> = Field.create(ENROLLMENT)
+    val enrollment: Field<NewTrackerImporterRelationshipItemEnrollment> = Field.create(ENROLLMENT)
 }

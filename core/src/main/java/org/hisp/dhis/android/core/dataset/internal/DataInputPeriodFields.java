@@ -35,12 +35,12 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo;
 
 final class DataInputPeriodFields {
 
-    private static FieldsHelper<DataInputPeriod> fieldsHelper = new FieldsHelper<>();
+    private static final FieldsHelper<DataInputPeriod> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataInputPeriod> allFields = Fields.<DataInputPeriod>builder().fields(
-            fieldsHelper.<String>field(DataInputPeriodTableInfo.Columns.PERIOD),
-            fieldsHelper.<String>field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
-            fieldsHelper.<String>field(DataInputPeriodTableInfo.Columns.CLOSING_DATE)
+            fieldsHelper.field(DataInputPeriodTableInfo.Columns.PERIOD),
+            fieldsHelper.field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
+            fieldsHelper.field(DataInputPeriodTableInfo.Columns.CLOSING_DATE)
 
     ).build();
 

@@ -32,9 +32,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -52,34 +50,32 @@ public final class TrackedEntityAttributeFields {
 
     private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
 
-    static final Field<TrackedEntityAttribute, String> uid = fh.uid();
-
-    static final Field<TrackedEntityAttribute, String> lastUpdated = fh.lastUpdated();
-
     public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<String>field(Columns.PATTERN),
-                    fh.<String>field(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM),
-                    fh.<ValueType>field(Columns.VALUE_TYPE),
-                    fh.<String>field(Columns.EXPRESSION),
-                    fh.<Boolean>field(Columns.PROGRAM_SCOPE),
-                    fh.<AggregationType>field(TrackedEntityAttributeTableInfo.Columns.AGGREGATION_TYPE),
-                    fh.<Boolean>field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
-                    fh.<Boolean>field(Columns.GENERATED),
-                    fh.<Boolean>field(Columns.DISPLAY_ON_VISIT_SCHEDULE),
-                    fh.<Boolean>field(Columns.ORG_UNIT_SCOPE),
-                    fh.<Boolean>field(UNIQUE),
-                    fh.<Boolean>field(Columns.INHERIT),
-                    fh.<String>field(Columns.FIELD_MASK),
+                    fh.field(Columns.PATTERN),
+                    fh.field(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM),
+                    fh.field(Columns.VALUE_TYPE),
+                    fh.field(Columns.EXPRESSION),
+                    fh.field(Columns.PROGRAM_SCOPE),
+                    fh.field(TrackedEntityAttributeTableInfo.Columns.AGGREGATION_TYPE),
+                    fh.field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
+                    fh.field(Columns.GENERATED),
+                    fh.field(Columns.DISPLAY_ON_VISIT_SCHEDULE),
+                    fh.field(Columns.ORG_UNIT_SCOPE),
+                    fh.field(UNIQUE),
+                    fh.field(Columns.INHERIT),
+                    fh.field(Columns.FIELD_MASK),
                     fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
                     fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.read),
-                    fh.<String>field(Columns.FORM_NAME),
-                    fh.<String>field(Columns.DISPLAY_FORM_NAME),
-                    fh.<Boolean>field(Columns.CONFIDENTIAL)
+                    fh.field(Columns.FORM_NAME),
+                    fh.field(Columns.DISPLAY_FORM_NAME),
+                    fh.field(Columns.CONFIDENTIAL)
                     ).build();
+    static final Field<TrackedEntityAttribute> uid = fh.uid();
+    static final Field<TrackedEntityAttribute> lastUpdated = fh.lastUpdated();
 
     private TrackedEntityAttributeFields() {
     }

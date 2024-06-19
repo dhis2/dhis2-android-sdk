@@ -45,24 +45,22 @@ public final class IndicatorFields {
     public static final String OBJECT_STYLE = "style";
     private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
 
-    public static final Field<Indicator, String> uid = fh.uid();
-
-    static final Field<Indicator, String> lastUpdated = fh.lastUpdated();
-
+    public static final Field<Indicator> uid = fh.uid();
     public static final Fields<Indicator> allFields = Fields.<Indicator>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<Boolean>field(Columns.ANNUALIZED),
+                    fh.field(Columns.ANNUALIZED),
                     fh.nestedFieldWithUid(Columns.INDICATOR_TYPE),
-                    fh.<String>field(Columns.NUMERATOR),
-                    fh.<String>field(Columns.NUMERATOR_DESCRIPTION),
-                    fh.<String>field(Columns.DENOMINATOR),
-                    fh.<String>field(Columns.DENOMINATOR_DESCRIPTION),
-                    fh.<String>field(Columns.URL),
+                    fh.field(Columns.NUMERATOR),
+                    fh.field(Columns.NUMERATOR_DESCRIPTION),
+                    fh.field(Columns.DENOMINATOR),
+                    fh.field(Columns.DENOMINATOR_DESCRIPTION),
+                    fh.field(Columns.URL),
                     fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
-                    fh.<Integer>field(Columns.DECIMALS),
+                    fh.field(Columns.DECIMALS),
                     fh.<ObjectStyle>nestedField(OBJECT_STYLE).with(ObjectStyleFields.allFields)
             ).build();
+    static final Field<Indicator> lastUpdated = fh.lastUpdated();
 
     private IndicatorFields() {
     }

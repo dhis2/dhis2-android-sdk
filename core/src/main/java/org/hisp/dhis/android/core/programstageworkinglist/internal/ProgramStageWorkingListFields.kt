@@ -35,17 +35,17 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCrite
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 
 internal object ProgramStageWorkingListFields {
-    const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
+    private const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
 
     private val fh = FieldsHelper<ProgramStageWorkingList>()
 
-    val programUid: Field<ProgramStageWorkingList, String> =
+    val programUid: Field<ProgramStageWorkingList> =
         Field.create(ProgramStageWorkingListTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
 
     val allFields = Fields.builder<ProgramStageWorkingList>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<String>(ProgramStageWorkingListTableInfo.Columns.DESCRIPTION),
+            fh.field(ProgramStageWorkingListTableInfo.Columns.DESCRIPTION),
             fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM),
             fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM_STAGE),
             fh.nestedField<ProgramStageQueryCriteria>(PROGRAM_STAGE_QUERY_CRITERIA)

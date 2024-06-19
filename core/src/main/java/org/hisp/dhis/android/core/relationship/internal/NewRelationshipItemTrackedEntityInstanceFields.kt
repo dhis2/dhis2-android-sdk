@@ -33,6 +33,5 @@ import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipIte
 internal object NewRelationshipItemTrackedEntityInstanceFields {
     private const val TRACKED_ENTITY = "trackedEntity"
 
-    val trackedEntityInstance: Field<NewTrackerImporterRelationshipItemTrackedEntity, String> =
-        Field.create(TRACKED_ENTITY)
+    val trackedEntityInstance: Field<NewTrackerImporterRelationshipItemTrackedEntity> = Field.create(TRACKED_ENTITY)
 }

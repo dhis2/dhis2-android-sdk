@@ -39,13 +39,13 @@ class FieldShould {
 
     @Test
     fun return_field_name_given_in_constructor() {
-        val field: Field<*, *> = Field.create<Any, Any>("test_field_name")
+        val field: Field<*> = Field.create<Any>("test_field_name")
         Truth.assertThat(field.name).isEqualTo("test_field_name")
     }
 
     @Test
     fun have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(Field.create<Any, Any>("").javaClass)
+        EqualsVerifier.forClass(Field.create<Any>("").javaClass)
             .suppress(Warning.NULL_FIELDS)
             .verify()
     }
@@ -59,8 +59,8 @@ class FieldShould {
 
     @Test
     fun return_nested_field_children_when_they_are_added_in_a_new_variable() {
-        val fieldOne = Field.create<String, String?>("fieldOne")
-        val fieldTwo = Field.create<String, String?>("fieldTwo")
+        val fieldOne = Field.create<String>("fieldOne")
+        val fieldTwo = Field.create<String>("fieldTwo")
 
         val nestedField = NestedField.create<String, String>("test_nested_field")
         val nestedFieldWithChildren: NestedField<String, *> = nestedField.with(fieldOne, fieldTwo)

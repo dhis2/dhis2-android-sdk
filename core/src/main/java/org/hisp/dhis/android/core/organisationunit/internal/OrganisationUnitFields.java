@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
@@ -49,11 +48,11 @@ public final class OrganisationUnitFields {
 
     private static final FieldsHelper<OrganisationUnit> fh = new FieldsHelper<>();
 
-    static final Field<OrganisationUnit, String> uid = fh.uid();
-    private static final Field<OrganisationUnit, String> displayName = fh.displayName();
-    static final Field<OrganisationUnit, String> path = Field.create(Columns.PATH);
-    private static final Field<OrganisationUnit, String> openingDate = Field.create(Columns.OPENING_DATE);
-    private static final Field<OrganisationUnit, String> closedDate = Field.create(Columns.CLOSED_DATE);
+    static final Field<OrganisationUnit> uid = fh.uid();
+    static final Field<OrganisationUnit> path = Field.create(Columns.PATH);
+    private static final Field<OrganisationUnit> displayName = fh.displayName();
+    private static final Field<OrganisationUnit> openingDate = Field.create(Columns.OPENING_DATE);
+    private static final Field<OrganisationUnit> closedDate = Field.create(Columns.CLOSED_DATE);
 
     public static final String ASC_ORDER = uid.getName() + ":" + RepositoryScope.OrderByDirection.ASC.getApi();
 
@@ -63,10 +62,10 @@ public final class OrganisationUnitFields {
                     path,
                     openingDate,
                     closedDate,
-                    fh.<String>field(Columns.LEVEL),
-                    //fh.<String>field(COORDINATES),
-                    fh.<FeatureType>field(FEATURE_TYPE),
-                    //fh.<Geometry>field(GEOMETRY),
+                    fh.field(Columns.LEVEL),
+                    //fh.field(COORDINATES),
+                    fh.field(FEATURE_TYPE),
+                    //fh.field(GEOMETRY),
                     fh.nestedFieldWithUid(Columns.PARENT),
                     fh.nestedFieldWithUid(PROGRAMS),
                     fh.nestedFieldWithUid(DATA_SETS),

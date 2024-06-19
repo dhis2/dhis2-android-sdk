@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentFields
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.relationship.internal.NewRelationshipFields
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
-import java.util.*
 
 internal object NewTrackedEntityInstanceFields {
     private const val UID = "trackedEntity"
@@ -69,15 +67,15 @@ internal object NewTrackedEntityInstanceFields {
 
     private fun commonFields(): Fields.Builder<NewTrackerImporterTrackedEntity> {
         return Fields.builder<NewTrackerImporterTrackedEntity>().fields(
-            fh.field<String>(UID),
-            fh.field<Date>(CREATED_AT),
-            fh.field<Date>(UPDATED_AT),
-            fh.field<Date>(CREATED_AT_CLIENT),
-            fh.field<Date>(UPDATED_AT_CLIENT),
-            fh.field<String>(ORGANISATION_UNIT),
-            fh.field<String>(TRACKED_ENTITY_TYPE),
-            fh.field<Geometry>(GEOMETRY),
-            fh.field<Boolean>(DELETED),
+            fh.field(UID),
+            fh.field(CREATED_AT),
+            fh.field(UPDATED_AT),
+            fh.field(CREATED_AT_CLIENT),
+            fh.field(UPDATED_AT_CLIENT),
+            fh.field(ORGANISATION_UNIT),
+            fh.field(TRACKED_ENTITY_TYPE),
+            fh.field(GEOMETRY),
+            fh.field(DELETED),
             fh.nestedField<NewTrackerImporterTrackedEntityAttributeValue>(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                 .with(NewTrackedEntityAttributeValueFields.allFields),
         )

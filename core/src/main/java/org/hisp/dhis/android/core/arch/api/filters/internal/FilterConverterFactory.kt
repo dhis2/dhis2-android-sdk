@@ -25,31 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
-package org.hisp.dhis.android.core.indicator.internal;
+import retrofit2.Converter
+import retrofit2.Retrofit
+import java.lang.reflect.Type
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.indicator.IndicatorType;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.Columns;
-
-
-final class IndicatorTypeFields {
-
-    private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
-
-    public static final Field<IndicatorType, String> uid = fh.uid();
-
-    static final Field<IndicatorType, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Boolean>field(Columns.NUMBER),
-                    fh.<Integer>field(Columns.FACTOR)
-            ).build();
-
-    private IndicatorTypeFields() {
-    }
+internal class FilterConverterFactory : Converter.Factory() {
+    override fun stringConverter(
+        type: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit,
+    ): Converter<*, String>? = annotations.firstOrNull { it is Where }?.let { FilterConverter() }
 }

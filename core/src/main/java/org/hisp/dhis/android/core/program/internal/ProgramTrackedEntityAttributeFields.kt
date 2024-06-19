@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
@@ -40,13 +39,13 @@ internal object ProgramTrackedEntityAttributeFields {
     val allFields: Fields<ProgramTrackedEntityAttribute> = Fields.builder<ProgramTrackedEntityAttribute>()
         .fields(fh.getNameableFields())
         .fields(
-            fh.field<String>(ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY),
+            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY),
             fh.nestedFieldWithUid(ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM),
-            fh.field<Boolean>(ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE),
-            fh.field<Boolean>(ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST),
-            fh.field<Int>(ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER),
-            fh.field<Boolean>(ProgramTrackedEntityAttributeTableInfo.Columns.SEARCHABLE),
+            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE),
+            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST),
+            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER),
+            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.SEARCHABLE),
             fh.nestedFieldWithUid(ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE),
-            fh.field<ValueTypeRendering>(RENDER_TYPE),
+            fh.field(RENDER_TYPE),
         ).build()
 }

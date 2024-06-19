@@ -46,11 +46,11 @@ public final class SectionFields {
     public static final Fields<Section> allFields = Fields.<Section>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
+                    fh.field(Columns.DESCRIPTION),
+                    fh.field(Columns.SORT_ORDER),
                     fh.nestedFieldWithUid(Columns.DATA_SET),
-                    fh.<Boolean>field(Columns.SHOW_ROW_TOTALS),
-                    fh.<Boolean>field(Columns.SHOW_COLUMN_TOTALS),
+                    fh.field(Columns.SHOW_ROW_TOTALS),
+                    fh.field(Columns.SHOW_COLUMN_TOTALS),
                     fh.nestedFieldWithUid(DATA_ELEMENTS),
                     fh.nestedFieldWithUid(INDICATORS),
                     fh.<DataElementOperand>nestedField(GREYED_FIELDS)

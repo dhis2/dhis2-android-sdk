@@ -40,8 +40,8 @@ public final class AccessFields {
     private static final String WRITE = "write";
     private static final String DATA = "data";
 
-    public static final Field<Access, Boolean> read = Field.create(READ);
-    public static final Field<Access, Boolean> write = Field.create(WRITE);
+    public static final Field<Access> read = Field.create(READ);
+    public static final Field<Access> write = Field.create(WRITE);
     public static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
 
     public static final Fields<Access> allFields = Fields.<Access>builder().fields(

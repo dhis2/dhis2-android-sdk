@@ -41,9 +41,9 @@ internal object CustomIconFields {
     val allFields: Fields<CustomIcon> =
         Fields.builder<CustomIcon>()
             .fields(
-                fh.field<String>(KEY),
+                fh.field(KEY),
                 fh.nestedFieldWithUid(FILE_RESOURCE),
-                fh.field<String>(HREF),
+                fh.field(HREF),
             )
             .build()
 }

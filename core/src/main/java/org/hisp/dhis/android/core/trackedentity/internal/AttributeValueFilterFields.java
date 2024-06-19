@@ -42,17 +42,17 @@ public final class AttributeValueFilterFields {
 
     public static final Fields<AttributeValueFilter> allFields = Fields.<AttributeValueFilter>builder()
             .fields(
-                    fh.<String>field(Columns.ATTRIBUTE),
-                    fh.<String>field(Columns.SW),
-                    fh.<String>field(Columns.EW),
-                    fh.<String>field(Columns.LE),
-                    fh.<String>field(Columns.GE),
-                    fh.<String>field(Columns.GT),
-                    fh.<String>field(Columns.LT),
-                    fh.<String>field(Columns.EQ),
-                    fh.<String>field(API_IN),
-                    fh.<String>field(Columns.LIKE),
-                    fh.<String>field(Columns.DATE_FILTER)
+                    fh.field(Columns.ATTRIBUTE),
+                    fh.field(Columns.SW),
+                    fh.field(Columns.EW),
+                    fh.field(Columns.LE),
+                    fh.field(Columns.GE),
+                    fh.field(Columns.GT),
+                    fh.field(Columns.LT),
+                    fh.field(Columns.EQ),
+                    fh.field(API_IN),
+                    fh.field(Columns.LIKE),
+                    fh.field(Columns.DATE_FILTER)
             ).build();
 
     private AttributeValueFilterFields() {

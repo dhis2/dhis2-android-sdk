@@ -59,7 +59,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
     private val programService: ProgramService = mock()
     private val programHandler: ProgramHandler = mock()
     private val fieldsCaptor = argumentCaptor<Fields<Program>>()
-    private val filterCaptor = argumentCaptor<Filter<Program, String>>()
+    private val filterCaptor = argumentCaptor<Filter<Program>>()
     private val accesDataReadFilter = argumentCaptor<String>()
 
     private val apiCall: Payload<Program> = Payload.emptyPayload()

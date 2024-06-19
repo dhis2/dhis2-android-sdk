@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -56,17 +55,17 @@ internal object DataElementFields {
     val allFields: Fields<DataElement> = Fields.builder<DataElement>()
         .fields(fh.getNameableFields())
         .fields(
-            fh.field<ValueType>(DataElementTableInfo.Columns.VALUE_TYPE),
-            fh.field<Boolean>(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT),
-            fh.field<String>(DataElementTableInfo.Columns.AGGREGATION_TYPE),
-            fh.field<String>(DataElementTableInfo.Columns.FORM_NAME),
-            fh.field<String>(DataElementTableInfo.Columns.DOMAIN_TYPE),
-            fh.field<String>(DataElementTableInfo.Columns.DISPLAY_FORM_NAME),
+            fh.field(DataElementTableInfo.Columns.VALUE_TYPE),
+            fh.field(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT),
+            fh.field(DataElementTableInfo.Columns.AGGREGATION_TYPE),
+            fh.field(DataElementTableInfo.Columns.FORM_NAME),
+            fh.field(DataElementTableInfo.Columns.DOMAIN_TYPE),
+            fh.field(DataElementTableInfo.Columns.DISPLAY_FORM_NAME),
             fh.nestedField<ObjectWithUid>(DataElementTableInfo.Columns.OPTION_SET)
                 .with(ObjectWithUid.uid),
             fh.nestedField<ObjectWithUid>(DataElementTableInfo.Columns.CATEGORY_COMBO)
                 .with(ObjectWithUid.uid),
-            fh.field<String>(DataElementTableInfo.Columns.FIELD_MASK),
+            fh.field(DataElementTableInfo.Columns.FIELD_MASK),
             fh.nestedField<ObjectStyle>(STYLE)
                 .with(ObjectStyleFields.allFields),
             fh.nestedField<Access>(ACCESS)

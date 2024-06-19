@@ -47,13 +47,13 @@ internal object ProgramSectionFields {
     val allFields: Fields<ProgramSection> = Fields.builder<ProgramSection>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<String>(ProgramSectionTableInfo.Columns.DESCRIPTION),
+            fh.field(ProgramSectionTableInfo.Columns.DESCRIPTION),
             fh.nestedFieldWithUid(ProgramSectionTableInfo.Columns.PROGRAM),
             fh.nestedFieldWithUid(ATTRIBUTES),
             fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTES),
-            fh.field<String>(ProgramSectionTableInfo.Columns.SORT_ORDER),
+            fh.field(ProgramSectionTableInfo.Columns.SORT_ORDER),
             fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field<String>(ProgramSectionTableInfo.Columns.FORM_NAME),
+            fh.field(ProgramSectionTableInfo.Columns.FORM_NAME),
             fh.nestedField<SectionRendering>(RENDER_TYPE),
         ).build()
 }

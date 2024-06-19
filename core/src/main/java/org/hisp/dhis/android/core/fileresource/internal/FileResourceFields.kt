@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain
-import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 
 internal object FileResourceFields {
@@ -47,9 +45,9 @@ internal object FileResourceFields {
             fh.name(),
             fh.created(),
             fh.lastUpdated(),
-            fh.field<String>(FileResourceTableInfo.Columns.CONTENT_TYPE),
-            fh.field<Long>(FileResourceTableInfo.Columns.CONTENT_LENGTH),
-            fh.field<FileResourceDomain>(FileResourceTableInfo.Columns.DOMAIN),
-            fh.field<FileResourceStorageStatus>(STORAGE_STATUS),
+            fh.field(FileResourceTableInfo.Columns.CONTENT_TYPE),
+            fh.field(FileResourceTableInfo.Columns.CONTENT_LENGTH),
+            fh.field(FileResourceTableInfo.Columns.DOMAIN),
+            fh.field(STORAGE_STATUS),
         ).build()
 }

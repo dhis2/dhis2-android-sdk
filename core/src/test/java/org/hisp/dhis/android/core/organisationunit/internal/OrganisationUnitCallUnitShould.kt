@@ -53,7 +53,7 @@ class OrganisationUnitCallUnitShould {
 
     // Captors for the organisationUnitService arguments:
     private val fieldsCaptor = argumentCaptor<Fields<OrganisationUnit>>()
-    private val filtersCaptor = argumentCaptor<Filter<OrganisationUnit, String>>()
+    private val filtersCaptor = argumentCaptor<Filter<OrganisationUnit>>()
     private val pagingCaptor = argumentCaptor<Boolean>()
     private val pageCaptor = argumentCaptor<Int>()
     private val pageSizeCaptor = argumentCaptor<Int>()

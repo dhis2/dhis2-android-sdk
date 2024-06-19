@@ -29,21 +29,21 @@ package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 
-internal class InFilter<T, K>(
-    override val field: Field<T, K>,
+internal class InFilter<T>(
+    override val field: Field<T>,
     override val operator: String,
     override val values: Collection<String>,
-) : Filter<T, K> {
+) : Filter<T> {
     override fun generateString(): String {
         val valuesString = values.joinToString(",")
         return "${field.name}:$operator:[$valuesString]"
     }
 
     companion object {
-        fun <T, K> create(
-            field: Field<T, K>,
+        fun <T> create(
+            field: Field<T>,
             values: Collection<String>,
-        ): Filter<T, K> {
+        ): Filter<T> {
             // If the filter is incomplete, return null so the filter is not included in the request.
             return InFilter(field, "in", values)
         }

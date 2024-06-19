@@ -41,12 +41,11 @@ import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.period.PeriodType
 
 internal object DataSetFields {
     const val DATA_SET_ELEMENTS = "dataSetElements"
     const val INDICATORS = "indicators"
-    const val SECTIONS = "sections"
+    private const val SECTIONS = "sections"
     const val COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands"
     const val DATA_INPUT_PERIODS = "dataInputPeriods"
     private const val ACCESS = "access"
@@ -59,21 +58,21 @@ internal object DataSetFields {
     val allFields: Fields<DataSet> = Fields.builder<DataSet>()
         .fields(fh.getNameableFields())
         .fields(
-            fh.field<PeriodType>(DataSetTableInfo.Columns.PERIOD_TYPE),
+            fh.field(DataSetTableInfo.Columns.PERIOD_TYPE),
             fh.nestedFieldWithUid(DataSetTableInfo.Columns.CATEGORY_COMBO),
-            fh.field<Boolean>(DataSetTableInfo.Columns.MOBILE),
-            fh.field<Int>(DataSetTableInfo.Columns.VERSION),
-            fh.field<Int>(DataSetTableInfo.Columns.EXPIRY_DAYS),
-            fh.field<Int>(DataSetTableInfo.Columns.TIMELY_DAYS),
-            fh.field<Boolean>(DataSetTableInfo.Columns.NOTIFY_COMPLETING_USER),
-            fh.field<Int>(DataSetTableInfo.Columns.OPEN_FUTURE_PERIODS),
-            fh.field<Boolean>(DataSetTableInfo.Columns.FIELD_COMBINATION_REQUIRED),
-            fh.field<Boolean>(DataSetTableInfo.Columns.VALID_COMPLETE_ONLY),
-            fh.field<Boolean>(DataSetTableInfo.Columns.NO_VALUE_REQUIRES_COMMENT),
-            fh.field<Boolean>(DataSetTableInfo.Columns.SKIP_OFFLINE),
-            fh.field<Boolean>(DataSetTableInfo.Columns.DATA_ELEMENT_DECORATION),
-            fh.field<Boolean>(DataSetTableInfo.Columns.RENDER_AS_TABS),
-            fh.field<Boolean>(DataSetTableInfo.Columns.RENDER_HORIZONTALLY),
+            fh.field(DataSetTableInfo.Columns.MOBILE),
+            fh.field(DataSetTableInfo.Columns.VERSION),
+            fh.field(DataSetTableInfo.Columns.EXPIRY_DAYS),
+            fh.field(DataSetTableInfo.Columns.TIMELY_DAYS),
+            fh.field(DataSetTableInfo.Columns.NOTIFY_COMPLETING_USER),
+            fh.field(DataSetTableInfo.Columns.OPEN_FUTURE_PERIODS),
+            fh.field(DataSetTableInfo.Columns.FIELD_COMBINATION_REQUIRED),
+            fh.field(DataSetTableInfo.Columns.VALID_COMPLETE_ONLY),
+            fh.field(DataSetTableInfo.Columns.NO_VALUE_REQUIRES_COMMENT),
+            fh.field(DataSetTableInfo.Columns.SKIP_OFFLINE),
+            fh.field(DataSetTableInfo.Columns.DATA_ELEMENT_DECORATION),
+            fh.field(DataSetTableInfo.Columns.RENDER_AS_TABS),
+            fh.field(DataSetTableInfo.Columns.RENDER_HORIZONTALLY),
             fh.nestedFieldWithUid(DataSetTableInfo.Columns.WORKFLOW),
             fh.nestedField<DataSetElement>(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
             fh.nestedFieldWithUid(INDICATORS),

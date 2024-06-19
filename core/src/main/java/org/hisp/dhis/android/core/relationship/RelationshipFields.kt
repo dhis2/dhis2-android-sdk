@@ -44,11 +44,11 @@ internal object RelationshipFields {
     private val fh = FieldsHelper<Relationship>()
 
     val allFields: Fields<Relationship> = Fields.builder<Relationship>().fields(
-        fh.field<String>(RELATIONSHIP),
-        fh.field<String>(RELATIONSHIP_NAME),
-        fh.field<String>(RELATIONSHIP_TYPE),
-        fh.field<String>(BaseIdentifiableObject.CREATED),
-        fh.field<String>(BaseIdentifiableObject.LAST_UPDATED),
+        fh.field(RELATIONSHIP),
+        fh.field(RELATIONSHIP_NAME),
+        fh.field(RELATIONSHIP_TYPE),
+        fh.field(BaseIdentifiableObject.CREATED),
+        fh.field(BaseIdentifiableObject.LAST_UPDATED),
         fh.nestedField<RelationshipItem>(FROM).with(RelationshipItemFields.allFields),
         fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields),
     ).build()

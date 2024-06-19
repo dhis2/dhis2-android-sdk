@@ -42,6 +42,6 @@ internal object CategoryFields {
         .fields(fh.getIdentifiableFields())
         .fields(
             fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-            fh.field<String>(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE),
+            fh.field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE),
         ).build()
 }

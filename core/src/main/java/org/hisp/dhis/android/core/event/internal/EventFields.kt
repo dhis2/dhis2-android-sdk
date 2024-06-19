@@ -29,10 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.Coordinates
-import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteFields
@@ -49,7 +46,7 @@ internal object EventFields {
     const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
     private const val GEOMETRY = "geometry"
     const val NOTES = "notes"
-    const val RELATIONSHIPS = "relationships"
+    private const val RELATIONSHIPS = "relationships"
 
     private val fh = FieldsHelper<Event>()
 
@@ -64,30 +61,30 @@ internal object EventFields {
     val asRelationshipFields: Fields<Event> = commonFields().build()
 
     val teiQueryFields: Fields<Event> = commonFields()
-        .fields(fh.field<String>(TRACKED_ENTITY_INSTANCE))
+        .fields(fh.field(TRACKED_ENTITY_INSTANCE))
         .build()
 
     private fun commonFields(): Fields.Builder<Event> {
         return Fields.builder<Event>().fields(
-            fh.field<String>(UID),
-            fh.field<String>(EventTableInfo.Columns.ENROLLMENT),
-            fh.field<String>(EventTableInfo.Columns.CREATED),
-            fh.field<String>(EventTableInfo.Columns.LAST_UPDATED),
-            fh.field<String>(EventTableInfo.Columns.CREATED_AT_CLIENT),
-            fh.field<String>(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
-            fh.field<EventStatus>(EventTableInfo.Columns.STATUS),
-            fh.field<Coordinates>(COORDINATE),
-            fh.field<Geometry>(GEOMETRY),
-            fh.field<String>(EventTableInfo.Columns.PROGRAM),
-            fh.field<String>(EventTableInfo.Columns.PROGRAM_STAGE),
-            fh.field<String>(ORGANISATION_UNIT),
-            fh.field<String>(EventTableInfo.Columns.EVENT_DATE),
-            fh.field<String>(EventTableInfo.Columns.COMPLETE_DATE),
-            fh.field<Boolean>(EventTableInfo.Columns.DELETED),
-            fh.field<String>(EventTableInfo.Columns.DUE_DATE),
-            fh.field<String>(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
-            fh.field<String>(EventTableInfo.Columns.ASSIGNED_USER),
-            fh.field<String>(EventTableInfo.Columns.COMPLETED_BY),
+            fh.field(UID),
+            fh.field(EventTableInfo.Columns.ENROLLMENT),
+            fh.field(EventTableInfo.Columns.CREATED),
+            fh.field(EventTableInfo.Columns.LAST_UPDATED),
+            fh.field(EventTableInfo.Columns.CREATED_AT_CLIENT),
+            fh.field(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
+            fh.field(EventTableInfo.Columns.STATUS),
+            fh.field(COORDINATE),
+            fh.field(GEOMETRY),
+            fh.field(EventTableInfo.Columns.PROGRAM),
+            fh.field(EventTableInfo.Columns.PROGRAM_STAGE),
+            fh.field(ORGANISATION_UNIT),
+            fh.field(EventTableInfo.Columns.EVENT_DATE),
+            fh.field(EventTableInfo.Columns.COMPLETE_DATE),
+            fh.field(EventTableInfo.Columns.DELETED),
+            fh.field(EventTableInfo.Columns.DUE_DATE),
+            fh.field(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
+            fh.field(EventTableInfo.Columns.ASSIGNED_USER),
+            fh.field(EventTableInfo.Columns.COMPLETED_BY),
         )
     }
 }

@@ -39,7 +39,7 @@ internal object TrackerDataViewFields {
 
     val allFields: Fields<TrackerDataView> = Fields.builder<TrackerDataView>()
         .fields(
-            fh.field<String>(ATTRIBUTES),
-            fh.field<String>(DATA_ELEMENTS),
+            fh.field(ATTRIBUTES),
+            fh.field(DATA_ELEMENTS),
         ).build()
 }

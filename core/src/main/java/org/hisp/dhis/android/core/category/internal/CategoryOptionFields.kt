@@ -44,8 +44,8 @@ internal object CategoryOptionFields {
     val allFields: Fields<CategoryOption> = Fields.builder<CategoryOption>()
         .fields(fh.getNameableFields())
         .fields(
-            fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
-            fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
+            fh.field(CategoryOptionTableInfo.Columns.START_DATE),
+            fh.field(CategoryOptionTableInfo.Columns.END_DATE),
             fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
         ).build()
 }

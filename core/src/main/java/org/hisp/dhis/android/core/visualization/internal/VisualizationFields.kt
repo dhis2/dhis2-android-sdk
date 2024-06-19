@@ -29,17 +29,12 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
-import org.hisp.dhis.android.core.visualization.DisplayDensity
-import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
-import org.hisp.dhis.android.core.visualization.VisualizationLegend
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationType
 
 internal object VisualizationFields {
-    internal const val LEGEND = "legend"
+    private const val LEGEND = "legend"
 
     private const val COLUMNS = "columns"
     private const val ROWS = "rows"
@@ -58,7 +53,7 @@ internal object VisualizationFields {
         get() =
             commonFields()
                 .fields(
-                    fh.field<VisualizationLegend>(LEGEND),
+                    fh.field(LEGEND),
                 )
                 .build()
 
@@ -66,8 +61,8 @@ internal object VisualizationFields {
         get() =
             commonFields()
                 .fields(
-                    fh.field<String>(LEGEND_DISPLAY_STRATEGY),
-                    fh.field<String>(LEGEND_DISPLAY_STYLE),
+                    fh.field(LEGEND_DISPLAY_STRATEGY),
+                    fh.field(LEGEND_DISPLAY_STYLE),
                     fh.nestedFieldWithUid(LEGEND_SET),
                 ).build()
 
@@ -75,27 +70,27 @@ internal object VisualizationFields {
         Fields.builder<Visualization>()
             .fields(fh.getIdentifiableFields())
             .fields(
-                fh.field<String>(VisualizationTableInfo.Columns.DESCRIPTION),
-                fh.field<String>(VisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
-                fh.field<String>(VisualizationTableInfo.Columns.DISPLAY_FORM_NAME),
-                fh.field<VisualizationType>(VisualizationTableInfo.Columns.TYPE),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.HIDE_TITLE),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.HIDE_SUBTITLE),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.HIDE_EMPTY_COLUMNS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.HIDE_EMPTY_ROWS),
-                fh.field<HideEmptyItemStrategy>(VisualizationTableInfo.Columns.HIDE_EMPTY_ROW_ITEMS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.HIDE_LEGEND),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.SHOW_HIERARCHY),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.ROW_TOTALS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.ROW_SUB_TOTALS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.COL_TOTALS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.COL_SUB_TOTALS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.SHOW_DIMENSION_LABELS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.PERCENT_STACKED_VALUES),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.NO_SPACE_BETWEEN_COLUMNS),
-                fh.field<Boolean>(VisualizationTableInfo.Columns.SKIP_ROUNDING),
-                fh.field<DisplayDensity>(VisualizationTableInfo.Columns.DISPLAY_DENSITY),
-                fh.field<DigitGroupSeparator>(VisualizationTableInfo.Columns.DIGIT_GROUP_SEPARATOR),
+                fh.field(VisualizationTableInfo.Columns.DESCRIPTION),
+                fh.field(VisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
+                fh.field(VisualizationTableInfo.Columns.DISPLAY_FORM_NAME),
+                fh.field(VisualizationTableInfo.Columns.TYPE),
+                fh.field(VisualizationTableInfo.Columns.HIDE_TITLE),
+                fh.field(VisualizationTableInfo.Columns.HIDE_SUBTITLE),
+                fh.field(VisualizationTableInfo.Columns.HIDE_EMPTY_COLUMNS),
+                fh.field(VisualizationTableInfo.Columns.HIDE_EMPTY_ROWS),
+                fh.field(VisualizationTableInfo.Columns.HIDE_EMPTY_ROW_ITEMS),
+                fh.field(VisualizationTableInfo.Columns.HIDE_LEGEND),
+                fh.field(VisualizationTableInfo.Columns.SHOW_HIERARCHY),
+                fh.field(VisualizationTableInfo.Columns.ROW_TOTALS),
+                fh.field(VisualizationTableInfo.Columns.ROW_SUB_TOTALS),
+                fh.field(VisualizationTableInfo.Columns.COL_TOTALS),
+                fh.field(VisualizationTableInfo.Columns.COL_SUB_TOTALS),
+                fh.field(VisualizationTableInfo.Columns.SHOW_DIMENSION_LABELS),
+                fh.field(VisualizationTableInfo.Columns.PERCENT_STACKED_VALUES),
+                fh.field(VisualizationTableInfo.Columns.NO_SPACE_BETWEEN_COLUMNS),
+                fh.field(VisualizationTableInfo.Columns.SKIP_ROUNDING),
+                fh.field(VisualizationTableInfo.Columns.DISPLAY_DENSITY),
+                fh.field(VisualizationTableInfo.Columns.DIGIT_GROUP_SEPARATOR),
                 fh.nestedField<VisualizationDimension>(COLUMNS).with(VisualizationDimensionFields.allFields),
                 fh.nestedField<VisualizationDimension>(ROWS).with(VisualizationDimensionFields.allFields),
                 fh.nestedField<VisualizationDimension>(FILTERS).with(VisualizationDimensionFields.allFields),

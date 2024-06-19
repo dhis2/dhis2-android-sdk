@@ -28,16 +28,13 @@
 
 package org.hisp.dhis.android.core.validation.internal;
 
+import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
-import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
-import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
-
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns;
 
 public final class ValidationRuleFields {
     private static final String LEFT_SIDE = "leftSide";
@@ -46,19 +43,16 @@ public final class ValidationRuleFields {
 
     private static final FieldsHelper<ValidationRule> fh = new FieldsHelper<>();
 
-    public static final Field<ValidationRule, String> uid = fh.uid();
-
-    public static final Fields<ValidationRule> uidField = Fields.<ValidationRule>builder()
-            .fields(fh.uid()).build();
+    public static final Field<ValidationRule> uid = fh.uid();
 
     public static final Fields<ValidationRule> allFields = Fields.<ValidationRule>builder()
             .fields(fh.getNameableFields())
             .fields(
-                    fh.<String>field(Columns.INSTRUCTION),
-                    fh.<ValidationRuleImportance>field(Columns.IMPORTANCE),
-                    fh.<ValidationRuleOperator>field(Columns.OPERATOR),
-                    fh.<PeriodType>field(Columns.PERIOD_TYPE),
-                    fh.<Boolean>field(Columns.SKIP_FORM_VALIDATION),
+                    fh.field(Columns.INSTRUCTION),
+                    fh.field(Columns.IMPORTANCE),
+                    fh.field(Columns.OPERATOR),
+                    fh.field(Columns.PERIOD_TYPE),
+                    fh.field(Columns.SKIP_FORM_VALIDATION),
                     fh.<ValidationRuleExpression>nestedField(LEFT_SIDE).with(ValidationRuleExpressionFields.allFields),
                     fh.<ValidationRuleExpression>nestedField(RIGHT_SIDE).with(ValidationRuleExpressionFields.allFields),
                     fh.<Integer>nestedField(ORGANISATION_UNIT_LEVELS)

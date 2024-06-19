@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
 internal object CategoryComboFields {
     const val CATEGORIES = "categories"
-    const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
+    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
     private val fh = FieldsHelper<CategoryCombo>()
     val uid = fh.uid()
@@ -43,7 +43,7 @@ internal object CategoryComboFields {
     val allFields: Fields<CategoryCombo> = Fields.builder<CategoryCombo>()
         .fields(fh.getIdentifiableFields())
         .fields(
-            fh.field<Boolean>(CategoryComboTableInfo.Columns.IS_DEFAULT),
+            fh.field(CategoryComboTableInfo.Columns.IS_DEFAULT),
             fh.nestedFieldWithUid(CATEGORIES),
             fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS)
                 .with(CategoryOptionComboFields.allFields),

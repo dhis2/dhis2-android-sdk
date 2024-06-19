@@ -27,19 +27,19 @@
  */
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
-internal data class Fields<T>(val fields: List<Property<T, *>>) {
+internal data class Fields<T>(val fields: List<Property<T>>) {
 
     class Builder<T> internal constructor() {
-        val fields: MutableList<Property<T, *>> = mutableListOf()
+        val fields: MutableList<Property<T>> = mutableListOf()
 
         @SafeVarargs
-        fun fields(vararg properties: Property<T, *>): Builder<T> {
+        fun fields(vararg properties: Property<T>): Builder<T> {
             require(properties.isNotEmpty()) { "properties should not be empty" }
             fields.addAll(properties)
             return this
         }
 
-        fun fields(properties: Collection<Property<T, *>>): Builder<T> {
+        fun fields(properties: Collection<Property<T>>): Builder<T> {
             require(properties.isNotEmpty()) { "properties should not be empty" }
             fields.addAll(properties)
             return this
@@ -60,10 +60,10 @@ internal data class Fields<T>(val fields: List<Property<T, *>>) {
             return Builder()
         }
 
-        private fun generateStringFromFields(properties: List<Property<*, *>>): String {
+        private fun generateStringFromFields(properties: List<Property<*>>): String {
             val fieldsStringList = properties.map { field ->
                 when (field) {
-                    is Field<*, *> -> field.name
+                    is Field<*> -> field.name
                     is NestedField<*, *> ->
                         field.name +
                             if (field.children.isNotEmpty()) "[${generateStringFromFields(field.children)}]" else ""

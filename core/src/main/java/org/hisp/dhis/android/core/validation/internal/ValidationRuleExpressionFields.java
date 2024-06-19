@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.validation.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
 
 public final class ValidationRuleExpressionFields {
@@ -41,13 +40,13 @@ public final class ValidationRuleExpressionFields {
 
     private static final FieldsHelper<ValidationRuleExpression> fh = new FieldsHelper<>();
 
-    public static final Field<ValidationRuleExpression, String> uid = fh.uid();
+    public static final Field<ValidationRuleExpression> uid = fh.uid();
 
     public static final Fields<ValidationRuleExpression> allFields = Fields.<ValidationRuleExpression>builder()
             .fields(
-                    fh.<String>field(EXPRESSION),
-                    fh.<String>field(DESCRIPTION),
-                    fh.<MissingValueStrategy>field(MISSING_VALUE_STRATEGY)
+                    fh.field(EXPRESSION),
+                    fh.field(DESCRIPTION),
+                    fh.field(MISSING_VALUE_STRATEGY)
             ).build();
 
     private ValidationRuleExpressionFields() {

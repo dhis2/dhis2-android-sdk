@@ -35,9 +35,9 @@ internal object DataAccessFields {
     private const val READ = "read"
     private const val WRITE = "write"
 
-    val read: Field<DataAccess, Boolean> = Field.create(READ)
+    val read: Field<DataAccess> = Field.create(READ)
 
-    val write: Field<DataAccess, Boolean> = Field.create(WRITE)
+    val write: Field<DataAccess> = Field.create(WRITE)
 
     val allFields: Fields<DataAccess> = Fields.builder<DataAccess>().fields(
         read,

@@ -35,11 +35,11 @@ import org.hisp.dhis.android.core.settings.UserSettingsTableInfo;
 
 final class UserSettingsFields {
 
-    private static FieldsHelper<UserSettings> fh = new FieldsHelper<>();
+    private static final FieldsHelper<UserSettings> fh = new FieldsHelper<>();
     static final Fields<UserSettings> allFields = Fields.<UserSettings>builder()
             .fields(
-                    fh.<String>field(UserSettingsTableInfo.Columns.KEY_UI_LOCALE),
-                    fh.<String>field(UserSettingsTableInfo.Columns.KEY_DB_LOCALE)
+                    fh.field(UserSettingsTableInfo.Columns.KEY_UI_LOCALE),
+                    fh.field(UserSettingsTableInfo.Columns.KEY_DB_LOCALE)
             ).build();
 
     private UserSettingsFields() {

@@ -41,8 +41,8 @@ final class OrganisationUnitGroupFields {
             Fields.<OrganisationUnitGroup>builder()
                     .fields(fh.getIdentifiableFields())
                     .fields(
-                        fh.<String>field(Columns.SHORT_NAME),
-                        fh.<String>field(Columns.DISPLAY_SHORT_NAME)
+                            fh.field(Columns.SHORT_NAME),
+                            fh.field(Columns.DISPLAY_SHORT_NAME)
                     ).build();
 
     private OrganisationUnitGroupFields() {

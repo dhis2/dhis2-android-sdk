@@ -30,13 +30,10 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.event.EventQueryCriteria;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 public final class EventQueryCriteriaFields {
 
@@ -47,15 +44,15 @@ public final class EventQueryCriteriaFields {
 
     public static final Fields<EventQueryCriteria> allFields = Fields.<EventQueryCriteria>builder()
             .fields(
-                    fh.<Boolean>field(Columns.FOLLOW_UP),
-                    fh.<String>field(Columns.ORGANISATION_UNIT),
-                    fh.<OrganisationUnitMode>field(Columns.OU_MODE),
-                    fh.<AssignedUserMode>field(Columns.ASSIGNED_USER_MODE),
-                    fh.<String>field(ORDER),
-                    fh.<String>field(Columns.DISPLAY_COLUMN_ORDER),
+                    fh.field(Columns.FOLLOW_UP),
+                    fh.field(Columns.ORGANISATION_UNIT),
+                    fh.field(Columns.OU_MODE),
+                    fh.field(Columns.ASSIGNED_USER_MODE),
+                    fh.field(ORDER),
+                    fh.field(Columns.DISPLAY_COLUMN_ORDER),
                     fh.<EventDataFilter>nestedField(DATA_FILTERS).with(EventDataFilterFields.allFields),
-                    fh.<String>field(Columns.EVENTS),
-                    fh.<EventStatus>field(Columns.EVENT_STATUS),
+                    fh.field(Columns.EVENTS),
+                    fh.field(Columns.EVENT_STATUS),
                     fh.<DateFilterPeriod>nestedField(Columns.EVENT_DATE).with(DateFilterPeriodFields.allFields),
                     fh.<DateFilterPeriod>nestedField(Columns.DUE_DATE).with(DateFilterPeriodFields.allFields),
                     fh.<DateFilterPeriod>nestedField(Columns.LAST_UPDATED_DATE).with(DateFilterPeriodFields.allFields),

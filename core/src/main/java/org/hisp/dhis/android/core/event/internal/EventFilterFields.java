@@ -41,14 +41,14 @@ public final class EventFilterFields {
 
     private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
 
-    public static final Field<EventFilter, String> programUid = Field.create(Columns.PROGRAM);
+    public static final Field<EventFilter> programUid = Field.create(Columns.PROGRAM);
 
     public static final Fields<EventFilter> allFields = Fields.<EventFilter>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(Columns.PROGRAM),
-                    fh.<String>field(Columns.PROGRAM_STAGE),
-                    fh.<String>field(Columns.DESCRIPTION),
+                    fh.field(Columns.PROGRAM),
+                    fh.field(Columns.PROGRAM_STAGE),
+                    fh.field(Columns.DESCRIPTION),
                     fh.<EventQueryCriteria>nestedField(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields)
             ).build();
 

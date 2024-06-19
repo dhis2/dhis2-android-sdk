@@ -40,7 +40,7 @@ internal object AttributeValuesFields {
 
     val allFields: Fields<AttributeValue> = Fields.builder<AttributeValue>()
         .fields(
-            fh.field<String>(VALUE),
+            fh.field(VALUE),
             fh.nestedField<ObjectWithUid>(ATTRIBUTE).with(ObjectWithUid.uid),
         ).build()
 }

@@ -42,8 +42,8 @@ public abstract class ValueTypeRendering {
     public static final String DESKTOP = "DESKTOP";
     public static final String MOBILE = "MOBILE";
 
-    private static final Field<ValueTypeRendering, String> desktop = Field.create(DESKTOP);
-    private static final Field<ValueTypeRendering, String> mobile = Field.create(MOBILE);
+    private static final Field<ValueTypeRendering> desktop = Field.create(DESKTOP);
+    private static final Field<ValueTypeRendering> mobile = Field.create(MOBILE);
 
     public static final Fields<ValueTypeRendering> allFields = Fields.<ValueTypeRendering>builder().fields(
             desktop, mobile).build();

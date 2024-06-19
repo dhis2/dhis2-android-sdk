@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
@@ -44,20 +42,20 @@ internal object ProgramIndicatorFields {
     const val LEGEND_SETS = "legendSets"
     private val fh = FieldsHelper<ProgramIndicator>()
     val uid = fh.uid()
-    val displayInForm: Field<ProgramIndicator, Boolean> = Field.create("displayInForm")
+    val displayInForm: Field<ProgramIndicator> = Field.create("displayInForm")
 
     @JvmField
     val allFields: Fields<ProgramIndicator> = Fields.builder<ProgramIndicator>()
         .fields(fh.getNameableFields())
         .fields(
-            fh.field<Boolean>(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM),
-            fh.field<String>(ProgramIndicatorTableInfo.Columns.EXPRESSION),
-            fh.field<String>(ProgramIndicatorTableInfo.Columns.DIMENSION_ITEM),
-            fh.field<String>(ProgramIndicatorTableInfo.Columns.FILTER),
-            fh.field<Int>(ProgramIndicatorTableInfo.Columns.DECIMALS),
-            fh.field<AggregationType>(ProgramIndicatorTableInfo.Columns.AGGREGATION_TYPE),
+            fh.field(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM),
+            fh.field(ProgramIndicatorTableInfo.Columns.EXPRESSION),
+            fh.field(ProgramIndicatorTableInfo.Columns.DIMENSION_ITEM),
+            fh.field(ProgramIndicatorTableInfo.Columns.FILTER),
+            fh.field(ProgramIndicatorTableInfo.Columns.DECIMALS),
+            fh.field(ProgramIndicatorTableInfo.Columns.AGGREGATION_TYPE),
             fh.nestedField<ObjectWithUid>(ProgramIndicatorTableInfo.Columns.PROGRAM).with(ObjectWithUid.uid),
-            fh.field<AnalyticsType>(ProgramIndicatorTableInfo.Columns.ANALYTICS_TYPE),
+            fh.field(ProgramIndicatorTableInfo.Columns.ANALYTICS_TYPE),
             fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
                 .with(AnalyticsPeriodBoundaryFields.allFields),
             fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),

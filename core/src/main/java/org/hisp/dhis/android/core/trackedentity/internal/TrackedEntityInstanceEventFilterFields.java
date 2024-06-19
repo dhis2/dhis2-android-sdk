@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns;
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.common.FilterPeriod;
-import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns;
 
 public final class TrackedEntityInstanceEventFilterFields {
 
@@ -46,10 +43,10 @@ public final class TrackedEntityInstanceEventFilterFields {
     public static final Fields<TrackedEntityInstanceEventFilter> allFields =
             Fields.<TrackedEntityInstanceEventFilter>builder()
             .fields(
-                    fh.<String>field(Columns.PROGRAM_STAGE),
-                    fh.<EventStatus>field(Columns.EVENT_STATUS),
-                    fh.<FilterPeriod>field(EVENT_CREATED_PERIOD),
-                    fh.<AssignedUserMode>field(Columns.ASSIGNED_USER_MODE)
+                    fh.field(Columns.PROGRAM_STAGE),
+                    fh.field(Columns.EVENT_STATUS),
+                    fh.field(EVENT_CREATED_PERIOD),
+                    fh.field(Columns.ASSIGNED_USER_MODE)
             ).build();
 
     private TrackedEntityInstanceEventFilterFields() {

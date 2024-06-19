@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.common.DatePeriodType;
-import org.hisp.dhis.android.core.common.RelativePeriod;
 
 public final class DateFilterPeriodFields {
 
@@ -47,12 +45,12 @@ public final class DateFilterPeriodFields {
 
     public static final Fields<DateFilterPeriod> allFields = Fields.<DateFilterPeriod>builder()
             .fields(
-                    fh.<Integer>field(START_BUFFER),
-                    fh.<Integer>field(END_BUFFER),
-                    fh.<String>field(START_DATE),
-                    fh.<String>field(END_DATE),
-                    fh.<RelativePeriod>field(PERIOD),
-                    fh.<DatePeriodType>field(TYPE)
+                    fh.field(START_BUFFER),
+                    fh.field(END_BUFFER),
+                    fh.field(START_DATE),
+                    fh.field(END_DATE),
+                    fh.field(PERIOD),
+                    fh.field(TYPE)
             ).build();
 
     private DateFilterPeriodFields() {

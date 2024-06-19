@@ -25,32 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.fields.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import retrofit2.Converter
+import java.io.IOException
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import retrofit2.Converter;
-import retrofit2.Retrofit;
-
-public final class FieldsConverterFactory extends Converter.Factory {
-    public static FieldsConverterFactory create() {
-        return new FieldsConverterFactory();
-    }
-
-    private FieldsConverterFactory() {}
-
-    @Override
-    public Converter<?, String> stringConverter(Type typef,
-            Annotation[] annotations, Retrofit retrofit) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Which) {
-                return new FieldsConverter();
-            }
-        }
-        return null;
+internal class FieldsConverter : Converter<Fields<*>, String> {
+    @Throws(IOException::class)
+    override fun convert(fields: Fields<*>): String {
+        return fields.generateString()
     }
 }

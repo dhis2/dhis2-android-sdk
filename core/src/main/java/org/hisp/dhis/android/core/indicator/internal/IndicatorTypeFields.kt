@@ -25,21 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.internal
 
-package org.hisp.dhis.android.core.arch.api.fields.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo
 
-import java.io.IOException;
+internal object IndicatorTypeFields {
+    private val fh = FieldsHelper<IndicatorType>()
 
-import retrofit2.Converter;
+    val uid: Field<IndicatorType> = fh.uid()
 
-class FieldsConverter implements Converter<Fields, String> {
-    FieldsConverter() {
-        // explicit empty constructor
-    }
+    val lastUpdated: Field<IndicatorType> = fh.lastUpdated()
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public String convert(Fields fields) throws IOException {
-        return fields.generateString();
-    }
+    val allFields: Fields<IndicatorType> = builder<IndicatorType>()
+        .fields(fh.getIdentifiableFields())
+        .fields(
+            fh.field(IndicatorTypeTableInfo.Columns.NUMBER),
+            fh.field(IndicatorTypeTableInfo.Columns.FACTOR),
+        ).build()
 }

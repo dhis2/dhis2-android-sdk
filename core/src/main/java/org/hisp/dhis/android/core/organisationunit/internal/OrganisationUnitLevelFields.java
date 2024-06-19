@@ -41,7 +41,7 @@ final class OrganisationUnitLevelFields {
             Fields.<OrganisationUnitLevel>builder()
                     .fields(fh.getIdentifiableFields())
                     .fields(
-                            fh.<String>field(Columns.LEVEL)
+                            fh.field(Columns.LEVEL)
                     ).build();
 
     private OrganisationUnitLevelFields() {

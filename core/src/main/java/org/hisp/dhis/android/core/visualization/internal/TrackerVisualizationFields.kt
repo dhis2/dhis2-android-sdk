@@ -46,10 +46,10 @@ internal object TrackerVisualizationFields {
         Fields.builder<TrackerVisualization>()
             .fields(fh.getIdentifiableFields())
             .fields(
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.DESCRIPTION),
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.TYPE),
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.OUTPUT_TYPE),
+                fh.field(TrackerVisualizationTableInfo.Columns.DESCRIPTION),
+                fh.field(TrackerVisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
+                fh.field(TrackerVisualizationTableInfo.Columns.TYPE),
+                fh.field(TrackerVisualizationTableInfo.Columns.OUTPUT_TYPE),
                 fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.PROGRAM),
                 fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.PROGRAM_STAGE),
                 fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.TRACKED_ENTITY_TYPE),

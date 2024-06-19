@@ -38,14 +38,14 @@ internal object ProgramStageWorkingListEventDataFilterFields {
 
     val allFields = Fields.builder<ProgramStageWorkingListEventDataFilter>()
         .fields(
-            fh.field<String>(Columns.DATA_ITEM),
-            fh.field<String>(Columns.LE),
-            fh.field<String>(Columns.GE),
-            fh.field<String>(Columns.GT),
-            fh.field<String>(Columns.LT),
-            fh.field<String>(Columns.EQ),
-            fh.field<String>(API_IN),
-            fh.field<String>(Columns.LIKE),
-            fh.field<String>(Columns.DATE_FILTER),
+            fh.field(Columns.DATA_ITEM),
+            fh.field(Columns.LE),
+            fh.field(Columns.GE),
+            fh.field(Columns.GT),
+            fh.field(Columns.LT),
+            fh.field(Columns.EQ),
+            fh.field(API_IN),
+            fh.field(Columns.LIKE),
+            fh.field(Columns.DATE_FILTER),
         ).build()
 }

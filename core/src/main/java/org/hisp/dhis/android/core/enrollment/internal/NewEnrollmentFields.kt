@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.Geometry
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.internal.NewEventFields
@@ -55,9 +53,9 @@ internal object NewEnrollmentFields {
     const val ORGANISATION_UNIT = "orgUnit"
     const val DELETED = "deleted"
     private const val EVENTS = "events"
-    const val NOTES = "notes"
+    private const val NOTES = "notes"
     private const val GEOMETRY = "geometry"
-    const val RELATIONSHIPS = "relationships"
+    private const val RELATIONSHIPS = "relationships"
 
     private val fh = FieldsHelper<NewTrackerImporterEnrollment>()
 
@@ -72,21 +70,21 @@ internal object NewEnrollmentFields {
 
     private fun commonFields(): Fields.Builder<NewTrackerImporterEnrollment> {
         return Fields.builder<NewTrackerImporterEnrollment>().fields(
-            fh.field<String>(UID),
-            fh.field<String>(CREATED_AT),
-            fh.field<String>(UPDATED_AT),
-            fh.field<String>(CREATED_AT_CLIENT),
-            fh.field<String>(UPDATED_AT_CLIENT),
-            fh.field<String>(ORGANISATION_UNIT),
-            fh.field<String>(PROGRAM),
-            fh.field<String>(ENROLLED_AT),
-            fh.field<String>(OCCURRED_AT),
-            fh.field<String>(COMPLETED_AT),
-            fh.field<String>(FOLLOW_UP),
-            fh.field<EnrollmentStatus>(STATUS),
-            fh.field<Boolean>(DELETED),
-            fh.field<String>(TRACKED_ENTITY),
-            fh.field<Geometry>(GEOMETRY),
+            fh.field(UID),
+            fh.field(CREATED_AT),
+            fh.field(UPDATED_AT),
+            fh.field(CREATED_AT_CLIENT),
+            fh.field(UPDATED_AT_CLIENT),
+            fh.field(ORGANISATION_UNIT),
+            fh.field(PROGRAM),
+            fh.field(ENROLLED_AT),
+            fh.field(OCCURRED_AT),
+            fh.field(COMPLETED_AT),
+            fh.field(FOLLOW_UP),
+            fh.field(STATUS),
+            fh.field(DELETED),
+            fh.field(TRACKED_ENTITY),
+            fh.field(GEOMETRY),
         )
     }
 }

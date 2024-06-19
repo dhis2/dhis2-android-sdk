@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
 import org.hisp.dhis.android.core.event.EventQueryCriteria
 
 internal object EventQueryCriteriaFields : BaseFields<EventQueryCriteria>() {
-    const val DATA_FILTERS: String = "dataFilters"
-    const val ORDER: String = "order"
+    const val DATA_FILTERS = "dataFilters"
+    const val ORDER = "order"
 
     val allFields = Fields.from(
         fh.field(Columns.FOLLOW_UP),

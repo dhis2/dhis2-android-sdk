@@ -25,61 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
+internal object OrganisationUnitFields : BaseFields<OrganisationUnit>() {
+    const val PROGRAMS = "programs"
+    const val DATA_SETS = "dataSets"
+    private const val ANCESTORS = "ancestors"
+    const val ORGANISATION_UNIT_GROUPS = "organisationUnitGroups"
+    const val FEATURE_TYPE = "featureType"
 
-public final class OrganisationUnitFields {
+    val uid = fh.uid()
+    val path = fh.field(Columns.PATH)
+    private val displayName = fh.displayName()
+    private val openingDate = fh.field(Columns.OPENING_DATE)
+    private val closedDate = fh.field(Columns.CLOSED_DATE)
+    val ASC_ORDER = uid.name + ":" + RepositoryScope.OrderByDirection.ASC.api
 
-    public static final String PROGRAMS = "programs";
-    public static final String DATA_SETS = "dataSets";
-    private static final String ANCESTORS = "ancestors";
-    public static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
-    //public final static String COORDINATES = "coordinates";
-    public final static String FEATURE_TYPE = "featureType";
-    //public final static String GEOMETRY = "geometry";
+    val fieldsInUserCall = Fields.from(
+        uid,
+        path,
+    )
 
-    private static final FieldsHelper<OrganisationUnit> fh = new FieldsHelper<>();
-
-    static final Field<OrganisationUnit> uid = fh.uid();
-    static final Field<OrganisationUnit> path = Field.create(Columns.PATH);
-    private static final Field<OrganisationUnit> displayName = fh.displayName();
-    private static final Field<OrganisationUnit> openingDate = Field.create(Columns.OPENING_DATE);
-    private static final Field<OrganisationUnit> closedDate = Field.create(Columns.CLOSED_DATE);
-
-    public static final String ASC_ORDER = uid.getName() + ":" + RepositoryScope.OrderByDirection.ASC.getApi();
-
-    public static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    path,
-                    openingDate,
-                    closedDate,
-                    fh.field(Columns.LEVEL),
-                    //fh.field(COORDINATES),
-                    fh.field(FEATURE_TYPE),
-                    //fh.field(GEOMETRY),
-                    fh.nestedFieldWithUid(Columns.PARENT),
-                    fh.nestedFieldWithUid(PROGRAMS),
-                    fh.nestedFieldWithUid(DATA_SETS),
-                    fh.<OrganisationUnit>nestedField(ANCESTORS).with(uid, displayName),
-                    fh.<OrganisationUnitGroup>nestedField(ORGANISATION_UNIT_GROUPS)
-                            .with(OrganisationUnitGroupFields.allFields)
-            ).build();
-
-    public static final Fields<OrganisationUnit> fieldsInUserCall = Fields.<OrganisationUnit>builder()
-            .fields(
-                    uid,
-                    path
-            ).build();
-
-    private OrganisationUnitFields() {
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        path,
+        openingDate,
+        closedDate,
+        fh.field(Columns.LEVEL),
+        fh.field(FEATURE_TYPE),
+        fh.nestedFieldWithUid(Columns.PARENT),
+        fh.nestedFieldWithUid(PROGRAMS),
+        fh.nestedFieldWithUid(DATA_SETS),
+        fh.nestedField<OrganisationUnit>(ANCESTORS).with(uid, displayName),
+        fh.nestedField<OrganisationUnitGroup>(ORGANISATION_UNIT_GROUPS).with(OrganisationUnitGroupFields.allFields),
+    )
 }

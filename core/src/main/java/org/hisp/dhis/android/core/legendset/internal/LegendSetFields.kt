@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
 
 internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS: String = "legends"
+    const val LEGENDS = "legends"
 
     val uid: Field<LegendSet> = fh.uid()
 

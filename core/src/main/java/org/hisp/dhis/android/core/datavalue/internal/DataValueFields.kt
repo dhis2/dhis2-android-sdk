@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns
 
 internal object DataValueFields : BaseFields<DataValue>() {
-    const val ORGANISATION_UNIT: String = "orgUnit"
-    const val FOLLOW_UP: String = "followup"
-    const val DELETED: String = "deleted"
+    const val ORGANISATION_UNIT = "orgUnit"
+    const val FOLLOW_UP = "followup"
+    const val DELETED = "deleted"
 
     val allFields = Fields.from(
         fh.field(Columns.DATA_ELEMENT),

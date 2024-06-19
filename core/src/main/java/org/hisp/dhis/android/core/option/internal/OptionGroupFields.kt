@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
 
 internal object OptionGroupFields : BaseFields<OptionGroup>() {
-    const val OPTIONS: String = "options"
+    const val OPTIONS = "options"
 
     val uid: Field<OptionGroup> = fh.uid()
 

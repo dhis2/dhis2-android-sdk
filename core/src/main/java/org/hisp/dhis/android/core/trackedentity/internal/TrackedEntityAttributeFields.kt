@@ -25,58 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.internal.AccessFields;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
+internal object TrackedEntityAttributeFields : BaseFields<TrackedEntityAttribute>() {
+    const val UNIQUE = "unique"
+    const val LEGEND_SETS = "legendSets"
+    private const val STYLE = "style"
+    private const val ACCESS = "access"
+    const val ORG_UNIT_SCOPE = "orgunitScope"
 
-public final class TrackedEntityAttributeFields {
-    public static final String UNIQUE = "unique";
-    public static final String LEGEND_SETS = "legendSets";
-    private static final String STYLE = "style";
-    private static final String ACCESS = "access";
-    public static final String ORG_UNIT_SCOPE = "orgunitScope";
+    val uid: Field<TrackedEntityAttribute> = fh.uid()
+    val lastUpdated: Field<TrackedEntityAttribute> = fh.lastUpdated()
 
-    private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
-
-    public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.field(Columns.PATTERN),
-                    fh.field(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM),
-                    fh.field(Columns.VALUE_TYPE),
-                    fh.field(Columns.EXPRESSION),
-                    fh.field(Columns.PROGRAM_SCOPE),
-                    fh.field(TrackedEntityAttributeTableInfo.Columns.AGGREGATION_TYPE),
-                    fh.field(Columns.DISPLAY_IN_LIST_NO_PROGRAM),
-                    fh.field(Columns.GENERATED),
-                    fh.field(Columns.DISPLAY_ON_VISIT_SCHEDULE),
-                    fh.field(Columns.ORG_UNIT_SCOPE),
-                    fh.field(UNIQUE),
-                    fh.field(Columns.INHERIT),
-                    fh.field(Columns.FIELD_MASK),
-                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
-                    fh.nestedFieldWithUid(Columns.OPTION_SET),
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<Access>nestedField(ACCESS).with(AccessFields.read),
-                    fh.field(Columns.FORM_NAME),
-                    fh.field(Columns.DISPLAY_FORM_NAME),
-                    fh.field(Columns.CONFIDENTIAL)
-                    ).build();
-    static final Field<TrackedEntityAttribute> uid = fh.uid();
-    static final Field<TrackedEntityAttribute> lastUpdated = fh.lastUpdated();
-
-    private TrackedEntityAttributeFields() {
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.PATTERN),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.EXPRESSION),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.PROGRAM_SCOPE),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.AGGREGATION_TYPE),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST_NO_PROGRAM),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.GENERATED),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.DISPLAY_ON_VISIT_SCHEDULE),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE),
+        fh.field(UNIQUE),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.INHERIT),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.FIELD_MASK),
+        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
+        fh.nestedFieldWithUid(TrackedEntityAttributeTableInfo.Columns.OPTION_SET),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.read),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.FORM_NAME),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.DISPLAY_FORM_NAME),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.CONFIDENTIAL),
+    )
 }

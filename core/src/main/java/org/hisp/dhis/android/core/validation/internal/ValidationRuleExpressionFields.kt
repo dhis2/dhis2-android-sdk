@@ -25,30 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.validation.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
+internal object ValidationRuleExpressionFields : BaseFields<ValidationRuleExpression>() {
+    const val EXPRESSION = "expression"
+    const val DESCRIPTION = "description"
+    private const val MISSING_VALUE_STRATEGY = "missingValueStrategy"
 
-public final class ValidationRuleExpressionFields {
-    public static final String EXPRESSION = "expression";
-    public static final String DESCRIPTION = "description";
-    public static final String MISSING_VALUE_STRATEGY = "missingValueStrategy";
+    val uid: Field<ValidationRuleExpression> = fh.uid()
 
-    private static final FieldsHelper<ValidationRuleExpression> fh = new FieldsHelper<>();
-
-    public static final Field<ValidationRuleExpression> uid = fh.uid();
-
-    public static final Fields<ValidationRuleExpression> allFields = Fields.<ValidationRuleExpression>builder()
-            .fields(
-                    fh.field(EXPRESSION),
-                    fh.field(DESCRIPTION),
-                    fh.field(MISSING_VALUE_STRATEGY)
-            ).build();
-
-    private ValidationRuleExpressionFields() {
-    }
+    val allFields = Fields.from(
+        fh.field(EXPRESSION),
+        fh.field(DESCRIPTION),
+        fh.field(MISSING_VALUE_STRATEGY),
+    )
 }

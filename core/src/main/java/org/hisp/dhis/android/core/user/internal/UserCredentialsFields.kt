@@ -25,29 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.user.UserCredentials
+import org.hisp.dhis.android.core.user.UserRole
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserRole;
+internal object UserCredentialsFields : BaseFields<UserCredentials>() {
+    private const val USERNAME = "username"
+    const val USER_ROLES = "userRoles"
 
-public final class UserCredentialsFields {
-    public static final String USERNAME = "username";
-    public static final String USER_ROLES = "userRoles";
-
-    private static final FieldsHelper<UserCredentials> fh = new FieldsHelper<>();
-
-    public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.field(BaseIdentifiableObject.UUID),
-                    fh.field(USERNAME),
-                    fh.<UserRole>nestedField(USER_ROLES).with(UserRoleFields.allFields)
-            ).build();
-
-    private UserCredentialsFields() {
-    }
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(BaseIdentifiableObject.UUID),
+        fh.field(USERNAME),
+        fh.nestedField<UserRole>(USER_ROLES).with(UserRoleFields.allFields),
+    )
 }

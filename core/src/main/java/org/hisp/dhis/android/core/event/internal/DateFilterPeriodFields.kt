@@ -32,12 +32,12 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 
 internal object DateFilterPeriodFields : BaseFields<DateFilterPeriod>() {
-    private const val START_BUFFER: String = "startBuffer"
-    private const val END_BUFFER: String = "endBuffer"
-    const val START_DATE: String = "startDate"
-    const val END_DATE: String = "endDate"
-    const val PERIOD: String = "period"
-    const val TYPE: String = "type"
+    private const val START_BUFFER = "startBuffer"
+    private const val END_BUFFER = "endBuffer"
+    const val START_DATE = "startDate"
+    const val END_DATE = "endDate"
+    const val PERIOD = "period"
+    const val TYPE = "type"
 
     val allFields = Fields.from(
         fh.field(START_BUFFER),

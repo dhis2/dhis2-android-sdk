@@ -25,20 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.user.UserRole
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.user.UserRole;
-
-final class UserRoleFields {
-
-    private static final FieldsHelper<UserRole> fh = new FieldsHelper<>();
-
-    static final Fields<UserRole> allFields = Fields.<UserRole>builder()
-            .fields(fh.getIdentifiableFields())
-            .build();
-
-    private UserRoleFields() {}
+internal object UserRoleFields : BaseFields<UserRole>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+    )
 }

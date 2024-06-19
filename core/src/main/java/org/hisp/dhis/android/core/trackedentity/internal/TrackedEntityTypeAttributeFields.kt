@@ -25,27 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns;
-
-final class TrackedEntityTypeAttributeFields {
-
-    private static final FieldsHelper<TrackedEntityTypeAttribute> fh = new FieldsHelper<>();
-
-    public static final Fields<TrackedEntityTypeAttribute> allFields = Fields.<TrackedEntityTypeAttribute>builder()
-            .fields(
-                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
-                    fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
-                    fh.field(Columns.DISPLAY_IN_LIST),
-                    fh.field(Columns.MANDATORY),
-                    fh.field(Columns.SEARCHABLE)
-            ).build();
-
-    private TrackedEntityTypeAttributeFields() {
-    }
+internal object TrackedEntityTypeAttributeFields : BaseFields<TrackedEntityTypeAttribute>() {
+    val allFields = Fields.from(
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+        fh.field(Columns.DISPLAY_IN_LIST),
+        fh.field(Columns.MANDATORY),
+        fh.field(Columns.SEARCHABLE),
+    )
 }

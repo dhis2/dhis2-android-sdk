@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo
 
 internal object DataApprovalFields : BaseFields<DataApproval>() {
-    const val WORKFLOW: String = "wf"
-    const val ORGANISATION_UNIT: String = "ou"
-    const val PERIOD: String = "pe"
-    const val ATTRIBUTE_OPTION_COMBO: String = "aoc"
+    const val WORKFLOW = "wf"
+    const val ORGANISATION_UNIT = "ou"
+    const val PERIOD = "pe"
+    const val ATTRIBUTE_OPTION_COMBO = "aoc"
 
     val allFields = Fields.from(
         fh.field(WORKFLOW),

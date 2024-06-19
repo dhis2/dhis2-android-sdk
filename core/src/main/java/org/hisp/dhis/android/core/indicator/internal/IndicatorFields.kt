@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 
 internal object IndicatorFields : BaseFields<Indicator>() {
-    const val LEGEND_SETS: String = "legendSets"
-    private const val OBJECT_STYLE: String = "style"
+    const val LEGEND_SETS = "legendSets"
+    private const val OBJECT_STYLE = "style"
 
     val uid: Field<Indicator> = fh.uid()
     val lastUpdated: Field<Indicator> = fh.lastUpdated()

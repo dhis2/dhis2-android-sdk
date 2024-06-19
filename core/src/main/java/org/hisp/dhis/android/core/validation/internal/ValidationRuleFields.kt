@@ -25,39 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal
 
-package org.hisp.dhis.android.core.validation.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.validation.ValidationRule
+import org.hisp.dhis.android.core.validation.ValidationRuleExpression
+import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns
 
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns;
+internal object ValidationRuleFields : BaseFields<ValidationRule>() {
+    private const val LEFT_SIDE = "leftSide"
+    private const val RIGHT_SIDE = "rightSide"
+    private const val ORGANISATION_UNIT_LEVELS = "organisationUnitLevels"
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.validation.ValidationRule;
-import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
+    val uid: Field<ValidationRule> = fh.uid()
 
-public final class ValidationRuleFields {
-    private static final String LEFT_SIDE = "leftSide";
-    private static final String RIGHT_SIDE = "rightSide";
-    private static final String ORGANISATION_UNIT_LEVELS = "organisationUnitLevels";
-
-    private static final FieldsHelper<ValidationRule> fh = new FieldsHelper<>();
-
-    public static final Field<ValidationRule> uid = fh.uid();
-
-    public static final Fields<ValidationRule> allFields = Fields.<ValidationRule>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.field(Columns.INSTRUCTION),
-                    fh.field(Columns.IMPORTANCE),
-                    fh.field(Columns.OPERATOR),
-                    fh.field(Columns.PERIOD_TYPE),
-                    fh.field(Columns.SKIP_FORM_VALIDATION),
-                    fh.<ValidationRuleExpression>nestedField(LEFT_SIDE).with(ValidationRuleExpressionFields.allFields),
-                    fh.<ValidationRuleExpression>nestedField(RIGHT_SIDE).with(ValidationRuleExpressionFields.allFields),
-                    fh.<Integer>nestedField(ORGANISATION_UNIT_LEVELS)
-            ).build();
-
-    private ValidationRuleFields() {
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.INSTRUCTION),
+        fh.field(Columns.IMPORTANCE),
+        fh.field(Columns.OPERATOR),
+        fh.field(Columns.PERIOD_TYPE),
+        fh.field(Columns.SKIP_FORM_VALIDATION),
+        fh.nestedField<ValidationRuleExpression>(LEFT_SIDE).with(ValidationRuleExpressionFields.allFields),
+        fh.nestedField<ValidationRuleExpression>(RIGHT_SIDE).with(ValidationRuleExpressionFields.allFields),
+        fh.nestedField<Int>(ORGANISATION_UNIT_LEVELS),
+    )
 }

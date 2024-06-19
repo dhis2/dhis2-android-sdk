@@ -25,25 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
-
-final class SystemInfoFields {
-
-    private static final FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
-    static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
-            fh.field(Columns.SERVER_DATE),
-            fh.field(Columns.DATE_FORMAT),
-            fh.field(Columns.VERSION),
-            fh.field(Columns.CONTEXT_PATH),
-            fh.field(Columns.SYSTEM_NAME)
-    ).build();
-
-    private SystemInfoFields() {
-    }
+internal object SystemInfoFields : BaseFields<SystemInfo>() {
+    val allFields = Fields.from(
+        fh.field(Columns.SERVER_DATE),
+        fh.field(Columns.DATE_FORMAT),
+        fh.field(Columns.VERSION),
+        fh.field(Columns.CONTEXT_PATH),
+        fh.field(Columns.SYSTEM_NAME),
+    )
 }

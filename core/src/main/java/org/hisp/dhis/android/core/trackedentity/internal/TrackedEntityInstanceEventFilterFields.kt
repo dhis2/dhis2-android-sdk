@@ -25,30 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns;
+internal object TrackedEntityInstanceEventFilterFields : BaseFields<TrackedEntityInstanceEventFilter>() {
+    private const val EVENT_CREATED_PERIOD = "eventCreatedPeriod"
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-
-public final class TrackedEntityInstanceEventFilterFields {
-
-    private final static String EVENT_CREATED_PERIOD = "eventCreatedPeriod";
-
-    private static final FieldsHelper<TrackedEntityInstanceEventFilter> fh = new FieldsHelper<>();
-
-    public static final Fields<TrackedEntityInstanceEventFilter> allFields =
-            Fields.<TrackedEntityInstanceEventFilter>builder()
-            .fields(
-                    fh.field(Columns.PROGRAM_STAGE),
-                    fh.field(Columns.EVENT_STATUS),
-                    fh.field(EVENT_CREATED_PERIOD),
-                    fh.field(Columns.ASSIGNED_USER_MODE)
-            ).build();
-
-    private TrackedEntityInstanceEventFilterFields() {
-    }
+    val allFields = Fields.from(
+        fh.field(Columns.PROGRAM_STAGE),
+        fh.field(Columns.EVENT_STATUS),
+        fh.field(EVENT_CREATED_PERIOD),
+        fh.field(Columns.ASSIGNED_USER_MODE),
+    )
 }

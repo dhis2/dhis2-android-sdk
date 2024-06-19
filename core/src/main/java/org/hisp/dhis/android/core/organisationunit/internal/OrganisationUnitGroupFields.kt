@@ -25,26 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns;
-
-final class OrganisationUnitGroupFields {
-
-    private static final FieldsHelper<OrganisationUnitGroup> fh = new FieldsHelper<>();
-
-    public static final Fields<OrganisationUnitGroup> allFields =
-            Fields.<OrganisationUnitGroup>builder()
-                    .fields(fh.getIdentifiableFields())
-                    .fields(
-                            fh.field(Columns.SHORT_NAME),
-                            fh.field(Columns.DISPLAY_SHORT_NAME)
-                    ).build();
-
-    private OrganisationUnitGroupFields() {
-    }
+internal object OrganisationUnitGroupFields : BaseFields<OrganisationUnitGroup>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SHORT_NAME),
+        fh.field(Columns.DISPLAY_SHORT_NAME),
+    )
 }

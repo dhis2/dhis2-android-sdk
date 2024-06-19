@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
 import org.hisp.dhis.android.core.event.EventQueryCriteria
 
 internal object EventFilterFields : BaseFields<EventFilter>() {
-    private const val EVENT_QUERY_CRITERIA: String = "eventQueryCriteria"
+    private const val EVENT_QUERY_CRITERIA = "eventQueryCriteria"
 
     val programUid = fh.field(Columns.PROGRAM)
 

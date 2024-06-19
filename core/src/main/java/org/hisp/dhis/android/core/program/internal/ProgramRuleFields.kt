@@ -25,29 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns;
+internal object ProgramRuleFields : BaseFields<ProgramRule>() {
+    const val PROGRAM_RULE_ACTIONS = "programRuleActions"
 
-public final class ProgramRuleFields {
-    public static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
-
-    private static final FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.field(Columns.PRIORITY),
-                    fh.field(Columns.CONDITION),
-                    fh.nestedFieldWithUid(Columns.PROGRAM),
-                    fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)
-            ).build();
-
-    private ProgramRuleFields() {
-    }
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.PRIORITY),
+        fh.field(Columns.CONDITION),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedField<ProgramRuleAction>(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields),
+    )
 }

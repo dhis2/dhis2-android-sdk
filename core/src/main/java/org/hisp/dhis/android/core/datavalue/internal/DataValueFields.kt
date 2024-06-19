@@ -25,40 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns
 
-import static org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns;
+internal object DataValueFields : BaseFields<DataValue>() {
+    const val ORGANISATION_UNIT: String = "orgUnit"
+    const val FOLLOW_UP: String = "followup"
+    const val DELETED: String = "deleted"
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-
-public final class DataValueFields {
-
-    public static final String ORGANISATION_UNIT = "orgUnit";
-    public static final String FOLLOW_UP = "followup";
-    public static final String DELETED = "deleted";
-
-    private static final FieldsHelper<DataValue> fieldsHelper = new FieldsHelper<>();
-
-    static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
-            fieldsHelper.field(Columns.DATA_ELEMENT),
-            fieldsHelper.field(Columns.PERIOD),
-            fieldsHelper.field(ORGANISATION_UNIT),
-            fieldsHelper.field(Columns.CATEGORY_OPTION_COMBO),
-            fieldsHelper.field(Columns.ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.field(Columns.VALUE),
-            fieldsHelper.field(Columns.STORED_BY),
-            fieldsHelper.field(Columns.CREATED),
-            fieldsHelper.field(Columns.LAST_UPDATED),
-            fieldsHelper.field(Columns.COMMENT),
-            fieldsHelper.field(FOLLOW_UP),
-            fieldsHelper.field(DELETED)
-
-    ).build();
-
-    private DataValueFields() {
-    }
-
+    val allFields = Fields.from(
+        fh.field(Columns.DATA_ELEMENT),
+        fh.field(Columns.PERIOD),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(Columns.CATEGORY_OPTION_COMBO),
+        fh.field(Columns.ATTRIBUTE_OPTION_COMBO),
+        fh.field(Columns.VALUE),
+        fh.field(Columns.STORED_BY),
+        fh.field(Columns.CREATED),
+        fh.field(Columns.LAST_UPDATED),
+        fh.field(Columns.COMMENT),
+        fh.field(FOLLOW_UP),
+        fh.field(DELETED),
+    )
 }

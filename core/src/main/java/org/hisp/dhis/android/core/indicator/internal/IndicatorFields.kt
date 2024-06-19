@@ -25,43 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.internal
 
-package org.hisp.dhis.android.core.indicator.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
-import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
+internal object IndicatorFields : BaseFields<Indicator>() {
+    const val LEGEND_SETS: String = "legendSets"
+    private const val OBJECT_STYLE: String = "style"
 
+    val uid: Field<Indicator> = fh.uid()
+    val lastUpdated: Field<Indicator> = fh.lastUpdated()
 
-public final class IndicatorFields {
-
-    public static final String LEGEND_SETS = "legendSets";
-    public static final String OBJECT_STYLE = "style";
-    private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
-
-    public static final Field<Indicator> uid = fh.uid();
-    public static final Fields<Indicator> allFields = Fields.<Indicator>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.field(Columns.ANNUALIZED),
-                    fh.nestedFieldWithUid(Columns.INDICATOR_TYPE),
-                    fh.field(Columns.NUMERATOR),
-                    fh.field(Columns.NUMERATOR_DESCRIPTION),
-                    fh.field(Columns.DENOMINATOR),
-                    fh.field(Columns.DENOMINATOR_DESCRIPTION),
-                    fh.field(Columns.URL),
-                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.uid),
-                    fh.field(Columns.DECIMALS),
-                    fh.<ObjectStyle>nestedField(OBJECT_STYLE).with(ObjectStyleFields.allFields)
-            ).build();
-    static final Field<Indicator> lastUpdated = fh.lastUpdated();
-
-    private IndicatorFields() {
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.ANNUALIZED),
+        fh.nestedFieldWithUid(Columns.INDICATOR_TYPE),
+        fh.field(Columns.NUMERATOR),
+        fh.field(Columns.NUMERATOR_DESCRIPTION),
+        fh.field(Columns.DENOMINATOR),
+        fh.field(Columns.DENOMINATOR_DESCRIPTION),
+        fh.field(Columns.URL),
+        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
+        fh.field(Columns.DECIMALS),
+        fh.nestedField<ObjectStyle>(OBJECT_STYLE).with(ObjectStyleFields.allFields),
+    )
 }

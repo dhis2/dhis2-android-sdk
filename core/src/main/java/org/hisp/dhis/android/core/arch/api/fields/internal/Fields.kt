@@ -81,8 +81,7 @@ internal data class Fields<T>(val fields: List<Property<T>>) {
             val fieldsStringList = properties.map { field ->
                 when (field) {
                     is Field<*> -> field.name
-                    is NestedField<*, *> ->
-                        field.name +
+                    is NestedField<*, *> -> field.name +
                             if (field.children.isNotEmpty()) "[${generateStringFromFields(field.children)}]" else ""
                     else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
                 }

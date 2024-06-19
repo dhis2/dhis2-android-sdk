@@ -25,27 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset.internal
 
-package org.hisp.dhis.android.core.legendset.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.legendset.Legend;
-
-import static org.hisp.dhis.android.core.legendset.LegendTableInfo.Columns;
-
-public final class LegendFields {
-
-    private static final FieldsHelper<Legend> fh = new FieldsHelper<>();
-
-    public static final Fields<Legend> allFields = Fields.<Legend>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.field(Columns.START_VALUE),
-                    fh.field(Columns.END_VALUE),
-                    fh.field(Columns.COLOR)
-            ).build();
-
-    private LegendFields() {
-    }
+internal object LegendFields : BaseFields<Legend>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.START_VALUE),
+        fh.field(Columns.END_VALUE),
+        fh.field(Columns.COLOR),
+    )
 }

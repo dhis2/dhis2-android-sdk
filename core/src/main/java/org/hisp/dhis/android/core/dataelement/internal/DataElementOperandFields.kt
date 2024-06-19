@@ -37,6 +37,6 @@ internal object DataElementOperandFields : BaseFields<DataElementOperand>() {
         fh.uid(),
         fh.deleted(),
         fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.DATA_ELEMENT),
-        fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.CATEGORY_OPTION_COMBO)
+        fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.CATEGORY_OPTION_COMBO),
     )
 }

@@ -25,30 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
+internal object DataSetCompleteRegistrationFields : BaseFields<DataSetCompleteRegistration>() {
+    private const val COMPLETED = "completed"
 
-final class DataSetCompleteRegistrationFields {
-
-    private static final String COMPLETED = "completed";
-
-    private static final FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
-
-    static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
-            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.PERIOD),
-            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET),
-            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT),
-            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.DATE),
-            fieldsHelper.field(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY),
-            fieldsHelper.field(COMPLETED)
-    ).build();
-
-    private DataSetCompleteRegistrationFields() {}
-
+    val allFields = Fields.from(
+        fh.field(Columns.PERIOD),
+        fh.field(Columns.DATA_SET),
+        fh.field(Columns.ORGANISATION_UNIT),
+        fh.field(Columns.ATTRIBUTE_OPTION_COMBO),
+        fh.field(Columns.DATE),
+        fh.field(Columns.STORED_BY),
+        fh.field(COMPLETED),
+    )
 }

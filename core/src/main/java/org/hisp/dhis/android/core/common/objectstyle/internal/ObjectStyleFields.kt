@@ -25,24 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.objectstyle.internal
 
-package org.hisp.dhis.android.core.common.objectstyle.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.ObjectStyle
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+internal object ObjectStyleFields : BaseFields<ObjectStyle>() {
+    private const val COLOR = "color"
+    private const val ICON = "icon"
 
-public final class ObjectStyleFields {
-
-    private static final String COLOR = "color";
-    private static final String ICON = "icon";
-
-    private static final FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
-    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(
-            fh.field(COLOR),
-            fh.field(ICON)
-    ).build();
-
-    private ObjectStyleFields() {
-    }
+    val allFields = Fields.from(
+        fh.field(COLOR),
+        fh.field(ICON),
+    )
 }

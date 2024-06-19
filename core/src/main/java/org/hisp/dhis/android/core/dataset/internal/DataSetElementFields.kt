@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
-
-final class DataSetElementFields {
-
-    private static final FieldsHelper<DataSetElement> fh = new FieldsHelper<>();
-
-    public static final Fields<DataSetElement> allFields = Fields.<DataSetElement>builder()
-            .fields(
-                    fh.nestedFieldWithUid(DataSetElementLinkTableInfo.Columns.DATA_SET),
-                    fh.nestedFieldWithUid(DataSetElementLinkTableInfo.Columns.DATA_ELEMENT),
-                    fh.nestedFieldWithUid(DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO)
-            ).build();
-
-    private DataSetElementFields() {
-    }
+internal object DataSetElementFields : BaseFields<DataSetElement>() {
+    val allFields = Fields.from(
+        fh.nestedFieldWithUid(Columns.DATA_SET),
+        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+    )
 }

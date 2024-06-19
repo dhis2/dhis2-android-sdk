@@ -25,34 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.DateFilterPeriod
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
+internal object DateFilterPeriodFields : BaseFields<DateFilterPeriod>() {
+    private const val START_BUFFER: String = "startBuffer"
+    private const val END_BUFFER: String = "endBuffer"
+    const val START_DATE: String = "startDate"
+    const val END_DATE: String = "endDate"
+    const val PERIOD: String = "period"
+    const val TYPE: String = "type"
 
-public final class DateFilterPeriodFields {
-
-        public final static String START_BUFFER = "startBuffer";
-        public final static String END_BUFFER = "endBuffer";
-        public final static String START_DATE = "startDate";
-        public final static String END_DATE = "endDate";
-        public final static String PERIOD = "period";
-        public final static String TYPE = "type";
-
-    private static final FieldsHelper<DateFilterPeriod> fh = new FieldsHelper<>();
-
-    public static final Fields<DateFilterPeriod> allFields = Fields.<DateFilterPeriod>builder()
-            .fields(
-                    fh.field(START_BUFFER),
-                    fh.field(END_BUFFER),
-                    fh.field(START_DATE),
-                    fh.field(END_DATE),
-                    fh.field(PERIOD),
-                    fh.field(TYPE)
-            ).build();
-
-    private DateFilterPeriodFields() {
-    }
+    val allFields = Fields.from(
+        fh.field(START_BUFFER),
+        fh.field(END_BUFFER),
+        fh.field(START_DATE),
+        fh.field(END_DATE),
+        fh.field(PERIOD),
+        fh.field(TYPE),
+    )
 }

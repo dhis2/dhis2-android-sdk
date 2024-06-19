@@ -43,6 +43,6 @@ internal object DataApprovalFields : BaseFields<DataApproval>() {
         fh.field(ORGANISATION_UNIT),
         fh.field(PERIOD),
         fh.field(ATTRIBUTE_OPTION_COMBO),
-        fh.field(DataApprovalTableInfo.Columns.STATE)
+        fh.field(DataApprovalTableInfo.Columns.STATE),
     )
 }

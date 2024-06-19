@@ -25,34 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns
+import org.hisp.dhis.android.core.event.EventDataFilter
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.event.EventDataFilter;
+internal object EventDataFilterFields : BaseFields<EventDataFilter>() {
+    private const val API_IN = "in"
 
-
-public final class EventDataFilterFields {
-
-    private static final String API_IN = "in";
-
-    private static final FieldsHelper<EventDataFilter> fh = new FieldsHelper<>();
-
-    public static final Fields<EventDataFilter> allFields = Fields.<EventDataFilter>builder()
-            .fields(
-                    fh.field(Columns.DATA_ITEM),
-                    fh.field(Columns.LE),
-                    fh.field(Columns.GE),
-                    fh.field(Columns.GT),
-                    fh.field(Columns.LT),
-                    fh.field(Columns.EQ),
-                    fh.field(API_IN),
-                    fh.field(Columns.LIKE),
-                    fh.field(Columns.DATE_FILTER)
-            ).build();
-
-    private EventDataFilterFields() {
-    }
+    val allFields = Fields.from(
+        fh.field(Columns.DATA_ITEM),
+        fh.field(Columns.LE),
+        fh.field(Columns.GE),
+        fh.field(Columns.GT),
+        fh.field(Columns.LT),
+        fh.field(Columns.EQ),
+        fh.field(API_IN),
+        fh.field(Columns.LIKE),
+        fh.field(Columns.DATE_FILTER),
+    )
 }

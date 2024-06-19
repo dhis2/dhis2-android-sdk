@@ -71,6 +71,6 @@ internal object AttributeFields : BaseFields<Attribute>() {
         fh.field(Columns.ORGANISATION_UNIT_GROUP_ATTRIBUTE),
         fh.field(Columns.DATA_ELEMENT_GROUP_SET_ATTRIBUTE),
         fh.field(Columns.ORGANISATION_UNIT_GROUP_SET_ATTRIBUTE),
-        fh.field(Columns.OPTION_ATTRIBUTE)
+        fh.field(Columns.OPTION_ATTRIBUTE),
     )
 }

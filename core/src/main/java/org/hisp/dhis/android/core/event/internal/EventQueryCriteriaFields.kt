@@ -25,40 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
+import org.hisp.dhis.android.core.event.EventQueryCriteria
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.event.EventQueryCriteria;
+internal object EventQueryCriteriaFields : BaseFields<EventQueryCriteria>() {
+    const val DATA_FILTERS: String = "dataFilters"
+    const val ORDER: String = "order"
 
-public final class EventQueryCriteriaFields {
-
-    public final static String DATA_FILTERS = "dataFilters";
-    public final static String ORDER = "order";
-
-    private static final FieldsHelper<EventQueryCriteria> fh = new FieldsHelper<>();
-
-    public static final Fields<EventQueryCriteria> allFields = Fields.<EventQueryCriteria>builder()
-            .fields(
-                    fh.field(Columns.FOLLOW_UP),
-                    fh.field(Columns.ORGANISATION_UNIT),
-                    fh.field(Columns.OU_MODE),
-                    fh.field(Columns.ASSIGNED_USER_MODE),
-                    fh.field(ORDER),
-                    fh.field(Columns.DISPLAY_COLUMN_ORDER),
-                    fh.<EventDataFilter>nestedField(DATA_FILTERS).with(EventDataFilterFields.allFields),
-                    fh.field(Columns.EVENTS),
-                    fh.field(Columns.EVENT_STATUS),
-                    fh.<DateFilterPeriod>nestedField(Columns.EVENT_DATE).with(DateFilterPeriodFields.allFields),
-                    fh.<DateFilterPeriod>nestedField(Columns.DUE_DATE).with(DateFilterPeriodFields.allFields),
-                    fh.<DateFilterPeriod>nestedField(Columns.LAST_UPDATED_DATE).with(DateFilterPeriodFields.allFields),
-                    fh.<DateFilterPeriod>nestedField(Columns.COMPLETED_DATE).with(DateFilterPeriodFields.allFields)
-            ).build();
-
-    private EventQueryCriteriaFields() {
-    }
+    val allFields = Fields.from(
+        fh.field(Columns.FOLLOW_UP),
+        fh.field(Columns.ORGANISATION_UNIT),
+        fh.field(Columns.OU_MODE),
+        fh.field(Columns.ASSIGNED_USER_MODE),
+        fh.field(ORDER),
+        fh.field(Columns.DISPLAY_COLUMN_ORDER),
+        fh.field(Columns.EVENTS),
+        fh.field(Columns.EVENT_STATUS),
+        fh.nestedField<EventDataFilter>(DATA_FILTERS).with(EventDataFilterFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.EVENT_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.DUE_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.LAST_UPDATED_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.COMPLETED_DATE).with(DateFilterPeriodFields.allFields),
+    )
 }

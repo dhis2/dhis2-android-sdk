@@ -25,23 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.settings.UserSettings
+import org.hisp.dhis.android.core.settings.UserSettingsTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.settings.UserSettings;
-import org.hisp.dhis.android.core.settings.UserSettingsTableInfo;
-
-final class UserSettingsFields {
-
-    private static final FieldsHelper<UserSettings> fh = new FieldsHelper<>();
-    static final Fields<UserSettings> allFields = Fields.<UserSettings>builder()
-            .fields(
-                    fh.field(UserSettingsTableInfo.Columns.KEY_UI_LOCALE),
-                    fh.field(UserSettingsTableInfo.Columns.KEY_DB_LOCALE)
-            ).build();
-
-    private UserSettingsFields() {
-    }
+internal object UserSettingsFields : BaseFields<UserSettings>() {
+    val allFields = Fields.from(
+        fh.field(Columns.KEY_UI_LOCALE),
+        fh.field(Columns.KEY_DB_LOCALE),
+    )
 }

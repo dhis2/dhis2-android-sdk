@@ -37,7 +37,6 @@ internal object AccessFields : BaseFields<Access>() {
     private const val WRITE = "write"
     private const val DATA = "data"
 
-
     val read = fh.field(READ)
     val write = fh.field(WRITE)
     val data = fh.nestedField<DataAccess>(DATA)

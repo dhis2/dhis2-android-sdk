@@ -25,31 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset.internal
 
-package org.hisp.dhis.android.core.legendset.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns;
+internal object LegendSetFields : BaseFields<LegendSet>() {
+    const val LEGENDS: String = "legends"
 
-public final class LegendSetFields {
+    val uid: Field<LegendSet> = fh.uid()
 
-    public final static String LEGENDS = "legends";
-
-    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
-
-    public static final Field<LegendSet> uid = fh.uid();
-
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.field(Columns.SYMBOLIZER),
-                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
-            ).build();
-
-    private LegendSetFields() {
-    }
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SYMBOLIZER),
+        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+    )
 }

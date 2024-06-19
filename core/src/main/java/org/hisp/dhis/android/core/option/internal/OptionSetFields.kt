@@ -25,30 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.option.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns;
+internal object OptionSetFields : BaseFields<OptionSet>() {
+    val uid: Field<OptionSet> = fh.uid()
 
-public final class OptionSetFields {
-
-    private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
-
-    public static final Field<OptionSet> uid = fh.uid();
-
-    public static final Field<OptionSet> version = Field.create(Columns.VERSION);
-
-    public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    version,
-                    fh.field(Columns.VALUE_TYPE)
-            ).build();
-
-    private OptionSetFields() {
-    }
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.VERSION),
+        fh.field(Columns.VALUE_TYPE),
+    )
 }

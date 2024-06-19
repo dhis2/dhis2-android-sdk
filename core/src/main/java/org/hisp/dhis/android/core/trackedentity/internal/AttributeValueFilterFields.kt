@@ -46,6 +46,6 @@ internal object AttributeValueFilterFields : BaseFields<AttributeValueFilter>() 
         fh.field(Columns.EQ),
         fh.field(API_IN),
         fh.field(Columns.LIKE),
-        fh.field(Columns.DATE_FILTER)
+        fh.field(Columns.DATE_FILTER),
     )
 }

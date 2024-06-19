@@ -25,30 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.option.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.option.OptionGroup;
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns;
+internal object OptionGroupFields : BaseFields<OptionGroup>() {
+    const val OPTIONS: String = "options"
 
-public final class OptionGroupFields {
+    val uid: Field<OptionGroup> = fh.uid()
 
-    public final static String OPTIONS = "options";
-
-    private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
-
-    public static final Field<OptionGroup> uid = fh.uid();
-
-    public static final Fields<OptionGroup> allFields = Fields.<OptionGroup>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(Columns.OPTION_SET),
-                    fh.nestedFieldWithUid(OPTIONS)
-            ).build();
-
-    private OptionGroupFields() {
-    }
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.nestedFieldWithUid(Columns.OPTION_SET),
+        fh.nestedFieldWithUid(OPTIONS),
+    )
 }

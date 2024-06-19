@@ -60,6 +60,23 @@ internal data class Fields<T>(val fields: List<Property<T>>) {
             return Builder()
         }
 
+        fun <K> from(vararg properties: Property<K>): Fields<K> {
+            require(properties.isNotEmpty()) { "properties should not be empty" }
+            return Fields(properties.toList())
+        }
+
+        fun <K> from(properties: Collection<Property<K>>): Fields<K> {
+            require(properties.isNotEmpty()) { "properties should not be empty" }
+            return Fields(properties.toList())
+        }
+
+        fun <K> from(properties: Collection<Property<K>>, vararg additionalProperties: Property<K>): Fields<K> {
+            require(properties.isNotEmpty()) { "properties should not be empty" }
+            val allFields = properties.toMutableList()
+            allFields.addAll(additionalProperties)
+            return Fields(allFields)
+        }
+
         private fun generateStringFromFields(properties: List<Property<*>>): String {
             val fieldsStringList = properties.map { field ->
                 when (field) {

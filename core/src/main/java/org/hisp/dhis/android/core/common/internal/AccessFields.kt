@@ -25,31 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal
 
-package org.hisp.dhis.android.core.common.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
+internal object AccessFields : BaseFields<Access>() {
+    private const val READ = "read"
+    private const val WRITE = "write"
+    private const val DATA = "data"
 
-public final class AccessFields {
 
-    private static final String READ = "read";
-    private static final String WRITE = "write";
-    private static final String DATA = "data";
+    val read = fh.field(READ)
+    val write = fh.field(WRITE)
+    val data = fh.nestedField<DataAccess>(DATA)
 
-    public static final Field<Access> read = Field.create(READ);
-    public static final Field<Access> write = Field.create(WRITE);
-    public static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
-
-    public static final Fields<Access> allFields = Fields.<Access>builder().fields(
-            read,
-            write,
-            data
-    ).build();
-
-    private AccessFields() {
-    }
+    val allFields = Fields.from(
+        read,
+        write,
+        data,
+    )
 }

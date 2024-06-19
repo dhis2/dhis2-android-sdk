@@ -25,33 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
+import org.hisp.dhis.android.core.event.EventQueryCriteria
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.event.EventQueryCriteria;
+internal object EventFilterFields : BaseFields<EventFilter>() {
+    private const val EVENT_QUERY_CRITERIA: String = "eventQueryCriteria"
 
-public final class EventFilterFields {
+    val programUid = fh.field(Columns.PROGRAM)
 
-    public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
-
-    private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
-
-    public static final Field<EventFilter> programUid = Field.create(Columns.PROGRAM);
-
-    public static final Fields<EventFilter> allFields = Fields.<EventFilter>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.field(Columns.PROGRAM),
-                    fh.field(Columns.PROGRAM_STAGE),
-                    fh.field(Columns.DESCRIPTION),
-                    fh.<EventQueryCriteria>nestedField(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields)
-            ).build();
-
-    private EventFilterFields() {
-    }
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        programUid,
+        fh.field(Columns.PROGRAM_STAGE),
+        fh.field(Columns.DESCRIPTION),
+        fh.nestedField<EventQueryCriteria>(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields),
+    )
 }

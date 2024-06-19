@@ -25,23 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant.internal
 
-package org.hisp.dhis.android.core.constant.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.constant.ConstantTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.constant.ConstantTableInfo;
-
-final class ConstantFields {
-
-    private static final FieldsHelper<Constant> fh = new FieldsHelper<>();
-
-    static final Fields<Constant> allFields = Fields.<Constant>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(fh.field(ConstantTableInfo.Columns.VALUE))
-            .build();
-
-    private ConstantFields() {
-    }
+internal object ConstantFields : BaseFields<Constant>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(ConstantTableInfo.Columns.VALUE),
+    )
 }

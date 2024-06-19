@@ -25,32 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval.internal
 
-package org.hisp.dhis.android.core.dataapproval.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataapproval.DataApproval;
-import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo.Columns;
+internal object DataApprovalFields : BaseFields<DataApproval>() {
+    const val WORKFLOW: String = "wf"
+    const val ORGANISATION_UNIT: String = "ou"
+    const val PERIOD: String = "pe"
+    const val ATTRIBUTE_OPTION_COMBO: String = "aoc"
 
-public final class DataApprovalFields {
-
-    public static final String WORKFLOW = "wf";
-    public static final String ORGANISATION_UNIT = "ou";
-    public static final String PERIOD = "pe";
-    public static final String ATTRIBUTE_OPTION_COMBO = "aoc";
-
-    private static final FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
-
-    static final Fields<DataApproval> allFields = Fields.<DataApproval>builder().fields(
-            fieldsHelper.field(WORKFLOW),
-            fieldsHelper.field(ORGANISATION_UNIT),
-            fieldsHelper.field(PERIOD),
-            fieldsHelper.field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.field(Columns.STATE)
-    ).build();
-
-    private DataApprovalFields() {
-    }
-
+    val allFields = Fields.from(
+        fh.field(WORKFLOW),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(PERIOD),
+        fh.field(ATTRIBUTE_OPTION_COMBO),
+        fh.field(DataApprovalTableInfo.Columns.STATE)
+    )
 }

@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataset.DataInputPeriod;
-import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo;
-
-final class DataInputPeriodFields {
-
-    private static final FieldsHelper<DataInputPeriod> fieldsHelper = new FieldsHelper<>();
-
-    static final Fields<DataInputPeriod> allFields = Fields.<DataInputPeriod>builder().fields(
-            fieldsHelper.field(DataInputPeriodTableInfo.Columns.PERIOD),
-            fieldsHelper.field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
-            fieldsHelper.field(DataInputPeriodTableInfo.Columns.CLOSING_DATE)
-
-    ).build();
-
-    private DataInputPeriodFields() {}
-
+internal object DataInputPeriodFields : BaseFields<DataInputPeriod>() {
+    val allFields = Fields.from(
+        fh.field(DataInputPeriodTableInfo.Columns.PERIOD),
+        fh.field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
+        fh.field(DataInputPeriodTableInfo.Columns.CLOSING_DATE),
+    )
 }

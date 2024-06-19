@@ -25,60 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute.internal
 
-package org.hisp.dhis.android.core.attribute.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.core.attribute.AttributeTableInfo.Columns
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.attribute.Attribute;
-import org.hisp.dhis.android.core.attribute.AttributeTableInfo.Columns;
+internal object AttributeFields : BaseFields<Attribute>() {
+    const val UNIQUE = "unique"
 
-public final class AttributeFields {
-    public static final String UNIQUE = "unique";
+    val uid = fh.uid()
 
-    private static final FieldsHelper<Attribute> fh = new FieldsHelper<>();
-
-    public static final Field<Attribute> uid = fh.uid();
-
-    public static final Fields<Attribute> allFields = Fields.<Attribute>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.field(Columns.VALUE_TYPE),
-                    fh.field(UNIQUE),
-                    fh.field(Columns.MANDATORY),
-                    fh.field(Columns.INDICATOR_ATTRIBUTE),
-                    fh.field(Columns.INDICATOR_GROUP_ATTRIBUTE),
-                    fh.field(Columns.USER_GROUP_ATTRIBUTE),
-                    fh.field(Columns.DATA_ELEMENT_ATTRIBUTE),
-                    fh.field(Columns.CONSTANT_ATTRIBUTE),
-                    fh.field(Columns.CATEGORY_OPTION_ATTRIBUTE),
-                    fh.field(Columns.OPTION_SET_ATTRIBUTE),
-                    fh.field(Columns.SQL_VIEW_ATTRIBUTE),
-                    fh.field(Columns.LEGEND_SET_ATTRIBUTE),
-                    fh.field(Columns.TRACKED_ENTITY_ATTRIBUTE_ATTRIBUTE),
-                    fh.field(Columns.ORGANISATION_UNIT_ATTRIBUTE),
-                    fh.field(Columns.DATA_SET_ATTRIBUTE),
-                    fh.field(Columns.DOCUMENT_ATTRIBUTE),
-                    fh.field(Columns.VALIDATION_RULE_GROUP_ATTRIBUTE),
-                    fh.field(Columns.DATA_ELEMENT_GROUP_ATTRIBUTE),
-                    fh.field(Columns.SECTION_ATTRIBUTE),
-                    fh.field(Columns.TRACKED_ENTITY_TYPE_ATTRIBUTE),
-                    fh.field(Columns.USER_ATTRIBUTE),
-                    fh.field(Columns.CATEGORY_OPTION_GROUP_ATTRIBUTE),
-                    fh.field(Columns.PROGRAM_STAGE_ATTRIBUTE),
-                    fh.field(Columns.PROGRAM_ATTRIBUTE),
-                    fh.field(Columns.CATEGORY_ATTRIBUTE),
-                    fh.field(Columns.CATEGORY_OPTION_COMBO_ATTRIBUTE),
-                    fh.field(Columns.CATEGORY_OPTION_GROUP_SET_ATTRIBUTE),
-                    fh.field(Columns.VALIDATION_RULE_ATTRIBUTE),
-                    fh.field(Columns.PROGRAM_INDICATOR_ATTRIBUTE),
-                    fh.field(Columns.ORGANISATION_UNIT_GROUP_ATTRIBUTE),
-                    fh.field(Columns.DATA_ELEMENT_GROUP_SET_ATTRIBUTE),
-                    fh.field(Columns.ORGANISATION_UNIT_GROUP_SET_ATTRIBUTE),
-                    fh.field(Columns.OPTION_ATTRIBUTE)
-            ).build();
-
-    private AttributeFields() {
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(UNIQUE),
+        fh.field(Columns.VALUE_TYPE),
+        fh.field(Columns.MANDATORY),
+        fh.field(Columns.INDICATOR_ATTRIBUTE),
+        fh.field(Columns.INDICATOR_GROUP_ATTRIBUTE),
+        fh.field(Columns.USER_GROUP_ATTRIBUTE),
+        fh.field(Columns.DATA_ELEMENT_ATTRIBUTE),
+        fh.field(Columns.CONSTANT_ATTRIBUTE),
+        fh.field(Columns.CATEGORY_OPTION_ATTRIBUTE),
+        fh.field(Columns.OPTION_SET_ATTRIBUTE),
+        fh.field(Columns.SQL_VIEW_ATTRIBUTE),
+        fh.field(Columns.LEGEND_SET_ATTRIBUTE),
+        fh.field(Columns.TRACKED_ENTITY_ATTRIBUTE_ATTRIBUTE),
+        fh.field(Columns.ORGANISATION_UNIT_ATTRIBUTE),
+        fh.field(Columns.DATA_SET_ATTRIBUTE),
+        fh.field(Columns.DOCUMENT_ATTRIBUTE),
+        fh.field(Columns.VALIDATION_RULE_GROUP_ATTRIBUTE),
+        fh.field(Columns.DATA_ELEMENT_GROUP_ATTRIBUTE),
+        fh.field(Columns.SECTION_ATTRIBUTE),
+        fh.field(Columns.TRACKED_ENTITY_TYPE_ATTRIBUTE),
+        fh.field(Columns.USER_ATTRIBUTE),
+        fh.field(Columns.CATEGORY_OPTION_GROUP_ATTRIBUTE),
+        fh.field(Columns.PROGRAM_STAGE_ATTRIBUTE),
+        fh.field(Columns.PROGRAM_ATTRIBUTE),
+        fh.field(Columns.CATEGORY_ATTRIBUTE),
+        fh.field(Columns.CATEGORY_OPTION_COMBO_ATTRIBUTE),
+        fh.field(Columns.CATEGORY_OPTION_GROUP_SET_ATTRIBUTE),
+        fh.field(Columns.VALIDATION_RULE_ATTRIBUTE),
+        fh.field(Columns.PROGRAM_INDICATOR_ATTRIBUTE),
+        fh.field(Columns.ORGANISATION_UNIT_GROUP_ATTRIBUTE),
+        fh.field(Columns.DATA_ELEMENT_GROUP_SET_ATTRIBUTE),
+        fh.field(Columns.ORGANISATION_UNIT_GROUP_SET_ATTRIBUTE),
+        fh.field(Columns.OPTION_ATTRIBUTE)
+    )
 }

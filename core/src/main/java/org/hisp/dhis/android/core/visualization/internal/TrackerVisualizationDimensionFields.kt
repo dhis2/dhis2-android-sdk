@@ -27,28 +27,21 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo.Columns
 
-internal object TrackerVisualizationDimensionFields {
-    private val fh = FieldsHelper<TrackerVisualizationDimension>()
-
-    val allFields: Fields<TrackerVisualizationDimension> =
-        Fields.builder<TrackerVisualizationDimension>()
-            .fields(
-                fh.field(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION),
-                fh.field(TrackerVisualizationDimensionTableInfo.Columns.DIMENSION_TYPE),
-                fh.field(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM),
-                fh.field(TrackerVisualizationDimensionTableInfo.Columns.PROGRAM_STAGE),
-                fh.nestedFieldWithUid(TrackerVisualizationDimensionTableInfo.Columns.ITEMS),
-                fh.field(TrackerVisualizationDimensionTableInfo.Columns.FILTER),
-                fh.nestedField<TrackerVisualizationDimensionRepetition>(
-                    TrackerVisualizationDimensionTableInfo.Columns.REPETITION,
-                )
-                    .with(TrackerVisualizationDimensionRepetitionFields.allFields),
-            )
-            .build()
+internal object TrackerVisualizationDimensionFields : BaseFields<TrackerVisualizationDimension>() {
+    val allFields = Fields.from(
+        fh.field(Columns.DIMENSION),
+        fh.field(Columns.DIMENSION_TYPE),
+        fh.field(Columns.PROGRAM),
+        fh.field(Columns.PROGRAM_STAGE),
+        fh.field(Columns.FILTER),
+        fh.nestedFieldWithUid(Columns.ITEMS),
+        fh.nestedField<TrackerVisualizationDimensionRepetition>(Columns.REPETITION)
+            .with(TrackerVisualizationDimensionRepetitionFields.allFields),
+    )
 }

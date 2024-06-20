@@ -27,24 +27,19 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
+import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo.Columns
 
-internal object ProgramRuleVariableFields {
-    private val fh = FieldsHelper<ProgramRuleVariable>()
-
-    val allFields: Fields<ProgramRuleVariable> = Fields.builder<ProgramRuleVariable>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET),
-            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.PROGRAM),
-            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE),
-            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT),
-            fh.nestedFieldWithUid(ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE),
-            fh.field(
-                ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE,
-            ),
-        ).build()
+internal object ProgramRuleVariableFields : BaseFields<ProgramRuleVariable>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.USE_CODE_FOR_OPTION_SET),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+        fh.field(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE),
+    )
 }

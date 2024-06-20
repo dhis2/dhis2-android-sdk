@@ -27,24 +27,20 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 
-internal object NewTrackedEntityAttributeValueFields {
+internal object NewTrackedEntityAttributeValueFields : BaseFields<NewTrackerImporterTrackedEntityAttributeValue>() {
     private const val ATTRIBUTE = "attribute"
     private const val VALUE = "value"
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
 
-    private val fh = FieldsHelper<NewTrackerImporterTrackedEntityAttributeValue>()
-
-    val allFields: Fields<NewTrackerImporterTrackedEntityAttributeValue> =
-        Fields.builder<NewTrackerImporterTrackedEntityAttributeValue>()
-            .fields(
-                fh.field(ATTRIBUTE),
-                fh.field(VALUE),
-                fh.field(CREATED_AT),
-                fh.field(UPDATED_AT),
-            ).build()
+    val allFields = Fields.from(
+        fh.field(ATTRIBUTE),
+        fh.field(VALUE),
+        fh.field(CREATED_AT),
+        fh.field(UPDATED_AT),
+    )
 }

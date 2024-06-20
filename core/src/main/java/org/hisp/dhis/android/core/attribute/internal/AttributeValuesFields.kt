@@ -27,20 +27,17 @@
  */
 package org.hisp.dhis.android.core.attribute.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
-internal object AttributeValuesFields {
+internal object AttributeValuesFields : BaseFields<AttributeValue>() {
     const val VALUE = "value"
     const val ATTRIBUTE = "attribute"
 
-    private val fh = FieldsHelper<AttributeValue>()
-
-    val allFields: Fields<AttributeValue> = Fields.builder<AttributeValue>()
-        .fields(
-            fh.field(VALUE),
-            fh.nestedField<ObjectWithUid>(ATTRIBUTE).with(ObjectWithUid.uid),
-        ).build()
+    val allFields = Fields.from(
+        fh.field(VALUE),
+        fh.nestedField<ObjectWithUid>(ATTRIBUTE).with(ObjectWithUid.uid),
+    )
 }

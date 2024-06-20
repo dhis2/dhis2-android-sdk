@@ -61,17 +61,15 @@ internal data class Fields<T>(val fields: List<Property<T>>) {
         }
 
         fun <K> from(vararg properties: Property<K>): Fields<K> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
+            require(properties.isNotEmpty()) { "At least one property must be provided." }
             return Fields(properties.toList())
         }
 
-        fun <K> from(properties: Collection<Property<K>>): Fields<K> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
-            return Fields(properties.toList())
-        }
-
-        fun <K> from(properties: Collection<Property<K>>, vararg additionalProperties: Property<K>): Fields<K> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
+        fun <K> from(
+            properties: Collection<Property<K>>,
+            vararg additionalProperties: Property<K> = emptyArray(),
+        ): Fields<K> {
+            require(properties.isNotEmpty()) { "At least one property must be provided." }
             val allFields = properties.toMutableList()
             allFields.addAll(additionalProperties)
             return Fields(allFields)
@@ -84,6 +82,7 @@ internal data class Fields<T>(val fields: List<Property<T>>) {
                     is NestedField<*, *> ->
                         field.name +
                             if (field.children.isNotEmpty()) "[${generateStringFromFields(field.children)}]" else ""
+
                     else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
                 }
             }

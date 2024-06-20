@@ -27,21 +27,18 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns
 
-internal object TrackedEntityDataValueFields {
-    private val fh = FieldsHelper<TrackedEntityDataValue>()
-
-    val allFields: Fields<TrackedEntityDataValue> = Fields.builder<TrackedEntityDataValue>()
-        .fields(
-            fh.field(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT),
-            fh.field(TrackedEntityDataValueTableInfo.Columns.STORED_BY),
-            fh.field(TrackedEntityDataValueTableInfo.Columns.VALUE),
-            fh.field(TrackedEntityDataValueTableInfo.Columns.CREATED),
-            fh.field(TrackedEntityDataValueTableInfo.Columns.LAST_UPDATED),
-            fh.field(TrackedEntityDataValueTableInfo.Columns.PROVIDED_ELSEWHERE),
-        ).build()
+internal object TrackedEntityDataValueFields : BaseFields<TrackedEntityDataValue>() {
+    val allFields = Fields.from(
+        fh.field(Columns.DATA_ELEMENT),
+        fh.field(Columns.STORED_BY),
+        fh.field(Columns.VALUE),
+        fh.field(Columns.CREATED),
+        fh.field(Columns.LAST_UPDATED),
+        fh.field(Columns.PROVIDED_ELSEWHERE),
+    )
 }

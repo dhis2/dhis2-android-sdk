@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
@@ -36,25 +36,22 @@ import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo.Columns
 
-internal object TrackedEntityTypeFields {
+internal object TrackedEntityTypeFields : BaseFields<TrackedEntityType>() {
     private const val STYLE = "style"
     const val TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes"
     private const val ACCESS = "access"
-    private val fh = FieldsHelper<TrackedEntityType>()
 
     val uid = fh.uid()
-
     val lastUpdated = fh.lastUpdated()
 
-    val allFields: Fields<TrackedEntityType> = Fields.builder<TrackedEntityType>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.nestedField<TrackedEntityTypeAttribute>(TRACKED_ENTITY_TYPE_ATTRIBUTES)
-                .with(TrackedEntityTypeAttributeFields.allFields),
-            fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field(TrackedEntityTypeTableInfo.Columns.FEATURE_TYPE),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
-        ).build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.FEATURE_TYPE),
+        fh.nestedField<TrackedEntityTypeAttribute>(TRACKED_ENTITY_TYPE_ATTRIBUTES)
+            .with(TrackedEntityTypeAttributeFields.allFields),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+    )
 }

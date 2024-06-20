@@ -27,24 +27,22 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 
-internal object NewNoteFields {
+internal object NewNoteFields : BaseFields<NewTrackerImporterNote>() {
     const val UID = "note"
     private const val VALUE = "value"
     private const val STORED_AT = "storedAt"
     private const val STORED_BY = "storedBy"
 
-    private val fh = FieldsHelper<NewTrackerImporterNote>()
     val uid = fh.uid()
 
-    val all: Fields<NewTrackerImporterNote> = Fields.builder<NewTrackerImporterNote>()
-        .fields(
-            fh.field(UID),
-            fh.field(VALUE),
-            fh.field(STORED_AT),
-            fh.field(STORED_BY),
-        ).build()
+    val allFields = Fields.from(
+        fh.field(UID),
+        fh.field(VALUE),
+        fh.field(STORED_AT),
+        fh.field(STORED_BY),
+    )
 }

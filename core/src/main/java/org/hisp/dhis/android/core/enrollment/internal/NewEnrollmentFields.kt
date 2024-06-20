@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.internal.NewEventFields
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.note.internal.NewNoteFields
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.internal.NewRelationshipFields
 
-internal object NewEnrollmentFields {
+internal object NewEnrollmentFields : BaseFields<NewTrackerImporterEnrollment>() {
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
     private const val CREATED_AT_CLIENT = "createdAtClient"
@@ -57,34 +57,30 @@ internal object NewEnrollmentFields {
     private const val GEOMETRY = "geometry"
     private const val RELATIONSHIPS = "relationships"
 
-    private val fh = FieldsHelper<NewTrackerImporterEnrollment>()
+    val allFields = Fields.from(
+        commonFields(),
+        fh.nestedField<NewTrackerImporterEvent>(EVENTS).with(NewEventFields.allFields),
+        fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.allFields),
+        fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
+    )
 
-    val allFields: Fields<NewTrackerImporterEnrollment> = commonFields()
-        .fields(
-            fh.nestedField<NewTrackerImporterEvent>(EVENTS).with(NewEventFields.allFields),
-            fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.all),
-            fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
-        ).build()
+    val asRelationshipFields = Fields.from(commonFields())
 
-    val asRelationshipFields: Fields<NewTrackerImporterEnrollment> = commonFields().build()
-
-    private fun commonFields(): Fields.Builder<NewTrackerImporterEnrollment> {
-        return Fields.builder<NewTrackerImporterEnrollment>().fields(
-            fh.field(UID),
-            fh.field(CREATED_AT),
-            fh.field(UPDATED_AT),
-            fh.field(CREATED_AT_CLIENT),
-            fh.field(UPDATED_AT_CLIENT),
-            fh.field(ORGANISATION_UNIT),
-            fh.field(PROGRAM),
-            fh.field(ENROLLED_AT),
-            fh.field(OCCURRED_AT),
-            fh.field(COMPLETED_AT),
-            fh.field(FOLLOW_UP),
-            fh.field(STATUS),
-            fh.field(DELETED),
-            fh.field(TRACKED_ENTITY),
-            fh.field(GEOMETRY),
-        )
-    }
+    private fun commonFields() = listOf(
+        fh.field(UID),
+        fh.field(CREATED_AT),
+        fh.field(UPDATED_AT),
+        fh.field(CREATED_AT_CLIENT),
+        fh.field(UPDATED_AT_CLIENT),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(PROGRAM),
+        fh.field(ENROLLED_AT),
+        fh.field(OCCURRED_AT),
+        fh.field(COMPLETED_AT),
+        fh.field(FOLLOW_UP),
+        fh.field(STATUS),
+        fh.field(DELETED),
+        fh.field(TRACKED_ENTITY),
+        fh.field(GEOMETRY),
+    )
 }

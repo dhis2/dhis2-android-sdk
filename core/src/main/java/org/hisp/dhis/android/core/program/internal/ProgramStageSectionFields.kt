@@ -27,27 +27,24 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo.Columns
 import org.hisp.dhis.android.core.program.SectionRendering
 
-internal object ProgramStageSectionFields {
+internal object ProgramStageSectionFields : BaseFields<ProgramStageSection>() {
     const val PROGRAM_INDICATORS = "programIndicators"
     const val DATA_ELEMENTS = "dataElements"
     private const val RENDER_TYPE = "renderType"
 
-    private val fh = FieldsHelper<ProgramStageSection>()
-
-    val allFields: Fields<ProgramStageSection> = Fields.builder<ProgramStageSection>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(ProgramStageSectionTableInfo.Columns.SORT_ORDER),
-            fh.nestedFieldWithUid(PROGRAM_INDICATORS),
-            fh.nestedFieldWithUid(DATA_ELEMENTS),
-            fh.nestedField<SectionRendering>(RENDER_TYPE),
-            fh.field(ProgramStageSectionTableInfo.Columns.DESCRIPTION),
-            fh.field(ProgramStageSectionTableInfo.Columns.DISPLAY_DESCRIPTION),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.DESCRIPTION),
+        fh.field(Columns.DISPLAY_DESCRIPTION),
+        fh.nestedFieldWithUid(PROGRAM_INDICATORS),
+        fh.nestedFieldWithUid(DATA_ELEMENTS),
+        fh.nestedField<SectionRendering>(RENDER_TYPE),
+    )
 }

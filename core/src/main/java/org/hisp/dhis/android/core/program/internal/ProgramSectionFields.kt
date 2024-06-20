@@ -27,33 +27,30 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
+import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns
 import org.hisp.dhis.android.core.program.SectionRendering
 
-internal object ProgramSectionFields {
-
+internal object ProgramSectionFields : BaseFields<ProgramSection>() {
     @Deprecated("In version 2.33 and later, use {@link #TRACKED_ENTITY_ATTRIBUTES} instead.")
     const val ATTRIBUTES = "programTrackedEntityAttribute"
     const val TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes"
     private const val STYLE = "style"
     private const val RENDER_TYPE = "renderType"
-    private val fh = FieldsHelper<ProgramSection>()
 
-    val allFields: Fields<ProgramSection> = Fields.builder<ProgramSection>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(ProgramSectionTableInfo.Columns.DESCRIPTION),
-            fh.nestedFieldWithUid(ProgramSectionTableInfo.Columns.PROGRAM),
-            fh.nestedFieldWithUid(ATTRIBUTES),
-            fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTES),
-            fh.field(ProgramSectionTableInfo.Columns.SORT_ORDER),
-            fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field(ProgramSectionTableInfo.Columns.FORM_NAME),
-            fh.nestedField<SectionRendering>(RENDER_TYPE),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DESCRIPTION),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.FORM_NAME),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(ATTRIBUTES),
+        fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTES),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedField<SectionRendering>(RENDER_TYPE),
+    )
 }

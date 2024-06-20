@@ -27,18 +27,18 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
-internal object TrackedEntityInstanceFields {
+internal object TrackedEntityInstanceFields : BaseFields<TrackedEntityInstance>() {
     const val UID = "trackedEntityInstance"
     const val ORGANISATION_UNIT = "orgUnit"
     const val TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes"
@@ -48,33 +48,28 @@ internal object TrackedEntityInstanceFields {
     private const val ENROLLMENTS = "enrollments"
     const val PROGRAM_OWNERS = "programOwners"
     private const val GEOMETRY = "geometry"
-    private val fh = FieldsHelper<TrackedEntityInstance>()
 
-    val allFields: Fields<TrackedEntityInstance> = commonFields()
-        .fields(
-            fh.nestedField<Relationship>(RELATIONSHIPS)
-                .with(RelationshipFields.allFields),
-            fh.nestedField<Enrollment>(ENROLLMENTS)
-                .with(EnrollmentFields.allFields),
-            fh.nestedField<ProgramOwner>(PROGRAM_OWNERS),
-        ).build()
+    val allFields = Fields.from(
+        commonFields(),
+        fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
+        fh.nestedField<Enrollment>(ENROLLMENTS).with(EnrollmentFields.allFields),
+        fh.nestedField<ProgramOwner>(PROGRAM_OWNERS),
+    )
 
-    val asRelationshipFields: Fields<TrackedEntityInstance> = commonFields().build()
+    val asRelationshipFields = Fields.from(commonFields())
 
-    private fun commonFields(): Fields.Builder<TrackedEntityInstance> {
-        return Fields.builder<TrackedEntityInstance>().fields(
-            fh.field(UID),
-            fh.field(TrackedEntityInstanceTableInfo.Columns.CREATED),
-            fh.field(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED),
-            fh.field(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT),
-            fh.field(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
-            fh.field(ORGANISATION_UNIT),
-            fh.field(TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
-            fh.field(COORDINATES),
-            fh.field(GEOMETRY),
-            fh.field(DELETED),
-            fh.nestedField<TrackedEntityAttributeValue>(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                .with(TrackedEntityAttributeValueFields.allFields),
-        )
-    }
+    private fun commonFields() = listOf(
+        fh.field(UID),
+        fh.field(Columns.CREATED),
+        fh.field(Columns.LAST_UPDATED),
+        fh.field(Columns.CREATED_AT_CLIENT),
+        fh.field(Columns.LAST_UPDATED_AT_CLIENT),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(Columns.TRACKED_ENTITY_TYPE),
+        fh.field(COORDINATES),
+        fh.field(GEOMETRY),
+        fh.field(DELETED),
+        fh.nestedField<TrackedEntityAttributeValue>(TRACKED_ENTITY_ATTRIBUTE_VALUES)
+            .with(TrackedEntityAttributeValueFields.allFields),
+    )
 }

@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.relationship.internal.NewRelationshipFields
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityDataValueFields
 
-internal object NewEventFields {
+internal object NewEventFields : BaseFields<NewTrackerImporterEvent>() {
     private const val UID = "event"
     private const val ENROLLMENT = "enrollment"
     private const val CREATED_AT = "createdAt"
@@ -61,42 +61,39 @@ internal object NewEventFields {
     private const val DELETED = "deleted"
     private const val TRACKED_ENTITY = "trackedEntity"
 
-    private val fh = FieldsHelper<NewTrackerImporterEvent>()
+    val allFields = Fields.from(
+        commonFields(),
+        fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.allFields),
+        fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
+        fh.nestedField<NewTrackerImporterTrackedEntityDataValue>(TRACKED_ENTITY_DATA_VALUES)
+            .with(NewTrackedEntityDataValueFields.allFields),
+    )
 
-    val allFields: Fields<NewTrackerImporterEvent> = commonFields()
-        .fields(
-            fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.all),
-            fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
-            fh.nestedField<NewTrackerImporterTrackedEntityDataValue>(TRACKED_ENTITY_DATA_VALUES)
-                .with(NewTrackedEntityDataValueFields.allFields),
-        ).build()
+    val asRelationshipFields = Fields.from(commonFields())
 
-    val asRelationshipFields: Fields<NewTrackerImporterEvent> = commonFields().build()
+    val teiQueryFields = Fields.from(
+        commonFields(),
+        fh.field(TRACKED_ENTITY),
+    )
 
-    val teiQueryFields: Fields<NewTrackerImporterEvent> = commonFields()
-        .fields(fh.field(TRACKED_ENTITY))
-        .build()
-
-    private fun commonFields(): Fields.Builder<NewTrackerImporterEvent> {
-        return Fields.builder<NewTrackerImporterEvent>().fields(
-            fh.field(UID),
-            fh.field(ENROLLMENT),
-            fh.field(CREATED_AT),
-            fh.field(UPDATED_AT),
-            fh.field(CREATED_AT_CLIENT),
-            fh.field(UPDATED_AT_CLIENT),
-            fh.field(STATUS),
-            fh.field(GEOMETRY),
-            fh.field(PROGRAM),
-            fh.field(PROGRAM_STAGE),
-            fh.field(ORGANISATION_UNIT),
-            fh.field(OCCURRED_AT),
-            fh.field(COMPLETED_AT),
-            fh.field(SCHEDULED_AT),
-            fh.field(DELETED),
-            fh.field(ATTRIBUTE_OPTION_COMBO),
-            fh.field(ASSIGNED_USER),
-            fh.field(COMPLETED_BY),
-        )
-    }
+    private fun commonFields() = listOf(
+        fh.field(UID),
+        fh.field(ENROLLMENT),
+        fh.field(CREATED_AT),
+        fh.field(UPDATED_AT),
+        fh.field(CREATED_AT_CLIENT),
+        fh.field(UPDATED_AT_CLIENT),
+        fh.field(STATUS),
+        fh.field(GEOMETRY),
+        fh.field(PROGRAM),
+        fh.field(PROGRAM_STAGE),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(OCCURRED_AT),
+        fh.field(COMPLETED_AT),
+        fh.field(SCHEDULED_AT),
+        fh.field(DELETED),
+        fh.field(ATTRIBUTE_OPTION_COMBO),
+        fh.field(ASSIGNED_USER),
+        fh.field(COMPLETED_BY),
+    )
 }

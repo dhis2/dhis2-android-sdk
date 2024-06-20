@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
@@ -39,10 +39,10 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 
-internal object ProgramFields {
+internal object ProgramFields : BaseFields<Program>() {
     private const val PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes"
     private const val CAPTURE_COORDINATES = "captureCoordinates"
     private const val PROGRAM_RULE_VARIABLES = "programRuleVariables"
@@ -51,53 +51,48 @@ internal object ProgramFields {
     private const val PROGRAM_SECTIONS = "programSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
 
-    private val fh = FieldsHelper<Program>()
-
     val uid = fh.uid()
 
-    val allFields: Fields<Program> = Fields.builder<Program>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field(ProgramTableInfo.Columns.VERSION),
-            fh.field(ProgramTableInfo.Columns.ONLY_ENROLL_ONCE),
-            fh.field(ProgramTableInfo.Columns.ENROLLMENT_DATE_LABEL),
-            fh.field(ProgramTableInfo.Columns.DISPLAY_INCIDENT_DATE),
-            fh.field(ProgramTableInfo.Columns.INCIDENT_DATE_LABEL),
-            fh.field(ProgramTableInfo.Columns.REGISTRATION),
-            fh.field(ProgramTableInfo.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
-            fh.field(ProgramTableInfo.Columns.DATA_ENTRY_METHOD),
-            fh.field(ProgramTableInfo.Columns.IGNORE_OVERDUE_EVENTS),
-            fh.field(ProgramTableInfo.Columns.SELECT_INCIDENT_DATES_IN_FUTURE),
-            fh.field(CAPTURE_COORDINATES),
-            fh.field(ProgramTableInfo.Columns.USE_FIRST_STAGE_DURING_REGISTRATION),
-            fh.field(ProgramTableInfo.Columns.DISPLAY_FRONT_PAGE_LIST),
-            fh.field(ProgramTableInfo.Columns.PROGRAM_TYPE),
-            fh.nestedField<ProgramTrackedEntityAttribute>(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
-                ProgramTrackedEntityAttributeFields.allFields,
-            ),
-            fh.nestedFieldWithUid(ProgramTableInfo.Columns.RELATED_PROGRAM),
-            fh.nestedFieldWithUid(ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE),
-            fh.nestedFieldWithUid(ProgramTableInfo.Columns.CATEGORY_COMBO),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
-            fh.nestedField<ProgramRuleVariable>(PROGRAM_RULE_VARIABLES)
-                .with(ProgramRuleVariableFields.allFields),
-            fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field(ProgramTableInfo.Columns.EXPIRY_DAYS),
-            fh.field(ProgramTableInfo.Columns.COMPLETE_EVENTS_EXPIRY_DAYS),
-            fh.field(ProgramTableInfo.Columns.EXPIRY_PERIOD_TYPE),
-            fh.field(ProgramTableInfo.Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
-            fh.field(ProgramTableInfo.Columns.MAX_TEI_COUNT_TO_RETURN),
-            fh.field(ProgramTableInfo.Columns.FEATURE_TYPE),
-            fh.field(ProgramTableInfo.Columns.ACCESS_LEVEL),
-            fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
-            fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
-            fh.field(ProgramTableInfo.Columns.ENROLLMENT_LABEL),
-            fh.field(ProgramTableInfo.Columns.FOLLOW_UP_LABEL),
-            fh.field(ProgramTableInfo.Columns.ORG_UNIT_LABEL),
-            fh.field(ProgramTableInfo.Columns.RELATIONSHIP_LABEL),
-            fh.field(ProgramTableInfo.Columns.NOTE_LABEL),
-            fh.field(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL),
-            fh.field(ProgramTableInfo.Columns.PROGRAM_STAGE_LABEL),
-            fh.field(ProgramTableInfo.Columns.EVENT_LABEL),
-        ).build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.VERSION),
+        fh.field(Columns.ONLY_ENROLL_ONCE),
+        fh.field(Columns.ENROLLMENT_DATE_LABEL),
+        fh.field(Columns.DISPLAY_INCIDENT_DATE),
+        fh.field(Columns.INCIDENT_DATE_LABEL),
+        fh.field(Columns.REGISTRATION),
+        fh.field(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
+        fh.field(Columns.DATA_ENTRY_METHOD),
+        fh.field(Columns.IGNORE_OVERDUE_EVENTS),
+        fh.field(Columns.SELECT_INCIDENT_DATES_IN_FUTURE),
+        fh.field(CAPTURE_COORDINATES),
+        fh.field(Columns.USE_FIRST_STAGE_DURING_REGISTRATION),
+        fh.field(Columns.DISPLAY_FRONT_PAGE_LIST),
+        fh.field(Columns.PROGRAM_TYPE),
+        fh.nestedField<ProgramTrackedEntityAttribute>(PROGRAM_TRACKED_ENTITY_ATTRIBUTES)
+            .with(ProgramTrackedEntityAttributeFields.allFields),
+        fh.nestedFieldWithUid(Columns.RELATED_PROGRAM),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+        fh.nestedField<ProgramRuleVariable>(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariableFields.allFields),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.field(Columns.EXPIRY_DAYS),
+        fh.field(Columns.COMPLETE_EVENTS_EXPIRY_DAYS),
+        fh.field(Columns.EXPIRY_PERIOD_TYPE),
+        fh.field(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
+        fh.field(Columns.MAX_TEI_COUNT_TO_RETURN),
+        fh.field(Columns.FEATURE_TYPE),
+        fh.field(Columns.ACCESS_LEVEL),
+        fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+        fh.field(Columns.ENROLLMENT_LABEL),
+        fh.field(Columns.FOLLOW_UP_LABEL),
+        fh.field(Columns.ORG_UNIT_LABEL),
+        fh.field(Columns.RELATIONSHIP_LABEL),
+        fh.field(Columns.NOTE_LABEL),
+        fh.field(Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL),
+        fh.field(Columns.PROGRAM_STAGE_LABEL),
+        fh.field(Columns.EVENT_LABEL),
+    )
 }

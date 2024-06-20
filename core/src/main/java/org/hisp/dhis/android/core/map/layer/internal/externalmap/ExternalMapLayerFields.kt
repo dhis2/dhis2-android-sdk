@@ -27,29 +27,24 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
-import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
+import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo.Columns
 
-internal object ExternalMapLayerFields {
-
+internal object ExternalMapLayerFields : BaseFields<ExternalMapLayer>() {
     private const val URL = "url"
 
-    private val fh = FieldsHelper<ExternalMapLayer>()
     val uid = fh.uid()
+    val mapLayerPosition = fh.field(Columns.MAP_LAYER_POSITION)
 
-    val mapLayerPosition: Field<ExternalMapLayer> = Field.create(MapLayerTableInfo.Columns.MAP_LAYER_POSITION)
-
-    val allFields: Fields<ExternalMapLayer> = Fields.builder<ExternalMapLayer>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(URL),
-            fh.field(MapLayerImageryProviderTableInfo.Columns.ATTRIBUTION),
-            fh.field(MapLayerTableInfo.Columns.MAP_SERVICE),
-            fh.field(MapLayerTableInfo.Columns.IMAGE_FORMAT),
-            fh.field(MapLayerTableInfo.Columns.LAYERS),
-            fh.field(MapLayerTableInfo.Columns.MAP_LAYER_POSITION),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(URL),
+        fh.field(MapLayerImageryProviderTableInfo.Columns.ATTRIBUTION),
+        fh.field(Columns.MAP_SERVICE),
+        fh.field(Columns.IMAGE_FORMAT),
+        fh.field(Columns.LAYERS),
+        fh.field(Columns.MAP_LAYER_POSITION),
+    )
 }

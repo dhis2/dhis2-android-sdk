@@ -29,37 +29,11 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 
 internal data class Fields<T>(val fields: List<Property<T>>) {
 
-    class Builder<T> internal constructor() {
-        val fields: MutableList<Property<T>> = mutableListOf()
-
-        @SafeVarargs
-        fun fields(vararg properties: Property<T>): Builder<T> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
-            fields.addAll(properties)
-            return this
-        }
-
-        fun fields(properties: Collection<Property<T>>): Builder<T> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
-            fields.addAll(properties)
-            return this
-        }
-
-        fun build(): Fields<T> {
-            return Fields(fields.toList())
-        }
-    }
-
     fun generateString(): String {
         return generateStringFromFields(fields.toList())
     }
 
     companion object {
-        @JvmStatic
-        fun <K> builder(): Builder<K> {
-            return Builder()
-        }
-
         fun <K> from(vararg properties: Property<K>): Fields<K> {
             require(properties.isNotEmpty()) { "At least one property must be provided." }
             return Fields(properties.toList())

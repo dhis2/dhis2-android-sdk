@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 
-internal object RelationshipItemEventFields {
+internal object RelationshipItemEventFields : BaseFields<RelationshipItemEvent>() {
     private const val EVENT = "event"
 
-    val event: Field<RelationshipItemEvent> = Field.create(EVENT)
+    val event = fh.field(EVENT)
 }

@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import okhttp3.ResponseBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.junit.Before
@@ -68,17 +67,14 @@ class FieldsConverterShould {
         val testService = testService(mockWebServer)
 
         testService.test(
-            builder<String>()
-                .fields(
-                    Field.create("property_one"),
-                    Field.create("property_two"),
-                    NestedField.create<String, String>("nested_property").with(
-                        Field.create("nested_property_one"),
-                    ),
-                )
-                .build(),
-        )
-            .execute()
+            Fields.from(
+                Field.create("property_one"),
+                Field.create("property_two"),
+                NestedField.create<String, String>("nested_property").with(
+                    Field.create("nested_property_one"),
+                ),
+            )
+        ).execute()
 
         val recordedRequest = mockWebServer.takeRequest()
         assertThat(recordedRequest.path).isEqualTo(

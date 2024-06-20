@@ -33,7 +33,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field.Companion.create
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
 import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter.Companion.create
 import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter.Companion.gt
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
@@ -101,12 +100,12 @@ class FilterConverterShould {
     @Throws(IOException::class, InterruptedException::class)
     fun returns_correct_path_when_create_a_retrofit_request_using_filters_and_values() {
         mixedTestService(server!!).test(
-            builder<String>().fields(
+            Fields.from(
                 create("id"),
                 create("code"),
                 create("name"),
                 create("displayName"),
-            ).build(),
+            ),
             create(create("id"), listOf("uid1", "uid2")),
             gt(create("lastUpdated"), "updatedDate"),
         ).execute()

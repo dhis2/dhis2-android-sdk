@@ -73,7 +73,7 @@ class FieldsConverterShould {
                 NestedField.create<String, String>("nested_property").with(
                     Field.create("nested_property_one"),
                 ),
-            )
+            ),
         ).execute()
 
         val recordedRequest = mockWebServer.takeRequest()

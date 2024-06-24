@@ -43,7 +43,6 @@ internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
     val uid = fh.uid()
     val displayInForm = fh.field("displayInForm")
 
-    @JvmField
     val allFields = Fields.from(
         fh.getNameableFields(),
         fh.field(Columns.DISPLAY_IN_FORM),

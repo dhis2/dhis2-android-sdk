@@ -127,10 +127,12 @@ import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationFie
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Ignore("Test for fields string generation. Only to be executed on demand")
 @RunWith(JUnit4::class)
 class FieldsStringGenerationShould {
 

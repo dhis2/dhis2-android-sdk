@@ -262,6 +262,6 @@ class FieldsStringGenerationShould {
         ValidationRuleFields,
         VisualizationDimensionFields,
         VisualizationDimensionItemFields,
-        VisualizationFields
+        VisualizationFields,
     )
 }

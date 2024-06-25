@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
@@ -39,9 +39,9 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns
 
-internal object ProgramStageFields {
+internal object ProgramStageFields : BaseFields<ProgramStage>() {
     private const val PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements"
     private const val CAPTURE_COORDINATES = "captureCoordinates"
     private const val STYLE = "style"
@@ -49,46 +49,42 @@ internal object ProgramStageFields {
     const val ATTRIBUTE_VALUES = "attributeValues"
     private const val ACCESS = "access"
 
-    private val fh = FieldsHelper<ProgramStage>()
-
     val uid = fh.uid()
 
-    val allFields: Fields<ProgramStage> = Fields.builder<ProgramStage>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(ProgramStageTableInfo.Columns.DESCRIPTION),
-            fh.field(ProgramStageTableInfo.Columns.DISPLAY_DESCRIPTION),
-            fh.field(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL),
-            fh.field(ProgramStageTableInfo.Columns.DUE_DATE_LABEL),
-            fh.field(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT),
-            fh.field(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY),
-            fh.field(ProgramStageTableInfo.Columns.REPORT_DATE_TO_USE),
-            fh.field(ProgramStageTableInfo.Columns.OPEN_AFTER_ENROLLMENT),
-            fh.field(ProgramStageTableInfo.Columns.REPEATABLE),
-            fh.field(CAPTURE_COORDINATES),
-            fh.field(ProgramStageTableInfo.Columns.FEATURE_TYPE),
-            fh.field(ProgramStageTableInfo.Columns.FORM_TYPE),
-            fh.field(ProgramStageTableInfo.Columns.DISPLAY_GENERATE_EVENT_BOX),
-            fh.field(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLMENT_DATE),
-            fh.field(ProgramStageTableInfo.Columns.AUTO_GENERATE_EVENT),
-            fh.field(ProgramStageTableInfo.Columns.SORT_ORDER),
-            fh.field(ProgramStageTableInfo.Columns.HIDE_DUE_DATE),
-            fh.field(ProgramStageTableInfo.Columns.BLOCK_ENTRY_FORM),
-            fh.field(ProgramStageTableInfo.Columns.MIN_DAYS_FROM_START),
-            fh.field(ProgramStageTableInfo.Columns.STANDARD_INTERVAL),
-            fh.nestedField<ProgramStageSection>(PROGRAM_STAGE_SECTIONS)
-                .with(ProgramStageSectionFields.allFields),
-            fh.nestedField<ProgramStageDataElement>(PROGRAM_STAGE_DATA_ELEMENTS)
-                .with(ProgramStageDataElementFields.allFields),
-            fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field(ProgramStageTableInfo.Columns.PERIOD_TYPE),
-            fh.field(ProgramStageTableInfo.Columns.PROGRAM),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
-            fh.field(ProgramStageTableInfo.Columns.REMIND_COMPLETED),
-            fh.field(ProgramStageTableInfo.Columns.VALIDATION_STRATEGY),
-            fh.field(ProgramStageTableInfo.Columns.ENABLE_USER_ASSIGNMENT),
-            fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
-            fh.field(ProgramStageTableInfo.Columns.PROGRAM_STAGE_LABEL),
-            fh.field(ProgramStageTableInfo.Columns.EVENT_LABEL),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DESCRIPTION),
+        fh.field(Columns.DISPLAY_DESCRIPTION),
+        fh.field(Columns.EXECUTION_DATE_LABEL),
+        fh.field(Columns.DUE_DATE_LABEL),
+        fh.field(Columns.ALLOW_GENERATE_NEXT_VISIT),
+        fh.field(Columns.VALID_COMPLETE_ONLY),
+        fh.field(Columns.REPORT_DATE_TO_USE),
+        fh.field(Columns.OPEN_AFTER_ENROLLMENT),
+        fh.field(Columns.REPEATABLE),
+        fh.field(CAPTURE_COORDINATES),
+        fh.field(Columns.FEATURE_TYPE),
+        fh.field(Columns.FORM_TYPE),
+        fh.field(Columns.DISPLAY_GENERATE_EVENT_BOX),
+        fh.field(Columns.GENERATED_BY_ENROLMENT_DATE),
+        fh.field(Columns.AUTO_GENERATE_EVENT),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.HIDE_DUE_DATE),
+        fh.field(Columns.BLOCK_ENTRY_FORM),
+        fh.field(Columns.MIN_DAYS_FROM_START),
+        fh.field(Columns.STANDARD_INTERVAL),
+        fh.field(Columns.PERIOD_TYPE),
+        fh.field(Columns.PROGRAM),
+        fh.field(Columns.REMIND_COMPLETED),
+        fh.field(Columns.VALIDATION_STRATEGY),
+        fh.field(Columns.ENABLE_USER_ASSIGNMENT),
+        fh.field(Columns.PROGRAM_STAGE_LABEL),
+        fh.field(Columns.EVENT_LABEL),
+        fh.nestedField<ProgramStageSection>(PROGRAM_STAGE_SECTIONS).with(ProgramStageSectionFields.allFields),
+        fh.nestedField<ProgramStageDataElement>(PROGRAM_STAGE_DATA_ELEMENTS)
+            .with(ProgramStageDataElementFields.allFields),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+    )
 }

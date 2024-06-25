@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEnrollment
 
-internal object NewRelationshipItemEnrollmentFields {
+internal object NewRelationshipItemEnrollmentFields : BaseFields<NewTrackerImporterRelationshipItemEnrollment>() {
     private const val ENROLLMENT = "enrollment"
 
-    val enrollment: Field<NewTrackerImporterRelationshipItemEnrollment> = Field.create(ENROLLMENT)
+    val enrollment = fh.field(ENROLLMENT)
 }

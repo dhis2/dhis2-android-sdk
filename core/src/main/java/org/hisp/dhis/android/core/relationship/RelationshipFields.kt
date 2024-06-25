@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.relationship
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields
 
-internal object RelationshipFields {
+internal object RelationshipFields : BaseFields<Relationship>() {
     const val RELATIONSHIP = "relationship"
     const val RELATIONSHIP_NAME = "relationshipName"
     private const val RELATIONSHIP_TYPE = "relationshipType"
@@ -41,9 +41,8 @@ internal object RelationshipFields {
 
     // Used only for children appending, can't be used in query
     const val ITEMS = "items"
-    private val fh = FieldsHelper<Relationship>()
 
-    val allFields: Fields<Relationship> = Fields.builder<Relationship>().fields(
+    val allFields = Fields.from(
         fh.field(RELATIONSHIP),
         fh.field(RELATIONSHIP_NAME),
         fh.field(RELATIONSHIP_TYPE),
@@ -51,5 +50,5 @@ internal object RelationshipFields {
         fh.field(BaseIdentifiableObject.LAST_UPDATED),
         fh.nestedField<RelationshipItem>(FROM).with(RelationshipItemFields.allFields),
         fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields),
-    ).build()
+    )
 }

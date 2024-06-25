@@ -27,21 +27,19 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryTableInfo
 
-internal object CategoryFields {
+internal object CategoryFields : BaseFields<Category>() {
     const val CATEGORY_OPTIONS = "categoryOptions"
 
-    private val fh = FieldsHelper<Category>()
     val uid = fh.uid()
 
-    val allFields: Fields<Category> = Fields.builder<Category>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-            fh.field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.nestedFieldWithUid(CATEGORY_OPTIONS),
+        fh.field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE),
+    )
 }

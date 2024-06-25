@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns
 
-internal object RelationshipTypeFields {
+internal object RelationshipTypeFields : BaseFields<RelationshipType>() {
     private const val B_IS_TO_A = "bIsToA"
     private const val A_IS_TO_B = "aIsToB"
     private const val FROM_CONSTRAINT = "fromConstraint"
@@ -46,22 +46,17 @@ internal object RelationshipTypeFields {
     // Used only for children appending, can't be used in query
     const val CONSTRAINTS = "constraints"
 
-    private val fh = FieldsHelper<RelationshipType>()
-
     val lastUpdated = fh.lastUpdated()
 
-    val allFields: Fields<RelationshipType> = Fields.builder<RelationshipType>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(B_IS_TO_A),
-            fh.field(A_IS_TO_B),
-            fh.field(RelationshipTypeTableInfo.Columns.FROM_TO_NAME),
-            fh.field(RelationshipTypeTableInfo.Columns.TO_FROM_NAME),
-            fh.field(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL),
-            fh.nestedField<RelationshipConstraint>(FROM_CONSTRAINT)
-                .with(RelationshipConstraintFields.allFields),
-            fh.nestedField<RelationshipConstraint>(TO_CONSTRAINT)
-                .with(RelationshipConstraintFields.allFields),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(B_IS_TO_A),
+        fh.field(A_IS_TO_B),
+        fh.field(Columns.FROM_TO_NAME),
+        fh.field(Columns.TO_FROM_NAME),
+        fh.field(Columns.BIDIRECTIONAL),
+        fh.nestedField<RelationshipConstraint>(FROM_CONSTRAINT).with(RelationshipConstraintFields.allFields),
+        fh.nestedField<RelationshipConstraint>(TO_CONSTRAINT).with(RelationshipConstraintFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+    )
 }

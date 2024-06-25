@@ -27,20 +27,21 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.relationship.*
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
 
-internal object RelationshipItemFields {
-    private val fh = FieldsHelper<RelationshipItem>()
-    val allFields: Fields<RelationshipItem> = Fields.builder<RelationshipItem>()
-        .fields(
-            fh.nestedField<RelationshipItemTrackedEntityInstance>(
-                RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-            ).with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            fh.nestedField<RelationshipItemEnrollment>(RelationshipItemTableInfo.Columns.ENROLLMENT)
-                .with(RelationshipItemEnrollmentFields.enrollment),
-            fh.nestedField<RelationshipItemEvent>(RelationshipItemTableInfo.Columns.EVENT)
-                .with(RelationshipItemEventFields.event),
-        ).build()
+internal object RelationshipItemFields : BaseFields<RelationshipItem>() {
+    val allFields = Fields.from(
+        fh.nestedField<RelationshipItemTrackedEntityInstance>(Columns.TRACKED_ENTITY_INSTANCE)
+            .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+        fh.nestedField<RelationshipItemEnrollment>(Columns.ENROLLMENT)
+            .with(RelationshipItemEnrollmentFields.enrollment),
+        fh.nestedField<RelationshipItemEvent>(Columns.EVENT)
+            .with(RelationshipItemEventFields.event),
+    )
 }

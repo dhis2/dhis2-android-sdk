@@ -27,29 +27,24 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
 
-internal object ProgramStageWorkingListFields {
+internal object ProgramStageWorkingListFields : BaseFields<ProgramStageWorkingList>() {
     private const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
 
-    private val fh = FieldsHelper<ProgramStageWorkingList>()
+    val programUid = fh.field(Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
 
-    val programUid: Field<ProgramStageWorkingList> =
-        Field.create(ProgramStageWorkingListTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
-
-    val allFields = Fields.builder<ProgramStageWorkingList>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(ProgramStageWorkingListTableInfo.Columns.DESCRIPTION),
-            fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM),
-            fh.nestedFieldWithUid(ProgramStageWorkingListTableInfo.Columns.PROGRAM_STAGE),
-            fh.nestedField<ProgramStageQueryCriteria>(PROGRAM_STAGE_QUERY_CRITERIA)
-                .with(ProgramStageQueryCriteriaFields.allFields),
-        )
-        .build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DESCRIPTION),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedField<ProgramStageQueryCriteria>(PROGRAM_STAGE_QUERY_CRITERIA)
+            .with(ProgramStageQueryCriteriaFields.allFields),
+    )
 }

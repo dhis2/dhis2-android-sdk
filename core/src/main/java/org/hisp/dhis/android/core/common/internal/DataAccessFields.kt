@@ -27,20 +27,19 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.common.DataAccess
 
-internal object DataAccessFields {
+internal object DataAccessFields : BaseFields<DataAccess>() {
     private const val READ = "read"
     private const val WRITE = "write"
 
-    val read: Field<DataAccess> = Field.create(READ)
+    val read = fh.field(READ)
+    val write = fh.field(WRITE)
 
-    val write: Field<DataAccess> = Field.create(WRITE)
-
-    val allFields: Fields<DataAccess> = Fields.builder<DataAccess>().fields(
+    val allFields = Fields.from(
         read,
         write,
-    ).build()
+    )
 }

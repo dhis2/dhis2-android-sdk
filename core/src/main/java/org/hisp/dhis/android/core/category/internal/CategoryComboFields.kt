@@ -27,25 +27,22 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
-internal object CategoryComboFields {
+internal object CategoryComboFields : BaseFields<CategoryCombo>() {
     const val CATEGORIES = "categories"
     private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
-    private val fh = FieldsHelper<CategoryCombo>()
     val uid = fh.uid()
 
-    val allFields: Fields<CategoryCombo> = Fields.builder<CategoryCombo>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(CategoryComboTableInfo.Columns.IS_DEFAULT),
-            fh.nestedFieldWithUid(CATEGORIES),
-            fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS)
-                .with(CategoryOptionComboFields.allFields),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.IS_DEFAULT),
+        fh.nestedFieldWithUid(CATEGORIES),
+        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
+    )
 }

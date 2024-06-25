@@ -27,22 +27,20 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.core.note.NoteTableInfo.Columns
 
-internal object NoteFields {
+internal object NoteFields : BaseFields<Note>() {
     const val UID = "note"
 
-    private val fh = FieldsHelper<Note>()
     val uid = fh.uid()
 
-    val all: Fields<Note> = Fields.builder<Note>()
-        .fields(
-            fh.field(UID),
-            fh.field(NoteTableInfo.Columns.VALUE),
-            fh.field(NoteTableInfo.Columns.STORED_BY),
-            fh.field(NoteTableInfo.Columns.STORED_DATE),
-        ).build()
+    val allFields = Fields.from(
+        fh.field(UID),
+        fh.field(Columns.VALUE),
+        fh.field(Columns.STORED_BY),
+        fh.field(Columns.STORED_DATE),
+    )
 }

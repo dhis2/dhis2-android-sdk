@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 import com.google.common.truth.Truth
 import nl.jqno.equalsverifier.EqualsVerifier
 import nl.jqno.equalsverifier.Warning
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,10 +39,13 @@ import java.io.IOException
 
 @RunWith(JUnit4::class)
 class FieldsShould {
+
+    private val fh: FieldsHelper<Any> = FieldsHelper()
+
     @Test
     fun throw_illegal_argument_exception_on_null_arguments() {
         try {
-            Fields.builder<Any>().fields().build()
+            Fields.from<Any>()
 
             Assert.fail("IllegalArgumentException was expected but was not thrown")
         } catch (illegalArgumentException: IllegalArgumentException) {
@@ -51,7 +55,7 @@ class FieldsShould {
 
     @Test
     fun have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(Fields.builder<Any>().build().javaClass)
+        EqualsVerifier.forClass(Fields.from(fh.field("field")).javaClass)
             .suppress(Warning.NULL_FIELDS)
             .verify()
     }
@@ -59,20 +63,18 @@ class FieldsShould {
     @Test
     @Throws(IOException::class)
     fun respect_the_field_order() {
-        val queryStringOne: String = Fields.builder<Any>().fields(
-            Field.create(""),
-        ).build().generateString()
+        val queryStringOne: String = Fields.from(fh.field("")).generateString()
 
-        val queryStringTwo: String = Fields.builder<Any>().fields(
-            Field.create("*"),
-        ).build().generateString()
+        val queryStringTwo: String = Fields.from(
+            fh.field("*"),
+        ).generateString()
 
-        val queryStringThree: String = Fields.builder<Any>().fields(
-            Field.create("name"),
-            Field.create("displayName"),
-            Field.create("created"),
-            Field.create("lastUpdated"),
-        ).build().generateString()
+        val queryStringThree: String = Fields.from(
+            fh.field("name"),
+            fh.field("displayName"),
+            fh.field("created"),
+            fh.field("lastUpdated"),
+        ).generateString()
 
         Truth.assertThat(queryStringOne).isEqualTo("")
         Truth.assertThat(queryStringTwo).isEqualTo("*")
@@ -82,41 +84,41 @@ class FieldsShould {
     @Test
     @Throws(IOException::class)
     fun respect_fields_order_with_nested_fields() {
-        val id: Field<Any> = Field.create("id")
-        val displayName: Field<Any> = Field.create("displayName")
-        val programs: NestedField<Any, Any> = NestedField.create("programs")
+        val id = fh.field("id")
+        val displayName = fh.field("displayName")
+        val programs = fh.nestedField<Any>("programs")
         val programsWithChildren = programs.with(id, displayName)
         val programsWithChildrenWithChildren = programs.with(id, displayName, programsWithChildren)
 
-        val queryStringOne: String = Fields.builder<Any>().fields(
+        val queryStringOne: String = Fields.from(
             id,
             displayName,
             programs,
-        ).build().generateString()
-        val queryStringTwo: String = Fields.builder<Any>().fields(
+        ).generateString()
+        val queryStringTwo: String = Fields.from(
             id,
             displayName,
             programsWithChildren,
-        ).build().generateString()
-        val queryStringThree: String = Fields.builder<Any>().fields(
+        ).generateString()
+        val queryStringThree: String = Fields.from(
             id,
             programsWithChildren,
             displayName,
-        ).build().generateString()
-        val queryStringFour: String = Fields.builder<Any>().fields(
+        ).generateString()
+        val queryStringFour: String = Fields.from(
             id,
             programsWithChildrenWithChildren,
-        ).build().generateString()
-        val queryStringFive: String = Fields.builder<Any>().fields(
+        ).generateString()
+        val queryStringFive: String = Fields.from(
             id,
             programsWithChildrenWithChildren,
             displayName,
-        ).build().generateString()
-        val queryStringSix: String = Fields.builder<Any>().fields(
+        ).generateString()
+        val queryStringSix: String = Fields.from(
             id,
             programs,
             displayName,
-        ).build().generateString()
+        ).generateString()
 
         Truth.assertThat(queryStringOne).isEqualTo("id,displayName,programs")
         Truth.assertThat(queryStringTwo).isEqualTo("id,displayName,programs[id,displayName]")

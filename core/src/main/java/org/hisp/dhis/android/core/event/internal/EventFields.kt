@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo.Columns
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteFields
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields
 
-internal object EventFields {
+internal object EventFields : BaseFields<Event>() {
     const val UID = "event"
     private const val COORDINATE = "coordinate"
     const val ORGANISATION_UNIT = "orgUnit"
@@ -48,43 +48,39 @@ internal object EventFields {
     const val NOTES = "notes"
     private const val RELATIONSHIPS = "relationships"
 
-    private val fh = FieldsHelper<Event>()
+    val allFields = Fields.from(
+        commonFields(),
+        fh.nestedField<Note>(NOTES).with(NoteFields.allFields),
+        fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
+        fh.nestedField<TrackedEntityDataValue>(TRACKED_ENTITY_DATA_VALUES).with(TrackedEntityDataValueFields.allFields),
+    )
 
-    val allFields: Fields<Event> = commonFields()
-        .fields(
-            fh.nestedField<Note>(NOTES).with(NoteFields.all),
-            fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
-            fh.nestedField<TrackedEntityDataValue>(TRACKED_ENTITY_DATA_VALUES)
-                .with(TrackedEntityDataValueFields.allFields),
-        ).build()
+    val asRelationshipFields = Fields.from(commonFields())
 
-    val asRelationshipFields: Fields<Event> = commonFields().build()
+    val teiQueryFields = Fields.from(
+        commonFields(),
+        fh.field(TRACKED_ENTITY_INSTANCE),
+    )
 
-    val teiQueryFields: Fields<Event> = commonFields()
-        .fields(fh.field(TRACKED_ENTITY_INSTANCE))
-        .build()
-
-    private fun commonFields(): Fields.Builder<Event> {
-        return Fields.builder<Event>().fields(
-            fh.field(UID),
-            fh.field(EventTableInfo.Columns.ENROLLMENT),
-            fh.field(EventTableInfo.Columns.CREATED),
-            fh.field(EventTableInfo.Columns.LAST_UPDATED),
-            fh.field(EventTableInfo.Columns.CREATED_AT_CLIENT),
-            fh.field(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
-            fh.field(EventTableInfo.Columns.STATUS),
-            fh.field(COORDINATE),
-            fh.field(GEOMETRY),
-            fh.field(EventTableInfo.Columns.PROGRAM),
-            fh.field(EventTableInfo.Columns.PROGRAM_STAGE),
-            fh.field(ORGANISATION_UNIT),
-            fh.field(EventTableInfo.Columns.EVENT_DATE),
-            fh.field(EventTableInfo.Columns.COMPLETE_DATE),
-            fh.field(EventTableInfo.Columns.DELETED),
-            fh.field(EventTableInfo.Columns.DUE_DATE),
-            fh.field(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
-            fh.field(EventTableInfo.Columns.ASSIGNED_USER),
-            fh.field(EventTableInfo.Columns.COMPLETED_BY),
-        )
-    }
+    private fun commonFields() = listOf(
+        fh.field(UID),
+        fh.field(Columns.ENROLLMENT),
+        fh.field(Columns.CREATED),
+        fh.field(Columns.LAST_UPDATED),
+        fh.field(Columns.CREATED_AT_CLIENT),
+        fh.field(Columns.LAST_UPDATED_AT_CLIENT),
+        fh.field(Columns.STATUS),
+        fh.field(COORDINATE),
+        fh.field(GEOMETRY),
+        fh.field(Columns.PROGRAM),
+        fh.field(Columns.PROGRAM_STAGE),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(Columns.EVENT_DATE),
+        fh.field(Columns.COMPLETE_DATE),
+        fh.field(Columns.DELETED),
+        fh.field(Columns.DUE_DATE),
+        fh.field(Columns.ATTRIBUTE_OPTION_COMBO),
+        fh.field(Columns.ASSIGNED_USER),
+        fh.field(Columns.COMPLETED_BY),
+    )
 }

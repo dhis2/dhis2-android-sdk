@@ -29,35 +29,24 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 
 internal data class Fields<T>(val fields: List<Property<T>>) {
 
-    class Builder<T> internal constructor() {
-        val fields: MutableList<Property<T>> = mutableListOf()
-
-        @SafeVarargs
-        fun fields(vararg properties: Property<T>): Builder<T> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
-            fields.addAll(properties)
-            return this
-        }
-
-        fun fields(properties: Collection<Property<T>>): Builder<T> {
-            require(properties.isNotEmpty()) { "properties should not be empty" }
-            fields.addAll(properties)
-            return this
-        }
-
-        fun build(): Fields<T> {
-            return Fields(fields.toList())
-        }
-    }
-
     fun generateString(): String {
         return generateStringFromFields(fields.toList())
     }
 
     companion object {
-        @JvmStatic
-        fun <K> builder(): Builder<K> {
-            return Builder()
+        fun <K> from(vararg properties: Property<K>): Fields<K> {
+            require(properties.isNotEmpty()) { "At least one property must be provided." }
+            return Fields(properties.toList())
+        }
+
+        fun <K> from(
+            properties: Collection<Property<K>>,
+            vararg additionalProperties: Property<K> = emptyArray(),
+        ): Fields<K> {
+            require(properties.isNotEmpty()) { "At least one property must be provided." }
+            val allFields = properties.toMutableList()
+            allFields.addAll(additionalProperties)
+            return Fields(allFields)
         }
 
         private fun generateStringFromFields(properties: List<Property<*>>): String {
@@ -67,6 +56,7 @@ internal data class Fields<T>(val fields: List<Property<T>>) {
                     is NestedField<*, *> ->
                         field.name +
                             if (field.children.isNotEmpty()) "[${generateStringFromFields(field.children)}]" else ""
+
                     else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
                 }
             }

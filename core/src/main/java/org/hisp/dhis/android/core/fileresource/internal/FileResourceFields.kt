@@ -28,26 +28,24 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo.Columns
 
-internal object FileResourceFields {
+internal object FileResourceFields : BaseFields<FileResource>() {
     private const val STORAGE_STATUS = "storageStatus"
-    private val fh = FieldsHelper<FileResource>()
 
     val uid = fh.uid()
 
-    val allFields: Fields<FileResource> = Fields.builder<FileResource>()
-        .fields(
-            uid,
-            fh.name(),
-            fh.created(),
-            fh.lastUpdated(),
-            fh.field(FileResourceTableInfo.Columns.CONTENT_TYPE),
-            fh.field(FileResourceTableInfo.Columns.CONTENT_LENGTH),
-            fh.field(FileResourceTableInfo.Columns.DOMAIN),
-            fh.field(STORAGE_STATUS),
-        ).build()
+    val allFields = Fields.from(
+        uid,
+        fh.name(),
+        fh.created(),
+        fh.lastUpdated(),
+        fh.field(Columns.CONTENT_TYPE),
+        fh.field(Columns.CONTENT_LENGTH),
+        fh.field(Columns.DOMAIN),
+        fh.field(STORAGE_STATUS),
+    )
 }

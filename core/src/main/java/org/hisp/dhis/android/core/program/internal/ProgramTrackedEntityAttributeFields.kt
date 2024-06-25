@@ -27,25 +27,23 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns
 
-internal object ProgramTrackedEntityAttributeFields {
+internal object ProgramTrackedEntityAttributeFields : BaseFields<ProgramTrackedEntityAttribute>() {
     const val RENDER_TYPE = "renderType"
-    private val fh = FieldsHelper<ProgramTrackedEntityAttribute>()
 
-    val allFields: Fields<ProgramTrackedEntityAttribute> = Fields.builder<ProgramTrackedEntityAttribute>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.MANDATORY),
-            fh.nestedFieldWithUid(ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM),
-            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.ALLOW_FUTURE_DATE),
-            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST),
-            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.SORT_ORDER),
-            fh.field(ProgramTrackedEntityAttributeTableInfo.Columns.SEARCHABLE),
-            fh.nestedFieldWithUid(ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE),
-            fh.field(RENDER_TYPE),
-        ).build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.MANDATORY),
+        fh.field(Columns.ALLOW_FUTURE_DATE),
+        fh.field(Columns.DISPLAY_IN_LIST),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.SEARCHABLE),
+        fh.field(RENDER_TYPE),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+    )
 }

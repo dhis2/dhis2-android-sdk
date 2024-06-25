@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventFields
 import org.hisp.dhis.android.core.note.Note
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.note.internal.NoteFields
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipFields
 
-internal object EnrollmentFields {
+internal object EnrollmentFields : BaseFields<Enrollment>() {
     const val UID = "enrollment"
     const val ORGANISATION_UNIT = "orgUnit"
     private const val COORDINATE = "coordinate"
@@ -47,35 +47,32 @@ internal object EnrollmentFields {
     const val NOTES = "notes"
     private const val GEOMETRY = "geometry"
     private const val RELATIONSHIPS = "relationships"
-    private val fh = FieldsHelper<Enrollment>()
 
-    val allFields: Fields<Enrollment> = commonFields()
-        .fields(
-            fh.nestedField<Event>(EVENTS).with(EventFields.allFields),
-            fh.nestedField<Note>(NOTES).with(NoteFields.all),
-            fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
-        ).build()
+    val allFields = Fields.from(
+        commonFields(),
+        fh.nestedField<Event>(EVENTS).with(EventFields.allFields),
+        fh.nestedField<Note>(NOTES).with(NoteFields.allFields),
+        fh.nestedField<Relationship>(RELATIONSHIPS).with(RelationshipFields.allFields),
+    )
 
-    val asRelationshipFields: Fields<Enrollment> = commonFields().build()
+    val asRelationshipFields: Fields<Enrollment> = Fields.from(commonFields())
 
-    private fun commonFields(): Fields.Builder<Enrollment> {
-        return Fields.builder<Enrollment>().fields(
-            fh.field(UID),
-            fh.field(EnrollmentTableInfo.Columns.CREATED),
-            fh.field(EnrollmentTableInfo.Columns.LAST_UPDATED),
-            fh.field(EnrollmentTableInfo.Columns.CREATED_AT_CLIENT),
-            fh.field(EnrollmentTableInfo.Columns.LAST_UPDATED_AT_CLIENT),
-            fh.field(ORGANISATION_UNIT),
-            fh.field(EnrollmentTableInfo.Columns.PROGRAM),
-            fh.field(EnrollmentTableInfo.Columns.ENROLLMENT_DATE),
-            fh.field(EnrollmentTableInfo.Columns.INCIDENT_DATE),
-            fh.field(EnrollmentTableInfo.Columns.COMPLETED_DATE),
-            fh.field(EnrollmentTableInfo.Columns.FOLLOW_UP),
-            fh.field(EnrollmentTableInfo.Columns.STATUS),
-            fh.field(DELETED),
-            fh.field(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE),
-            fh.field(COORDINATE),
-            fh.field(GEOMETRY),
-        )
-    }
+    private fun commonFields() = listOf(
+        fh.field(UID),
+        fh.field(Columns.CREATED),
+        fh.field(Columns.LAST_UPDATED),
+        fh.field(Columns.CREATED_AT_CLIENT),
+        fh.field(Columns.LAST_UPDATED_AT_CLIENT),
+        fh.field(ORGANISATION_UNIT),
+        fh.field(Columns.PROGRAM),
+        fh.field(Columns.ENROLLMENT_DATE),
+        fh.field(Columns.INCIDENT_DATE),
+        fh.field(Columns.COMPLETED_DATE),
+        fh.field(Columns.FOLLOW_UP),
+        fh.field(Columns.STATUS),
+        fh.field(DELETED),
+        fh.field(Columns.TRACKED_ENTITY_INSTANCE),
+        fh.field(COORDINATE),
+        fh.field(GEOMETRY),
+    )
 }

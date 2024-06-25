@@ -27,24 +27,19 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields.Companion.builder
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo
 
-internal object IndicatorTypeFields {
-    private val fh = FieldsHelper<IndicatorType>()
-
+internal object IndicatorTypeFields : BaseFields<IndicatorType>() {
     val uid: Field<IndicatorType> = fh.uid()
-
     val lastUpdated: Field<IndicatorType> = fh.lastUpdated()
 
-    val allFields: Fields<IndicatorType> = builder<IndicatorType>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field(IndicatorTypeTableInfo.Columns.NUMBER),
-            fh.field(IndicatorTypeTableInfo.Columns.FACTOR),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(IndicatorTypeTableInfo.Columns.NUMBER),
+        fh.field(IndicatorTypeTableInfo.Columns.FACTOR),
+    )
 }

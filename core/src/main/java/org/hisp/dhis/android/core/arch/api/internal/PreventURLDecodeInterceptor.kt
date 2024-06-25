@@ -25,32 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import okhttp3.Interceptor
+import okhttp3.Interceptor.Chain
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-import java.io.IOException;
+internal class PreventURLDecodeInterceptor : Interceptor {
+    @Throws(IOException::class)
+    public override fun intercept(chain: Interceptor.Chain): Response {
+        var request: Request = chain.request()
+        var encodedUrl = request.url.toString()
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+        var nonEncodedUrl = encodedUrl
+            .replace("%2C", ",")
+            .replace("%5B", "[")
+            .replace("%5D", "]")
+            .replace("%3A", ":")
 
-public class PreventURLDecodeInterceptor implements Interceptor {
+        var newRequest = request.newBuilder()
+            .url(nonEncodedUrl)
+            .build()
 
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
-        String encodedUrl = request.url().toString();
-
-        String nonEncodedUrl = encodedUrl
-                .replace("%2C", ",")
-                .replace("%5B", "[")
-                .replace("%5D", "]")
-                .replace("%3A", ":");
-
-        Request newRequest = request.newBuilder()
-                .url(nonEncodedUrl)
-                .build();
-
-        return chain.proceed(newRequest);
+        return chain.proceed(newRequest)
     }
 }

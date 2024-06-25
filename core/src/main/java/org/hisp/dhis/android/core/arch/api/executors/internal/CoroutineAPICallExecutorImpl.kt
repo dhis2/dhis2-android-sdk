@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import kotlinx.coroutines.*
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import org.hisp.dhis.android.core.arch.api.internal.toD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -38,7 +41,6 @@ import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.koin.core.annotation.Singleton
 import retrofit2.HttpException
-import retrofit2.Response
 
 @Singleton
 internal class CoroutineAPICallExecutorImpl(
@@ -62,42 +64,60 @@ internal class CoroutineAPICallExecutorImpl(
     ): Result<P, D2Error> {
         return try {
             Result.Success(block.invoke())
-        } catch (t: HttpException) {
-            val response = t.response()
-
-            if (response != null) {
-                val errorBody = errorMapper.getErrorBody(response)
-                val errorBuilder = errorBuilder(response)
-
-                if (userAccountDisabledErrorCatcher.isUserAccountLocked(response, errorBody)) {
-                    Result.Failure(
-                        catchError(userAccountDisabledErrorCatcher, errorBuilder, response, errorBody, storeError),
-                    )
-                } else if (errorClass != null && acceptedErrorCodes?.contains(response.code()) == true) {
-                    Result.Success(
-                        ObjectMapperFactory.objectMapper().readValue(errorBody, errorClass),
-                    )
-                } else if (errorCatcher != null) {
-                    Result.Failure(
-                        catchError(errorCatcher, errorBuilder, response, errorBody, storeError),
-                    )
-                } else {
-                    Result.Failure(
-                        storeAndReturn(
-                            errorMapper.responseException(errorBuilder, response, null, errorBody),
-                            storeError,
-                        ),
-                    )
-                }
-            } else {
-                Result.Failure(
-                    storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError),
-                )
-            }
+        } catch (retrofitException: HttpException) {
+            handleHttpException(retrofitException, storeError, acceptedErrorCodes, errorCatcher, errorClass)
         } catch (d2Error: D2Error) {
             Result.Failure(d2Error)
         } catch (t: Throwable) {
             Result.Failure(storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError))
+        }
+    }
+
+    private fun <P> handleHttpException(
+        exception: HttpException,
+        storeError: Boolean,
+        acceptedErrorCodes: List<Int>?,
+        errorCatcher: APICallErrorCatcher?,
+        errorClass: Class<P>?,
+    ): Result<P, D2Error> {
+        val d2ErrorResponse = exception.toD2Response()
+        return if (d2ErrorResponse.errorBody.isEmpty()) {
+            Result.Failure(
+                storeAndReturn(
+                    errorMapper.mapRetrofitException(
+                        D2HttpException(d2ErrorResponse),
+                        baseErrorBuilder(),
+                    ),
+                    storeError,
+                ),
+            )
+        } else {
+            val errorBuilder = errorBuilder(d2ErrorResponse)
+            when {
+                userAccountDisabledErrorCatcher.isUserAccountLocked(d2ErrorResponse) -> {
+                    Result.Failure(
+                        catchError(userAccountDisabledErrorCatcher, errorBuilder, d2ErrorResponse, storeError),
+                    )
+                }
+                errorClass != null && acceptedErrorCodes?.contains(d2ErrorResponse.statusCode) == true -> {
+                    Result.Success(
+                        ObjectMapperFactory.objectMapper().readValue(d2ErrorResponse.errorBody, errorClass),
+                    )
+                }
+                errorCatcher != null -> {
+                    Result.Failure(
+                        catchError(errorCatcher, errorBuilder, d2ErrorResponse, storeError),
+                    )
+                }
+                else -> {
+                    Result.Failure(
+                        storeAndReturn(
+                            errorMapper.responseException(errorBuilder, d2ErrorResponse, null),
+                            storeError,
+                        ),
+                    )
+                }
+            }
         }
     }
 
@@ -125,15 +145,14 @@ internal class CoroutineAPICallExecutorImpl(
         }
     }
 
-    private fun <P> catchError(
+    private fun catchError(
         errorCatcher: APICallErrorCatcher,
         errorBuilder: D2Error.Builder,
-        response: Response<P>,
-        errorBody: String,
+        response: D2HttpResponse,
         storeError: Boolean,
     ): D2Error {
-        return errorCatcher.catchError(response, errorBody)?.let { errorCode ->
-            val d2Error = errorMapper.responseException(errorBuilder, response, errorCode, errorBody)
+        return errorCatcher.catchError(response)?.let { errorCode ->
+            val d2Error = errorMapper.responseException(errorBuilder, response, errorCode)
 
             if (errorCatcher.mustBeStored() == true) {
                 storeAndReturn(d2Error, storeError = true)
@@ -141,7 +160,7 @@ internal class CoroutineAPICallExecutorImpl(
                 d2Error
             }
         }
-            ?: storeAndReturn(errorMapper.responseException(errorBuilder, response, null, errorBody), storeError)
+            ?: storeAndReturn(errorMapper.responseException(errorBuilder, response, null), storeError)
     }
 
     private fun storeAndReturn(d2Error: D2Error, storeError: Boolean): D2Error {
@@ -151,7 +170,7 @@ internal class CoroutineAPICallExecutorImpl(
         return d2Error
     }
 
-    private fun <P> errorBuilder(response: Response<P>): D2Error.Builder {
+    private fun errorBuilder(response: D2HttpResponse): D2Error.Builder {
         return errorMapper.getBaseErrorBuilder(response)
     }
 

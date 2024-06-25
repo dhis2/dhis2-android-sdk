@@ -150,7 +150,7 @@ internal class APIErrorMapper {
 
         return message ?: "No server message"
     }
-    
+
     companion object {
         internal const val noErrorMessage: String = "No error message"
         internal fun getIfNotEmpty(message: String?): String? {

@@ -280,4 +280,23 @@ class IdentifiableCollectionFiltersMockIntegrationShould : BaseMockIntegrationTe
 
         assertThat(beforeCategories.size).isEqualTo(1)
     }
+
+    @Test
+    fun find_object_with_uid_shortcut_method() {
+        val combo = d2.categoryModule().categoryCombos()
+            .uid(birthUid)
+            .blockingGet()
+
+        assertThat(combo).isNotNull()
+        assertThat(combo!!.uid()).isEqualTo(birthUid)
+    }
+
+    @Test
+    fun do_not_fail_with_uid_containing_single_quote() {
+        val combo = d2.categoryModule().categoryCombos()
+            .uid("non'existing'uid'")
+            .blockingGet()
+
+        assertThat(combo).isNull()
+    }
 }

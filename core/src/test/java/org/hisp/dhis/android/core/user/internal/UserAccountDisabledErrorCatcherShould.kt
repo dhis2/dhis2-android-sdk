@@ -31,7 +31,7 @@ import com.google.common.truth.Truth
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.AccountDeletionReason
@@ -39,12 +39,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import retrofit2.Response
 
 @RunWith(JUnit4::class)
 class UserAccountDisabledErrorCatcherShould {
     private lateinit var catcher: UserAccountDisabledErrorCatcher
-    private lateinit var response: Response<Any>
+    private lateinit var response: D2HttpResponse
     private var accountManager: AccountManagerImpl = mock()
 
     @Before
@@ -53,18 +52,23 @@ class UserAccountDisabledErrorCatcherShould {
 
         val responseError = "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\"," +
             "\"message\": \"Account disabled\"}"
-        response = Response.error(401, ResponseBody.create(null, responseError))
+        response = D2HttpResponse(
+            statusCode = 401,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
     }
 
     @Test
     fun return_account_disabled() {
-        Truth.assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+        Truth.assertThat(catcher.catchError(response))
             .isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
     }
 
     @Test
     fun delete_database() {
-        catcher.catchError(response, response.errorBody()!!.string())
+        catcher.catchError(response)
         verify(accountManager, times(1)).deleteCurrentAccountAndEmit(AccountDeletionReason.ACCOUNT_DISABLED)
     }
 }

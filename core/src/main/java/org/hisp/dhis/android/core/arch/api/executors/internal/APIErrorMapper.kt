@@ -150,11 +150,7 @@ internal class APIErrorMapper {
 
         return message ?: "No server message"
     }
-
-    fun getErrorBody(response: D2HttpResponse): String {
-        return response.errorBody
-    }
-
+    
     companion object {
         internal const val noErrorMessage: String = "No error message"
         internal fun getIfNotEmpty(message: String?): String? {

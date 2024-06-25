@@ -25,35 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import java.io.IOException
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-
-import java.io.IOException;
-
-import retrofit2.Response;
-
-final class TrackedEntityAttributeReservedValueCallErrorCatcher implements APICallErrorCatcher {
-
-    @Override
-    public Boolean mustBeStored() {
-        return true;
+internal class TrackedEntityAttributeReservedValueCallErrorCatcher : APICallErrorCatcher {
+    public override fun mustBeStored(): Boolean? {
+        return true
     }
 
-    @Override
-    public D2ErrorCode catchError(Response<?> response, String errorBody) throws IOException {
-        if (errorBody.contains("Not enough values left to reserve")) {
-            return D2ErrorCode.NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER;
-        } else if (errorBody.contains("Generation and reservation of values took too long")) {
-            return D2ErrorCode.VALUES_RESERVATION_TOOK_TOO_LONG;
-        } else if (errorBody.contains("You might be running low on available values")) {
-            return D2ErrorCode.MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES;
-        } else if (response.code() == 409) {
-            return D2ErrorCode.COULD_NOT_RESERVE_VALUE_ON_SERVER;
+    @Throws(IOException::class)
+    @Suppress("MagicNumber")
+    override fun catchError(response: D2HttpResponse): D2ErrorCode? {
+        return if (response.errorBody.contains("Not enough values left to reserve")) {
+            D2ErrorCode.NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER
+        } else if (response.errorBody.contains("Generation and reservation of values took too long")) {
+            D2ErrorCode.VALUES_RESERVATION_TOOK_TOO_LONG
+        } else if (response.errorBody.contains("You might be running low on available values")) {
+            D2ErrorCode.MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES
+        } else if (response.statusCode == 409) {
+            D2ErrorCode.COULD_NOT_RESERVE_VALUE_ON_SERVER
+        } else {
+            null
         }
-
-        return null;
     }
 }

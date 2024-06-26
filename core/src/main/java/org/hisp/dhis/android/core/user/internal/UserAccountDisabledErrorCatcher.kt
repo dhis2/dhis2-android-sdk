@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
-import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode

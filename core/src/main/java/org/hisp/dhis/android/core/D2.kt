@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
-import io.ktor.client.HttpClient
 import org.hisp.dhis.android.core.analytics.AnalyticsModule
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
@@ -78,10 +77,6 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     @VisibleForTesting
     fun retrofit(): Retrofit {
         return d2DIComponent.retrofit
-    }
-    @VisibleForTesting
-    fun ktor(): HttpClient {
-        return d2DIComponent.ktor
     }
 
     @VisibleForTesting

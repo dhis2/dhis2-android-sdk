@@ -25,37 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+internal class PreventURLDecodeInterceptor : Interceptor {
+    @Throws(IOException::class)
+    public override fun intercept(chain: Interceptor.Chain): Response {
+        var request: Request = chain.request()
+        var encodedUrl = request.url.toString()
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+        var nonEncodedUrl = encodedUrl
+            .replace("%2C", ",")
+            .replace("%5B", "[")
+            .replace("%5D", "]")
+            .replace("%3A", ":")
 
-final class RetrofitFactory {
+        var newRequest = request.newBuilder()
+            .url(nonEncodedUrl)
+            .build()
 
-    static Retrofit retrofit(OkHttpClient okHttpClient) throws D2Error {
-        return new Retrofit.Builder()
-                // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
-                // to create Retrofit
-                .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
-
-                .client(okHttpClient)
-                .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
-                .addConverterFactory(new FilterConverterFactory())
-                .addConverterFactory(new FieldsConverterFactory())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .validateEagerly(true)
-                .build();
-    }
-
-    private RetrofitFactory() {
+        return chain.proceed(newRequest)
     }
 }

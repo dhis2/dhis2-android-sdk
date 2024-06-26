@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,50 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.core.arch.api.internal
 
-import com.google.common.truth.Truth
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.user.AccountDeletionReason
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.parse
+import org.hisp.dhis.android.core.maintenance.D2Error
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 
-@RunWith(JUnit4::class)
-class UserAccountDisabledErrorCatcherShould {
-    private lateinit var catcher: UserAccountDisabledErrorCatcher
-    private lateinit var response: D2HttpResponse
-    private var accountManager: AccountManagerImpl = mock()
-
-    @Before
-    fun setUp() {
-        catcher = UserAccountDisabledErrorCatcher(objectMapper(), accountManager)
-
-        val responseError = "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\"," +
-            "\"message\": \"Account disabled\"}"
-        response = D2HttpResponse(
-            statusCode = 401,
-            message = "",
-            errorBody = responseError,
-            requestUrl = null,
-        )
-    }
-
-    @Test
-    fun return_account_disabled() {
-        Truth.assertThat(catcher.catchError(response))
-            .isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
-    }
-
-    @Test
-    fun delete_database() {
-        catcher.catchError(response)
-        verify(accountManager, times(1)).deleteCurrentAccountAndEmit(AccountDeletionReason.ACCOUNT_DISABLED)
+internal object RetrofitFactory {
+    @Throws(D2Error::class)
+    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor.
+            // But it's mandatory to create Retrofit
+            .baseUrl(parse("https://temporary-dhis-url.org/"))
+            .client(okHttpClient)
+            .addConverterFactory(JacksonConverterFactory.create(objectMapper()))
+            .addConverterFactory(FilterConverterFactory())
+            .addConverterFactory(FieldsConverterFactory())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .validateEagerly(true)
+            .build()
     }
 }

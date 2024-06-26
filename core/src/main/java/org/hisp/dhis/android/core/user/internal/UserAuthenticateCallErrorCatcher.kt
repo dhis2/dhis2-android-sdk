@@ -31,10 +31,10 @@ import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.koin.core.annotation.Singleton
-import retrofit2.Response
 import java.lang.Exception
 import java.net.HttpURLConnection
 
@@ -46,25 +46,25 @@ internal class UserAuthenticateCallErrorCatcher(private val objectMapper: Object
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode {
+    override fun catchError(response: D2HttpResponse): D2ErrorCode {
         return try {
-            if (errorBody == APIErrorMapper.noErrorMessage) {
+            if (response.errorBody == APIErrorMapper.noErrorMessage) {
                 D2ErrorCode.NO_DHIS2_SERVER
             } else {
-                val errorResponse = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
-                val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
+                val errorResponse = objectMapper.readValue(response.errorBody, HttpMessageResponse::class.java)
+                val isUnauthorized = response.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED
                 if (isUnauthorized && errorResponse.message().contains("Account locked")) {
                     D2ErrorCode.USER_ACCOUNT_LOCKED
                 } else if (isUnauthorized) {
                     D2ErrorCode.BAD_CREDENTIALS
-                } else if (hasInvalidCharacters(response.code(), errorBody)) {
+                } else if (hasInvalidCharacters(response.statusCode, response.errorBody)) {
                     D2ErrorCode.INVALID_CHARACTERS
                 } else {
                     D2ErrorCode.NO_DHIS2_SERVER
                 }
             }
         } catch (e: Exception) {
-            if (hasInvalidCharacters(response.code(), errorBody)) {
+            if (hasInvalidCharacters(response.statusCode, response.errorBody)) {
                 D2ErrorCode.INVALID_CHARACTERS
             } else {
                 Log.e(UserAuthenticateCallErrorCatcher::class.java.simpleName, e.javaClass.simpleName, e)

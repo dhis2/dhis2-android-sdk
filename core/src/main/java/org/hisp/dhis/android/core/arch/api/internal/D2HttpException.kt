@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.getIfNotEmpty
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.noErrorMessage
+import retrofit2.HttpException
+import java.io.IOException
+import java.lang.Exception
 
-import java.io.IOException;
+internal class D2HttpException(val response: D2HttpResponse) : Exception() {
+    override val message: String?
+        get() = this.response.message
+}
+data class D2HttpResponse(
+    val statusCode: Int,
+    val message: String?,
+    val errorBody: String,
+    val requestUrl: String?,
+)
 
-import retrofit2.Response;
-
-final class TrackedEntityAttributeReservedValueCallErrorCatcher implements APICallErrorCatcher {
-
-    @Override
-    public Boolean mustBeStored() {
-        return true;
-    }
-
-    @Override
-    public D2ErrorCode catchError(Response<?> response, String errorBody) throws IOException {
-        if (errorBody.contains("Not enough values left to reserve")) {
-            return D2ErrorCode.NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER;
-        } else if (errorBody.contains("Generation and reservation of values took too long")) {
-            return D2ErrorCode.VALUES_RESERVATION_TOOK_TOO_LONG;
-        } else if (errorBody.contains("You might be running low on available values")) {
-            return D2ErrorCode.MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES;
-        } else if (response.code() == 409) {
-            return D2ErrorCode.COULD_NOT_RESERVE_VALUE_ON_SERVER;
+internal fun HttpException.toD2Response(): D2HttpResponse {
+    val errorBody =
+        try {
+            getIfNotEmpty(this.response()?.errorBody()!!.string())
+                ?: getIfNotEmpty(this.response()?.errorBody().toString())
+        } catch (e: IOException) {
+            null
         }
-
-        return null;
-    }
+    val requestUrl = this.response()?.raw()?.request?.url.toString()
+    return D2HttpResponse(this.code(), this.message(), errorBody ?: noErrorMessage, requestUrl)
 }

@@ -37,14 +37,14 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 object KtorFactory {
     fun ktor(
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
     ): HttpClient {
         val client = HttpClient(OkHttp) {
             engine {
                 preconfigured = okHttpClient
             }
             install(ContentNegotiation) {
-                jackson(){
+                jackson() {
                     ObjectMapperFactory.objectMapper()
                 }
             }

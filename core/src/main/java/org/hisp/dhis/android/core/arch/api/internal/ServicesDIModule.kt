@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
-import io.ktor.client.HttpClient
 import org.hisp.dhis.android.core.attribute.internal.AttributeService
 import org.hisp.dhis.android.core.category.internal.CategoryComboService
 import org.hisp.dhis.android.core.category.internal.CategoryOptionService

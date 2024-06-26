@@ -28,24 +28,18 @@
 
 package org.hisp.dhis.android.core.constant.internal
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpMethod
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
 
 internal class KtorConstantService(private val client: KtorServiceClient) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean ): Payload<Constant> {
+    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
         val url = "${URL}constants"
         val parameters = mapOf(
             "fields" to fields.generateString(),
-            "paging" to paging.toString()
+            "paging" to paging.toString(),
         )
         return client.get(url, parameters)
     }
@@ -56,6 +50,6 @@ internal class KtorConstantService(private val client: KtorServiceClient) {
     }
 
     companion object {
-        private val URL = "https://temporary-dhis-url.org/api/"
+        private const val URL = "https://temporary-dhis-url.org/api/"
     }
 }

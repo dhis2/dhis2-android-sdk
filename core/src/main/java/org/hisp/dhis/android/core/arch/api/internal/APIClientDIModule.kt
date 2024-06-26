@@ -56,6 +56,7 @@ internal class APIClientDIModule {
     }
 
     @Singleton
+    @Suppress("TooGenericExceptionThrown")
     fun ktor(okHttpClient: OkHttpClient): HttpClient {
         return try {
             KtorFactory.ktor(okHttpClient)

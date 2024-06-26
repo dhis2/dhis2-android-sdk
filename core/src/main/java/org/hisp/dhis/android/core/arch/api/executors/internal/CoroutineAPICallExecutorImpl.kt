@@ -28,13 +28,11 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.statement.HttpResponse
-import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.*
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.api.internal.retrofitToD2Response
 import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
+import org.hisp.dhis.android.core.arch.api.internal.retrofitToD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -45,7 +43,6 @@ import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.koin.core.annotation.Singleton
 import retrofit2.HttpException
-import java.lang.Exception
 
 @Singleton
 internal class CoroutineAPICallExecutorImpl(

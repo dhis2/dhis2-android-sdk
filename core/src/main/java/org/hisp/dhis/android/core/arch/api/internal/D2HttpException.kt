@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.internal
 
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.statement.bodyAsText
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.getIfNotEmpty
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.noErrorMessage
 import retrofit2.HttpException

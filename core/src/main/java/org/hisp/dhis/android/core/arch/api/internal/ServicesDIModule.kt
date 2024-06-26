@@ -1,10 +1,12 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
+import io.ktor.client.HttpClient
 import org.hisp.dhis.android.core.attribute.internal.AttributeService
 import org.hisp.dhis.android.core.category.internal.CategoryComboService
 import org.hisp.dhis.android.core.category.internal.CategoryOptionService
 import org.hisp.dhis.android.core.category.internal.CategoryService
 import org.hisp.dhis.android.core.constant.internal.ConstantService
+import org.hisp.dhis.android.core.constant.internal.KtorConstantService
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalService
 import org.hisp.dhis.android.core.dataelement.internal.DataElementService
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationService
@@ -62,6 +64,7 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(CategoryOptionService::class.java) }
     single { get<Retrofit>().create(CategoryService::class.java) }
     single { get<Retrofit>().create(ConstantService::class.java) }
+    single { KtorConstantService(get<HttpClient>()) }
     single { get<Retrofit>().create(DataApprovalService::class.java) }
     single { get<Retrofit>().create(DataElementService::class.java) }
     single { get<Retrofit>().create(DataSetCompleteRegistrationService::class.java) }

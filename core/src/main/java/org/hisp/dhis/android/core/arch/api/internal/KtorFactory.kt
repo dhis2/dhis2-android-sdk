@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,43 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.internal
 
-import android.util.Log
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.jackson.jackson
 import okhttp3.OkHttpClient
-import org.hisp.dhis.android.core.D2Configuration
-import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-@Module
-internal class APIClientDIModule {
-    @Singleton
-    fun okHttpClient(d2Configuration: D2Configuration, authenticator: ParentAuthenticator): OkHttpClient {
-        return OkHttpClientFactory.okHttpClient(d2Configuration, authenticator)
-    }
-
-    @Singleton
-    @Suppress("TooGenericExceptionThrown")
-    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
-        return try {
-            RetrofitFactory.retrofit(okHttpClient)
-        } catch (d2Error: D2Error) {
-            Log.e("APIClientDIModule", d2Error.message!!)
-            throw RuntimeException("Can't instantiate retrofit")
+object KtorFactory {
+    fun ktor(
+        okHttpClient: OkHttpClient
+    ): HttpClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okHttpClient
+            }
+            install(ContentNegotiation) {
+                jackson(){
+                    ObjectMapperFactory.objectMapper()
+                }
+            }
+            expectSuccess = true
         }
-    }
-
-    @Singleton
-    fun ktor(okHttpClient: OkHttpClient): HttpClient {
-        return try {
-            KtorFactory.ktor(okHttpClient)
-        } catch (d2Error: D2Error) {
-            Log.e("APIClientDIModule", d2Error.message!!)
-            throw RuntimeException("Can't instantiate ktor")
-        }
+        return client
     }
 }

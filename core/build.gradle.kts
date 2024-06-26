@@ -144,6 +144,12 @@ dependencies {
     api(libs.retrofit.jackson)
     api(libs.retrofit.rxjava2)
 
+    // Ktor
+    api(libs.ktor)
+    api(libs.ktor.okhttp)
+    api(libs.ktor.negotiation)
+    api(libs.ktor.jackson)
+
     // Kotlin
     api(libs.kotlinx.datetime)
     api(libs.kotlinx.coroutines.core)

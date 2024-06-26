@@ -66,9 +66,4 @@ internal class UserAccountDisabledErrorCatcher(
             false
         }
     }
-
-    fun catchError(throwable: Throwable): D2ErrorCode? {
-        val response = (throwable as D2HttpException)
-        return catchError(response)
-    }
 }

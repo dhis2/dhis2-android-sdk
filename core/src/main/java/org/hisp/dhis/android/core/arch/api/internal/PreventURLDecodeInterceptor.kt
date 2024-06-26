@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
 import okhttp3.Interceptor
-import okhttp3.Interceptor.Chain
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException

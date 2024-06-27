@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
@@ -276,17 +277,27 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
             val organisationUnits = getOrgUnitsWithCodeLinkedToAttributes(attribute)
 
             for (organisationUnit in organisationUnits) {
-                downloadValuesIfBelowThreshold(
-                    attribute,
-                    organisationUnit,
-                    numberOfValuesToFillUp,
-                    true,
-                )
+                try {
+                    downloadValuesIfBelowThreshold(
+                        attribute,
+                        organisationUnit,
+                        numberOfValuesToFillUp,
+                        true,
+                    )
+                } catch (e: Exception) {
+                    Log.e(
+                        this::class.java.simpleName, "Error downloading reserved values for " +
+                                "attribute: $attribute and org. unit: ${organisationUnit.uid()}", e
+                    )
+                }
                 emit(increaseProgress())
             }
         } else {
-            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
-
+            try {
+                downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
+            } catch (e: Exception) {
+                Log.e(this::class.java.simpleName, "Error downloading reserved values for attribute: $attribute", e)
+            }
             emit(increaseProgress())
         }
     }

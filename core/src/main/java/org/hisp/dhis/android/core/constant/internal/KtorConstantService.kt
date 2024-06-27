@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.constant.Constant
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class KtorConstantService(private val client: KtorServiceClient) {
     suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
         val url = "${URL}constants"

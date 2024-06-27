@@ -46,11 +46,6 @@ internal class KtorConstantService(private val client: KtorServiceClient) {
         return client.get(url, parameters)
     }
 
-    // Dummy service for testing purposes
-    suspend fun constantsError(): Payload<Constant> {
-        return client.get("${URL}constants/asdasdasd", emptyMap())
-    }
-
     companion object {
         private const val URL = "https://temporary-dhis-url.org/api/"
     }

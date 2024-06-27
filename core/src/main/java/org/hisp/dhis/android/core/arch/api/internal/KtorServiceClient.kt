@@ -40,7 +40,7 @@ internal class KtorServiceClient(private val client: HttpClient) {
         url: String,
         parametersService: Map<String, String> = emptyMap(),
     ): T {
-        return client.request(url) {
+        return client.request(BASE_URL + url) {
             method = HttpMethod.Get
             url {
                 parametersService.forEach { (key, value) -> parameters.append(key, value) }
@@ -48,4 +48,7 @@ internal class KtorServiceClient(private val client: HttpClient) {
         }.body()
     }
     // Add more methods for POST, PUT, DELETE as needed
+    companion object {
+        private const val BASE_URL = "https://temporary-dhis-url.org/api/"
+    }
 }

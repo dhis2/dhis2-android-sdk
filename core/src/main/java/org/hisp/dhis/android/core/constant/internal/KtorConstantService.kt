@@ -38,20 +38,11 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class KtorConstantService(private val client: KtorServiceClient) {
     suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
-        val url = "${URL}constants"
+        val url = "constants"
         val parameters = mapOf(
             "fields" to fields.generateString(),
             "paging" to paging.toString(),
         )
         return client.get(url, parameters)
-    }
-
-    // Dummy service for testing purposes
-    suspend fun constantsError(): Payload<Constant> {
-        return client.get("${URL}constants/asdasdasd", emptyMap())
-    }
-
-    companion object {
-        private const val URL = "https://temporary-dhis-url.org/api/"
     }
 }

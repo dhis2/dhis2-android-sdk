@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -46,6 +47,7 @@ object KtorFactory {
             install(ContentNegotiation) {
                 jackson() {
                     ObjectMapperFactory.objectMapper()
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 }
             }
             expectSuccess = true

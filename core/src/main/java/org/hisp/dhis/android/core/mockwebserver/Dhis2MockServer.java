@@ -416,14 +416,6 @@ public class Dhis2MockServer {
         }
     }
 
-    private MockResponse getErrorResponse() {
-        return new MockResponse().setResponseCode(500).setBody("Error");
-    }
-
-    private MockResponse getErrorNotFoundResponse() {
-        return new MockResponse().setResponseCode(404).setBody("Not found");
-    }
-
     public void enqueueMockResponse(String fileName, Date dateHeader) {
         MockResponse response = createMockResponse(fileName);
 

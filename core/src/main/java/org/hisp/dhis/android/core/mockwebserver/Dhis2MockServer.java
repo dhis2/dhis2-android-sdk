@@ -185,6 +185,10 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
+    public void setDhis2Dispatcher() {
+        server.setDispatcher(dhis2Dispatcher);
+    }
+
     public void setRequestDispatcher() {
         final Dispatcher dispatcher = new Dispatcher() {
 
@@ -431,5 +435,9 @@ public class Dhis2MockServer {
 
     public RecordedRequest takeRequest() throws InterruptedException {
         return server.takeRequest();
+    }
+
+    public void addResponse(String method, String path, String responseName, int responseCode) {
+        dhis2Dispatcher.addResponse(method, path, responseName, responseCode);
     }
 }

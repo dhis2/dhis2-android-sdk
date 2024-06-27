@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
@@ -238,7 +239,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         for (trackedEntityAttribute in trackedEntityAttributes) {
             val builder = ReservedValueSummary.builder().trackedEntityAttribute(trackedEntityAttribute)
             if (isOrgunitDependent(trackedEntityAttribute.pattern())) {
-                val organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid())
+                val organisationUnits = getOrgUnitsWithCodeLinkedToAttributes(trackedEntityAttribute.uid())
                 for (organisationUnit in organisationUnits) {
                     builder.organisationUnit(organisationUnit)
                         .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
@@ -273,20 +274,30 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
 
         if (isOrgunitDependent(pattern)) {
-            val organisationUnits = getOrgUnitsLinkedToAttribute(attribute)
+            val organisationUnits = getOrgUnitsWithCodeLinkedToAttributes(attribute)
 
             for (organisationUnit in organisationUnits) {
-                downloadValuesIfBelowThreshold(
-                    attribute,
-                    organisationUnit,
-                    numberOfValuesToFillUp,
-                    true,
-                )
+                try {
+                    downloadValuesIfBelowThreshold(
+                        attribute,
+                        organisationUnit,
+                        numberOfValuesToFillUp,
+                        true,
+                    )
+                } catch (e: Exception) {
+                    Log.e(
+                        this::class.java.simpleName, "Error downloading reserved values for " +
+                                "attribute: $attribute and org. unit: ${organisationUnit.uid()}", e
+                    )
+                }
                 emit(increaseProgress())
             }
         } else {
-            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
-
+            try {
+                downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
+            } catch (e: Exception) {
+                Log.e(this::class.java.simpleName, "Error downloading reserved values for attribute: $attribute", e)
+            }
             emit(increaseProgress())
         }
     }
@@ -348,7 +359,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         }
     }
 
-    private fun getOrgUnitsLinkedToAttribute(attribute: String): List<OrganisationUnit> {
+    private fun getOrgUnitsWithCodeLinkedToAttributes(attribute: String): List<OrganisationUnit> {
         val linkedProgramUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
             ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
             WhereClauseBuilder().appendKeyStringValue(
@@ -372,7 +383,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                 IdentifiableColumns.UID,
                 linkedOrgunitUids,
             ).build(),
-        )
+        ).filter { it.code() != null }
     }
 
     private val generatedAttributes: List<TrackedEntityAttribute>

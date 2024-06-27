@@ -75,7 +75,7 @@ internal class CoroutineAPICallExecutorImpl(
         } catch (d2Error: D2Error) {
             Result.Failure(d2Error)
         } catch (t: Throwable) {
-            Result.Failure(storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError))
+            Result.Failure(storeAndReturn(errorMapper.mapHttpException(t, baseErrorBuilder()), storeError))
         }
     }
 
@@ -89,7 +89,7 @@ internal class CoroutineAPICallExecutorImpl(
         return if (d2ExceptionResponse.errorBody.isEmpty()) {
             Result.Failure(
                 storeAndReturn(
-                    errorMapper.mapRetrofitException(
+                    errorMapper.mapHttpException(
                         D2HttpException(d2ExceptionResponse),
                         baseErrorBuilder(),
                     ),
@@ -142,7 +142,7 @@ internal class CoroutineAPICallExecutorImpl(
             } catch (t: Throwable) {
                 throw when (t) {
                     is D2Error -> t
-                    else -> errorMapper.mapRetrofitException(t, baseErrorBuilder())
+                    else -> errorMapper.mapHttpException(t, baseErrorBuilder())
                 }
             } finally {
                 transaction.end()

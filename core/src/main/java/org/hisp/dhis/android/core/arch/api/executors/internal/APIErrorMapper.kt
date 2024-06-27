@@ -44,7 +44,7 @@ import javax.net.ssl.SSLException
 @Suppress("TooManyFunctions")
 internal class APIErrorMapper {
 
-    fun mapRetrofitException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
+    fun mapHttpException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
         return when (throwable) {
             is SocketTimeoutException -> socketTimeoutException(errorBuilder, throwable)
             is UnknownHostException -> unknownHostException(errorBuilder, throwable)

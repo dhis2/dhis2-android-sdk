@@ -48,6 +48,11 @@
         }
       ],
       "dimension": "programStatus"
+    },
+    {
+      "dimensionType": "CATEGORY",
+      "items": [],
+      "dimension": "vGs6omsRekv"
     }
   ],
   "displayName": "Child line list",

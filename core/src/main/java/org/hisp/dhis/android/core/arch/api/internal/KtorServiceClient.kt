@@ -47,6 +47,7 @@ internal class KtorServiceClient(private val client: HttpClient) {
             }
         }.body()
     }
+
     // Add more methods for POST, PUT, DELETE as needed
     companion object {
         private const val BASE_URL = "https://temporary-dhis-url.org/api/"

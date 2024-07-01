@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.arch.api.internal
 
-@Singleton
-internal class ConstantCoroutineCallFactory(
-    data: GenericCallData,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: KtorConstantService,
-    private val handler: ConstantHandler,
-) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
+import com.fasterxml.jackson.databind.DeserializationFeature
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.jackson.jackson
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-    override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
-        return object : ConstantCallFetcher(coroutineAPICallExecutor) {
-            override suspend fun getCall(): List<Constant> {
-                return service.constants(ConstantFields.allFields, false).items()
+object KtorFactory {
+    fun ktor(
+        okHttpClient: OkHttpClient,
+    ): HttpClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okHttpClient
             }
+            install(ContentNegotiation) {
+                jackson() {
+                    ObjectMapperFactory.objectMapper()
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                }
+            }
+            expectSuccess = true
         }
-    }
-
-    override fun processor(): CallProcessor<Constant> {
-        return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
-            handler,
-        )
+        return client
     }
 }

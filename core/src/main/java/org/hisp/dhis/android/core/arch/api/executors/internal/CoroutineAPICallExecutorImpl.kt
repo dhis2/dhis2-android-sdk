@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.*
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.api.internal.toD2Response
+import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
+import org.hisp.dhis.android.core.arch.api.internal.retrofitToD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -65,54 +67,57 @@ internal class CoroutineAPICallExecutorImpl(
         return try {
             Result.Success(block.invoke())
         } catch (retrofitException: HttpException) {
-            handleHttpException(retrofitException, storeError, acceptedErrorCodes, errorCatcher, errorClass)
+            val d2ErrorResponse = retrofitException.retrofitToD2Response()
+            handleHttpException(d2ErrorResponse, storeError, acceptedErrorCodes, errorCatcher, errorClass)
+        } catch (ktorException: ClientRequestException) {
+            val d2ErrorResponse = ktorException.ktorToD2Response()
+            handleHttpException(d2ErrorResponse, storeError, acceptedErrorCodes, errorCatcher, errorClass)
         } catch (d2Error: D2Error) {
             Result.Failure(d2Error)
         } catch (t: Throwable) {
-            Result.Failure(storeAndReturn(errorMapper.mapRetrofitException(t, baseErrorBuilder()), storeError))
+            Result.Failure(storeAndReturn(errorMapper.mapHttpException(t, baseErrorBuilder()), storeError))
         }
     }
 
     private fun <P> handleHttpException(
-        exception: HttpException,
+        d2ExceptionResponse: D2HttpResponse,
         storeError: Boolean,
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
         errorClass: Class<P>?,
     ): Result<P, D2Error> {
-        val d2ErrorResponse = exception.toD2Response()
-        return if (d2ErrorResponse.errorBody.isEmpty()) {
+        return if (d2ExceptionResponse.errorBody.isEmpty()) {
             Result.Failure(
                 storeAndReturn(
-                    errorMapper.mapRetrofitException(
-                        D2HttpException(d2ErrorResponse),
+                    errorMapper.mapHttpException(
+                        D2HttpException(d2ExceptionResponse),
                         baseErrorBuilder(),
                     ),
                     storeError,
                 ),
             )
         } else {
-            val errorBuilder = errorBuilder(d2ErrorResponse)
+            val errorBuilder = errorBuilder(d2ExceptionResponse)
             when {
-                userAccountDisabledErrorCatcher.isUserAccountLocked(d2ErrorResponse) -> {
+                userAccountDisabledErrorCatcher.isUserAccountLocked(d2ExceptionResponse) -> {
                     Result.Failure(
-                        catchError(userAccountDisabledErrorCatcher, errorBuilder, d2ErrorResponse, storeError),
+                        catchError(userAccountDisabledErrorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
-                errorClass != null && acceptedErrorCodes?.contains(d2ErrorResponse.statusCode) == true -> {
+                errorClass != null && acceptedErrorCodes?.contains(d2ExceptionResponse.statusCode) == true -> {
                     Result.Success(
-                        ObjectMapperFactory.objectMapper().readValue(d2ErrorResponse.errorBody, errorClass),
+                        ObjectMapperFactory.objectMapper().readValue(d2ExceptionResponse.errorBody, errorClass),
                     )
                 }
                 errorCatcher != null -> {
                     Result.Failure(
-                        catchError(errorCatcher, errorBuilder, d2ErrorResponse, storeError),
+                        catchError(errorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
                 else -> {
                     Result.Failure(
                         storeAndReturn(
-                            errorMapper.responseException(errorBuilder, d2ErrorResponse, null),
+                            errorMapper.responseException(errorBuilder, d2ExceptionResponse, null),
                             storeError,
                         ),
                     )
@@ -137,7 +142,7 @@ internal class CoroutineAPICallExecutorImpl(
             } catch (t: Throwable) {
                 throw when (t) {
                     is D2Error -> t
-                    else -> errorMapper.mapRetrofitException(t, baseErrorBuilder())
+                    else -> errorMapper.mapHttpException(t, baseErrorBuilder())
                 }
             } finally {
                 transaction.end()

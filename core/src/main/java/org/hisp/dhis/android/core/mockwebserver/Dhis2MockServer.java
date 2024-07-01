@@ -409,18 +409,11 @@ public class Dhis2MockServer {
             MockResponse response = new MockResponse();
             response.setResponseCode(code);
             response.setBody(body);
+            response.setHeader("Content-Type", "application/json");
             return response;
         } catch (IOException e) {
             return new MockResponse().setResponseCode(500).setBody("Error reading JSON file for MockServer");
         }
-    }
-
-    private MockResponse getErrorResponse() {
-        return new MockResponse().setResponseCode(500).setBody("Error");
-    }
-
-    private MockResponse getErrorNotFoundResponse() {
-        return new MockResponse().setResponseCode(404).setBody("Not found");
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader) {

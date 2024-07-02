@@ -46,7 +46,8 @@ internal class KtorServiceClient(private val client: HttpClient) {
             method = HttpMethod.Get
             url {
                 requestBuilder.buildParameters().forEach { (key, value) ->
-                    parameters.append(key, value)}
+                    parameters.append(key, value)
+                }
             }
         }.body()
     }
@@ -57,7 +58,8 @@ internal class KtorServiceClient(private val client: HttpClient) {
             method = HttpMethod.Post
             url {
                 requestBuilder.buildParameters().forEach { (key, value) ->
-                    parameters.append(key, value)}
+                    parameters.append(key, value)
+                }
             }
             contentType(ContentType.Application.Json)
             setBody(requestBuilder.buildBody())

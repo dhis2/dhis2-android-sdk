@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.constant.Constant
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ConstantCoroutineCallFactory(
-    data: GenericCallData,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: KtorConstantService,
-    private val handler: ConstantHandler,
-) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
-
-    override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
-        return object : ConstantCallFetcher(coroutineAPICallExecutor) {
-            override suspend fun getCall(): List<Constant> {
-                return service.constants(ConstantFields.allFields, false).items()
-            }
-        }
-    }
-
-    override fun processor(): CallProcessor<Constant> {
-        return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
-            handler,
+internal class KtorConstantService(private val client: KtorServiceClient) {
+    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
+        val url = "constants"
+        val parameters = mapOf(
+            "fields" to fields.generateString(),
+            "paging" to paging.toString(),
         )
+        return client.get(url, parameters)
     }
 }

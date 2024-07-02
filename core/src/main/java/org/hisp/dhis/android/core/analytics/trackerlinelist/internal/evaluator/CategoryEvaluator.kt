@@ -28,30 +28,23 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.util.SqlUtils
 
-internal object TrackerLineListEvaluatorMapper {
-    fun getEvaluator(item: TrackerLineListItem, context: TrackerLineListContext): TrackerLineListEvaluator {
-        return when (item) {
-            is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, context.metadata)
-            is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, context.metadata)
-            is TrackerLineListItem.ProgramIndicator -> ProgramIndicatorEvaluator(item, context)
-            is TrackerLineListItem.Category -> CategoryEvaluator(item, context.metadata)
-
-            is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item, context)
-
-            is TrackerLineListItem.ProgramStatusItem -> ProgramStatusEvaluator(item)
-            is TrackerLineListItem.EventStatusItem -> EventStatusEvaluator(item)
-
-            is TrackerLineListItem.LastUpdated -> LastUpdatedEvaluator(item)
-            is TrackerLineListItem.IncidentDate -> IncidentDateEvaluator(item)
-            is TrackerLineListItem.EnrollmentDate -> EnrollmentDateEvaluator(item)
-            is TrackerLineListItem.ScheduledDate -> ScheduledDateEvaluator(item)
-            is TrackerLineListItem.EventDate -> EventDateEvaluator(item)
-
-            is TrackerLineListItem.CreatedBy -> NotSupportedEvaluator()
-            is TrackerLineListItem.LastUpdatedBy -> NotSupportedEvaluator()
-        }
+internal class CategoryEvaluator(
+    private val item: TrackerLineListItem.Category,
+    private val metadata: Map<String, MetadataItem>,
+) : TrackerLineListEvaluator() {
+    override fun getCommonSelectSQL(): String {
+        return "SELECT" + "FROM"
     }
+
+    override fun getCommonWhereSQL(): String {
+        return DataFilterHelper.getWhereClause(item.id, item.filters)
+    }
+
+
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.constant.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.constant.Constant
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface ConstantService {
-    @GET("constants")
-    suspend fun constants(
-        @Query("fields") @Which fields: Fields<Constant>,
-        @Query("paging") paging: Boolean,
-    ): Payload<Constant>
+@Singleton
+internal class ConstantService(private val client: KtorServiceClient) {
+    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
+        return client.get {
+            url("constants")
+            parameters {
+                fields(fields)
+                paging(paging)
+            }
+        }
+    }
 }

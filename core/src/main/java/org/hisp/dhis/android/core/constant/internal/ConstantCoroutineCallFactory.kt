@@ -40,7 +40,7 @@ import org.koin.core.annotation.Singleton
 internal class ConstantCoroutineCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: KtorConstantService,
+    private val service: ConstantService,
     private val handler: ConstantHandler,
 ) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
 

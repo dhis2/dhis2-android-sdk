@@ -28,46 +28,23 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.request
-import io.ktor.client.request.setBody
-import io.ktor.client.utils.EmptyContent.contentType
-import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
-import io.ktor.http.contentType
-import org.koin.core.annotation.Singleton
+internal class RequestBuilder {
+    lateinit var url: String
+    private val parametersBuilder = ParametersBuilder()
+    private var body: Any? = null
 
-@Singleton
-internal class KtorServiceClient(private val client: HttpClient) {
-    suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
-            method = HttpMethod.Get
-            url {
-                requestBuilder.buildParameters().forEach { (key, value) ->
-                    parameters.append(key, value)
-                }
-            }
-        }.body()
+    fun url(url: String) {
+        this.url = url
     }
 
-    suspend inline fun <reified T> post(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
-            method = HttpMethod.Post
-            url {
-                requestBuilder.buildParameters().forEach { (key, value) ->
-                    parameters.append(key, value)
-                }
-            }
-            contentType(ContentType.Application.Json)
-            setBody(requestBuilder.buildBody())
-        }.body()
+    fun parameters(block: ParametersBuilder.() -> Unit) {
+        parametersBuilder.apply(block)
     }
 
-    // Add more methods for POST, PUT, DELETE as needed
-    companion object {
-        private const val BASE_URL = "https://temporary-dhis-url.org/api/"
+    fun body(body: Any?) {
+        this.body = body
     }
+
+    fun buildParameters() = parametersBuilder.build()
+    fun buildBody() = body
 }

@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
 internal const val TRACKER_URL = "tracker"
 internal const val JOBS_URL = "tracker/jobs/"
@@ -40,17 +41,28 @@ internal const val ATOMIC_MODE_OBJECT = "OBJECT"
 internal const val IMPORT_STRATEGY = "importStrategy"
 internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
 internal const val IMPORT_STRATEGY_DELETE = "DELETE"
-internal const val JOB_ID = "jobId"
 
-internal interface TrackerImporterService {
+@Singleton
+internal class TrackerImporterService(private val client: KtorServiceClient) {
 
-    @POST(TRACKER_URL)
     suspend fun postTrackerPayload(
-        @Body payload: NewTrackerImporterPayload,
-        @Query(ATOMIC_MODE) atomicMode: String,
-        @Query(IMPORT_STRATEGY) importStrategy: String,
-    ): ObjectWithUidWebResponse
+        payload: NewTrackerImporterPayload,
+        atomicMode: String,
+        importStrategy: String,
+    ): ObjectWithUidWebResponse {
+        return client.post {
+            url(TRACKER_URL)
+            parameters {
+                attribute(ATOMIC_MODE to atomicMode)
+                attribute(IMPORT_STRATEGY to importStrategy)
+            }
+            body(payload)
+        }
+    }
 
-    @GET("$JOBS_URL{jobId}/report")
-    suspend fun getJobReport(@Path(JOB_ID) jobId: String): JobReport
+    suspend fun getJobReport(jobId: String): JobReport {
+        return client.get {
+            url("$JOBS_URL{$jobId}/report")
+        }
+    }
 }

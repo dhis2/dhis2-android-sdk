@@ -28,16 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 
 internal data class NewTrackerImporterPayload(
-    val trackedEntities: MutableList<NewTrackerImporterTrackedEntity> = mutableListOf(),
-    val enrollments: MutableList<NewTrackerImporterEnrollment> = mutableListOf(),
-    val events: MutableList<NewTrackerImporterEvent> = mutableListOf(),
-    val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf(),
+    @JsonProperty("trackedEntities") val trackedEntities: MutableList<NewTrackerImporterTrackedEntity> = mutableListOf(),
+    @JsonProperty("enrollments") val enrollments: MutableList<NewTrackerImporterEnrollment> = mutableListOf(),
+    @JsonProperty("events") val events: MutableList<NewTrackerImporterEvent> = mutableListOf(),
+    @JsonProperty("relationships") val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf(),
 
     @JsonIgnore
     val fileResourcesMap: Map<String, List<String>> = mutableMapOf(),

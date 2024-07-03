@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import retrofit2.http.Query
 
 internal class ParametersBuilder {
     private val parameters = mutableListOf<Pair<String, String>>()
@@ -42,12 +43,20 @@ internal class ParametersBuilder {
         parameters.add("filter" to filter.generateString())
     }
 
+    fun attribute(pair: Pair<String, String>) {
+        parameters.add(pair)
+    }
+
     fun paging(paging: Boolean) {
         parameters.add("paging" to paging.toString())
     }
 
-    fun attribute(pair: Pair<String, String>) {
-        parameters.add(pair)
+    fun page(page: Int) {
+        parameters.add("page" to page.toString())
+    }
+
+    fun pageSize(pageSize: Int) {
+        parameters.add("pageSize" to pageSize.toString())
     }
 
     fun build(): List<Pair<String, String>> = parameters

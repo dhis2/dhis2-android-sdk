@@ -35,11 +35,10 @@ import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 
 internal data class NewTrackerImporterPayload(
-    @JsonProperty("trackedEntities") val trackedEntities: MutableList<NewTrackerImporterTrackedEntity> =
-        mutableListOf(),
-    @JsonProperty("enrollments") val enrollments: MutableList<NewTrackerImporterEnrollment> = mutableListOf(),
-    @JsonProperty("events") val events: MutableList<NewTrackerImporterEvent> = mutableListOf(),
-    @JsonProperty("relationships") val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf(),
+    val trackedEntities: MutableList<NewTrackerImporterTrackedEntity> = mutableListOf(),
+    val enrollments: MutableList<NewTrackerImporterEnrollment> = mutableListOf(),
+    val events: MutableList<NewTrackerImporterEvent> = mutableListOf(),
+    val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf(),
 
     @JsonIgnore
     val fileResourcesMap: Map<String, List<String>> = mutableMapOf(),

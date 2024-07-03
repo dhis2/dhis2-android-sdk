@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
 internal class RequestBuilder {
-    lateinit var url: String
+    private lateinit var url: String
     private val parametersBuilder = ParametersBuilder()
     private var body: Any? = null
 
@@ -46,5 +46,8 @@ internal class RequestBuilder {
     }
 
     fun buildParameters() = parametersBuilder.build()
-    fun buildBody() = body
+
+    fun getBody() = body
+
+    fun getUrl() = url
 }

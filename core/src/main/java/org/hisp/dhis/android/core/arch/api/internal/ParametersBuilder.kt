@@ -26,22 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant.internal
+package org.hisp.dhis.android.core.arch.api.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 
-@Singleton
-internal class KtorConstantService(private val client: KtorServiceClient) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
-        val url = "constants"
-        val parameters = mapOf(
-            "fields" to fields.generateString(),
-            "paging" to paging.toString(),
-        )
-        return client.get(url, parameters)
+internal class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
+    fun <T> fields(fields: Fields<T>) {
+        parameters.add("fields" to fields.generateString())
+    }
+
+    fun <T> filter(filter: Filter<T>) {
+        parameters.add("filter" to filter.generateString())
+    }
+
+    fun attribute(pair: Pair<String, String>) {
+        parameters.add(pair)
+    }
+
+    fun paging(paging: Boolean) {
+        parameters.add("paging" to paging.toString())
+    }
+
+    fun page(page: Int) {
+        parameters.add("page" to page.toString())
+    }
+
+    fun pageSize(pageSize: Int) {
+        parameters.add("pageSize" to pageSize.toString())
     }
 }

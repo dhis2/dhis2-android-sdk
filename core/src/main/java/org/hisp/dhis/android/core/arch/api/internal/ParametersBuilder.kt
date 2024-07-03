@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import retrofit2.http.Query
 
 internal class ParametersBuilder {
     private val parameters = mutableListOf<Pair<String, String>>()

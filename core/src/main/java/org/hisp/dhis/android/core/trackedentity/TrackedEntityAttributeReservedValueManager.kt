@@ -287,8 +287,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                     )
                 } catch (e: Exception) {
                     Log.e(
-                        this::class.java.simpleName, "Error downloading reserved values for " +
-                                "attribute: $attribute and org. unit: ${organisationUnit.uid()}", e
+                        this::class.java.simpleName,
+                        "Error downloading reserved values for attribute: $attribute and " +
+                                "org. unit: ${organisationUnit.uid()}",
+                        e,
                     )
                 }
                 emit(increaseProgress())

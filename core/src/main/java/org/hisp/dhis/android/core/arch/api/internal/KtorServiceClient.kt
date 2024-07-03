@@ -41,10 +41,10 @@ import org.koin.core.annotation.Singleton
 internal class KtorServiceClient(private val client: HttpClient) {
     suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
         val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.getUrl()) {
+        return client.request(BASE_URL + requestBuilder.url) {
             method = HttpMethod.Get
             url {
-                requestBuilder.buildParameters().forEach { (key, value) ->
+                requestBuilder.parameters.forEach { (key, value) ->
                     parameters.append(key, value)
                 }
             }
@@ -53,15 +53,15 @@ internal class KtorServiceClient(private val client: HttpClient) {
 
     suspend inline fun <reified T> post(block: RequestBuilder.() -> Unit): T {
         val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.getUrl()) {
+        return client.request(BASE_URL + requestBuilder.url) {
             method = HttpMethod.Post
             url {
-                requestBuilder.buildParameters().forEach { (key, value) ->
+                requestBuilder.parameters.forEach { (key, value) ->
                     parameters.append(key, value)
                 }
             }
             contentType(ContentType.Application.Json)
-            setBody(requestBuilder.getBody())
+            setBody(requestBuilder.body)
         }.body()
     }
 

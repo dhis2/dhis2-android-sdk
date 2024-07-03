@@ -29,25 +29,26 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
 internal class RequestBuilder {
-    private lateinit var url: String
-    private val parametersBuilder = ParametersBuilder()
-    private var body: Any? = null
+    lateinit var url: String
+        private set
+
+    var body: Any? = null
+        private set
+
+    var parameters: MutableList<Pair<String, String>> = mutableListOf()
+        private set
+
+    private val parametersBuilder = ParametersBuilder(parameters)
 
     fun url(url: String) {
         this.url = url
-    }
-
-    fun parameters(block: ParametersBuilder.() -> Unit) {
-        parametersBuilder.apply(block)
     }
 
     fun body(body: Any?) {
         this.body = body
     }
 
-    fun buildParameters() = parametersBuilder.build()
-
-    fun getBody() = body
-
-    fun getUrl() = url
+    fun parameters(block: ParametersBuilder.() -> Unit) {
+        parametersBuilder.apply(block)
+    }
 }

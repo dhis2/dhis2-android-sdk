@@ -267,6 +267,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         )
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun downloadValuesForOrgUnits(
         attribute: String,
         numberOfValuesToFillUp: Int?,

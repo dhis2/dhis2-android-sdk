@@ -289,7 +289,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                     Log.e(
                         this::class.java.simpleName,
                         "Error downloading reserved values for attribute: $attribute and " +
-                                "org. unit: ${organisationUnit.uid()}",
+                            "org. unit: ${organisationUnit.uid()}",
                         e,
                     )
                 }

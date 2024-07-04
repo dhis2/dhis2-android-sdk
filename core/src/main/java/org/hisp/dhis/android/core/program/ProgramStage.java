@@ -50,7 +50,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract String displayDescription();
 
     /**
-     * @deprecated replaced by {@link #displayExecutionDateLabel()}
+     * @deprecated since v41, replaced by {@link #displayExecutionDateLabel()}
      */
     @Deprecated
     @Nullable
@@ -63,7 +63,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract String displayExecutionDateLabel();
 
     /**
-     * @deprecated replaced by {@link #displayDueDateLabel()}
+     * @deprecated since v41, replaced by {@link #displayDueDateLabel()}
      */
     @Deprecated
     @Nullable
@@ -184,7 +184,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract ValidationStrategy validationStrategy();
 
     /**
-     * @deprecated replaced by {@link #displayProgramStageLabel()}
+     * @deprecated since v41, replaced by {@link #displayProgramStageLabel()}
      */
     @Deprecated
     @Nullable
@@ -197,7 +197,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract String displayProgramStageLabel();
 
     /**
-     * @deprecated replaced by {@link #displayEventLabel()}
+     * @deprecated since v41, replaced by {@link #displayEventLabel()}
      */
     @Deprecated
     @Nullable
@@ -236,7 +236,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder displayDescription(String displayDescription);
 
         /**
-         * @deprecated replaced by {@link #displayExecutionDateLabel(String displayExecutionDateLabel)}
+         * @deprecated since v41, replaced by {@link #displayExecutionDateLabel(String displayExecutionDateLabel)}
          */
         public Builder executionDateLabel(String executionDateLabel) {
             return displayExecutionDateLabel(executionDateLabel);
@@ -245,7 +245,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder displayExecutionDateLabel(String displayExecutionDateLabel);
 
         /**
-         * @deprecated replaced by {@link #displayDueDateLabel(String displayDueDateLabel)}
+         * @deprecated since v41, replaced by {@link #displayDueDateLabel(String displayDueDateLabel)}
          */
         public Builder dueDateLabel(String dueDateLabel) {
             return displayDueDateLabel(dueDateLabel);
@@ -305,7 +305,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder validationStrategy(ValidationStrategy validationStrategy);
 
         /**
-         * @deprecated replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel)}
+         * @deprecated since v41, replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel)}
          */
         public Builder programStageLabel(String programStageLabel) {
             return displayProgramStageLabel(programStageLabel);
@@ -314,7 +314,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder displayProgramStageLabel(String displayProgramStageLabel);
 
         /**
-         * @deprecated replaced by {@link #displayEventLabel(String displayEventLabel)}
+         * @deprecated since v41, replaced by {@link #displayEventLabel(String displayEventLabel)}
          */
         public Builder eventLabel(String eventLabel) {
             return displayEventLabel(eventLabel);

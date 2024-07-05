@@ -65,6 +65,32 @@ internal class KtorServiceClient(private val client: HttpClient) {
         }.body()
     }
 
+    suspend inline fun <reified T> put(block: RequestBuilder.() -> Unit): T {
+        val requestBuilder = RequestBuilder().apply(block)
+        return client.request(BASE_URL + requestBuilder.url) {
+            method = HttpMethod.Put
+            url {
+                requestBuilder.parameters.forEach { (key, value) ->
+                    parameters.append(key, value)
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(requestBuilder.body)
+        }.body()
+    }
+
+    suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
+        val requestBuilder = RequestBuilder().apply(block)
+        return client.request(BASE_URL + requestBuilder.url) {
+            method = HttpMethod.Delete
+            url {
+                requestBuilder.parameters.forEach { (key, value) ->
+                    parameters.append(key, value)
+                }
+            }
+        }.body()
+    }
+
     // Add more methods for POST, PUT, DELETE as needed
     companion object {
         private const val BASE_URL = "https://temporary-dhis-url.org/api/"

@@ -80,7 +80,7 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean onlyEnrollOnce();
 
     /**
-     *  @deprecated replaced by {@link #displayEnrollmentDateLabel()}
+     * @deprecated replaced by {@link #displayEnrollmentDateLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -97,7 +97,7 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean displayIncidentDate();
 
     /**
-     *  @deprecated replaced by {@link #displayIncidentDateLabel()}
+     * @deprecated replaced by {@link #displayIncidentDateLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -222,7 +222,7 @@ public abstract class Program extends BaseNameableObject
     public abstract AccessLevel accessLevel();
 
     /**
-     *  @deprecated replaced by {@link #displayEnrollmentLabel()}
+     * @deprecated replaced by {@link #displayEnrollmentLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -235,7 +235,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayEnrollmentLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayFollowUpLabel()}
+     * @deprecated replaced by {@link #displayFollowUpLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -248,7 +248,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayFollowUpLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayOrgUnitLabel()}
+     * @deprecated replaced by {@link #displayOrgUnitLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -261,7 +261,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayOrgUnitLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayRelationshipLabel()}
+     * @deprecated replaced by {@link #displayRelationshipLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -274,7 +274,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayRelationshipLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayNoteLabel()}
+     * @deprecated replaced by {@link #displayNoteLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -287,7 +287,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayNoteLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayTrackedEntityAttributeLabel()}
+     * @deprecated replaced by {@link #displayTrackedEntityAttributeLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -300,7 +300,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayTrackedEntityAttributeLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayProgramStageLabel()}
+     * @deprecated replaced by {@link #displayProgramStageLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -313,7 +313,7 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayProgramStageLabel();
 
     /**
-     *  @deprecated replaced by {@link #displayEventLabel()}
+     * @deprecated replaced by {@link #displayEventLabel()}
      */
     @Deprecated(since = "41")
     @Nullable
@@ -352,7 +352,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder onlyEnrollOnce(Boolean onlyEnrollOnce);
 
         /**
-         *  @deprecated replaced by {@link #displayEnrollmentDateLabel(String displayEnrollmentDateLabel))}
+         * @deprecated replaced by {@link #displayEnrollmentDateLabel(String displayEnrollmentDateLabel))}
          */
         public Builder enrollmentDateLabel(String enrollmentDateLabel) {
             return displayEnrollmentDateLabel(enrollmentDateLabel);
@@ -363,7 +363,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayIncidentDate(Boolean displayIncidentDate);
 
         /**
-         *  @deprecated replaced by {@link #displayIncidentDateLabel(String displayIncidentDateLabel))}
+         * @deprecated replaced by {@link #displayIncidentDateLabel(String displayIncidentDateLabel))}
          */
         public Builder incidentDateLabel(String incidentDateLabel) {
             return displayIncidentDateLabel(incidentDateLabel);
@@ -423,7 +423,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder accessLevel(AccessLevel accessLevel);
 
         /**
-         *  @deprecated replaced by {@link #displayEnrollmentLabel(String displayEnrollmentLabel))}
+         * @deprecated replaced by {@link #displayEnrollmentLabel(String displayEnrollmentLabel))}
          */
         public Builder enrollmentLabel(String enrollmentLabel) {
             return displayEnrollmentLabel(enrollmentLabel);
@@ -432,7 +432,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayEnrollmentLabel(String displayEnrollmentLabel);
 
         /**
-         *  @deprecated replaced by {@link #displayFollowUpLabel(String displayFollowUpLabel))}
+         * @deprecated replaced by {@link #displayFollowUpLabel(String displayFollowUpLabel))}
          */
         public Builder followUpLabel(String followUpLabel) {
             return displayFollowUpLabel(followUpLabel);
@@ -441,7 +441,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayFollowUpLabel(String displayFollowUpLabel);
 
         /**
-         *  @deprecated replaced by {@link #displayOrgUnitLabel(String displayOrgUnitLabel))}
+         * @deprecated replaced by {@link #displayOrgUnitLabel(String displayOrgUnitLabel))}
          */
         public Builder orgUnitLabel(String orgUnitLabel) {
             return displayOrgUnitLabel(orgUnitLabel);
@@ -450,7 +450,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayOrgUnitLabel(String displayOrgUnitLabel);
 
         /**
-         *  @deprecated replaced by {@link #displayRelationshipLabel(String displayRelationshipLabel))}
+         * @deprecated replaced by {@link #displayRelationshipLabel(String displayRelationshipLabel))}
          */
         public Builder relationshipLabel(String relationshipLabel) {
             return displayRelationshipLabel(relationshipLabel);
@@ -459,7 +459,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayRelationshipLabel(String displayRelationshipLabel);
 
         /**
-         *  @deprecated replaced by {@link #displayNoteLabel(String displayNoteLabel))}
+         * @deprecated replaced by {@link #displayNoteLabel(String displayNoteLabel))}
          */
         public Builder noteLabel(String noteLabel) {
             return displayNoteLabel(noteLabel);
@@ -468,7 +468,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayNoteLabel(String displayNoteLabel);
 
         /**
-         *  @deprecated replaced by
+         * @deprecated replaced by
          * {@link #displayTrackedEntityAttributeLabel(String displayTrackedEntityAttributeLabel))}
          */
         public Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel) {
@@ -478,7 +478,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayTrackedEntityAttributeLabel(String displayTrackedEntityAttributeLabel);
 
         /**
-         *  @deprecated replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel))}
+         * @deprecated replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel))}
          */
         public Builder programStageLabel(String programStageLabel) {
             return displayProgramStageLabel(programStageLabel);
@@ -487,7 +487,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder displayProgramStageLabel(String displayProgramStageLabel);
 
         /**
-         *  @deprecated replaced by {@link #displayEventLabel(String displayEventLabel))}
+         * @deprecated replaced by {@link #displayEventLabel(String displayEventLabel))}
          */
         public Builder eventLabel(String eventLabel) {
             return displayEventLabel(eventLabel);

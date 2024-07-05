@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -113,7 +114,7 @@ internal class DataSetCompleteRegistrationPostCall(
                 )
             }.fold(
                 onSuccess = { result ->
-                    if (result.isSuccessful) {
+                    if (result.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX) {
                         deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
                     } else {
                         withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)

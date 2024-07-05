@@ -40,19 +40,25 @@ internal class ParametersBuilder(var parameters: MutableList<Pair<String, String
         parameters.add("filter" to filter.generateString())
     }
 
-    fun attribute(pair: Pair<String, String>) {
-        parameters.add(pair)
+    fun filter(filter: List<String>?) {
+        filter?.let { parameters.add("filter" to it.joinToString { "," }) }
+    }
+
+    fun <T> attribute(pair: Pair<String, T?>) {
+        pair.second?.let { nonNullSecond ->
+            parameters.add(pair.first to nonNullSecond.toString())
+        }
     }
 
     fun paging(paging: Boolean) {
         parameters.add("paging" to paging.toString())
     }
 
-    fun page(page: Int) {
-        parameters.add("page" to page.toString())
+    fun page(page: Int?) {
+        page?.let { parameters.add("page" to it.toString()) }
     }
 
-    fun pageSize(pageSize: Int) {
-        parameters.add("pageSize" to pageSize.toString())
+    fun pageSize(pageSize: Int?) {
+        pageSize?.let { parameters.add("pageSize" to it.toString()) }
     }
 }

@@ -52,11 +52,11 @@ internal class DataSetCompleteRegistrationService(private val client: KtorServic
             url("completeDataSetRegistrations")
             parameters {
                 fields(fields)
-                lastUpdated?.let { attribute("lastUpdated" to lastUpdated) }
+                attribute("lastUpdated" to lastUpdated)
                 attribute("dataSet" to dataSetUids)
                 attribute("period" to periodIds)
                 attribute("orgUnit" to organisationUnitIds)
-                attribute("children" to children.toString())
+                attribute("children" to children)
                 paging(paging)
             }
         }
@@ -96,7 +96,7 @@ internal class DataSetCompleteRegistrationService(private val client: KtorServic
                 attribute("ou" to orgUnit)
                 attribute("cc" to categoryComboUid)
                 attribute("cp" to categoryOptionUids)
-                attribute("multiOu" to multiOrganisationUnit.toString())
+                attribute("multiOu" to multiOrganisationUnit)
             }
         }
     }

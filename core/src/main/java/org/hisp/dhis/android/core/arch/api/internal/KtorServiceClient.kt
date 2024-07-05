@@ -38,10 +38,13 @@ import io.ktor.http.contentType
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class KtorServiceClient(private val client: HttpClient) {
+internal class KtorServiceClient(
+    private val client: HttpClient,
+    var baseUrl: String = "https://temporary-dhis-url.org/api/",
+) {
     suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
         val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
+        return client.request(baseUrl + requestBuilder.url) {
             method = HttpMethod.Get
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
@@ -53,7 +56,7 @@ internal class KtorServiceClient(private val client: HttpClient) {
 
     suspend inline fun <reified T> post(block: RequestBuilder.() -> Unit): T {
         val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
+        return client.request(baseUrl + requestBuilder.url) {
             method = HttpMethod.Post
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
@@ -67,7 +70,7 @@ internal class KtorServiceClient(private val client: HttpClient) {
 
     suspend inline fun <reified T> put(block: RequestBuilder.() -> Unit): T {
         val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
+        return client.request(baseUrl + requestBuilder.url) {
             method = HttpMethod.Put
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
@@ -81,7 +84,7 @@ internal class KtorServiceClient(private val client: HttpClient) {
 
     suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
         val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
+        return client.request(baseUrl + requestBuilder.url) {
             method = HttpMethod.Delete
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
@@ -89,10 +92,5 @@ internal class KtorServiceClient(private val client: HttpClient) {
                 }
             }
         }.body()
-    }
-
-    // Add more methods for POST, PUT, DELETE as needed
-    companion object {
-        private const val BASE_URL = "https://temporary-dhis-url.org/api/"
     }
 }

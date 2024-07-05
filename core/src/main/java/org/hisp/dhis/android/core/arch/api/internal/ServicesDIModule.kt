@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.category.internal.CategoryOptionService
 import org.hisp.dhis.android.core.category.internal.CategoryService
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalService
 import org.hisp.dhis.android.core.dataelement.internal.DataElementService
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationService
 import org.hisp.dhis.android.core.dataset.internal.DataSetService
 import org.hisp.dhis.android.core.datavalue.internal.DataValueService
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentService
@@ -30,7 +29,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramRuleService
 import org.hisp.dhis.android.core.program.internal.ProgramService
 import org.hisp.dhis.android.core.program.internal.ProgramStageService
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListService
-import org.hisp.dhis.android.core.relationship.internal.RelationshipService
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeService
 import org.hisp.dhis.android.core.settings.internal.SettingService
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.ApiService
@@ -41,7 +39,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
 import org.hisp.dhis.android.core.user.internal.AuthorityService
@@ -61,7 +58,6 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(CategoryService::class.java) }
     single { get<Retrofit>().create(DataApprovalService::class.java) }
     single { get<Retrofit>().create(DataElementService::class.java) }
-    single { get<Retrofit>().create(DataSetCompleteRegistrationService::class.java) }
     single { get<Retrofit>().create(DataSetService::class.java) }
     single { get<Retrofit>().create(DataValueService::class.java) }
     single { get<Retrofit>().create(EnrollmentService::class.java) }
@@ -80,14 +76,12 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(OptionSetService::class.java) }
     single { get<Retrofit>().create(OrganisationUnitLevelService::class.java) }
     single { get<Retrofit>().create(OrganisationUnitService::class.java) }
-    single { get<Retrofit>().create(OwnershipService::class.java) }
     single { get<Retrofit>().create(PingService::class.java) }
     single { get<Retrofit>().create(ProgramIndicatorService::class.java) }
     single { get<Retrofit>().create(ProgramRuleService::class.java) }
     single { get<Retrofit>().create(ProgramService::class.java) }
     single { get<Retrofit>().create(ProgramStageService::class.java) }
     single { get<Retrofit>().create(ProgramStageWorkingListService::class.java) }
-    single { get<Retrofit>().create(RelationshipService::class.java) }
     single { get<Retrofit>().create(RelationshipTypeService::class.java) }
     single { get<Retrofit>().create(SettingService::class.java) }
     single { get<Retrofit>().create(StockUseCaseService::class.java) }

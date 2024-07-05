@@ -62,7 +62,7 @@ internal class TrackerImporterService(private val client: KtorServiceClient) {
 
     suspend fun getJobReport(jobId: String): JobReport {
         return client.get {
-            url("$JOBS_URL{$jobId}/report")
+            url("$JOBS_URL$jobId/report")
         }
     }
 }

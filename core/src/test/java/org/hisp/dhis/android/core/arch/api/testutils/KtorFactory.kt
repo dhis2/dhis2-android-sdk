@@ -44,25 +44,7 @@ internal object KtorFactory {
     fun fromDHIS2MockServer(server: Dhis2MockServer): KtorServiceClient {
         return fromServerUrl(server.baseEndpoint)
     }
-//
-//    fun fromMockWebServer(mockWebServer: MockWebServer): KtorServiceClient {
-//        val client = HttpClient(OkHttp) {
-//            engine {
-//                preconfigured = okClient
-//            }
-//            install(ContentNegotiation) {
-//                jackson() {
-//                    ObjectMapperFactory.objectMapper()
-//                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//                }
-//            }
-//            expectSuccess = true
-//        }
-//
-//        return KtorServiceClient(client, mockWebServer.url("/").toString())
-//    }
 
-//    @JvmStatic
     fun fromServerUrl(serverUrl: String): KtorServiceClient {
         val client = HttpClient(OkHttp) {
             engine {

@@ -12,7 +12,6 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentService
 import org.hisp.dhis.android.core.event.internal.EventFilterService
 import org.hisp.dhis.android.core.event.internal.EventService
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemService
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceService
 import org.hisp.dhis.android.core.icon.internal.IconService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeService
@@ -64,7 +63,6 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(EventService::class.java) }
     single { get<Retrofit>().create(ExpressionDimensionItemService::class.java) }
     single { get<Retrofit>().create(ExternalMapLayerService::class.java) }
-    single { get<Retrofit>().create(FileResourceService::class.java) }
     single { get<Retrofit>().create(IconService::class.java) }
     single { get<Retrofit>().create(IndicatorService::class.java) }
     single { get<Retrofit>().create(IndicatorTypeService::class.java) }

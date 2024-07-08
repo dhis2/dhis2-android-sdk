@@ -27,65 +27,114 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readBytes
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.fileresource.FileResource
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
-internal interface FileResourceService {
+@Singleton
+internal class FileResourceService(private val client: KtorServiceClient) {
 
-    @Multipart
-    @POST(FILE_RESOURCES)
-    suspend fun uploadFile(@Part filePart: MultipartBody.Part): ResponseBody
+    suspend fun uploadFile(filePart: MultipartBody.Part): ResponseBody {
+        return client.post {
+            url(FILE_RESOURCES)
+            body(filePart)
+        }
+    }
 
-    @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
-    suspend fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): FileResource
+    suspend fun getFileResource(fileResource: String): FileResource {
+        return client.get {
+            url("$FILE_RESOURCES/$fileResource")
+        }
+    }
 
-    @GET(FILE_RESOURCES)
     suspend fun getFileResources(
-        @Query("fields") @Which fields: Fields<FileResource>,
-        @Query("filter") @Where fileResources: Filter<FileResource>,
-        @Query("paging") paging: Boolean,
-    ): Payload<FileResource>
+        fields: Fields<FileResource>,
+        fileResources: Filter<FileResource>,
+        paging: Boolean,
+    ): Payload<FileResource> {
+        return client.get {
+            url(FILE_RESOURCES)
+            parameters {
+                fields(fields)
+                filter(fileResources)
+                paging(paging)
+            }
+        }
+    }
 
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
     suspend fun getImageFromTrackedEntityAttribute(
-        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
-        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
-        @Query("dimension") dimension: String,
-    ): ResponseBody
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+        dimension: String,
+    ): ResponseBody {
+        val response: HttpResponse = client.get {
+            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
+            parameters {
+                attribute(dimension to dimension)
+            }
+        }
+        val byteArray: ByteArray = response.readBytes()
+        return byteArray.toResponseBody(null)
+    }
 
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/file")
     suspend fun getFileFromTrackedEntityAttribute(
-        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
-        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
-    ): ResponseBody
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+    ): ResponseBody {
+        return client.get {
+            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/file")
+        }
+    }
 
-    @GET("$EVENTS/files")
     suspend fun getFileFromEventValue(
-        @Query("eventUid") eventUid: String,
-        @Query("dataElementUid") dataElementUid: String,
-        @Query("dimension") dimension: String,
-    ): ResponseBody
+        eventUid: String,
+        dataElementUid: String,
+        dimension: String,
+    ): ResponseBody {
+        return client.get {
+            url("$EVENTS/files")
+            parameters {
+                attribute("eventUid" to eventUid)
+                attribute("dataElementUid" to dataElementUid)
+                attribute("dimension" to dimension)
+            }
+        }
+    }
 
-    @GET
     suspend fun getCustomIcon(
-        @Url customIconHref: String,
-    ): ResponseBody
+        customIconHref: String,
+    ): ResponseBody {
+        return client.get {
+            url(customIconHref)
+        }
+    }
 
-    @GET("$DATA_VALUES/files")
     suspend fun getFileFromDataValue(
-        @Query("de") dataElement: String,
-        @Query("pe") period: String,
-        @Query("ou") organisationUnit: String,
-        @Query("co") categoryOptionCombo: String,
-        @Query("dimension") dimension: String,
-    ): ResponseBody
+        dataElement: String,
+        period: String,
+        organisationUnit: String,
+        categoryOptionCombo: String,
+        dimension: String,
+    ): ResponseBody {
+        return client.get {
+            url("$DATA_VALUES/files")
+            parameters {
+                attribute("de" to dataElement)
+                attribute("pe" to period)
+                attribute("ou" to organisationUnit)
+                attribute("co" to categoryOptionCombo)
+                attribute("dimension" to dimension)
+            }
+        }
+    }
 
     companion object {
         const val FILE_RESOURCES = "fileResources"

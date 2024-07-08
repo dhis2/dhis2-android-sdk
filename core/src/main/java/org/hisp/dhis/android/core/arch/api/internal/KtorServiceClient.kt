@@ -42,55 +42,38 @@ internal class KtorServiceClient(
     private val client: HttpClient,
     var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
-    suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
+    private suspend inline fun <reified T> request(
+        requestMethod: HttpMethod,
+        block: RequestBuilder.() -> Unit,
+    ): T {
         val requestBuilder = RequestBuilder().apply(block)
         return client.request(baseUrl + requestBuilder.url) {
-            method = HttpMethod.Get
+            method = requestMethod
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
                     parameters.append(key, value)
                 }
             }
+            if (method == HttpMethod.Post || method == HttpMethod.Put) {
+                contentType(ContentType.Application.Json)
+                setBody(requestBuilder.body)
+            }
         }.body()
+    }
+
+    suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
+        return request(HttpMethod.Get, block)
     }
 
     suspend inline fun <reified T> post(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(baseUrl + requestBuilder.url) {
-            method = HttpMethod.Post
-            url {
-                requestBuilder.parameters.forEach { (key, value) ->
-                    parameters.append(key, value)
-                }
-            }
-            contentType(ContentType.Application.Json)
-            setBody(requestBuilder.body)
-        }.body()
+        return request(HttpMethod.Post, block)
     }
 
     suspend inline fun <reified T> put(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(baseUrl + requestBuilder.url) {
-            method = HttpMethod.Put
-            url {
-                requestBuilder.parameters.forEach { (key, value) ->
-                    parameters.append(key, value)
-                }
-            }
-            contentType(ContentType.Application.Json)
-            setBody(requestBuilder.body)
-        }.body()
+        return request(HttpMethod.Put, block)
     }
 
     suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(baseUrl + requestBuilder.url) {
-            method = HttpMethod.Delete
-            url {
-                requestBuilder.parameters.forEach { (key, value) ->
-                    parameters.append(key, value)
-                }
-            }
-        }.body()
+        return request(HttpMethod.Delete, block)
     }
 }

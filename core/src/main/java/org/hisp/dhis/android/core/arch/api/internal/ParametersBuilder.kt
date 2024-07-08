@@ -40,8 +40,10 @@ internal class ParametersBuilder(var parameters: MutableList<Pair<String, String
         parameters.add("filter" to filter.generateString())
     }
 
-    fun filter(filter: List<String>?) {
-        filter?.let { parameters.add("filter" to it.joinToString { "," }) }
+    fun filter(filter: List<String?>?) {
+        filter?.let {
+            parameters.add("filter" to it.filterNot { it.isNullOrBlank() }.joinToString(","))
+        }
     }
 
     fun <T> attribute(pair: Pair<String, T?>) {

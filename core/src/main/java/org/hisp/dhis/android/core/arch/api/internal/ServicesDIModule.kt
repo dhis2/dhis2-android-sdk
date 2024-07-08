@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterService
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
@@ -89,7 +88,6 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(TrackedEntityAttributeReservedValueService::class.java) }
     single { get<Retrofit>().create(TrackedEntityAttributeService::class.java) }
     single { get<Retrofit>().create(TrackedEntityInstanceFilterService::class.java) }
-    single { get<Retrofit>().create(TrackedEntityInstanceService::class.java) }
     single { get<Retrofit>().create(TrackedEntityTypeService::class.java) }
     single { get<Retrofit>().create(TrackerExporterService::class.java) }
     single { get<Retrofit>().create(TrackerVisualizationService::class.java) }

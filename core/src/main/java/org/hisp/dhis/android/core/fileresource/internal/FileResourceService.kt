@@ -112,9 +112,11 @@ internal class FileResourceService(private val client: KtorServiceClient) {
     suspend fun getCustomIcon(
         customIconHref: String,
     ): ResponseBody {
-        return client.get {
+        val response: HttpResponse = client.get {
             absoluteUrl(customIconHref)
         }
+        val byteArray: ByteArray = response.readBytes()
+        return byteArray.toResponseBody(null)
     }
 
     suspend fun getFileFromDataValue(

@@ -113,7 +113,7 @@ internal class FileResourceService(private val client: KtorServiceClient) {
         customIconHref: String,
     ): ResponseBody {
         return client.get {
-            url(customIconHref)
+            absoluteUrl(customIconHref)
         }
     }
 

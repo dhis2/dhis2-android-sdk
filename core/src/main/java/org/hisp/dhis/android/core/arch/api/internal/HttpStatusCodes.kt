@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-object HttpStatusCodes {
+internal object HttpStatusCodes {
     const val SUCCESS_MIN = 200
     const val SUCCESS_MAX = 299
 }

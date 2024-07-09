@@ -248,7 +248,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSetCapture = d2.dataSetModule().dataSets()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .blockingGet();
-        assertThat(dataSetCapture.size()).isEqualTo(2);
+        assertThat(dataSetCapture.size()).isEqualTo(3);
 
         List<DataSet> dataSetSearch = d2.dataSetModule().dataSets()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)

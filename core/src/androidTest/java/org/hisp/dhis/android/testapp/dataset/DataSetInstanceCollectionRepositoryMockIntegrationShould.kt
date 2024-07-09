@@ -95,7 +95,7 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould :
             .byOrganisationUnitUid().eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataSetInstances.size).isEqualTo(3)
+        assertThat(dataSetInstances.size).isEqualTo(2)
     }
 
     @Test

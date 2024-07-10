@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-internal class RequestBuilder {
+internal class RequestBuilder(private val baseUrl: String) {
     lateinit var url: String
         private set
 
@@ -41,6 +41,10 @@ internal class RequestBuilder {
     private val parametersBuilder = ParametersBuilder(parameters)
 
     fun url(url: String) {
+        this.url = baseUrl + url
+    }
+
+    fun absoluteUrl(url: String) {
         this.url = url
     }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
 
+package org.hisp.dhis.android.core.arch.api.testutils
+
+import com.fasterxml.jackson.databind.DeserializationFeature
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.jackson.jackson
+import okhttp3.OkHttpClient
+import okhttp3.OkHttpClient.Builder
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
-internal const val TRACKER_URL = "tracker"
-internal const val JOBS_URL = "tracker/jobs/"
+internal object KtorFactory {
+    fun fromDHIS2MockServer(server: Dhis2MockServer): KtorServiceClient {
+        return fromServerUrl(server.baseEndpoint)
+    }
 
-internal const val ATOMIC_MODE = "atomicMode"
-internal const val ATOMIC_MODE_OBJECT = "OBJECT"
-
-internal const val IMPORT_STRATEGY = "importStrategy"
-internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
-internal const val IMPORT_STRATEGY_DELETE = "DELETE"
-
-@Singleton
-internal class TrackerImporterService(private val client: KtorServiceClient) {
-
-    suspend fun postTrackerPayload(
-        payload: NewTrackerImporterPayload,
-        atomicMode: String,
-        importStrategy: String,
-    ): ObjectWithUidWebResponse {
-        return client.post {
-            url(TRACKER_URL)
-            parameters {
-                attribute(ATOMIC_MODE to atomicMode)
-                attribute(IMPORT_STRATEGY to importStrategy)
+    fun fromServerUrl(serverUrl: String): KtorServiceClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okClient
             }
-            body(payload)
+            install(ContentNegotiation) {
+                jackson() {
+                    ObjectMapperFactory.objectMapper()
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                }
+            }
+            expectSuccess = true
         }
+        return KtorServiceClient(client, serverUrl + "api/")
     }
 
-    suspend fun getJobReport(jobId: String): JobReport {
-        return client.get {
-            url("$JOBS_URL$jobId/report")
-        }
-    }
+    private val okClient: OkHttpClient
+        get() = Builder()
+            .addInterceptor(PreventURLDecodeInterceptor())
+            .build()
 }

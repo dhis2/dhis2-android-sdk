@@ -28,33 +28,52 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
-internal interface DataValueService {
+@Singleton
+internal class DataValueService(private val client: KtorServiceClient) {
 
-    @GET("dataValueSets")
     suspend fun getDataValues(
-        @Query("fields") @Which fields: Fields<DataValue>,
-        @Query("lastUpdated") lastUpdated: String?,
-        @Query("dataSet") dataSetUids: String,
-        @Query("period") periodIds: String,
-        @Query("orgUnit") orgUnitUids: String,
-        @Query("children") children: Boolean,
-        @Query("paging") paging: Boolean,
-        @Query("includeDeleted") includeDeleted: Boolean?,
-    ): DataValueSet
+        fields: Fields<DataValue>,
+        lastUpdated: String?,
+        dataSetUids: String,
+        periodIds: String,
+        orgUnitUids: String,
+        children: Boolean,
+        paging: Boolean,
+        includeDeleted: Boolean?,
+    ): DataValueSet {
+        return client.get {
+            url("dataValueSets")
+            parameters {
+                fields(fields)
+                attribute("lastUpdated" to lastUpdated)
+                attribute("dataSet" to dataSetUids)
+                attribute("period" to periodIds)
+                attribute("orgUnit" to orgUnitUids)
+                attribute("children" to children)
+                attribute("includeDeleted" to includeDeleted)
+                paging(paging)
+            }
+        }
+    }
 
-    @POST("dataValueSets")
-    suspend fun postDataValues(@Body dataValueSet: DataValueSet): DataValueImportSummary
+    suspend fun postDataValues(dataValueSet: DataValueSet): DataValueImportSummary {
+        return client.post {
+            url("dataValueSets")
+            body(dataValueSet)
+        }
+    }
 
-    @POST("dataValueSets")
-    suspend fun postDataValuesWebResponse(@Body dataValueSet: DataValueSet): DataValueImportSummaryWebResponse
+    suspend fun postDataValuesWebResponse(dataValueSet: DataValueSet): DataValueImportSummaryWebResponse {
+        return client.post {
+            url("dataValueSets")
+            body(dataValueSet)
+        }
+    }
 }

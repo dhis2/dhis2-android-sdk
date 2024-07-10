@@ -32,41 +32,58 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readBytes
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class KtorServiceClient(private val client: HttpClient) {
-    suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
-            method = HttpMethod.Get
+internal class KtorServiceClient(
+    private val client: HttpClient,
+    var baseUrl: String = "https://temporary-dhis-url.org/api/",
+) {
+    private suspend inline fun <reified T> request(
+        requestMethod: HttpMethod,
+        block: RequestBuilder.() -> Unit,
+    ): T {
+        val requestBuilder = RequestBuilder(baseUrl).apply(block)
+        val response: HttpResponse = client.request(requestBuilder.url) {
+            method = requestMethod
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
                     parameters.append(key, value)
                 }
             }
-        }.body()
+            if (method == HttpMethod.Post || method == HttpMethod.Put) {
+                contentType(ContentType.Application.Json)
+                setBody(requestBuilder.body)
+            }
+        }
+        return if (T::class == ResponseBody::class) {
+            val byteArray: ByteArray = response.readBytes()
+            byteArray.toResponseBody(null) as T
+        } else {
+            response.body()
+        }
+    }
+
+    suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {
+        return request(HttpMethod.Get, block)
     }
 
     suspend inline fun <reified T> post(block: RequestBuilder.() -> Unit): T {
-        val requestBuilder = RequestBuilder().apply(block)
-        return client.request(BASE_URL + requestBuilder.url) {
-            method = HttpMethod.Post
-            url {
-                requestBuilder.parameters.forEach { (key, value) ->
-                    parameters.append(key, value)
-                }
-            }
-            contentType(ContentType.Application.Json)
-            setBody(requestBuilder.body)
-        }.body()
+        return request(HttpMethod.Post, block)
     }
 
-    // Add more methods for POST, PUT, DELETE as needed
-    companion object {
-        private const val BASE_URL = "https://temporary-dhis-url.org/api/"
+    suspend inline fun <reified T> put(block: RequestBuilder.() -> Unit): T {
+        return request(HttpMethod.Put, block)
+    }
+
+    suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
+        return request(HttpMethod.Delete, block)
     }
 }

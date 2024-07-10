@@ -27,46 +27,77 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.common.Unit
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import retrofit2.Response
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal interface DataSetCompleteRegistrationService {
+internal class DataSetCompleteRegistrationService(private val client: KtorServiceClient) {
 
-    @GET("completeDataSetRegistrations")
     suspend fun getDataSetCompleteRegistrations(
-        @Query("fields") @Which fields: Fields<DataSetCompleteRegistration>,
-        @Query("lastUpdated") lastUpdated: String?,
-        @Query("dataSet") dataSetUids: String,
-        @Query("period") periodIds: String,
-        @Query("orgUnit") organisationUnitIds: String,
-        @Query("children") children: Boolean,
-        @Query("paging") paging: Boolean,
-    ): DataSetCompleteRegistrationPayload
+        fields: Fields<DataSetCompleteRegistration>,
+        lastUpdated: String?,
+        dataSetUids: String,
+        periodIds: String,
+        organisationUnitIds: String,
+        children: Boolean,
+        paging: Boolean,
+    ): DataSetCompleteRegistrationPayload {
+        return client.get {
+            url("completeDataSetRegistrations")
+            parameters {
+                fields(fields)
+                attribute("lastUpdated" to lastUpdated)
+                attribute("dataSet" to dataSetUids)
+                attribute("period" to periodIds)
+                attribute("orgUnit" to organisationUnitIds)
+                attribute("children" to children)
+                paging(paging)
+            }
+        }
+    }
 
-    @POST("completeDataSetRegistrations")
     suspend fun postDataSetCompleteRegistrations(
-        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
-    ): DataValueImportSummary
+        dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
+    ): DataValueImportSummary {
+        return client.post {
+            url("completeDataSetRegistrations")
+            body(dataSetCompleteRegistrationPayload)
+        }
+    }
 
-    @POST("completeDataSetRegistrations")
     suspend fun postDataSetCompleteRegistrationsWebResponse(
-        @Body dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
-    ): DataValueImportSummaryWebResponse
+        dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
+    ): DataValueImportSummaryWebResponse {
+        return client.post {
+            url("completeDataSetRegistrations")
+            body(dataSetCompleteRegistrationPayload)
+        }
+    }
 
-    @DELETE("completeDataSetRegistrations")
     suspend fun deleteDataSetCompleteRegistration(
-        @Query("ds") dataSet: String,
-        @Query("pe") periodId: String,
-        @Query("ou") orgUnit: String,
-        @Query("cc") categoryComboUid: String,
-        @Query("cp") categoryOptionUids: String,
-        @Query("multiOu") multiOrganisationUnit: Boolean,
-    ): Response<Unit>
+        dataSet: String,
+        periodId: String,
+        orgUnit: String,
+        categoryComboUid: String,
+        categoryOptionUids: String,
+        multiOrganisationUnit: Boolean,
+    ): HttpResponse {
+        return client.delete {
+            url("completeDataSetRegistrations")
+            parameters {
+                attribute("ds" to dataSet)
+                attribute("pe" to periodId)
+                attribute("ou" to orgUnit)
+                attribute("cc" to categoryComboUid)
+                attribute("cp" to categoryOptionUids)
+                attribute("multiOu" to multiOrganisationUnit)
+            }
+        }
+    }
 }

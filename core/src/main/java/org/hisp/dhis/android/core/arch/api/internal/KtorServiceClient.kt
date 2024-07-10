@@ -32,9 +32,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readBytes
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -47,7 +51,7 @@ internal class KtorServiceClient(
         block: RequestBuilder.() -> Unit,
     ): T {
         val requestBuilder = RequestBuilder(baseUrl).apply(block)
-        return client.request(requestBuilder.url) {
+        val response: HttpResponse =  client.request(requestBuilder.url) {
             method = requestMethod
             url {
                 requestBuilder.parameters.forEach { (key, value) ->
@@ -58,7 +62,13 @@ internal class KtorServiceClient(
                 contentType(ContentType.Application.Json)
                 setBody(requestBuilder.body)
             }
-        }.body()
+        }
+        return if (T::class == ResponseBody::class) {
+            val byteArray: ByteArray = response.readBytes()
+            byteArray.toResponseBody(null) as T
+        } else {
+            response.body()
+        }
     }
 
     suspend inline fun <reified T> get(block: RequestBuilder.() -> Unit): T {

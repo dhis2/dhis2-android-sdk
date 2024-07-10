@@ -114,8 +114,8 @@ internal class TrackedEntityInstanceService(private val client: KtorServiceClien
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
                 fields(fields)
-                attribute(TRACKED_ENTITY_INSTACE to orgUnits)
-                attribute(OU to trackedEntityInstances)
+                attribute(TRACKED_ENTITY_INSTACE to trackedEntityInstances)
+                attribute(OU to orgUnits)
                 attribute(OU_MODE to orgUnitMode)
                 attribute(PROGRAM to program)
                 attribute(PROGRAM_STATUS to programStatus)

@@ -27,11 +27,8 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readBytes
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
@@ -75,14 +72,12 @@ internal class FileResourceService(private val client: KtorServiceClient) {
         trackedEntityAttributeUid: String,
         dimension: String,
     ): ResponseBody {
-        val response: HttpResponse = client.get {
+        return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
                 attribute(dimension to dimension)
             }
         }
-        val byteArray: ByteArray = response.readBytes()
-        return byteArray.toResponseBody(null)
     }
 
     suspend fun getFileFromTrackedEntityAttribute(
@@ -112,11 +107,9 @@ internal class FileResourceService(private val client: KtorServiceClient) {
     suspend fun getCustomIcon(
         customIconHref: String,
     ): ResponseBody {
-        val response: HttpResponse = client.get {
+        return client.get {
             absoluteUrl(customIconHref)
         }
-        val byteArray: ByteArray = response.readBytes()
-        return byteArray.toResponseBody(null)
     }
 
     suspend fun getFileFromDataValue(

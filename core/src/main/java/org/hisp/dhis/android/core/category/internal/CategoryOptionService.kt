@@ -28,25 +28,40 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface CategoryOptionService {
+@Singleton
+internal class CategoryOptionService(private val client: KtorServiceClient) {
 
-    @GET("categoryOptions")
     suspend fun getCategoryOptions(
-        @Query("fields") @Which fields: Fields<CategoryOption>,
-        @Query("filter") categoryUidsFilterString: String,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<CategoryOption>
+        fields: Fields<CategoryOption>,
+        categoryUidsFilterString: String,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): Payload<CategoryOption> {
+        return client.get {
+            url("categoryOptions")
+            parameters {
+                fields(fields)
+                attribute("filter" to categoryUidsFilterString)
+                attribute("filter" to accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 
-    @GET("categoryOptions/orgUnits")
     suspend fun getCategoryOptionOrgUnits(
-        @Query("categoryOptions") categoryOptions: String,
-    ): CategoryOptionOrganisationUnits
+        categoryOptions: String,
+    ): CategoryOptionOrganisationUnits {
+        return client.get {
+            url("categoryOptions/orgUnits")
+            parameters {
+                attribute("categoryOptions" to categoryOptions)
+            }
+        }
+    }
 }

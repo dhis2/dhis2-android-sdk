@@ -28,20 +28,31 @@
 package org.hisp.dhis.android.core.dataapproval.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.dataapproval.DataApproval
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal interface DataApprovalService {
-    @GET("dataApprovals/multiple")
+internal class DataApprovalService(private val client: KtorServiceClient) {
     suspend fun getDataApprovals(
-        @Query("fields") @Which fields: Fields<DataApproval>,
-        @Query("lastUpdated") lastUpdated: String?,
-        @Query("wf") workflow: String,
-        @Query("pe") periods: String,
-        @Query("ou") organisationUnit: String,
-        @Query("aoc") attributeOptionCombo: String,
-    ): List<DataApproval>
+        fields: Fields<DataApproval>,
+        lastUpdated: String?,
+        workflow: String,
+        periods: String,
+        organisationUnit: String,
+        attributeOptionCombo: String,
+    ): List<DataApproval> {
+        return client.get {
+            url("dataApprovals/multiple")
+            parameters {
+                fields(fields)
+                attribute("lastUpdated" to lastUpdated)
+                attribute("wf" to workflow)
+                attribute("pe" to periods)
+                attribute("ou" to organisationUnit)
+                attribute("aoc" to attributeOptionCombo)
+            }
+        }
+    }
 }

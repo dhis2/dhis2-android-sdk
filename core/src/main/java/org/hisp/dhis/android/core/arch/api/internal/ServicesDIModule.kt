@@ -1,18 +1,8 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.attribute.internal.AttributeService
-import org.hisp.dhis.android.core.category.internal.CategoryComboService
-import org.hisp.dhis.android.core.category.internal.CategoryOptionService
-import org.hisp.dhis.android.core.category.internal.CategoryService
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalService
-import org.hisp.dhis.android.core.dataelement.internal.DataElementService
-import org.hisp.dhis.android.core.dataset.internal.DataSetService
 import org.hisp.dhis.android.core.datavalue.internal.DataValueService
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentService
-import org.hisp.dhis.android.core.event.internal.EventFilterService
 import org.hisp.dhis.android.core.event.internal.EventService
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemService
-import org.hisp.dhis.android.core.icon.internal.IconService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorService
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeService
 import org.hisp.dhis.android.core.legendset.internal.LegendSetService
@@ -51,23 +41,13 @@ internal val servicesDIModule = module {
     single { get<Retrofit>().create(ApiService::class.java) }
     single { get<Retrofit>().create(AuthorityService::class.java) }
     single { get<Retrofit>().create(BingService::class.java) }
-    single { get<Retrofit>().create(CategoryComboService::class.java) }
-    single { get<Retrofit>().create(CategoryOptionService::class.java) }
-    single { get<Retrofit>().create(CategoryService::class.java) }
-    single { get<Retrofit>().create(DataApprovalService::class.java) }
-    single { get<Retrofit>().create(DataElementService::class.java) }
-    single { get<Retrofit>().create(DataSetService::class.java) }
     single { get<Retrofit>().create(DataValueService::class.java) }
-    single { get<Retrofit>().create(EnrollmentService::class.java) }
-    single { get<Retrofit>().create(EventFilterService::class.java) }
     single { get<Retrofit>().create(EventService::class.java) }
     single { get<Retrofit>().create(ExpressionDimensionItemService::class.java) }
     single { get<Retrofit>().create(ExternalMapLayerService::class.java) }
-    single { get<Retrofit>().create(IconService::class.java) }
     single { get<Retrofit>().create(IndicatorService::class.java) }
     single { get<Retrofit>().create(IndicatorTypeService::class.java) }
     single { get<Retrofit>().create(LegendSetService::class.java) }
-    single { get<Retrofit>().create(AttributeService::class.java) }
     single { get<Retrofit>().create(OptionGroupService::class.java) }
     single { get<Retrofit>().create(OptionService::class.java) }
     single { get<Retrofit>().create(OptionSetService::class.java) }

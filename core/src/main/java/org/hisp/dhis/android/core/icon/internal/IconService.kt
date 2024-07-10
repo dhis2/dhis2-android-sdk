@@ -28,21 +28,30 @@
 package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.icon.CustomIcon
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface IconService {
+@Singleton
+internal class IconService(private val client: KtorServiceClient) {
 
-    @GET(ICONS)
     suspend fun getCustomIcons(
-        @Query("fields") @Which fields: Fields<CustomIcon>,
-        @Query("keys") keys: String,
-        @Query("type") type: String?,
-        @Query("paging") paging: Boolean,
-    ): Payload<CustomIcon>
+        fields: Fields<CustomIcon>,
+        keys: String,
+        type: String?,
+        paging: Boolean,
+    ): Payload<CustomIcon> {
+        return client.get {
+            url(ICONS)
+            parameters {
+                fields(fields)
+                attribute("keys" to keys)
+                attribute("type" to type)
+                paging(paging)
+            }
+        }
+    }
 
     companion object {
         const val ICONS = "icons"

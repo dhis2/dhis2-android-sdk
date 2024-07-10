@@ -51,7 +51,7 @@ internal class KtorServiceClient(
         block: RequestBuilder.() -> Unit,
     ): T {
         val requestBuilder = RequestBuilder(baseUrl).apply(block)
-        val response: HttpResponse =  client.request(requestBuilder.url) {
+        val response: HttpResponse = client.request(requestBuilder.url) {
             method = requestMethod
             url {
                 requestBuilder.parameters.forEach { (key, value) ->

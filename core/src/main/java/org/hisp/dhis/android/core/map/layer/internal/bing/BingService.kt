@@ -28,13 +28,17 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import retrofit2.http.GET
-import retrofit2.http.Url
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.koin.core.annotation.Singleton
 
-internal interface BingService {
+@Singleton
+internal class BingService(private val client: KtorServiceClient) {
 
-    @GET
     suspend fun getBaseMap(
-        @Url url: String,
-    ): BingServerResponse
+        url: String,
+    ): BingServerResponse {
+        return client.get {
+            url(url)
+        }
+    }
 }

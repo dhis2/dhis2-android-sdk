@@ -183,6 +183,7 @@ public class Dhis2MockServer {
 
     public void enqueueMockResponse(String fileName) {
         MockResponse response = createMockResponse(fileName);
+        response.setHeader("Content-Type", "application/json");
         server.enqueue(response);
     }
 

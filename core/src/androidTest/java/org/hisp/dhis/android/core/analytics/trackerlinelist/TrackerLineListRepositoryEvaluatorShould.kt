@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
@@ -128,6 +129,32 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
                 3 -> assertThat(value.value).isEqualTo("8")
             }
         }
+    }
+
+    @Test
+    fun evaluate_line_list_category() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
+        val event1 = generator.generate()
+        createDefaultTrackerEvent(event1, enrollment1, eventDate = period202001.startDate())
+        val event2 = generator.generate()
+        createDefaultTrackerEvent(event2, enrollment1, eventDate = period201912.startDate())
+        val event3 = generator.generate()
+        createDefaultTrackerEvent(event3, enrollment1, eventDate = period201911.startDate())
+
+        val result = d2.analyticsModule().trackerLineList()
+            .withEnrollmentOutput(program.uid())
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
+            .withColumn(TrackerLineListItem.Category(category.uid()))
+            .blockingEvaluate()
+
+        val rows = result.getOrThrow().rows
+        val firstRow = rows.first()
+
+        assertThat(rows.size).isEqualTo(3)
+        assertThat(firstRow[1].value).isEqualTo(category.displayName())
+
     }
 
     @Test

@@ -36,8 +36,10 @@ internal class ParametersBuilder(var parameters: MutableList<Pair<String, String
         parameters.add("fields" to fields.generateString())
     }
 
-    fun <T> filter(filter: Filter<T>) {
-        parameters.add("filter" to filter.generateString())
+    fun <T> filter(filter: Filter<T>?) {
+        filter?.let {
+            parameters.add("filter" to filter.generateString())
+        }
     }
 
     fun filter(filter: List<String?>?) {

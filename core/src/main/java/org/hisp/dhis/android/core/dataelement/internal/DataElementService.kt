@@ -29,20 +29,29 @@ package org.hisp.dhis.android.core.dataelement.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.dataelement.DataElement
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface DataElementService {
-    @GET("dataElements")
+@Singleton
+internal class DataElementService(private val client: KtorServiceClient) {
     suspend fun getDataElements(
-        @Query("fields") @Which fields: Fields<DataElement>,
-        @Query("filter") @Where uids: Filter<DataElement>,
-        @Query("filter") @Where lastUpdated: Filter<DataElement>?,
-        @Query("filter") accessReadFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<DataElement>
+        fields: Fields<DataElement>,
+        uids: Filter<DataElement>,
+        lastUpdated: Filter<DataElement>?,
+        accessReadFilter: String,
+        paging: Boolean,
+    ): Payload<DataElement> {
+        return client.get {
+            url("dataElements")
+            parameters {
+                fields(fields)
+                filter(uids)
+                filter(lastUpdated)
+                attribute("filter" to accessReadFilter)
+                paging(paging)
+            }
+        }
+    }
 }

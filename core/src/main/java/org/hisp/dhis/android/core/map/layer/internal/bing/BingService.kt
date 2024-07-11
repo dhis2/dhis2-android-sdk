@@ -38,7 +38,7 @@ internal class BingService(private val client: KtorServiceClient) {
         url: String,
     ): BingServerResponse {
         return client.get {
-            url(url)
+            absoluteUrl(url)
         }
     }
 }

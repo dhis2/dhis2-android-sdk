@@ -51,15 +51,16 @@ internal object ProgramFields : BaseFields<Program>() {
     private const val PROGRAM_SECTIONS = "programSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
 
+    private const val ENROLLMENT_DATE_LABEL = "enrollmentDateLabel"
+    private const val INCIDENT_DATE_LABEL = "incidentDateLabel"
+
     val uid = fh.uid()
 
-    val allFields = Fields.from(
+    private val commonFields = Fields.from(
         fh.getNameableFields(),
         fh.field(Columns.VERSION),
         fh.field(Columns.ONLY_ENROLL_ONCE),
-        fh.field(Columns.DISPLAY_ENROLLMENT_DATE_LABEL),
         fh.field(Columns.DISPLAY_INCIDENT_DATE),
-        fh.field(Columns.DISPLAY_INCIDENT_DATE_LABEL),
         fh.field(Columns.REGISTRATION),
         fh.field(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
         fh.field(Columns.DATA_ENTRY_METHOD),
@@ -94,5 +95,17 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL),
         fh.field(Columns.DISPLAY_PROGRAM_STAGE_LABEL),
         fh.field(Columns.DISPLAY_EVENT_LABEL),
+    )
+
+    val allFields = Fields.from(
+        commonFields.fields,
+        fh.field(Columns.DISPLAY_ENROLLMENT_DATE_LABEL),
+        fh.field(Columns.DISPLAY_INCIDENT_DATE_LABEL),
+    )
+
+    val allFieldsBefore35 = Fields.from(
+        commonFields.fields,
+        fh.field(ENROLLMENT_DATE_LABEL),
+        fh.field(INCIDENT_DATE_LABEL),
     )
 }

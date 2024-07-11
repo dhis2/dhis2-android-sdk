@@ -37,6 +37,7 @@ internal object TrackerLineListEvaluatorMapper {
             is TrackerLineListItem.ProgramAttribute -> ProgramAttributeEvaluator(item, context.metadata)
             is TrackerLineListItem.ProgramDataElement -> ProgramDataElementEvaluator(item, context.metadata)
             is TrackerLineListItem.ProgramIndicator -> ProgramIndicatorEvaluator(item, context)
+            is TrackerLineListItem.Category -> CategoryEvaluator(item, context.metadata)
 
             is TrackerLineListItem.OrganisationUnitItem -> OrganisationUnitEvaluator(item, context)
 

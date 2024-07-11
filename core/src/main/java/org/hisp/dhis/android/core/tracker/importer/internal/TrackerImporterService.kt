@@ -53,4 +53,7 @@ internal interface TrackerImporterService {
 
     @GET("$JOBS_URL{jobId}/report")
     suspend fun getJobReport(@Path(JOB_ID) jobId: String): JobReport
+
+    @GET("$JOBS_URL{jobId}")
+    suspend fun getJob(@Path(JOB_ID) jobId: String): List<JobProgress>
 }

@@ -28,19 +28,31 @@
 package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.Option
+import org.koin.core.annotation.Singleton
 import retrofit2.http.GET
-import retrofit2.http.Query
 
-internal fun interface OptionService {
+@Singleton
+internal class OptionService(private val client: KtorServiceClient) {
     @GET("options")
     suspend fun getOptions(
-        @Query("fields") @Which fields: Fields<Option>,
-        @Query("filter") optionSetUidsFilterString: String,
-        @Query("paging") paging: Boolean,
-        @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int,
-    ): Payload<Option>
+        fields: Fields<Option>,
+        optionSetUidsFilterString: String,
+        paging: Boolean,
+        page: Int,
+        pageSize: Int,
+    ): Payload<Option> {
+        return client.get {
+            url("options")
+            parameters {
+                fields(fields)
+                attribute("filter" to optionSetUidsFilterString)
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 }

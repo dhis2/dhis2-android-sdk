@@ -30,18 +30,25 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.legendset.LegendSet
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface LegendSetService {
-    @GET("legendSets")
+@Singleton
+internal class LegendSetService(private val client: KtorServiceClient) {
     suspend fun getLegendSets(
-        @Query("fields") @Which fields: Fields<LegendSet>,
-        @Query("filter") @Where uids: Filter<LegendSet>,
-        @Query("paging") paging: Boolean,
-    ): Payload<LegendSet>
+        fields: Fields<LegendSet>,
+        uids: Filter<LegendSet>,
+        paging: Boolean,
+    ): Payload<LegendSet> {
+        return client.get {
+            url("legendSets")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

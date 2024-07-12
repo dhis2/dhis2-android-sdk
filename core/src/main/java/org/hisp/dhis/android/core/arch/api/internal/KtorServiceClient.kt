@@ -30,11 +30,13 @@ package org.hisp.dhis.android.core.arch.api.internal
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readBytes
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import okhttp3.ResponseBody
@@ -57,6 +59,9 @@ internal class KtorServiceClient(
                 requestBuilder.parameters.forEach { (key, value) ->
                     parameters.append(key, value)
                 }
+            }
+            requestBuilder.authorizationHeader?.let {
+                header(HttpHeaders.Authorization, it)
             }
             if (method == HttpMethod.Post || method == HttpMethod.Put) {
                 contentType(ContentType.Application.Json)

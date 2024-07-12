@@ -65,55 +65,55 @@ internal class SettingService(private val client: KtorServiceClient) {
 
     suspend fun settingsAppInfo(url: String): SettingsAppInfo {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun generalSettings(url: String): GeneralSettings {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun dataSetSettings(url: String): DataSetSettings {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun programSettings(url: String): ProgramSettings {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun synchronizationSettings(url: String): SynchronizationSettings {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun appearanceSettings(url: String): AppearanceSettings {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun analyticsSettings(url: String): AnalyticsSettings {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun latestAppVersion(url: String): LatestAppVersion {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 
     suspend fun versions(url: String): Payload<ApkDistributionVersion> {
         return client.get {
-            absoluteUrl(url)
+            url(url)
         }
     }
 }

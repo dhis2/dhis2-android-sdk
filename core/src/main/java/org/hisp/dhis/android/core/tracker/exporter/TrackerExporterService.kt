@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.koin.core.annotation.Singleton
-import retrofit2.http.*
 
 @Singleton
 @Suppress("LongParameterList")
@@ -132,7 +131,6 @@ internal class TrackerExporterService(private val client: KtorServiceClient) {
         }
     }
 
-    @GET(EVENTS_API)
     suspend fun getEvents(
         fields: Fields<NewTrackerImporterEvent>,
         orgUnit: String?,
@@ -198,8 +196,8 @@ internal class TrackerExporterService(private val client: KtorServiceClient) {
 
     suspend fun getEventSingle(
         fields: Fields<NewTrackerImporterEvent>,
-        @QueryMap eventUid: Map<String, String>? = null,
-        @QueryMap orgUnitMode: Map<String, String>? = null,
+        eventUid: Map<String, String>? = null,
+        orgUnitMode: Map<String, String>? = null,
     ): TrackerPayload<NewTrackerImporterEvent> {
         return client.get {
             url(EVENTS_API)

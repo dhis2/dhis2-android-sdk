@@ -92,8 +92,8 @@ internal class SettingAppService(
     }
 
     companion object {
-        const val ANDROID_APP_NAMESPACE_V1 = "api/dataStore/ANDROID_SETTING_APP"
-        const val ANDROID_APP_NAMESPACE_V2 = "api/dataStore/ANDROID_SETTINGS_APP"
-        const val APK_DISTRIBUTION_NAMESPACE = "api/dataStore/APK_DISTRIBUTION"
+        const val ANDROID_APP_NAMESPACE_V1 = "dataStore/ANDROID_SETTING_APP"
+        const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
+        const val APK_DISTRIBUTION_NAMESPACE = "dataStore/APK_DISTRIBUTION"
     }
 }

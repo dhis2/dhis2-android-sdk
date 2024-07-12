@@ -47,6 +47,8 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +60,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
 
     private val programService: ProgramService = mock()
     private val programHandler: ProgramHandler = mock()
+    private val dhisVersionManager: DHISVersionManager = mock()
     private val fieldsCaptor = argumentCaptor<Fields<Program>>()
     private val filterCaptor = argumentCaptor<Filter<Program>>()
     private val accesDataReadFilter = argumentCaptor<String>()
@@ -78,6 +81,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
                 downloadPartitioned(same(programUids), any(), any<Handler<Program>>(), any())
             } doReturn programCallResult
         }
+        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_34)) doReturn true
     }
 
     @Test
@@ -86,6 +90,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
             programService,
             programHandler,
             mockedApiDownloader,
+            dhisVersionManager,
         ).download(programUids)
 
         verify(mockedApiDownloader).downloadPartitioned(
@@ -111,6 +116,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
             programService,
             programHandler,
             APIDownloaderImpl(resourceHandler),
+            dhisVersionManager,
         ).download(programUids)
 
         assertThat(fieldsCaptor.firstValue).isEqualTo(ProgramFields.allFields)

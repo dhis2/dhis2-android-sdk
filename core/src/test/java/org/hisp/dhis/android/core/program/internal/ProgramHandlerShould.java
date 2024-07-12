@@ -150,9 +150,9 @@ public class ProgramHandlerShould {
         //Program attributes:
         when(program.version()).thenReturn(1);
         when(program.onlyEnrollOnce()).thenReturn(true);
-        when(program.enrollmentDateLabel()).thenReturn("enrollment date");
+        when(program.displayEnrollmentDateLabel()).thenReturn("enrollment date");
         when(program.displayIncidentDate()).thenReturn(true);
-        when(program.incidentDateLabel()).thenReturn("incident date label");
+        when(program.displayIncidentDateLabel()).thenReturn("incident date label");
         when(program.registration()).thenReturn(true);
         when(program.selectEnrollmentDatesInFuture()).thenReturn(true);
         when(program.dataEntryMethod()).thenReturn(true);

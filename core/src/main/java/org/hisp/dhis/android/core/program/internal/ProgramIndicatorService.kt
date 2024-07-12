@@ -30,20 +30,29 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface ProgramIndicatorService {
-    @GET("programIndicators")
+@Singleton
+internal class ProgramIndicatorService(private val client: KtorServiceClient) {
     suspend fun getProgramIndicator(
-        @Query("fields") @Which fields: Fields<ProgramIndicator>,
-        @Query("filter") @Where displayInForm: Filter<ProgramIndicator>?,
-        @Query("filter") program: String?,
-        @Query("filter") @Where uids: Filter<ProgramIndicator>?,
-        @Query("paging") paging: Boolean,
-    ): Payload<ProgramIndicator>
+        fields: Fields<ProgramIndicator>,
+        displayInForm: Filter<ProgramIndicator>?,
+        program: String?,
+        uids: Filter<ProgramIndicator>?,
+        paging: Boolean,
+    ): Payload<ProgramIndicator> {
+        return client.get {
+            url("programIndicators")
+            parameters {
+                fields(fields)
+                filter(displayInForm)
+                attribute("filter" to program)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

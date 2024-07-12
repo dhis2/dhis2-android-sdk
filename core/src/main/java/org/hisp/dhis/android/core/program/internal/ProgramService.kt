@@ -29,19 +29,27 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.Program
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface ProgramService {
-    @GET("programs")
+@Singleton
+internal class ProgramService(private val client: KtorServiceClient) {
     suspend fun getPrograms(
-        @Query("fields") @Which fields: Fields<Program>,
-        @Query("filter") @Where uids: Filter<Program>,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<Program>
+        fields: Fields<Program>,
+        uids: Filter<Program>,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): Payload<Program> {
+        return client.get {
+            url("programs")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter" to accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 }

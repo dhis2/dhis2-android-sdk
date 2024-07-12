@@ -144,7 +144,7 @@ internal class BingCallFactory(
 
     private fun getUrl(style: String, bingKey: String): String {
         return if (D2Manager.isTestMode && !D2Manager.isRealIntegration) {
-            "mockBingMaps"
+            "api/mockBingMaps"
         } else {
             "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/$style?" +
                 "output=json&include=ImageryProviders&culture=en-GB&uriScheme=https&key=$bingKey"

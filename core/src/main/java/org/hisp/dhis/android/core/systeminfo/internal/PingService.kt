@@ -28,11 +28,15 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import okhttp3.ResponseBody
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.koin.core.annotation.Singleton
 import retrofit2.Response
-import retrofit2.http.GET
 
-internal interface PingService {
-
-    @GET("system/ping")
-    suspend fun getPing(): Response<ResponseBody>
+@Singleton
+internal class PingService(private val client: KtorServiceClient) {
+    suspend fun getPing(): Response<ResponseBody> {
+        return client.get {
+            url("system/ping")
+        }
+    }
 }

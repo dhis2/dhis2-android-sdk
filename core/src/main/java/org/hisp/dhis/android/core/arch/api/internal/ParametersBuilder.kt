@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+
+package org.hisp.dhis.android.core.arch.api.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.EventFilter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class EventFilterService(private val client: KtorServiceClient) {
-    suspend fun getEventFilters(
-        uids: Filter<EventFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<EventFilter>,
-        paging: Boolean,
-    ): Payload<EventFilter> {
-        return client.get {
-            url("eventFilters")
-            parameters {
-                filter(uids)
-                attribute("filter" to accessDataReadFilter)
-                fields(fields)
-                paging(paging)
-            }
+internal class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
+    fun <T> fields(fields: Fields<T>) {
+        parameters.add("fields" to fields.generateString())
+    }
+
+    fun <T> filter(filter: Filter<T>?) {
+        filter?.let {
+            parameters.add("filter" to filter.generateString())
         }
+    }
+
+    fun filter(filter: List<String?>?) {
+        filter?.let {
+            parameters.add("filter" to it.filterNot { it.isNullOrBlank() }.joinToString(","))
+        }
+    }
+
+    fun <T> attribute(pair: Pair<String, T?>) {
+        pair.second?.let { nonNullSecond ->
+            parameters.add(pair.first to nonNullSecond.toString())
+        }
+    }
+
+    fun paging(paging: Boolean) {
+        parameters.add("paging" to paging.toString())
+    }
+
+    fun page(page: Int?) {
+        page?.let { parameters.add("page" to it.toString()) }
+    }
+
+    fun pageSize(pageSize: Int?) {
+        pageSize?.let { parameters.add("pageSize" to it.toString()) }
     }
 }

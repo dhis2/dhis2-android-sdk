@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+package org.hisp.dhis.android.core.arch.api.testutils
+
+import com.fasterxml.jackson.databind.DeserializationFeature
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.jackson.jackson
+import okhttp3.OkHttpClient
+import okhttp3.OkHttpClient.Builder
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.EventFilter
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
-@Singleton
-internal class EventFilterService(private val client: KtorServiceClient) {
-    suspend fun getEventFilters(
-        uids: Filter<EventFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<EventFilter>,
-        paging: Boolean,
-    ): Payload<EventFilter> {
-        return client.get {
-            url("eventFilters")
-            parameters {
-                filter(uids)
-                attribute("filter" to accessDataReadFilter)
-                fields(fields)
-                paging(paging)
-            }
-        }
+internal object KtorFactory {
+    fun fromDHIS2MockServer(server: Dhis2MockServer): KtorServiceClient {
+        return fromServerUrl(server.baseEndpoint)
     }
+
+    fun fromServerUrl(serverUrl: String): KtorServiceClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okClient
+            }
+            install(ContentNegotiation) {
+                jackson() {
+                    ObjectMapperFactory.objectMapper()
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                }
+            }
+            expectSuccess = true
+        }
+        return KtorServiceClient(client, serverUrl + "api/")
+    }
+
+    private val okClient: OkHttpClient
+        get() = Builder()
+            .addInterceptor(PreventURLDecodeInterceptor())
+            .build()
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-
-import java.io.IOException;
-
-import retrofit2.Response;
-
-final class TrackedEntityAttributeReservedValueCallErrorCatcher implements APICallErrorCatcher {
-
-    @Override
-    public Boolean mustBeStored() {
-        return true;
-    }
-
-    @Override
-    public D2ErrorCode catchError(Response<?> response, String errorBody) throws IOException {
-        if (errorBody.contains("Not enough values left to reserve")) {
-            return D2ErrorCode.NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER;
-        } else if (errorBody.contains("Generation and reservation of values took too long")) {
-            return D2ErrorCode.VALUES_RESERVATION_TOOK_TOO_LONG;
-        } else if (errorBody.contains("You might be running low on available values")) {
-            return D2ErrorCode.MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES;
-        } else if (response.code() == 409) {
-            return D2ErrorCode.COULD_NOT_RESERVE_VALUE_ON_SERVER;
-        }
-
-        return null;
-    }
+internal object HttpStatusCodes {
+    const val SUCCESS_MIN = 200
+    const val SUCCESS_MAX = 299
 }

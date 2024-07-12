@@ -28,25 +28,41 @@
 package org.hisp.dhis.android.core.validation.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface ValidationRuleService {
-    @GET("validationRules")
+@Singleton
+internal class ValidationRuleService(private val client: KtorServiceClient) {
     suspend fun getValidationRules(
-        @Query("fields") @Which fields: Fields<ValidationRule>,
-        @Query("filter") uidsFilterString: String,
-        @Query("paging") paging: Boolean?,
-    ): Payload<ValidationRule>
+        fields: Fields<ValidationRule>,
+        uidsFilterString: String,
+        paging: Boolean,
+    ): Payload<ValidationRule> {
+        return client.get {
+            url("validationRules")
+            parameters {
+                fields(fields)
+                attribute("filter" to uidsFilterString)
+                paging(paging)
+            }
+        }
+    }
 
-    @GET("validationRules")
     suspend fun getDataSetValidationRuleUids(
-        @Query("dataSet") dataSetUid: String,
-        @Query("fields") id: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<ObjectWithUid>
+        dataSetUid: String,
+        id: String,
+        paging: Boolean,
+    ): Payload<ObjectWithUid> {
+        return client.get {
+            url("validationRules")
+            parameters {
+                attribute("dataSet" to dataSetUid)
+                attribute("fields" to id)
+                paging(paging)
+            }
+        }
+    }
 }

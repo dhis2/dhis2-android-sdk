@@ -27,35 +27,50 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Query
-import retrofit2.http.QueryMap
+import org.koin.core.annotation.Singleton
 
-internal interface OwnershipService {
+@Singleton
+internal class OwnershipService(private val client: KtorServiceClient) {
 
-    @POST("$OWNERSHIP_URL/override")
     suspend fun breakGlass(
-        @QueryMap trackedEntity: Map<String, String>,
-        @Query(PROGRAM) program: String,
-        @Query(REASON) reason: String,
-    ): HttpMessageResponse
+        trackedEntity: Map<String, String>,
+        program: String,
+        reason: String,
+    ): HttpMessageResponse {
+        return client.post {
+            url("$OWNERSHIP_URL/override")
+            parameters {
+                attribute(PROGRAM to program)
+                attribute(REASON to reason)
+            }
+            body(trackedEntity)
+        }
+    }
 
-    @PUT("$OWNERSHIP_URL/transfer")
     suspend fun transfer(
-        @QueryMap trackedEntity: Map<String, String>,
-        @Query(PROGRAM) program: String,
-        @Query(ORG_UNIT) ou: String,
-    ): HttpMessageResponse
+        trackedEntity: Map<String, String>,
+        program: String,
+        ou: String,
+    ): HttpMessageResponse {
+        return client.put {
+            url("$OWNERSHIP_URL/transfer")
+            parameters {
+                attribute(PROGRAM to program)
+                attribute(ORG_UNIT to ou)
+            }
+            body(trackedEntity)
+        }
+    }
 
     companion object {
-        const val OWNERSHIP_URL = "tracker/ownership"
+        private const val OWNERSHIP_URL = "tracker/ownership"
+        private const val PROGRAM = "program"
+        private const val REASON = "reason"
+        private const val ORG_UNIT = "ou"
 
         const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
         const val TRACKED_ENTITY = "trackedEntity"
-        const val PROGRAM = "program"
-        const val REASON = "reason"
-        const val ORG_UNIT = "ou"
     }
 }

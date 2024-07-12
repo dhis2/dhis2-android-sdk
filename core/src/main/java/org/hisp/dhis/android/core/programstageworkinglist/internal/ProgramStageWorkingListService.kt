@@ -29,19 +29,28 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
-internal fun interface ProgramStageWorkingListService {
+@Singleton
+internal class ProgramStageWorkingListService(private val client: KtorServiceClient) {
 
-    @GET("programStageWorkingLists")
     suspend fun getProgramStageWorkingLists(
-        @Query("filter") @Where uids: Filter<ProgramStageWorkingList>,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("fields") @Which fields: Fields<ProgramStageWorkingList>,
-        @Query("paging") paging: Boolean,
-    ): Payload<ProgramStageWorkingList>
+        uids: Filter<ProgramStageWorkingList>,
+        accessDataReadFilter: String,
+        fields: Fields<ProgramStageWorkingList>,
+        paging: Boolean,
+    ): Payload<ProgramStageWorkingList> {
+        return client.get {
+            url("programStageWorkingLists")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter" to accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 }

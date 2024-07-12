@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal;
+package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import com.fasterxml.jackson.databind.DeserializationFeature
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.jackson.jackson
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
-final class RetrofitFactory {
-
-    static Retrofit retrofit(OkHttpClient okHttpClient) throws D2Error {
-        return new Retrofit.Builder()
-                // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
-                // to create Retrofit
-                .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
-
-                .client(okHttpClient)
-                .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
-                .addConverterFactory(new FilterConverterFactory())
-                .addConverterFactory(new FieldsConverterFactory())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .validateEagerly(true)
-                .build();
-    }
-
-    private RetrofitFactory() {
+object KtorFactory {
+    fun ktor(
+        okHttpClient: OkHttpClient,
+    ): HttpClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okHttpClient
+            }
+            install(ContentNegotiation) {
+                jackson() {
+                    ObjectMapperFactory.objectMapper()
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                }
+            }
+            expectSuccess = true
+        }
+        return client
     }
 }

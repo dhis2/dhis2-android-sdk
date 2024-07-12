@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
 import android.util.Log
+import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator
@@ -51,6 +52,17 @@ internal class APIClientDIModule {
         } catch (d2Error: D2Error) {
             Log.e("APIClientDIModule", d2Error.message!!)
             throw RuntimeException("Can't instantiate retrofit")
+        }
+    }
+
+    @Singleton
+    @Suppress("TooGenericExceptionThrown")
+    fun ktor(okHttpClient: OkHttpClient): HttpClient {
+        return try {
+            KtorFactory.ktor(okHttpClient)
+        } catch (d2Error: D2Error) {
+            Log.e("APIClientDIModule", d2Error.message!!)
+            throw RuntimeException("Can't instantiate ktor")
         }
     }
 }

@@ -87,23 +87,13 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void filter_d2_error_by_created() {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         Date startDate = cal.getTime();
 
-        cal.set(Calendar.HOUR, 23);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.SECOND, 59);
-        Date endDate = cal.getTime();
-
-        Period todayPeriod = Period.builder()
-                .periodType(PeriodType.Daily)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byCreated().inPeriods(Lists.newArrayList(todayPeriod)).blockingGet();
+                .byCreated().afterOrEqual(startDate).blockingGet();
 
         assertThat(d2Errors.size()).isEqualTo(3);
     }

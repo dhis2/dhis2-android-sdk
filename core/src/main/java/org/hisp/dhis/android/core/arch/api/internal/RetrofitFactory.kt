@@ -25,31 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.EventFilter
-import org.koin.core.annotation.Singleton
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.parse
+import org.hisp.dhis.android.core.maintenance.D2Error
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 
-@Singleton
-internal class EventFilterService(private val client: KtorServiceClient) {
-    suspend fun getEventFilters(
-        uids: Filter<EventFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<EventFilter>,
-        paging: Boolean,
-    ): Payload<EventFilter> {
-        return client.get {
-            url("eventFilters")
-            parameters {
-                filter(uids)
-                attribute("filter" to accessDataReadFilter)
-                fields(fields)
-                paging(paging)
-            }
-        }
+internal object RetrofitFactory {
+    @Throws(D2Error::class)
+    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor.
+            // But it's mandatory to create Retrofit
+            .baseUrl(parse("https://temporary-dhis-url.org/"))
+            .client(okHttpClient)
+            .addConverterFactory(JacksonConverterFactory.create(objectMapper()))
+            .addConverterFactory(FilterConverterFactory())
+            .addConverterFactory(FieldsConverterFactory())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .validateEagerly(true)
+            .build()
     }
 }

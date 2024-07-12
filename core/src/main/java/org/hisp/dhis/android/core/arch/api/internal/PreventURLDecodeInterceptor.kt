@@ -25,31 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.EventFilter
-import org.koin.core.annotation.Singleton
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-@Singleton
-internal class EventFilterService(private val client: KtorServiceClient) {
-    suspend fun getEventFilters(
-        uids: Filter<EventFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<EventFilter>,
-        paging: Boolean,
-    ): Payload<EventFilter> {
-        return client.get {
-            url("eventFilters")
-            parameters {
-                filter(uids)
-                attribute("filter" to accessDataReadFilter)
-                fields(fields)
-                paging(paging)
-            }
-        }
+internal class PreventURLDecodeInterceptor : Interceptor {
+    @Throws(IOException::class)
+    public override fun intercept(chain: Interceptor.Chain): Response {
+        var request: Request = chain.request()
+        var encodedUrl = request.url.toString()
+
+        var nonEncodedUrl = encodedUrl
+            .replace("%2C", ",")
+            .replace("%5B", "[")
+            .replace("%5D", "]")
+            .replace("%3A", ":")
+
+        var newRequest = request.newBuilder()
+            .url(nonEncodedUrl)
+            .build()
+
+        return chain.proceed(newRequest)
     }
 }

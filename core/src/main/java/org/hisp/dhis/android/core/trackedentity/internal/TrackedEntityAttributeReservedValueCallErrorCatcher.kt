@@ -25,32 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import java.io.IOException
 
-import java.io.IOException;
+internal class TrackedEntityAttributeReservedValueCallErrorCatcher : APICallErrorCatcher {
+    public override fun mustBeStored(): Boolean? {
+        return true
+    }
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class PreventURLDecodeInterceptor implements Interceptor {
-
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
-        String encodedUrl = request.url().toString();
-
-        String nonEncodedUrl = encodedUrl
-                .replace("%2C", ",")
-                .replace("%5B", "[")
-                .replace("%5D", "]")
-                .replace("%3A", ":");
-
-        Request newRequest = request.newBuilder()
-                .url(nonEncodedUrl)
-                .build();
-
-        return chain.proceed(newRequest);
+    @Throws(IOException::class)
+    @Suppress("MagicNumber")
+    override fun catchError(response: D2HttpResponse): D2ErrorCode? {
+        return when {
+            response.errorBody.contains("Not enough values left to reserve") -> {
+                D2ErrorCode.NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER
+            }
+            response.errorBody.contains("Generation and reservation of values took too long") -> {
+                D2ErrorCode.VALUES_RESERVATION_TOOK_TOO_LONG
+            }
+            response.errorBody.contains("You might be running low on available values") -> {
+                D2ErrorCode.MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES
+            }
+            response.statusCode == 409 -> {
+                D2ErrorCode.COULD_NOT_RESERVE_VALUE_ON_SERVER
+            }
+            else -> null
+        }
     }
 }

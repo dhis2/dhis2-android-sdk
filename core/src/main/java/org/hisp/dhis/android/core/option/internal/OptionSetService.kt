@@ -29,18 +29,25 @@ package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.OptionSet
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface OptionSetService {
-    @GET("optionSets")
+@Singleton
+internal class OptionSetService(private val client: KtorServiceClient) {
     suspend fun optionSets(
-        @Query("fields") @Which fields: Fields<OptionSet>,
-        @Query("filter") @Where filter: Filter<OptionSet>,
-        @Query("paging") paging: Boolean,
-    ): Payload<OptionSet>
+        fields: Fields<OptionSet>,
+        filter: Filter<OptionSet>,
+        paging: Boolean,
+    ): Payload<OptionSet> {
+        return client.get {
+            url("optionSets")
+            parameters {
+                fields(fields)
+                filter(filter)
+                paging(paging)
+            }
+        }
+    }
 }

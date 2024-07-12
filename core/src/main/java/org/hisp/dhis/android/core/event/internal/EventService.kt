@@ -28,84 +28,127 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
-internal interface EventService {
+@Singleton
+internal class EventService(private val client: KtorServiceClient) {
 
-    @POST(EVENTS)
-    suspend fun postEvents(@Body events: EventPayload, @Query(STRATEGY) strategy: String): EventWebResponse
+    suspend fun postEvents(events: EventPayload, strategy: String): EventWebResponse {
+        return client.post {
+            url(EVENTS)
+            parameters {
+                attribute(STRATEGY to strategy)
+            }
+            body(events)
+        }
+    }
 
     @SuppressWarnings("LongParameterList")
-    @GET(EVENTS)
     suspend fun getEvents(
-        @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(ORG_UNIT) orgUnit: String? = null,
-        @Query(OU_MODE) orgUnitMode: String? = null,
-        @Query(STATUS) status: String? = null,
-        @Query(PROGRAM) program: String? = null,
-        @Query(PROGRAM_STAGE) programStage: String? = null,
-        @Query(PROGRAM_STATUS) programStatus: String? = null,
-        @Query(FILTER) filter: List<String>? = null,
-        @Query(FOLLOW_UP) followUp: Boolean? = null,
-        @Query(EVENT_START_DATE) startDate: String? = null,
-        @Query(EVENT_END_DATE) endDate: String? = null,
-        @Query(DUE_START_DATE) dueDateStart: String? = null,
-        @Query(DUE_END_DATE) dueDateEnd: String? = null,
-        @Query(ORDER) order: String? = null,
-        @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
-        @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int?,
-        @Query(PAGE_SIZE) pageSize: Int?,
-        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String? = null,
-        @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String? = null,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @Query(EVENT) eventUid: String? = null,
-    ): Payload<Event>
+        fields: Fields<Event>,
+        orgUnit: String? = null,
+        orgUnitMode: String? = null,
+        status: String? = null,
+        program: String? = null,
+        programStage: String? = null,
+        programStatus: String? = null,
+        filter: List<String>? = null,
+        followUp: Boolean? = null,
+        startDate: String? = null,
+        endDate: String? = null,
+        dueDateStart: String? = null,
+        dueDateEnd: String? = null,
+        order: String? = null,
+        assignedUserMode: String? = null,
+        paging: Boolean,
+        page: Int?,
+        pageSize: Int?,
+        lastUpdatedStartDate: String? = null,
+        lastUpdatedEndDate: String? = null,
+        includeDeleted: Boolean,
+        eventUid: String? = null,
+    ): Payload<Event> {
+        return client.get {
+            url(EVENTS)
+            parameters {
+                fields(fields)
+                attribute(ORG_UNIT to orgUnit)
+                attribute(OU_MODE to orgUnitMode)
+                attribute(STATUS to status)
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STAGE to programStage)
+                attribute(PROGRAM_STATUS to programStatus)
+                attribute(FOLLOW_UP to followUp)
+                attribute(EVENT_START_DATE to startDate)
+                attribute(EVENT_END_DATE to endDate)
+                attribute(DUE_START_DATE to dueDateStart)
+                attribute(DUE_END_DATE to dueDateEnd)
+                attribute(ORDER to order)
+                attribute(ASSIGNED_USER_MODE to assignedUserMode)
+                attribute(LAST_UPDATED_START_DATE to lastUpdatedStartDate)
+                attribute(LAST_UPDATED_END_DATE to lastUpdatedEndDate)
+                attribute(INCLUDE_DELETED to includeDeleted)
+                attribute(EVENT to eventUid)
+                filter(filter)
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 
-    @GET("$EVENTS/{$EVENT_UID}")
     suspend fun getEvent(
-        @Path(EVENT_UID) eventUid: String,
-        @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(OU_MODE) orgUnitMode: String,
-    ): Event
+        eventUid: String,
+        fields: Fields<Event>,
+        orgUnitMode: String,
+    ): Event {
+        return client.get {
+            url("$EVENTS/$eventUid")
+            parameters {
+                fields(fields)
+                attribute(OU_MODE to orgUnitMode)
+            }
+        }
+    }
 
-    @GET(EVENTS)
     suspend fun getEventSingle(
-        @Query(EVENT) eventUid: String,
-        @Query(FIELDS) @Which fields: Fields<Event>,
-        @Query(OU_MODE) orgUnitMode: String,
-    ): Payload<Event>
+        eventUid: String,
+        fields: Fields<Event>,
+        orgUnitMode: String,
+    ): Payload<Event> {
+        return client.get {
+            url(EVENTS)
+            parameters {
+                fields(fields)
+                attribute(EVENT to eventUid)
+                attribute(OU_MODE to orgUnitMode)
+            }
+        }
+    }
 
     companion object {
-        const val ORG_UNIT = "orgUnit"
-        const val OU_MODE = "ouMode"
-        const val STATUS = "status"
-        const val PROGRAM = "program"
-        const val PROGRAM_STAGE = "programStage"
-        const val PROGRAM_STATUS = "programStatus"
-        const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
-        const val FILTER = "filter"
-        const val FOLLOW_UP = "followUp"
-        const val EVENT_START_DATE = "startDate"
-        const val EVENT_END_DATE = "endDate"
-        const val DUE_START_DATE = "dueDateStart"
-        const val DUE_END_DATE = "dueDateEnd"
-        const val ORDER = "order"
-        const val ASSIGNED_USER_MODE = "assignedUserMode"
-        const val FIELDS = "fields"
-        const val PAGING = "paging"
-        const val PAGE_SIZE = "pageSize"
-        const val PAGE = "page"
-        const val EVENTS = "events"
-        const val STRATEGY = "strategy"
-        const val EVENT_UID = "eventUid"
-        const val EVENT = "event"
-        const val LAST_UPDATED_START_DATE = "lastUpdatedStartDate"
-        const val LAST_UPDATED_END_DATE = "lastUpdatedEndDate"
-        const val INCLUDE_DELETED = "includeDeleted"
+        private const val ORG_UNIT = "orgUnit"
+        private const val OU_MODE = "ouMode"
+        private const val STATUS = "status"
+        private const val PROGRAM = "program"
+        private const val PROGRAM_STAGE = "programStage"
+        private const val PROGRAM_STATUS = "programStatus"
+        private const val FOLLOW_UP = "followUp"
+        private const val EVENT_START_DATE = "startDate"
+        private const val EVENT_END_DATE = "endDate"
+        private const val DUE_START_DATE = "dueDateStart"
+        private const val DUE_END_DATE = "dueDateEnd"
+        private const val ORDER = "order"
+        private const val ASSIGNED_USER_MODE = "assignedUserMode"
+        private const val EVENTS = "events"
+        private const val STRATEGY = "strategy"
+        private const val EVENT = "event"
+        private const val LAST_UPDATED_START_DATE = "lastUpdatedStartDate"
+        private const val LAST_UPDATED_END_DATE = "lastUpdatedEndDate"
+        private const val INCLUDE_DELETED = "includeDeleted"
     }
 }

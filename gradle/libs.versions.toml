@@ -99,6 +99,7 @@ ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor"}
 ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor"}
 ktor-jackson = { group = "io.ktor", name = "ktor-serialization-jackson", version.ref = "ktor"}
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor"}
 
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }

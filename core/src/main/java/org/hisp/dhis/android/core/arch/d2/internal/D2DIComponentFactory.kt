@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.arch.d2.internal
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.analytics.AnalyticsDIModule
 import org.hisp.dhis.android.core.arch.ArchDIModule
-import org.hisp.dhis.android.core.arch.api.internal.servicesDIModule
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.keyValueStorageDIModule
@@ -91,7 +90,6 @@ internal object D2DIComponentFactory {
                     appContextDIModule(d2Config),
                     keyValueStorageDIModule(secureStore, insecureStore),
                     javaDIClasses,
-                    servicesDIModule,
 
                     AnalyticsDIModule().module,
                     ArchDIModule().module,

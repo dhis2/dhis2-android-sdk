@@ -432,7 +432,7 @@ public class Dhis2MockServer {
     }
 
     public String getBaseEndpoint() {
-        return server.url("/").toString();
+        return server.url("/api/").toString();
     }
 
     public RecordedRequest takeRequest() throws InterruptedException {

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.d2.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
@@ -38,7 +37,6 @@ import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.period.internal.PeriodParser
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.DataSetsStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.FileResourceCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
@@ -54,8 +52,6 @@ internal val javaDIClasses = module {
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }
     single { DatabaseAdapterFactory(get(), get()) }
-    single { DatabaseExport(get(), get(), get()) }
     single { D2CallExecutor(get(), get()) }
-    single { RelationshipDHISVersionManager(get()) }
     single { DataSetsStore(get(), get(), get(), get()) }
 }

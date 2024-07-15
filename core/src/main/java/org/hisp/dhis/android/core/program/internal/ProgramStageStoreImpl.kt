@@ -80,6 +80,8 @@ internal class ProgramStageStoreImpl(
                     w.bind(31, o.featureType())
                     w.bind(32, o.enableUserAssignment())
                     w.bind(33, o.validationStrategy())
+                    w.bind(34, o.programStageLabel())
+                    w.bind(35, o.eventLabel())
                 }
             }
         val CHILD_PROJECTION = SingleParentChildProjection(

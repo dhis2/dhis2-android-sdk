@@ -32,7 +32,12 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -98,8 +103,33 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         return LivePagedListBuilder(factory, pageSize).build()
     }
 
+    override fun getPagingData(pageSize: Int): Flow<PagingData<TrackedEntitySearchItem>> {
+        return getPager(pageSize).flow
+    }
+
+    fun getPager(pageSize: Int): Pager<TrackedEntitySearchItem, TrackedEntitySearchItem> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+        ) {
+            pagingSource
+        }
+    }
+
     val dataSource: DataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
         get() = TrackedEntitySearchDataSource(getDataFetcher())
+
+    val pagingSource: PagingSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
+        get() = TrackedEntitySearchPagingSource(
+            store,
+            databaseAdapter,
+            trackerParentCallFactory,
+            scope,
+            childrenAppenders,
+            onlineCache,
+            onlineHelper,
+            localQueryHelper,
+            searchDataFetcherHelper,
+        )
 
     val resultDataSource: DataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>
         get() = TrackedEntitySearchDataSourceResult(getDataFetcher())

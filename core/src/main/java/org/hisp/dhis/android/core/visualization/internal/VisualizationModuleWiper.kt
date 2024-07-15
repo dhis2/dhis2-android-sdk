@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
@@ -37,6 +39,8 @@ import org.koin.core.annotation.Singleton
 class VisualizationModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
     override fun wipeMetadata() {
         tableWiper.wipeTables(
+            TrackerVisualizationTableInfo.TABLE_INFO,
+            TrackerVisualizationDimensionTableInfo.TABLE_INFO,
             VisualizationTableInfo.TABLE_INFO,
             VisualizationDimensionItemTableInfo.TABLE_INFO,
         )

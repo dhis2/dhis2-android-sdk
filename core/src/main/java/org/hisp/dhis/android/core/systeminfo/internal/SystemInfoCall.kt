@@ -55,7 +55,7 @@ class SystemInfoCall internal constructor(
         }.fold(
             onSuccess = { systemInfo ->
                 val version = systemInfo.version()
-                if (version != null && isAllowedVersion(version)) {
+                if (version != null && isAllowedVersion(version, versionManager.getBypassVersion())) {
                     versionManager.setVersion(version)
                 } else {
                     throw D2Error.builder()

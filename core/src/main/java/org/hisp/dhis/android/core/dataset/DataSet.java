@@ -173,8 +173,8 @@ public abstract class DataSet extends BaseNameableObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<DataSet, Builder> {
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder periodType(PeriodType periodType);

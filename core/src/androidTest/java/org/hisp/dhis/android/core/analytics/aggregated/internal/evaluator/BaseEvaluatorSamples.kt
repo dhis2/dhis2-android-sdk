@@ -220,6 +220,12 @@ object BaseEvaluatorSamples {
         .valueType(ValueType.INTEGER)
         .build()
 
+    val attribute2 = TrackedEntityAttribute.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 2")
+        .valueType(ValueType.TEXT)
+        .build()
+
     val period2019SunW25: Period = Period.builder()
         .periodId("2019SunW25")
         .periodType(PeriodType.WeeklySunday)
@@ -275,6 +281,8 @@ object BaseEvaluatorSamples {
 
     val program: Program = Program.builder()
         .uid(generator.generate())
+        .name("Tracker program")
+        .displayName("Tracker program")
         .trackedEntityType(trackedEntityType)
         .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
         .build()
@@ -282,12 +290,15 @@ object BaseEvaluatorSamples {
     val programStage1: ProgramStage = ProgramStage.builder()
         .uid(generator.generate())
         .name("Program stage 1")
+        .displayName("Program stage 1")
         .program(ObjectWithUid.create(program.uid()))
         .formType(FormType.DEFAULT)
         .build()
 
     val programStage2: ProgramStage = ProgramStage.builder()
         .uid(generator.generate())
+        .name("Program stage 2")
+        .displayName("Program stage 2")
         .program(ObjectWithUid.create(program.uid()))
         .formType(FormType.DEFAULT)
         .build()

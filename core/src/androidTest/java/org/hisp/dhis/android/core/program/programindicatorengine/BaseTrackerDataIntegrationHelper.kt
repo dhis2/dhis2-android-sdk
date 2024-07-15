@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -151,8 +152,9 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         programIndicatorUid: String,
         programUid: String,
         expression: String,
+        analyticsType: AnalyticsType,
     ) {
-        insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE)
+        insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE, analyticsType)
     }
 
     fun insertProgramIndicator(
@@ -160,9 +162,16 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         programUid: String,
         expression: String,
         aggregationType: AggregationType,
+        analyticsType: AnalyticsType = AnalyticsType.ENROLLMENT,
     ) {
-        val programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
-            .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build()
+        val programIndicator = ProgramIndicator.builder()
+            .uid(programIndicatorUid)
+            .name(programIndicatorUid)
+            .displayName(programIndicatorUid)
+            .analyticsType(analyticsType)
+            .program(ObjectWithUid.create(programUid)).expression(expression)
+            .aggregationType(aggregationType)
+            .build()
         setProgramIndicator(programIndicator)
     }
 

@@ -62,6 +62,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     abstract val teiSingleFile: String
     abstract val teiWithRemovedDataFile: String
     abstract val teiWithRelationshipFile: String
+    abstract val teiAsRelationshipFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
     private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
@@ -156,7 +157,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     fun downloadAndPersistRelatedItems() {
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(teiWithRelationshipFile)
-        dhis2MockServer.enqueueMockResponse(teiCollectionFile)
+        dhis2MockServer.enqueueMockResponse(teiAsRelationshipFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
             .byProgramUid("IpHINAT79UW")

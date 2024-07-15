@@ -85,7 +85,7 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Core
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
 
         public abstract Builder id(Long id);
 

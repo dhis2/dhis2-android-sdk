@@ -43,7 +43,7 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
     @Test
     public void allow_access_to_system_setting() {
         List<SystemSetting> systemSettings = d2.settingModule().systemSetting().blockingGet();
-        assertThat(systemSettings.size()).isEqualTo(2);
+        assertThat(systemSettings.size()).isEqualTo(3);
     }
 
     @Test
@@ -56,6 +56,10 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<SystemSetting> systemSettingsStyle = d2.settingModule().systemSetting().byKey()
                 .eq(SystemSetting.SystemSettingKey.STYLE).blockingGet();
         assertThat(systemSettingsStyle.get(0).value()).isEqualTo("light_blue/light_blue.css");
+
+        List<SystemSetting> systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byKey()
+                .eq(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP).blockingGet();
+        assertThat(systemSettingsDefaultBaseMap.get(0).value()).isEqualTo("keyDefaultBaseMap");
     }
 
     @Test
@@ -68,6 +72,11 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<SystemSetting> systemSettingsStyle = d2.settingModule().systemSetting().byValue()
                 .eq("light_blue/light_blue.css").blockingGet();
         assertThat(systemSettingsStyle.get(0).key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
+
+        List<SystemSetting> systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byValue()
+                .eq("keyDefaultBaseMap").blockingGet();
+        assertThat(systemSettingsDefaultBaseMap.get(0).key())
+                .isEqualTo(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP);
     }
 
     @Test
@@ -82,5 +91,12 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
         SystemSetting systemSetting = d2.settingModule().systemSetting().style().blockingGet();
         assertThat(systemSetting.key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
         assertThat(systemSetting.value()).isEqualTo("light_blue/light_blue.css");
+    }
+
+    @Test
+    public void allow_access_to_default_base_map_settings() {
+        SystemSetting systemSetting = d2.settingModule().systemSetting().defaultBaseMap().blockingGet();
+        assertThat(systemSetting.key()).isEqualTo(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP);
+        assertThat(systemSetting.value()).isEqualTo("keyDefaultBaseMap");
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.CoreObject
 
-internal open class ObjectWithoutUidHandlerImpl<O : CoreObject?>(protected val store: ObjectWithoutUidStore<O>) :
+internal open class ObjectWithoutUidHandlerImpl<O : CoreObject>(protected val store: ObjectWithoutUidStore<O>) :
     HandlerBaseImpl<O>() {
 
     override fun deleteOrPersist(o: O): HandleAction {

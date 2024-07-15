@@ -124,19 +124,19 @@ class DatabasesConfigurationHelperShould {
 
     @Test
     fun add_new_configuration_to_empty() {
-        val config = helper.addAccount(null, url1, username1, false)
+        val config = helper.addOrUpdateAccount(null, url1, username1, false)
         assertThat(config).isEqualTo(singleServerSingleUserConfig)
     }
 
     @Test
     fun add_new_configuration_to_single_server_single_user_in_same_server() {
-        val config = helper.addAccount(singleServerSingleUserConfig, url1, username2, false)
+        val config = helper.addOrUpdateAccount(singleServerSingleUserConfig, url1, username2, false)
         assertThat(config).isEqualTo(singleServer2UserConfig)
     }
 
     @Test
     fun add_new_configuration_to_single_server_single_user_in_other_server() {
-        val config = helper.addAccount(singleServerSingleUserConfig, url2, username2, false)
+        val config = helper.addOrUpdateAccount(singleServerSingleUserConfig, url2, username2, false)
         assertThat(
             DatabaseConfigurationHelper
                 .getLoggedAccount(config, username2, url2),

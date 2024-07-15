@@ -56,6 +56,10 @@ object MapLayerTableInfo {
                     IMAGE_URL,
                     SUBDOMAINS,
                     SUBDOMAIN_PLACEHOLDER,
+                    CODE,
+                    MAP_SERVICE,
+                    IMAGE_FORMAT,
+                    LAYERS,
                 )
         }
 
@@ -69,6 +73,10 @@ object MapLayerTableInfo {
             const val IMAGE_URL = "imageUrl"
             const val SUBDOMAINS = "subdomains"
             const val SUBDOMAIN_PLACEHOLDER = "subdomainPlaceholder"
+            const val CODE = "code"
+            const val MAP_SERVICE = "mapService"
+            const val IMAGE_FORMAT = "imageFormat"
+            const val LAYERS = "layers"
         }
     }
 }

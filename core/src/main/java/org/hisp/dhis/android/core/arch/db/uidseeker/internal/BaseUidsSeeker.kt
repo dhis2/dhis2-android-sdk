@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.uidseeker.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
-internal open class BaseUidsSeeker constructor(private val databaseAdapter: DatabaseAdapter) {
+internal open class BaseUidsSeeker(private val databaseAdapter: DatabaseAdapter) {
 
     fun readSingleColumnResults(query: String): Set<String> {
         val cursor = databaseAdapter.rawQuery(query)

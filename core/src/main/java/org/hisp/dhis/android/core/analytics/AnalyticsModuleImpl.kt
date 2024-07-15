@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -37,6 +38,7 @@ internal class AnalyticsModuleImpl(
     private val eventLineListRepository: EventLineListRepository,
     private val analyticsRepository: AnalyticsRepository,
     private val analyticsVisualizationsRepository: AnalyticsVisualizationsRepository,
+    private val trackerLineListRepository: TrackerLineListRepository,
 ) : AnalyticsModule {
 
     override fun eventLineList(): EventLineListRepository = eventLineListRepository
@@ -44,4 +46,6 @@ internal class AnalyticsModuleImpl(
     override fun analytics(): AnalyticsRepository = analyticsRepository
 
     override fun visualizations(): AnalyticsVisualizationsRepository = analyticsVisualizationsRepository
+
+    override fun trackerLineList(): TrackerLineListRepository = trackerLineListRepository
 }

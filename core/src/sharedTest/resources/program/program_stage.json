@@ -18,6 +18,8 @@
   "captureCoordinates": true,
   "formType": "DEFAULT",
   "dueDateLabel": "Due date",
+  "programStageLabel": "ProgramStage Label",
+  "eventLabel": "Event Label",
   "remindCompleted": false,
   "displayGenerateEventBox": false,
   "validationStrategy": "ON_UPDATE_AND_INSERT",

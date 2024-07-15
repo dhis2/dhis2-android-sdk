@@ -31,22 +31,22 @@ package org.hisp.dhis.android.core.map.layer.internal.bing
 internal object BingBasemaps {
     val list: List<BingBasemap> = listOf(
         BingBasemap(
-            id = "ql5jVkAL1iy",
+            id = "bingLight",
             name = "Bing Road",
             style = "CanvasLight",
         ),
         BingBasemap(
-            id = "PwJ1fQoTthh",
+            id = "bingDark",
             name = "Bing Dark",
             style = "CanvasDark",
         ),
         BingBasemap(
-            id = "kKJNmY2yYtM",
+            id = "bingAerial",
             name = "Bing Aerial",
             style = "Aerial",
         ),
         BingBasemap(
-            id = "TfK2zM71AHJ",
+            id = "bingHybrid",
             name = "Bing Aerial Labels",
             style = "AerialWithLabelsOnDemand",
         ),

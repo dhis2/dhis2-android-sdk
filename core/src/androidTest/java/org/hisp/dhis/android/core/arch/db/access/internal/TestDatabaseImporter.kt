@@ -28,44 +28,36 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
-import androidx.test.platform.app.InstrumentationRegistry
-import java.io.*
+import java.io.File
 
 class TestDatabaseImporter {
 
-    fun copyDatabaseFromAssets(filename: String = FILESYSTEM_DB_NAME) {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val databasePath = context.applicationInfo?.dataDir + "/databases"
-        val outputFile = databaseFile(context, filename)
-        if (outputFile.exists()) {
-            return
+    fun validDatabaseFile(context: Context): File {
+        return copyAssetsFileToFilesDir(context, VALID_DATABASE_FILE)
+    }
+
+    fun invalidDatabaseFile(context: Context): File {
+        return copyAssetsFileToFilesDir(context, INVALID_DATABASE_FILE)
+    }
+
+    fun noZipFile(context: Context): File {
+        return copyAssetsFileToFilesDir(context, NO_ZIP_FILE)
+    }
+
+    private fun copyAssetsFileToFilesDir(context: Context, filename: String): File {
+        val outputFile = context.filesDir.resolve(filename).also { it.delete() }
+
+        context.assets.open("databases/$filename").use { fis ->
+            outputFile.outputStream().use { fos ->
+                fis.copyTo(fos)
+            }
         }
-        val inputStream = context.assets.open("databases/$ASSETS_DB_NAME")
-        val outputStream = FileOutputStream("$databasePath/$filename")
-        writeExtractedFileToDisk(inputStream, outputStream)
-    }
 
-    @Throws(IOException::class)
-    private fun writeExtractedFileToDisk(input: InputStream, output: OutputStream) {
-        val buffer = ByteArray(1024)
-        var length: Int
-        length = input.read(buffer)
-        while (length > 0) {
-            output.write(buffer, 0, length)
-            length = input.read(buffer)
-        }
-        output.flush()
-        output.close()
-        input.close()
+        return outputFile
     }
-
-    fun databaseFile(context: Context, filename: String = FILESYSTEM_DB_NAME): File {
-        val databasePath = context.applicationInfo?.dataDir + "/databases"
-        return File("$databasePath/$filename")
-    }
-
     companion object {
-        const val ASSETS_DB_NAME = "test-database.db"
-        const val FILESYSTEM_DB_NAME = "test-database.db"
+        const val VALID_DATABASE_FILE = "export-database.zip"
+        const val INVALID_DATABASE_FILE = "corrupted-database.zip"
+        const val NO_ZIP_FILE = "test-database.db"
     }
 }

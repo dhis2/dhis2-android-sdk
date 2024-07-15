@@ -50,7 +50,6 @@ internal data class JobValidationReport(
 
 internal data class JobObjectReport(
     val errorReports: List<String>,
-    val index: Int,
     val trackerType: TrackerImporterObjectType,
     val uid: String,
 )

@@ -38,7 +38,7 @@ public abstract class RelationshipDeleteSummary extends BaseImportSummary {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseImportSummary.Builder<Builder> {
+    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
 
         public abstract RelationshipDeleteSummary build();
 

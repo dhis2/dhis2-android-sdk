@@ -31,14 +31,15 @@ plugins {
     id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.16"
     id("kotlin-android")
     id("kotlin-kapt")
+
+    // EySeeTea customization - This give error and I think is not used by us
+/*    id("maven-publish-conventions")
+    id("jacoco-conventions")*/
     alias(libs.plugins.detekt)
-    alias(libs.plugins.dokka) apply false
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
 apply(from = project.file("plugins/android-pmd.gradle"))
-apply(from = project.file("plugins/jacoco.gradle.kts"))
-apply(from = project.file("plugins/gradle-mvn-push.gradle"))
 
 repositories {
     mavenCentral()
@@ -53,7 +54,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
+        testOptions.targetSdk = libs.versions.targetSdkVersion.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
@@ -111,6 +112,12 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    // EyeSeeTea customization - Until I add this line, the build fails because
+    // ksp not generating ksp modules
+    ksp {
+        arg("koin.codegen.module.package", "org.hisp.dhis.android.core")
+    }
 }
 
 dependencies {
@@ -123,7 +130,7 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.annotation)
-    api(libs.androidx.paging)
+    api(libs.androidx.paging.runtime)
 
     // Auto Value
     api(libs.google.auto.value.annotation)
@@ -162,6 +169,8 @@ dependencies {
     // From SQLCipher 4.5.5, it depends on androidx.sqlite:sqlite
     api(libs.sqlite)
 
+    implementation(libs.zip4j)
+
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
 
@@ -188,6 +197,7 @@ dependencies {
         exclude(group = "junit") // Android has JUnit built in.
     }
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.paging.testing)
 
     debugImplementation(libs.facebook.soloader)
     debugImplementation(libs.facebook.flipper.core)
@@ -204,3 +214,17 @@ detekt {
     parallel = true
     buildUponDefaultConfig = false
 }
+
+// EyeSeeTea customization - not used by us?
+/*tasks.dokkaJavadoc.configure {
+    dependsOn("kaptReleaseKotlin")
+
+    dokkaSourceSets {
+        configureEach {
+            perPackageOption {
+                matchingRegex.set(".*.internal.*")
+                suppress.set(true)
+            }
+        }
+    }
+}*/

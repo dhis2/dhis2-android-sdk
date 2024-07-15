@@ -39,6 +39,7 @@ class SystemSettingSplitterShould {
     private val settings: SystemSettings = SystemSettings(
         keyFlag = "aFlag",
         keyStyle = "aStyle",
+        keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
     )
 
@@ -59,6 +60,15 @@ class SystemSettingSplitterShould {
         settingList[1].let { style ->
             assertThat(style.key()).isEqualTo(SystemSettingKey.STYLE)
             assertThat(style.value()).isEqualTo("aStyle")
+        }
+    }
+
+    @Test
+    fun build_default_base_map_setting() {
+        val settingList = systemSettingsSplitter.splitSettings(settings)
+        settingList[2].let { style ->
+            assertThat(style.key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
+            assertThat(style.value()).isEqualTo("aDefaultBaseMap")
         }
     }
 }

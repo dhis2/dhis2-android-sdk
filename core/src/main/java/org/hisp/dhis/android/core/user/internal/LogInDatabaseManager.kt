@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.koin.core.annotation.Singleton
@@ -59,5 +61,15 @@ internal class LogInDatabaseManager(
             serverUrl,
             username,
         )
+    }
+
+    fun isPendingToImportDB(serverUrl: String, username: String): Boolean {
+        val existingAccount = multiUserDatabaseManager.getAccount(serverUrl, username)
+        return existingAccount?.importDB()?.status() == DatabaseAccountImportStatus.PENDING_TO_IMPORT
+    }
+
+    fun importDB(serverUrl: String, credentials: Credentials) {
+        val existingAccount = multiUserDatabaseManager.getAccount(serverUrl, credentials.username)!!
+        multiUserDatabaseManager.importAndLoadDb(existingAccount, credentials.password!!)
     }
 }

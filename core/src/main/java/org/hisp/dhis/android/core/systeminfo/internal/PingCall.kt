@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class PingCall internal constructor(
+internal class PingCall internal constructor(
     private val pingService: PingService,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {

@@ -28,13 +28,15 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 
 internal data class FileResourceDownloadParams(
-    val valueTypes: List<FileResourceValueType> = FileResourceValueType.values().asList(),
-    val elementTypes: List<FileResourceElementType> = FileResourceElementType.values().asList(),
-    val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.values().asList(),
+    val valueTypes: List<FileResourceValueType> = FileResourceValueType.entries,
+    val elementTypes: List<FileResourceElementType> = FileResourceElementType.entries,
+    val dataDomainTypes: List<FileResourceDataDomainType> = FileResourceDataDomainType.entries,
+    val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.entries,
     val maxContentLength: Int? = null,
 ) : BaseScope

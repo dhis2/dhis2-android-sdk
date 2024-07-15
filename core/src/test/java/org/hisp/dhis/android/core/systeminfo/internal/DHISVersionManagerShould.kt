@@ -60,16 +60,36 @@ class DHISVersionManagerShould {
         assertThat(dhisVersionManager.isVersion(DHISVersion.V2_31)).isTrue()
         assertThat(dhisVersionManager.isVersion(DHISVersion.V2_32)).isFalse()
         assertThat(dhisVersionManager.isVersion(DHISVersion.V2_33)).isFalse()
+        assertThat(dhisVersionManager.isVersion(DHISVersion.UNKNOWN)).isFalse()
 
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_30)).isTrue()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_31)).isFalse()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isFalse()
         assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isFalse()
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.UNKNOWN)).isFalse()
 
         assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_30)).isTrue()
         assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_31)).isTrue()
         assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_32)).isFalse()
         assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_33)).isFalse()
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.UNKNOWN)).isFalse()
+    }
+
+    @Test
+    fun compare_version_when_unknown() {
+        dhisVersionManager.setBypassVersion(true)
+        whenever(systemInfo.version()).thenReturn(DHISVersion.UNKNOWN.name)
+
+        assertThat(dhisVersionManager.isVersion(DHISVersion.V2_33)).isFalse()
+        assertThat(dhisVersionManager.isVersion(DHISVersion.UNKNOWN)).isTrue()
+
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_32)).isTrue()
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).isTrue()
+        assertThat(dhisVersionManager.isGreaterThan(DHISVersion.UNKNOWN)).isFalse()
+
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_32)).isTrue()
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_33)).isTrue()
+        assertThat(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.UNKNOWN)).isTrue()
     }
 
     @Test(expected = D2Error::class)
@@ -88,6 +108,16 @@ class DHISVersionManagerShould {
     fun return_null_if_unknown_patch_version() {
         whenever(systemInfo.version()).thenReturn("2.39.5.1")
         assertThat(dhisVersionManager.getPatchVersion()).isNull()
+    }
+
+    @Test
+    fun return_unknown_if_unknown_patch_version_and_bypass_dhis2_version_is_true() {
+        dhisVersionManager.setBypassVersion(true)
+        whenever(systemInfo.version()).thenReturn("2.100.100")
+        assertThat(dhisVersionManager.getPatchVersion()).isEqualTo(DHISPatchVersion.UNKNOWN)
+
+        whenever(systemInfo.version()).thenReturn("2.100.0")
+        assertThat(dhisVersionManager.getPatchVersion()).isEqualTo(DHISPatchVersion.UNKNOWN)
     }
 
     @Test

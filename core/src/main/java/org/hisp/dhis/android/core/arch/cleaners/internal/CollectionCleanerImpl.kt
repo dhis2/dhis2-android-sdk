@@ -28,25 +28,27 @@
 package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal open class CollectionCleanerImpl<P : ObjectWithUidInterface>(
-    private val tableName: String,
-    private val databaseAdapter: DatabaseAdapter,
-) : CollectionCleaner<P> {
+    tableName: String,
+    databaseAdapter: DatabaseAdapter,
+) : CollectionCleaner<P>,
+    BaseCollectionCleaner(
+        tableName = tableName,
+        databaseAdapter = databaseAdapter,
+        key = IdentifiableColumns.UID,
+    ) {
 
     override fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {
             return false
         }
-        return deleteNotPresentByUid(objects.map { it.uid() })
+        return deleteNotPresentByKey(objects.map { it.uid() })
     }
 
     override fun deleteNotPresentByUid(uids: Collection<String>): Boolean {
-        val objectUids = CollectionsHelper.commaAndSpaceSeparatedCollectionValues(uids.map { "'$it'" })
-        val clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");"
-        return databaseAdapter.delete(tableName, clause, null) > 0
+        return deleteNotPresentByKey(uids)
     }
 }

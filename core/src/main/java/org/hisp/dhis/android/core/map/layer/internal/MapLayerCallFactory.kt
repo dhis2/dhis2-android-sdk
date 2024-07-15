@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingCallFactory
+import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerCallFactory
 import org.hisp.dhis.android.core.map.layer.internal.osm.OSMCallFactory
 import org.koin.core.annotation.Singleton
 
@@ -38,10 +39,14 @@ import org.koin.core.annotation.Singleton
 internal class MapLayerCallFactory(
     private val osmCallFactory: OSMCallFactory,
     private val bingCallFactory: BingCallFactory,
+    private val externalMapLayerCallFactory: ExternalMapLayerCallFactory,
+    private val mapLayerCollectionCleaner: MapLayerCollectionCleaner,
 ) {
 
     suspend fun downloadMetadata(): List<MapLayer> {
-        return flowOf(osmCallFactory.download(), bingCallFactory.download()).toList()
+        return flowOf(osmCallFactory.download(), bingCallFactory.download(), externalMapLayerCallFactory.download())
+            .toList()
             .flatten()
+            .also { mapLayerCollectionCleaner.deleteNotPresent(it) }
     }
 }

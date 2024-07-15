@@ -81,7 +81,7 @@ public abstract class ForeignKeyViolation extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder fromTable(String fromTable);
 

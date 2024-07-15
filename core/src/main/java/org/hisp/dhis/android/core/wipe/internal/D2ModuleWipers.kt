@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleWiper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceModuleWiper
+import org.hisp.dhis.android.core.icon.internal.IconModuleWiper
 import org.hisp.dhis.android.core.imports.internal.ImportModuleWiper
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleWiper
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleWiper
@@ -76,6 +77,7 @@ internal class D2ModuleWipers(
     event: EventModuleWiper,
     expressionDimensionItem: ExpressionDimensionItemModuleWiper,
     fileResource: FileResourceModuleWiper,
+    icon: IconModuleWiper,
     importModule: ImportModuleWiper,
     indicator: IndicatorModuleWiper,
     legendSet: LegendSetModuleWiper,
@@ -114,6 +116,7 @@ internal class D2ModuleWipers(
             event,
             expressionDimensionItem,
             fileResource,
+            icon,
             importModule,
             indicator,
             legendSet,

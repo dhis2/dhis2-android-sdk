@@ -43,7 +43,7 @@ public abstract class BaseDeletableDataObject extends BaseDataObject implements 
     public abstract Boolean deleted();
 
     @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseDataObject.Builder<T> {
+    protected abstract static class Builder<T extends Builder> extends BaseDataObject.Builder<T> {
         public abstract T deleted(@Nullable Boolean deleted);
     }
 }

@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentDIModule
 import org.hisp.dhis.android.core.event.EventDIModule
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemDIModule
 import org.hisp.dhis.android.core.fileresource.FileResourceDIModule
+import org.hisp.dhis.android.core.icon.IconDIModule
 import org.hisp.dhis.android.core.imports.ImportsDIModule
 import org.hisp.dhis.android.core.indicator.IndicatorDIModule
 import org.hisp.dhis.android.core.legendset.LegendSetDIModule
@@ -109,6 +110,7 @@ internal object D2DIComponentFactory {
                     EventDIModule().module,
                     ExpressionDimensionItemDIModule().module,
                     FileResourceDIModule().module,
+                    IconDIModule().module,
                     ImportsDIModule().module,
                     IndicatorDIModule().module,
                     LegendSetDIModule().module,

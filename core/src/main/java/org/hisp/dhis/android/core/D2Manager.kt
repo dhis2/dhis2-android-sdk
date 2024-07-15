@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
-import org.koin.ksp.generated.*
 
 /**
  * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a

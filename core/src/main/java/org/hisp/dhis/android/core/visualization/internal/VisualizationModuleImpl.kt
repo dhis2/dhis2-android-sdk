@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 import org.hisp.dhis.android.core.visualization.VisualizationModule
 import org.koin.core.annotation.Singleton
@@ -34,7 +35,10 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class VisualizationModuleImpl(
     private val visualizations: VisualizationCollectionRepository,
+    private val trackerVisualizations: TrackerVisualizationCollectionRepository,
 ) : VisualizationModule {
 
     override fun visualizations(): VisualizationCollectionRepository = visualizations
+
+    override fun trackerVisualizations(): TrackerVisualizationCollectionRepository = trackerVisualizations
 }

@@ -3,6 +3,10 @@ pipeline {
         label "ec2-android"
     }
 
+    options {
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
     stages{
         stage('Checks') {
             steps {

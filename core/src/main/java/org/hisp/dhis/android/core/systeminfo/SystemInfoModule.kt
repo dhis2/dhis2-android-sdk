@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.systeminfo
 interface SystemInfoModule {
     fun versionManager(): DHISVersionManager
     fun systemInfo(): SystemInfoObjectRepository
+    fun ping(): Ping
 }

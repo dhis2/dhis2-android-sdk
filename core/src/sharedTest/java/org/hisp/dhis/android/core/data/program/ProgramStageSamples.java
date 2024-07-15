@@ -73,6 +73,8 @@ public class ProgramStageSamples {
                 .access(Access.create(false, false, DataAccess.create(true, true)))
                 .remindCompleted(Boolean.FALSE)
                 .validationStrategy(ValidationStrategy.ON_UPDATE_AND_INSERT)
+                .programStageLabel("programStageLabel")
+                .eventLabel("eventLabel")
                 .build();
     }
 

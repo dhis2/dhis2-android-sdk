@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Indicator.Builder.class)
+@JsonDeserialize(builder = AutoValue_Indicator.Builder.class)
 public abstract class Indicator extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<Indicator, Indicator.Builder> {
 
@@ -103,8 +103,8 @@ public abstract class Indicator extends BaseNameableObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<Indicator, Builder> {
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<Indicator, Indicator.Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder annualized(Boolean annualized);

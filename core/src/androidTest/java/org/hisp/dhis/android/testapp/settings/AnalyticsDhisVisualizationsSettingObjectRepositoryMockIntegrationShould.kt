@@ -46,6 +46,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
         assertThat(
             analyticsDhisVisualizationsSetting.home().first().visualizations().first().name(),
         ).isNotEmpty()
+        assertThat(analyticsDhisVisualizationsSetting.home().first().visualizations().size).isEqualTo(3)
 
         assertThat(analyticsDhisVisualizationsSetting.program().size).isEqualTo(1)
         assertThat(analyticsDhisVisualizationsSetting.dataSet().size).isEqualTo(1)
@@ -60,7 +61,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .blockingGetByProgram("IpHINAT79UW")
 
         assertThat(programSettings?.size).isEqualTo(1)
-        assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(2)
+        assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(1)
         assertThat(
             programSettings?.first()?.visualizations()?.first()?.uid(),
         ).isEqualTo("PYBH8ZaAQnC")

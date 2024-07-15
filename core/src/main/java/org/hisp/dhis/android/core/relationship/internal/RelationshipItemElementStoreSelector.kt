@@ -32,4 +32,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 
 internal interface RelationshipItemElementStoreSelector {
     fun getElementStore(item: RelationshipItem?): StoreWithState<*>
+
+    fun getElementStore(item: RelationshipItemRelative): StoreWithState<*>
 }

@@ -29,4 +29,6 @@ package org.hisp.dhis.android.core.visualization
 
 interface VisualizationModule {
     fun visualizations(): VisualizationCollectionRepository
+
+    fun trackerVisualizations(): TrackerVisualizationCollectionRepository
 }

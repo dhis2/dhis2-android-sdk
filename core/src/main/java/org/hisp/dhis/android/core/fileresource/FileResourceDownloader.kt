@@ -71,6 +71,10 @@ class FileResourceDownloader internal constructor(
         return connectorFactory.listConnector { list -> params.copy(elementTypes = list) }
     }
 
+    fun byDataDomainType(): ListFilterConnector<FileResourceDownloader, FileResourceDataDomainType> {
+        return connectorFactory.listConnector { list -> params.copy(dataDomainTypes = list) }
+    }
+
     fun byDomainType(): ListFilterConnector<FileResourceDownloader, FileResourceDomainType> {
         return connectorFactory.listConnector { list -> params.copy(domainTypes = list) }
     }

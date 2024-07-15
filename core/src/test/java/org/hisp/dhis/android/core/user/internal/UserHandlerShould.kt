@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
+import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
 import org.junit.Before
 import org.junit.Test
@@ -44,8 +45,11 @@ class UserHandlerShould {
     private val userStore: UserStore = mock()
     private val userRoleHandler: UserRoleHandler = mock()
     private val userRoleCollectionCleaner: UserRoleCollectionCleaner = mock()
+    private val userGroupHandler: UserGroupHandler = mock()
+    private val userGroupCollectionCleaner: UserGroupCollectionCleaner = mock()
 
     private val userRoles: List<UserRole> = mock()
+    private val userGroups: List<UserGroup> = mock()
 
     private lateinit var user: User
     private lateinit var userCredentials: UserCredentials
@@ -55,7 +59,10 @@ class UserHandlerShould {
 
     @Before
     fun setUp() {
-        userHandler = UserHandler(userStore, userRoleHandler, userRoleCollectionCleaner)
+        userHandler = UserHandler(
+            userStore, userRoleHandler, userRoleCollectionCleaner, userGroupHandler,
+            userGroupCollectionCleaner,
+        )
         userCredentials = UserCredentials.builder()
             .username("username")
             .userRoles(userRoles)
@@ -63,6 +70,7 @@ class UserHandlerShould {
         user = User.builder()
             .uid("userUid")
             .userCredentials(userCredentials)
+            .userGroups(userGroups)
             .build()
 
         whenever(userStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
@@ -71,16 +79,25 @@ class UserHandlerShould {
     @Test
     fun extend_identifiable_sync_handler_impl() {
         val genericHandler: IdentifiableHandlerImpl<User> =
-            UserHandler(userStore, userRoleHandler, userRoleCollectionCleaner)
+            UserHandler(
+                userStore,
+                userRoleHandler,
+                userRoleCollectionCleaner,
+                userGroupHandler,
+                userGroupCollectionCleaner,
+            )
 
         assertThat(genericHandler).isNotNull()
     }
 
     @Test
-    fun add_username_and_roles_from_credentials() {
+    fun add_username_groups_and_roles_from_credentials() {
         userHandler.handle(user)
 
         verify(userRoleCollectionCleaner, times(1)).deleteNotPresent(eq(userRoles))
         verify(userRoleHandler, times(1)).handleMany(eq(userRoles))
+
+        verify(userGroupCollectionCleaner, times(1)).deleteNotPresent(eq(userGroups))
+        verify(userGroupHandler, times(1)).handleMany(eq(userGroups))
     }
 }

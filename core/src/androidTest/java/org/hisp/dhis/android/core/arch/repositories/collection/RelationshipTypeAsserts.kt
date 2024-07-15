@@ -52,14 +52,34 @@ internal object RelationshipTypeAsserts : BaseRealIntegrationTest() {
     fun assertTypeWithConstraints(target: RelationshipType, reference: RelationshipType) {
         val prunedTarget = target.toBuilder()
             .id(null)
-            .toConstraint(target.toConstraint()?.toBuilder()?.id(null)?.build())
-            .fromConstraint(target.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .toConstraint(
+                target.toConstraint()?.toBuilder()?.id(null)
+                    ?.trackerDataView(
+                        target.toConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
+                    )?.build(),
+            )
+            .fromConstraint(
+                target.fromConstraint()?.toBuilder()?.id(null)
+                    ?.trackerDataView(
+                        target.fromConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
+                    )?.build(),
+            )
             .build()
 
         val prunedReference = reference.toBuilder()
             .id(null)
-            .toConstraint(reference.toConstraint()?.toBuilder()?.id(null)?.build())
-            .fromConstraint(reference.fromConstraint()?.toBuilder()?.id(null)?.build())
+            .toConstraint(
+                reference.toConstraint()?.toBuilder()?.id(null)
+                    ?.trackerDataView(
+                        reference.toConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
+                    )?.build(),
+            )
+            .fromConstraint(
+                reference.fromConstraint()?.toBuilder()?.id(null)
+                    ?.trackerDataView(
+                        reference.fromConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
+                    )?.build(),
+            )
             .build()
 
         assertThat(prunedTarget).isEqualTo(prunedReference)

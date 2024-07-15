@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.koin.core.annotation.Singleton
 
@@ -42,7 +42,7 @@ internal class JobReportFileResourceHandler internal constructor(
 
         val fileResources = jobObjects.flatMap { it.fileResources() }
 
-        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDomainType.TRACKER)
+        fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDataDomainType.TRACKER)
 
         progress.increaseProgress(FileResource::class.java, false)
     }

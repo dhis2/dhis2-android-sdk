@@ -63,6 +63,14 @@ public class UserModuleMockIntegrationShould extends BaseMockIntegrationTestFull
     }
 
     @Test
+    public void allow_access_to_user_group() {
+        List<UserGroup> userGroups = d2.userModule().userGroups().blockingGet();
+        assertThat(userGroups.get(0).uid()).isEqualTo("Kk12LkEWtXp");
+        assertThat(userGroups.get(0).name()).isEqualTo("_PROGRAM_TB program");
+        assertThat(userGroups.get(0).displayName()).isEqualTo("_PROGRAM_TB program");
+    }
+
+    @Test
     public void allow_access_to_user() {
         User user = d2.userModule().user().blockingGet();
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");

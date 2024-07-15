@@ -93,7 +93,7 @@ public abstract class InternalStockUseCase extends BaseObject implements ObjectW
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty("programUid")

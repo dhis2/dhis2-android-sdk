@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search
 import androidx.paging.ItemKeyedDataSource
 import org.hisp.dhis.android.core.arch.helpers.Result
 
-internal class TrackedEntitySearchDataSource constructor(
+internal class TrackedEntitySearchDataSource(
     private val dataFetcher: TrackedEntitySearchDataFetcher,
 ) : ItemKeyedDataSource<TrackedEntitySearchItem, TrackedEntitySearchItem>() {
 

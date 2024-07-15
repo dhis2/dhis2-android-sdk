@@ -274,6 +274,25 @@ class ExpressionServiceShould {
     }
 
     @Test
+    fun evaluate_contains() {
+        assertEqual("contains('ALLERGY,LATEX', 'ALLERGY')", true)
+        assertEqual("contains('ALLERGY,LATEX', 'LATEX', 'ALLERGY')", true)
+        assertEqual("contains('ALLERGY,LATEX', 'ALLE')", true)
+        assertEqual("contains('ALLERGY,LATEX', 'RGY,LAT')", true)
+        assertEqual("contains('abcdef', 'abcdef')", true)
+        assertEqual("contains('abcdef', 'bcd')", true)
+        assertEqual("contains('abcdef', 'xyz')", false)
+
+        assertEqual("containsItems('ALLERGY,LATEX', 'ALLERGY')", true)
+        assertEqual("containsItems('ALLERGY,LATEX', 'LATEX', 'ALLERGY')", true)
+        assertEqual("containsItems('ALLERGY,LATEX', 'ALLE')", false)
+        assertEqual("containsItems('ALLERGY,LATEX', 'RGY,LAT')", false)
+        assertEqual("containsItems('abcdef', 'abcdef')", true)
+        assertEqual("containsItems('abcdef', 'bcd')", false)
+        assertEqual("containsItems('abcdef', 'xyz')", false)
+    }
+
+    @Test
     fun evaluate_divide_by_zero() {
         assertThat(service.getExpressionValue("4 / 0")).isEqualTo(null)
     }
@@ -394,6 +413,10 @@ class ExpressionServiceShould {
             service.regenerateExpression(expression, context)
 
         assertThat(regeneratedExpression).isEqualTo("5.0 + " + de(dataElementId2))
+    }
+
+    private fun assertEqual(expression: String, result: Any) {
+        assertThat(service.getExpressionValue(expression)).isEqualTo(result)
     }
 
     private fun constant(uid: String): String {

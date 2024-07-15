@@ -64,9 +64,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     override fun setUp() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
-        trackedEntityInstanceService = d2.retrofit().create(
-            TrackedEntityInstanceService::class.java,
-        )
+        trackedEntityInstanceService = TrackedEntityInstanceService(d2.ktor())
     }
 
     // @Test

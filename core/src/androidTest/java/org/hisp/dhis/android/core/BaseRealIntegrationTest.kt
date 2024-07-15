@@ -59,7 +59,7 @@ abstract class BaseRealIntegrationTest {
     internal fun getGenericCallData(d2: D2): GenericCallData {
         return GenericCallData.create(
             d2.databaseAdapter(),
-            d2.retrofit(),
+            d2.ktor(),
             ResourceHandler.create(d2.databaseAdapter()),
             d2.systemInfoModule().versionManager(),
         )

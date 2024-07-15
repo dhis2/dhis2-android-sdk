@@ -27,17 +27,17 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import retrofit2.Retrofit
 
-object EventCallFactory {
+internal object EventCallFactory {
     @JvmStatic
     suspend fun create(
-        retrofit: Retrofit,
+        httpClient: KtorServiceClient,
         orgUnit: String?,
         pageSize: Int,
         uids: Collection<String> = emptyList(),
@@ -59,7 +59,7 @@ object EventCallFactory {
         )
 
         return OldEventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
+            EventService(httpClient)
         ).getCollectionCall(eventQuery)
     }
 }

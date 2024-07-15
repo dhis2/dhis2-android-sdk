@@ -36,7 +36,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.lang.Exception
 
-internal class D2HttpException(val response: D2HttpResponse) : Exception() {
+class D2HttpException(val response: D2HttpResponse) : Exception() {
     override val message: String?
         get() = this.response.message
 }

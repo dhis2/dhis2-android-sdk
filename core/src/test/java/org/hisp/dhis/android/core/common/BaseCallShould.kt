@@ -25,69 +25,74 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import org.hisp.dhis.android.core.arch.api.testutils.KtorFactory.fromServerUrl
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.Transaction
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.mockito.ArgumentMatchers
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import java.util.Date
+import javax.net.ssl.HttpsURLConnection
 
-import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Date;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
-public abstract class BaseCallShould {
+abstract class BaseCallShould {
+    @Mock
+    protected lateinit var databaseAdapter: DatabaseAdapter
 
     @Mock
-    protected DatabaseAdapter databaseAdapter;
-
-    protected Retrofit retrofit;
+    protected lateinit var serverDate: Date
 
     @Mock
-    protected Date serverDate;
+    internal lateinit var resourceHandler: ResourceHandler
 
     @Mock
-    protected ResourceHandler resourceHandler;
+    protected lateinit var genericCallData: GenericCallData
 
     @Mock
-    protected GenericCallData genericCallData;
+    protected lateinit var transaction: Transaction
 
     @Mock
-    protected Transaction transaction;
+    protected lateinit var d2Error: D2Error
 
-    @Mock
-    protected D2Error d2Error;
+    protected lateinit var errorResponse: D2HttpException
 
-    protected Response errorResponse;
+    @Throws(Exception::class)
+    open fun setUp() {
+        MockitoAnnotations.initMocks(this)
 
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        var httpClient = fromServerUrl("https://fake.dhis.org")
 
-        retrofit = RetrofitFactory.fromServerUrl("https://fake.dhis.org");
+        Mockito.`when`(genericCallData.databaseAdapter()).thenReturn(databaseAdapter)
+        Mockito.`when`(genericCallData.httpClient()).thenReturn(httpClient)
+        Mockito.`when`(
+            genericCallData.resourceHandler()
+        ).thenReturn(resourceHandler)
 
-        when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
-        when(genericCallData.retrofit()).thenReturn(retrofit);
-        when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
+        Mockito.`when`(
+            resourceHandler.getLastUpdated(
+                ArgumentMatchers.any(
+                    Resource.Type::class.java
+                )
+            )
+        ).thenReturn(null)
 
-        when(resourceHandler.getLastUpdated(any(Resource.Type.class))).thenReturn(null);
+        Mockito.`when`(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
 
-        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
-
-        errorResponse = Response.error(
+        errorResponse = D2HttpException(
+            D2HttpResponse(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
-                ResponseBody.create(MediaType.parse("application/json"), "{}"));
+                "",
+                "{}",
+                null
+            )
+        )
     }
 }

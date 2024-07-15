@@ -86,10 +86,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     override fun setUp() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
-        trackedEntityInstanceService = d2.retrofit().create(
-            TrackedEntityInstanceService::class.java,
-        )
-        ownershipService = d2.retrofit().create(OwnershipService::class.java)
+        trackedEntityInstanceService = TrackedEntityInstanceService(d2.ktor())
+        ownershipService = OwnershipService(d2.ktor())
         login()
     }
 

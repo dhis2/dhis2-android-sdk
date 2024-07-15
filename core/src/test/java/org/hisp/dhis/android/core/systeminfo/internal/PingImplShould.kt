@@ -34,6 +34,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -82,7 +83,7 @@ class PingImplShould {
             val d2Error = cause as D2Error
             assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
             assertThat(d2Error.errorDescription()).isEqualTo("Unable to ping the server.")
-//            assertThat((d2Error.originalException() as D2HttpException).response.statusCode).isEqualTo(500)
+            assertThat(d2Error.originalException()?.message).isEqualTo("Ping to the server failed with status code: 500")
         }
     }
 }

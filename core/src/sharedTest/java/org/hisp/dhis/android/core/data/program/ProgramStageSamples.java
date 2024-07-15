@@ -51,8 +51,8 @@ public class ProgramStageSamples {
                 .id(1L)
                 .description("description")
                 .displayDescription("display_description")
-                .executionDateLabel("execution_date_label")
-                .dueDateLabel("due_date_label")
+                .displayExecutionDateLabel("execution_date_label")
+                .displayDueDateLabel("due_date_label")
                 .allowGenerateNextVisit(Boolean.FALSE)
                 .validCompleteOnly(Boolean.TRUE)
                 .reportDateToUse("report_date_to_use")
@@ -73,8 +73,8 @@ public class ProgramStageSamples {
                 .access(Access.create(false, false, DataAccess.create(true, true)))
                 .remindCompleted(Boolean.FALSE)
                 .validationStrategy(ValidationStrategy.ON_UPDATE_AND_INSERT)
-                .programStageLabel("programStageLabel")
-                .eventLabel("eventLabel")
+                .displayProgramStageLabel("programStageLabel")
+                .displayEventLabel("eventLabel")
                 .build();
     }
 

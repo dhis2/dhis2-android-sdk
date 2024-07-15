@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore.internal
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.koin.core.annotation.Singleton
-import retrofit2.http.*
 
 @Singleton
 internal class DataStoreService(private val client: KtorServiceClient) {

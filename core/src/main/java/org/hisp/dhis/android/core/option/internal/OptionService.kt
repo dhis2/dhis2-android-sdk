@@ -32,11 +32,9 @@ import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.Option
 import org.koin.core.annotation.Singleton
-import retrofit2.http.GET
 
 @Singleton
 internal class OptionService(private val client: KtorServiceClient) {
-    @GET("options")
     suspend fun getOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,

@@ -28,14 +28,18 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface SystemInfoService {
-    @GET("system/info")
-    suspend fun getSystemInfo(
-        @Query("fields") @Which fields: Fields<SystemInfo>,
-    ): SystemInfo
+@Singleton
+internal class SystemInfoService(private val client: KtorServiceClient) {
+    suspend fun getSystemInfo(fields: Fields<SystemInfo>): SystemInfo {
+        return client.get {
+            url("system/info")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 }

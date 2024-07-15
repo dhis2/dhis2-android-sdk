@@ -35,6 +35,9 @@ internal class RequestBuilder(private val baseUrl: String) {
     var body: Any? = null
         private set
 
+    var authorizationHeader: String? = null
+        private set
+
     var parameters: MutableList<Pair<String, String>> = mutableListOf()
         private set
 
@@ -46,6 +49,10 @@ internal class RequestBuilder(private val baseUrl: String) {
 
     fun absoluteUrl(url: String) {
         this.url = url
+    }
+
+    fun authorizationHeader(header: String?) {
+        this.authorizationHeader = header
     }
 
     fun body(body: Any?) {

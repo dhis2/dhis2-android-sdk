@@ -29,28 +29,45 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterAPI37
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface TrackedEntityInstanceFilterService {
-    @GET("trackedEntityInstanceFilters")
+@Singleton
+internal class TrackedEntityInstanceFilterService(private val client: KtorServiceClient) {
     suspend fun getTrackedEntityInstanceFiltersAPI37(
-        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter>,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("fields") @Which fields: Fields<TrackedEntityInstanceFilter>,
-        @Query("paging") paging: Boolean,
-    ): Payload<TrackedEntityInstanceFilterAPI37>
+        uids: Filter<TrackedEntityInstanceFilter>,
+        accessDataReadFilter: String,
+        fields: Fields<TrackedEntityInstanceFilter>,
+        paging: Boolean,
+    ): Payload<TrackedEntityInstanceFilterAPI37> {
+        return client.get {
+            url("trackedEntityInstanceFilters")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter" to accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 
-    @GET("trackedEntityInstanceFilters")
     suspend fun getTrackedEntityInstanceFilters(
-        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter>,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("fields") @Which fields: Fields<TrackedEntityInstanceFilter>,
-        @Query("paging") paging: Boolean,
-    ): Payload<TrackedEntityInstanceFilter>
+        uids: Filter<TrackedEntityInstanceFilter>,
+        accessDataReadFilter: String,
+        fields: Fields<TrackedEntityInstanceFilter>,
+        paging: Boolean,
+    ): Payload<TrackedEntityInstanceFilter> {
+        return client.get {
+            url("trackedEntityInstanceFilters")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter" to accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 }

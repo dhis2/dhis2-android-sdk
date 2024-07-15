@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.api.testutils
 
-import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.jackson.jackson
+import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.JacksonConverter
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
@@ -51,10 +51,8 @@ internal object KtorFactory {
                 preconfigured = okClient
             }
             install(ContentNegotiation) {
-                jackson() {
-                    ObjectMapperFactory.objectMapper()
-                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                }
+                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
+                register(ContentType.Application.Json, converter)
             }
             expectSuccess = true
         }

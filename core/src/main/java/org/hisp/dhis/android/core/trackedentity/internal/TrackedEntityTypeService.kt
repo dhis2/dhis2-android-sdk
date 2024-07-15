@@ -29,19 +29,27 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface TrackedEntityTypeService {
-    @GET("trackedEntityTypes")
+@Singleton
+internal class TrackedEntityTypeService(private val client: KtorServiceClient) {
     suspend fun getTrackedEntityTypes(
-        @Query("fields") @Which fields: Fields<TrackedEntityType>,
-        @Query("filter") @Where idFilter: Filter<TrackedEntityType>,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<TrackedEntityType>
+        fields: Fields<TrackedEntityType>,
+        idFilter: Filter<TrackedEntityType>,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): Payload<TrackedEntityType> {
+        return client.get {
+            url("trackedEntityTypes")
+            parameters {
+                fields(fields)
+                filter(idFilter)
+                attribute("filter" to accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 }

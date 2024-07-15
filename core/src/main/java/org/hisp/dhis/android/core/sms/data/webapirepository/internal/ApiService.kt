@@ -28,23 +28,36 @@
 
 package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal fun interface ApiService {
+internal class ApiService(private val client: KtorServiceClient) {
 
     // That's an API call and looks like an API endpoint
-    @GET("metadata")
     suspend fun getMetadataIds(
-        @Query("dataElements:fields") dataElements: String?,
-        @Query("categoryOptionCombos:fields") categoryOptionCombos: String?,
-        @Query("organisationUnits:fields") organisationUnits: String?,
-        @Query("users:fields") users: String?,
-        @Query("trackedEntityTypes:fields") trackedEntityTypes: String?,
-        @Query("trackedEntityAttributes:fields") trackedEntityAttributes: String?,
-        @Query("programs:fields") programs: String?,
-    ): MetadataResponse
+        dataElements: String?,
+        categoryOptionCombos: String?,
+        organisationUnits: String?,
+        users: String?,
+        trackedEntityTypes: String?,
+        trackedEntityAttributes: String?,
+        programs: String?,
+    ): MetadataResponse {
+        return client.get {
+            url("metadata")
+            parameters {
+                attribute("dataElements:fields" to dataElements)
+                attribute("categoryOptionCombos:fields" to categoryOptionCombos)
+                attribute("organisationUnits:fields" to organisationUnits)
+                attribute("users:fields" to users)
+                attribute("trackedEntityTypes:fields" to trackedEntityTypes)
+                attribute("trackedEntityAttributes:fields" to trackedEntityAttributes)
+                attribute("programs:fields" to programs)
+            }
+        }
+    }
 
     companion object {
         const val GET_IDS = "id"

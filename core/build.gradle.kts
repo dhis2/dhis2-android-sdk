@@ -197,14 +197,6 @@ dependencies {
     }
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.paging.testing)
-
-    debugImplementation(libs.facebook.soloader)
-    debugImplementation(libs.facebook.flipper.core)
-    debugImplementation(libs.facebook.flipper.network) {
-        exclude(group = "com.squareup.okhttp3")
-    }
-
-    releaseImplementation(libs.facebook.flipper.noop)
 }
 
 detekt {

@@ -6,7 +6,7 @@
 
 - [Koin](https://insert-koin.io/)
 - [Autovalue](https://github.com/google/auto/blob/master/value/userguide/index.md)
-- [Retrofit](https://square.github.io/retrofit/)/[OkHttp3](https://github.com/square/okhttp)
+- [Ktor](https://github.com/ktorio/ktor)/[OkHttp3](https://github.com/square/okhttp)
 - [SQLCipher](https://www.zetetic.net/sqlcipher/)
 
 ## Public API overview
@@ -31,7 +31,7 @@ Feature packages contain at least:
 - `*TableInfo`: defines the table structure. It is used by the `*Store`.
 - `*Handler`: manages de synchronization of objects of a given type. It receives a list of Model objects and uses the `*Store` to persist them in the database. It also calls the handler of child objects.
 - `*Fields`: API fields.
-- `*Service`: Retrofit service defining the API calls. Methods in this file usually receive a list of fields, which is defined in `*Fields`. And they usually return a List or a Payload of Model objects.
+- `*Service`: Ktor service defining the API calls. Methods in this file usually receive a list of fields, which is defined in `*Fields`. And they usually return a List or a Payload of Model objects.
 - `*Call`/ `*CallFactory`: defines the call. It usually links the service and the handler.
 - `*EntityDIModule`: Dagger class that injects the classes related to a concrete type, like store, handler and service. It optionally includes other auxiliary classes.
 - `*PackageDIModule`: Dagger class that injects the classes related to a given package. This typically wraps several `*EntityDIModule` classes.

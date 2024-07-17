@@ -140,9 +140,6 @@ dependencies {
     // Square libraries
     api(libs.okhttp)
     api(libs.okhttp.mockwebserver)
-    api(libs.retrofit.core)
-    api(libs.retrofit.jackson)
-    api(libs.retrofit.rxjava2)
 
     // Ktor
     api(libs.ktor)

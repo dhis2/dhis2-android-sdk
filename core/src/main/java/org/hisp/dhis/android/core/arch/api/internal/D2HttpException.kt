@@ -32,7 +32,6 @@ import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.statement.bodyAsText
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.getIfNotEmpty
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.noErrorMessage
-import retrofit2.HttpException
 import java.io.IOException
 import java.lang.Exception
 
@@ -46,18 +45,6 @@ data class D2HttpResponse(
     val errorBody: String,
     val requestUrl: String?,
 )
-
-internal fun HttpException.retrofitToD2Response(): D2HttpResponse {
-    val errorBody =
-        try {
-            getIfNotEmpty(this.response()?.errorBody()!!.string())
-                ?: getIfNotEmpty(this.response()?.errorBody().toString())
-        } catch (e: IOException) {
-            null
-        }
-    val requestUrl = this.response()?.raw()?.request?.url.toString()
-    return D2HttpResponse(this.code(), this.message(), errorBody ?: noErrorMessage, requestUrl)
-}
 
 internal suspend fun ClientRequestException.ktorToD2Response(): D2HttpResponse {
     val errorBody = try {

@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandle
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
 
 @Singleton
 @Suppress("LongParameterList")
@@ -65,9 +64,6 @@ internal class D2DIComponent(
     val multiUserDatabaseManagerForD2Manager: MultiUserDatabaseManagerForD2Manager,
     val credentialsSecureStore: CredentialsSecureStore,
     val appContext: Context,
-
-    @get:VisibleForTesting
-    val retrofit: Retrofit,
 
     @get:VisibleForTesting
     val ktor: KtorServiceClient,

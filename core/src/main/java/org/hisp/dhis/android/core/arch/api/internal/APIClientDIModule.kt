@@ -35,24 +35,12 @@ import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthent
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
 
 @Module
 internal class APIClientDIModule {
     @Singleton
     fun okHttpClient(d2Configuration: D2Configuration, authenticator: ParentAuthenticator): OkHttpClient {
         return OkHttpClientFactory.okHttpClient(d2Configuration, authenticator)
-    }
-
-    @Singleton
-    @Suppress("TooGenericExceptionThrown")
-    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
-        return try {
-            RetrofitFactory.retrofit(okHttpClient)
-        } catch (d2Error: D2Error) {
-            Log.e("APIClientDIModule", d2Error.message!!)
-            throw RuntimeException("Can't instantiate retrofit")
-        }
     }
 
     @Singleton

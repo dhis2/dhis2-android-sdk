@@ -43,6 +43,7 @@ import org.mockito.MockitoAnnotations
 import java.util.Date
 import javax.net.ssl.HttpsURLConnection
 
+@Suppress("UnnecessaryAbstractClass")
 abstract class BaseCallShould {
     @Mock
     protected lateinit var databaseAdapter: DatabaseAdapter

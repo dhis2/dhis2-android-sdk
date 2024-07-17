@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.realservertests.apischema
 
-import io.ktor.http.HttpMethod
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload

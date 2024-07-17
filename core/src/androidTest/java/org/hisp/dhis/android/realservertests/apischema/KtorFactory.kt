@@ -81,7 +81,7 @@ internal object KtorFactory {
                     }
                 }
             }
-            return if (response.contentType() == ContentType.Text.Plain) {
+            return if (response.contentType().toString().startsWith("text/plain")) {
                 val mapper = ObjectMapperFactory.objectMapper()
                 return mapper.readValue(response.bodyAsText(), T::class.java)
             } else {

@@ -54,7 +54,7 @@ internal class UserCall(
                 )
             }.getOrThrow()
 
-        val transaction = genericCallData!!.databaseAdapter().beginNewTransaction()
+        val transaction = genericCallData.databaseAdapter().beginNewTransaction()
         try {
             userHandler.handle(user)
             transaction.setSuccessful()

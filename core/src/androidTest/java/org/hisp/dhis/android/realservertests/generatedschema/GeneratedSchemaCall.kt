@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.realservertests.generatedschema
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.realservertests.apischema.KtorFactory
 import org.hisp.dhis.android.realservertests.apischema.KtorFactory.HttpTestClient
 
 internal class GeneratedSchemaCall internal constructor(

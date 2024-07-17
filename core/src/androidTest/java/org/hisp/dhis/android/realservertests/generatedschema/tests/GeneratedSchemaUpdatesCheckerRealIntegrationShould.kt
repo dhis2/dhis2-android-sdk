@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.realservertests.generatedschema.tests
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.D2Factory
-import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.AssignedUserMode
@@ -40,7 +37,6 @@ import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType
-import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus

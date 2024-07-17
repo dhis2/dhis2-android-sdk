@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.realservertests.generatedschema
 
-import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Path
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.realservertests.apischema.KtorFactory
+import org.hisp.dhis.android.realservertests.apischema.KtorFactory.HttpTestClient
 
-internal interface GeneratedSchemaService {
-
-    @GET("{instanceVersion}/{schemaName}.json")
-    fun getSchema(
-        @Path("instanceVersion") instanceVersion: String,
-        @Path("schemaName") schemaName: String,
-    ): Single<GeneratedSchema>
+internal class GeneratedSchemaService(private val client: HttpTestClient) {
+    suspend fun getSchema(
+        instanceVersion: String,
+        schemaName: String,
+    ): GeneratedSchema {
+        return client.get {
+            url("$instanceVersion/$schemaName.json")
+        }
+    }
 }

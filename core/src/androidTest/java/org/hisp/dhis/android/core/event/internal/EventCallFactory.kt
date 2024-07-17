@@ -59,7 +59,7 @@ internal object EventCallFactory {
         )
 
         return OldEventEndpointCallFactory(
-            EventService(httpClient)
+            EventService(httpClient),
         ).getCollectionCall(eventQuery)
     }
 }

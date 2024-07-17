@@ -45,7 +45,6 @@ internal object KtorFactory {
         return fromServerUrl(server.baseEndpoint)
     }
 
-    @JvmStatic
     fun fromServerUrl(serverUrl: String): KtorServiceClient {
         val client = HttpClient(OkHttp) {
             engine {

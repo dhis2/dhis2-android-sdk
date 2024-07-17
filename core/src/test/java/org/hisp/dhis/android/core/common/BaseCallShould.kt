@@ -73,15 +73,15 @@ abstract class BaseCallShould {
         Mockito.`when`(genericCallData.databaseAdapter()).thenReturn(databaseAdapter)
         Mockito.`when`(genericCallData.httpClient()).thenReturn(httpClient)
         Mockito.`when`(
-            genericCallData.resourceHandler()
+            genericCallData.resourceHandler(),
         ).thenReturn(resourceHandler)
 
         Mockito.`when`(
             resourceHandler.getLastUpdated(
                 ArgumentMatchers.any(
-                    Resource.Type::class.java
-                )
-            )
+                    Resource.Type::class.java,
+                ),
+            ),
         ).thenReturn(null)
 
         Mockito.`when`(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
@@ -91,8 +91,8 @@ abstract class BaseCallShould {
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 "",
                 "{}",
-                null
-            )
+                null,
+            ),
         )
     }
 }

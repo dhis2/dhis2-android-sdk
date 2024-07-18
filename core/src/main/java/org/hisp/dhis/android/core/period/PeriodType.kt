@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.period
 
 import java.lang.IllegalArgumentException
-import java.util.*
+import java.util.Calendar
 import kotlin.Throws
 
 @Suppress("MagicNumber")

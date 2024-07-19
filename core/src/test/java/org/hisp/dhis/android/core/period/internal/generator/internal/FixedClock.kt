@@ -34,9 +34,9 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 
-class FixedClock(localDate: LocalDate): Clock {
+class FixedClock(localDate: LocalDate) : Clock {
     private val fixedInstant = Instant.fromEpochMilliseconds(
-        localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+        localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds(),
     )
     override fun now(): Instant = fixedInstant
 }

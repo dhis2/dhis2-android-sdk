@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DayOfWeek
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal data class PeriodK(
-    val periodId: String,
-    val periodType: PeriodType,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
-)
+internal object WeeklyPeriodGeneratorFactory {
+    fun weekly(clock: Clock): WeeklyPeriodGenerator {
+        return WeeklyPeriodGenerator(clock, PeriodType.Weekly, DayOfWeek.MONDAY, "W")
+    }
+
+    fun wednesday(clock: Clock): WeeklyPeriodGenerator {
+        return WeeklyPeriodGenerator(clock, PeriodType.WeeklyWednesday, DayOfWeek.WEDNESDAY, "WedW")
+    }
+
+    fun thursday(clock: Clock): WeeklyPeriodGenerator {
+        return WeeklyPeriodGenerator(clock, PeriodType.WeeklyThursday, DayOfWeek.THURSDAY, "ThuW")
+    }
+
+    fun saturday(clock: Clock): WeeklyPeriodGenerator {
+        return WeeklyPeriodGenerator(clock, PeriodType.WeeklySaturday, DayOfWeek.SATURDAY, "SatW")
+    }
+
+    fun sunday(clock: Clock): WeeklyPeriodGenerator {
+        return WeeklyPeriodGenerator(clock, PeriodType.WeeklySunday, DayOfWeek.SUNDAY, "SunW")
+    }
+}

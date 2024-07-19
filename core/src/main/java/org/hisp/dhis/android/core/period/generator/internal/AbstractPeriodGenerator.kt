@@ -37,8 +37,8 @@ import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.period.PeriodType
 
 internal abstract class AbstractPeriodGenerator(
-    protected val clock: Clock,
-    protected val periodType: PeriodType
+    private val clock: Clock,
+    protected val periodType: PeriodType,
 ) : PeriodGenerator {
 
     @Synchronized
@@ -51,7 +51,7 @@ internal abstract class AbstractPeriodGenerator(
         val currentDate = getToday()
         val firstPeriodStartDate = moveToStartOfThePeriodOfADayWithOffset(currentDate, start)
 
-        val periods = (0 ..< (end - start)).map { offset -> generatePeriod(offset, firstPeriodStartDate) }
+        val periods = (0..<(end - start)).map { offset -> generatePeriod(offset, firstPeriodStartDate) }
 
         return periods
     }
@@ -60,37 +60,36 @@ internal abstract class AbstractPeriodGenerator(
     override fun generatePeriod(periodOffset: Int, refDate: LocalDate): PeriodK {
         val startDate = moveToStartOfThePeriodOfADayWithOffset(refDate, periodOffset)
 
-        val periodId = generateId(startDate)
         val nextPeriodStartDate = this.movePeriods(startDate, 1)
         val endDate = nextPeriodStartDate.minus(1, DateTimeUnit.DAY)
+
+        val periodId = generateId(startDate, endDate)
 
         return PeriodK(
             periodId,
             periodType,
             startDate,
-            endDate
+            endDate,
         )
     }
-
 
     @Synchronized
     override fun generatePeriodsInYear(yearOffset: Int): List<PeriodK> {
         val currentDate = getToday()
 
-        val startOfCurrentYear = getStartOfCurrentYear(currentDate)
-        val startOfTargetYear = startOfCurrentYear.plus(yearOffset, DateTimeUnit.YEAR)
-
-        val targetYear = startOfTargetYear.year
+        val targetDate = currentDate.plus(yearOffset, DateTimeUnit.YEAR)
+        val targetYear = targetDate.year
+        val startOfTargetYear = getStartOfYearFor(targetDate)
 
         val periods = generateSequence(0) { it + 1 }
-            .map { offset -> generatePeriod(offset, startOfTargetYear)}
+            .map { offset -> generatePeriod(offset, startOfTargetYear) }
             .takeWhile { period -> period.periodId.startsWith(targetYear.toString()) }
 
         return periods.toList()
     }
 
     private fun moveToStartOfThePeriodOfADayWithOffset(date: LocalDate, periodOffset: Int): LocalDate {
-        val startOfCurrentPeriod = getStartOfCurrentPeriod(date)
+        val startOfCurrentPeriod = getStartOfPeriodFor(date)
         return this.movePeriods(startOfCurrentPeriod, periodOffset)
     }
 
@@ -98,11 +97,11 @@ internal abstract class AbstractPeriodGenerator(
         return clock.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
-    protected abstract fun getStartOfCurrentPeriod(date: LocalDate): LocalDate
+    protected abstract fun getStartOfPeriodFor(date: LocalDate): LocalDate
 
-    protected abstract fun getStartOfCurrentYear(date: LocalDate): LocalDate
+    protected abstract fun getStartOfYearFor(date: LocalDate): LocalDate
 
     protected abstract fun movePeriods(date: LocalDate, offset: Int): LocalDate
 
-    protected abstract fun generateId(date: LocalDate): String
+    protected abstract fun generateId(startDate: LocalDate, endDate: LocalDate): String
 }

@@ -31,7 +31,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.analytics.AnalyticsModule
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -74,7 +74,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule
 class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     private val modules: D2Modules = d2DIComponent.modules
 
-    fun ktor(): KtorServiceClient {
+    fun ktor(): HttpServiceClient {
         return d2DIComponent.ktor
     }
 

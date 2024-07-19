@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.EventFilter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class EventFilterService(private val client: KtorServiceClient) {
+internal class EventFilterService(private val client: HttpServiceClient) {
     suspend fun getEventFilters(
         uids: Filter<EventFilter>,
         accessDataReadFilter: String,

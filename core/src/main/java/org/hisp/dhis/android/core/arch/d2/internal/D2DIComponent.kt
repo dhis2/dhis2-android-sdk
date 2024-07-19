@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.d2.internal
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
@@ -66,7 +66,7 @@ internal class D2DIComponent(
     val appContext: Context,
 
     @get:VisibleForTesting
-    val ktor: KtorServiceClient,
+    val ktor: HttpServiceClient,
 
     @get:VisibleForTesting
     val coroutineApiCallExecutor: CoroutineAPICallExecutor,

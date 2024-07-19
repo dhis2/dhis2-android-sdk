@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class EnrollmentService(private val client: KtorServiceClient) {
+internal class EnrollmentService(private val client: HttpServiceClient) {
     suspend fun getEnrollmentSingle(
         enrollmentUid: String?,
         fields: Fields<Enrollment>,

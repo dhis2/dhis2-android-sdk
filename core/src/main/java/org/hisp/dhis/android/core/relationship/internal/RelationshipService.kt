@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class RelationshipService(private val client: KtorServiceClient) {
+internal class RelationshipService(private val client: HttpServiceClient) {
 
     suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse {
         return client.delete {

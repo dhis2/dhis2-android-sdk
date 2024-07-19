@@ -35,17 +35,17 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.jackson.JacksonConverter
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
-internal object KtorFactory {
-    fun fromDHIS2MockServer(server: Dhis2MockServer): KtorServiceClient {
+internal object HttpServiceClientFactory {
+    fun fromDHIS2MockServer(server: Dhis2MockServer): HttpServiceClient {
         return fromServerUrl(server.baseEndpoint)
     }
 
-    fun fromServerUrl(serverUrl: String): KtorServiceClient {
+    fun fromServerUrl(serverUrl: String): HttpServiceClient {
         val client = HttpClient(OkHttp) {
             engine {
                 preconfigured = okClient
@@ -56,7 +56,7 @@ internal object KtorFactory {
             }
             expectSuccess = true
         }
-        return KtorServiceClient(client, serverUrl + "api/")
+        return HttpServiceClient(client, serverUrl + "api/")
     }
 
     private val okClient: OkHttpClient

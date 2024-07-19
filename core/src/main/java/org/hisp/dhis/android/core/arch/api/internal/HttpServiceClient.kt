@@ -44,7 +44,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class KtorServiceClient(
+class HttpServiceClient(
     val client: HttpClient,
     var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {

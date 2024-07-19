@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common
 
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.api.testutils.KtorFactory.fromServerUrl
+import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory.fromServerUrl
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
@@ -72,7 +72,7 @@ abstract class BaseCallShould {
         var httpClient = fromServerUrl("https://fake.dhis.org")
 
         Mockito.`when`(genericCallData.databaseAdapter()).thenReturn(databaseAdapter)
-        Mockito.`when`(genericCallData.httpClient()).thenReturn(httpClient)
+        Mockito.`when`(genericCallData.httpServiceClient()).thenReturn(httpClient)
         Mockito.`when`(
             genericCallData.resourceHandler(),
         ).thenReturn(resourceHandler)

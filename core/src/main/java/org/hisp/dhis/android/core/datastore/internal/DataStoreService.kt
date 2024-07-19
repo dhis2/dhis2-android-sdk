@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataStoreService(private val client: KtorServiceClient) {
+internal class DataStoreService(private val client: HttpServiceClient) {
     suspend fun getNamespaces(): List<String> {
         return client.get {
             url(DATA_STORE)

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -37,7 +37,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("LongParameterList")
-internal class TrackedEntityInstanceService(private val client: KtorServiceClient) {
+internal class TrackedEntityInstanceService(private val client: HttpServiceClient) {
     suspend fun postTrackedEntityInstances(
         trackedEntityInstances: TrackedEntityInstancePayload?,
         strategy: String?,

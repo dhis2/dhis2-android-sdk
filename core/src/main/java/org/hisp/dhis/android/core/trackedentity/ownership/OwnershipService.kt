@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OwnershipService(private val client: KtorServiceClient) {
+internal class OwnershipService(private val client: HttpServiceClient) {
 
     suspend fun breakGlass(
         trackedEntity: Map<String, String>,

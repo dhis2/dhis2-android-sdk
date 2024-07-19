@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class EventService(private val client: KtorServiceClient) {
+internal class EventService(private val client: HttpServiceClient) {
 
     suspend fun postEvents(events: EventPayload, strategy: String): EventWebResponse {
         return client.post {

@@ -74,8 +74,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule
 class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     private val modules: D2Modules = d2DIComponent.modules
 
-    @VisibleForTesting
-    internal fun ktor(): KtorServiceClient {
+    fun ktor(): KtorServiceClient {
         return d2DIComponent.ktor
     }
 

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-internal class RequestBuilder(private val baseUrl: String) {
+class RequestBuilder(private val baseUrl: String) {
     lateinit var url: String
         private set
 

@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.arch.api.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 
-internal class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
-    fun <T> fields(fields: Fields<T>) {
+class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
+    internal fun <T> fields(fields: Fields<T>) {
         parameters.add("fields" to fields.generateString())
     }
 
-    fun <T> filter(filter: Filter<T>?) {
+    internal fun <T> filter(filter: Filter<T>?) {
         filter?.let {
             parameters.add("filter" to filter.generateString())
         }

@@ -44,11 +44,11 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class KtorServiceClient(
-    private val client: HttpClient,
+class KtorServiceClient(
+    val client: HttpClient,
     var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
-    internal suspend inline fun <reified T> request(
+    suspend inline fun <reified T> request(
         requestMethod: HttpMethod,
         block: RequestBuilder.() -> Unit,
     ): T {

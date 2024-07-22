@@ -23,8 +23,7 @@ paging = "3.2.1"
 jackson = "2.13.4"
 autoValue = "1.10.2"
 autoValueCursor = "2.0.1"
-retrofit = "2.9.0"
-okHttp = "4.10.0"
+okHttp = "4.12.0"
 ktor = "2.3.11"
 rxJava = "2.2.21"
 rxAndroid = "2.1.1"
@@ -89,9 +88,6 @@ jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-modul
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okHttp" }
-retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "retrofit" }
-retrofit-rxjava2 = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "retrofit" }
 
 ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor"}

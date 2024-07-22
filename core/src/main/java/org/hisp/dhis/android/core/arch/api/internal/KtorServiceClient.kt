@@ -48,7 +48,7 @@ internal class KtorServiceClient(
     private val client: HttpClient,
     var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
-    private suspend inline fun <reified T> request(
+    internal suspend inline fun <reified T> request(
         requestMethod: HttpMethod,
         block: RequestBuilder.() -> Unit,
     ): T {

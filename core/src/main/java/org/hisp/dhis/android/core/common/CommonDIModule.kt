@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
@@ -34,7 +35,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
 
 @Module
 @ComponentScan
@@ -42,13 +42,13 @@ internal class CommonDIModule {
     @Singleton
     fun genericCallData(
         databaseAdapter: DatabaseAdapter,
-        retrofit: Retrofit,
+        httpClient: KtorServiceClient,
         resourceHandler: ResourceHandler,
         versionManager: DHISVersionManager,
     ): GenericCallData {
         return GenericCallData.create(
             databaseAdapter,
-            retrofit,
+            httpClient,
             resourceHandler,
             versionManager,
         )

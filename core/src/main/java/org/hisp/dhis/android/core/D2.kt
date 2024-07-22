@@ -69,16 +69,10 @@ import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.validation.ValidationModule
 import org.hisp.dhis.android.core.visualization.VisualizationModule
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
-import retrofit2.Retrofit
 
 @Suppress("TooManyFunctions")
 class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
     private val modules: D2Modules = d2DIComponent.modules
-
-    @VisibleForTesting
-    fun retrofit(): Retrofit {
-        return d2DIComponent.retrofit
-    }
 
     @VisibleForTesting
     internal fun ktor(): KtorServiceClient {

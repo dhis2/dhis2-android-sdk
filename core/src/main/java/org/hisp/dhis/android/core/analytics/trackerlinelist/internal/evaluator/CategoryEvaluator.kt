@@ -31,8 +31,12 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.android.core.util.SqlUtils
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.core.category.CategoryTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo
 
 internal class CategoryEvaluator(
     private val item: TrackerLineListItem.Category,
@@ -40,19 +44,31 @@ internal class CategoryEvaluator(
 ) : TrackerLineListEvaluator() {
 
     override fun getSelectSQLForEvent(): String {
-        return getCommonSelectSQL()
+        return "SELECT CO.${CategoryOptionTableInfo.Columns.DISPLAY_NAME} " +
+        "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} COCCOL " +
+        "JOIN ${CategoryOptionTableInfo.TABLE_INFO.name()} CO ON COCCOL.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} = " +
+        "CO.${CategoryOptionTableInfo.Columns.UID} " +
+        "WHERE COCCOL.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO} = " +
+            "$EventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO} " +
+        "AND EXISTS ( " +
+            "SELECT 1 " +
+            "FROM ${CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name()} CCOL " +
+            "WHERE CCOL.${CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY} = '${item.uid}' " +
+            "AND COCCOL.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} = " +
+            "CCOL.${CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} " +
+            ") "
     }
 
     override fun getWhereSQLForEvent(): String {
-        return getCommonWhereSQL()
+        return " 1 "
     }
 
     override fun getSelectSQLForEnrollment(): String {
-        throw AnalyticsException.InvalidArguments("EventDate is not supported in ENROLLMENT output type")
+        throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
     override fun getWhereSQLForEnrollment(): String {
-        throw AnalyticsException.InvalidArguments("EventDate is not supported in ENROLLMENT output type")
+        throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
 

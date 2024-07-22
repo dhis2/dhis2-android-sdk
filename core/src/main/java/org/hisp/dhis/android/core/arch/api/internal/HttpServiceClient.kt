@@ -48,7 +48,8 @@ class HttpServiceClient(
     val client: HttpClient,
     var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
-    suspend inline fun <reified T> request(
+    @PublishedApi
+    internal suspend inline fun <reified T> request(
         requestMethod: HttpMethod,
         block: RequestBuilder.() -> Unit,
     ): T {

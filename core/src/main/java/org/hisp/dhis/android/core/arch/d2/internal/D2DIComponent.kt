@@ -66,7 +66,7 @@ internal class D2DIComponent(
     val appContext: Context,
 
     @get:VisibleForTesting
-    val ktor: HttpServiceClient,
+    val httpServiceClient: HttpServiceClient,
 
     @get:VisibleForTesting
     val coroutineApiCallExecutor: CoroutineAPICallExecutor,

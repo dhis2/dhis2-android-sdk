@@ -65,4 +65,10 @@ internal class TrackerImporterService(private val client: HttpServiceClient) {
             url("$JOBS_URL$jobId/report")
         }
     }
+
+    suspend fun getJob(jobId: String): List<JobProgress> {
+        return client.get {
+            url("$JOBS_URL$jobId")
+        }
+    }
 }

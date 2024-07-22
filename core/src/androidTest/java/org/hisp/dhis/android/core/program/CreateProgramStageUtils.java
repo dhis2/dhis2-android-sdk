@@ -69,8 +69,8 @@ public class CreateProgramStageUtils {
         programStage.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME);
         programStage.put(IdentifiableColumns.CREATED, DATE);
         programStage.put(IdentifiableColumns.LAST_UPDATED, DATE);
-        programStage.put(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
-        programStage.put(ProgramStageTableInfo.Columns.DUE_DATE_LABEL, DUE_DATE_LABEL);
+        programStage.put(ProgramStageTableInfo.Columns.DISPLAY_EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
+        programStage.put(ProgramStageTableInfo.Columns.DISPLAY_DUE_DATE_LABEL, DUE_DATE_LABEL);
         programStage.put(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
         programStage.put(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
         programStage.put(ProgramStageTableInfo.Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);

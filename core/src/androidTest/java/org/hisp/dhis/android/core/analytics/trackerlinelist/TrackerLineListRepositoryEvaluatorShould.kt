@@ -32,7 +32,9 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
@@ -144,7 +146,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         createDefaultTrackerEvent(event3, enrollment1, eventDate = period201911.startDate())
 
         val result = d2.analyticsModule().trackerLineList()
-            .withEnrollmentOutput(program.uid())
+            .withEventOutput(programStage1.uid())
             .withColumn(TrackerLineListItem.OrganisationUnitItem())
             .withColumn(TrackerLineListItem.Category(category.uid()))
             .blockingEvaluate()
@@ -153,7 +155,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         val firstRow = rows.first()
 
         assertThat(rows.size).isEqualTo(3)
-        assertThat(firstRow[1].value).isEqualTo(category.displayName())
+        assertThat(firstRow[1].value).isEqualTo(categoryOption.displayName())
 
     }
 
@@ -421,6 +423,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE,
+        attributeOptionComboUid: String = attributeOptionCombo.uid()
     ) {
         helper.createTrackerEvent(
             eventUid,
@@ -433,6 +436,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
             created,
             lastUpdated,
             status,
+            attributeOptionComboUid,
         )
     }
 }

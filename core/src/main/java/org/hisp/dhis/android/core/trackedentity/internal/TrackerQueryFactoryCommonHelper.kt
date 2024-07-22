@@ -84,31 +84,29 @@ internal class TrackerQueryFactoryCommonHelper(
         }
     }
 
-    @Suppress("ReturnCount")
-    fun hasLimitByOrgUnit(
+    private fun hasLimitByOrgUnit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,
     ): Boolean {
-        if (params.limitByOrgunit() != null) {
-            return params.limitByOrgunit()!!
+        val specificProgramScope = programSettings?.specificSettings()?.get(programUid)?.settingDownload()
+        val globalScope = programSettings?.globalSettings()?.settingDownload()
+
+        return when {
+            params.limitByOrgunit() != null && isUserDefinedProgram(params, programUid) ->
+                params.limitByOrgunit()!!
+
+            specificProgramScope != null ->
+                specificProgramScope == LimitScope.PER_ORG_UNIT
+
+            params.limitByOrgunit() != null ->
+                params.limitByOrgunit()!!
+
+            globalScope != null ->
+                globalScope == LimitScope.PER_OU_AND_PROGRAM || globalScope == LimitScope.PER_ORG_UNIT
+
+            else -> false
         }
-        if (programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            if (specificSetting != null) {
-                val scope = specificSetting.settingDownload()
-                if (scope != null) {
-                    return scope == LimitScope.PER_ORG_UNIT
-                }
-            }
-            if (programSettings.globalSettings() != null) {
-                val scope = programSettings.globalSettings()!!.settingDownload()
-                if (scope != null) {
-                    return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_ORG_UNIT
-                }
-            }
-        }
-        return false
     }
 
     fun getLimit(

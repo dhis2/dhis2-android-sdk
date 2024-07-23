@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import io.ktor.client.plugins.ClientRequestException
-import kotlinx.coroutines.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
-import org.hisp.dhis.android.core.arch.api.internal.retrofitToD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -42,7 +44,6 @@ import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.koin.core.annotation.Singleton
-import retrofit2.HttpException
 
 @Singleton
 internal class CoroutineAPICallExecutorImpl(
@@ -66,9 +67,6 @@ internal class CoroutineAPICallExecutorImpl(
     ): Result<P, D2Error> {
         return try {
             Result.Success(block.invoke())
-        } catch (retrofitException: HttpException) {
-            val d2ErrorResponse = retrofitException.retrofitToD2Response()
-            handleHttpException(d2ErrorResponse, storeError, acceptedErrorCodes, errorCatcher, errorClass)
         } catch (ktorException: ClientRequestException) {
             val d2ErrorResponse = ktorException.ktorToD2Response()
             handleHttpException(d2ErrorResponse, storeError, acceptedErrorCodes, errorCatcher, errorClass)

@@ -29,19 +29,31 @@
 package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.user.User
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface UserService {
-    @GET("me")
+@Singleton
+internal class UserService(private val client: KtorServiceClient) {
     suspend fun authenticate(
-        @Header("Authorization") credentials: String,
-        @Query("fields") @Which fields: Fields<User>,
-    ): User
+        credentials: String,
+        fields: Fields<User>,
+    ): User {
+        return client.get {
+            url("me")
+            authorizationHeader(credentials)
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @GET("me")
-    suspend fun getUser(@Query("fields") @Which fields: Fields<User>): User
+    suspend fun getUser(fields: Fields<User>): User {
+        return client.get {
+            url("me")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 }

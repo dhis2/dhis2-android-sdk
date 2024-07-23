@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.realservertests
 
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory
-import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.jackson.JacksonConverterFactory
+package org.hisp.dhis.android.core.arch.api.internal
 
-class OutsideRetrofitFactory {
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 
-    companion object {
-        fun retrofit(baseUrl: String, okHttpClient: OkHttpClient): Retrofit {
-            return Retrofit.Builder()
-                .baseUrl(baseUrl.toHttpUrlOrNull()!!)
-                .client(okHttpClient)
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper()))
-                .addConverterFactory(FilterConverterFactory())
-                .addConverterFactory(FieldsConverterFactory())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .validateEagerly(true)
-                .build()
+internal class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
+    fun <T> fields(fields: Fields<T>) {
+        parameters.add("fields" to fields.generateString())
+    }
+
+    fun <T> filter(filter: Filter<T>?) {
+        filter?.let {
+            parameters.add("filter" to filter.generateString())
         }
+    }
+
+    fun filter(filter: List<String?>?) {
+        filter?.let {
+            parameters.add("filter" to it.filterNot { it.isNullOrBlank() }.joinToString(","))
+        }
+    }
+
+    fun <T> attribute(pair: Pair<String, T?>) {
+        pair.second?.let { nonNullSecond ->
+            parameters.add(pair.first to nonNullSecond.toString())
+        }
+    }
+
+    fun paging(paging: Boolean) {
+        parameters.add("paging" to paging.toString())
+    }
+
+    fun page(page: Int?) {
+        page?.let { parameters.add("page" to it.toString()) }
+    }
+
+    fun pageSize(pageSize: Int?) {
+        pageSize?.let { parameters.add("pageSize" to it.toString()) }
     }
 }

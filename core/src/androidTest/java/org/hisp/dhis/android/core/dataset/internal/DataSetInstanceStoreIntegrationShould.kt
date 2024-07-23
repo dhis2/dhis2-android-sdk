@@ -74,15 +74,19 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
     }
 
     private fun insertDataValuesWithStates(state1: State, state2: State) {
+        val dataSetUid = "lyLU2wR22tC"
+
         val dataset = d2.dataSetModule().dataSets()
-            .byUid().eq("lyLU2wR22tC")
+            .byUid().eq(dataSetUid)
             .withDataSetElements()
             .one()
             .blockingGet()!!
 
         val dataElements = dataset.dataSetElements()!!
 
-        val orgunit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!
+        val orgunit = d2.organisationUnitModule().organisationUnits()
+            .byDataSetUids(listOf(dataSetUid))
+            .one().blockingGet()!!
 
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("202208")
 

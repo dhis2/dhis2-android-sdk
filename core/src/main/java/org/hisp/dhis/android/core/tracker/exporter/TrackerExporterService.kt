@@ -28,98 +28,186 @@
 package org.hisp.dhis.android.core.tracker.exporter
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal interface TrackerExporterService {
-    @GET("$TRACKED_ENTITIES_API/{$TRACKED_ENTITY}")
+internal class TrackerExporterService(private val client: KtorServiceClient) {
     suspend fun getSingleTrackedEntityInstance(
-        @Path(TRACKED_ENTITY) trackedEntityInstanceUid: String,
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
-        @QueryMap orgUnitMode: Map<String, String> = emptyMap(),
-        @Query(PROGRAM) program: String?,
-        @Query(PROGRAM_STATUS) programStatus: String?,
-        @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String?,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-    ): NewTrackerImporterTrackedEntity
+        trackedEntityInstanceUid: String,
+        fields: Fields<NewTrackerImporterTrackedEntity>,
+        orgUnitMode: Map<String, String> = emptyMap(),
+        program: String?,
+        programStatus: String?,
+        programStartDate: String?,
+        includeDeleted: Boolean,
+    ): NewTrackerImporterTrackedEntity {
+        return client.get {
+            url("$TRACKED_ENTITIES_API/$trackedEntityInstanceUid")
+            parameters {
+                fields(fields)
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STATUS to programStatus)
+                attribute(ENROLLMENT_ENROLLED_AFTER to programStartDate)
+                attribute(INCLUDE_DELETED to includeDeleted)
+                orgUnitMode.forEach { (key, value) -> attribute(key to value) }
+            }
+        }
+    }
 
-    @GET(TRACKED_ENTITIES_API)
     suspend fun getTrackedEntityInstances(
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterTrackedEntity>,
-        @QueryMap trackedEntityInstances: Map<String, String> = emptyMap(),
-        @QueryMap orgUnits: Map<String, String> = emptyMap(),
-        @QueryMap orgUnitMode: Map<String, String> = emptyMap(),
-        @Query(PROGRAM) program: String? = null,
-        @Query(PROGRAM_STAGE) programStage: String? = null,
-        @Query(ENROLLMENT_ENROLLED_AFTER) programStartDate: String? = null,
-        @Query(ENROLLMENT_ENROLLED_BEFORE) programEndDate: String? = null,
-        @Query(PROGRAM_STATUS) programStatus: String? = null,
-        @Query(ENROLLMENT_OCCURRED_AFTER) programIncidentStartDate: String? = null,
-        @Query(ENROLLMENT_OCCURRED_BEFORE) programIncidentEndDate: String? = null,
-        @Query(FOLLOW_UP) followUp: Boolean? = null,
-        @Query(EVENT_START_DATE) eventStartDate: String? = null,
-        @Query(EVENT_END_DATE) eventEndDate: String? = null,
-        @Query(EVENT_STATUS) eventStatus: String? = null,
-        @Query(TRACKED_ENTITY_TYPE) trackedEntityType: String? = null,
-        @Query(FILTER) filter: List<String?>? = null,
-        @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
-        @Query(UPDATED_AFTER) lastUpdatedStartDate: String? = null,
-        @Query(UPDATED_BEFORE) lastUpdatedEndDate: String? = null,
-        @Query(ORDER) order: String? = null,
-        @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int?,
-        @Query(PAGE_SIZE) pageSize: Int?,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean = false,
-    ): TrackerPayload<NewTrackerImporterTrackedEntity>
+        fields: Fields<NewTrackerImporterTrackedEntity>,
+        trackedEntityInstances: Map<String, String> = emptyMap(),
+        orgUnits: Map<String, String> = emptyMap(),
+        orgUnitMode: Map<String, String> = emptyMap(),
+        program: String? = null,
+        programStage: String? = null,
+        programStartDate: String? = null,
+        programEndDate: String? = null,
+        programStatus: String? = null,
+        programIncidentStartDate: String? = null,
+        programIncidentEndDate: String? = null,
+        followUp: Boolean? = null,
+        eventStartDate: String? = null,
+        eventEndDate: String? = null,
+        eventStatus: String? = null,
+        trackedEntityType: String? = null,
+        filter: List<String?>? = null,
+        assignedUserMode: String? = null,
+        lastUpdatedStartDate: String? = null,
+        lastUpdatedEndDate: String? = null,
+        order: String? = null,
+        paging: Boolean,
+        page: Int?,
+        pageSize: Int?,
+        includeDeleted: Boolean = false,
+    ): TrackerPayload<NewTrackerImporterTrackedEntity> {
+        return client.get {
+            url(TRACKED_ENTITIES_API)
+            parameters {
+                fields(fields)
+                trackedEntityInstances.forEach { (key, value) -> attribute(key to value) }
+                orgUnits.forEach { (key, value) -> attribute(key to value) }
+                orgUnitMode.forEach { (key, value) -> attribute(key to value) }
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STAGE to programStage)
+                attribute(ENROLLMENT_ENROLLED_AFTER to programStartDate)
+                attribute(ENROLLMENT_ENROLLED_BEFORE to programEndDate)
+                attribute(PROGRAM_STATUS to programStatus)
+                attribute(ENROLLMENT_OCCURRED_AFTER to programIncidentStartDate)
+                attribute(ENROLLMENT_OCCURRED_BEFORE to programIncidentEndDate)
+                attribute(FOLLOW_UP to followUp)
+                attribute(EVENT_START_DATE to eventStartDate)
+                attribute(EVENT_END_DATE to eventEndDate)
+                attribute(EVENT_STATUS to eventStatus)
+                attribute(TRACKED_ENTITY_TYPE to trackedEntityType)
+                attribute(FILTER to filter)
+                attribute(ASSIGNED_USER_MODE to assignedUserMode)
+                attribute(UPDATED_AFTER to lastUpdatedStartDate)
+                attribute(UPDATED_BEFORE to lastUpdatedEndDate)
+                attribute(ORDER to order)
+                attribute(INCLUDE_DELETED to includeDeleted)
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 
-    @GET("$ENROLLMENTS_API/{$ENROLLMENT}")
     suspend fun getEnrollmentSingle(
-        @Path(ENROLLMENT) enrollmentUid: String,
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEnrollment>,
-    ): NewTrackerImporterEnrollment
+        enrollmentUid: String,
+        fields: Fields<NewTrackerImporterEnrollment>,
+    ): NewTrackerImporterEnrollment {
+        return client.get {
+            url("$ENROLLMENTS_API/$enrollmentUid")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @GET(EVENTS_API)
     suspend fun getEvents(
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
-        @Query(ORG_UNIT) orgUnit: String?,
-        @QueryMap orgUnitMode: Map<String, String> = emptyMap(),
-        @Query(STATUS) status: String? = null,
-        @Query(PROGRAM) program: String?,
-        @Query(PROGRAM_STAGE) programStage: String? = null,
-        @Query(PROGRAM_STATUS) programStatus: String? = null,
-        @Query(FILTER) filter: List<String?>? = null,
-        @Query(FILTER_ATTRIBUTES) filterAttributes: List<String?>? = null,
-        @Query(FOLLOW_UP) followUp: Boolean? = null,
-        @Query(OCCURRED_AFTER) occurredAfter: String? = null,
-        @Query(OCCURRED_BEFORE) occurredBefore: String? = null,
-        @Query(SCHEDULED_AFTER) scheduledAfter: String? = null,
-        @Query(SCHEDULED_BEFORE) scheduledBefore: String? = null,
-        @Query(ENROLLMENT_ENROLLED_AFTER) enrollmentEnrolledAfter: String? = null,
-        @Query(ENROLLMENT_ENROLLED_BEFORE) enrollmentEnrolledBefore: String? = null,
-        @Query(ENROLLMENT_OCCURRED_AFTER) enrollmentOccurredAfter: String? = null,
-        @Query(ENROLLMENT_OCCURRED_BEFORE) enrollmentOccurredBefore: String? = null,
-        @Query(ORDER) order: String? = null,
-        @Query(ASSIGNED_USER_MODE) assignedUserMode: String? = null,
-        @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int?,
-        @Query(PAGE_SIZE) pageSize: Int?,
-        @Query(UPDATED_AFTER) updatedAfter: String?,
-        @Query(UPDATED_BEFORE) updatedBefore: String? = null,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-        @QueryMap eventUid: Map<String, String> = emptyMap(),
-    ): TrackerPayload<NewTrackerImporterEvent>
+        fields: Fields<NewTrackerImporterEvent>,
+        orgUnit: String?,
+        orgUnitMode: Map<String, String> = emptyMap(),
+        status: String? = null,
+        program: String?,
+        programStage: String? = null,
+        programStatus: String? = null,
+        filter: List<String?>? = null,
+        filterAttributes: List<String?>? = null,
+        followUp: Boolean? = null,
+        occurredAfter: String? = null,
+        occurredBefore: String? = null,
+        scheduledAfter: String? = null,
+        scheduledBefore: String? = null,
+        enrollmentEnrolledAfter: String? = null,
+        enrollmentEnrolledBefore: String? = null,
+        enrollmentOccurredAfter: String? = null,
+        enrollmentOccurredBefore: String? = null,
+        order: String? = null,
+        assignedUserMode: String? = null,
+        paging: Boolean,
+        page: Int?,
+        pageSize: Int?,
+        updatedAfter: String?,
+        updatedBefore: String? = null,
+        includeDeleted: Boolean,
+        eventUid: Map<String, String> = emptyMap(),
+    ): TrackerPayload<NewTrackerImporterEvent> {
+        return client.get {
+            url(EVENTS_API)
+            parameters {
+                fields(fields)
+                attribute(ORG_UNIT to orgUnit)
+                orgUnitMode.forEach { (key, value) -> attribute(key to value) }
+                attribute(STATUS to status)
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STAGE to programStage)
+                attribute(PROGRAM_STATUS to programStatus)
+                attribute(FILTER to filter)
+                attribute(FILTER_ATTRIBUTES to filterAttributes)
+                attribute(FOLLOW_UP to followUp)
+                attribute(OCCURRED_AFTER to occurredAfter)
+                attribute(OCCURRED_BEFORE to occurredBefore)
+                attribute(SCHEDULED_AFTER to scheduledAfter)
+                attribute(SCHEDULED_BEFORE to scheduledBefore)
+                attribute(ENROLLMENT_ENROLLED_AFTER to enrollmentEnrolledAfter)
+                attribute(ENROLLMENT_ENROLLED_BEFORE to enrollmentEnrolledBefore)
+                attribute(ENROLLMENT_OCCURRED_AFTER to enrollmentOccurredAfter)
+                attribute(ENROLLMENT_OCCURRED_BEFORE to enrollmentOccurredBefore)
+                attribute(ORDER to order)
+                attribute(ASSIGNED_USER_MODE to assignedUserMode)
+                attribute(UPDATED_AFTER to updatedAfter)
+                attribute(UPDATED_BEFORE to updatedBefore)
+                attribute(INCLUDE_DELETED to includeDeleted)
+                eventUid.forEach { (key, value) -> attribute(key to value) }
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 
-    @GET(EVENTS_API)
     suspend fun getEventSingle(
-        @Query(FIELDS) @Which fields: Fields<NewTrackerImporterEvent>,
-        @QueryMap eventUid: Map<String, String>? = null,
-        @QueryMap orgUnitMode: Map<String, String>? = null,
-    ): TrackerPayload<NewTrackerImporterEvent>
+        fields: Fields<NewTrackerImporterEvent>,
+        eventUid: Map<String, String>? = null,
+        orgUnitMode: Map<String, String>? = null,
+    ): TrackerPayload<NewTrackerImporterEvent> {
+        return client.get {
+            url(EVENTS_API)
+            parameters {
+                fields(fields)
+                eventUid?.forEach { (key, value) -> attribute(key to value) }
+                orgUnitMode?.forEach { (key, value) -> attribute(key to value) }
+            }
+        }
+    }
 
     companion object {
         const val TRACKED_ENTITIES_API = "tracker/trackedEntities"
@@ -134,10 +222,6 @@ internal interface TrackerExporterService {
         const val ORG_UNITS = "orgUnits"
         const val OU_MODE = "orgUnitMode"
         const val OU_MODE_BELOW_41 = "ouMode"
-        const val FIELDS = "fields"
-        const val PAGING = "paging"
-        const val PAGE = "page"
-        const val PAGE_SIZE = "pageSize"
         const val PROGRAM = "program"
         const val PROGRAM_STAGE = "programStage"
         const val ENROLLMENT_ENROLLED_AFTER = "enrollmentEnrolledAfter"

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal;
 
-import java.io.IOException;
+package org.hisp.dhis.android.core.arch.api.internal
 
-import retrofit2.Converter;
-
-public class FilterConverter implements Converter<Filter, String> {
-
-    @Override
-    public String convert(Filter filter) throws IOException {
-        //the convert logic is actually in the Filter implementations.
-        return filter.generateString();
-    }
+internal object HttpStatusCodes {
+    const val SUCCESS_MIN = 200
+    const val SUCCESS_MAX = 299
 }

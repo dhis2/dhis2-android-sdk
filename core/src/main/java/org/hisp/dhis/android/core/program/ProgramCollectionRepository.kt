@@ -78,7 +78,7 @@ class ProgramCollectionRepository internal constructor(
     }
 
     fun byEnrollmentDateLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.ENROLLMENT_DATE_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_ENROLLMENT_DATE_LABEL)
     }
 
     fun byDisplayIncidentDate(): BooleanFilterConnector<ProgramCollectionRepository> {
@@ -86,7 +86,7 @@ class ProgramCollectionRepository internal constructor(
     }
 
     fun byIncidentDateLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.INCIDENT_DATE_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_INCIDENT_DATE_LABEL)
     }
 
     fun byRegistration(): BooleanFilterConnector<ProgramCollectionRepository> {
@@ -166,35 +166,35 @@ class ProgramCollectionRepository internal constructor(
     }
 
     fun byEnrollmentLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.ENROLLMENT_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_ENROLLMENT_LABEL)
     }
 
     fun byFollowUpLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.FOLLOW_UP_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_FOLLOW_UP_LABEL)
     }
 
     fun byOrgUnitLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.ORG_UNIT_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_ORG_UNIT_LABEL)
     }
 
     fun byRelationshipLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.RELATIONSHIP_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_RELATIONSHIP_LABEL)
     }
 
     fun byNoteLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.NOTE_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_NOTE_LABEL)
     }
 
     fun byTrackedEntityAttributeLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL)
     }
 
     fun byProgramStageLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.PROGRAM_STAGE_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_PROGRAM_STAGE_LABEL)
     }
 
     fun byEventLabel(): StringFilterConnector<ProgramCollectionRepository> {
-        return cf.string(ProgramTableInfo.Columns.EVENT_LABEL)
+        return cf.string(ProgramTableInfo.Columns.DISPLAY_EVENT_LABEL)
     }
 
     fun byColor(): StringFilterConnector<ProgramCollectionRepository> {

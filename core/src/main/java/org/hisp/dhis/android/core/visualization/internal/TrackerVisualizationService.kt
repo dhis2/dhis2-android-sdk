@@ -28,24 +28,30 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface TrackerVisualizationService {
+@Singleton
+internal class TrackerVisualizationService(private val client: KtorServiceClient) {
 
-    @GET("$TRACKER_VISUALIZATIONS/{$TRACKER_VISUALIZATION_UID}")
     suspend fun getSingleTrackerVisualization(
-        @Path(TRACKER_VISUALIZATION_UID) uid: String,
-        @Query("fields") @Which fields: Fields<TrackerVisualization>,
-        @Query("filter") accessFilter: String,
-        @Query("paging") paging: Boolean,
-    ): TrackerVisualization
+        uid: String,
+        fields: Fields<TrackerVisualization>,
+        accessFilter: String,
+        paging: Boolean,
+    ): TrackerVisualization {
+        return client.get {
+            url("$TRACKER_VISUALIZATIONS/$uid")
+            parameters {
+                fields(fields)
+                attribute("filter" to accessFilter)
+                paging(paging)
+            }
+        }
+    }
 
     companion object {
         const val TRACKER_VISUALIZATIONS = "eventVisualizations"
-        const val TRACKER_VISUALIZATION_UID = "visualizationUid"
     }
 }

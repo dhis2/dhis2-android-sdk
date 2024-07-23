@@ -28,49 +28,92 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.*
-import retrofit2.http.GET
-import retrofit2.http.Query
-import retrofit2.http.Url
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("TooManyFunctions")
-internal interface SettingService {
+internal class SettingService(private val client: KtorServiceClient) {
+    suspend fun getSystemSettingsSingle(fields: Fields<SystemSettings>): SystemSettings {
+        return client.get {
+            url("systemSettings")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @GET("systemSettings")
-    suspend fun getSystemSettingsSingle(@Query("key") @Which fields: Fields<SystemSettings>): SystemSettings
+    suspend fun getSystemSettings(fields: Fields<SystemSettings>): SystemSettings {
+        return client.get {
+            url("systemSettings")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @GET("systemSettings")
-    suspend fun getSystemSettings(@Query("key") @Which fields: Fields<SystemSettings>): SystemSettings
+    suspend fun getUserSettings(fields: Fields<UserSettings>): UserSettings {
+        return client.get {
+            url("userSettings")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @GET("userSettings")
-    suspend fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): UserSettings
+    suspend fun settingsAppInfo(url: String): SettingsAppInfo {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun settingsAppInfo(@Url url: String): SettingsAppInfo
+    suspend fun generalSettings(url: String): GeneralSettings {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun generalSettings(@Url url: String): GeneralSettings
+    suspend fun dataSetSettings(url: String): DataSetSettings {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun dataSetSettings(@Url url: String): DataSetSettings
+    suspend fun programSettings(url: String): ProgramSettings {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun programSettings(@Url url: String): ProgramSettings
+    suspend fun synchronizationSettings(url: String): SynchronizationSettings {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun synchronizationSettings(@Url url: String): SynchronizationSettings
+    suspend fun appearanceSettings(url: String): AppearanceSettings {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun appearanceSettings(@Url url: String): AppearanceSettings
+    suspend fun analyticsSettings(url: String): AnalyticsSettings {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun analyticsSettings(@Url url: String): AnalyticsSettings
+    suspend fun latestAppVersion(url: String): LatestAppVersion {
+        return client.get {
+            url(url)
+        }
+    }
 
-    @GET
-    suspend fun latestAppVersion(@Url url: String): LatestAppVersion
-
-    @GET
-    suspend fun versions(@Url url: String): Payload<ApkDistributionVersion>
+    suspend fun versions(url: String): Payload<ApkDistributionVersion> {
+        return client.get {
+            url(url)
+        }
+    }
 }

@@ -27,9 +27,14 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import retrofit2.http.GET
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.koin.core.annotation.Singleton
 
-internal fun interface AuthorityService {
-    @GET("me/authorization")
-    suspend fun authorities(): List<String>
+@Singleton
+internal class AuthorityService(private val client: KtorServiceClient) {
+    suspend fun authorities(): List<String> {
+        return client.get {
+            url("me/authorization")
+        }
+    }
 }

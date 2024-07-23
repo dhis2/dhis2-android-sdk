@@ -40,7 +40,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val dataValues = d2.dataValueModule().dataValues()
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(8)
+        assertThat(dataValues.size).isEqualTo(9)
     }
 
     @Test
@@ -50,7 +50,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("g9eOBujte1U")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(8)
+        assertThat(dataValues.size).isEqualTo(9)
     }
 
     @Test
@@ -80,7 +80,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("Gmbgme7z9BF")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -149,7 +149,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byFollowUp().isFalse
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(8)
     }
 
     @Test
@@ -158,7 +158,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(8)
+        assertThat(dataValues.size).isEqualTo(9)
     }
 
     @Test
@@ -167,16 +167,16 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byDeleted().isFalse
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(8)
+        assertThat(dataValues.size).isEqualTo(9)
     }
 
     @Test
     fun filter_by_dataset() {
         val dataValues = d2.dataValueModule().dataValues()
-            .byDataSetUid("lyLU2wR22tC")
+            .byDataSetUid("TaMAefItzgt")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(5)
+        assertThat(dataValues.size).isEqualTo(1)
     }
 
     @Test

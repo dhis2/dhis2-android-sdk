@@ -28,64 +28,52 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
-import okhttp3.ResponseBody.Companion.toResponseBody
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
-import retrofit2.Response
-import java.net.HttpURLConnection
 
 @RunWith(JUnit4::class)
 class PingImplShould {
 
-    @Mock
-    internal lateinit var service: PingService
-
-    private lateinit var ping: PingImpl
-
-    @Before
-    fun setUp() {
-        MockitoAnnotations.openMocks(this)
-        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-
-        ping = PingImpl(service)
-    }
-
     @Test
-    fun get_should_return_success_when_ping_service_succeeds() {
+    fun get_should_return_success_when_ping_service_succeeds2() = runBlocking {
         val expectedResponse = "pong"
-        val responseBody = expectedResponse.toResponseBody()
-        val response = Response.success(responseBody)
-        runBlocking {
-            `when`(service.getPing()).thenReturn(response)
-        }
+        val mockEngine = MockEngine { respond(content = expectedResponse) }
+        val client = HttpClient(mockEngine)
+        val ktorServiceClient = KtorServiceClient(client)
+        val pingService = PingService(ktorServiceClient)
 
-        assertThat(ping.blockingGet()).isEqualTo(expectedResponse)
+        val response = pingService.getPing()
+        val result = response.bodyAsText()
+        assertThat(expectedResponse).isEqualTo(result)
     }
 
     @Test
-    fun get_should_return_D2Error_when_ping_service_fails() {
-        val errorCode = HttpURLConnection.HTTP_INTERNAL_ERROR
-        val httpException = HttpException(Response.error<String>(errorCode, "Internal Server Error".toResponseBody()))
-
-        runBlocking {
-            `when`(service.getPing()).thenThrow(httpException)
+    fun get_should_return_D2Error_when_ping_service_fails() = runBlocking {
+        val mockEngine = MockEngine {
+            respond(
+                content = "Internal Server Error",
+                status = HttpStatusCode.InternalServerError,
+            )
         }
+        val client = HttpClient(mockEngine)
+        val ktorServiceClient = KtorServiceClient(client)
+        val pingService = PingService(ktorServiceClient)
+        val pingImpl = PingImpl(pingService)
 
         try {
-            ping.blockingGet()
+            pingImpl.blockingGet()
             fail("D2Error was expected but not thrown.")
         } catch (e: RuntimeException) {
             val cause = e.cause
@@ -94,7 +82,9 @@ class PingImplShould {
             val d2Error = cause as D2Error
             assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
             assertThat(d2Error.errorDescription()).isEqualTo("Unable to ping the server.")
-            assertThat((d2Error.originalException() as HttpException).code()).isEqualTo(errorCode)
+            assertThat(
+                d2Error.originalException()?.message,
+            ).isEqualTo("Ping to the server failed with status code: 500")
         }
     }
 }

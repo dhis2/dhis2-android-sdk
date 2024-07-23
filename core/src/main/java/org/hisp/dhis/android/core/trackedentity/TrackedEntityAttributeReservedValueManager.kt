@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
@@ -110,9 +111,9 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null, false)
 
         val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
-        val attributeOrgunit = if (isOrgunitDependent(pattern)) organisationUnitUid else null
+        val attributeOrgUnit = if (isOrgUnitDependent(pattern)) organisationUnitUid else null
 
-        return store.popOne(attributeUid, attributeOrgunit)?.value() ?: throw D2Error.builder()
+        return store.popOne(attributeUid, attributeOrgUnit)?.value() ?: throw D2Error.builder()
             .errorCode(D2ErrorCode.NO_RESERVED_VALUES).errorDescription("There are no reserved values")
             .errorComponent(D2ErrorComponent.Database).build()
     }
@@ -136,8 +137,8 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * The download is only triggered for this attribute passed as parameter.
      * <br></br><br></br>
      * If the attribute pattern is dependent on OrganisationUnit code (that is, it contains "ORG_UNIT_CODE"), it
-     * reserves values for each orgunit assigned to the programs with this attribute. It applies the limit
-     * per orgunit. Otherwise the limit is applied per attribute.
+     * reserves values for each orgUnit assigned to the programs with this attribute. It applies the limit
+     * per orgUnit. Otherwise the limit is applied per attribute.
      *
      * @param attributeUid           Attribute uid
      * @param numberOfValuesToFillUp An optional maximum number of values to reserve
@@ -237,8 +238,8 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         val reservedValueSummaries: MutableList<ReservedValueSummary> = ArrayList()
         for (trackedEntityAttribute in trackedEntityAttributes) {
             val builder = ReservedValueSummary.builder().trackedEntityAttribute(trackedEntityAttribute)
-            if (isOrgunitDependent(trackedEntityAttribute.pattern())) {
-                val organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid())
+            if (isOrgUnitDependent(trackedEntityAttribute.pattern())) {
+                val organisationUnits = getOrgUnitsWithCodeLinkedToAttributes(trackedEntityAttribute.uid())
                 for (organisationUnit in organisationUnits) {
                     builder.organisationUnit(organisationUnit)
                         .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
@@ -266,27 +267,40 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         )
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun downloadValuesForOrgUnits(
         attribute: String,
         numberOfValuesToFillUp: Int?,
     ): Flow<D2Progress> = flow {
         val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
 
-        if (isOrgunitDependent(pattern)) {
-            val organisationUnits = getOrgUnitsLinkedToAttribute(attribute)
+        if (isOrgUnitDependent(pattern)) {
+            val organisationUnits = getOrgUnitsWithCodeLinkedToAttributes(attribute)
 
             for (organisationUnit in organisationUnits) {
-                downloadValuesIfBelowThreshold(
-                    attribute,
-                    organisationUnit,
-                    numberOfValuesToFillUp,
-                    true,
-                )
+                try {
+                    downloadValuesIfBelowThreshold(
+                        attribute,
+                        organisationUnit,
+                        numberOfValuesToFillUp,
+                        true,
+                    )
+                } catch (e: Exception) {
+                    Log.e(
+                        this::class.java.simpleName,
+                        "Error downloading reserved values for attribute: $attribute and " +
+                            "org. unit: ${organisationUnit.uid()}",
+                        e,
+                    )
+                }
                 emit(increaseProgress())
             }
         } else {
-            downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
-
+            try {
+                downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
+            } catch (e: Exception) {
+                Log.e(this::class.java.simpleName, "Error downloading reserved values for attribute: $attribute", e)
+            }
             emit(increaseProgress())
         }
     }
@@ -304,7 +318,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
             val pattern = trackedEntityAttributeStore.selectByUid(attribute)!!.pattern()
             val remainingValues = store.count(
                 attribute,
-                if (isOrgunitDependent(pattern)) getUidOrNull(organisationUnit) else null,
+                if (isOrgUnitDependent(pattern)) getUidOrNull(organisationUnit) else null,
                 pattern,
             )
 
@@ -348,7 +362,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         }
     }
 
-    private fun getOrgUnitsLinkedToAttribute(attribute: String): List<OrganisationUnit> {
+    private fun getOrgUnitsWithCodeLinkedToAttributes(attribute: String): List<OrganisationUnit> {
         val linkedProgramUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
             ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
             WhereClauseBuilder().appendKeyStringValue(
@@ -356,23 +370,23 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                 attribute,
             ).build(),
         )
-        val linkedOrgunitUids = organisationUnitProgramLinkStore.selectStringColumnsWhereClause(
+        val linkedOrgUnitUids = organisationUnitProgramLinkStore.selectStringColumnsWhereClause(
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
             WhereClauseBuilder().appendInKeyStringValues(
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 linkedProgramUids,
             ).build(),
         )
-        val captureOrgunits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
+        val captureOrgUnits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
             OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
         )
-        linkedOrgunitUids.toMutableList().retainAll(captureOrgunits)
+        linkedOrgUnitUids.toMutableList().retainAll(captureOrgUnits)
         return organisationUnitStore.selectWhere(
             WhereClauseBuilder().appendInKeyStringValues(
                 IdentifiableColumns.UID,
-                linkedOrgunitUids,
+                linkedOrgUnitUids,
             ).build(),
-        )
+        ).filter { it.code() != null }
     }
 
     private val generatedAttributes: List<TrackedEntityAttribute>
@@ -386,16 +400,16 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return if (uid == null) null else organisationUnitStore.selectByUid(uid)
     }
 
-    private fun isOrgunitDependent(pattern: String?): Boolean {
+    private fun isOrgUnitDependent(pattern: String?): Boolean {
         return pattern != null && pattern.contains("ORG_UNIT_CODE")
     }
 
     private fun getFillUpToValue(minNumberOfValuesToHave: Int?, attribute: String): Int? {
         return if (minNumberOfValuesToHave == null) {
             val reservedValueSetting = reservedValueSettingStore.selectByUid(attribute)
-            if (reservedValueSetting == null || reservedValueSetting.numberOfValuesToReserve() == null) {
+            if (reservedValueSetting?.numberOfValuesToReserve() == null) {
                 val generalSettings = generalSettingObjectRepository.blockingGet()
-                if (generalSettings == null || generalSettings.reservedValues() == null) {
+                if (generalSettings?.reservedValues() == null) {
                     FILL_UP_TO
                 } else {
                     generalSettings.reservedValues()

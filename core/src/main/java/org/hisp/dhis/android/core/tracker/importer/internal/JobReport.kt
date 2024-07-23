@@ -77,3 +77,8 @@ internal data class JobReport(
     val stats: JobImportCount?,
     val bundleReport: JobBundleReport?,
 )
+
+internal data class JobProgress(
+    val message: String,
+    val completed: Boolean,
+)

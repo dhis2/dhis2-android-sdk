@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.d2.internal
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
@@ -50,7 +51,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandle
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
 
 @Singleton
 @Suppress("LongParameterList")
@@ -66,7 +66,7 @@ internal class D2DIComponent(
     val appContext: Context,
 
     @get:VisibleForTesting
-    val retrofit: Retrofit,
+    val ktor: KtorServiceClient,
 
     @get:VisibleForTesting
     val coroutineApiCallExecutor: CoroutineAPICallExecutor,

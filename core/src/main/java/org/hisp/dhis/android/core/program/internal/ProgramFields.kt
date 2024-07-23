@@ -51,15 +51,16 @@ internal object ProgramFields : BaseFields<Program>() {
     private const val PROGRAM_SECTIONS = "programSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
 
+    private const val ENROLLMENT_DATE_LABEL = "enrollmentDateLabel"
+    private const val INCIDENT_DATE_LABEL = "incidentDateLabel"
+
     val uid = fh.uid()
 
-    val allFields = Fields.from(
+    private val commonFields = Fields.from(
         fh.getNameableFields(),
         fh.field(Columns.VERSION),
         fh.field(Columns.ONLY_ENROLL_ONCE),
-        fh.field(Columns.ENROLLMENT_DATE_LABEL),
         fh.field(Columns.DISPLAY_INCIDENT_DATE),
-        fh.field(Columns.INCIDENT_DATE_LABEL),
         fh.field(Columns.REGISTRATION),
         fh.field(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
         fh.field(Columns.DATA_ENTRY_METHOD),
@@ -86,13 +87,25 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.ACCESS_LEVEL),
         fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
         fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
-        fh.field(Columns.ENROLLMENT_LABEL),
-        fh.field(Columns.FOLLOW_UP_LABEL),
-        fh.field(Columns.ORG_UNIT_LABEL),
-        fh.field(Columns.RELATIONSHIP_LABEL),
-        fh.field(Columns.NOTE_LABEL),
-        fh.field(Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL),
-        fh.field(Columns.PROGRAM_STAGE_LABEL),
-        fh.field(Columns.EVENT_LABEL),
+        fh.field(Columns.DISPLAY_ENROLLMENT_LABEL),
+        fh.field(Columns.DISPLAY_FOLLOW_UP_LABEL),
+        fh.field(Columns.DISPLAY_ORG_UNIT_LABEL),
+        fh.field(Columns.DISPLAY_RELATIONSHIP_LABEL),
+        fh.field(Columns.DISPLAY_NOTE_LABEL),
+        fh.field(Columns.DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL),
+        fh.field(Columns.DISPLAY_PROGRAM_STAGE_LABEL),
+        fh.field(Columns.DISPLAY_EVENT_LABEL),
+    )
+
+    val allFields = Fields.from(
+        commonFields.fields,
+        fh.field(Columns.DISPLAY_ENROLLMENT_DATE_LABEL),
+        fh.field(Columns.DISPLAY_INCIDENT_DATE_LABEL),
+    )
+
+    val allFieldsBefore35 = Fields.from(
+        commonFields.fields,
+        fh.field(ENROLLMENT_DATE_LABEL),
+        fh.field(INCIDENT_DATE_LABEL),
     )
 }

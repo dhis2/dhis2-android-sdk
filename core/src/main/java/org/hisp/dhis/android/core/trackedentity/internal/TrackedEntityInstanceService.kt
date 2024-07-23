@@ -28,96 +28,169 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("LongParameterList")
-internal interface TrackedEntityInstanceService {
-    @POST(TRACKED_ENTITY_INSTANCES)
+internal class TrackedEntityInstanceService(private val client: KtorServiceClient) {
     suspend fun postTrackedEntityInstances(
-        @Body trackedEntityInstances: TrackedEntityInstancePayload?,
-        @Query(STRATEGY) strategy: String?,
-    ): TEIWebResponse
+        trackedEntityInstances: TrackedEntityInstancePayload?,
+        strategy: String?,
+    ): TEIWebResponse {
+        return client.post {
+            url(TRACKED_ENTITY_INSTANCES)
+            parameters {
+                attribute(STRATEGY to strategy)
+            }
+            body(trackedEntityInstances)
+        }
+    }
 
-    @GET(TRACKED_ENTITY_INSTANCES)
     suspend fun getTrackedEntityInstance(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-    ): Payload<TrackedEntityInstance>
+        trackedEntityInstance: String,
+        orgUnitMode: String?,
+        fields: Fields<TrackedEntityInstance>,
+        includeAllAttributes: Boolean,
+        includeDeleted: Boolean,
+    ): Payload<TrackedEntityInstance> {
+        return client.get {
+            url(TRACKED_ENTITY_INSTANCES)
+            parameters {
+                fields(fields)
+                attribute(TRACKED_ENTITY_INSTACE to trackedEntityInstance)
+                attribute(OU_MODE to orgUnitMode)
+                attribute(INCLUDE_ALL_ATTRIBUTES to includeAllAttributes)
+                attribute(INCLUDE_DELETED to includeDeleted)
+            }
+        }
+    }
 
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTACE}")
     suspend fun getSingleTrackedEntityInstance(
-        @Path(TRACKED_ENTITY_INSTACE) trackedEntityInstanceUid: String,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(PROGRAM) program: String?,
-        @Query(PROGRAM_STATUS) programStatus: String?,
-        @Query(PROGRAM_START_DATE) programStartDate: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-    ): TrackedEntityInstance
+        trackedEntityInstanceUid: String,
+        orgUnitMode: String?,
+        program: String?,
+        programStatus: String?,
+        programStartDate: String?,
+        fields: Fields<TrackedEntityInstance>,
+        includeAllAttributes: Boolean,
+        includeDeleted: Boolean,
+    ): TrackedEntityInstance {
+        return client.get {
+            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid")
+            parameters {
+                fields(fields)
+                attribute(OU_MODE to orgUnitMode)
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STATUS to programStatus)
+                attribute(PROGRAM_START_DATE to programStartDate)
+                attribute(INCLUDE_ALL_ATTRIBUTES to includeAllAttributes)
+                attribute(INCLUDE_DELETED to includeDeleted)
+            }
+        }
+    }
 
-    @GET(TRACKED_ENTITY_INSTANCES)
     suspend fun getTrackedEntityInstances(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstances: String?,
-        @Query(OU) orgUnits: String?,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(PROGRAM) program: String?,
-        @Query(PROGRAM_STATUS) programStatus: String?,
-        @Query(PROGRAM_START_DATE) programStartDate: String?,
-        @Query(FIELDS) @Which fields: Fields<TrackedEntityInstance>,
-        @Query(ORDER) order: String?,
-        @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int?,
-        @Query(PAGE_SIZE) pageSize: Int?,
-        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
-        @Query(INCLUDE_ALL_ATTRIBUTES) includeAllAttributes: Boolean,
-        @Query(INCLUDE_DELETED) includeDeleted: Boolean,
-    ): Payload<TrackedEntityInstance>
+        trackedEntityInstances: String?,
+        orgUnits: String?,
+        orgUnitMode: String?,
+        program: String?,
+        programStatus: String?,
+        programStartDate: String?,
+        fields: Fields<TrackedEntityInstance>,
+        order: String?,
+        paging: Boolean,
+        page: Int?,
+        pageSize: Int?,
+        lastUpdatedStartDate: String?,
+        includeAllAttributes: Boolean,
+        includeDeleted: Boolean,
+    ): Payload<TrackedEntityInstance> {
+        return client.get {
+            url(TRACKED_ENTITY_INSTANCES)
+            parameters {
+                fields(fields)
+                attribute(TRACKED_ENTITY_INSTACE to trackedEntityInstances)
+                attribute(OU to orgUnits)
+                attribute(OU_MODE to orgUnitMode)
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STATUS to programStatus)
+                attribute(PROGRAM_START_DATE to programStartDate)
+                attribute(ORDER to order)
+                attribute(LAST_UPDATED_START_DATE to lastUpdatedStartDate)
+                attribute(INCLUDE_ALL_ATTRIBUTES to includeAllAttributes)
+                attribute(INCLUDE_DELETED to includeDeleted)
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 
-    @GET("$TRACKED_ENTITY_INSTANCES/query")
     suspend fun query(
-        @Query(TRACKED_ENTITY_INSTACE) trackedEntityInstance: String?,
-        @Query(OU) orgUnit: String?,
-        @Query(OU_MODE) orgUnitMode: String?,
-        @Query(PROGRAM) program: String?,
-        @Query(PROGRAM_STAGE) programStage: String?,
-        @Query(PROGRAM_START_DATE) programStartDate: String?,
-        @Query(PROGRAM_END_DATE) programEndDate: String?,
-        @Query(PROGRAM_STATUS) enrollmentStatus: String?,
-        @Query(PROGRAM_INCIDENT_START_DATE) programIncidentStartDate: String?,
-        @Query(PROGRAM_INCIDENT_END_DATE) programIncidentEndDate: String?,
-        @Query(FOLLOW_UP) followUp: Boolean?,
-        @Query(EVENT_START_DATE) eventStartDate: String?,
-        @Query(EVENT_END_DATE) eventEndDate: String?,
-        @Query(EVENT_STATUS) eventStatus: String?,
-        @Query(TRACKED_ENTITY_TYPE) trackedEntityType: String?,
-        @Query(FILTER) filter: List<String?>?,
-        @Query(ASSIGNED_USER_MODE) assignedUserMode: String?,
-        @Query(LAST_UPDATED_START_DATE) lastUpdatedStartDate: String?,
-        @Query(LAST_UPDATED_END_DATE) lastUpdatedEndDate: String?,
-        @Query(ORDER) order: String?,
-        @Query(PAGING) paging: Boolean,
-        @Query(PAGE) page: Int?,
-        @Query(PAGE_SIZE) pageSize: Int?,
-    ): SearchGrid
+        trackedEntityInstance: String?,
+        orgUnit: String?,
+        orgUnitMode: String?,
+        program: String?,
+        programStage: String?,
+        programStartDate: String?,
+        programEndDate: String?,
+        enrollmentStatus: String?,
+        programIncidentStartDate: String?,
+        programIncidentEndDate: String?,
+        followUp: Boolean?,
+        eventStartDate: String?,
+        eventEndDate: String?,
+        eventStatus: String?,
+        trackedEntityType: String?,
+        filter: List<String?>?,
+        assignedUserMode: String?,
+        lastUpdatedStartDate: String?,
+        lastUpdatedEndDate: String?,
+        order: String?,
+        paging: Boolean,
+        page: Int?,
+        pageSize: Int?,
+    ): SearchGrid {
+        return client.get {
+            url("$TRACKED_ENTITY_INSTANCES/query")
+            parameters {
+                filter(filter)
+                attribute(TRACKED_ENTITY_INSTACE to trackedEntityInstance)
+                attribute(OU to orgUnit)
+                attribute(OU_MODE to orgUnitMode)
+                attribute(PROGRAM to program)
+                attribute(PROGRAM_STAGE to programStage)
+                attribute(PROGRAM_START_DATE to programStartDate)
+                attribute(PROGRAM_END_DATE to programEndDate)
+                attribute(PROGRAM_STATUS to enrollmentStatus)
+                attribute(PROGRAM_INCIDENT_START_DATE to programIncidentStartDate)
+                attribute(PROGRAM_INCIDENT_END_DATE to programIncidentEndDate)
+                attribute(FOLLOW_UP to followUp)
+                attribute(EVENT_START_DATE to eventStartDate)
+                attribute(EVENT_END_DATE to eventEndDate)
+                attribute(EVENT_STATUS to eventStatus)
+                attribute(TRACKED_ENTITY_TYPE to trackedEntityType)
+                attribute(ASSIGNED_USER_MODE to assignedUserMode)
+                attribute(LAST_UPDATED_START_DATE to lastUpdatedStartDate)
+                attribute(LAST_UPDATED_END_DATE to lastUpdatedEndDate)
+                attribute(ORDER to order)
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 
     companion object {
         const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"
         const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
         const val OU = "ou"
         const val OU_MODE = "ouMode"
-        const val FIELDS = "fields"
-        const val PAGING = "paging"
-        const val PAGE = "page"
-        const val PAGE_SIZE = "pageSize"
         const val PROGRAM = "program"
         const val PROGRAM_STAGE = "programStage"
         const val PROGRAM_START_DATE = "programStartDate"

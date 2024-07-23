@@ -79,17 +79,35 @@ public abstract class Program extends BaseNameableObject
     @JsonProperty()
     public abstract Boolean onlyEnrollOnce();
 
+    /**
+     * @deprecated replaced by {@link #displayEnrollmentDateLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String enrollmentDateLabel() {
+        return displayEnrollmentDateLabel();
+    }
+
     @Nullable
     @JsonProperty()
-    public abstract String enrollmentDateLabel();
+    public abstract String displayEnrollmentDateLabel();
 
     @Nullable
     @JsonProperty()
     public abstract Boolean displayIncidentDate();
 
+    /**
+     * @deprecated replaced by {@link #displayIncidentDateLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String incidentDateLabel() {
+        return displayIncidentDateLabel();
+    }
+
     @Nullable
     @JsonProperty()
-    public abstract String incidentDateLabel();
+    public abstract String displayIncidentDateLabel();
 
     @Nullable
     @JsonProperty()
@@ -112,9 +130,9 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean selectIncidentDatesInFuture();
 
     /**
-     * @deprecated since 2.29, replaced by {@link #featureType()}
+     * @deprecated replaced by {@link #featureType()}
      */
-    @Deprecated
+    @Deprecated(since = "2.29")
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
@@ -203,37 +221,109 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(AccessLevelColumnAdapter.class)
     public abstract AccessLevel accessLevel();
 
+    /**
+     * @deprecated replaced by {@link #displayEnrollmentLabel()}
+     */
+    @Deprecated(since = "41")
     @Nullable
-    @JsonProperty()
-    public abstract String enrollmentLabel();
+    public String enrollmentLabel() {
+        return displayEnrollmentLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String followUpLabel();
+    public abstract String displayEnrollmentLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayFollowUpLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String followUpLabel() {
+        return displayFollowUpLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String orgUnitLabel();
+    public abstract String displayFollowUpLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayOrgUnitLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String orgUnitLabel() {
+        return displayOrgUnitLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String relationshipLabel();
+    public abstract String displayOrgUnitLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayRelationshipLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String relationshipLabel() {
+        return displayRelationshipLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String noteLabel();
+    public abstract String displayRelationshipLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayNoteLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String noteLabel() {
+        return displayNoteLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String trackedEntityAttributeLabel();
+    public abstract String displayNoteLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayTrackedEntityAttributeLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String trackedEntityAttributeLabel() {
+        return displayTrackedEntityAttributeLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String programStageLabel();
+    public abstract String displayTrackedEntityAttributeLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayProgramStageLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String programStageLabel() {
+        return displayProgramStageLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String eventLabel();
+    public abstract String displayProgramStageLabel();
+
+    /**
+     * @deprecated replaced by {@link #displayEventLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String eventLabel() {
+        return displayEventLabel();
+    }
+
+    @Nullable
+    @JsonProperty()
+    public abstract String displayEventLabel();
 
     @Nullable
     @JsonProperty()
@@ -261,11 +351,25 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder onlyEnrollOnce(Boolean onlyEnrollOnce);
 
-        public abstract Builder enrollmentDateLabel(String enrollmentDateLabel);
+        /**
+         * @deprecated replaced by {@link #displayEnrollmentDateLabel(String displayEnrollmentDateLabel))}
+         */
+        public Builder enrollmentDateLabel(String enrollmentDateLabel) {
+            return displayEnrollmentDateLabel(enrollmentDateLabel);
+        }
+
+        public abstract Builder displayEnrollmentDateLabel(String displayEnrollmentDateLabel);
 
         public abstract Builder displayIncidentDate(Boolean displayIncidentDate);
 
-        public abstract Builder incidentDateLabel(String incidentDateLabel);
+        /**
+         * @deprecated replaced by {@link #displayIncidentDateLabel(String displayIncidentDateLabel))}
+         */
+        public Builder incidentDateLabel(String incidentDateLabel) {
+            return displayIncidentDateLabel(incidentDateLabel);
+        }
+
+        public abstract Builder displayIncidentDateLabel(String displayIncidentDateLabel);
 
         public abstract Builder registration(Boolean registration);
 
@@ -278,9 +382,9 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder selectIncidentDatesInFuture(Boolean selectIncidentDatesInFuture);
 
         /**
-         * @deprecated since 2.29, replaced by {@link #featureType()}
+         * @deprecated replaced by {@link #featureType()}
          */
-        @Deprecated
+        @Deprecated(since = "2.29")
         abstract Builder captureCoordinates(Boolean captureCoordinates);
 
         public abstract Builder useFirstStageDuringRegistration(Boolean useFirstStageDuringRegistration);
@@ -290,7 +394,7 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder programType(ProgramType programType);
 
         abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
-                                                                       programTrackedEntityAttributes);
+                                                                programTrackedEntityAttributes);
 
         public abstract Builder relatedProgram(ObjectWithUid relatedProgram);
 
@@ -318,21 +422,78 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder accessLevel(AccessLevel accessLevel);
 
-        public abstract Builder enrollmentLabel(String enrollmentLabel);
+        /**
+         * @deprecated replaced by {@link #displayEnrollmentLabel(String displayEnrollmentLabel))}
+         */
+        public Builder enrollmentLabel(String enrollmentLabel) {
+            return displayEnrollmentLabel(enrollmentLabel);
+        }
 
-        public abstract Builder followUpLabel(String followUpLabel);
+        public abstract Builder displayEnrollmentLabel(String displayEnrollmentLabel);
 
-        public abstract Builder orgUnitLabel(String orgUnitLabel);
+        /**
+         * @deprecated replaced by {@link #displayFollowUpLabel(String displayFollowUpLabel))}
+         */
+        public Builder followUpLabel(String followUpLabel) {
+            return displayFollowUpLabel(followUpLabel);
+        }
 
-        public abstract Builder relationshipLabel(String relationshipLabel);
+        public abstract Builder displayFollowUpLabel(String displayFollowUpLabel);
 
-        public abstract Builder noteLabel(String noteLabel);
+        /**
+         * @deprecated replaced by {@link #displayOrgUnitLabel(String displayOrgUnitLabel))}
+         */
+        public Builder orgUnitLabel(String orgUnitLabel) {
+            return displayOrgUnitLabel(orgUnitLabel);
+        }
 
-        public abstract Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel);
+        public abstract Builder displayOrgUnitLabel(String displayOrgUnitLabel);
 
-        public abstract Builder programStageLabel(String programStageLabel);
+        /**
+         * @deprecated replaced by {@link #displayRelationshipLabel(String displayRelationshipLabel))}
+         */
+        public Builder relationshipLabel(String relationshipLabel) {
+            return displayRelationshipLabel(relationshipLabel);
+        }
 
-        public abstract Builder eventLabel(String eventLabel);
+        public abstract Builder displayRelationshipLabel(String displayRelationshipLabel);
+
+        /**
+         * @deprecated replaced by {@link #displayNoteLabel(String displayNoteLabel))}
+         */
+        public Builder noteLabel(String noteLabel) {
+            return displayNoteLabel(noteLabel);
+        }
+
+        public abstract Builder displayNoteLabel(String displayNoteLabel);
+
+        /**
+         * @deprecated replaced by
+         * {@link #displayTrackedEntityAttributeLabel(String displayTrackedEntityAttributeLabel))}
+         */
+        public Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel) {
+            return displayTrackedEntityAttributeLabel(trackedEntityAttributeLabel);
+        }
+
+        public abstract Builder displayTrackedEntityAttributeLabel(String displayTrackedEntityAttributeLabel);
+
+        /**
+         * @deprecated replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel))}
+         */
+        public Builder programStageLabel(String programStageLabel) {
+            return displayProgramStageLabel(programStageLabel);
+        }
+
+        public abstract Builder displayProgramStageLabel(String displayProgramStageLabel);
+
+        /**
+         * @deprecated replaced by {@link #displayEventLabel(String displayEventLabel))}
+         */
+        public Builder eventLabel(String eventLabel) {
+            return displayEventLabel(eventLabel);
+        }
+
+        public abstract Builder displayEventLabel(String displayEventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 
@@ -340,9 +501,13 @@ public abstract class Program extends BaseNameableObject
 
         // Auxiliary fields
         abstract Boolean captureCoordinates();
+
         abstract FeatureType featureType();
+
         abstract Access access();
+
         abstract AccessLevel accessLevel();
+
         abstract ObjectStyle style();
 
         public Program build() {

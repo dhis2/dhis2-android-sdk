@@ -26,22 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant.internal
+package org.hisp.dhis.android.core.arch.api.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+internal class RequestBuilder(private val baseUrl: String) {
+    lateinit var url: String
+        private set
 
-@Singleton
-internal class KtorConstantService(private val client: KtorServiceClient) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
-        val url = "constants"
-        val parameters = mapOf(
-            "fields" to fields.generateString(),
-            "paging" to paging.toString(),
-        )
-        return client.get(url, parameters)
+    var body: Any? = null
+        private set
+
+    var authorizationHeader: String? = null
+        private set
+
+    var parameters: MutableList<Pair<String, String>> = mutableListOf()
+        private set
+
+    private val parametersBuilder = ParametersBuilder(parameters)
+
+    fun url(url: String) {
+        this.url = baseUrl + url
+    }
+
+    fun absoluteUrl(url: String) {
+        this.url = url
+    }
+
+    fun authorizationHeader(header: String?) {
+        this.authorizationHeader = header
+    }
+
+    fun body(body: Any?) {
+        this.body = body
+    }
+
+    fun parameters(block: ParametersBuilder.() -> Unit) {
+        parametersBuilder.apply(block)
     }
 }

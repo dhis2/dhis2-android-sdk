@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler

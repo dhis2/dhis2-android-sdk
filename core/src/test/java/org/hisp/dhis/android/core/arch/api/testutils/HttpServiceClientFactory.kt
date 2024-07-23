@@ -35,7 +35,7 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.jackson.JacksonConverter
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer

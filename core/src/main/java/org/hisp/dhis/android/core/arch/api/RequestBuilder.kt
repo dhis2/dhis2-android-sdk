@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api
 
 class RequestBuilder(private val baseUrl: String) {
     lateinit var url: String

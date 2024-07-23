@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import org.koin.core.annotation.Singleton

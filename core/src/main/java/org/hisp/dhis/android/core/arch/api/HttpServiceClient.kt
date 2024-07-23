@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

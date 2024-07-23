@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event

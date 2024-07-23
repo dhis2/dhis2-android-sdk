@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterAPI37

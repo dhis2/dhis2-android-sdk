@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse

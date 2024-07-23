@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.koin.core.annotation.Singleton

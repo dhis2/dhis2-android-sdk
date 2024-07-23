@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.koin.core.annotation.Singleton
 

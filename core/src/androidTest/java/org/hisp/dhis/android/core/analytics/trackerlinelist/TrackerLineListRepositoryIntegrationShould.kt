@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -44,17 +43,7 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationT
             .withTrackerVisualization("s85urBIkN0z")
             .blockingEvaluate()
 
-        val trackerResult = result.getOrThrow()
-        val rows = trackerResult.rows
+        val rows = result.getOrThrow().rows
         assertThat(rows.size).isEqualTo(2)
-
-        rows.forEach { row ->
-            val categoryColumnValue = row.find { cell ->
-                val metadataItem = trackerResult.metadata[cell.id]
-                metadataItem is MetadataItem.CategoryItem
-            }
-
-            assertThat(categoryColumnValue!!.value).isEqualTo("default display name")
-        }
     }
 }

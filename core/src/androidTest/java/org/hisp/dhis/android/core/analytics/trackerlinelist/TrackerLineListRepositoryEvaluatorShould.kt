@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
@@ -148,15 +148,49 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         val result = d2.analyticsModule().trackerLineList()
             .withEventOutput(programStage1.uid())
             .withColumn(TrackerLineListItem.OrganisationUnitItem())
-            .withColumn(TrackerLineListItem.Category(category.uid()))
+            .withColumn(TrackerLineListItem.Category(attribute.uid()))
             .blockingEvaluate()
 
         val rows = result.getOrThrow().rows
         val firstRow = rows.first()
 
         assertThat(rows.size).isEqualTo(3)
-        assertThat(firstRow[1].value).isEqualTo(categoryOption.displayName())
+        assertThat(firstRow[1].value).isEqualTo(attributeOption.displayName())
+    }
 
+    @Test
+    fun evaluate_line_list_category_with_filters() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
+        val event = generator.generate()
+        createDefaultTrackerEvent(event, enrollment1, eventDate = period202001.startDate())
+
+        val result_with_correct_filters = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
+            .withColumn(
+                TrackerLineListItem.Category(attribute.uid(), listOf(DataFilter.In(listOf(attributeOption.uid()!!)))),
+            )
+            .blockingEvaluate()
+
+        val rows_with_correct_filters = result_with_correct_filters.getOrThrow().rows
+        val firstRow_with_correct_filters = rows_with_correct_filters.first()
+
+        assertThat(rows_with_correct_filters.size).isEqualTo(1)
+        assertThat(firstRow_with_correct_filters[1].value).isEqualTo(attributeOption.displayName())
+
+        val result_with_incorrect_filters = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
+            .withColumn(
+                TrackerLineListItem.Category(attribute.uid(), listOf(DataFilter.In(listOf("Incorrect filter")))),
+            )
+            .blockingEvaluate()
+
+        val rows_with_incorrect_filters = result_with_incorrect_filters.getOrThrow().rows
+
+        assertThat(rows_with_incorrect_filters.size).isEqualTo(0)
     }
 
     @Test
@@ -423,7 +457,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE,
-        attributeOptionComboUid: String = attributeOptionCombo.uid()
+        attributeOptionComboUid: String = attributeOptionCombo.uid(),
     ) {
         helper.createTrackerEvent(
             eventUid,

@@ -48,7 +48,7 @@ internal class TrackerLineListServiceMetadataHelper(
     private val programIndicatorStore: ProgramIndicatorStore,
     private val programStore: ProgramStore,
     private val programStageStore: ProgramStageStore,
-    private val categoryStore: CategoryStore
+    private val categoryStore: CategoryStore,
 ) {
 
     fun getMetadata(params: TrackerLineListParams): Map<String, MetadataItem> {
@@ -123,9 +123,8 @@ internal class TrackerLineListServiceMetadataHelper(
             ?: throw AnalyticsException.InvalidProgramStage(programStageId)
     }
 
-    private fun getCategory(item: TrackerLineListItem.Category):  List<MetadataItem> {
+    private fun getCategory(item: TrackerLineListItem.Category): List<MetadataItem> {
         val category = categoryStore.selectByUid(item.uid) ?: throw AnalyticsException.InvalidCategory(item.uid)
         return listOf(MetadataItem.CategoryItem(category))
-
     }
 }

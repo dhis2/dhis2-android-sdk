@@ -45,8 +45,8 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class HttpServiceClient(
-    val client: HttpClient,
-    var baseUrl: String = "https://temporary-dhis-url.org/api/",
+    @PublishedApi internal val client: HttpClient,
+    @PublishedApi internal var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
     @PublishedApi
     internal suspend inline fun <reified T> request(

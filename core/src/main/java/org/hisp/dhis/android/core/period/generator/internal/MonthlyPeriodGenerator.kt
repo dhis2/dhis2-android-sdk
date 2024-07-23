@@ -34,11 +34,11 @@ import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal class DailyPeriodGenerator(clock: Clock) :
-    AbstractPeriodGenerator(clock, PeriodType.Daily) {
+internal class MonthlyPeriodGenerator(clock: Clock) :
+    AbstractPeriodGenerator(clock, PeriodType.Monthly) {
 
     override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        return date
+        return LocalDate(date.year, date.monthNumber, 1)
     }
 
     override fun getStartOfYearFor(date: LocalDate): LocalDate {
@@ -46,10 +46,10 @@ internal class DailyPeriodGenerator(clock: Clock) :
     }
 
     override fun movePeriods(date: LocalDate, offset: Int): LocalDate {
-        return date.plus(offset, DateTimeUnit.DAY)
+        return date.plus(offset, DateTimeUnit.MONTH)
     }
 
     override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
-        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}${startDate.dayOfMonth.zeroPrefixed()}"
+        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}"
     }
 }

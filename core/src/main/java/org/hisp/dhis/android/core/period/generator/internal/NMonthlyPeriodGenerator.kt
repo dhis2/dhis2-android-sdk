@@ -30,26 +30,65 @@ package org.hisp.dhis.android.core.period.generator.internal
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal class DailyPeriodGenerator(clock: Clock) :
-    AbstractPeriodGenerator(clock, PeriodType.Daily) {
+internal open class NMonthlyPeriodGenerator(
+    clock: Clock,
+    periodType: PeriodType,
+    private val durationInMonths: Int,
+    protected val idAdditionalString: String,
+    private val startMonth: Month,
+) :
+    AbstractPeriodGenerator(clock, periodType) {
 
     override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        return date
+        val currentMonth = date.monthNumber
+        val monthsFromPeriodStart = (currentMonth - startMonth.number + 12) % durationInMonths
+        val currentPeriodStartMonth = (currentMonth - monthsFromPeriodStart + 12) % 12
+        val year =
+            if (currentMonth - monthsFromPeriodStart < 0) {
+                date.year - 1
+            } else {
+                date.year
+            }
+
+        return LocalDate(year, currentPeriodStartMonth, 1)
     }
 
     override fun getStartOfYearFor(date: LocalDate): LocalDate {
-        return LocalDate(date.year, 1, 1)
+        val startYear =
+            if (date.month.number < startMonth.number) {
+                date.year - 1
+            } else {
+                date.year
+            }
+
+        return LocalDate(startYear, startMonth, 1)
     }
 
     override fun movePeriods(date: LocalDate, offset: Int): LocalDate {
-        return date.plus(offset, DateTimeUnit.DAY)
+        return date.plus(offset * durationInMonths, DateTimeUnit.MONTH)
     }
 
     override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
-        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}${startDate.dayOfMonth.zeroPrefixed()}"
+        val periodNumber = getPeriodNumber(startDate)
+
+        var year = startDate.year
+        if (startDate.monthNumber < startMonth.number) {
+            year--
+        }
+        if (startMonth.number > 6) {
+            year++
+        }
+
+        return "$year$idAdditionalString$periodNumber"
+    }
+
+    protected fun getPeriodNumber(startDate: LocalDate): Int {
+        val monthsFromStart = (startDate.monthNumber - startMonth.number + 12) % 12
+        return (monthsFromStart / durationInMonths) + 1
     }
 }

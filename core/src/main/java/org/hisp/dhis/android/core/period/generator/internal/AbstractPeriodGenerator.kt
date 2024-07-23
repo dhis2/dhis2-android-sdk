@@ -51,14 +51,14 @@ internal abstract class AbstractPeriodGenerator(
         val currentDate = getToday()
         val firstPeriodStartDate = moveToStartOfThePeriodOfADayWithOffset(currentDate, start)
 
-        val periods = (0..<(end - start)).map { offset -> generatePeriod(offset, firstPeriodStartDate) }
+        val periods = (0..<(end - start)).map { offset -> generatePeriod(firstPeriodStartDate, offset) }
 
         return periods
     }
 
     @Synchronized
-    override fun generatePeriod(periodOffset: Int, refDate: LocalDate): PeriodK {
-        val startDate = moveToStartOfThePeriodOfADayWithOffset(refDate, periodOffset)
+    override fun generatePeriod(date: LocalDate, periodOffset: Int): PeriodK {
+        val startDate = moveToStartOfThePeriodOfADayWithOffset(date, periodOffset)
 
         val nextPeriodStartDate = this.movePeriods(startDate, 1)
         val endDate = nextPeriodStartDate.minus(1, DateTimeUnit.DAY)
@@ -82,7 +82,7 @@ internal abstract class AbstractPeriodGenerator(
         val startOfTargetYear = getStartOfYearFor(targetDate)
 
         val periods = generateSequence(0) { it + 1 }
-            .map { offset -> generatePeriod(offset, startOfTargetYear) }
+            .map { offset -> generatePeriod(startOfTargetYear, offset) }
             .takeWhile { period -> period.periodId.startsWith(targetYear.toString()) }
 
         return periods.toList()

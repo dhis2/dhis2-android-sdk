@@ -30,74 +30,63 @@ package org.hisp.dhis.android.core.period.internal.generator.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.period.generator.internal.DailyPeriodGenerator
+import org.hisp.dhis.android.core.period.generator.internal.NMonthlyPeriodGeneratorFactory
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class DailyPeriodGeneratorShould {
+class BiMonthlyPeriodGeneratorShould {
 
     @Test
-    fun generate_daily_periods_for_one_day() {
-        val clock = Clock.fixed(LocalDate(2024, 2, 2))
+    fun generate_daily_periods_for_one_bimonth() {
+        val clock = Clock.fixed(LocalDate(2018, 4, 11))
 
-        val periods = DailyPeriodGenerator(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.biMonthly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
-            assertThat(period.periodId).isEqualTo("20240201")
-            assertThat(period.startDate).isEqualTo(LocalDate(2024, 2, 1))
-            assertThat(period.endDate).isEqualTo(LocalDate(2024, 2, 1))
+            assertThat(period.periodId).isEqualTo("201801B")
+            assertThat(period.startDate).isEqualTo(LocalDate(2018, 1, 1))
+            assertThat(period.endDate).isEqualTo(LocalDate(2018, 2, 28))
         }
     }
 
     @Test
-    fun generate_daily_periods_for_changing_year() {
-        val clock = Clock.fixed(LocalDate(2024, 1, 3))
-
-        val periods = DailyPeriodGenerator(clock).generatePeriods(-3, 0)
-
-        assertThat(periods.map { it.periodId }).isEqualTo(listOf("20231231", "20240101", "20240102"))
-    }
-
-    @Test
     fun generate_period_id() {
-        val generator = DailyPeriodGenerator(Clock.System)
-
-        assertThat("20191230").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 0).periodId)
-        assertThat("20200102").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), 0).periodId)
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(Clock.System)
+        assertThat("201903B").isEqualTo(generator.generatePeriod(LocalDate(2019, 6, 30), 0).periodId)
+        assertThat("201904B").isEqualTo(generator.generatePeriod(LocalDate(2019, 7, 1), 0).periodId)
     }
 
     @Test
     fun generate_period_id_with_offset() {
-        val generator = DailyPeriodGenerator(Clock.System)
-
-        assertThat("20200101").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 2).periodId)
-        assertThat("20191229").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), -4).periodId)
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(Clock.System)
+        assertThat("201905B").isEqualTo(generator.generatePeriod(LocalDate(2019, 6, 30), 2).periodId)
+        assertThat("201903B").isEqualTo(generator.generatePeriod(LocalDate(2019, 7, 1), -1).periodId)
     }
 
     @Test
     fun generate_periods_in_this_year() {
-        val clock = Clock.fixed(LocalDate(2024, 8, 29))
-        val generator = DailyPeriodGenerator(clock)
+        val clock = Clock.fixed(LocalDate(2019, 8, 29))
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(clock)
 
         val periods = generator.generatePeriodsInYear(0)
 
-        assertThat(periods.size).isEqualTo(366)
-        assertThat(periods[0].periodId).isEqualTo("20240101")
-        assertThat(periods[365].periodId).isEqualTo("20241231")
+        assertThat(periods.size).isEqualTo(6)
+        assertThat(periods.first().periodId).isEqualTo("201901B")
+        assertThat(periods.last().periodId).isEqualTo("201906B")
     }
 
     @Test
     fun generate_periods_in_last_year() {
-        val clock = Clock.fixed(LocalDate(2024, 8, 29))
-        val generator = DailyPeriodGenerator(clock)
+        val clock = Clock.fixed(LocalDate(2019, 8, 29))
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(clock)
 
         val periods = generator.generatePeriodsInYear(-1)
 
-        assertThat(periods.size).isEqualTo(365)
-        assertThat(periods[0].periodId).isEqualTo("20230101")
-        assertThat(periods[364].periodId).isEqualTo("20231231")
+        assertThat(periods.size).isEqualTo(6)
+        assertThat(periods.first().periodId).isEqualTo("201801B")
+        assertThat(periods.last().periodId).isEqualTo("201806B")
     }
 }

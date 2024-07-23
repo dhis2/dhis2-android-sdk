@@ -98,47 +98,47 @@ class WeeklyPeriodGeneratorShould {
     @Test
     fun generate_period_id() {
         val saturdayGenerator = WeeklyPeriodGeneratorFactory.saturday(Clock.System)
-        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(0, LocalDate(2019, 12, 20)).periodId)
-        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(0, LocalDate(2019, 12, 21)).periodId)
+        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(LocalDate(2019, 12, 20), 0).periodId)
+        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(LocalDate(2019, 12, 21), 0).periodId)
 
         val sundayGenerator = WeeklyPeriodGeneratorFactory.sunday(Clock.System)
-        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(0, LocalDate(2019, 12, 21)).periodId)
-        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(0, LocalDate(2019, 12, 22)).periodId)
+        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(LocalDate(2019, 12, 21), 0).periodId)
+        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(LocalDate(2019, 12, 22), 0).periodId)
 
         val weeklyGenerator = WeeklyPeriodGeneratorFactory.weekly(Clock.System)
-        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(0, LocalDate(2019, 12, 22)).periodId)
-        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(0, LocalDate(2019, 12, 23)).periodId)
+        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(LocalDate(2019, 12, 22), 0).periodId)
+        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(LocalDate(2019, 12, 23), 0).periodId)
 
         val wednesdayGenerator = WeeklyPeriodGeneratorFactory.wednesday(Clock.System)
-        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(0, LocalDate(2019, 12, 24)).periodId)
-        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(0, LocalDate(2019, 12, 25)).periodId)
+        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(LocalDate(2019, 12, 24), 0).periodId)
+        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(LocalDate(2019, 12, 25), 0).periodId)
 
         val thursdayGenerator = WeeklyPeriodGeneratorFactory.thursday(Clock.System)
-        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(0, LocalDate(2019, 12, 25)).periodId)
-        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(0, LocalDate(2019, 12, 26)).periodId)
+        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(LocalDate(2019, 12, 25), 0).periodId)
+        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(LocalDate(2019, 12, 26), 0).periodId)
     }
 
     @Test
     fun generate_period_id_with_offsets() {
         val saturdayGenerator = WeeklyPeriodGeneratorFactory.saturday(Clock.System)
-        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(1, LocalDate(2019, 12, 20)).periodId)
-        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(-1, LocalDate(2019, 12, 21)).periodId)
+        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(LocalDate(2019, 12, 20), 1).periodId)
+        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(LocalDate(2019, 12, 21), -1).periodId)
 
         val sundayGenerator = WeeklyPeriodGeneratorFactory.sunday(Clock.System)
-        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(1, LocalDate(2019, 12, 21)).periodId)
-        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(-1, LocalDate(2019, 12, 22)).periodId)
+        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(LocalDate(2019, 12, 21), 1).periodId)
+        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(LocalDate(2019, 12, 22), -1).periodId)
 
         val weeklyGenerator = WeeklyPeriodGeneratorFactory.weekly(Clock.System)
-        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(1, LocalDate(2019, 12, 22)).periodId)
-        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(-1, LocalDate(2019, 12, 23)).periodId)
+        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(LocalDate(2019, 12, 22), 1).periodId)
+        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(LocalDate(2019, 12, 23), -1).periodId)
 
         val wednesdayGenerator = WeeklyPeriodGeneratorFactory.wednesday(Clock.System)
-        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(1, LocalDate(2019, 12, 24)).periodId)
-        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(-1, LocalDate(2019, 12, 25)).periodId)
+        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(LocalDate(2019, 12, 24), 1).periodId)
+        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(LocalDate(2019, 12, 25), -1).periodId)
 
         val thursdayGenerator = WeeklyPeriodGeneratorFactory.thursday(Clock.System)
-        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(1, LocalDate(2019, 12, 25)).periodId)
-        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(-1, LocalDate(2019, 12, 26)).periodId)
+        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(LocalDate(2019, 12, 25), 1).periodId)
+        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(LocalDate(2019, 12, 26), -1).periodId)
     }
 
     @Test

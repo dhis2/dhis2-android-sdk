@@ -99,7 +99,8 @@ object DateUtils {
         return c.time
     }
 
-    private fun Int.zeroPrefixed(length: Int = 2): String = this.toString().padStart(length, '0')
+    internal fun Int.zeroPrefixed(length: Int = 2): String = this.toString().padStart(length, '0')
+
     internal fun getCurrentTimeAndDate(): String {
         val dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 

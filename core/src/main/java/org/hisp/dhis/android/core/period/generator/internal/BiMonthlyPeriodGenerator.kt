@@ -28,28 +28,16 @@
 package org.hisp.dhis.android.core.period.generator.internal
 
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
 import org.hisp.dhis.android.core.period.PeriodType
+import java.time.Month
 
-internal class DailyPeriodGenerator(clock: Clock) :
-    AbstractPeriodGenerator(clock, PeriodType.Daily) {
-
-    override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        return date
-    }
-
-    override fun getStartOfYearFor(date: LocalDate): LocalDate {
-        return LocalDate(date.year, 1, 1)
-    }
-
-    override fun movePeriods(date: LocalDate, offset: Int): LocalDate {
-        return date.plus(offset, DateTimeUnit.DAY)
-    }
+internal class BiMonthlyPeriodGenerator(clock: Clock) :
+    NMonthlyPeriodGenerator(clock, PeriodType.BiMonthly, 2, "B", Month.JANUARY) {
 
     override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
-        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}${startDate.dayOfMonth.zeroPrefixed()}"
+        val periodNumber = getPeriodNumber(startDate)
+        return "${startDate.year}${periodNumber.zeroPrefixed()}$idAdditionalString"
     }
 }

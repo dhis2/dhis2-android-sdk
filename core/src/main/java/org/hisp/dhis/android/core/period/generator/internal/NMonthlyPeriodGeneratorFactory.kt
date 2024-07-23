@@ -28,28 +28,27 @@
 package org.hisp.dhis.android.core.period.generator.internal
 
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.plus
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
+import kotlinx.datetime.Month
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal class DailyPeriodGenerator(clock: Clock) :
-    AbstractPeriodGenerator(clock, PeriodType.Daily) {
-
-    override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        return date
+internal object NMonthlyPeriodGeneratorFactory {
+    fun biMonthly(clock: Clock): NMonthlyPeriodGenerator {
+        return BiMonthlyPeriodGenerator(clock)
     }
 
-    override fun getStartOfYearFor(date: LocalDate): LocalDate {
-        return LocalDate(date.year, 1, 1)
+    fun quarter(clock: Clock): NMonthlyPeriodGenerator {
+        return NMonthlyPeriodGenerator(clock, PeriodType.Quarterly, 3, "Q", Month.JANUARY)
     }
 
-    override fun movePeriods(date: LocalDate, offset: Int): LocalDate {
-        return date.plus(offset, DateTimeUnit.DAY)
+    fun sixMonthly(clock: Clock): NMonthlyPeriodGenerator {
+        return NMonthlyPeriodGenerator(clock, PeriodType.SixMonthly, 6, "S", Month.JANUARY)
     }
 
-    override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
-        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}${startDate.dayOfMonth.zeroPrefixed()}"
+    fun sixMonthlyApril(clock: Clock): NMonthlyPeriodGenerator {
+        return NMonthlyPeriodGenerator(clock, PeriodType.SixMonthlyApril, 6, "AprilS", Month.APRIL)
+    }
+
+    fun sixMonthlyNov(clock: Clock): NMonthlyPeriodGenerator {
+        return NMonthlyPeriodGenerator(clock, PeriodType.SixMonthlyNov, 6, "NovS", Month.NOVEMBER)
     }
 }

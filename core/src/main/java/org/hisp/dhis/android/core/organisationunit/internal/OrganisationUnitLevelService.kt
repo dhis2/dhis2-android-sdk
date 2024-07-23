@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.koin.core.annotation.Singleton

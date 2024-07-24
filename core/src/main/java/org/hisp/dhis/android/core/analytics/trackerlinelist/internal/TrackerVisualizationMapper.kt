@@ -86,6 +86,7 @@ internal class TrackerVisualizationMapper(
                 "PROGRAM_ATTRIBUTE" -> mapProgramAttribute(item)
                 "PROGRAM_DATA_ELEMENT" -> mapProgramDataElement(item, trackerVisualization)
                 "DATA_X" -> mapDataX(item)
+                "CATEGORY" -> mapCategory(item)
                 "ORGANISATION_UNIT_GROUP_SET" ->
                     throw AnalyticsException.InvalidArguments("Dimension ORGANISATION_UNIT_GROUP_SET IS not supported")
 
@@ -185,6 +186,12 @@ internal class TrackerVisualizationMapper(
             )
 
             else -> null
+        }
+    }
+
+    internal fun mapCategory(item: TrackerVisualizationDimension): TrackerLineListItem? {
+        return item.dimension()?.let { uid ->
+            TrackerLineListItem.Category(uid, mapDataFilters(item))
         }
     }
 

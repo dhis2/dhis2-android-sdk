@@ -60,6 +60,9 @@ sealed class TrackerLineListItem(val id: String) {
     data class ProgramAttribute(val uid: String, val filters: List<DataFilter> = emptyList()) :
         TrackerLineListItem(uid)
 
+    data class Category(val uid: String, val filters: List<DataFilter> = emptyList()) :
+        TrackerLineListItem(uid)
+
     data class ProgramDataElement(
         val dataElement: String,
         val programStage: String,

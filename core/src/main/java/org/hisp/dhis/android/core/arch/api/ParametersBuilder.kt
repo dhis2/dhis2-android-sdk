@@ -26,41 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.testutils
+package org.hisp.dhis.android.core.arch.api
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.serialization.jackson.JacksonConverter
-import okhttp3.OkHttpClient
-import okhttp3.OkHttpClient.Builder
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
-import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 
-internal object KtorFactory {
-    fun fromDHIS2MockServer(server: Dhis2MockServer): KtorServiceClient {
-        return fromServerUrl(server.baseEndpoint)
+class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
+    internal fun <T> fields(fields: Fields<T>) {
+        parameters.add("fields" to fields.generateString())
     }
 
-    fun fromServerUrl(serverUrl: String): KtorServiceClient {
-        val client = HttpClient(OkHttp) {
-            engine {
-                preconfigured = okClient
-            }
-            install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
-                register(ContentType.Application.Json, converter)
-            }
-            expectSuccess = true
+    internal fun <T> filter(filter: Filter<T>?) {
+        filter?.let {
+            parameters.add("filter" to filter.generateString())
         }
-        return KtorServiceClient(client, serverUrl + "api/")
     }
 
-    private val okClient: OkHttpClient
-        get() = Builder()
-            .addInterceptor(PreventURLDecodeInterceptor())
-            .build()
+    fun filter(filter: List<String?>?) {
+        filter?.let {
+            parameters.add("filter" to it.filterNot { it.isNullOrBlank() }.joinToString(","))
+        }
+    }
+
+    fun <T> attribute(pair: Pair<String, T?>) {
+        pair.second?.let { nonNullSecond ->
+            parameters.add(pair.first to nonNullSecond.toString())
+        }
+    }
+
+    fun paging(paging: Boolean) {
+        parameters.add("paging" to paging.toString())
+    }
+
+    fun page(page: Int?) {
+        page?.let { parameters.add("page" to it.toString()) }
+    }
+
+    fun pageSize(pageSize: Int?) {
+        pageSize?.let { parameters.add("pageSize" to it.toString()) }
+    }
 }

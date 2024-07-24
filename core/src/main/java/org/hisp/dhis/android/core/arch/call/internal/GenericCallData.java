@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.call.internal;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient;
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
@@ -39,11 +39,11 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 @AutoValue
 public abstract class GenericCallData {
     public abstract DatabaseAdapter databaseAdapter();
-    public abstract KtorServiceClient httpClient();
+    public abstract HttpServiceClient httpServiceClient();
     public abstract ResourceHandler resourceHandler();
     public abstract DHISVersionManager versionManager();
 
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, KtorServiceClient httpClient,
+    public static GenericCallData create(DatabaseAdapter databaseAdapter, HttpServiceClient httpClient,
                                          ResourceHandler resourceHandler, DHISVersionManager versionManager) {
         return new AutoValue_GenericCallData(databaseAdapter, httpClient, resourceHandler, versionManager);
     }

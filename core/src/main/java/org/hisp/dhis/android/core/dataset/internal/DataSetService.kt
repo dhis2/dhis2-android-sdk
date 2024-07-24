@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataSetService(private val client: KtorServiceClient) {
+internal class DataSetService(private val client: HttpServiceClient) {
     suspend fun getDataSets(
         fields: Fields<DataSet>,
         uids: Filter<DataSet>,

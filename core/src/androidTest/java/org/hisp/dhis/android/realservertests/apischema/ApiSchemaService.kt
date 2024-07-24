@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.realservertests.apischema
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 
-internal class ApiSchemaService(private val client: KtorServiceClient) {
+internal class ApiSchemaService(private val client: HttpServiceClient) {
     suspend fun getSchema(
         fields: Fields<ApiSchema>,
     ): Payload<ApiSchema> {

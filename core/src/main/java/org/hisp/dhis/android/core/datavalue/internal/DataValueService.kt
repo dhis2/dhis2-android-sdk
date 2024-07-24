@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
@@ -36,7 +36,7 @@ import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
 @Singleton
-internal class DataValueService(private val client: KtorServiceClient) {
+internal class DataValueService(private val client: HttpServiceClient) {
 
     suspend fun getDataValues(
         fields: Fields<DataValue>,

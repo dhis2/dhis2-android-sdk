@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.api.testutils.KtorFactory
+import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -129,15 +129,15 @@ class EventEndpointCallShould {
 
     companion object {
         private lateinit var mockWebServer: Dhis2MockServer
-        private lateinit var httpClient: KtorServiceClient
+        private lateinit var httpServiceClient: HttpServiceClient
         private lateinit var eventService: EventService
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
             mockWebServer = Dhis2MockServer(0)
-            httpClient = KtorFactory.fromDHIS2MockServer(mockWebServer)
-            eventService = EventService(httpClient)
+            httpServiceClient = HttpServiceClientFactory.fromDHIS2MockServer(mockWebServer)
+            eventService = EventService(httpServiceClient)
         }
 
         @AfterClass

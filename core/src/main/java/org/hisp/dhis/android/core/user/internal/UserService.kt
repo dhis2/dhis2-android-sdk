@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.user.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.user.User
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class UserService(private val client: KtorServiceClient) {
+internal class UserService(private val client: HttpServiceClient) {
     suspend fun authenticate(
         credentials: String,
         fields: Fields<User>,

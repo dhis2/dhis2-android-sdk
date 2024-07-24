@@ -41,8 +41,8 @@ import io.ktor.http.contentType
 import io.ktor.serialization.jackson.JacksonConverter
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
+import org.hisp.dhis.android.core.arch.api.RequestBuilder
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
-import org.hisp.dhis.android.core.arch.api.internal.RequestBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal object KtorFactory {

@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackerVisualizationService(private val client: KtorServiceClient) {
+internal class TrackerVisualizationService(private val client: HttpServiceClient) {
 
     suspend fun getSingleTrackerVisualization(
         uid: String,

@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -44,10 +44,11 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class KtorServiceClient(
-    private val client: HttpClient,
-    var baseUrl: String = "https://temporary-dhis-url.org/api/",
+class HttpServiceClient(
+    @PublishedApi internal val client: HttpClient,
+    @PublishedApi internal var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
+    @PublishedApi
     internal suspend inline fun <reified T> request(
         requestMethod: HttpMethod,
         block: RequestBuilder.() -> Unit,

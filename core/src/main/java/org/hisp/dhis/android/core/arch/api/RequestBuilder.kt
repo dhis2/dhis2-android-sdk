@@ -26,43 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+class RequestBuilder(private val baseUrl: String) {
+    lateinit var url: String
+        private set
 
-internal class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
-    fun <T> fields(fields: Fields<T>) {
-        parameters.add("fields" to fields.generateString())
+    var body: Any? = null
+        private set
+
+    var authorizationHeader: String? = null
+        private set
+
+    var parameters: MutableList<Pair<String, String>> = mutableListOf()
+        private set
+
+    private val parametersBuilder = ParametersBuilder(parameters)
+
+    fun url(url: String) {
+        this.url = baseUrl + url
     }
 
-    fun <T> filter(filter: Filter<T>?) {
-        filter?.let {
-            parameters.add("filter" to filter.generateString())
-        }
+    fun absoluteUrl(url: String) {
+        this.url = url
     }
 
-    fun filter(filter: List<String?>?) {
-        filter?.let {
-            parameters.add("filter" to it.filterNot { it.isNullOrBlank() }.joinToString(","))
-        }
+    fun authorizationHeader(header: String?) {
+        this.authorizationHeader = header
     }
 
-    fun <T> attribute(pair: Pair<String, T?>) {
-        pair.second?.let { nonNullSecond ->
-            parameters.add(pair.first to nonNullSecond.toString())
-        }
+    fun body(body: Any?) {
+        this.body = body
     }
 
-    fun paging(paging: Boolean) {
-        parameters.add("paging" to paging.toString())
-    }
-
-    fun page(page: Int?) {
-        page?.let { parameters.add("page" to it.toString()) }
-    }
-
-    fun pageSize(pageSize: Int?) {
-        pageSize?.let { parameters.add("pageSize" to it.toString()) }
+    fun parameters(block: ParametersBuilder.() -> Unit) {
+        parametersBuilder.apply(block)
     }
 }

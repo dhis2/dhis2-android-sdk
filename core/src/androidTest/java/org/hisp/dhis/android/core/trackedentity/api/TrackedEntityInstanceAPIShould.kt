@@ -64,7 +64,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     override fun setUp() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
-        trackedEntityInstanceService = TrackedEntityInstanceService(d2.ktor())
+        trackedEntityInstanceService = TrackedEntityInstanceService(d2.httpServiceClient())
     }
 
     // @Test

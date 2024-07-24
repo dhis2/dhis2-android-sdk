@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class IndicatorTypeService(private val client: KtorServiceClient) {
+internal class IndicatorTypeService(private val client: HttpServiceClient) {
     suspend fun getIndicatorTypes(
         fields: Fields<IndicatorType>,
         lastUpdated: Filter<IndicatorType>?,

@@ -26,40 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api.testutils
 
-internal class RequestBuilder(private val baseUrl: String) {
-    lateinit var url: String
-        private set
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.JacksonConverter
+import okhttp3.OkHttpClient
+import okhttp3.OkHttpClient.Builder
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
-    var body: Any? = null
-        private set
-
-    var authorizationHeader: String? = null
-        private set
-
-    var parameters: MutableList<Pair<String, String>> = mutableListOf()
-        private set
-
-    private val parametersBuilder = ParametersBuilder(parameters)
-
-    fun url(url: String) {
-        this.url = baseUrl + url
+internal object HttpServiceClientFactory {
+    fun fromDHIS2MockServer(server: Dhis2MockServer): HttpServiceClient {
+        return fromServerUrl(server.baseEndpoint)
     }
 
-    fun absoluteUrl(url: String) {
-        this.url = url
+    fun fromServerUrl(serverUrl: String): HttpServiceClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okClient
+            }
+            install(ContentNegotiation) {
+                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
+                register(ContentType.Application.Json, converter)
+            }
+            expectSuccess = true
+        }
+        return HttpServiceClient(client, serverUrl + "api/")
     }
 
-    fun authorizationHeader(header: String?) {
-        this.authorizationHeader = header
-    }
-
-    fun body(body: Any?) {
-        this.body = body
-    }
-
-    fun parameters(block: ParametersBuilder.() -> Unit) {
-        parametersBuilder.apply(block)
-    }
+    private val okClient: OkHttpClient
+        get() = Builder()
+            .addInterceptor(PreventURLDecodeInterceptor())
+            .build()
 }

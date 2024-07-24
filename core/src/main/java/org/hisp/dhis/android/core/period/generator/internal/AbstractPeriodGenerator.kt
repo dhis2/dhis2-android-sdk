@@ -76,14 +76,15 @@ internal abstract class AbstractPeriodGenerator(
     @Synchronized
     override fun generatePeriodsInYear(yearOffset: Int): List<PeriodK> {
         val currentDate = getToday()
-
         val targetDate = currentDate.plus(yearOffset, DateTimeUnit.YEAR)
-        val targetYear = targetDate.year
+
+        val currentPeriod = generatePeriod(targetDate, 0)
+        val targetYear = currentPeriod.periodId.substring(0, 4)
         val startOfTargetYear = getStartOfYearFor(targetDate)
 
         val periods = generateSequence(0) { it + 1 }
             .map { offset -> generatePeriod(startOfTargetYear, offset) }
-            .takeWhile { period -> period.periodId.startsWith(targetYear.toString()) }
+            .takeWhile { period -> period.periodId.startsWith(targetYear) }
 
         return periods.toList()
     }

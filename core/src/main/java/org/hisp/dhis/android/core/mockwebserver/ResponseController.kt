@@ -25,95 +25,95 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.mockwebserver
 
-package org.hisp.dhis.android.core.mockwebserver;
+class ResponseController internal constructor() {
+    private var methodsMap: MutableMap<String, LinkedHashMap<String?, String>>? = null
+    private var codeResponses: MutableMap<String, Int>? = null
+    private var contentTypeMap: MutableMap<String, String>? = null
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class ResponseController {
-
-    public static final String GET = "GET";
-    public static final String POST = "POST";
-    public static final String PUT = "PUT";
-    public static final String DELETE = "DELETE";
-
-    public static final String API_ME_PATH = "/api/me?.*";
-    public static final String API_SYSTEM_INFO_PATH = "/api/system/info?.*";
-
-    private Map<String, LinkedHashMap<String, String>> methodsMap;
-    private Map<String, Integer> codeResponses;
-    private Map<String, String> contentTypeMap;
-
-    ResponseController(){
-        initMaps();
+    init {
+        initMaps()
     }
 
-    private void initMaps() {
-        codeResponses = new HashMap<>();
-        contentTypeMap = new HashMap<>();
-        methodsMap = new HashMap<>();
-        methodsMap.put(GET, new LinkedHashMap<>());
-        methodsMap.put(POST, new LinkedHashMap<>());
-        methodsMap.put(PUT, new LinkedHashMap<>());
-        methodsMap.put(DELETE, new LinkedHashMap<>());
+    private fun initMaps() {
+        codeResponses = mutableMapOf()
+        contentTypeMap = mutableMapOf()
+        methodsMap = mutableMapOf()
+        methodsMap?.put(GET, LinkedHashMap())
+        methodsMap?.put(POST, LinkedHashMap())
+        methodsMap?.put(PUT, LinkedHashMap())
+        methodsMap?.put(DELETE, LinkedHashMap())
     }
 
-    void populateInternalResponses(){
-        //move sdk dispatcher here
+    fun populateInternalResponses() {
+        // move sdk dispatcher here
     }
 
-    void addResponse(String method, String path, String responseName,
-                     Integer responseCode, String contentType) {
-        LinkedHashMap<String, String> resourcesMap = methodsMap.get(method);
-        resourcesMap.put(path, responseName);
-        codeResponses.put(responseName, responseCode);
-        contentTypeMap.put(responseName, contentType);
+    fun addResponse(
+        method: String,
+        path: String,
+        responseName: String,
+        responseCode: Int,
+        contentType: String,
+    ) {
+        var resourcesMap = methodsMap!!.get(method)!!
+        resourcesMap.put(path, responseName)
+        codeResponses!!.put(responseName, responseCode)
+        contentTypeMap!!.put(responseName, contentType)
     }
 
-    String getBody(String method, String currentPath){
-        Map<String, String> resourcesMap = methodsMap.get(method);
-        String filename = "";
+    fun getBody(method: String, currentPath: String?): String? {
+        var resourcesMap: Map<String?, String> = methodsMap?.get(method) ?: return null
+        var filename: String? = ""
 
-        List<String> paths = new ArrayList<>(resourcesMap.keySet());
-        Collections.reverse(paths);
-        for (String path : paths) {
-            filename = findResponse(resourcesMap, path, currentPath);
-            if (!filename.isEmpty()){
-                break;
+        val paths: List<String?> = resourcesMap.keys.toList().asReversed()
+        for (path in paths) {
+            filename = findResponse(resourcesMap, path, currentPath)
+            if (!filename!!.isEmpty()) {
+                break
             }
         }
-        return filename;
+        return filename
     }
 
-    private String findResponse(Map<String, String> resourcesMap, String path, String currentPath) {
-        String filename = "";
-        Pattern pattern = Pattern.compile(path);
-        Matcher matcher = pattern.matcher(currentPath);
+    private fun findResponse(
+        resourcesMap: Map<String?, String>,
+        path: String?,
+        currentPath: String?,
+    ): String? {
+        var filename: String? = ""
+        val pattern = path?.toRegex() ?: return filename
 
-        if (matcher.matches()){
-            filename = resourcesMap.get(path);
+        if (currentPath != null && pattern.matches(currentPath)) {
+            filename = resourcesMap[path]
         }
-        return filename;
+        return filename
     }
 
-    int getCode(String resource){
+    @Suppress("TooGenericExceptionThrown")
+    fun getCode(resource: String?): Int {
         if (resource == null || resource.isEmpty()) {
-            throw new RuntimeException("Resource not not found");
+            throw RuntimeException("Resource not not found")
         }
-        return codeResponses.get(resource);
+        return codeResponses!!.get(resource)!!
     }
 
-    String getContentType(String resource){
+    @Suppress("TooGenericExceptionThrown")
+    fun getContentType(resource: String?): String? {
         if (resource == null || resource.isEmpty()) {
-            throw new RuntimeException("Resource not not found");
+            throw RuntimeException("Resource not not found")
         }
-        return contentTypeMap.get(resource);
+        return contentTypeMap!!.get(resource)
+    }
+
+    companion object {
+        const val GET: String = "GET"
+        const val POST: String = "POST"
+        const val PUT: String = "PUT"
+        const val DELETE: String = "DELETE"
+
+        const val API_ME_PATH: String = "/api/me?.*"
+        const val API_SYSTEM_INFO_PATH: String = "/api/system/info?.*"
     }
 }

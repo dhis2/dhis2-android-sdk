@@ -49,6 +49,7 @@ public class ResponseController {
 
     private Map<String, LinkedHashMap<String, String>> methodsMap;
     private Map<String, Integer> codeResponses;
+    private Map<String, String> contentTypeMap;
 
     ResponseController(){
         initMaps();
@@ -56,6 +57,7 @@ public class ResponseController {
 
     private void initMaps() {
         codeResponses = new HashMap<>();
+        contentTypeMap = new HashMap<>();
         methodsMap = new HashMap<>();
         methodsMap.put(GET, new LinkedHashMap<>());
         methodsMap.put(POST, new LinkedHashMap<>());
@@ -67,10 +69,12 @@ public class ResponseController {
         //move sdk dispatcher here
     }
 
-    void addResponse(String method, String path, String responseName, Integer responseCode) {
+    void addResponse(String method, String path, String responseName,
+                     Integer responseCode, String contentType) {
         LinkedHashMap<String, String> resourcesMap = methodsMap.get(method);
         resourcesMap.put(path, responseName);
         codeResponses.put(responseName, responseCode);
+        contentTypeMap.put(responseName, contentType);
     }
 
     String getBody(String method, String currentPath){
@@ -104,5 +108,12 @@ public class ResponseController {
             throw new RuntimeException("Resource not not found");
         }
         return codeResponses.get(resource);
+    }
+
+    String getContentType(String resource){
+        if (resource == null || resource.isEmpty()) {
+            throw new RuntimeException("Resource not not found");
+        }
+        return contentTypeMap.get(resource);
     }
 }

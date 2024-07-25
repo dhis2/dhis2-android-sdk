@@ -228,7 +228,7 @@ public class Dhis2MockServer {
                     return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/versions")) {
                     return createMockResponse(VERSIONS_JSON);
-                }  else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
+                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
                     return createMockResponse(LATEST_APP_VERSION_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
@@ -316,7 +316,7 @@ public class Dhis2MockServer {
                     return createMockResponse(SMS_METADATA);
                 } else if (path.startsWith("/api/fileResources?")) {
                     return createMockResponse(FILE_RESOURCES);
-               } else if (path.startsWith("/api/fileResources/befryEfXge5")) {
+                } else if (path.startsWith("/api/fileResources/befryEfXge5")) {
                     return createMockResponse(FILE_RESOURCE);
                 } else if (path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image")) {
                     return createMockResponse(TRACKED_ENTITY_IMAGE);
@@ -439,7 +439,8 @@ public class Dhis2MockServer {
         return server.takeRequest();
     }
 
-    public void addResponse(String method, String path, String responseName, int responseCode) {
-        dhis2Dispatcher.addResponse(method, path, responseName, responseCode);
+    public void addResponse(String method, String path, String responseName,
+                            int responseCode, String contentType) {
+        dhis2Dispatcher.addResponse(method, path, responseName, responseCode, contentType);
     }
 }

@@ -62,17 +62,22 @@ public class Dhis2Dispatcher extends Dispatcher {
 
         String fileName = responseController.getBody(method, path);
         int httpCode = responseController.getCode(fileName);
+        String contentType = responseController.getContentType(fileName);
 
         try {
             String body = fileReader.getStringFromFile(fileName);
             Log.i(DISPATCHER, String.format(method, path, body));
-            return new MockResponse().setBody(body).setResponseCode(httpCode);
+            return new MockResponse()
+                    .setBody(body)
+                    .setResponseCode(httpCode)
+                    .setHeader("Content-Type", contentType);
         } catch (IOException e) {
             return new MockResponse().setResponseCode(500).setBody("Error reading JSON file for MockServer");
         }
     }
 
-    void addResponse(String method, String path, String responseName, int responseCode) {
-        responseController.addResponse(method, path, responseName, responseCode);
+    void addResponse(String method, String path, String responseName,
+                     int responseCode, String contentType) {
+        responseController.addResponse(method, path, responseName, responseCode, contentType);
     }
 }

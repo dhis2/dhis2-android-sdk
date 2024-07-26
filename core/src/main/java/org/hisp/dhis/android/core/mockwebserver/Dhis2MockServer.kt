@@ -88,7 +88,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         var mockResponse = MockResponse()
         mockResponse.setResponseCode(code)
         mockResponse.setBody(response!!)
-        mockResponse.setHeader("Content-Type", "application/json")
+        mockResponse.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
         server.enqueue(mockResponse)
     }
 
@@ -99,7 +99,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
     fun enqueueMockResponse(fileName: String) {
         var response = createMockResponse(fileName)
-        response.setHeader("Content-Type", "application/json")
+        response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
         server.enqueue(response)
     }
 
@@ -324,7 +324,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
             var response = MockResponse()
             response.setResponseCode(code)
             response.setBody(body!!)
-            response.setHeader("Content-Type", "application/json")
+            response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
             return response
         } catch (e: IOException) {
             return MockResponse().setResponseCode(INTERNAL_SERVER_ERROR)
@@ -358,7 +358,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         path: String,
         responseName: String,
         responseCode: Int,
-        contentType: String = "application/json",
+        contentType: String = CONTENT_TYPE_JSON,
     ) {
         dhis2Dispatcher.addResponse(method, path, responseName, responseCode, contentType)
     }
@@ -438,5 +438,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
             "trackedentity/tracked_entity_attribute_reserved_values.json"
         private const val SMS_METADATA = "sms/metadata_ids.json"
         private const val MOCKWEBSERVER = "Dhis2MockWebServer"
+        private const val CONTENT_TYPE = "Content-Type"
+        private const val CONTENT_TYPE_JSON = "application/json"
     }
 }

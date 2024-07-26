@@ -111,139 +111,143 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     fun setRequestDispatcher() {
         val dispatcher: Dispatcher = object : Dispatcher() {
             public override fun dispatch(request: RecordedRequest): MockResponse {
-                var path = request.path
-                return if (path!!.startsWith("/api/me?")) {
-                    createMockResponse(USER_JSON)
-                } else if ("/api/me/authorization" == path) {
-                    createMockResponse(AUTHORITIES_JSON)
-                } else if (path.startsWith("/api/system/info?")) {
-                    createMockResponse(SYSTEM_INFO_JSON)
-                } else if (path.startsWith("/api/systemSettings?")) {
-                    createMockResponse(SYSTEM_SETTINGS_JSON)
-                } else if (path.startsWith("/api/dataStore/USE_CASES/stockUseCases")) {
-                    createMockResponse(STOCK_USE_CASES_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {
-                    createMockResponse(ANDROID_SETTINGS_INFO_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
-                    createMockResponse(GENERAL_SETTINGS_V1_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
-                    createMockResponse(DATASET_SETTINGS_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
-                    createMockResponse(PROGRAM_SETTINGS_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/generalSettings")) {
-                    createMockResponse(GENERAL_SETTINGS_V2_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/synchronization")) {
-                    createMockResponse(SYNCHRONIZATION_SETTTINGS_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/appearance")) {
-                    createMockResponse(APPEARANCE_SETTINGS_JSON)
-                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/analytics")) {
-                    createMockResponse(ANALYTICS_SETTINGS_JSON)
-                } else if (path.startsWith("/api/userSettings?")) {
-                    createMockResponse(USER_SETTINGS_JSON)
-                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/versions")) {
-                    createMockResponse(VERSIONS_JSON)
-                } else if (path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion")) {
-                    createMockResponse(LATEST_APP_VERSION_JSON)
-                } else if (path.startsWith("/api/programs?")) {
-                    createMockResponse(PROGRAMS_JSON)
-                } else if (path.startsWith("/api/programIndicators?")) {
-                    createMockResponse(PROGRAMS_INDICATORS_JSON)
-                } else if (path.startsWith("/api/programStages?")) {
-                    createMockResponse(PROGRAM_STAGES_JSON)
-                } else if (path.startsWith("/api/trackedEntityTypes?")) {
-                    createMockResponse(TRACKED_ENTITY_TYPES_JSON)
-                } else if (path.startsWith("/api/trackedEntityAttributes?")) {
-                    createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON)
-                } else if (path.startsWith("/api/programRules?")) {
-                    createMockResponse(PROGRAM_RULES_JSON)
-                } else if (path.startsWith("/api/trackedEntityInstanceFilters?")) {
-                    createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON)
-                } else if (path.startsWith("/api/eventFilters?")) {
-                    createMockResponse(EVENT_FILTERS_JSON)
-                } else if (path.startsWith("/api/programStageWorkingLists?")) {
-                    createMockResponse(PROGRAM_STAGE_WORKING_LISTS)
-                } else if (path.startsWith("/api/relationshipTypes?")) {
-                    createMockResponse(RELATIONSHIP_TYPES_JSON)
-                } else if (path.startsWith("/api/optionSets?")) {
-                    createMockResponse(OPTION_SETS_JSON)
-                } else if (path.startsWith("/api/options?")) {
-                    createMockResponse(OPTIONS_JSON)
-                } else if (path.startsWith("/api/optionGroups?")) {
-                    createMockResponse(OPTION_GROUPS_JSON)
-                } else if (path.startsWith("/api/validationRules?dataSet")) {
-                    createMockResponse(VALIDATION_RULE_UIDS_JSON)
-                } else if (path.startsWith("/api/validationRules?")) {
-                    createMockResponse(VALIDATION_RULES_JSON)
-                } else if (path.startsWith("/api/dataSets?")) {
-                    createMockResponse(DATA_SETS_JSON)
-                } else if (path.startsWith("/api/dataElements?")) {
-                    createMockResponse(DATA_ELEMENTS_JSON)
-                } else if (path.startsWith("/api/attributes?")) {
-                    createMockResponse(ATTRIBUTES_JSON)
-                } else if (path.startsWith("/api/indicators?")) {
-                    createMockResponse(INDICATORS_JSON)
-                } else if (path.startsWith("/api/indicatorTypes?")) {
-                    createMockResponse(INDICATOR_TYPES_JSON)
-                } else if (path.startsWith("/api/categoryCombos?")) {
-                    createMockResponse(CATEGORY_COMBOS_JSON)
-                } else if (path.startsWith("/api/categories?")) {
-                    createMockResponse(CATEGORIES_JSON)
-                } else if (path.startsWith("/api/categoryOptions?")) {
-                    createMockResponse(CATEGORY_OPTIONS_JSON)
-                } else if (path.startsWith("/api/categoryOptions/orgUnits?")) {
-                    createMockResponse(CATEGORY_OPTION_ORGUNITS_JSON)
-                } else if (path.startsWith("/api/visualizations/PYBH8ZaAQnC?")) {
-                    createMockResponse(VISUALIZATIONS_1_JSON)
-                } else if (path.startsWith("/api/visualizations/FAFa11yFeFe?")) {
-                    createMockResponse(VISUALIZATIONS_2_JSON)
-                } else if (path.startsWith("/api/eventVisualizations/s85urBIkN0z?")) {
-                    createMockResponse(TRACKER_VISUALIZATIONS_1_JSON)
-                } else if (path.startsWith("/api/organisationUnits?")) {
-                    createMockResponse(ORGANISATION_UNITS_JSON)
-                } else if (path.startsWith("/api/organisationUnitLevels?")) {
-                    createMockResponse(ORGANISATION_UNIT_LEVELS_JSON)
-                } else if (path.startsWith("/api/constants?")) {
-                    createMockResponse(CONSTANTS_JSON)
-                } else if (path.startsWith("/api/trackedEntityInstances?")) {
-                    createMockResponse(TRACKED_ENTITY_INSTANCES_JSON)
-                } else if (path.startsWith("/api/tracker/trackedEntities?")) {
-                    createMockResponse(NEW_TRACKED_ENTITY_INSTANCES_JSON)
-                } else if (path.startsWith("/api/events?")) {
-                    createMockResponse(EVENTS_JSON)
-                } else if (path.startsWith("/api/tracker/events?")) {
-                    createMockResponse(NEW_EVENTS_JSON)
-                } else if (path.startsWith("/api/dataValueSets?")) {
-                    createMockResponse(DATA_VALUES_JSON)
-                } else if (path.startsWith("/api/completeDataSetRegistrations?")) {
-                    createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON)
-                } else if (path.startsWith("/api/dataApprovals/multiple?")) {
-                    createMockResponse(DATA_APPROVALS_MULTIPLE_JSON)
-                } else if (path.startsWith("/api/legendSets?")) {
-                    createMockResponse(LEGEND_SETS_JSON)
-                } else if (path.startsWith("/api/expressionDimensionItems?")) {
-                    createMockResponse(EXPRESSION_DIMENSION_ITEMS)
-                } else if (path.startsWith("/api/icons?")) {
-                    createMockResponse(CUSTOM_ICONS_JSON)
-                } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
-                    createMockResponse(RESERVE_VALUES_JSON)
-                } else if (path.startsWith("/api/metadata")) {
-                    createMockResponse(SMS_METADATA)
-                } else if (path.startsWith("/api/fileResources?")) {
-                    createMockResponse(FILE_RESOURCES)
-                } else if (path.startsWith("/api/fileResources/befryEfXge5")) {
-                    createMockResponse(FILE_RESOURCE)
-                } else if (path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image")) {
-                    createMockResponse(TRACKED_ENTITY_IMAGE)
-                } else if (path == "/api/dataStore") {
-                    createMockResponse(DATA_STORE_NAMESPACES)
-                } else if (path.startsWith("/api/dataStore/capture")) {
-                    createMockResponse(DATA_STORE_NAMESPACE_CAPTURE)
-                } else if (path.startsWith("/api/dataStore/scorecard")) {
-                    createMockResponse(DATA_STORE_NAMESPACE_SCORECARD)
-                } else {
-                    MockResponse()
-                        .setResponseCode(NOT_FOUND)
-                        .setBody("Path not present in Dhis2MockServer dispatcher: $path")
+                val path = request.path ?: return MockResponse()
+                    .setResponseCode(NOT_FOUND)
+                    .setBody("Path not found")
+                return when {
+                    path == "/api/me/authorization" ->
+                        createMockResponse(AUTHORITIES_JSON)
+                    path.startsWith("/api/me?") ->
+                        createMockResponse(USER_JSON)
+                    path.startsWith("/api/system/info?") ->
+                        createMockResponse(SYSTEM_INFO_JSON)
+                    path.startsWith("/api/systemSettings?") ->
+                        createMockResponse(SYSTEM_SETTINGS_JSON)
+                    path.startsWith("/api/dataStore/USE_CASES/stockUseCases") ->
+                        createMockResponse(STOCK_USE_CASES_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info") ->
+                        createMockResponse(ANDROID_SETTINGS_INFO_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings") ->
+                        createMockResponse(GENERAL_SETTINGS_V1_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings") ->
+                        createMockResponse(DATASET_SETTINGS_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings") ->
+                        createMockResponse(PROGRAM_SETTINGS_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/generalSettings") ->
+                        createMockResponse(GENERAL_SETTINGS_V2_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/synchronization") ->
+                        createMockResponse(SYNCHRONIZATION_SETTTINGS_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/appearance") ->
+                        createMockResponse(APPEARANCE_SETTINGS_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/analytics") ->
+                        createMockResponse(ANALYTICS_SETTINGS_JSON)
+                    path.startsWith("/api/userSettings?") ->
+                        createMockResponse(USER_SETTINGS_JSON)
+                    path.startsWith("/api/dataStore/APK_DISTRIBUTION/versions") ->
+                        createMockResponse(VERSIONS_JSON)
+                    path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion") ->
+                        createMockResponse(LATEST_APP_VERSION_JSON)
+                    path.startsWith("/api/programs?") ->
+                        createMockResponse(PROGRAMS_JSON)
+                    path.startsWith("/api/programIndicators?") ->
+                        createMockResponse(PROGRAMS_INDICATORS_JSON)
+                    path.startsWith("/api/programStages?") ->
+                        createMockResponse(PROGRAM_STAGES_JSON)
+                    path.startsWith("/api/trackedEntityTypes?") ->
+                        createMockResponse(TRACKED_ENTITY_TYPES_JSON)
+                    path.startsWith("/api/trackedEntityAttributes?") ->
+                        createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON)
+                    path.startsWith("/api/programRules?") ->
+                        createMockResponse(PROGRAM_RULES_JSON)
+                    path.startsWith("/api/trackedEntityInstanceFilters?") ->
+                        createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON)
+                    path.startsWith("/api/eventFilters?") ->
+                        createMockResponse(EVENT_FILTERS_JSON)
+                    path.startsWith("/api/programStageWorkingLists?") ->
+                        createMockResponse(PROGRAM_STAGE_WORKING_LISTS)
+                    path.startsWith("/api/relationshipTypes?") ->
+                        createMockResponse(RELATIONSHIP_TYPES_JSON)
+                    path.startsWith("/api/optionSets?") ->
+                        createMockResponse(OPTION_SETS_JSON)
+                    path.startsWith("/api/options?") ->
+                        createMockResponse(OPTIONS_JSON)
+                    path.startsWith("/api/optionGroups?") ->
+                        createMockResponse(OPTION_GROUPS_JSON)
+                    path.startsWith("/api/validationRules?dataSet") ->
+                        createMockResponse(VALIDATION_RULE_UIDS_JSON)
+                    path.startsWith("/api/validationRules?") ->
+                        createMockResponse(VALIDATION_RULES_JSON)
+                    path.startsWith("/api/dataSets?") ->
+                        createMockResponse(DATA_SETS_JSON)
+                    path.startsWith("/api/dataElements?") ->
+                        createMockResponse(DATA_ELEMENTS_JSON)
+                    path.startsWith("/api/attributes?") ->
+                        createMockResponse(ATTRIBUTES_JSON)
+                    path.startsWith("/api/indicators?") ->
+                        createMockResponse(INDICATORS_JSON)
+                    path.startsWith("/api/indicatorTypes?") ->
+                        createMockResponse(INDICATOR_TYPES_JSON)
+                    path.startsWith("/api/categoryCombos?") ->
+                        createMockResponse(CATEGORY_COMBOS_JSON)
+                    path.startsWith("/api/categories?") ->
+                        createMockResponse(CATEGORIES_JSON)
+                    path.startsWith("/api/categoryOptions?") ->
+                        createMockResponse(CATEGORY_OPTIONS_JSON)
+                    path.startsWith("/api/categoryOptions/orgUnits?") ->
+                        createMockResponse(CATEGORY_OPTION_ORGUNITS_JSON)
+                    path.startsWith("/api/visualizations/PYBH8ZaAQnC?") ->
+                        createMockResponse(VISUALIZATIONS_1_JSON)
+                    path.startsWith("/api/visualizations/FAFa11yFeFe?") ->
+                        createMockResponse(VISUALIZATIONS_2_JSON)
+                    path.startsWith("/api/eventVisualizations/s85urBIkN0z?") ->
+                        createMockResponse(TRACKER_VISUALIZATIONS_1_JSON)
+                    path.startsWith("/api/organisationUnits?") ->
+                        createMockResponse(ORGANISATION_UNITS_JSON)
+                    path.startsWith("/api/organisationUnitLevels?") ->
+                        createMockResponse(ORGANISATION_UNIT_LEVELS_JSON)
+                    path.startsWith("/api/constants?") ->
+                        createMockResponse(CONSTANTS_JSON)
+                    path.startsWith("/api/trackedEntityInstances?") ->
+                        createMockResponse(TRACKED_ENTITY_INSTANCES_JSON)
+                    path.startsWith("/api/tracker/trackedEntities?") ->
+                        createMockResponse(NEW_TRACKED_ENTITY_INSTANCES_JSON)
+                    path.startsWith("/api/events?") ->
+                        createMockResponse(EVENTS_JSON)
+                    path.startsWith("/api/tracker/events?") ->
+                        createMockResponse(NEW_EVENTS_JSON)
+                    path.startsWith("/api/dataValueSets?") ->
+                        createMockResponse(DATA_VALUES_JSON)
+                    path.startsWith("/api/completeDataSetRegistrations?") ->
+                        createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON)
+                    path.startsWith("/api/dataApprovals/multiple?") ->
+                        createMockResponse(DATA_APPROVALS_MULTIPLE_JSON)
+                    path.startsWith("/api/legendSets?") ->
+                        createMockResponse(LEGEND_SETS_JSON)
+                    path.startsWith("/api/expressionDimensionItems?") ->
+                        createMockResponse(EXPRESSION_DIMENSION_ITEMS)
+                    path.startsWith("/api/icons?") ->
+                        createMockResponse(CUSTOM_ICONS_JSON)
+                    path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve") ->
+                        createMockResponse(RESERVE_VALUES_JSON)
+                    path.startsWith("/api/metadata") ->
+                        createMockResponse(SMS_METADATA)
+                    path.startsWith("/api/fileResources?") ->
+                        createMockResponse(FILE_RESOURCES)
+                    path.startsWith("/api/fileResources/befryEfXge5") ->
+                        createMockResponse(FILE_RESOURCE)
+                    path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image") ->
+                        createMockResponse(TRACKED_ENTITY_IMAGE)
+                    path == "/api/dataStore" ->
+                        createMockResponse(DATA_STORE_NAMESPACES)
+                    path.startsWith("/api/dataStore/capture") ->
+                        createMockResponse(DATA_STORE_NAMESPACE_CAPTURE)
+                    path.startsWith("/api/dataStore/scorecard") ->
+                        createMockResponse(DATA_STORE_NAMESPACE_SCORECARD)
+                    else -> {
+                        MockResponse()
+                            .setResponseCode(NOT_FOUND)
+                            .setBody("Path not present in Dhis2MockServer dispatcher: $path")
+                    }
                 }
             }
         }

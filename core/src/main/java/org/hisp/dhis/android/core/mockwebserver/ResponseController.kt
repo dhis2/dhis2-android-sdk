@@ -28,23 +28,14 @@
 package org.hisp.dhis.android.core.mockwebserver
 
 class ResponseController internal constructor() {
-    private var methodsMap: MutableMap<String, LinkedHashMap<String?, String>>? = null
-    private var codeResponses: MutableMap<String, Int>? = null
-    private var contentTypeMap: MutableMap<String, String>? = null
-
-    init {
-        initMaps()
-    }
-
-    private fun initMaps() {
-        codeResponses = mutableMapOf()
-        contentTypeMap = mutableMapOf()
-        methodsMap = mutableMapOf()
-        methodsMap?.put(GET, LinkedHashMap())
-        methodsMap?.put(POST, LinkedHashMap())
-        methodsMap?.put(PUT, LinkedHashMap())
-        methodsMap?.put(DELETE, LinkedHashMap())
-    }
+    private var methodsMap: MutableMap<String, LinkedHashMap<String?, String>> = mutableMapOf(
+        GET to LinkedHashMap(),
+        POST to LinkedHashMap(),
+        PUT to LinkedHashMap(),
+        DELETE to LinkedHashMap(),
+    )
+    private var codeResponses: MutableMap<String, Int> = mutableMapOf()
+    private var contentTypeMap: MutableMap<String, String> = mutableMapOf()
 
     fun populateInternalResponses() {
         // move sdk dispatcher here
@@ -57,20 +48,20 @@ class ResponseController internal constructor() {
         responseCode: Int,
         contentType: String,
     ) {
-        var resourcesMap = methodsMap!!.get(method)!!
+        var resourcesMap = methodsMap.get(method)!!
         resourcesMap.put(path, responseName)
-        codeResponses!!.put(responseName, responseCode)
-        contentTypeMap!!.put(responseName, contentType)
+        codeResponses.put(responseName, responseCode)
+        contentTypeMap.put(responseName, contentType)
     }
 
     fun getBody(method: String, currentPath: String?): String? {
-        var resourcesMap: Map<String?, String> = methodsMap?.get(method) ?: return null
+        var resourcesMap: Map<String?, String> = methodsMap.get(method) ?: return null
         var filename: String? = ""
 
         val paths: List<String?> = resourcesMap.keys.toList().asReversed()
         for (path in paths) {
             filename = findResponse(resourcesMap, path, currentPath)
-            if (!filename!!.isEmpty()) {
+            if (filename!!.isNotEmpty()) {
                 break
             }
         }
@@ -93,18 +84,18 @@ class ResponseController internal constructor() {
 
     @Suppress("TooGenericExceptionThrown")
     fun getCode(resource: String?): Int {
-        if (resource == null || resource.isEmpty()) {
+        if (resource.isNullOrEmpty()) {
             throw RuntimeException("Resource not not found")
         }
-        return codeResponses!!.get(resource)!!
+        return codeResponses.get(resource)!!
     }
 
     @Suppress("TooGenericExceptionThrown")
     fun getContentType(resource: String?): String? {
-        if (resource == null || resource.isEmpty()) {
+        if (resource.isNullOrEmpty()) {
             throw RuntimeException("Resource not not found")
         }
-        return contentTypeMap!!.get(resource)
+        return contentTypeMap.get(resource)
     }
 
     companion object {

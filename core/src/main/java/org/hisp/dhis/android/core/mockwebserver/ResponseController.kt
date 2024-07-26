@@ -48,14 +48,14 @@ class ResponseController internal constructor() {
         responseCode: Int,
         contentType: String,
     ) {
-        var resourcesMap = methodsMap.get(method)!!
-        resourcesMap.put(path, responseName)
+        var resourcesMap = methodsMap[method]
+        resourcesMap?.put(path, responseName)
         codeResponses.put(responseName, responseCode)
         contentTypeMap.put(responseName, contentType)
     }
 
     fun getBody(method: String, currentPath: String?): String? {
-        var resourcesMap: Map<String?, String> = methodsMap.get(method) ?: return null
+        var resourcesMap: Map<String?, String> = methodsMap[method] ?: return null
         var filename: String? = ""
 
         val paths: List<String?> = resourcesMap.keys.toList().asReversed()
@@ -87,7 +87,7 @@ class ResponseController internal constructor() {
         if (resource.isNullOrEmpty()) {
             throw RuntimeException("Resource not not found")
         }
-        return codeResponses.get(resource)!!
+        return codeResponses[resource] ?: throw RuntimeException("Code for resource not found")
     }
 
     @Suppress("TooGenericExceptionThrown")
@@ -95,7 +95,7 @@ class ResponseController internal constructor() {
         if (resource.isNullOrEmpty()) {
             throw RuntimeException("Resource not not found")
         }
-        return contentTypeMap.get(resource)
+        return contentTypeMap[resource]
     }
 
     companion object {

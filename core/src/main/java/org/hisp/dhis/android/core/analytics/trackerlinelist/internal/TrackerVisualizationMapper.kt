@@ -192,7 +192,7 @@ internal class TrackerVisualizationMapper(
     internal fun mapCategory(item: TrackerVisualizationDimension): TrackerLineListItem? {
         val filters = item.items()
             .takeIf { !it.isNullOrEmpty() }
-            ?.let { listOf(DataFilter.In(it.map { it.uid() }))}
+            ?.let { listOf(DataFilter.In(it.map { it.uid() })) }
             ?: emptyList()
         return item.dimension()?.let { uid ->
             TrackerLineListItem.Category(uid, filters)

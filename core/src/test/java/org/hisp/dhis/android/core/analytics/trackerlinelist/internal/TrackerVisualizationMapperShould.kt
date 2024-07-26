@@ -138,10 +138,10 @@ class TrackerVisualizationMapperShould {
                         listOf(
                             categoryOption1,
                             categoryOption2,
-                        )
-                    )
-                )
-            )
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 }

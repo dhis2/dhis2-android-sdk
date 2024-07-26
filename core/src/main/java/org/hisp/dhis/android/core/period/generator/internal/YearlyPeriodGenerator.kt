@@ -58,11 +58,11 @@ internal open class YearlyPeriodGenerator(
         return LocalDate(startYear, startMonth, 1)
     }
 
-    override fun movePeriods(date: LocalDate, offset: Int): LocalDate {
-        return date.plus(offset, DateTimeUnit.YEAR)
+    override fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate {
+        return startDate.plus(offset, DateTimeUnit.YEAR)
     }
 
-    override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
+    override fun generateId(startDate: LocalDate): String {
         val year =
             if (periodType == PeriodType.FinancialNov) {
                 startDate.year + 1

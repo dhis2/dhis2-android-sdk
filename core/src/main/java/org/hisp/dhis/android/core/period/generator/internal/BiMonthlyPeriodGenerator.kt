@@ -36,7 +36,7 @@ import java.time.Month
 internal class BiMonthlyPeriodGenerator(clock: Clock) :
     NMonthlyPeriodGenerator(clock, PeriodType.BiMonthly, 2, "B", Month.JANUARY) {
 
-    override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
+    override fun generateId(startDate: LocalDate): String {
         val periodNumber = getPeriodNumber(startDate)
         return "${startDate.year}${periodNumber.zeroPrefixed()}$idAdditionalString"
     }

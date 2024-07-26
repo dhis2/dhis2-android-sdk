@@ -45,11 +45,11 @@ internal class MonthlyPeriodGenerator(clock: Clock) :
         return LocalDate(date.year, 1, 1)
     }
 
-    override fun movePeriods(date: LocalDate, offset: Int): LocalDate {
-        return date.plus(offset, DateTimeUnit.MONTH)
+    override fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate {
+        return startDate.plus(offset, DateTimeUnit.MONTH)
     }
 
-    override fun generateId(startDate: LocalDate, endDate: LocalDate): String {
+    override fun generateId(startDate: LocalDate): String {
         return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}"
     }
 }

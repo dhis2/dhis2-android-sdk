@@ -29,66 +29,65 @@ package org.hisp.dhis.android.core.period.generator.internal
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
-import kotlinx.datetime.number
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.math.abs
 
-internal open class NMonthlyPeriodGenerator(
-    clock: Clock,
-    periodType: PeriodType,
-    private val durationInMonths: Int,
-    protected val idAdditionalString: String,
-    private val startMonth: Month,
-) :
-    AbstractPeriodGenerator(clock, periodType) {
+internal class BiWeeklyPeriodGenerator(clock: Clock) :
+    AbstractPeriodGenerator(clock, PeriodType.BiWeekly) {
+
+    private val weekHelper = WeeklyPeriodGeneratorHelper(DayOfWeek.MONDAY)
 
     override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        val currentMonth = date.monthNumber
-        val monthsFromPeriodStart = (currentMonth - startMonth.number + 12) % durationInMonths
-        val currentPeriodStartMonth = (currentMonth - monthsFromPeriodStart + 12) % 12
-        val year =
-            if (currentMonth - monthsFromPeriodStart < 0) {
-                date.year - 1
-            } else {
-                date.year
-            }
+        val startDate = weekHelper.getFirstDayOfWeek(date)
+        val weekNumber = weekHelper.getWeekNumber(date)
+        val isSecondWeekOfBiWeek = weekNumber % 2 == 0
 
-        return LocalDate(year, currentPeriodStartMonth, 1)
+        return if (isSecondWeekOfBiWeek) {
+            startDate.minus(1, DateTimeUnit.WEEK)
+        } else {
+            startDate
+        }
     }
 
     override fun getStartOfYearFor(date: LocalDate): LocalDate {
-        val startYear =
-            if (date.month.number < startMonth.number) {
-                date.year - 1
-            } else {
-                date.year
-            }
-
-        return LocalDate(startYear, startMonth, 1)
+        return weekHelper.getFirstDayOfYear(date.year)
     }
 
     override fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate {
-        return startDate.plus(offset * durationInMonths, DateTimeUnit.MONTH)
+        var periodId = generateId(startDate)
+        var dateInPeriod = startDate
+        var periodStartDate = startDate
+
+        var iterations = 0
+        while (iterations < abs(offset)) {
+            val weekIncrement = if (offset > 0) 1 else -1
+            val nextPeriodDate = dateInPeriod.plus(weekIncrement, DateTimeUnit.WEEK)
+            val nextPeriodStartDate = getStartOfPeriodFor(nextPeriodDate)
+            val nextPeriodId = generateId(nextPeriodStartDate)
+
+            if (nextPeriodId != periodId) {
+                iterations++
+            }
+            periodId = nextPeriodId
+            dateInPeriod = nextPeriodDate
+            periodStartDate = nextPeriodStartDate
+        }
+
+        return periodStartDate
+    }
+
+    override fun getEndDateForStartDate(startDate: LocalDate): LocalDate {
+        return startDate.plus(2, DateTimeUnit.WEEK).minus(1, DateTimeUnit.DAY)
     }
 
     override fun generateId(startDate: LocalDate): String {
-        val periodNumber = getPeriodNumber(startDate)
+        val year = weekHelper.getWeekYearForStartDate(startDate)
+        val weekNumber = (weekHelper.getWeekNumber(startDate) / 2) + 1
 
-        var year = startDate.year
-        if (startDate.monthNumber < startMonth.number) {
-            year--
-        }
-        if (periodType == PeriodType.SixMonthlyNov) {
-            year++
-        }
-
-        return "$year$idAdditionalString$periodNumber"
-    }
-
-    protected fun getPeriodNumber(startDate: LocalDate): Int {
-        val monthsFromStart = (startDate.monthNumber - startMonth.number + 12) % 12
-        return (monthsFromStart / durationInMonths) + 1
+        return "${year}BiW${weekNumber}"
     }
 }

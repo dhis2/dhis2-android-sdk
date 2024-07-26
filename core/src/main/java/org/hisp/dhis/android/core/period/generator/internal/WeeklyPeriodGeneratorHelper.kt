@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
-import org.hisp.dhis.android.core.period.PeriodType
 
-internal class DailyPeriodGenerator(clock: Clock) :
-    AbstractPeriodGenerator(clock, PeriodType.Daily) {
+internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek,) {
 
-    override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        return date
+    fun getFirstDayOfYear(year: Int): LocalDate {
+        val firstJanuary = LocalDate(year, 1, 1)
+        val startOfWeek = getFirstDayOfWeek(firstJanuary)
+        val daysInPreviousYear = daysFromWeekStart(firstJanuary)
+
+        return if (daysInPreviousYear < DAYS_IN_YEAR_THRESHOLD) {
+            startOfWeek
+        } else {
+            startOfWeek.plus(1, DateTimeUnit.WEEK)
+        }
     }
 
-    override fun getStartOfYearFor(date: LocalDate): LocalDate {
-        return LocalDate(date.year, 1, 1)
+    fun getFirstDayOfWeek(date: LocalDate): LocalDate {
+        val daysToGoBack = daysFromWeekStart(date)
+        return date.minus(daysToGoBack, DateTimeUnit.DAY)
     }
 
-    override fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate {
-        return startDate.plus(offset, DateTimeUnit.DAY)
+    fun getWeekNumber(date: LocalDate): Int {
+        val startDate = getFirstDayOfWeek(date)
+        val year = getWeekYearForStartDate(startDate)
+        val startOfTargetYear = getFirstDayOfYear(year)
+        val daysFromStartOfYear = startDate.toEpochDays() - startOfTargetYear.toEpochDays()
+        return Math.floorDiv(daysFromStartOfYear, WEEK_DAYS) + 1
     }
 
-    override fun generateId(startDate: LocalDate): String {
-        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}${startDate.dayOfMonth.zeroPrefixed()}"
+    fun getWeekYearForStartDate(startDate: LocalDate): Int {
+        val endDate = startDate.plus(WEEK_DAYS - 1, DateTimeUnit.DAY)
+        return if (endDate.dayOfYear >= DAYS_IN_YEAR_THRESHOLD) {
+            endDate.year
+        } else {
+            startDate.year
+        }
+    }
+
+    private fun daysFromWeekStart(date: LocalDate): Int {
+        val diff = date.dayOfWeek.value - weekStartDay.value
+        return if (diff >= 0) diff else diff + WEEK_DAYS
+    }
+
+    companion object {
+        private const val DAYS_IN_YEAR_THRESHOLD = 4
+        private const val WEEK_DAYS = 7
     }
 }

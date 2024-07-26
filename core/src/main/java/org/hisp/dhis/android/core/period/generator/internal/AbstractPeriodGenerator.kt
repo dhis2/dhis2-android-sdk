@@ -59,11 +59,8 @@ internal abstract class AbstractPeriodGenerator(
     @Synchronized
     override fun generatePeriod(date: LocalDate, periodOffset: Int): PeriodK {
         val startDate = moveToStartOfThePeriodOfADayWithOffset(date, periodOffset)
-
-        val nextPeriodStartDate = this.movePeriods(startDate, 1)
-        val endDate = nextPeriodStartDate.minus(1, DateTimeUnit.DAY)
-
-        val periodId = generateId(startDate, endDate)
+        val endDate = this.getEndDateForStartDate(startDate)
+        val periodId = generateId(startDate)
 
         return PeriodK(
             periodId,
@@ -91,18 +88,22 @@ internal abstract class AbstractPeriodGenerator(
 
     private fun moveToStartOfThePeriodOfADayWithOffset(date: LocalDate, periodOffset: Int): LocalDate {
         val startOfCurrentPeriod = getStartOfPeriodFor(date)
-        return this.movePeriods(startOfCurrentPeriod, periodOffset)
+        return this.movePeriodForStartDate(startOfCurrentPeriod, periodOffset)
     }
 
     private fun getToday(): LocalDate {
         return clock.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
+    protected open fun getEndDateForStartDate(startDate: LocalDate): LocalDate {
+        return this.movePeriodForStartDate(startDate, 1).minus(1, DateTimeUnit.DAY)
+    }
+
     protected abstract fun getStartOfPeriodFor(date: LocalDate): LocalDate
 
     protected abstract fun getStartOfYearFor(date: LocalDate): LocalDate
 
-    protected abstract fun movePeriods(date: LocalDate, offset: Int): LocalDate
+    protected abstract fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate
 
-    protected abstract fun generateId(startDate: LocalDate, endDate: LocalDate): String
+    protected abstract fun generateId(startDate: LocalDate): String
 }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.period.generator.internal
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal data class PeriodK(
+internal data class PeriodKt(
     val periodId: String,
     val periodType: PeriodType,
     val startDate: LocalDate,

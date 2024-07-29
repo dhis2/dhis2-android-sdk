@@ -121,6 +121,23 @@ class BiWeeklyPeriodGeneratorShould {
     }
 
     @Test
+    fun generate_period_id_with_very_large_offset() {
+        val generator = BiWeeklyPeriodGenerator(Clock.System)
+
+        val periodPast = generator.generatePeriod(LocalDate(2024, 7, 29), -180)
+
+        assertThat(periodPast.periodId).isEqualTo("2017BiW19")
+        assertThat(periodPast.startDate).isEqualTo(LocalDate(2017, 9, 11))
+        assertThat(periodPast.endDate).isEqualTo(LocalDate(2017, 9, 24))
+
+        val periodFuture = generator.generatePeriod(LocalDate(2024, 7, 29), 64)
+
+        assertThat(periodFuture.periodId).isEqualTo("2027BiW1")
+        assertThat(periodFuture.startDate).isEqualTo(LocalDate(2027, 1, 4))
+        assertThat(periodFuture.endDate).isEqualTo(LocalDate(2027, 1, 17))
+    }
+
+    @Test
     fun generate_last_periods_in_53_weeks_year() {
         val clock = Clock.fixed(LocalDate(2021, 1, 18))
 

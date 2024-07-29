@@ -31,7 +31,7 @@ import kotlinx.datetime.LocalDate
 
 internal interface PeriodGenerator {
     @Throws(RuntimeException::class)
-    fun generatePeriods(start: Int, end: Int): List<PeriodK>
-    fun generatePeriod(date: LocalDate, periodOffset: Int): PeriodK
-    fun generatePeriodsInYear(yearOffset: Int): List<PeriodK>
+    fun generatePeriods(start: Int, end: Int): List<PeriodKt>
+    fun generatePeriod(date: LocalDate, periodOffset: Int): PeriodKt
+    fun generatePeriodsInYear(yearOffset: Int): List<PeriodKt>
 }

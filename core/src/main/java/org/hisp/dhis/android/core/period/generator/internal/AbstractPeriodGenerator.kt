@@ -43,7 +43,7 @@ internal abstract class AbstractPeriodGenerator(
 
     @Synchronized
     @Throws(RuntimeException::class)
-    override fun generatePeriods(start: Int, end: Int): List<PeriodK> {
+    override fun generatePeriods(start: Int, end: Int): List<PeriodKt> {
         if (start >= end) {
             return emptyList()
         }
@@ -57,12 +57,12 @@ internal abstract class AbstractPeriodGenerator(
     }
 
     @Synchronized
-    override fun generatePeriod(date: LocalDate, periodOffset: Int): PeriodK {
+    override fun generatePeriod(date: LocalDate, periodOffset: Int): PeriodKt {
         val startDate = moveToStartOfThePeriodOfADayWithOffset(date, periodOffset)
         val endDate = this.getEndDateForStartDate(startDate)
         val periodId = generateId(startDate)
 
-        return PeriodK(
+        return PeriodKt(
             periodId,
             periodType,
             startDate,
@@ -71,7 +71,7 @@ internal abstract class AbstractPeriodGenerator(
     }
 
     @Synchronized
-    override fun generatePeriodsInYear(yearOffset: Int): List<PeriodK> {
+    override fun generatePeriodsInYear(yearOffset: Int): List<PeriodKt> {
         val currentDate = getToday()
         val targetDate = currentDate.plus(yearOffset, DateTimeUnit.YEAR)
 

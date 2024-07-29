@@ -45,9 +45,9 @@ internal class APIClientDIModule {
 
     @Singleton
     @Suppress("TooGenericExceptionThrown")
-    fun ktor(okHttpClient: OkHttpClient): HttpClient {
+    fun ktor(okHttpClient: OkHttpClient, d2Configuration: D2Configuration): HttpClient {
         return try {
-            KtorFactory.ktor(okHttpClient)
+            KtorFactory.ktor(okHttpClient, d2Configuration)
         } catch (d2Error: D2Error) {
             Log.e("APIClientDIModule", d2Error.message!!)
             throw RuntimeException("Can't instantiate ktor")

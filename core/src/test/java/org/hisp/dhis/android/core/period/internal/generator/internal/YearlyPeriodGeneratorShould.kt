@@ -68,7 +68,6 @@ class YearlyPeriodGeneratorShould {
         val generator = YearlyPeriodGeneratorFactory.yearly(Clock.System)
         assertThat("2019").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 0).periodId)
         assertThat("2020").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), 0).periodId)
-
     }
 
     @Test

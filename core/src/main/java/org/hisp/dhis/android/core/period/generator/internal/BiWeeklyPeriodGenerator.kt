@@ -59,8 +59,8 @@ internal class BiWeeklyPeriodGenerator(clock: Clock) :
 
     override fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate {
         var periodId = generateId(startDate)
-        var dateInPeriod = startDate
         var periodStartDate = startDate
+        var dateInPeriod = startDate
 
         var iterations = 0
         while (iterations < abs(offset)) {
@@ -73,8 +73,8 @@ internal class BiWeeklyPeriodGenerator(clock: Clock) :
                 iterations++
             }
             periodId = nextPeriodId
-            dateInPeriod = nextPeriodDate
             periodStartDate = nextPeriodStartDate
+            dateInPeriod = nextPeriodDate
         }
 
         return periodStartDate
@@ -88,6 +88,6 @@ internal class BiWeeklyPeriodGenerator(clock: Clock) :
         val year = weekHelper.getWeekYearForStartDate(startDate)
         val weekNumber = (weekHelper.getWeekNumber(startDate) / 2) + 1
 
-        return "${year}BiW${weekNumber}"
+        return "${year}BiW$weekNumber"
     }
 }

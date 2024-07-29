@@ -68,7 +68,7 @@ class BiWeeklyPeriodGeneratorShould {
 
         val periods = BiWeeklyPeriodGenerator(clock).generatePeriods(
             PeriodType.BiWeekly.defaultStartPeriods,
-            PeriodType.BiWeekly.defaultEndPeriods
+            PeriodType.BiWeekly.defaultEndPeriods,
         )
 
         val periodIds = periods.map { it.periodId }

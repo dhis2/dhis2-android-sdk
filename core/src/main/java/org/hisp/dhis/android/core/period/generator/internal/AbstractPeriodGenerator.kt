@@ -76,7 +76,7 @@ internal abstract class AbstractPeriodGenerator(
         val targetDate = currentDate.plus(yearOffset, DateTimeUnit.YEAR)
 
         val currentPeriod = generatePeriod(targetDate, 0)
-        val targetYear = currentPeriod.periodId.substring(0, 4)
+        val targetYear = currentPeriod.periodId.substring(0, YEAR_DIGITS)
         val startOfTargetYear = getStartOfYearFor(targetDate)
 
         val periods = generateSequence(0) { it + 1 }
@@ -106,4 +106,8 @@ internal abstract class AbstractPeriodGenerator(
     protected abstract fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate
 
     protected abstract fun generateId(startDate: LocalDate): String
+
+    companion object {
+        private const val YEAR_DIGITS = 4
+    }
 }

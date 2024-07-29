@@ -31,6 +31,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Month
 import org.hisp.dhis.android.core.period.PeriodType
 
+@Suppress("MagicNumber")
 internal object NMonthlyPeriodGeneratorFactory {
     fun biMonthly(clock: Clock): NMonthlyPeriodGenerator {
         return BiMonthlyPeriodGenerator(clock)

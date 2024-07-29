@@ -34,7 +34,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
-internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek,) {
+internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek) {
 
     fun getFirstDayOfYear(year: Int): LocalDate {
         val firstJanuary = LocalDate(year, 1, 1)

@@ -2,8 +2,8 @@
 dhis2AndroidSdkVersion = "1.11.0-SNAPSHOT"
 dhis2AndroidSdkCode = "295"
 
-gradle = "8.4.0"
-kotlin = "1.9.21"
+gradle = "8.4.2"
+kotlin = "2.0.0"
 ktlint = "11.5.1"
 sonarqube = "3.3"
 detekt = "1.18.0"

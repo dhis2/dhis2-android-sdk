@@ -25,65 +25,68 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal.generator.internal
+package org.hisp.dhis.android.core.period.generator.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.period.generator.internal.YearlyPeriodGeneratorFactory
+import org.hisp.dhis.android.core.period.clock.internal.fixed
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class YearlyFinancialAprilPeriodGeneratorShould {
+class BiMonthlyPeriodGeneratorShould {
 
     @Test
-    fun generate_periods_for_one_year() {
-        val clock = Clock.fixed(LocalDate(2019, 2, 21))
+    fun generate_daily_periods_for_one_bimonth() {
+        val clock = Clock.fixed(LocalDate(2018, 4, 11))
 
-        val periods = YearlyPeriodGeneratorFactory.financialApril(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.biMonthly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
-            assertThat(period.periodId).isEqualTo("2017April")
-            assertThat(period.startDate).isEqualTo(LocalDate(2017, 4, 1))
-            assertThat(period.endDate).isEqualTo(LocalDate(2018, 3, 31))
+            assertThat(period.periodId).isEqualTo("201801B")
+            assertThat(period.startDate).isEqualTo(LocalDate(2018, 1, 1))
+            assertThat(period.endDate).isEqualTo(LocalDate(2018, 2, 28))
         }
     }
 
     @Test
-    fun generate_periods_for_two_year() {
-        val clock = Clock.fixed(LocalDate(2019, 2, 21))
-
-        val periods = YearlyPeriodGeneratorFactory.financialApril(clock).generatePeriods(-2, 0)
-
-        assertThat(periods.size).isEqualTo(2)
-
-        assertThat(periods.map { it.periodId }).isEqualTo(listOf("2016April", "2017April"))
-    }
-
-    @Test
     fun generate_period_id() {
-        val generator = YearlyPeriodGeneratorFactory.financialApril(Clock.System)
-        assertThat("2018April").isEqualTo(generator.generatePeriod(LocalDate(2019, 3, 30), 0).periodId)
-        assertThat("2019April").isEqualTo(generator.generatePeriod(LocalDate(2019, 4, 2), 0).periodId)
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(Clock.System)
+        assertThat("201903B").isEqualTo(generator.generatePeriod(LocalDate(2019, 6, 30), 0).periodId)
+        assertThat("201904B").isEqualTo(generator.generatePeriod(LocalDate(2019, 7, 1), 0).periodId)
     }
 
     @Test
     fun generate_period_id_with_offset() {
-        val generator = YearlyPeriodGeneratorFactory.financialApril(Clock.System)
-        assertThat("2019April").isEqualTo(generator.generatePeriod(LocalDate(2019, 3, 30), 1).periodId)
-        assertThat("2018April").isEqualTo(generator.generatePeriod(LocalDate(2019, 4, 2), -1).periodId)
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(Clock.System)
+        assertThat("201905B").isEqualTo(generator.generatePeriod(LocalDate(2019, 6, 30), 2).periodId)
+        assertThat("201903B").isEqualTo(generator.generatePeriod(LocalDate(2019, 7, 1), -1).periodId)
     }
 
     @Test
     fun generate_periods_in_this_year() {
-        val clock = Clock.fixed(LocalDate(2020, 9, 29))
+        val clock = Clock.fixed(LocalDate(2019, 8, 29))
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(clock)
 
-        val generator = YearlyPeriodGeneratorFactory.financialApril(clock)
         val periods = generator.generatePeriodsInYear(0)
-        assertThat(periods.size).isEqualTo(1)
-        assertThat(periods.first().periodId).isEqualTo("2020April")
+
+        assertThat(periods.size).isEqualTo(6)
+        assertThat(periods.first().periodId).isEqualTo("201901B")
+        assertThat(periods.last().periodId).isEqualTo("201906B")
+    }
+
+    @Test
+    fun generate_periods_in_last_year() {
+        val clock = Clock.fixed(LocalDate(2019, 8, 29))
+        val generator = NMonthlyPeriodGeneratorFactory.biMonthly(clock)
+
+        val periods = generator.generatePeriodsInYear(-1)
+
+        assertThat(periods.size).isEqualTo(6)
+        assertThat(periods.first().periodId).isEqualTo("201801B")
+        assertThat(periods.last().periodId).isEqualTo("201806B")
     }
 }

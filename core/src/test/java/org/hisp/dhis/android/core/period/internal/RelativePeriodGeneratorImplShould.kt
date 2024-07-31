@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,7 +42,7 @@ class RelativePeriodGeneratorImplShould {
 
     @Before
     fun setUp() {
-        periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.createFixed())
+        periodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.createFixed())
     }
 
     @Test

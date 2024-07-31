@@ -31,7 +31,8 @@ import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.MockIntegrationTestObjects
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.setFixed
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 
 internal object MockIntegrationTestObjectsFactory {
     private val instances: MutableMap<MockIntegrationTestDatabaseContent, MockIntegrationTestObjects> = HashMap()
@@ -39,7 +40,8 @@ internal object MockIntegrationTestObjectsFactory {
     private val d2: D2
 
     init {
-        setFixed()
+        CalendarProviderFactory.setFixed()
+        ClockProviderFactory.setFixed()
         d2 = D2Factory.forNewDatabase()
         d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
     }

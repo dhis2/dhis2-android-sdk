@@ -25,31 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.clock.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import kotlinx.datetime.Clock
 
-import org.hisp.dhis.android.core.period.PeriodType;
-
-import java.util.Calendar;
-
-class MonthlyPeriodGenerator extends AbstractPeriodGenerator {
-
-    MonthlyPeriodGenerator(Calendar calendar) {
-        super(calendar, "yyyyMM", PeriodType.Monthly);
-    }
-
-    @Override
-    protected void moveToStartOfCurrentPeriod() {
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-    }
-
-    @Override
-    protected void moveToStartOfCurrentYear() {
-        calendar.set(Calendar.DAY_OF_YEAR, 1);
-    }
-
-    @Override
-    protected void movePeriods(int number) {
-        calendar.add(Calendar.MONTH, number);
-    }
+internal interface ClockProvider {
+    val clock: Clock
 }

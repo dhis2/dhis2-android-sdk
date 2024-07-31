@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.D2Factory.clear
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
@@ -61,6 +62,7 @@ class MockIntegrationTestObjects(
 
     init {
         CalendarProviderFactory.setFixed()
+        ClockProviderFactory.setFixed()
         resourceHandler.serverDate = serverDate
     }
 }

@@ -25,29 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal
+package org.hisp.dhis.android.core.period.generator.internal
 
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.util.*
 
 @RunWith(JUnit4::class)
 class PeriodGeneratorShould {
 
-    private val calendar = Calendar.getInstance()
+    private val clock = Clock.System
 
-    private val dailyGenerator: PeriodGenerator = DailyPeriodGenerator(calendar)
-    private val weeklyGenerator: PeriodGenerator = WeeklyPeriodGeneratorFactory.weekly(calendar)
-    private val monthlyGenerator: PeriodGenerator = MonthlyPeriodGenerator(calendar)
+    private val dailyGenerator: PeriodGenerator = DailyPeriodGenerator(clock)
+    private val weeklyGenerator: PeriodGenerator = WeeklyPeriodGeneratorFactory.weekly(clock)
+    private val monthlyGenerator: PeriodGenerator = MonthlyPeriodGenerator(clock)
 
     @Test
     fun generate_single_period_simultaneously() {
-        val refDate = DateUtils.SIMPLE_DATE_FORMAT.parse("2019-12-30")
+        val refDate = LocalDate(2019, 12, 30)
 
         val periods = (-500..500).map {
             Single.fromCallable {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.clock.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import kotlinx.datetime.LocalDateTime
 
-import java.util.Calendar;
+internal object ClockProviderFactory {
 
-final class NMonthlyPeriodGenerators {
+    var clockProvider: ClockProvider = RegularClockProvider()
+        private set
 
-    final PeriodGenerator biMonthly;
-    final PeriodGenerator quarter;
-    final PeriodGenerator sixMonthly;
-    final PeriodGenerator sixMonthlyApril;
-    final PeriodGenerator sixMonthlyNov;
-
-    NMonthlyPeriodGenerators(PeriodGenerator biMonthly,
-                             PeriodGenerator quarter,
-                             PeriodGenerator sixMonthly,
-                             PeriodGenerator sixMonthlyApril,
-                             PeriodGenerator sixMonthlyNov) {
-        this.biMonthly = biMonthly;
-        this.quarter = quarter;
-        this.sixMonthly = sixMonthly;
-        this.sixMonthlyApril = sixMonthlyApril;
-        this.sixMonthlyNov = sixMonthlyNov;
+    fun setRegular() {
+        clockProvider = RegularClockProvider()
     }
 
+    fun setFixed() {
+        clockProvider = createFixed()
+    }
 
-    static NMonthlyPeriodGenerators create(Calendar calendar) {
-        return new NMonthlyPeriodGenerators(
-                NMonthlyPeriodGeneratorFactory.biMonthly(calendar),
-                NMonthlyPeriodGeneratorFactory.quarter(calendar),
-                NMonthlyPeriodGeneratorFactory.sixMonthly(calendar),
-                NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar),
-                NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar));
+    @Suppress("MagicNumber")
+    fun createFixed(): ClockProvider {
+        val date = LocalDateTime(2019, 12, 10, 10, 30, 0, 0)
+        return FixedClockProvider(date)
     }
 }

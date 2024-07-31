@@ -25,30 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal.generator.internal
+package org.hisp.dhis.android.core.period.generator.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.period.generator.internal.YearlyPeriodGeneratorFactory
+import org.hisp.dhis.android.core.period.clock.internal.fixed
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class YearlyPeriodGeneratorShould {
+class YearlyFinancialNovemberPeriodGeneratorShould {
 
     @Test
     fun generate_periods_for_one_year() {
         val clock = Clock.fixed(LocalDate(2019, 2, 21))
 
-        val periods = YearlyPeriodGeneratorFactory.yearly(clock).generatePeriods(-1, 0)
+        val periods = YearlyPeriodGeneratorFactory.financialNov(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
-            assertThat(period.periodId).isEqualTo("2018")
-            assertThat(period.startDate).isEqualTo(LocalDate(2018, 1, 1))
-            assertThat(period.endDate).isEqualTo(LocalDate(2018, 12, 31))
+            assertThat(period.periodId).isEqualTo("2018Nov")
+            assertThat(period.startDate).isEqualTo(LocalDate(2017, 11, 1))
+            assertThat(period.endDate).isEqualTo(LocalDate(2018, 10, 31))
         }
     }
 
@@ -56,34 +56,34 @@ class YearlyPeriodGeneratorShould {
     fun generate_periods_for_two_year() {
         val clock = Clock.fixed(LocalDate(2019, 2, 21))
 
-        val periods = YearlyPeriodGeneratorFactory.yearly(clock).generatePeriods(-2, 0)
+        val periods = YearlyPeriodGeneratorFactory.financialNov(clock).generatePeriods(-2, 0)
 
         assertThat(periods.size).isEqualTo(2)
 
-        assertThat(periods.map { it.periodId }).isEqualTo(listOf("2017", "2018"))
+        assertThat(periods.map { it.periodId }).isEqualTo(listOf("2017Nov", "2018Nov"))
     }
 
     @Test
     fun generate_period_id() {
-        val generator = YearlyPeriodGeneratorFactory.yearly(Clock.System)
-        assertThat("2019").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 0).periodId)
-        assertThat("2020").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), 0).periodId)
+        val generator = YearlyPeriodGeneratorFactory.financialNov(Clock.System)
+        assertThat("2019Nov").isEqualTo(generator.generatePeriod(LocalDate(2019, 10, 30), 0).periodId)
+        assertThat("2020Nov").isEqualTo(generator.generatePeriod(LocalDate(2019, 11, 2), 0).periodId)
     }
 
     @Test
     fun generate_period_id_with_offset() {
-        val generator = YearlyPeriodGeneratorFactory.yearly(Clock.System)
-        assertThat("2020").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 1).periodId)
-        assertThat("2019").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), -1).periodId)
+        val generator = YearlyPeriodGeneratorFactory.financialNov(Clock.System)
+        assertThat("2020Nov").isEqualTo(generator.generatePeriod(LocalDate(2019, 10, 30), 1).periodId)
+        assertThat("2019Nov").isEqualTo(generator.generatePeriod(LocalDate(2019, 11, 2), -1).periodId)
     }
 
     @Test
     fun generate_periods_in_this_year() {
         val clock = Clock.fixed(LocalDate(2020, 9, 29))
 
-        val generator = YearlyPeriodGeneratorFactory.yearly(clock)
+        val generator = YearlyPeriodGeneratorFactory.financialNov(clock)
         val periods = generator.generatePeriodsInYear(0)
         assertThat(periods.size).isEqualTo(1)
-        assertThat(periods.first().periodId).isEqualTo("2020")
+        assertThat(periods.first().periodId).isEqualTo("2020Nov")
     }
 }

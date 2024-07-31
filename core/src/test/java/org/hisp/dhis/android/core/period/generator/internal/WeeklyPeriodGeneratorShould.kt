@@ -25,12 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal.generator.internal
+package org.hisp.dhis.android.core.period.generator.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGeneratorFactory
+import org.hisp.dhis.android.core.period.clock.internal.fixed
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

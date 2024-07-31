@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.period.PeriodSamples
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.createFixed
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory.createFixed
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner

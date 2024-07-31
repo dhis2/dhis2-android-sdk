@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.clock.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import kotlinx.datetime.Clock
 
-import org.hisp.dhis.android.core.period.PeriodType;
-
-import java.util.Calendar;
-
-final class WeeklyPeriodGeneratorFactory {
-    private WeeklyPeriodGeneratorFactory() {
-    }
-
-    static WeeklyPeriodGenerator weekly(Calendar calendar) {
-        return new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W");
-    }
-
-    static WeeklyPeriodGenerator wednesday(Calendar calendar) {
-        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyWednesday, Calendar.WEDNESDAY, "WedW");
-    }
-
-    static WeeklyPeriodGenerator thursday(Calendar calendar) {
-        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyThursday, Calendar.THURSDAY, "ThuW");
-    }
-
-    static WeeklyPeriodGenerator saturday(Calendar calendar) {
-        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySaturday, Calendar.SATURDAY, "SatW");
-    }
-
-    static WeeklyPeriodGenerator sunday(Calendar calendar) {
-        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySunday, Calendar.SUNDAY, "SunW");
-    }
+internal class RegularClockProvider : ClockProvider {
+    override val clock = Clock.System
 }

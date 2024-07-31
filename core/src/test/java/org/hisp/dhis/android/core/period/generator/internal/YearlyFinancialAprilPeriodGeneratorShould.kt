@@ -25,79 +25,65 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal.generator.internal
+package org.hisp.dhis.android.core.period.generator.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.android.core.period.generator.internal.DailyPeriodGenerator
+import org.hisp.dhis.android.core.period.clock.internal.fixed
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class DailyPeriodGeneratorShould {
+class YearlyFinancialAprilPeriodGeneratorShould {
 
     @Test
-    fun generate_daily_periods_for_one_day() {
-        val clock = Clock.fixed(LocalDate(2024, 2, 2))
+    fun generate_periods_for_one_year() {
+        val clock = Clock.fixed(LocalDate(2019, 2, 21))
 
-        val periods = DailyPeriodGenerator(clock).generatePeriods(-1, 0)
+        val periods = YearlyPeriodGeneratorFactory.financialApril(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
-            assertThat(period.periodId).isEqualTo("20240201")
-            assertThat(period.startDate).isEqualTo(LocalDate(2024, 2, 1))
-            assertThat(period.endDate).isEqualTo(LocalDate(2024, 2, 1))
+            assertThat(period.periodId).isEqualTo("2017April")
+            assertThat(period.startDate).isEqualTo(LocalDate(2017, 4, 1))
+            assertThat(period.endDate).isEqualTo(LocalDate(2018, 3, 31))
         }
     }
 
     @Test
-    fun generate_daily_periods_for_changing_year() {
-        val clock = Clock.fixed(LocalDate(2024, 1, 3))
+    fun generate_periods_for_two_year() {
+        val clock = Clock.fixed(LocalDate(2019, 2, 21))
 
-        val periods = DailyPeriodGenerator(clock).generatePeriods(-3, 0)
+        val periods = YearlyPeriodGeneratorFactory.financialApril(clock).generatePeriods(-2, 0)
 
-        assertThat(periods.map { it.periodId }).isEqualTo(listOf("20231231", "20240101", "20240102"))
+        assertThat(periods.size).isEqualTo(2)
+
+        assertThat(periods.map { it.periodId }).isEqualTo(listOf("2016April", "2017April"))
     }
 
     @Test
     fun generate_period_id() {
-        val generator = DailyPeriodGenerator(Clock.System)
-
-        assertThat("20191230").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 0).periodId)
-        assertThat("20200102").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), 0).periodId)
+        val generator = YearlyPeriodGeneratorFactory.financialApril(Clock.System)
+        assertThat("2018April").isEqualTo(generator.generatePeriod(LocalDate(2019, 3, 30), 0).periodId)
+        assertThat("2019April").isEqualTo(generator.generatePeriod(LocalDate(2019, 4, 2), 0).periodId)
     }
 
     @Test
     fun generate_period_id_with_offset() {
-        val generator = DailyPeriodGenerator(Clock.System)
-
-        assertThat("20200101").isEqualTo(generator.generatePeriod(LocalDate(2019, 12, 30), 2).periodId)
-        assertThat("20191229").isEqualTo(generator.generatePeriod(LocalDate(2020, 1, 2), -4).periodId)
+        val generator = YearlyPeriodGeneratorFactory.financialApril(Clock.System)
+        assertThat("2019April").isEqualTo(generator.generatePeriod(LocalDate(2019, 3, 30), 1).periodId)
+        assertThat("2018April").isEqualTo(generator.generatePeriod(LocalDate(2019, 4, 2), -1).periodId)
     }
 
     @Test
     fun generate_periods_in_this_year() {
-        val clock = Clock.fixed(LocalDate(2024, 8, 29))
-        val generator = DailyPeriodGenerator(clock)
+        val clock = Clock.fixed(LocalDate(2020, 9, 29))
 
+        val generator = YearlyPeriodGeneratorFactory.financialApril(clock)
         val periods = generator.generatePeriodsInYear(0)
-
-        assertThat(periods.size).isEqualTo(366)
-        assertThat(periods[0].periodId).isEqualTo("20240101")
-        assertThat(periods[365].periodId).isEqualTo("20241231")
-    }
-
-    @Test
-    fun generate_periods_in_last_year() {
-        val clock = Clock.fixed(LocalDate(2024, 8, 29))
-        val generator = DailyPeriodGenerator(clock)
-
-        val periods = generator.generatePeriodsInYear(-1)
-
-        assertThat(periods.size).isEqualTo(365)
-        assertThat(periods[0].periodId).isEqualTo("20230101")
-        assertThat(periods[364].periodId).isEqualTo("20231231")
+        assertThat(periods.size).isEqualTo(1)
+        assertThat(periods.first().periodId).isEqualTo("2020April")
     }
 }

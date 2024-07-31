@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period.internal;
+package org.hisp.dhis.android.core.period.internal
 
-import java.util.Calendar;
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toLocalDateTime
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.generator.internal.PeriodKt
+import org.hisp.dhis.android.core.util.toLocalDate
+import java.util.Date
 
-final class YearlyPeriodGenerators {
+internal fun List<PeriodKt>.toPeriods(): List<Period> {
+    return this.map { it.toPeriods() }
+}
 
-    final PeriodGenerator yearly;
-    final PeriodGenerator financialApril;
-    final PeriodGenerator financialJuly;
-    final PeriodGenerator financialOct;
-    final PeriodGenerator financialNov;
+internal fun PeriodKt.toPeriods(): Period {
+    return Period.builder()
+        .periodId(this.periodId)
+        .periodType(this.periodType)
+        .startDate(toStartDate(this.startDate))
+        .endDate(toEndDate(this.endDate))
+        .build()
+}
 
-    YearlyPeriodGenerators(PeriodGenerator yearly,
-                           PeriodGenerator financialApril,
-                           PeriodGenerator financialJuly,
-                           PeriodGenerator financialOct,
-                           PeriodGenerator financialNov) {
-        this.yearly = yearly;
-        this.financialApril = financialApril;
-        this.financialJuly = financialJuly;
-        this.financialOct = financialOct;
-        this.financialNov = financialNov;
-    }
+private fun toStartDate(localDate: LocalDate): Date {
+    return Date.from(localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toJavaInstant())
+}
 
+private fun toEndDate(localDate: LocalDate): Date {
+    val nextDay = toStartDate(localDate.plus(1, DateTimeUnit.DAY))
+    return Date(nextDay.time - 1)
+}
 
-    static YearlyPeriodGenerators create(Calendar calendar) {
-        return new YearlyPeriodGenerators(
-                YearlyPeriodGeneratorFactory.yearly(calendar),
-                YearlyPeriodGeneratorFactory.financialApril(calendar),
-                YearlyPeriodGeneratorFactory.financialJuly(calendar),
-                YearlyPeriodGeneratorFactory.financialOct(calendar),
-                YearlyPeriodGeneratorFactory.financialNov(calendar));
-    }
+internal fun Date.toLocalDate(): LocalDate {
+    return Instant.fromEpochMilliseconds(this.time).toLocalDateTime(TimeZone.currentSystemDefault()).toLocalDate()
 }

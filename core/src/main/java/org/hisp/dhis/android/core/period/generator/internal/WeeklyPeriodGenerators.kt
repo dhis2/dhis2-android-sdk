@@ -25,16 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.generator.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import kotlinx.datetime.Clock
 
-import org.hisp.dhis.android.core.period.Period;
-
-import java.util.Date;
-import java.util.List;
-
-interface PeriodGenerator {
-    List<Period> generatePeriods(int start, int end) throws RuntimeException;
-    Period generatePeriod(Date date, int periodOffset);
-    List<Period> generatePeriodsInYear(int yearOffset);
+internal class WeeklyPeriodGenerators(clock: Clock) {
+    val weekly = WeeklyPeriodGeneratorFactory.weekly(clock)
+    val weeklyWednesday = WeeklyPeriodGeneratorFactory.wednesday(clock)
+    val weeklyThursday = WeeklyPeriodGeneratorFactory.thursday(clock)
+    val weeklySaturday = WeeklyPeriodGeneratorFactory.saturday(clock)
+    val weeklySunday = WeeklyPeriodGeneratorFactory.sunday(clock)
 }

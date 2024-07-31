@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period.internal;
+package org.hisp.dhis.android.core.period.clock.internal
 
-import org.hisp.dhis.android.core.period.PeriodType;
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
-import java.util.Calendar;
-
-public class BiMonthlyPeriodGenerator extends NMonthlyPeriodGenerator {
-
-    BiMonthlyPeriodGenerator(Calendar calendar) {
-        super(calendar, PeriodType.BiMonthly, 2, "B", Calendar.JANUARY);
-    }
-
-    @Override
-    protected String generateId() {
-        int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
-        return idFormatter.format(calendar.getTime()) + String.format("%02d", periodNumber) + idAdditionalString;
-    }
+internal class FixedClockProvider(localDate: LocalDateTime) : ClockProvider {
+    override val clock: Clock = FixedClock(localDate)
 }
+
+internal class FixedClock(localDate: LocalDateTime) : Clock {
+    private val fixedInstant = localDate.toInstant(TimeZone.currentSystemDefault())
+
+    override fun now(): Instant = fixedInstant
+}
+
+fun Clock.Companion.fixed(localDate: LocalDate): Clock =
+    FixedClock(
+        localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault()),
+    )
+
+fun Clock.Companion.fixed(localDateTime: LocalDateTime): Clock = FixedClock(localDateTime)

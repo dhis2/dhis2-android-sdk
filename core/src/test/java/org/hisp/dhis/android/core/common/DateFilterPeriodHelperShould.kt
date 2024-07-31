@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.common
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.junit.Before
@@ -41,9 +42,10 @@ class DateFilterPeriodHelperShould {
     @Before
     fun setUp() {
         val calendarProvider = CalendarProviderFactory.createFixed()
+        val clockProvider = ClockProviderFactory.createFixed()
 
         dateFilterPeriodHelper =
-            DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))
+            DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(clockProvider))
     }
 
     @Test

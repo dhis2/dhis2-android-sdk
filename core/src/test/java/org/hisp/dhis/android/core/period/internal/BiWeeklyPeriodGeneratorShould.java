@@ -151,6 +151,24 @@ public class BiWeeklyPeriodGeneratorShould {
         assertThat("2019BiW25").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -2).periodId());
     }
 
+    @Test(expected = AssertionError.class)
+    public void generate_period_id_with_offset_failing_test() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
+        Period period = biWeeklyGenerator.generatePeriod(dateFormatter.parse("2024-07-29"), -180);
+
+        assertThat(period.periodId()).isEqualTo("2017BiW19");
+        assertThat(period.startDate()).isEqualTo(dateFormatter.parse("2017-09-11T00:00:00.000"));
+        assertThat(period.endDate()).isEqualTo(dateFormatter.parse("2017-09-24T23:59:59.999"));
+
+        Period periodFuture = biWeeklyGenerator.generatePeriod(dateFormatter.parse("2024-07-29"), 64);
+
+        assertThat(periodFuture.periodId()).isEqualTo("2017BiW19");
+        assertThat(periodFuture.startDate()).isEqualTo(dateFormatter.parse("2017-09-11T00:00:00.000"));
+        assertThat(periodFuture.endDate()).isEqualTo(dateFormatter.parse("2017-09-24T23:59:59.999"));
+    }
+
     @Test
     public void generate_last_periods_in_53_weeks_year() {
         calendar.set(2021, 0, 18);

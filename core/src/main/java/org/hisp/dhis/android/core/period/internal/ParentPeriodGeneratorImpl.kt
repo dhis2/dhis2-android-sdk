@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -95,7 +95,8 @@ internal class ParentPeriodGeneratorImpl(
             PeriodType.BiWeekly -> biWeekly
             PeriodType.Monthly -> monthly
             PeriodType.BiMonthly -> nMonthly.biMonthly
-            PeriodType.Quarterly -> nMonthly.quarter
+            PeriodType.Quarterly -> nMonthly.quarterly
+            PeriodType.QuarterlyNov -> nMonthly.quarterlyNov
             PeriodType.SixMonthly -> nMonthly.sixMonthly
             PeriodType.SixMonthlyApril -> nMonthly.sixMonthlyApril
             PeriodType.SixMonthlyNov -> nMonthly.sixMonthlyNov

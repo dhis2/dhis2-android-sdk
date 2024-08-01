@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ internal open class NMonthlyPeriodGenerator(
         if (startDate.monthNumber < startMonth.number) {
             year--
         }
-        if (periodType == PeriodType.SixMonthlyNov) {
+        if (periodType == PeriodType.SixMonthlyNov || periodType == PeriodType.QuarterlyNov) {
             year++
         }
 

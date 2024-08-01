@@ -27,24 +27,6 @@
  */
 package org.hisp.dhis.android.core.period.clock.internal
 
-import kotlinx.datetime.LocalDateTime
-
 internal object ClockProviderFactory {
-
     var clockProvider: ClockProvider = RegularClockProvider()
-        private set
-
-    fun setRegular() {
-        clockProvider = RegularClockProvider()
-    }
-
-    fun setFixed() {
-        clockProvider = createFixed()
-    }
-
-    @Suppress("MagicNumber")
-    fun createFixed(): ClockProvider {
-        val date = LocalDateTime(2019, 12, 10, 10, 30, 0, 0)
-        return FixedClockProvider(date)
-    }
 }

@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
-import org.junit.Before
+import org.hisp.dhis.android.core.period.clock.internal.FixedClockProvider
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -38,12 +38,9 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class RelativePeriodGeneratorImplShould {
 
-    private lateinit var periodGenerator: ParentPeriodGeneratorImpl
-
-    @Before
-    fun setUp() {
-        periodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.createFixed())
-    }
+    private val fixedDate = LocalDateTime(2019, 12, 10, 0, 0)
+    private val clockProvider = FixedClockProvider(fixedDate)
+    private val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider)
 
     @Test
     @Suppress("ComplexMethod", "LongMethod")

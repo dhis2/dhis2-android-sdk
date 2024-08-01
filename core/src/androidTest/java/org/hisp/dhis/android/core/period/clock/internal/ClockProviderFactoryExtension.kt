@@ -28,28 +28,14 @@
 
 package org.hisp.dhis.android.core.period.clock.internal
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
-internal class FixedClockProvider(localDate: LocalDateTime) : ClockProvider {
-    override val clock: Clock = FixedClock(localDate)
+internal fun ClockProviderFactory.setFixed() {
+    clockProvider = createFixed()
 }
 
-internal class FixedClock(localDate: LocalDateTime) : Clock {
-    private val fixedInstant = localDate.toInstant(TimeZone.currentSystemDefault())
-
-    override fun now(): Instant = fixedInstant
+@Suppress("MagicNumber")
+internal fun ClockProviderFactory.createFixed(): ClockProvider {
+    val date = LocalDateTime(2019, 12, 10, 10, 30, 0, 0)
+    return FixedClockProvider(date)
 }
-
-internal fun Clock.Companion.fixed(localDate: LocalDate): Clock =
-    FixedClock(
-        localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault()),
-    )
-
-internal fun Clock.Companion.fixed(localDateTime: LocalDateTime): Clock = FixedClock(localDateTime)

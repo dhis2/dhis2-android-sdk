@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.MockIntegrationTestObjects
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.period.clock.internal.setFixed
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 
 internal object MockIntegrationTestObjectsFactory {

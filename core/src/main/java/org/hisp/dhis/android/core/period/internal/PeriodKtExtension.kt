@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period.internal
 
-import org.hisp.dhis.android.core.common.RelativePeriod
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
+import org.hisp.dhis.android.core.period.generator.internal.PeriodKt
+import org.hisp.dhis.android.core.util.toLocalDate
+import java.util.Date
 
-internal interface ParentPeriodGenerator {
-    fun generatePeriods(): List<Period>
-    fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
-    fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>
-    fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period?
-    fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
+internal fun List<PeriodKt>.toPeriods(): List<Period> {
+    return this.map { it.toPeriods() }
+}
+
+internal fun PeriodKt.toPeriods(): Period {
+    return Period.builder()
+        .periodId(this.periodId)
+        .periodType(this.periodType)
+        .startDate(toStartDate(this.startDate))
+        .endDate(toEndDate(this.endDate))
+        .build()
+}
+
+private fun toStartDate(localDate: LocalDate): Date {
+    return Date.from(localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toJavaInstant())
+}
+
+private fun toEndDate(localDate: LocalDate): Date {
+    val nextDay = toStartDate(localDate.plus(1, DateTimeUnit.DAY))
+    return Date(nextDay.time - 1)
+}
+
+internal fun Date.toLocalDate(): LocalDate {
+    return Instant.fromEpochMilliseconds(this.time).toLocalDateTime(TimeZone.currentSystemDefault()).toLocalDate()
 }

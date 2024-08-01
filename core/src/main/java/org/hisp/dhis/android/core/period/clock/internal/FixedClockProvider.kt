@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal
 
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
+package org.hisp.dhis.android.core.period.clock.internal
 
-internal interface ParentPeriodGenerator {
-    fun generatePeriods(): List<Period>
-    fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
-    fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>
-    fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period?
-    fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+
+internal class FixedClockProvider(localDate: LocalDateTime) : ClockProvider {
+    override val clock: Clock = FixedClock(localDate)
 }
+
+internal class FixedClock(localDate: LocalDateTime) : Clock {
+    private val fixedInstant = localDate.toInstant(TimeZone.currentSystemDefault())
+
+    override fun now(): Instant = fixedInstant
+}
+
+internal fun Clock.Companion.fixed(localDate: LocalDate): Clock =
+    FixedClock(
+        localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault()),
+    )
+
+internal fun Clock.Companion.fixed(localDateTime: LocalDateTime): Clock = FixedClock(localDateTime)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.internal
 
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
+package org.hisp.dhis.android.core.period.clock.internal
 
-internal interface ParentPeriodGenerator {
-    fun generatePeriods(): List<Period>
-    fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period>
-    fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period>
-    fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period?
-    fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
+import kotlinx.datetime.LocalDateTime
+
+internal fun ClockProviderFactory.setFixed() {
+    clockProvider = createFixed()
+}
+
+@Suppress("MagicNumber")
+internal fun ClockProviderFactory.createFixed(): ClockProvider {
+    val date = LocalDateTime(2019, 12, 10, 10, 30, 0, 0)
+    return FixedClockProvider(date)
 }

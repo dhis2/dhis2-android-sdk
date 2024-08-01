@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.calendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.junit.Before
@@ -53,7 +54,8 @@ class TrackedEntityInstanceLocalQueryHelperShould {
     fun setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
         val calendarProvider = calendarProvider
-        val periodHelper = DateFilterPeriodHelper(calendarProvider, create(calendarProvider))
+        val clockProvider = ClockProviderFactory.clockProvider
+        val periodHelper = DateFilterPeriodHelper(calendarProvider, create(clockProvider))
         localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
     }
 

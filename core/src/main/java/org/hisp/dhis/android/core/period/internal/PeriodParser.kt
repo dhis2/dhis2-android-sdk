@@ -1,139 +1,108 @@
-/*
- *  Copyright (c) 2004-2023, University of Oslo
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *  Redistributions of source code must retain the above copyright notice, this
- *  list of conditions and the following disclaimer.
- *
- *  Redistributions in binary form must reproduce the above copyright notice,
- *  this list of conditions and the following disclaimer in the documentation
- *  and/or other materials provided with the distribution.
- *  Neither the name of the HISP project nor the names of its contributors may
- *  be used to endorse or promote products derived from this software without
- *  specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import kotlinx.datetime.*
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.period.PeriodType.Companion.firstDayOfTheWeek
+import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.period.PeriodType;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-@SuppressWarnings({
-        "PMD.CyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity"
-})
-public class PeriodParser {
-
-    private final CalendarProvider calendarProvider;
-
-    public PeriodParser(CalendarProvider calendarProvider) {
-        this.calendarProvider = calendarProvider;
+internal class PeriodParser {
+    @Throws(IllegalArgumentException::class)
+    fun parse(periodId: String): Instant {
+        val periodType = periodTypeFromPeriodId(periodId)
+        return parse(periodId, periodType)
     }
 
-    public Date parse(@NonNull String periodId) throws IllegalArgumentException {
-        PeriodType periodType = PeriodType.periodTypeFromPeriodId(periodId);
-        return parse(periodId, periodType);
+    @Throws(IllegalArgumentException::class)
+    fun parse(periodId: String, periodType: PeriodType): Instant {
+        val matcher = getMatcherFromPeriodId(periodId, periodType)
+        val date = getDateFromPeriodId(matcher, periodType)
+        return date.atStartOfDayIn(TimeZone.currentSystemDefault())
     }
 
-    public Date parse(@NonNull String periodId, @NonNull PeriodType periodType) throws IllegalArgumentException {
-        Matcher matcher = getMatcherFromPeriodId(periodId, periodType);
-        Date date = getDateFromPeriodId(matcher, periodType);
-        if (date == null) {
-            throw new IllegalArgumentException(
-                    "It has not been possible to generate a date for the given periodId.");
-        } else {
-            return date;
-        }
+    private fun getMatcherFromPeriodId(periodId: String, periodType: PeriodType): Matcher {
+        val pattern = Pattern.compile(periodType.pattern)
+        val matcher = pattern.matcher(periodId)
+        val match = matcher.find()
+
+        require(match) { "It has not been possible to generate a match for the period pattern." }
+
+        return matcher
     }
 
-    private Matcher getMatcherFromPeriodId(String periodId, PeriodType periodType) {
-        Pattern pattern = Pattern.compile(periodType.getPattern());
-        Matcher matcher = pattern.matcher(periodId);
-        boolean match = matcher.find();
+    private fun getDateFromPeriodId(matcher: Matcher, periodType: PeriodType): LocalDate {
+        val year = matcher.group(1)?.toIntOrNull() ?: throw IllegalArgumentException("Invalid year in periodId")
+        val match2 = matcher.group(2)?.toIntOrNull()
+        val month: Int
+        val semester: Int
+        val week: Int
 
-        if (!match) {
-            throw new IllegalArgumentException(
-                    "It has not been possible to generate a match for the period pattern.");
-        }
+        return when (periodType) {
+            PeriodType.Daily -> {
+                month = match2 ?: throw IllegalArgumentException("Invalid month in periodId")
+                val day = matcher.group(3)?.toIntOrNull() ?: throw IllegalArgumentException("Invalid day in periodId")
+                LocalDate(year, month, day)
+            }
 
-        return matcher;
-    }
+            PeriodType.Weekly, PeriodType.WeeklyWednesday, PeriodType.WeeklyThursday,
+            PeriodType.WeeklySaturday, PeriodType.WeeklySunday -> {
+                week = match2 ?: throw IllegalArgumentException("Invalid week in periodId")
+                getDateFromWeek(year, week, firstDayOfTheWeek(periodType))
+            }
 
-    private Date getDateFromPeriodId(Matcher matcher, PeriodType periodType) {
-        Calendar calendar = calendarProvider.getCalendar();
-        int year = Integer.parseInt(matcher.group(1));
-        int month;
-        int semester;
-        int week;
+            PeriodType.BiWeekly -> {
+                week = match2?.let { it * 2 - 1 } ?: throw IllegalArgumentException("Invalid bi-week in periodId")
+                getDateFromWeek(year, week, firstDayOfTheWeek(periodType))
+            }
 
-        switch (periodType) {
-            case Daily:
-                month = Integer.parseInt(matcher.group(2));
-                int day = Integer.parseInt(matcher.group(3));
+            PeriodType.Monthly -> {
+                month = match2 ?: throw IllegalArgumentException("Invalid month in periodId")
+                getDateFromMonth(year, month)
+            }
 
-                calendar.set(year, month - 1, day);
-                return calendar.getTime();
-            case Weekly:
-            case WeeklyWednesday:
-            case WeeklyThursday:
-            case WeeklySaturday:
-            case WeeklySunday:
-                week = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
-            case BiWeekly:
-                week = Integer.parseInt(matcher.group(2)) * 2 - 1;
-                return getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
-            case Monthly:
-                month = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, month - 1, calendar);
-            case BiMonthly:
-                int biMonth = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, biMonth * 2 - 2, calendar);
-            case Quarterly:
-                int quarter = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, quarter * 3 - 3, calendar);
-            case SixMonthly:
-                semester = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, semester * 6 - 6, calendar);
-            case SixMonthlyApril:
-                semester = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, semester * 6 - 3, calendar);
-            case SixMonthlyNov:
-                semester = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(semester == 1 ? year - 1 : year,
-                        semester == 1 ? Calendar.NOVEMBER :
-                                semester == 2 ? Calendar.MAY : -1, calendar);
-            case Yearly:
-                return getDateTimeFromMonth(year, Calendar.JANUARY, calendar);
-            case FinancialApril:
-                return getDateTimeFromMonth(year, Calendar.APRIL, calendar);
-            case FinancialJuly:
-                return getDateTimeFromMonth(year, Calendar.JULY, calendar);
-            case FinancialOct:
-                return getDateTimeFromMonth(year, Calendar.OCTOBER, calendar);
-            case FinancialNov:
-                return getDateTimeFromMonth(year - 1, Calendar.NOVEMBER, calendar);
-            default:
-                return null;
+            PeriodType.BiMonthly -> {
+                val biMonth = match2 ?: throw IllegalArgumentException("Invalid bi-month in periodId")
+                getDateFromMonth(year, biMonth * 2 - 1)
+            }
+
+            PeriodType.Quarterly -> {
+                val quarter = match2 ?: throw IllegalArgumentException("Invalid quarter in periodId")
+                getDateFromMonth(year, quarter * 3 - 2)
+            }
+
+            PeriodType.QuarterlyNov -> {
+                val quarter = match2 ?: throw IllegalArgumentException("Invalid quarter in periodId")
+                val quarterMap = mapOf(1 to 11, 2 to 2, 3 to 5, 4 to 8)
+                getDateFromMonth(
+                    if (quarter == 1) year - 1 else year,
+                    quarterMap[quarter] ?: throw IllegalArgumentException("Invalid quarter in periodId")
+                )
+            }
+
+            PeriodType.SixMonthly -> {
+                semester = match2 ?: throw IllegalArgumentException("Invalid semester in periodId")
+                getDateFromMonth(year, semester * 6 - 5)
+            }
+
+            PeriodType.SixMonthlyApril -> {
+                semester = match2 ?: throw IllegalArgumentException("Invalid semester in periodId")
+                getDateFromMonth(year, semester * 6 - 2)
+            }
+
+            PeriodType.SixMonthlyNov -> {
+                semester = match2 ?: throw IllegalArgumentException("Invalid semester in periodId")
+                getDateFromMonth(
+                    if (semester == 1) year - 1 else year,
+                    if (semester == 1) 11 else if (semester == 2) 5 else throw IllegalArgumentException("Invalid semester in periodId")
+                )
+            }
+
+            PeriodType.Yearly -> getDateFromMonth(year, 0)
+            PeriodType.FinancialApril -> getDateFromMonth(year, 3)
+            PeriodType.FinancialJuly -> getDateFromMonth(year, 6)
+            PeriodType.FinancialOct -> getDateFromMonth(year, 9)
+            PeriodType.FinancialNov -> getDateFromMonth(year - 1, 10)
         }
     }
 
@@ -142,24 +111,27 @@ public class PeriodParser {
      *
      * @param year           The year of the date
      * @param week           The week of the date
-     * @param calendar       The calendar used to calculate the date
      * @param firstDayOfWeek The first day of the week
-     * @return The Date of the week
+     * @return The LocalDate of the week
      */
-    private Date getDateTimeFromWeek(int year, int week, Calendar calendar, Integer firstDayOfWeek)
-            throws IllegalArgumentException {
-        if (week < 1 || week > 53) {
-            throw new IllegalArgumentException("The week number is outside the year week range.");
-        }
+    @Throws(IllegalArgumentException::class)
+    private fun getDateFromWeek(year: Int, week: Int, firstDayOfWeek: Int): LocalDate {
+        require(!(week < 1 || week > 53)) { "The week number is outside the year week range." }
 
-        calendar.setFirstDayOfWeek(firstDayOfWeek);
-        calendar.setMinimalDaysInFirstWeek(4);
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.WEEK_OF_YEAR, week);
-        CalendarUtils.setDayOfWeek(calendar, firstDayOfWeek);
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        val firstDayOfYear = LocalDate(year, 1, 1)
+        val firstWeekStart = firstDayOfYear.plus(
+            ((DayOfWeek(firstDayOfWeek).ordinal - firstDayOfYear.dayOfWeek.ordinal + 7) % 7).toLong(), DateTimeUnit.DAY
+        )
 
-        return calendar.getTime();
+        val firstWeekDays = firstDayOfYear.daysUntil(firstWeekStart) + 1
+        val isFirstWeekValid = firstWeekDays >= 4
+
+        val actualFirstWeekStart = if (isFirstWeekValid) firstWeekStart else firstWeekStart.plus(7, DateTimeUnit.DAY)
+
+        val weekStart = actualFirstWeekStart.plus((week - 1).toLong() * 7, DateTimeUnit.DAY)
+        val date = LocalDate(weekStart.year, weekStart.monthNumber, weekStart.dayOfMonth)
+
+        return date
     }
 
     /**
@@ -167,17 +139,12 @@ public class PeriodParser {
      *
      * @param year              The year of the date
      * @param month             The month of the date
-     * @param calendar          The calendar used to calculate the date
      * @return The first Date of the month
      */
-    private Date getDateTimeFromMonth(int year, int month, Calendar calendar) throws IllegalArgumentException {
-        if (month < 0 || month > 11) {
-            throw new IllegalArgumentException("The periodId does not match a real date.");
-        }
+    @Throws(IllegalArgumentException::class)
+    private fun getDateFromMonth(year: Int, month: Int): LocalDate {
+        require(!(month < 1 || month > 12)) { "The periodId does not match a real date." }
 
-        calendar.set(year, month, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-
-        return calendar.getTime();
+        return LocalDate(year, month, 1)
     }
 }

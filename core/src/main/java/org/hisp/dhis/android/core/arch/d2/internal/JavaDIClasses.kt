@@ -47,7 +47,7 @@ internal val javaDIClasses = module {
     single { FileResourceCleaner(get(), get(), get()) }
     single { NoteUniquenessManager(get()) }
     single { PeriodHelper(get(), get(), get(), get(), get()) }
-    single { PeriodParser(get()) }
+    single { PeriodParser() }
     single { DatabaseEncryptionPasswordManager(get(), get()) }
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }

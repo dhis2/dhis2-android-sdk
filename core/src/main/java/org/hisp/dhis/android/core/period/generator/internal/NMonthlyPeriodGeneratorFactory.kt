@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,12 @@ internal object NMonthlyPeriodGeneratorFactory {
         return BiMonthlyPeriodGenerator(clock)
     }
 
-    fun quarter(clock: Clock): NMonthlyPeriodGenerator {
+    fun quarterly(clock: Clock): NMonthlyPeriodGenerator {
         return NMonthlyPeriodGenerator(clock, PeriodType.Quarterly, 3, "Q", Month.JANUARY)
+    }
+
+    fun quarterlyNov(clock: Clock): NMonthlyPeriodGenerator {
+        return NMonthlyPeriodGenerator(clock, PeriodType.QuarterlyNov, 3, "NovQ", Month.NOVEMBER)
     }
 
     fun sixMonthly(clock: Clock): NMonthlyPeriodGenerator {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,8 @@ import kotlinx.datetime.Clock
 
 internal class NMonthlyPeriodGenerators(clock: Clock) {
     val biMonthly = NMonthlyPeriodGeneratorFactory.biMonthly(clock)
-    val quarter = NMonthlyPeriodGeneratorFactory.quarter(clock)
+    val quarterly = NMonthlyPeriodGeneratorFactory.quarterly(clock)
+    val quarterlyNov = NMonthlyPeriodGeneratorFactory.quarterlyNov(clock)
     val sixMonthly = NMonthlyPeriodGeneratorFactory.sixMonthly(clock)
     val sixMonthlyApril = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(clock)
     val sixMonthlyNov = NMonthlyPeriodGeneratorFactory.sixMonthlyNov(clock)

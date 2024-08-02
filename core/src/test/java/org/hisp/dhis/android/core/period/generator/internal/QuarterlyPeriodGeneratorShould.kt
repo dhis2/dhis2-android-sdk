@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -36,13 +36,13 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class QuarterPeriodGeneratorShould {
+class QuarterlyPeriodGeneratorShould {
 
     @Test
     fun generate_last_period_forQ1() {
         val clock = Clock.fixed(LocalDate(2018, 4, 21))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
@@ -56,7 +56,7 @@ class QuarterPeriodGeneratorShould {
     fun generate_last_period_forQ2() {
         val clock = Clock.fixed(LocalDate(2018, 9, 11))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
@@ -70,7 +70,7 @@ class QuarterPeriodGeneratorShould {
     fun generate_last_period_forQ3() {
         val clock = Clock.fixed(LocalDate(2018, 11, 3))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
@@ -84,7 +84,7 @@ class QuarterPeriodGeneratorShould {
     fun generate_last_period_forQ4() {
         val clock = Clock.fixed(LocalDate(2019, 2, 3))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
@@ -98,7 +98,7 @@ class QuarterPeriodGeneratorShould {
     fun generate_starting_period_on_first_day() {
         val clock = Clock.fixed(LocalDate(2018, 4, 1))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
@@ -110,7 +110,7 @@ class QuarterPeriodGeneratorShould {
     fun generate_ending_period_on_last_day() {
         val clock = Clock.fixed(LocalDate(2018, 6, 30))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-1, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-1, 0)
 
         assertThat(periods.size).isEqualTo(1)
         periods.first().let { period ->
@@ -122,7 +122,7 @@ class QuarterPeriodGeneratorShould {
     fun generate_last_two_periods() {
         val clock = Clock.fixed(LocalDate(2018, 5, 21))
 
-        val periods = NMonthlyPeriodGeneratorFactory.quarter(clock).generatePeriods(-2, 0)
+        val periods = NMonthlyPeriodGeneratorFactory.quarterly(clock).generatePeriods(-2, 0)
 
         assertThat(periods.size).isEqualTo(2)
         assertThat(periods.map { it.periodId }).isEqualTo(listOf("2017Q4", "2018Q1"))
@@ -130,14 +130,14 @@ class QuarterPeriodGeneratorShould {
 
     @Test
     fun generate_period_id() {
-        val generator = NMonthlyPeriodGeneratorFactory.quarter(Clock.System)
+        val generator = NMonthlyPeriodGeneratorFactory.quarterly(Clock.System)
         assertThat("2019Q2").isEqualTo(generator.generatePeriod(LocalDate(2019, 6, 30), 0).periodId)
         assertThat("2019Q3").isEqualTo(generator.generatePeriod(LocalDate(2019, 7, 1), 0).periodId)
     }
 
     @Test
     fun generate_period_id_with_offset() {
-        val generator = NMonthlyPeriodGeneratorFactory.quarter(Clock.System)
+        val generator = NMonthlyPeriodGeneratorFactory.quarterly(Clock.System)
         assertThat("2019Q3").isEqualTo(generator.generatePeriod(LocalDate(2019, 6, 30), 1).periodId)
         assertThat("2019Q2").isEqualTo(generator.generatePeriod(LocalDate(2019, 7, 1), -1).periodId)
     }
@@ -145,7 +145,7 @@ class QuarterPeriodGeneratorShould {
     @Test
     fun generate_periods_in_this_year() {
         val clock = Clock.fixed(LocalDate(2019, 8, 29))
-        val generator = NMonthlyPeriodGeneratorFactory.quarter(clock)
+        val generator = NMonthlyPeriodGeneratorFactory.quarterly(clock)
 
         val periods = generator.generatePeriodsInYear(0)
 
@@ -157,7 +157,7 @@ class QuarterPeriodGeneratorShould {
     @Test
     fun generate_periods_in_last_year() {
         val clock = Clock.fixed(LocalDate(2019, 8, 29))
-        val generator = NMonthlyPeriodGeneratorFactory.quarter(clock)
+        val generator = NMonthlyPeriodGeneratorFactory.quarterly(clock)
 
         val periods = generator.generatePeriodsInYear(-1)
 

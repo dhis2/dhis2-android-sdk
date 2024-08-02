@@ -44,7 +44,7 @@ public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEm
             "20200315", "2019W40", "2020W1", "2020W10", "2020W53",
             "2020WedW5", "2020ThuW6", "2020SatW7", "2020SunW8",
             "2020BiW1", "2019BiW15", "2020BiW25",
-            "202003","202012", "202001B", "2020Q1","2020Q4",
+            "202003","202012", "202001B", "2020Q1","2020Q4", "2020NovQ1","2020NovQ4",
             "2020S1", "2020AprilS1", "2020NovS1", "2020NovS2", "2020",
             "2020April", "2020July", "2020Oct", "2020Nov");
 

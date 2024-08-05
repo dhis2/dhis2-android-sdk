@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackedEntityAttributeReservedValueService(private val client: KtorServiceClient) {
+internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClient) {
     suspend fun generateAndReserveWithOrgUnitCode(
         trackedEntityAttributeUid: String,
         numberToReserve: Int,

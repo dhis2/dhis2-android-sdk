@@ -68,7 +68,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         val organisationUnits = listOf(orgUnit)
 
         // dependencies for the OrganisationUnitCall:
-        val organisationUnitService = OrganisationUnitService(d2.ktor())
+        val organisationUnitService = OrganisationUnitService(d2.httpServiceClient())
 
         // Create a user with the root as assigned organisation unit (for the test):
         val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)

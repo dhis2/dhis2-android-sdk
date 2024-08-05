@@ -55,7 +55,7 @@ abstract class EventAPIRealShould internal constructor(
     override fun setUp() {
         super.setUp()
         apiCallExecutor = d2.coroutineAPICallExecutor()
-        eventService = EventService(d2.ktor())
+        eventService = EventService(d2.httpServiceClient())
     }
 
     // @Test

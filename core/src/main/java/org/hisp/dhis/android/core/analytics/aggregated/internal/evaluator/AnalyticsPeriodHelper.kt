@@ -32,15 +32,15 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 
 object AnalyticsPeriodHelper {
 
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
+    private val periodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.clockProvider)
 
     fun shiftPeriod(period: Period, offset: Int): Period {
-        return periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, offset)!!
+        return periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, offset)
     }
 
     fun shiftPeriods(periods: List<Period>, offset: Int): List<Period> {
@@ -50,7 +50,7 @@ object AnalyticsPeriodHelper {
     fun countWeeksOrBiWeeksInYear(periodType: PeriodType, year: Int): Int {
         // The period containing this date is the last period in the year
         val lastDate = DateUtils.SIMPLE_DATE_FORMAT.parse("$year-12-28")
-        val lastPeriod = periodGenerator.generatePeriod(periodType, lastDate, 0)!!
+        val lastPeriod = periodGenerator.generatePeriod(periodType, lastDate, 0)
 
         return ParserUtils.getTrailingDigits(lastPeriod.periodId()!!)!!
     }
@@ -59,7 +59,7 @@ object AnalyticsPeriodHelper {
         val periodInYear = ParserUtils.getPeriodInYear(period)
 
         val periodsExcludingEnd = (1 until periodInYear).map {
-            periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, -it)!!
+            periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, -it)
         }
 
         return periodsExcludingEnd + period

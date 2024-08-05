@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.Program
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ProgramService(private val client: KtorServiceClient) {
+internal class ProgramService(private val client: HttpServiceClient) {
     suspend fun getPrograms(
         fields: Fields<Program>,
         uids: Filter<Program>,

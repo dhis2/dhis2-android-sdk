@@ -66,7 +66,11 @@ pipeline {
                 script {
                     echo 'Sonarqube'
                     sh 'chmod +x ./scripts/sonarqube.sh'
-                    sh './scripts/sonarqube.sh'
+                    retry(3) { // Retry up to 3 times
+                        timeout(time: 10, unit: 'MINUTES') {
+                            sh './scripts/sonarqube.sh'
+                        }
+                    }
                 }
             }
         }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.period
 
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.CalendarProvider
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
@@ -41,12 +43,17 @@ import org.koin.core.annotation.Singleton
 internal class PeriodDIModule {
 
     @Singleton
-    fun parentPeriodGenerator(calendarProvider: CalendarProvider): ParentPeriodGenerator {
-        return ParentPeriodGeneratorImpl.create(calendarProvider)
+    fun parentPeriodGenerator(clockProvider: ClockProvider): ParentPeriodGenerator {
+        return ParentPeriodGeneratorImpl.create(clockProvider)
     }
 
     @Singleton
     fun calendarProvider(): CalendarProvider {
         return CalendarProviderFactory.calendarProvider
+    }
+
+    @Singleton
+    fun clockProvider(): ClockProvider {
+        return ClockProviderFactory.clockProvider
     }
 }

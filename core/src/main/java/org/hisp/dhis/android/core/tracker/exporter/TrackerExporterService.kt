@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
@@ -37,7 +37,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("LongParameterList")
-internal class TrackerExporterService(private val client: KtorServiceClient) {
+internal class TrackerExporterService(private val client: HttpServiceClient) {
     suspend fun getSingleTrackedEntityInstance(
         trackedEntityInstanceUid: String,
         fields: Fields<NewTrackerImporterTrackedEntity>,

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 internal object EventCallFactory {
     @JvmStatic
     suspend fun create(
-        httpClient: KtorServiceClient,
+        httpClient: HttpServiceClient,
         orgUnit: String?,
         pageSize: Int,
         uids: Collection<String> = emptyList(),

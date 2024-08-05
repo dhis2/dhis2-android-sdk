@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.validation.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ValidationRuleService(private val client: KtorServiceClient) {
+internal class ValidationRuleService(private val client: HttpServiceClient) {
     suspend fun getValidationRules(
         fields: Fields<ValidationRule>,
         uidsFilterString: String,

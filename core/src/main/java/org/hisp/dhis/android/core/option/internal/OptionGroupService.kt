@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OptionGroupService(private val client: KtorServiceClient) {
+internal class OptionGroupService(private val client: HttpServiceClient) {
     suspend fun optionGroups(
         fields: Fields<OptionGroup>,
         dataSetUidsFilter: String,

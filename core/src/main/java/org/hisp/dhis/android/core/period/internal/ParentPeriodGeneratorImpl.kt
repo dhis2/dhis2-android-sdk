@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,17 @@ package org.hisp.dhis.android.core.period.internal
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
+import org.hisp.dhis.android.core.period.generator.internal.BiWeeklyPeriodGenerator
+import org.hisp.dhis.android.core.period.generator.internal.DailyPeriodGenerator
+import org.hisp.dhis.android.core.period.generator.internal.MonthlyPeriodGenerator
+import org.hisp.dhis.android.core.period.generator.internal.NMonthlyPeriodGenerators
+import org.hisp.dhis.android.core.period.generator.internal.PeriodGenerator
+import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGenerators
+import org.hisp.dhis.android.core.period.generator.internal.YearlyPeriodGenerators
+import java.util.Date
 
-internal class ParentPeriodGeneratorImpl constructor(
+internal class ParentPeriodGeneratorImpl(
     private val daily: PeriodGenerator,
     private val weekly: WeeklyPeriodGenerators,
     private val biWeekly: PeriodGenerator,
@@ -42,12 +50,9 @@ internal class ParentPeriodGeneratorImpl constructor(
 ) : ParentPeriodGenerator {
 
     override fun generatePeriods(): List<Period> {
-        val periods: MutableList<Period> = ArrayList()
-        for (periodType in PeriodType.values()) {
-            val periodsInType = generatePeriods(periodType, periodType.defaultEndPeriods)
-            periods.addAll(periodsInType)
+        return PeriodType.entries.flatMap { periodType ->
+            generatePeriods(periodType, periodType.defaultEndPeriods)
         }
-        return periods
     }
 
     override fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period> {
@@ -55,12 +60,12 @@ internal class ParentPeriodGeneratorImpl constructor(
     }
 
     override fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period> {
-        return getPeriodGenerator(periodType).generatePeriods(startPeriods, endPeriods)
+        return getPeriodGenerator(periodType).generatePeriods(startPeriods, endPeriods).toPeriods()
     }
 
-    override fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period? {
+    override fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period {
         val periodGenerator = getPeriodGenerator(periodType)
-        return periodGenerator.generatePeriod(date, offset)
+        return periodGenerator.generatePeriod(date.toLocalDate(), offset).toPeriods()
     }
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
@@ -68,11 +73,11 @@ internal class ParentPeriodGeneratorImpl constructor(
 
         return when {
             relativePeriod.start != null && relativePeriod.end != null ->
-                periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end)
+                periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end).toPeriods()
             relativePeriod.periodsThisYear ->
-                periodGenerator.generatePeriodsInYear(0)
+                periodGenerator.generatePeriodsInYear(0).toPeriods()
             relativePeriod.periodsLastYear ->
-                periodGenerator.generatePeriodsInYear(-1)
+                periodGenerator.generatePeriodsInYear(-1).toPeriods()
             else ->
                 emptyList()
         }
@@ -90,7 +95,8 @@ internal class ParentPeriodGeneratorImpl constructor(
             PeriodType.BiWeekly -> biWeekly
             PeriodType.Monthly -> monthly
             PeriodType.BiMonthly -> nMonthly.biMonthly
-            PeriodType.Quarterly -> nMonthly.quarter
+            PeriodType.Quarterly -> nMonthly.quarterly
+            PeriodType.QuarterlyNov -> nMonthly.quarterlyNov
             PeriodType.SixMonthly -> nMonthly.sixMonthly
             PeriodType.SixMonthlyApril -> nMonthly.sixMonthlyApril
             PeriodType.SixMonthlyNov -> nMonthly.sixMonthlyNov
@@ -103,15 +109,15 @@ internal class ParentPeriodGeneratorImpl constructor(
     }
 
     companion object {
-        fun create(calendarProvider: CalendarProvider): ParentPeriodGeneratorImpl {
-            val calendar = calendarProvider.calendar
+        fun create(clockProvider: ClockProvider): ParentPeriodGeneratorImpl {
+            val clock = clockProvider.clock
             return ParentPeriodGeneratorImpl(
-                DailyPeriodGenerator(calendar),
-                WeeklyPeriodGenerators.create(calendar),
-                BiWeeklyPeriodGenerator(calendar),
-                MonthlyPeriodGenerator(calendar),
-                NMonthlyPeriodGenerators.create(calendar),
-                YearlyPeriodGenerators.create(calendar),
+                DailyPeriodGenerator(clock),
+                WeeklyPeriodGenerators(clock),
+                BiWeeklyPeriodGenerator(clock),
+                MonthlyPeriodGenerator(clock),
+                NMonthlyPeriodGenerators(clock),
+                YearlyPeriodGenerators(clock),
             )
         }
     }

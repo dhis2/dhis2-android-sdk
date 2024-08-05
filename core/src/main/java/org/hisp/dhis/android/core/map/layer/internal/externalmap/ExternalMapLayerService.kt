@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ExternalMapLayerService(private val client: KtorServiceClient) {
+internal class ExternalMapLayerService(private val client: HttpServiceClient) {
 
     suspend fun getExternalMapLayers(
         fields: Fields<ExternalMapLayer>,

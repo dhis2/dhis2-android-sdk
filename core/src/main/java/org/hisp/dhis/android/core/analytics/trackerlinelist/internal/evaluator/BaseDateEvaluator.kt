@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateItem
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodParser
@@ -41,7 +42,7 @@ internal abstract class BaseDateEvaluator(
     private val item: DateItem,
 ) : TrackerLineListEvaluator() {
 
-    private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.calendarProvider)
+    private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.clockProvider)
     private val periodParser = PeriodParser(CalendarProviderFactory.calendarProvider)
 
     fun getDateWhereClause(): String {
@@ -58,7 +59,7 @@ internal abstract class BaseDateEvaluator(
             is DateFilter.Absolute -> {
                 val periodType = PeriodType.periodTypeFromPeriodId(filter.uid)
                 val date = periodParser.parse(filter.uid)
-                val period = parentPeriodGenerator.generatePeriod(periodType, date, 0)!!
+                val period = parentPeriodGenerator.generatePeriod(periodType, date, 0)
 
                 betweenDates(period.startDate()!!, period.endDate()!!)
             }

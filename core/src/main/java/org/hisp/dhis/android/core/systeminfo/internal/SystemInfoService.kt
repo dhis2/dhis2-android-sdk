@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class SystemInfoService(private val client: KtorServiceClient) {
+internal class SystemInfoService(private val client: HttpServiceClient) {
     suspend fun getSystemInfo(fields: Fields<SystemInfo>): SystemInfo {
         return client.get {
             url("system/info")

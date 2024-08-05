@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackedEntityTypeService(private val client: KtorServiceClient) {
+internal class TrackedEntityTypeService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityTypes(
         fields: Fields<TrackedEntityType>,
         idFilter: Filter<TrackedEntityType>,

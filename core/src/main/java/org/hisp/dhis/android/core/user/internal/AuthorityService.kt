@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class AuthorityService(private val client: KtorServiceClient) {
+internal class AuthorityService(private val client: HttpServiceClient) {
     suspend fun authorities(): List<String> {
         return client.get {
             url("me/authorization")

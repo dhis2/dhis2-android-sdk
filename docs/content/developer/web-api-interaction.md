@@ -2,38 +2,75 @@
 
 When using the SDK sometimes one would like to make requests that are not supported by the default sdk, but fortunately the SDK offers another approach allowing you to interact with the Web API and here are the steps to follow.
 
-## Retrofit Service
+## HttpServiceClient
 
-The SDK uses Retrofit to make requests to the Web API and the first thing we have to do is to create a retrofit service by specifying a particular end-point. Everything you already know about [Retrofit](https://square.github.io/retrofit/) can be more or less used here.
+The SDK uses `HttpServiceClient` based on Ktor for HTTP requests to the Web API. You can define custom services to interact with various endpoints using this client. The client object is available through the d2 instance.
 
 > **Important**
 >
 > The end-point must be an end-point supported by the Web API otherwise your request will not succeed.
 
-```java
-interface MyService {
+```kotlin
+class CustomService(private val client: HttpServiceClient) {
 
-    @GET("/end-point")
-    Single<Payload<User>> getSomeThing();
+    suspend fun getData(
+        path: String,
+        field: String,
+        filter: String,
+        paging: Boolean,
+        page: Int?,
+        pageSize: Int?,
+    ): User {
+        return client.get {
+            url("end-point/$path")
+            parameters{
+                attribute("field" to field)
+                attribute("filter" to filter)
+                paging(paging)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
+
+    suspend fun postData(
+        body: BodyClass
+    ): Body {
+        return client.post {
+            url("some_endpoint")
+            setBody(body)
+        }
+    }
 }
-
 ```
 
-## Query
+## Using the service
 
-The service we have created in the previous section will help us to make HTTP requests to the server, but to do that we need an instance of the service (the MyService interface we created previously), an instance of the service ca be created using the Retrofit instance that is already available in the SDK and we can have access to it as shown in the following code snippet
+Instantiate your service and perform requests:
 
-```java
-MyService myService = d2().retrofit().create(MyService.class);
-Single<Payload<User>> userPayload = myService.getSomeThing();
-```
 
-As we have used `Single` as the return type we can get the query response in a blocking way.
+```kotlin
+val customService = CustomService(httpServiceClient)
 
-```java
-Payload<User> userPayload = myService.getSomeThing().blockingGet();
+// Get data
+val data = customService.getData(
+    "dataPath",
+    "dataField",
+    "dataFielter",
+    false,
+)
+
+// Post data
+val dataBody = BodyClass(data = "some data")
+val createdData = customService.postData(dataBody)
 ```
 
 > **Important**
 >
-> The `Single` class come from [RxJava](https://github.com/ReactiveX/RxJava) that's already included in the SDK
+> This httpServiceClient approach is asynchronous and leverages Kotlin coroutines for managing requests and responses.
+
+## Notes
+- **Error Handling**: Make sure to handle potential errors in your service methods.
+- **Request DSL**: The approach for defining requests uses a DSL provided by `RequestBuilder` to build the request.
+- **Based on Ktor**: `httpServiceClient` uses Ktor's `HttpClient` for making HTTP requests.
+

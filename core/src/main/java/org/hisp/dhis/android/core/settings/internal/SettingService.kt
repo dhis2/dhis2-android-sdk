@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.internal.KtorServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.*
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
-internal class SettingService(private val client: KtorServiceClient) {
+internal class SettingService(private val client: HttpServiceClient) {
     suspend fun getSystemSettingsSingle(fields: Fields<SystemSettings>): SystemSettings {
         return client.get {
             url("systemSettings")

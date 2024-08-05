@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.internal
 
-import android.os.Build
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.JacksonConverter
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-internal object OkHttpClientFactory {
-    fun okHttpClient(
+object HttpServiceClientFactory {
+    internal fun ktor(
+        okHttpClient: OkHttpClient,
         d2Configuration: D2Configuration,
-    ): OkHttpClient {
-        val client = OkHttpClient.Builder()
-            .followRedirects(false)
-
-        for (interceptor in d2Configuration.networkInterceptors()) {
-            client.addNetworkInterceptor(interceptor)
+        authenticator: ParentAuthenticatorPlugin,
+    ): HttpClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okHttpClient
+            }
+            install(ContentNegotiation) {
+                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
+                register(ContentType.Application.Json, converter)
+            }
+            expectSuccess = true
+//            followRedirects = false
+            addKtorPlugins(d2Configuration, authenticator)
         }
-
-        for (interceptor in d2Configuration.interceptors()) {
-            client.addInterceptor(interceptor)
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            val (socketFactory, trustManager) = TrustFactory.getTrustFactoryManager(d2Configuration.context())
-            client.sslSocketFactory(socketFactory, trustManager)
-        }
-
-        return client.build()
+        return client
     }
 }

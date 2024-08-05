@@ -28,28 +28,32 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.serialization.jackson.JacksonConverter
-import okhttp3.OkHttpClient
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.util.*
 
-object KtorFactory {
-    fun ktor(
-        okHttpClient: OkHttpClient,
-    ): HttpClient {
-        val client = HttpClient(OkHttp) {
-            engine {
-                preconfigured = okHttpClient
-            }
-            install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
-                register(ContentType.Application.Json, converter)
-            }
-            expectSuccess = true
+object DynamicServerURLPlugin {
+    val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
+        onRequest { request, _ ->
+            transformRequest(request)
         }
-        return client
+    }
+    private fun transformUrl(urlBuilder: URLBuilder): URLBuilder {
+        val urlString = urlBuilder.buildString()
+        val afterAPI = ServerURLWrapper.extractAfterAPI(urlString)
+        val transformedUrlString = if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+            ServerURLWrapper.serverUrl + "/api/" + afterAPI
+        } else {
+            urlString
+        }
+        return URLBuilder(transformedUrlString)
+    }
+    fun transformRequest(request: HttpRequestBuilder) {
+        val originalUrlBuilder = request.url
+        val transformedUrlBuilder = transformUrl(originalUrlBuilder)
+        originalUrlBuilder.parameters.clear()
+        originalUrlBuilder.takeFrom(transformedUrlBuilder)
     }
 }

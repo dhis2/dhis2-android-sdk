@@ -55,6 +55,7 @@ internal object KtorFactory {
                 val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
                 register(ContentType.Application.Json, converter)
             }
+//            install(PreventURLDecodePlugin.instance)
             expectSuccess = true
         }
         return HttpTestClient(client, serverUrl)

@@ -33,6 +33,9 @@ internal object HttpStatusCodes {
     const val SUCCESS_MIN = OK_CODE
     const val SUCCESS_MAX = 299
 
+    const val REDIRECT_MIN = 300
+    const val REDIRECT_MAX = 399
+
     const val NOT_FOUND = 404
 
     const val INTERNAL_SERVER_ERROR = 500

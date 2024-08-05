@@ -31,7 +31,7 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
-import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -39,15 +39,19 @@ import org.koin.core.annotation.Singleton
 @Module
 internal class APIClientDIModule {
     @Singleton
-    fun okHttpClient(d2Configuration: D2Configuration, authenticator: ParentAuthenticator): OkHttpClient {
-        return OkHttpClientFactory.okHttpClient(d2Configuration, authenticator)
+    fun okHttpClient(d2Configuration: D2Configuration): OkHttpClient {
+        return OkHttpClientFactory.okHttpClient(d2Configuration)
     }
 
     @Singleton
     @Suppress("TooGenericExceptionThrown")
-    fun ktor(okHttpClient: OkHttpClient, d2Configuration: D2Configuration): HttpClient {
+    fun ktor(
+        okHttpClient: OkHttpClient,
+        d2Configuration: D2Configuration,
+        authenticator: ParentAuthenticatorPlugin,
+    ): HttpClient {
         return try {
-            KtorFactory.ktor(okHttpClient, d2Configuration)
+            HttpServiceClientFactory.ktor(okHttpClient, d2Configuration, authenticator)
         } catch (d2Error: D2Error) {
             Log.e("APIClientDIModule", d2Error.message!!)
             throw RuntimeException("Can't instantiate ktor")

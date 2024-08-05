@@ -74,7 +74,7 @@ class ParentAuthenticatorPluginShould {
         mockEngine = MockEngine { request ->
             respond(
                 content = "OK",
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Text.Plain.toString())
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Text.Plain.toString()),
             )
         }
 
@@ -88,9 +88,9 @@ class ParentAuthenticatorPluginShould {
                 credentialsSecureStore,
                 tokenRefresher,
                 userIdHelper,
-                logoutHandler
+                logoutHandler,
             ),
-            cookieHelper
+            cookieHelper,
         )
 
         ktorClient = HttpClient(mockEngine) {

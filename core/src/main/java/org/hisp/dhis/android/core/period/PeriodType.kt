@@ -63,7 +63,7 @@ enum class PeriodType(
         @JvmStatic
         @Throws(IllegalArgumentException::class)
         fun periodTypeFromPeriodId(periodId: String): PeriodType {
-            return values().find {
+            return entries.find {
                 periodId.matches(it.pattern.toRegex())
             } ?: throw IllegalArgumentException("The period id does not match any period type")
         }

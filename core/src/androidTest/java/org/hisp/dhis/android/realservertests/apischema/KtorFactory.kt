@@ -39,32 +39,22 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.serialization.jackson.JacksonConverter
-import okhttp3.OkHttpClient
-import okhttp3.OkHttpClient.Builder
 import org.hisp.dhis.android.core.arch.api.RequestBuilder
-import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodePlugin
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal object KtorFactory {
     fun getClient(serverUrl: String): HttpTestClient {
         val client = HttpClient(OkHttp) {
-            engine {
-                preconfigured = okClient
-            }
             install(ContentNegotiation) {
                 val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
                 register(ContentType.Application.Json, converter)
             }
-//            install(PreventURLDecodePlugin.instance)
+            install(PreventURLDecodePlugin.instance)
             expectSuccess = true
         }
         return HttpTestClient(client, serverUrl)
     }
-
-    private val okClient: OkHttpClient
-        get() = Builder()
-            .addInterceptor(PreventURLDecodeInterceptor())
-            .build()
 
     internal class HttpTestClient(
         private val client: HttpClient,

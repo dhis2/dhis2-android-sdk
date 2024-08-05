@@ -54,7 +54,7 @@ internal class BiWeeklyPeriodGenerator(clock: Clock) :
     }
 
     override fun getStartOfYearFor(date: LocalDate): LocalDate {
-        return weekHelper.getFirstDayOfYear(date.year)
+        return weekHelper.getFirstDayOfWeekOfYear(date.year)
     }
 
     override fun movePeriodForStartDate(startDate: LocalDate, offset: Int): LocalDate {

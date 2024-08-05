@@ -71,8 +71,8 @@ internal class OpenIDConnectAuthenticatorPlugin(
 
     private fun addTokenHeader(requestBuilder: HttpRequestBuilder, token: String) {
         requestBuilder.apply {
-            headers.remove(UserIdAuthenticatorHelper.AUTHORIZATION_KEY)
-            header(UserIdAuthenticatorHelper.AUTHORIZATION_KEY, "Bearer $token")
+            headers.remove(UserIdAuthenticatorHelperPlugin.AUTHORIZATION_KEY)
+            header(UserIdAuthenticatorHelperPlugin.AUTHORIZATION_KEY, "Bearer $token")
         }
     }
 }

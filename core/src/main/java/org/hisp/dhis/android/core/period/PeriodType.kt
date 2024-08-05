@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.period
 
+import kotlinx.datetime.DayOfWeek
 import java.lang.IllegalArgumentException
-import java.util.Calendar
 import kotlin.Throws
 
 @Suppress("MagicNumber")
@@ -68,14 +68,13 @@ enum class PeriodType(
             } ?: throw IllegalArgumentException("The period id does not match any period type")
         }
 
-        @JvmStatic
-        fun firstDayOfTheWeek(periodType: PeriodType?): Int {
+        fun firstDayOfTheWeek(periodType: PeriodType?): DayOfWeek {
             return when (periodType) {
-                WeeklySunday -> Calendar.SUNDAY
-                WeeklyWednesday -> Calendar.WEDNESDAY
-                WeeklyThursday -> Calendar.THURSDAY
-                WeeklySaturday -> Calendar.SATURDAY
-                else -> Calendar.MONDAY
+                WeeklySunday -> DayOfWeek.SUNDAY
+                WeeklyWednesday -> DayOfWeek.WEDNESDAY
+                WeeklyThursday -> DayOfWeek.THURSDAY
+                WeeklySaturday -> DayOfWeek.SATURDAY
+                else -> DayOfWeek.MONDAY
             }
         }
     }

@@ -5,7 +5,9 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.PeriodType.Companion.firstDayOfTheWeek
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
 import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGeneratorHelper
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class PeriodParser {
     @Throws(IllegalArgumentException::class)
     fun parse(periodId: String): Instant {

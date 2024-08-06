@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
+import io.ktor.client.call.HttpClientCall
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.request.HttpRequest
@@ -50,8 +51,7 @@ object ServerURLVersionRedirectionPlugin {
             while (isRedirect(call.response) && redirects <= MAX_REDIRECTS) {
                 redirects++
                 updateServerUrl(call.response)
-                val redirectRequest = buildRedirectRequest(call.request)
-                call = proceed(redirectRequest)
+                call = buildRedirectRequest(this, call.request)
             }
             redirects = 0
             call
@@ -69,11 +69,11 @@ object ServerURLVersionRedirectionPlugin {
         }
     }
 
-    private fun buildRedirectRequest(request: HttpRequest): HttpRequestBuilder {
+    private suspend fun buildRedirectRequest(sender: Send.Sender, request: HttpRequest): HttpClientCall {
         val redirectRequest = HttpRequestBuilder().apply {
             takeFrom(request)
         }
         transformRequest(redirectRequest)
-        return redirectRequest
+        return sender.proceed(redirectRequest)
     }
 }

@@ -27,14 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import io.ktor.client.call.body
+import io.ktor.client.call.HttpClientCall
+import io.ktor.client.plugins.api.Send.Sender
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
-import io.ktor.client.request.request
 import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
-import io.ktor.util.reflect.TypeInfo
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -51,7 +49,11 @@ internal class PasswordAndCookieAuthenticatorPlugin(
         const val LOCATION_KEY = "Location"
     }
 
-    fun handlePasswordCall(requestBuilder: HttpRequestBuilder, credentials: Credentials) {
+    suspend fun handlePasswordCall(
+        sender: Sender,
+        requestBuilder: HttpRequestBuilder,
+        credentials: Credentials,
+    ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
         val useCookie = cookieHelper.isCookieDefined()
         if (useCookie) {
@@ -59,30 +61,23 @@ internal class PasswordAndCookieAuthenticatorPlugin(
         } else {
             addPasswordHeader(requestBuilder, credentials)
         }
-    }
+        val call = sender.proceed(requestBuilder)
 
-    suspend fun handlePasswordResponse(
-        response: HttpResponse,
-        credentials: Credentials,
-        requestedType: TypeInfo,
-    ): HttpResponse {
-        val useCookie = cookieHelper.isCookieDefined()
-        val finalRes = if (useCookie && hasAuthenticationFailed(response)) {
+        val finalCall = if (useCookie && hasAuthenticationFailed(call.response)) {
             cookieHelper.removeCookie()
             val originalRequest: HttpRequestBuilder = HttpRequestBuilder().apply {
-                takeFrom(response.request)
+                takeFrom(call.request)
             }
 
             userIdHelper.builderWithUserId(originalRequest)
             addPasswordHeader(originalRequest, credentials)
-            val newResponse = response.call.client.request(originalRequest)
-            newResponse.body(requestedType)
+            sender.proceed(originalRequest)
         } else {
-            response
+            call
         }
 
-        cookieHelper.storeCookieIfSentByServer(finalRes)
-        return finalRes
+        cookieHelper.storeCookieIfSentByServer(finalCall.response)
+        return finalCall
     }
 
     private fun hasAuthenticationFailed(res: HttpResponse): Boolean {

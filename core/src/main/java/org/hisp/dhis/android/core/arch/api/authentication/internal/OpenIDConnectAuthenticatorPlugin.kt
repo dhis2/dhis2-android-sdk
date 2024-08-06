@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+import io.ktor.client.call.HttpClientCall
+import io.ktor.client.plugins.api.Send.Sender
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
-import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
@@ -46,16 +47,20 @@ internal class OpenIDConnectAuthenticatorPlugin(
     private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {
 
-    fun handleTokenCall(requestBuilder: HttpRequestBuilder, credentials: Credentials) {
+    suspend fun handleTokenCall(
+        sender: Sender,
+        requestBuilder: HttpRequestBuilder,
+        credentials: Credentials,
+    ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
         addTokenHeader(requestBuilder, getUpdatedToken(credentials))
-    }
 
-    fun handleTokenResponse(response: HttpResponse): HttpResponse {
-        if (response.status.value == UNAUTHORIZED) {
+        val call = sender.proceed(requestBuilder)
+
+        if (call.response.status.value == UNAUTHORIZED) {
             logoutHandler.logOut()
         }
-        return response
+        return call
     }
 
     private fun getUpdatedToken(credentials: Credentials): String {

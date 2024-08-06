@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelperPlugin.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
@@ -43,51 +42,28 @@ internal class ParentAuthenticatorPlugin(
     private val openIDConnectAuthenticator: OpenIDConnectAuthenticatorPlugin,
     private val cookieHelper: CookieAuthenticatorHelperPlugin,
 ) {
-
     val instance = createClientPlugin(name = "ParentAuthenticatorPlugin") {
-        onRequest { request, _ ->
-            // Header has already been explicitly added in UserService.authenticate
+        on(Send) { request ->
             val isLoginCall = request.headers[AUTHORIZATION_KEY] != null
-
             if (isLoginCall) {
                 cookieHelper.removeCookie()
+                val call = proceed(request)
+                cookieHelper.storeCookieIfSentByServer(call.response)
+                call
             } else {
                 val credentials = credentialsSecureStore.get()
                 when {
-                    credentials?.password != null -> passwordAndCookieAuthenticator.handlePasswordCall(
-                        request,
-                        credentials,
-                    )
-                    credentials?.openIDConnectState != null -> openIDConnectAuthenticator.handleTokenCall(
-                        request,
-                        credentials,
-                    )
-                    else -> {}
+                    credentials?.password != null -> {
+                        passwordAndCookieAuthenticator.handlePasswordCall(this, request, credentials)
+                    }
+                    credentials?.openIDConnectState != null -> {
+                        openIDConnectAuthenticator.handleTokenCall(this, request, credentials)
+                    }
+                    else -> {
+                        proceed(request)
+                    }
                 }
             }
         }
-
-        transformResponseBody { response, _, requestedType ->
-            val isLoginCall = response.request.headers[AUTHORIZATION_KEY] != null
-            if (isLoginCall) {
-                handleLoginResponse(response)
-            } else {
-                val credentials = credentialsSecureStore.get()
-                when {
-                    credentials?.password != null -> passwordAndCookieAuthenticator.handlePasswordResponse(
-                        response,
-                        credentials,
-                        requestedType,
-                    )
-                    credentials?.openIDConnectState != null -> openIDConnectAuthenticator.handleTokenResponse(response)
-                    else -> {}
-                }
-            }
-        }
-    }
-
-    fun handleLoginResponse(response: HttpResponse): HttpResponse {
-        cookieHelper.storeCookieIfSentByServer(response)
-        return response
     }
 }

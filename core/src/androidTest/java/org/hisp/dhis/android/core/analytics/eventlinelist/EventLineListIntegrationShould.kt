@@ -68,7 +68,6 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.clock.internal.createFixed
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStoreImpl
@@ -109,10 +108,9 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
     private val legendSetStore = LegendSetStoreImpl(databaseAdapter)
     private val legendStore = LegendStoreImpl(databaseAdapter)
-    private val calendarProvider = CalendarProviderFactory.createFixed()
     private val clockProvider = ClockProviderFactory.createFixed()
     private val dateFilterPeriodHelper =
-        DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(clockProvider))
+        DateFilterPeriodHelper(clockProvider, ParentPeriodGeneratorImpl.create(clockProvider))
     private val organisationUnitHelper = AnalyticsOrganisationUnitHelper(
         userOrganisationUnitStore,
         organisationUnitStore,

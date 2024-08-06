@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper.listToStr
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory.clockProvider
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory.calendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.junit.Before
@@ -50,7 +49,7 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     fun setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
             .orgUnits(listOf("uid"))
-        val periodHelper = DateFilterPeriodHelper(calendarProvider, create(clockProvider))
+        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider))
         onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     }
 

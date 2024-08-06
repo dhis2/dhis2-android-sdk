@@ -52,6 +52,7 @@ object HttpServiceClientFactory {
                 val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
                 register(ContentType.Application.Json, converter)
             }
+            expectSuccess = true
             followRedirects = false
             addKtorPlugins(d2Configuration, authenticator)
         }

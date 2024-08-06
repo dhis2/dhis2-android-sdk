@@ -28,12 +28,14 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-import io.ktor.client.call.body
+import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.request
 import io.ktor.client.request.takeFrom
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
+import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLPlugin.transformRequest
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 
@@ -42,26 +44,36 @@ object ServerURLVersionRedirectionPlugin {
     private var redirects = 0
 
     val instance = createClientPlugin(name = "ServerURLVersionRedirectionPlugin") {
-        transformResponseBody { response, _, requestedType ->
-            var iteration = response
+        on(Send) { request ->
+            var call = proceed(request)
 
-            while (iteration.status.value in REDIRECT_MIN..REDIRECT_MAX && redirects <= MAX_REDIRECTS) {
+            while (isRedirect(call.response) && redirects <= MAX_REDIRECTS) {
                 redirects++
-
-                val location = iteration.headers[HttpHeaders.Location]
-                location?.let {
-                    ServerURLWrapper.setServerUrl(it)
-                }
-
-                val originalRequest = iteration.call.request
-
-                val redirectRequest = HttpRequestBuilder().apply {
-                    takeFrom(originalRequest)
-                }
-
-                iteration = iteration.call.client.request(redirectRequest)
+                updateServerUrl(call.response)
+                val redirectRequest = buildRedirectRequest(call.request)
+                call = proceed(redirectRequest)
             }
-            iteration.body(requestedType)
+            redirects = 0
+            call
         }
+    }
+
+    private fun isRedirect(response: HttpResponse): Boolean {
+        return response.status.value in REDIRECT_MIN..REDIRECT_MAX
+    }
+
+    private fun updateServerUrl(response: HttpResponse) {
+        val location = response.headers[HttpHeaders.Location]
+        location?.let {
+            ServerURLWrapper.setServerUrl(it)
+        }
+    }
+
+    private fun buildRedirectRequest(request: HttpRequest): HttpRequestBuilder {
+        val redirectRequest = HttpRequestBuilder().apply {
+            takeFrom(request)
+        }
+        transformRequest(redirectRequest)
+        return redirectRequest
     }
 }

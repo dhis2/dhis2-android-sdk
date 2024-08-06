@@ -36,7 +36,7 @@ import kotlinx.datetime.plus
 
 internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek) {
 
-    fun getFirstDayOfYear(year: Int): LocalDate {
+    fun getFirstDayOfWeekOfYear(year: Int): LocalDate {
         val firstJanuary = LocalDate(year, 1, 1)
         val startOfWeek = getFirstDayOfWeek(firstJanuary)
         val daysInPreviousYear = daysFromWeekStart(firstJanuary)
@@ -56,7 +56,7 @@ internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek) 
     fun getWeekNumber(date: LocalDate): Int {
         val startDate = getFirstDayOfWeek(date)
         val year = getWeekYearForStartDate(startDate)
-        val startOfTargetYear = getFirstDayOfYear(year)
+        val startOfTargetYear = getFirstDayOfWeekOfYear(year)
         val daysFromStartOfYear = startDate.toEpochDays() - startOfTargetYear.toEpochDays()
         return Math.floorDiv(daysFromStartOfYear, WEEK_DAYS) + 1
     }

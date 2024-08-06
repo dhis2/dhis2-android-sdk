@@ -145,7 +145,7 @@ public class PeriodHelper {
      */
     public Period blockingGetPeriodForPeriodId(@NonNull String periodId) throws IllegalArgumentException {
         PeriodType periodType = PeriodType.periodTypeFromPeriodId(periodId);
-        Date date = periodParser.parse(periodId, periodType);
+        Date date = new Date(periodParser.parse(periodId, periodType).toEpochMilliseconds());
 
         return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
     }

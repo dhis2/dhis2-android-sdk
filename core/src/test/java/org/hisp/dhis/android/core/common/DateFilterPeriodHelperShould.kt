@@ -41,7 +41,7 @@ class DateFilterPeriodHelperShould {
 
     @Before
     fun setUp() {
-        val fixedDate = LocalDateTime(2019, 12, 10, 0, 0)
+        val fixedDate = LocalDateTime(2019, 12, 10, 10, 30)
         val clockProvider = FixedClockProvider(fixedDate)
 
         dateFilterPeriodHelper =

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.hisp.dhis.android.core.period.internal.PeriodParser
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.DataSetsStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.FileResourceCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService

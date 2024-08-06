@@ -29,8 +29,9 @@ package org.hisp.dhis.android.core.common
 
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.atTime
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.period.Period
@@ -129,8 +130,9 @@ internal class DateFilterPeriodHelper(
     }
 
     private fun addDaysToCurrentDate(days: Int): Date {
-        val today = clockProvider.clock.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-        val newInstant = today.plus(days, DateTimeUnit.DAY).atStartOfDayIn(TimeZone.currentSystemDefault())
+        val now = clockProvider.clock.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val newInstant = now.date.plus(days, DateTimeUnit.DAY).atTime(now.time)
+            .toInstant(TimeZone.currentSystemDefault())
         return Date(newInstant.toEpochMilliseconds())
     }
 }

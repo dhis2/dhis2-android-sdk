@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
-import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelperPlugin.Companion.AUTHORIZATION_KEY
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
 
@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 @PublishedApi
 internal class ParentAuthenticatorPlugin(
     private val credentialsSecureStore: CredentialsSecureStore,
-    private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticatorPlugin,
-    private val openIDConnectAuthenticator: OpenIDConnectAuthenticatorPlugin,
-    private val cookieHelper: CookieAuthenticatorHelperPlugin,
+    private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
+    private val openIDConnectAuthenticator: OpenIDConnectAuthenticator,
+    private val cookieHelper: CookieAuthenticatorHelper,
 ) {
     val instance = createClientPlugin(name = "ParentAuthenticatorPlugin") {
         on(Send) { request ->

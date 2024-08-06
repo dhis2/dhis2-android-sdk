@@ -31,69 +31,53 @@ import io.ktor.client.call.HttpClientCall
 import io.ktor.client.plugins.api.Send.Sender
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
-import io.ktor.client.request.takeFrom
-import io.ktor.client.statement.HttpResponse
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 import org.koin.core.annotation.Singleton
 
+private const val UNAUTHORIZED = 401
+
 @Singleton
-internal class PasswordAndCookieAuthenticatorPlugin(
-    private val userIdHelper: UserIdAuthenticatorHelperPlugin,
-    private val cookieHelper: CookieAuthenticatorHelperPlugin,
+internal class OpenIDConnectAuthenticator(
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val tokenRefresher: OpenIDConnectTokenRefresher,
+    private val userIdHelper: UserIdAuthenticatorHelper,
+    private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {
 
-    companion object {
-        private const val LOGIN_ACTION = "login.action"
-        const val LOCATION_KEY = "Location"
-    }
-
-    suspend fun handlePasswordCall(
+    suspend fun handleTokenCall(
         sender: Sender,
         requestBuilder: HttpRequestBuilder,
         credentials: Credentials,
     ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
-        val useCookie = cookieHelper.isCookieDefined()
-        if (useCookie) {
-            cookieHelper.addCookieHeader(requestBuilder)
-        } else {
-            addPasswordHeader(requestBuilder, credentials)
-        }
+        addTokenHeader(requestBuilder, getUpdatedToken(credentials))
+
         val call = sender.proceed(requestBuilder)
 
-        val finalCall = if (useCookie && hasAuthenticationFailed(call.response)) {
-            cookieHelper.removeCookie()
-            val originalRequest: HttpRequestBuilder = HttpRequestBuilder().apply {
-                takeFrom(call.request)
-            }
-
-            userIdHelper.builderWithUserId(originalRequest)
-            addPasswordHeader(originalRequest, credentials)
-            sender.proceed(originalRequest)
-        } else {
-            call
+        if (call.response.status.value == UNAUTHORIZED) {
+            logoutHandler.logOut()
         }
-
-        cookieHelper.storeCookieIfSentByServer(finalCall.response)
-        return finalCall
+        return call
     }
 
-    private fun hasAuthenticationFailed(res: HttpResponse): Boolean {
-        val location = res.headers[LOCATION_KEY]
-        return res.status.value in REDIRECT_MIN..REDIRECT_MAX &&
-            location != null &&
-            location.contains(LOGIN_ACTION)
+    private fun getUpdatedToken(credentials: Credentials): String {
+        val state = credentials.openIDConnectState!!
+        return if (state.needsTokenRefresh) {
+            val token = tokenRefresher.blockingGetFreshToken(state)
+            credentialsSecureStore.set(credentials) // Auth state internally updated
+            token
+        } else {
+            state.idToken!!
+        }
     }
 
-    private fun addPasswordHeader(requestBuilder: HttpRequestBuilder, credentials: Credentials) {
+    private fun addTokenHeader(requestBuilder: HttpRequestBuilder, token: String) {
         requestBuilder.apply {
-            headers.remove(UserIdAuthenticatorHelperPlugin.AUTHORIZATION_KEY)
-            header(
-                UserIdAuthenticatorHelperPlugin.AUTHORIZATION_KEY,
-                UserIdAuthenticatorHelperPlugin.basic(credentials),
-            )
+            headers.remove(UserIdAuthenticatorHelper.AUTHORIZATION_KEY)
+            header(UserIdAuthenticatorHelper.AUTHORIZATION_KEY, "Bearer $token")
         }
     }
 }

@@ -29,38 +29,34 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
-import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CookieAuthenticatorHelperPlugin {
+internal class UserIdAuthenticatorHelper(
+    private val userIdStore: UserIdInMemoryStore,
+) {
 
     companion object {
-        private const val COOKIE_KEY = "Cookie"
-        private const val SET_COOKIE_KEY = "set-cookie"
-    }
+        const val AUTHORIZATION_KEY = "Authorization"
+        private const val USER_ID_KEY = "x-dhis2-user-id"
 
-    private var cookieValue: String? = null
+        fun basic(credentials: Credentials): String {
+            return basic(credentials.username, credentials.password!!)
+        }
 
-    fun storeCookieIfSentByServer(res: HttpResponse) {
-        val cookieRes = res.headers[SET_COOKIE_KEY]
-        if (cookieRes != null) {
-            cookieValue = cookieRes
+        fun basic(username: String, password: String): String {
+            val base64Credentials = UserHelper.base64(username, password)
+            return "Basic $base64Credentials"
         }
     }
 
-    fun isCookieDefined(): Boolean {
-        return cookieValue != null
-    }
-
-    fun removeCookie() {
-        cookieValue = null
-    }
-
-    fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
-        requestBuilder.apply {
-            headers.remove(COOKIE_KEY)
-            header(COOKIE_KEY, cookieValue!!)
+    fun builderWithUserId(requestBuilder: HttpRequestBuilder): HttpRequestBuilder {
+        return requestBuilder.apply {
+            headers.remove(USER_ID_KEY)
+            header(USER_ID_KEY, userIdStore.get()!!)
         }
     }
 }

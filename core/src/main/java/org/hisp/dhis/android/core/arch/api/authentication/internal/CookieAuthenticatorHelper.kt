@@ -27,57 +27,40 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import io.ktor.client.call.HttpClientCall
-import io.ktor.client.plugins.api.Send.Sender
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
+import io.ktor.client.statement.HttpResponse
 import org.koin.core.annotation.Singleton
 
-private const val UNAUTHORIZED = 401
-
 @Singleton
-internal class OpenIDConnectAuthenticatorPlugin(
-    private val credentialsSecureStore: CredentialsSecureStore,
-    private val tokenRefresher: OpenIDConnectTokenRefresher,
-    private val userIdHelper: UserIdAuthenticatorHelperPlugin,
-    private val logoutHandler: OpenIDConnectLogoutHandler,
-) {
+internal class CookieAuthenticatorHelper {
 
-    suspend fun handleTokenCall(
-        sender: Sender,
-        requestBuilder: HttpRequestBuilder,
-        credentials: Credentials,
-    ): HttpClientCall {
-        userIdHelper.builderWithUserId(requestBuilder)
-        addTokenHeader(requestBuilder, getUpdatedToken(credentials))
-
-        val call = sender.proceed(requestBuilder)
-
-        if (call.response.status.value == UNAUTHORIZED) {
-            logoutHandler.logOut()
-        }
-        return call
+    companion object {
+        private const val COOKIE_KEY = "Cookie"
+        private const val SET_COOKIE_KEY = "set-cookie"
     }
 
-    private fun getUpdatedToken(credentials: Credentials): String {
-        val state = credentials.openIDConnectState!!
-        return if (state.needsTokenRefresh) {
-            val token = tokenRefresher.blockingGetFreshToken(state)
-            credentialsSecureStore.set(credentials) // Auth state internally updated
-            token
-        } else {
-            state.idToken!!
+    private var cookieValue: String? = null
+
+    fun storeCookieIfSentByServer(res: HttpResponse) {
+        val cookieRes = res.headers[SET_COOKIE_KEY]
+        if (cookieRes != null) {
+            cookieValue = cookieRes
         }
     }
 
-    private fun addTokenHeader(requestBuilder: HttpRequestBuilder, token: String) {
+    fun isCookieDefined(): Boolean {
+        return cookieValue != null
+    }
+
+    fun removeCookie() {
+        cookieValue = null
+    }
+
+    fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
         requestBuilder.apply {
-            headers.remove(UserIdAuthenticatorHelperPlugin.AUTHORIZATION_KEY)
-            header(UserIdAuthenticatorHelperPlugin.AUTHORIZATION_KEY, "Bearer $token")
+            headers.remove(COOKIE_KEY)
+            header(COOKIE_KEY, cookieValue!!)
         }
     }
 }

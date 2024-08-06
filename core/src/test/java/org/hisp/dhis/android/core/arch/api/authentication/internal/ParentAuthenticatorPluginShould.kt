@@ -32,11 +32,11 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.authentication.internal.CookieAuthenticatorHelperPlugin
-import org.hisp.dhis.android.core.arch.api.authentication.internal.OpenIDConnectAuthenticatorPlugin
+import org.hisp.dhis.android.core.arch.api.authentication.internal.CookieAuthenticatorHelper
+import org.hisp.dhis.android.core.arch.api.authentication.internal.OpenIDConnectAuthenticator
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
-import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticatorPlugin
-import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelperPlugin
+import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -78,13 +78,13 @@ class ParentAuthenticatorPluginShould {
             )
         }
 
-        val userIdHelper = UserIdAuthenticatorHelperPlugin(userIdStore)
-        val cookieHelper = CookieAuthenticatorHelperPlugin()
+        val userIdHelper = UserIdAuthenticatorHelper(userIdStore)
+        val cookieHelper = CookieAuthenticatorHelper()
 
         authenticator = ParentAuthenticatorPlugin(
             credentialsSecureStore,
-            PasswordAndCookieAuthenticatorPlugin(userIdHelper, cookieHelper),
-            OpenIDConnectAuthenticatorPlugin(
+            PasswordAndCookieAuthenticator(userIdHelper, cookieHelper),
+            OpenIDConnectAuthenticator(
                 credentialsSecureStore,
                 tokenRefresher,
                 userIdHelper,

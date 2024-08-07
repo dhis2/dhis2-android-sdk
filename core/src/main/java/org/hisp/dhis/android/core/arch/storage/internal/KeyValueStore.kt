@@ -25,8 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+interface KeyValueStore {
+    fun setData(key: String, data: String?)
 
-public interface SecureStore extends KeyValueStore {
+    fun getData(key: String): String?
+
+    fun removeData(key: String)
+
+    fun getAllKeys(): Set<String>
 }

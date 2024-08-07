@@ -122,16 +122,18 @@ internal class AccountManagerImpl(
         accountDeletionSubject.onNext(deletionReason)
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()
-        val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
-            configuration,
-            credentials.username,
-            credentials.serverUrl,
-        )
-        val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
-        databasesConfigurationStore.set(updatedConfiguration)
+        if (configuration != null) {
+            val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
+                configuration,
+                credentials.username,
+                credentials.serverUrl,
+            )
+            val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
+            databasesConfigurationStore.set(updatedConfiguration)
 
-        FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
-        databaseAdapterFactory.deleteDatabase(loggedAccount)
+            FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
+            databaseAdapterFactory.deleteDatabase(loggedAccount)
+        }
     }
 
     private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {

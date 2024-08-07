@@ -25,33 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+internal interface ObjectKeyValueStore<O> {
+    fun set(o: O)
 
-import androidx.annotation.NonNull;
+    fun get(): O?
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-public final class InMemoryUnsecureStore implements InsecureStore {
-
-    private final Map<String, String> dataMap = new HashMap<>();
-
-    public void setData(@NonNull String key, @NonNull String data) {
-        dataMap.put(key, data);
-    }
-
-    public String getData(@NonNull String key) {
-        return dataMap.get(key);
-    }
-
-    public void removeData(String key) {
-        dataMap.remove(key);
-    }
-
-    @Override
-    public Set<String> getAllKeys() {
-        return dataMap.keySet();
-    }
+    fun remove()
 }

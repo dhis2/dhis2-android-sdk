@@ -25,33 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+internal class InMemorySecureStore : SecureStore {
+    private val dataMap: MutableMap<String, String> = HashMap()
 
-import androidx.annotation.NonNull;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-public final class InMemorySecureStore implements SecureStore {
-
-    private final Map<String, String> dataMap = new HashMap<>();
-
-    public void setData(@NonNull String key, @NonNull String data) {
-        dataMap.put(key, data);
+    override fun setData(key: String, data: String?) {
+        removeData(key)
+        if (data != null) {
+            dataMap[key] = data
+        }
     }
 
-    public String getData(@NonNull String key) {
-        return dataMap.get(key);
+    override fun getData(key: String): String? {
+        return dataMap[key]
     }
 
-    public void removeData(String key) {
-        dataMap.remove(key);
+    override fun removeData(key: String) {
+        dataMap.remove(key)
     }
 
-    @Override
-    public Set<String> getAllKeys() {
-        return dataMap.keySet();
+    override fun getAllKeys(): Set<String> {
+        return dataMap.keys
     }
 }

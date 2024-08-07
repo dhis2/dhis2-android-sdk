@@ -25,60 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+import com.fasterxml.jackson.core.JsonProcessingException
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import java.io.IOException
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+@Suppress("TooGenericExceptionThrown")
+internal open class JsonKeyValueStoreImpl<O>(
+    private val secureStore: KeyValueStore,
+    private val key: String,
+    private val clazz: Class<O>,
+) : ObjectKeyValueStore<O> {
+    private var value: O? = null
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-
-import java.io.IOException;
-
-@SuppressWarnings({"PMD.PreserveStackTrace"})
-public class JsonKeyValueStoreImpl<O> implements ObjectKeyValueStore<O> {
-
-    private final KeyValueStore secureStore;
-    private final String key;
-    private final Class<O> clazz;
-
-    private O object;
-
-    public JsonKeyValueStoreImpl(KeyValueStore secureStore, String key, Class<O> clazz) {
-        this.secureStore = secureStore;
-        this.key = key;
-        this.clazz = clazz;
-    }
-
-    public void set(O o) {
+    override fun set(o: O) {
         try {
-            String strObject = ObjectMapperFactory.objectMapper().writeValueAsString(o);
-            this.secureStore.setData(key, strObject);
-            this.object = o;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Couldn't persist object in key value store");
+            val strObject = objectMapper().writeValueAsString(o)
+            secureStore.setData(key, strObject)
+            this.value = o
+        } catch (e: JsonProcessingException) {
+            throw RuntimeException("Couldn't persist object in key value store")
         }
     }
 
-    public O get() {
-        if (this.object == null) {
-            String strObject = this.secureStore.getData(key);
-            if (strObject == null) {
-                return null;
+    override fun get(): O? {
+        if (this.value == null) {
+            val strObject = secureStore.getData(key)
+            return if (strObject == null) {
+                null
             } else {
                 try {
-                    return ObjectMapperFactory.objectMapper().readValue(strObject, clazz);
-                } catch (IOException e) {
-                    throw new RuntimeException("Couldn't read object from key value store");
+                    objectMapper().readValue(strObject, clazz)
+                } catch (e: IOException) {
+                    throw RuntimeException("Couldn't read object from key value store")
                 }
             }
-
         } else {
-            return this.object;
+            return this.value
         }
     }
 
-    public void remove() {
-        this.object = null;
-        this.secureStore.removeData(key);
+    override fun remove() {
+        this.value = null
+        secureStore.removeData(key)
     }
 }

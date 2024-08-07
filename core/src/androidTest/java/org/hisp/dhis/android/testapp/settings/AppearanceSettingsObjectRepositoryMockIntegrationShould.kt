@@ -139,6 +139,34 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         assertThat(program2Setting?.itemHeader()?.programIndicator()).isNull()
     }
 
+    @Test
+    fun should_return_minimumLocationAccuracy_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
+        assertThat(setting?.minimumLocationAccuracy()).isEqualTo(2)
+
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        assertThat(program1Setting?.minimumLocationAccuracy()).isEqualTo(5)
+
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        assertThat(program2Setting?.minimumLocationAccuracy()).isEqualTo(null)
+    }
+
+    @Test
+    fun should_return_disableManualLocation_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
+        assertThat(setting?.disableManualLocation()).isEqualTo(false)
+
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        assertThat(program1Setting?.disableManualLocation()).isEqualTo(true)
+
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        assertThat(program2Setting?.disableManualLocation()).isEqualTo(false)
+    }
+
     companion object {
         const val program1 = "IpHINAT79UW"
         const val program2 = "IpHINAT79UQ"

@@ -72,6 +72,8 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(programConfiguration.globalSettings()!!.completionSpinner()).isEqualTo(true)
         assertThat(programConfiguration.globalSettings()!!.disableReferrals()).isEqualTo(true)
         assertThat(programConfiguration.globalSettings()!!.disableCollapsibleSections()).isEqualTo(false)
+        assertThat(programConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(2)
+        assertThat(programConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
 
         val speficicProgramConfiguration = programConfiguration.specificSettings()
         val specificProgramConfiguration = speficicProgramConfiguration!!["IpHINAT79UW"]!!
@@ -81,6 +83,8 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(specificProgramConfiguration.disableReferrals()).isEqualTo(true)
         assertThat(specificProgramConfiguration.disableCollapsibleSections()).isEqualTo(false)
         assertThat(specificProgramConfiguration.itemHeader()!!.programIndicator()).isEqualTo("kALwOyvVvdT")
+        assertThat(specificProgramConfiguration.minimumLocationAccuracy()).isEqualTo(5)
+        assertThat(specificProgramConfiguration.disableManualLocation()).isEqualTo(true)
 
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()

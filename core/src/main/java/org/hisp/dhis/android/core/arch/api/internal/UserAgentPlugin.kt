@@ -35,10 +35,10 @@ import io.ktor.util.*
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.D2Configuration
 
-public class UserAgentPlugin private constructor(public val agent: String) {
+internal class UserAgentPlugin private constructor(public val agent: String) {
 
     @KtorDsl
-    public class Config {
+    class Config {
         public lateinit var d2Configuration: D2Configuration
         var userAgent: String? = null
             private set

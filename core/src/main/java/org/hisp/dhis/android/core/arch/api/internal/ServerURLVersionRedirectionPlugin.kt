@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLPlugin.trans
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 
-object ServerURLVersionRedirectionPlugin {
+internal object ServerURLVersionRedirectionPlugin {
     private const val MAX_REDIRECTS = 20
     private var redirects = 0
 

@@ -32,7 +32,7 @@ import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.takeFrom
 
-object PreventURLDecodePlugin {
+internal object PreventURLDecodePlugin {
     val instance = createClientPlugin(name = "PreventURLDecodePlugin") {
         onRequest { request, _ ->
             replaceEncodedCharacters(request)

@@ -34,8 +34,6 @@ import io.ktor.client.plugins.HttpTimeout
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 
-private const val SECTOMILISEC = 1000
-
 internal fun HttpClientConfig<*>.addKtorPlugins(
     d2Configuration: D2Configuration,
     authenticator: ParentAuthenticatorPlugin,
@@ -46,8 +44,5 @@ internal fun HttpClientConfig<*>.addKtorPlugins(
     install(PreventURLDecodePlugin.instance)
     install(authenticator.instance)
     install(HttpTimeout) {
-        requestTimeoutMillis = d2Configuration.readTimeoutInSeconds().toLong() * SECTOMILISEC
-        connectTimeoutMillis = d2Configuration.connectTimeoutInSeconds().toLong() * SECTOMILISEC
-        socketTimeoutMillis = d2Configuration.writeTimeoutInSeconds().toLong() * SECTOMILISEC
     }
 }

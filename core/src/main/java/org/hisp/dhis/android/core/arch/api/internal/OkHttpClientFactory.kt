@@ -30,12 +30,16 @@ package org.hisp.dhis.android.core.arch.api.internal
 import android.os.Build
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
+import java.util.concurrent.TimeUnit
 
 internal object OkHttpClientFactory {
     fun okHttpClient(
         d2Configuration: D2Configuration,
     ): OkHttpClient {
         val client = OkHttpClient.Builder()
+            .readTimeout(d2Configuration.readTimeoutInSeconds().toLong(), TimeUnit.SECONDS)
+            .connectTimeout(d2Configuration.connectTimeoutInSeconds().toLong(), TimeUnit.SECONDS)
+            .writeTimeout(d2Configuration.writeTimeoutInSeconds().toLong(), TimeUnit.SECONDS)
             .followRedirects(false)
 
         for (interceptor in d2Configuration.networkInterceptors()) {

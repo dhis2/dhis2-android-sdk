@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-object HttpServiceClientFactory {
+internal object HttpServiceClientFactory {
     internal fun ktor(
         okHttpClient: OkHttpClient,
         d2Configuration: D2Configuration,

@@ -72,7 +72,7 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(programConfiguration.globalSettings()!!.completionSpinner()).isEqualTo(true)
         assertThat(programConfiguration.globalSettings()!!.disableReferrals()).isEqualTo(true)
         assertThat(programConfiguration.globalSettings()!!.disableCollapsibleSections()).isEqualTo(false)
-        assertThat(programConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(2)
+        assertThat(programConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(7)
         assertThat(programConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
 
         val speficicProgramConfiguration = programConfiguration.specificSettings()

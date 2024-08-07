@@ -142,7 +142,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
     @Test
     fun should_return_minimumLocationAccuracy_settings() {
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
-        assertThat(setting?.minimumLocationAccuracy()).isEqualTo(2)
+        assertThat(setting?.minimumLocationAccuracy()).isEqualTo(7)
 
         val program1Setting =
             d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)

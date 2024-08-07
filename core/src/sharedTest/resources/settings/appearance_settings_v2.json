@@ -132,7 +132,7 @@
       "completionSpinner": "true",
       "disableReferrals": "true",
       "disableCollapsibleSections": "false",
-      "minimumLocationAccuracy": "2",
+      "minimumLocationAccuracy": "7",
       "disableManualLocation": "false"
     },
     "specificSettings": {

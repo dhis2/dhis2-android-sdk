@@ -64,6 +64,12 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     @ColumnAdapter(ProgramItemHeaderColumnAdapter.class)
     public abstract ProgramItemHeader itemHeader();
 
+    @Nullable
+    public abstract Integer minimumLocationAccuracy();
+
+    @Nullable
+    public abstract Boolean disableManualLocation();
+
     public static ProgramConfigurationSetting create(Cursor cursor) {
         return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
     }
@@ -91,6 +97,10 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
         public abstract Builder disableCollapsibleSections(Boolean disableCollapsibleSections);
 
         public abstract Builder itemHeader(ProgramItemHeader itemHeader);
+
+        public abstract Builder minimumLocationAccuracy(Integer minimumLocationAccuracy);
+
+        public abstract Builder disableManualLocation(Boolean disableManualLocation);
 
         public abstract ProgramConfigurationSetting build();
     }

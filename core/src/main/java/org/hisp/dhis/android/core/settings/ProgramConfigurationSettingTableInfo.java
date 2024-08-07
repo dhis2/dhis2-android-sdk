@@ -57,6 +57,8 @@ public class ProgramConfigurationSettingTableInfo {
         public static final String DISABLE_REFERRALS = "disableReferrals";
         public static final String DISABLE_COLLAPSIBLE_SECTIONS = "disableCollapsibleSections";
         public static final String ITEM_HEADER_PROGRAM_INDICATOR = "itemHeaderProgramIndicator";
+        public static final String MINIMUM_LOCATION_ACCURACY = "minimumLocationAccuracy";
+        public static final String DISABLE_MANUAL_LOCATION = "disableManualLocation";
 
         @Override
         public String[] all() {
@@ -66,7 +68,9 @@ public class ProgramConfigurationSettingTableInfo {
                     OPTIONAL_SEARCH,
                     DISABLE_REFERRALS,
                     DISABLE_COLLAPSIBLE_SECTIONS,
-                    ITEM_HEADER_PROGRAM_INDICATOR
+                    ITEM_HEADER_PROGRAM_INDICATOR,
+                    MINIMUM_LOCATION_ACCURACY,
+                    DISABLE_MANUAL_LOCATION
             );
         }
     }

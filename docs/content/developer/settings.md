@@ -63,6 +63,8 @@ These settings give control over the appearance of the data entry form.
     - DisableReferrals: whether referrals must be enabled or not for this program.
     - DisableCollapsibleSections: whether the sections must be collapsible or not for this program.
     - ItemHeader: it defines the element (programIndicator) to be used to generate a header for the TEI. This property is automatically consumed by the SDK when using the `TrackedEntitySearchCollectionRepository`.
+    - MinimumLocationAccuracy: it determines the precision when capturing coordinates.
+    - DisableManualLocation: whether the coordinates are manually captured.
 
 Most of the settings refer to visual components so they are usually consumed by the app.
 

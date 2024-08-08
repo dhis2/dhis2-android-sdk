@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.internal
 
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
+import UserAgentPlugin
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.plugins.HttpTimeout
+import org.hisp.dhis.android.core.D2Configuration
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 
-internal class PreventURLDecodeInterceptor : Interceptor {
-    @Throws(IOException::class)
-    public override fun intercept(chain: Interceptor.Chain): Response {
-        var request: Request = chain.request()
-        var encodedUrl = request.url.toString()
-
-        var nonEncodedUrl = encodedUrl
-            .replace("%2C", ",")
-            .replace("%5B", "[")
-            .replace("%5D", "]")
-            .replace("%3A", ":")
-
-        var newRequest = request.newBuilder()
-            .url(nonEncodedUrl)
-            .build()
-
-        return chain.proceed(newRequest)
+internal fun HttpClientConfig<*>.addKtorPlugins(
+    d2Configuration: D2Configuration,
+    authenticator: ParentAuthenticatorPlugin,
+) {
+    install(UserAgentPlugin) { this.d2Configuration = d2Configuration }
+    install(DynamicServerURLPlugin.instance)
+    install(ServerURLVersionRedirectionPlugin.instance)
+    install(PreventURLDecodePlugin.instance)
+    install(authenticator.instance)
+    install(HttpTimeout) {
     }
 }

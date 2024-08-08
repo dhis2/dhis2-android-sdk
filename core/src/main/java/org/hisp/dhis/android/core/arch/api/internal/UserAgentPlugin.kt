@@ -26,30 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+import android.os.Build
+import io.ktor.client.*
+import io.ktor.client.plugins.*
+import io.ktor.client.request.*
+import io.ktor.http.HttpHeaders
+import io.ktor.util.*
+import org.hisp.dhis.android.BuildConfig
+import org.hisp.dhis.android.core.D2Configuration
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.serialization.jackson.JacksonConverter
-import okhttp3.OkHttpClient
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+internal class UserAgentPlugin private constructor(public val agent: String) {
 
-object KtorFactory {
-    fun ktor(
-        okHttpClient: OkHttpClient,
-    ): HttpClient {
-        val client = HttpClient(OkHttp) {
-            engine {
-                preconfigured = okHttpClient
-            }
-            install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
-                register(ContentType.Application.Json, converter)
-            }
-            expectSuccess = true
+    @KtorDsl
+    class Config {
+        public lateinit var d2Configuration: D2Configuration
+        var userAgent: String? = null
+            private set
+
+        internal fun generateUserAgent() {
+            userAgent = String.format(
+                "%s/%s/%s/Android_%s",
+                d2Configuration.appName(),
+                BuildConfig.VERSION_NAME, // SDK version
+                d2Configuration.appVersion(),
+                Build.VERSION.SDK_INT, // Android Version
+            )
         }
-        return client
+    }
+
+    public companion object Plugin : HttpClientPlugin<Config, UserAgentPlugin> {
+        override val key: AttributeKey<UserAgentPlugin> = AttributeKey("CustomUserAgent")
+
+        override fun prepare(block: Config.() -> Unit): UserAgentPlugin {
+            val config = Config().apply(block)
+            config.generateUserAgent()
+            return UserAgentPlugin(config.userAgent ?: "Ktor http-client")
+        }
+
+        override fun install(plugin: UserAgentPlugin, scope: HttpClient) {
+            scope.requestPipeline.intercept(HttpRequestPipeline.State) {
+                context.headers.remove(HttpHeaders.UserAgent) // Remove any existing User-Agent header
+                context.header(HttpHeaders.UserAgent, plugin.agent)
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.internal
 
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.JacksonConverter
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.D2Configuration
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-internal class DynamicServerURLInterceptor : Interceptor {
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        return chain.proceed(transformRequest(chain.request()))
-    }
-
-    companion object {
-        fun transformRequest(request: Request): Request {
-            val transformedUrl = transformUrl(request.url.toString())?.let { it.toHttpUrlOrNull() }
-            return transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
-        }
-
-        fun transformUrl(url: String?): String? {
-            return url?.let {
-                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
-
-                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
-                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
-                } else {
-                    url
-                }
+internal object HttpServiceClientFactory {
+    internal fun ktor(
+        okHttpClient: OkHttpClient,
+        d2Configuration: D2Configuration,
+        authenticator: ParentAuthenticatorPlugin,
+    ): HttpClient {
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = okHttpClient
             }
+            install(ContentNegotiation) {
+                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
+                register(ContentType.Application.Json, converter)
+            }
+            expectSuccess = true
+            followRedirects = false
+            addKtorPlugins(d2Configuration, authenticator)
         }
+        return client
     }
 }

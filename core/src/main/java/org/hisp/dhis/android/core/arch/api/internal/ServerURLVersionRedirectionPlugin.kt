@@ -25,42 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+package org.hisp.dhis.android.core.arch.api.internal
+
+import io.ktor.client.call.HttpClientCall
+import io.ktor.client.plugins.api.Send
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.header
+import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpResponse
-import org.koin.core.annotation.Singleton
+import io.ktor.http.HttpHeaders
+import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLPlugin.transformRequest
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 
-@Singleton
-internal class CookieAuthenticatorHelper {
+internal object ServerURLVersionRedirectionPlugin {
+    private const val MAX_REDIRECTS = 20
+    private var redirects = 0
 
-    companion object {
-        private const val COOKIE_KEY = "Cookie"
-        private const val SET_COOKIE_KEY = "set-cookie"
-    }
+    val instance = createClientPlugin(name = "ServerURLVersionRedirectionPlugin") {
+        on(Send) { request ->
+            var call = proceed(request)
 
-    private var cookieValue: String? = null
-
-    fun storeCookieIfSentByServer(res: HttpResponse) {
-        val cookieRes = res.headers[SET_COOKIE_KEY]
-        if (cookieRes != null) {
-            cookieValue = cookieRes
+            while (isRedirect(call.response) && redirects <= MAX_REDIRECTS) {
+                redirects++
+                updateServerUrl(call.response)
+                call = buildRedirectRequest(this, call.request)
+            }
+            redirects = 0
+            call
         }
     }
 
-    fun isCookieDefined(): Boolean {
-        return cookieValue != null
+    private fun isRedirect(response: HttpResponse): Boolean {
+        return response.status.value in REDIRECT_MIN..REDIRECT_MAX
     }
 
-    fun removeCookie() {
-        cookieValue = null
-    }
-
-    fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
-        requestBuilder.apply {
-            headers.remove(COOKIE_KEY)
-            header(COOKIE_KEY, cookieValue!!)
+    private fun updateServerUrl(response: HttpResponse) {
+        val location = response.headers[HttpHeaders.Location]
+        location?.let {
+            ServerURLWrapper.setServerUrl(it)
         }
+    }
+
+    private suspend fun buildRedirectRequest(sender: Send.Sender, request: HttpRequest): HttpClientCall {
+        val redirectRequest = HttpRequestBuilder().apply {
+            takeFrom(request)
+        }
+        transformRequest(redirectRequest)
+        return sender.proceed(redirectRequest)
     }
 }

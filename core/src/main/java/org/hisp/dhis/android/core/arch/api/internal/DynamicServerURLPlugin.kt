@@ -25,42 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.header
-import io.ktor.client.statement.HttpResponse
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.arch.api.internal
 
-@Singleton
-internal class CookieAuthenticatorHelper {
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.util.*
 
-    companion object {
-        private const val COOKIE_KEY = "Cookie"
-        private const val SET_COOKIE_KEY = "set-cookie"
-    }
-
-    private var cookieValue: String? = null
-
-    fun storeCookieIfSentByServer(res: HttpResponse) {
-        val cookieRes = res.headers[SET_COOKIE_KEY]
-        if (cookieRes != null) {
-            cookieValue = cookieRes
+internal object DynamicServerURLPlugin {
+    val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
+        onRequest { request, _ ->
+            transformRequest(request)
         }
     }
-
-    fun isCookieDefined(): Boolean {
-        return cookieValue != null
-    }
-
-    fun removeCookie() {
-        cookieValue = null
-    }
-
-    fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
-        requestBuilder.apply {
-            headers.remove(COOKIE_KEY)
-            header(COOKIE_KEY, cookieValue!!)
+    private fun transformUrl(urlBuilder: URLBuilder): URLBuilder {
+        val urlString = urlBuilder.buildString()
+        val afterAPI = ServerURLWrapper.extractAfterAPI(urlString)
+        val transformedUrlString = if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+            ServerURLWrapper.serverUrl + "/api/" + afterAPI
+        } else {
+            urlString
         }
+        return URLBuilder(transformedUrlString)
+    }
+    fun transformRequest(request: HttpRequestBuilder) {
+        val originalUrlBuilder = request.url
+        val transformedUrlBuilder = transformUrl(originalUrlBuilder)
+        originalUrlBuilder.parameters.clear()
+        originalUrlBuilder.takeFrom(transformedUrlBuilder)
     }
 }

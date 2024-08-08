@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import okhttp3.Interceptor
-import okhttp3.Request
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -53,8 +53,10 @@ internal class UserIdAuthenticatorHelper(
         }
     }
 
-    fun builderWithUserId(chain: Interceptor.Chain): Request.Builder {
-        val req = chain.request()
-        return req.newBuilder().addHeader(USER_ID_KEY, userIdStore.get()!!)
+    fun builderWithUserId(requestBuilder: HttpRequestBuilder): HttpRequestBuilder {
+        return requestBuilder.apply {
+            headers.remove(USER_ID_KEY)
+            header(USER_ID_KEY, userIdStore.get()!!)
+        }
     }
 }

@@ -28,7 +28,7 @@
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.16"
+    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.24"
     id("kotlin-android")
     id("kotlin-kapt")
     id("maven-publish-conventions")

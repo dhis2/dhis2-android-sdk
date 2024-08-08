@@ -34,7 +34,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.util.*
 
-object DynamicServerURLPlugin {
+internal object DynamicServerURLPlugin {
     val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
         onRequest { request, _ ->
             transformRequest(request)

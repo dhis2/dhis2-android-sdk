@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCall
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -253,12 +254,20 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> getIdsValuePairsSequentially(valueMap: Map<String?, V>): List<Pair<FileResource, V>> {
         return valueMap.mapNotNull { (uid, value) ->
             uid?.let {
-                val fileResource = coroutineAPICallExecutor.wrap {
+                val frResult = coroutineAPICallExecutor.wrap {
                     fileResourceService.getFileResource(
                         uid,
                     )
-                }.getOrThrow()
-                Pair(fileResource, value)
+                }
+                when (frResult) {
+                    is Result.Success -> {
+                        Pair(frResult.value, value)
+                    }
+                    is Result.Failure -> {
+                        Log.v(FileResourceDownloadCall::class.java.canonicalName, frResult.failure.errorDescription())
+                        null
+                    }
+                }
             }
         }
     }

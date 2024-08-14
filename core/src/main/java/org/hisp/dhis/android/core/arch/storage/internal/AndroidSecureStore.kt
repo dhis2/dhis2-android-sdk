@@ -129,38 +129,42 @@ class AndroidSecureStore(context: Context) : SecureStore {
         if (data == null) {
             removeData(key)
         } else {
-            try {
-                val ks = getKeyStore()
+            setNonNullData(key, data)
+        }
+    }
 
-                if (ks.getCertificate(ALIAS) == null) {
-                    throw RuntimeException("Couldn't find certificate for key: $key")
-                }
+    private fun setNonNullData(key: String, data: String) {
+        try {
+            val ks = getKeyStore()
 
-                val publicKey = ks.getCertificate(ALIAS).publicKey
-                    ?: throw RuntimeException("Couldn't find publicKey for key: $key")
-
-                val value = encrypt(publicKey, data.toByteArray(CHARSET))
-
-                val editor = preferences.edit()
-                editor.putString(key, value)
-                editor.apply()
-            } catch (e: NoSuchAlgorithmException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: InvalidKeyException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: NoSuchPaddingException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: IllegalBlockSizeException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: BadPaddingException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: KeyStoreException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: CertificateException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-            } catch (e: IOException) {
-                throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+            if (ks.getCertificate(ALIAS) == null) {
+                throw RuntimeException("Couldn't find certificate for key: $key")
             }
+
+            val publicKey = ks.getCertificate(ALIAS).publicKey
+                ?: throw RuntimeException("Couldn't find publicKey for key: $key")
+
+            val value = encrypt(publicKey, data.toByteArray(CHARSET))
+
+            val editor = preferences.edit()
+            editor.putString(key, value)
+            editor.apply()
+        } catch (e: NoSuchAlgorithmException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: InvalidKeyException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: NoSuchPaddingException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: IllegalBlockSizeException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: BadPaddingException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: KeyStoreException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: CertificateException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+        } catch (e: IOException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
         }
     }
 

@@ -50,9 +50,9 @@ internal open class JsonKeyValueStoreImpl<O>(
     }
 
     override fun get(): O? {
-        if (this.value == null) {
+        return if (this.value == null) {
             val strObject = secureStore.getData(key)
-            return if (strObject == null) {
+            if (strObject == null) {
                 null
             } else {
                 try {
@@ -62,7 +62,7 @@ internal open class JsonKeyValueStoreImpl<O>(
                 }
             }
         } else {
-            return this.value
+            this.value
         }
     }
 

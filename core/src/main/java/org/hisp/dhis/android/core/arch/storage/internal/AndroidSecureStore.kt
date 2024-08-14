@@ -133,6 +133,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
         }
     }
 
+    @Suppress("ThrowsCount")
     private fun setNonNullData(key: String, data: String) {
         try {
             val ks = getKeyStore()

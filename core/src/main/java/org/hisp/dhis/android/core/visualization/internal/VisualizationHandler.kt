@@ -69,7 +69,8 @@ internal class VisualizationHandler(
         position: LayoutPosition,
     ): List<VisualizationDimensionItem> {
         return dimensions?.map { dimension ->
-            if (dimension.items().isNullOrEmpty()) {
+            val nonNullItems = dimension.items()?.filterNotNull()
+            if (nonNullItems.isNullOrEmpty()) {
                 listOf(
                     VisualizationDimensionItem.builder()
                         .position(position)
@@ -77,7 +78,7 @@ internal class VisualizationHandler(
                         .build(),
                 )
             } else {
-                dimension.items()!!.map { item ->
+                nonNullItems.map { item ->
                     item.toBuilder()
                         .position(position)
                         .dimension(dimension.id())

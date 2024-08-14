@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutine
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.koin.core.annotation.Singleton
-import java.lang.Boolean
 
 @Singleton
 class ValidationRuleCall internal constructor(
@@ -47,7 +46,7 @@ class ValidationRuleCall internal constructor(
             handler,
         ) { partitionUids: Set<String> ->
             val uidsFilterStr = ObjectWithUid.uid.`in`(partitionUids).generateString()
-            service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE)
+            service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, false)
         }
     }
 

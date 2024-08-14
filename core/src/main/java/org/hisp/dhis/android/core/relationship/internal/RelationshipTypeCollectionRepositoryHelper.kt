@@ -49,12 +49,10 @@ object RelationshipTypeCollectionRepositoryHelper {
 
     private val availabilityTeiQuery = { tei: TrackedEntityInstance?, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
-            tei?.let {
-                if (type != null) {
-                    appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
-                }
+            tei?.let { tei ->
+                type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
                 appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                appendKeyStringValue(Columns.TRACKED_ENTITY_TYPE, it.trackedEntityType())
+                tei.trackedEntityType()?.let { appendKeyStringValue(Columns.TRACKED_ENTITY_TYPE, it) }
                 appendComplexQuery(appendOptionalEnrollmentInProgram(tei))
             }
         }
@@ -81,11 +79,9 @@ object RelationshipTypeCollectionRepositoryHelper {
     private val availableForEnrollment = { enrollment: Enrollment?, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
             enrollment?.let {
-                if (type != null) {
-                    appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
-                }
+                type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
                 appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_INSTANCE)
-                appendKeyStringValue(Columns.PROGRAM, enrollment.program())
+                appendKeyStringValue(Columns.PROGRAM, enrollment.program()!!)
             }
         }
 
@@ -100,14 +96,12 @@ object RelationshipTypeCollectionRepositoryHelper {
     private val availableForEvent = { event: Event?, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
             event?.let {
-                if (type != null) {
-                    appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
-                }
+                type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
                 appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_STAGE_INSTANCE)
                 appendComplexQuery(
                     WhereClauseBuilder()
-                        .appendOrKeyStringValue(Columns.PROGRAM, it.program())
-                        .appendOrKeyStringValue(Columns.PROGRAM_STAGE, it.programStage())
+                        .appendOrKeyStringValue(Columns.PROGRAM, event.program()!!)
+                        .appendOrKeyStringValue(Columns.PROGRAM_STAGE, event.programStage()!!)
                         .build(),
                 )
             }

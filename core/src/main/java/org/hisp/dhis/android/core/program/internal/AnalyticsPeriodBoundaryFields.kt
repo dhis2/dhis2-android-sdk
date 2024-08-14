@@ -27,18 +27,16 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo.Columns
 
-object AnalyticsPeriodBoundaryFields {
-    private val fh = FieldsHelper<AnalyticsPeriodBoundary>()
-    val allFields: Fields<AnalyticsPeriodBoundary> = Fields.builder<AnalyticsPeriodBoundary>()
-        .fields(
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.BOUNDARY_TARGET),
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),
-            fh.field<Int>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIODS),
-            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIOD_TYPE),
-        ).build()
+internal object AnalyticsPeriodBoundaryFields : BaseFields<AnalyticsPeriodBoundary>() {
+    val allFields = Fields.from(
+        fh.field(Columns.BOUNDARY_TARGET),
+        fh.field(Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),
+        fh.field(Columns.OFFSET_PERIODS),
+        fh.field(Columns.OFFSET_PERIOD_TYPE),
+    )
 }

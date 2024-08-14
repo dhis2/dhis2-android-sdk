@@ -27,38 +27,33 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
 
-internal object ProgramStageQueryCriteriaFields {
+internal object ProgramStageQueryCriteriaFields : BaseFields<ProgramStageQueryCriteria>() {
     const val DATA_FILTERS = "dataFilters"
     const val ATTRIBUTE_VALUE_FILTER = "attributeValueFilters"
     const val ORDER = "order"
-    private val fh = FieldsHelper<ProgramStageQueryCriteria>()
-    val allFields: Fields<ProgramStageQueryCriteria> = Fields.builder<ProgramStageQueryCriteria>()
-        .fields(
-            fh.field<EventStatus>(Columns.EVENT_STATUS),
-            fh.field<DateFilterPeriod>(Columns.EVENT_CREATED_AT),
-            fh.field<DateFilterPeriod>(Columns.EVENT_OCCURRED_AT),
-            fh.field<DateFilterPeriod>(Columns.EVENT_SCHEDULED_AT),
-            fh.field<EnrollmentStatus>(Columns.ENROLLMENT_STATUS),
-            fh.field<DateFilterPeriod>(Columns.ENROLLMENT_AT),
-            fh.field<DateFilterPeriod>(Columns.ENROLLMENT_OCCURRED_AT),
-            fh.field<String>(ORDER),
-            fh.field<String>(Columns.ORG_UNIT),
-            fh.field<String>(Columns.OU_MODE),
-            fh.field<AssignedUserMode>(Columns.ASSIGNED_USER_MODE),
-            fh.nestedField<ProgramStageWorkingListEventDataFilter>(DATA_FILTERS)
-                .with(ProgramStageWorkingListEventDataFilterFields.allFields),
-            fh.nestedField<ProgramStageWorkingListAttributeValueFilter>(ATTRIBUTE_VALUE_FILTER)
-                .with(ProgramStageWorkingListAttributeValueFilterFields.allFields),
-        ).build()
+
+    val allFields = Fields.from(
+        fh.field(Columns.EVENT_STATUS),
+        fh.field(Columns.EVENT_CREATED_AT),
+        fh.field(Columns.EVENT_OCCURRED_AT),
+        fh.field(Columns.EVENT_SCHEDULED_AT),
+        fh.field(Columns.ENROLLMENT_STATUS),
+        fh.field(Columns.ENROLLMENT_AT),
+        fh.field(Columns.ENROLLMENT_OCCURRED_AT),
+        fh.field(ORDER),
+        fh.field(Columns.ORG_UNIT),
+        fh.field(Columns.OU_MODE),
+        fh.field(Columns.ASSIGNED_USER_MODE),
+        fh.nestedField<ProgramStageWorkingListEventDataFilter>(DATA_FILTERS)
+            .with(ProgramStageWorkingListEventDataFilterFields.allFields),
+        fh.nestedField<ProgramStageWorkingListAttributeValueFilter>(ATTRIBUTE_VALUE_FILTER)
+            .with(ProgramStageWorkingListAttributeValueFilterFields.allFields),
+    )
 }

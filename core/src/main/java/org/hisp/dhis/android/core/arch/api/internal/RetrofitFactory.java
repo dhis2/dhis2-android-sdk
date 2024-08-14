@@ -49,8 +49,8 @@ final class RetrofitFactory {
 
                 .client(okHttpClient)
                 .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
+                .addConverterFactory(new FilterConverterFactory())
+                .addConverterFactory(new FieldsConverterFactory())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .validateEagerly(true)
                 .build();

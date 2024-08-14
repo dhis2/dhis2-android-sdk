@@ -41,7 +41,7 @@ internal fun interface LegendSetService {
     @GET("legendSets")
     suspend fun getLegendSets(
         @Query("fields") @Which fields: Fields<LegendSet>,
-        @Query("filter") @Where uids: Filter<LegendSet, String>,
+        @Query("filter") @Where uids: Filter<LegendSet>,
         @Query("paging") paging: Boolean,
     ): Payload<LegendSet>
 }

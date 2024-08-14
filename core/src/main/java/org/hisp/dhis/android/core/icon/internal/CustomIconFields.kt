@@ -27,23 +27,18 @@
  */
 package org.hisp.dhis.android.core.icon.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.icon.CustomIcon
 
-internal object CustomIconFields {
+internal object CustomIconFields : BaseFields<CustomIcon>() {
     private const val KEY = "key"
     private const val FILE_RESOURCE = "fileResource"
     private const val HREF = "href"
 
-    private val fh = FieldsHelper<CustomIcon>()
-
-    val allFields: Fields<CustomIcon> =
-        Fields.builder<CustomIcon>()
-            .fields(
-                fh.field<String>(KEY),
-                fh.nestedFieldWithUid(FILE_RESOURCE),
-                fh.field<String>(HREF),
-            )
-            .build()
+    val allFields = Fields.from(
+        fh.field(KEY),
+        fh.nestedFieldWithUid(FILE_RESOURCE),
+        fh.field(HREF),
+    )
 }

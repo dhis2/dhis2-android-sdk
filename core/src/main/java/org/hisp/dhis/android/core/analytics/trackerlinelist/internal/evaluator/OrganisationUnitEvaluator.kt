@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
@@ -95,9 +96,10 @@ internal class OrganisationUnitEvaluator(
 
             is OrganisationUnitFilter.Level -> {
                 val level = orgunitLevelStore.selectByUid(filter.uid)
+                    ?: throw AnalyticsException.InvalidOrganisationUnitLevel(filter.uid)
                 val orgunits = orgunitLevelStore.selectUidsWhere(
                     WhereClauseBuilder()
-                        .appendKeyStringValue(OrganisationUnitTableInfo.Columns.LEVEL, level?.level()?.toString())
+                        .appendKeyStringValue(OrganisationUnitTableInfo.Columns.LEVEL, level.level()!!.toString())
                         .build(),
                 )
 

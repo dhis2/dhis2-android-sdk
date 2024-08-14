@@ -40,7 +40,7 @@ internal interface CategoryComboService {
     @GET("categoryCombos")
     suspend fun getCategoryCombos(
         @Query("fields") @Which fields: Fields<CategoryCombo>,
-        @Query("filter") @Where uids: Filter<CategoryCombo, String>,
+        @Query("filter") @Where uids: Filter<CategoryCombo>,
         @Query("paging") paging: Boolean?,
     ): Payload<CategoryCombo>
 }

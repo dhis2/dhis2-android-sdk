@@ -42,7 +42,7 @@ internal interface OrganisationUnitService {
     @GET(ORGANISATION_UNITS)
     suspend fun getOrganisationUnits(
         @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,
-        @Query(FILTER) @Where filter: Filter<OrganisationUnit, String>,
+        @Query(FILTER) @Where filter: Filter<OrganisationUnit>,
         @Query(ORDER) order: String,
         @Query(PAGING) paging: Boolean,
         @Query(PAGE_SIZE) pageSize: Int,
@@ -52,7 +52,7 @@ internal interface OrganisationUnitService {
     @GET(ORGANISATION_UNITS)
     suspend fun getSearchOrganisationUnits(
         @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,
-        @Query(FILTER) @Where filter: Filter<OrganisationUnit, String>,
+        @Query(FILTER) @Where filter: Filter<OrganisationUnit>,
         @Query(ORDER) order: String,
         @Query(PAGING) paging: Boolean,
     ): Payload<OrganisationUnit>

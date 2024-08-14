@@ -27,18 +27,15 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
-object CategoryOptionComboFields {
+internal object CategoryOptionComboFields : BaseFields<CategoryOptionCombo>() {
     const val CATEGORY_OPTIONS = "categoryOptions"
 
-    private val fh = FieldsHelper<CategoryOptionCombo>()
-
-    val allFields: Fields<CategoryOptionCombo> = Fields.builder<CategoryOptionCombo>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.nestedFieldWithUid(CATEGORY_OPTIONS),
+    )
 }

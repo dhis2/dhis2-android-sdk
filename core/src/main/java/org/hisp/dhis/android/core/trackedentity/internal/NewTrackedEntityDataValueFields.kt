@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
-import java.util.*
 
-internal object NewTrackedEntityDataValueFields {
+internal object NewTrackedEntityDataValueFields : BaseFields<NewTrackerImporterTrackedEntityDataValue>() {
     private const val DATA_ELEMENT = "dataElement"
     private const val CREATED_BY = "createdBy"
     private const val VALUE = "value"
@@ -40,16 +39,12 @@ internal object NewTrackedEntityDataValueFields {
     private const val UPDATED_AT = "updatedAt"
     private const val PROVIDED_ELSEWHERE = "providedElsewhere"
 
-    private val fh = FieldsHelper<NewTrackerImporterTrackedEntityDataValue>()
-
-    val allFields: Fields<NewTrackerImporterTrackedEntityDataValue> =
-        Fields.builder<NewTrackerImporterTrackedEntityDataValue>()
-            .fields(
-                fh.field<String>(DATA_ELEMENT),
-                fh.field<String>(CREATED_BY),
-                fh.field<String>(VALUE),
-                fh.field<Date>(CREATED_AT),
-                fh.field<Date>(UPDATED_AT),
-                fh.field<Boolean>(PROVIDED_ELSEWHERE),
-            ).build()
+    val allFields = Fields.from(
+        fh.field(DATA_ELEMENT),
+        fh.field(CREATED_BY),
+        fh.field(VALUE),
+        fh.field(CREATED_AT),
+        fh.field(UPDATED_AT),
+        fh.field(PROVIDED_ELSEWHERE),
+    )
 }

@@ -40,7 +40,7 @@ internal fun interface ProgramService {
     @GET("programs")
     suspend fun getPrograms(
         @Query("fields") @Which fields: Fields<Program>,
-        @Query("filter") @Where uids: Filter<Program, String>,
+        @Query("filter") @Where uids: Filter<Program>,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
     ): Payload<Program>

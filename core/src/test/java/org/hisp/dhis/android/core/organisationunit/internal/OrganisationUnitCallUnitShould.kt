@@ -53,7 +53,7 @@ class OrganisationUnitCallUnitShould {
 
     // Captors for the organisationUnitService arguments:
     private val fieldsCaptor = argumentCaptor<Fields<OrganisationUnit>>()
-    private val filtersCaptor = argumentCaptor<Filter<OrganisationUnit, String>>()
+    private val filtersCaptor = argumentCaptor<Filter<OrganisationUnit>>()
     private val pagingCaptor = argumentCaptor<Boolean>()
     private val pageCaptor = argumentCaptor<Int>()
     private val pageSizeCaptor = argumentCaptor<Int>()
@@ -151,8 +151,8 @@ class OrganisationUnitCallUnitShould {
         organisationUnitCall.invoke()
 
         assertThat(fieldsCaptor.firstValue).isEqualTo(OrganisationUnitFields.allFields)
-        assertThat(filtersCaptor.firstValue.operator()).isEqualTo("like")
-        assertThat(filtersCaptor.firstValue.field()).isEqualTo(OrganisationUnitFields.path)
+        assertThat(filtersCaptor.firstValue.operator).isEqualTo("like")
+        assertThat(filtersCaptor.firstValue.field).isEqualTo(OrganisationUnitFields.path)
         assertThat(orderCaptor.firstValue).isEqualTo(OrganisationUnitFields.ASC_ORDER)
         assertThat(pagingCaptor.firstValue).isTrue()
         assertThat(pageCaptor.firstValue).isEqualTo(1)

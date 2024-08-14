@@ -40,7 +40,7 @@ import retrofit2.http.Query
 internal interface TrackedEntityInstanceFilterService {
     @GET("trackedEntityInstanceFilters")
     suspend fun getTrackedEntityInstanceFiltersAPI37(
-        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter, String>,
+        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter>,
         @Query("filter") accessDataReadFilter: String,
         @Query("fields") @Which fields: Fields<TrackedEntityInstanceFilter>,
         @Query("paging") paging: Boolean,
@@ -48,7 +48,7 @@ internal interface TrackedEntityInstanceFilterService {
 
     @GET("trackedEntityInstanceFilters")
     suspend fun getTrackedEntityInstanceFilters(
-        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter, String>,
+        @Query("filter") @Where uids: Filter<TrackedEntityInstanceFilter>,
         @Query("filter") accessDataReadFilter: String,
         @Query("fields") @Which fields: Fields<TrackedEntityInstanceFilter>,
         @Query("paging") paging: Boolean,

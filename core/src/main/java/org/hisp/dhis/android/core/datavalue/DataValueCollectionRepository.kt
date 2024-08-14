@@ -128,7 +128,7 @@ class DataValueCollectionRepository internal constructor(
             .rawSubQuery(
                 operator,
                 whereClause(dataSetUid!!),
-            )!!
+            )
     }
 
     fun byStoredBy(): StringFilterConnector<DataValueCollectionRepository> {

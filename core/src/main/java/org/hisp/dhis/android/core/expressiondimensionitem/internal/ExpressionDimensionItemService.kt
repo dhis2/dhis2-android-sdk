@@ -39,7 +39,7 @@ internal fun interface ExpressionDimensionItemService {
 
     @GET("expressionDimensionItems")
     suspend fun getExpressionDimensionItems(
-        @Query("filter") @Where uids: Filter<ExpressionDimensionItem, String>,
+        @Query("filter") @Where uids: Filter<ExpressionDimensionItem>,
         @Query("fields") @Which fields: Fields<ExpressionDimensionItem>,
         @Query("paging") paging: Boolean,
     ): Payload<ExpressionDimensionItem>

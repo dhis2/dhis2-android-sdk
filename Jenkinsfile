@@ -21,6 +21,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Check style and quality'
+                    sh 'chmod +x ./runChecks.sh'
                     sh './runChecks.sh'
                 }
             }

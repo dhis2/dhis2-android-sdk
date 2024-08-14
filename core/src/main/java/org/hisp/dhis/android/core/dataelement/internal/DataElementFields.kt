@@ -27,51 +27,43 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo.Columns
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 
-internal object DataElementFields {
+internal object DataElementFields : BaseFields<DataElement>() {
     private const val STYLE = "style"
     private const val ACCESS = "access"
     const val LEGEND_SETS = "legendSets"
     const val ATTRIBUTE_VALUES = "attributeValues"
 
-    private val fh = FieldsHelper<DataElement>()
     val uid = fh.uid()
-
     val lastUpdated = fh.lastUpdated()
 
-    val allFields: Fields<DataElement> = Fields.builder<DataElement>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field<ValueType>(DataElementTableInfo.Columns.VALUE_TYPE),
-            fh.field<Boolean>(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT),
-            fh.field<String>(DataElementTableInfo.Columns.AGGREGATION_TYPE),
-            fh.field<String>(DataElementTableInfo.Columns.FORM_NAME),
-            fh.field<String>(DataElementTableInfo.Columns.DOMAIN_TYPE),
-            fh.field<String>(DataElementTableInfo.Columns.DISPLAY_FORM_NAME),
-            fh.nestedField<ObjectWithUid>(DataElementTableInfo.Columns.OPTION_SET)
-                .with(ObjectWithUid.uid),
-            fh.nestedField<ObjectWithUid>(DataElementTableInfo.Columns.CATEGORY_COMBO)
-                .with(ObjectWithUid.uid),
-            fh.field<String>(DataElementTableInfo.Columns.FIELD_MASK),
-            fh.nestedField<ObjectStyle>(STYLE)
-                .with(ObjectStyleFields.allFields),
-            fh.nestedField<Access>(ACCESS)
-                .with(AccessFields.read),
-            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
-            fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
-        ).build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.VALUE_TYPE),
+        fh.field(Columns.ZERO_IS_SIGNIFICANT),
+        fh.field(Columns.AGGREGATION_TYPE),
+        fh.field(Columns.FORM_NAME),
+        fh.field(Columns.DOMAIN_TYPE),
+        fh.field(Columns.DISPLAY_FORM_NAME),
+        fh.nestedField<ObjectWithUid>(Columns.OPTION_SET).with(ObjectWithUid.uid),
+        fh.nestedField<ObjectWithUid>(Columns.CATEGORY_COMBO).with(ObjectWithUid.uid),
+        fh.field(Columns.FIELD_MASK),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.read),
+        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+    )
 }

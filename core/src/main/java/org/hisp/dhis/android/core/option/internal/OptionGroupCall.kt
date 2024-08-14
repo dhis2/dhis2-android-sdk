@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.koin.core.annotation.Singleton
-import java.lang.Boolean
 
 @Singleton
 class OptionGroupCall internal constructor(
@@ -47,7 +46,7 @@ class OptionGroupCall internal constructor(
         ) { partitionUids: Set<String> ->
             val optionSetUidsFilterStr =
                 "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
-            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE)
+            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
         }
     }
 

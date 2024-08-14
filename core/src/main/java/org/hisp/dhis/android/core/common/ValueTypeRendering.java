@@ -28,25 +28,16 @@
 
 package org.hisp.dhis.android.core.common;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class ValueTypeRendering {
     public static final String DESKTOP = "DESKTOP";
     public static final String MOBILE = "MOBILE";
-
-    private static final Field<ValueTypeRendering, String> desktop = Field.create(DESKTOP);
-    private static final Field<ValueTypeRendering, String> mobile = Field.create(MOBILE);
-
-    public static final Fields<ValueTypeRendering> allFields = Fields.<ValueTypeRendering>builder().fields(
-            desktop, mobile).build();
 
     @Nullable
     @JsonProperty(DESKTOP)

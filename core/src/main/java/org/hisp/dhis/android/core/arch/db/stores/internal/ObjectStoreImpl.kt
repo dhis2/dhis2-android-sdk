@@ -109,7 +109,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     }
 
     override fun delete(): Int {
-        return databaseAdapter.delete(builder.tableName)
+        return databaseAdapter.delete(builder.getTableName())
     }
 
     @Throws(RuntimeException::class)
@@ -137,11 +137,11 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     }
 
     override fun deleteWhere(clause: String): Boolean {
-        return databaseAdapter.delete(builder.tableName, clause, null) > 0
+        return databaseAdapter.delete(builder.getTableName(), clause, null) > 0
     }
 
     override fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        return databaseAdapter.update(builder.tableName, updates, whereClause, null)
+        return databaseAdapter.update(builder.getTableName(), updates, whereClause, null)
     }
 
     @Throws(RuntimeException::class)

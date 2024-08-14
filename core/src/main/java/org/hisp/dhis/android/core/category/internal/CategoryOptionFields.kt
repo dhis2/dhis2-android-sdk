@@ -27,25 +27,23 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 
-internal object CategoryOptionFields {
+internal object CategoryOptionFields : BaseFields<CategoryOption>() {
     private const val ACCESS = "access"
     internal const val ORGANISATION_UNITS = "organisationUnits"
-    private val fh = FieldsHelper<CategoryOption>()
     val uid = fh.uid()
 
-    val allFields: Fields<CategoryOption> = Fields.builder<CategoryOption>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
-            fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
-        ).build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(CategoryOptionTableInfo.Columns.START_DATE),
+        fh.field(CategoryOptionTableInfo.Columns.END_DATE),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+    )
 }

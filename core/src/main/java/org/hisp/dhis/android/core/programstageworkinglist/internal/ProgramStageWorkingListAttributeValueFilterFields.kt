@@ -27,27 +27,26 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
-object ProgramStageWorkingListAttributeValueFilterFields {
+internal object ProgramStageWorkingListAttributeValueFilterFields :
+    BaseFields<ProgramStageWorkingListAttributeValueFilter>() {
     private const val API_IN = "in"
-    private val fh = FieldsHelper<ProgramStageWorkingListAttributeValueFilter>()
 
-    val allFields = Fields.builder<ProgramStageWorkingListAttributeValueFilter>()
-        .fields(
-            fh.field<String>(ItemFilterTableInfo.Columns.ATTRIBUTE),
-            fh.field<String>(ItemFilterTableInfo.Columns.SW),
-            fh.field<String>(ItemFilterTableInfo.Columns.EW),
-            fh.field<String>(ItemFilterTableInfo.Columns.LE),
-            fh.field<String>(ItemFilterTableInfo.Columns.GE),
-            fh.field<String>(ItemFilterTableInfo.Columns.GT),
-            fh.field<String>(ItemFilterTableInfo.Columns.LT),
-            fh.field<String>(ItemFilterTableInfo.Columns.EQ),
-            fh.field<String>(API_IN),
-            fh.field<String>(ItemFilterTableInfo.Columns.LIKE),
-            fh.field<String>(ItemFilterTableInfo.Columns.DATE_FILTER),
-        ).build()
+    val allFields = Fields.from(
+        fh.field(ItemFilterTableInfo.Columns.ATTRIBUTE),
+        fh.field(ItemFilterTableInfo.Columns.SW),
+        fh.field(ItemFilterTableInfo.Columns.EW),
+        fh.field(ItemFilterTableInfo.Columns.LE),
+        fh.field(ItemFilterTableInfo.Columns.GE),
+        fh.field(ItemFilterTableInfo.Columns.GT),
+        fh.field(ItemFilterTableInfo.Columns.LT),
+        fh.field(ItemFilterTableInfo.Columns.EQ),
+        fh.field(API_IN),
+        fh.field(ItemFilterTableInfo.Columns.LIKE),
+        fh.field(ItemFilterTableInfo.Columns.DATE_FILTER),
+    )
 }

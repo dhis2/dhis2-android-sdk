@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Suppress("TooManyFunctions")
 internal class FieldsHelper<O> {
-    fun <T> field(fieldName: String): Field<O, T> {
+    fun field(fieldName: String): Field<O> {
         return Field.create(fieldName)
     }
 
@@ -44,31 +44,31 @@ internal class FieldsHelper<O> {
         return NestedField.create(fieldName)
     }
 
-    fun uid(): Field<O, String> {
+    fun uid(): Field<O> {
         return Field.create(BaseIdentifiableObject.UID)
     }
 
-    fun code(): Field<O, String> {
+    fun code(): Field<O> {
         return Field.create(BaseIdentifiableObject.CODE)
     }
 
-    fun name(): Field<O, String> {
+    fun name(): Field<O> {
         return Field.create(BaseIdentifiableObject.NAME)
     }
 
-    fun displayName(): Field<O, String> {
+    fun displayName(): Field<O> {
         return Field.create(BaseIdentifiableObject.DISPLAY_NAME)
     }
 
-    fun created(): Field<O, String> {
+    fun created(): Field<O> {
         return Field.create(BaseIdentifiableObject.CREATED)
     }
 
-    fun lastUpdated(): Field<O, String> {
+    fun lastUpdated(): Field<O> {
         return Field.create(BaseIdentifiableObject.LAST_UPDATED)
     }
 
-    fun deleted(): Field<O, String> {
+    fun deleted(): Field<O> {
         return Field.create(BaseIdentifiableObject.DELETED)
     }
 
@@ -77,8 +77,8 @@ internal class FieldsHelper<O> {
         return nested.with(ObjectWithUid.uid)
     }
 
-    fun getIdentifiableFields(): List<Property<O, *>> {
-        return listOf<Property<O, *>>(
+    fun getIdentifiableFields(): List<Property<O>> {
+        return listOf(
             uid(),
             code(),
             name(),
@@ -89,12 +89,12 @@ internal class FieldsHelper<O> {
         )
     }
 
-    fun getNameableFields(): List<Property<O, *>> {
-        return getIdentifiableFields() + listOf<Property<O, *>>(
-            this.field<O>(BaseNameableObject.SHORT_NAME),
-            this.field<O>(BaseNameableObject.DISPLAY_SHORT_NAME),
-            this.field<O>(BaseNameableObject.DESCRIPTION),
-            this.field<O>(BaseNameableObject.DISPLAY_DESCRIPTION),
+    fun getNameableFields(): List<Property<O>> {
+        return getIdentifiableFields() + listOf(
+            this.field(BaseNameableObject.SHORT_NAME),
+            this.field(BaseNameableObject.DISPLAY_SHORT_NAME),
+            this.field(BaseNameableObject.DESCRIPTION),
+            this.field(BaseNameableObject.DISPLAY_DESCRIPTION),
         )
     }
 }

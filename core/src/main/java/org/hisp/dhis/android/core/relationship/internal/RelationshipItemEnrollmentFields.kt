@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
 
-internal object RelationshipItemEnrollmentFields {
+internal object RelationshipItemEnrollmentFields : BaseFields<RelationshipItemEnrollment>() {
     private const val ENROLLMENT = "enrollment"
-    val enrollment: Field<RelationshipItemEnrollment, String> = Field.create(ENROLLMENT)
+
+    val enrollment = fh.field(ENROLLMENT)
 }

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.fields.internal.NestedField
+import org.hisp.dhis.android.core.arch.api.fields.internal.Property
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
 
-object UserFields {
+internal object UserFields : BaseFields<User>() {
     const val USERNAME = "username"
     const val BIRTHDAY = "birthday"
     const val EDUCATION = "education"
@@ -54,64 +54,49 @@ object UserFields {
     const val EMAIL = "email"
     const val PHONE_NUMBER = "phoneNumber"
     const val NATIONALITY = "nationality"
-    const val USER_CREDENTIALS = "userCredentials"
+    private const val USER_CREDENTIALS = "userCredentials"
     const val USER_ROLES = "userRoles"
-    const val USER_GROUPS = "userGroups"
+    private const val USER_GROUPS = "userGroups"
     private const val ORGANISATION_UNITS = "organisationUnits"
     private const val TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits"
 
-    private val uid = Field.create<User, String>(BaseIdentifiableObject.UID)
-    private val code = Field.create<User, String>(BaseIdentifiableObject.CODE)
-    private val name = Field.create<User, String>(BaseIdentifiableObject.NAME)
-    private val displayName = Field.create<User, String>(BaseIdentifiableObject.DISPLAY_NAME)
-    private val created = Field.create<User, String>(BaseIdentifiableObject.CREATED)
-    private val lastUpdated = Field.create<User, String>(BaseIdentifiableObject.LAST_UPDATED)
-    private val username = Field.create<User, String>(USERNAME)
-    private val birthday = Field.create<User, String>(BIRTHDAY)
-    private val education = Field.create<User, String>(EDUCATION)
-    private val gender = Field.create<User, String>(GENDER)
-    private val jobTitle = Field.create<User, String>(JOB_TITLE)
-    private val surname = Field.create<User, String>(SURNAME)
-    private val firstName = Field.create<User, String>(FIRST_NAME)
-    private val introduction = Field.create<User, String>(INTRODUCTION)
-    private val employer = Field.create<User, String>(EMPLOYER)
-    private val interests = Field.create<User, String>(INTERESTS)
-    private val languages = Field.create<User, String>(LANGUAGES)
-    private val email = Field.create<User, String>(EMAIL)
-    private val phoneNumber = Field.create<User, String>(PHONE_NUMBER)
-    private val nationality = Field.create<User, String>(NATIONALITY)
-    private val deleted = Field.create<User, Boolean>(BaseIdentifiableObject.DELETED)
-    private val userCredentials = NestedField.create<User, UserCredentials>(USER_CREDENTIALS)
-    private val organisationUnits = NestedField.create<User, OrganisationUnit>(ORGANISATION_UNITS)
-    private val teiSearchOrganisationUnits = NestedField.create<User, OrganisationUnit>(TEI_SEARCH_ORGANISATION_UNITS)
-    private val userRoles = NestedField.create<User, UserRole>(USER_ROLES)
-    private val userGroups = NestedField.create<User, UserGroup>(USER_GROUPS)
+    private val username = fh.field(USERNAME)
+    private val userCredentials = fh.nestedField<UserCredentials>(USER_CREDENTIALS)
+    private val userRoles = fh.nestedField<UserRole>(USER_ROLES)
+    private val organisationUnits = fh.nestedField<OrganisationUnit>(ORGANISATION_UNITS)
+    private val teiSearchOrganisationUnits = fh.nestedField<OrganisationUnit>(TEI_SEARCH_ORGANISATION_UNITS)
 
-    private fun commonFields(): Fields.Builder<User> {
-        return Fields.builder<User>().fields(
-            uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle, surname,
-            firstName, introduction, employer, interests, languages, email, phoneNumber, nationality, deleted,
-            userGroups.with(UserGroupFields.allFields),
-        )
-    }
+    private fun commonFields() = listOf(
+        fh.field(BaseIdentifiableObject.UID),
+        fh.field(BaseIdentifiableObject.CODE),
+        fh.field(BaseIdentifiableObject.NAME),
+        fh.field(BaseIdentifiableObject.DISPLAY_NAME),
+        fh.field(BaseIdentifiableObject.CREATED),
+        fh.field(BaseIdentifiableObject.LAST_UPDATED),
+        fh.field(BIRTHDAY),
+        fh.field(EDUCATION),
+        fh.field(GENDER),
+        fh.field(JOB_TITLE),
+        fh.field(SURNAME),
+        fh.field(FIRST_NAME),
+        fh.field(INTRODUCTION),
+        fh.field(EMPLOYER),
+        fh.field(INTERESTS),
+        fh.field(LANGUAGES),
+        fh.field(EMAIL),
+        fh.field(PHONE_NUMBER),
+        fh.field(NATIONALITY),
+        fh.field(BaseIdentifiableObject.DELETED),
+        fh.nestedField<UserGroup>(USER_GROUPS).with(UserGroupFields.allFields),
+    )
 
-    private fun baseFields37(): Fields.Builder<User> {
-        return commonFields()
-            .fields(userCredentials.with(UserCredentialsFields.allFields))
-    }
+    private fun baseFields37() = commonFields() + userCredentials.with(UserCredentialsFields.allFields)
 
-    private fun baseFields38(): Fields.Builder<User> {
-        return commonFields()
-            .fields(username, userRoles.with(UserRoleFields.allFields))
-    }
+    private fun baseFields38() = commonFields() + username + userRoles.with(UserRoleFields.allFields)
 
-    private fun allBaseFields(): Fields.Builder<User> {
-        return commonFields()
-            .fields(userCredentials.with(UserCredentialsFields.allFields))
-            .fields(username, userRoles.with(UserRoleFields.allFields))
-    }
+    private fun allBaseFields() = (baseFields37() + baseFields38()).distinct()
 
-    private fun getBaseFields(version: DHISVersion?): Fields.Builder<User> {
+    private fun getBaseFields(version: DHISVersion? = null): List<Property<User>> {
         return when {
             version == null -> allBaseFields()
             version >= DHISVersion.V2_38 -> baseFields38()
@@ -119,14 +104,11 @@ object UserFields {
         }
     }
 
-    val allFieldsWithoutOrgUnit: Fields<User> = getBaseFields(null).build()
+    val allFieldsWithoutOrgUnit: Fields<User> = Fields.from(getBaseFields())
 
-    fun allFieldsWithOrgUnit(version: DHISVersion?): Fields<User> {
-        return getBaseFields(version)
-            .fields(
-                organisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
-                teiSearchOrganisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
-            )
-            .build()
-    }
+    fun allFieldsWithOrgUnit(version: DHISVersion?) = Fields.from(
+        getBaseFields(version),
+        organisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
+        teiSearchOrganisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
+    )
 }

@@ -44,7 +44,7 @@ internal class AndroidInsecureStore(context: Context) : InsecureStore {
     }
 
     override fun getData(key: String): String? {
-        return preferences.getString(key, null)!!
+        return preferences.getString(key, null)
     }
 
     override fun removeData(key: String) {

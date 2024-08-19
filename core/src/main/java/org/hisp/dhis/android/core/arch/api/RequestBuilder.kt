@@ -32,6 +32,9 @@ class RequestBuilder(private val baseUrl: String) {
     lateinit var url: String
         private set
 
+    var isAbsoluteUrl: Boolean = false
+        private set
+
     var body: Any? = null
         private set
 
@@ -49,6 +52,7 @@ class RequestBuilder(private val baseUrl: String) {
 
     fun absoluteUrl(url: String) {
         this.url = url
+        this.isAbsoluteUrl = true
     }
 
     fun authorizationHeader(header: String?) {

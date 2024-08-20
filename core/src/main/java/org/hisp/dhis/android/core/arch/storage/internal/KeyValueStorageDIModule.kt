@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import org.koin.dsl.module
 
-fun keyValueStorageDIModule(
+internal fun keyValueStorageDIModule(
     secureStore: SecureStore,
     insecureStore: InsecureStore,
 ) = module {

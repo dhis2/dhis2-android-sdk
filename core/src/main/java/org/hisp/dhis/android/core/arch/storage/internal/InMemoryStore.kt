@@ -25,8 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+internal class InMemoryStore : KeyValueStore {
+    private val dataMap: MutableMap<String, String> = HashMap()
 
-public interface SecureStore extends KeyValueStore {
+    override fun setData(key: String, data: String?) {
+        removeData(key)
+        if (data != null) {
+            dataMap[key] = data
+        }
+    }
+
+    override fun getData(key: String): String? {
+        return dataMap[key]
+    }
+
+    override fun removeData(key: String) {
+        dataMap.remove(key)
+    }
+
+    override fun getAllKeys(): Set<String> {
+        return dataMap.keys
+    }
 }

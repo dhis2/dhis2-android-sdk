@@ -25,45 +25,6 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.annotation.NonNull;
-
-import java.util.Set;
-
-public final class AndroidInsecureStore implements InsecureStore {
-
-    private static final String PREFERENCES_FILE = "preferences";
-
-    private final SharedPreferences preferences;
-
-    public AndroidInsecureStore(Context context) {
-        preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
-    }
-
-    public void setData(@NonNull String key, @NonNull String data) {
-        preferences.edit()
-                .putString(key, data)
-                .apply();
-    }
-
-    public String getData(@NonNull String key) {
-        return preferences.getString(key, null);
-
-    }
-
-    public void removeData(String key) {
-        preferences.edit()
-                .remove(key)
-                .apply();
-    }
-
-    @Override
-    public Set<String> getAllKeys() {
-        return preferences.getAll().keySet();
-    }
-}
+interface SecureStore : KeyValueStore

@@ -79,12 +79,12 @@ internal class DatabaseConfigurationMigration(
                 try {
                     // This is the main flow after versionCode 260
                     val configuration = databaseConfigurationStore.get()
-                    existingVersionCode = configuration.versionCode()
+                    existingVersionCode = configuration!!.versionCode()
 
                     migrateVersionCodeIfNeeded(configuration)
                 } catch (e: RuntimeException) {
                     val configuration = tryOldDatabaseConfiguration()
-                    databaseConfigurationStore.set(configuration)
+                    databaseConfigurationStore.set(configuration!!)
                 }
             } catch (e: RuntimeException) {
                 databaseConfigurationStore.remove()

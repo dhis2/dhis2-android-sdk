@@ -25,18 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
-
-import java.util.Set;
-
-public interface KeyValueStore {
-
-    void setData(String key, String data);
-
-    String getData(String key);
-
-    void removeData(String key);
-
-    Set<String> getAllKeys();
-}
+internal class InMemorySecureStore :
+    KeyValueStore by InMemoryStore(),
+    SecureStore

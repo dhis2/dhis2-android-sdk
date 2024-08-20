@@ -25,9 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.configuration.internal
+import android.content.Context
+import android.content.SharedPreferences
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+internal class AndroidInsecureStore(context: Context) : InsecureStore {
+    private val preferences: SharedPreferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)
 
-internal interface DatabaseConfigurationInsecureStore : ObjectKeyValueStore<DatabasesConfiguration>
+    override fun setData(key: String, data: String?) {
+        if (data == null) {
+            removeData(key)
+        } else {
+            preferences.edit()
+                .putString(key, data)
+                .apply()
+        }
+    }
+
+    override fun getData(key: String): String? {
+        return preferences.getString(key, null)
+    }
+
+    override fun removeData(key: String) {
+        preferences.edit()
+            .remove(key)
+            .apply()
+    }
+
+    override fun getAllKeys(): Set<String> {
+        return preferences.all.keys
+    }
+
+    companion object {
+        private const val PREFERENCES_FILE = "preferences"
+    }
+}

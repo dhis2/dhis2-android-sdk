@@ -44,7 +44,7 @@ class ChunkedSecureStoreShould {
 
     @Test
     fun should_remove_matched_keys() {
-        whenever(internalSecureStore.allKeys).doReturn(
+        whenever(internalSecureStore.getAllKeys()).doReturn(
             setOf(
                 "sampleKey",
                 "sampleKey_[LEN]_",
@@ -62,7 +62,7 @@ class ChunkedSecureStoreShould {
 
         chunkedSecureStore.removeData("sampleKey")
 
-        verify(internalSecureStore).allKeys
+        verify(internalSecureStore).getAllKeys()
         verify(internalSecureStore).removeData("sampleKey")
         verify(internalSecureStore).removeData("sampleKey_[LEN]_")
         verify(internalSecureStore).removeData("sampleKey_[0]_")

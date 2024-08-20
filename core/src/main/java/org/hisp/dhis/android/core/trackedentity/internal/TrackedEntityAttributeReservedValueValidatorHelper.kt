@@ -25,82 +25,63 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.period.internal.CalendarUtils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import kotlinx.datetime.*
 
-public final class TrackedEntityAttributeReservedValueValidatorHelper {
-    Date getExpiryDateCode(String pattern) throws IllegalStateException {
-        List<String> matches = getCurrentDatePatternStrList(pattern);
+private const val i = 7
 
-        boolean yearly = false;
-        boolean monthly = false;
-        boolean weekly = false;
+class TrackedEntityAttributeReservedValueValidatorHelper {
+    @Throws(IllegalStateException::class)
+    fun getExpiryDateCode(pattern: String?): Instant {
+        val matches = getCurrentDatePatternStrList(pattern)
 
-        for (String match : matches) {
-            char[] charArray = match.toCharArray();
-            for (char ch : charArray) {
-                switch (ch) {
-                    case 'Y': yearly = true;
-                        break;
-                    case 'M': monthly = true;
-                        break;
-                    case 'w': weekly = true;
-                        break;
-                    default:
-                        break;
+        val flags = matches.flatMap { it.toCharArray().asIterable() }
+            .fold(Triple(false, false, false)) { acc, ch ->
+                when (ch) {
+                    'Y' -> acc.copy(first = true)
+                    'M' -> acc.copy(second = true)
+                    'w' -> acc.copy(third = true)
+                    else -> acc
                 }
             }
-        }
 
-        return nextExpiryDate(yearly, monthly, weekly);
+        return nextExpiryDate(flags.first, flags.second, flags.third)
     }
 
-    List<String> getCurrentDatePatternStrList(String pattern) {
-        String regex = "CURRENT_DATE\\((.*?)\\)";
+    fun getCurrentDatePatternStrList(pattern: String?): List<String> {
+        val regex = Regex("""CURRENT_DATE\((.*?)\)""")
+        return regex.findAll(pattern ?: "")
+            .flatMap { it.groupValues.drop(1) }
+            .toList()
+    }
 
-        Pattern idCodePattern = Pattern.compile(regex, Pattern.MULTILINE);
-        Matcher idCodeMatcher = idCodePattern.matcher(pattern);
 
-        List<String> matches = new ArrayList<>();
-
-        while (idCodeMatcher.find()) {
-            for (int i = 1; i <= idCodeMatcher.groupCount(); i++) {
-                matches.add(idCodeMatcher.group(i));
+    @Throws(IllegalStateException::class)
+    fun nextExpiryDate(yearly: Boolean, monthly: Boolean, weekly: Boolean): Instant {
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val nextDate = when {
+            weekly -> {
+                val daysUntilNextWeek = DAYS_IN_A_WEEK - now.dayOfWeek.ordinal
+                now.plus(daysUntilNextWeek, DateTimeUnit.DAY)
             }
-        }
 
-        return matches;
+            monthly -> {
+                val nextMonth = now.plus(1, DateTimeUnit.MONTH)
+                LocalDate(nextMonth.year, nextMonth.month, 1)
+            }
+
+            yearly -> {
+                LocalDate(now.year + 1, 1, 1)
+            }
+
+            else -> throw IllegalStateException("No expiry date available for this pattern.")
+        }
+        return nextDate.atStartOfDayIn(TimeZone.currentSystemDefault())
     }
 
-    Date nextExpiryDate(boolean yearly, boolean monthly, boolean weekly) throws IllegalStateException {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.clear(Calendar.MINUTE);
-        cal.clear(Calendar.SECOND);
-        cal.clear(Calendar.MILLISECOND);
-
-        if (weekly) {
-            cal.setFirstDayOfWeek(Calendar.MONDAY);
-            cal.add(Calendar.WEEK_OF_YEAR, 1);
-            CalendarUtils.setDayOfWeek(cal, Calendar.MONDAY);
-        } else if (monthly) {
-            cal.add(Calendar.MONTH, 1);
-            cal.set(Calendar.DAY_OF_MONTH, 1);
-        } else if (yearly) {
-            cal.add(Calendar.YEAR, 1);
-            cal.set(Calendar.DAY_OF_YEAR, 1);
-        } else {
-            throw new IllegalStateException("No expiry date available for this pattern.");
-        }
-
-        return cal.getTime();
+    companion object {
+        const val DAYS_IN_A_WEEK = 7
     }
 }

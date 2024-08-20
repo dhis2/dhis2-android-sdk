@@ -27,25 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-internal class InMemorySecureStore : SecureStore {
-    private val dataMap: MutableMap<String, String> = HashMap()
-
-    override fun setData(key: String, data: String?) {
-        removeData(key)
-        if (data != null) {
-            dataMap[key] = data
-        }
-    }
-
-    override fun getData(key: String): String? {
-        return dataMap[key]
-    }
-
-    override fun removeData(key: String) {
-        dataMap.remove(key)
-    }
-
-    override fun getAllKeys(): Set<String> {
-        return dataMap.keys
-    }
-}
+internal class InMemorySecureStore :
+    KeyValueStore by InMemoryStore(),
+    SecureStore

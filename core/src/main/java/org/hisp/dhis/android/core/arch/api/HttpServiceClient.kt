@@ -39,6 +39,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import io.ktor.util.AttributeKey
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
@@ -60,6 +61,9 @@ class HttpServiceClient(
                 requestBuilder.parameters.forEach { (key, value) ->
                     parameters.append(key, value)
                 }
+            }
+            if (requestBuilder.isAbsoluteUrl) {
+                attributes.put(AttributeKey<Boolean>("isAbsoluteUrl"), true)
             }
             requestBuilder.authorizationHeader?.let {
                 header(HttpHeaders.Authorization, it)

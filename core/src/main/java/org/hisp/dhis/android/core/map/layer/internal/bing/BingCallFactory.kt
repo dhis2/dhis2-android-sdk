@@ -32,6 +32,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
@@ -144,7 +145,7 @@ internal class BingCallFactory(
 
     private fun getUrl(style: String, bingKey: String): String {
         return if (D2Manager.isTestMode && !D2Manager.isRealIntegration) {
-            "api/mockBingMaps"
+            ServerURLWrapper.serverUrl + "/api/mockBingMaps"
         } else {
             "https://dev.virtualearth.net/REST/V1/Imagery/Metadata/$style?" +
                 "output=json&include=ImageryProviders&culture=en-GB&uriScheme=https&key=$bingKey"

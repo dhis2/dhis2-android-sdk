@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-import io.ktor.client.plugins.*
 import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.util.*
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.http.URLBuilder
+import io.ktor.http.takeFrom
+import io.ktor.util.AttributeKey
 
 internal object DynamicServerURLPlugin {
     val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
@@ -51,9 +51,11 @@ internal object DynamicServerURLPlugin {
         return URLBuilder(transformedUrlString)
     }
     fun transformRequest(request: HttpRequestBuilder) {
-        val originalUrlBuilder = request.url
-        val transformedUrlBuilder = transformUrl(originalUrlBuilder)
-        originalUrlBuilder.parameters.clear()
-        originalUrlBuilder.takeFrom(transformedUrlBuilder)
+        if (!request.attributes.contains(AttributeKey<Boolean>("isAbsoluteUrl"))) {
+            val originalUrlBuilder = request.url
+            val transformedUrlBuilder = transformUrl(originalUrlBuilder)
+            originalUrlBuilder.parameters.clear()
+            originalUrlBuilder.takeFrom(transformedUrlBuilder)
+        }
     }
 }

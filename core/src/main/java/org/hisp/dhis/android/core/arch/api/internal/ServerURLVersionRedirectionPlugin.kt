@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.arch.api.internal
 import io.ktor.client.call.HttpClientCall
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
-import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLPlugin.transformRequest
+import io.ktor.http.takeFrom
+import io.ktor.util.AttributeKey
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 
@@ -50,8 +50,10 @@ internal object ServerURLVersionRedirectionPlugin {
 
             while (isRedirect(call.response) && redirects <= MAX_REDIRECTS) {
                 redirects++
-                updateServerUrl(call.response)
-                call = buildRedirectRequest(this, call.request)
+                if (isInternal(request)) {
+                    updateServerUrl(call.response)
+                }
+                call = buildRedirectRequest(this, call)
             }
             redirects = 0
             call
@@ -62,6 +64,10 @@ internal object ServerURLVersionRedirectionPlugin {
         return response.status.value in REDIRECT_MIN..REDIRECT_MAX
     }
 
+    private fun isInternal(request: HttpRequestBuilder): Boolean {
+        return !request.attributes.contains(AttributeKey<Boolean>("isAbsoluteUrl"))
+    }
+
     private fun updateServerUrl(response: HttpResponse) {
         val location = response.headers[HttpHeaders.Location]
         location?.let {
@@ -69,11 +75,13 @@ internal object ServerURLVersionRedirectionPlugin {
         }
     }
 
-    private suspend fun buildRedirectRequest(sender: Send.Sender, request: HttpRequest): HttpClientCall {
+    private suspend fun buildRedirectRequest(sender: Send.Sender, call: HttpClientCall): HttpClientCall {
         val redirectRequest = HttpRequestBuilder().apply {
-            takeFrom(request)
+            takeFrom(call.request)
         }
-        transformRequest(redirectRequest)
+        val originalUrlBuilder = redirectRequest.url
+        originalUrlBuilder.parameters.clear()
+        originalUrlBuilder.takeFrom(call.response.headers[HttpHeaders.Location]!!)
         return sender.proceed(redirectRequest)
     }
 }

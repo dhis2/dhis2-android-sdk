@@ -77,7 +77,7 @@ internal class TrackedEntityAttributeReservedValueValidatorHelper {
                 LocalDate(now.year + 1, 1, 1)
             }
 
-            else -> throw IllegalStateException("No expiry date available for this pattern.")
+            else -> error("No expiry date available for this pattern.")
         }
         return nextDate.atStartOfDayIn(TimeZone.currentSystemDefault())
     }

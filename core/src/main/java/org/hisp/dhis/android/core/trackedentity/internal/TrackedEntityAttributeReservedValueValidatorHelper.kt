@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-
 import kotlinx.datetime.*
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.koin.core.annotation.Singleton
 
-private const val i = 7
-
-class TrackedEntityAttributeReservedValueValidatorHelper {
+@Singleton
+internal class TrackedEntityAttributeReservedValueValidatorHelper {
     @Throws(IllegalStateException::class)
     fun getExpiryDateCode(pattern: String?): Instant {
         val matches = getCurrentDatePatternStrList(pattern)
@@ -54,13 +54,14 @@ class TrackedEntityAttributeReservedValueValidatorHelper {
         val regex = Regex("""CURRENT_DATE\((.*?)\)""")
         return regex.findAll(pattern ?: "")
             .flatMap { it.groupValues.drop(1) }
+            .filter { it.isNotEmpty() }
             .toList()
     }
 
-
     @Throws(IllegalStateException::class)
     fun nextExpiryDate(yearly: Boolean, monthly: Boolean, weekly: Boolean): Instant {
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val now = ClockProviderFactory.clockProvider.clock.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+
         val nextDate = when {
             weekly -> {
                 val daysUntilNextWeek = DAYS_IN_A_WEEK - now.dayOfWeek.ordinal

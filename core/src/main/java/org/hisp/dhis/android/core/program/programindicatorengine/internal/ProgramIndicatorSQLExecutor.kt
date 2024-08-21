@@ -134,7 +134,7 @@ internal class ProgramIndicatorSQLExecutor(
 
         return "SELECT ${aggregator.sql}($selectExpression) " +
             "FROM $targetTable " +
-            "WHERE $filterExpression " +
+            "WHERE ($filterExpression) " +
             "AND $contextWhereClause"
     }
 

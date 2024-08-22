@@ -25,34 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramRuleActionSamples.programRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramRuleActionSamples;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramRuleActionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleAction> {
-
-    public ProgramRuleActionStoreIntegrationShould() {
-        super(new ProgramRuleActionStoreImpl(TestDatabaseAdapterFactory.get()), ProgramRuleActionTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+internal class ProgramRuleActionStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleAction>(
+        ProgramRuleActionStoreImpl(TestDatabaseAdapterFactory.get()),
+        ProgramRuleActionTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    protected override fun buildObject(): ProgramRuleAction {
+        return programRuleAction
     }
 
-    @Override
-    protected ProgramRuleAction buildObject() {
-        return ProgramRuleActionSamples.getProgramRuleAction();
-    }
-
-    @Override
-    protected ProgramRuleAction buildObjectToUpdate() {
-        return ProgramRuleActionSamples.getProgramRuleAction().toBuilder()
-                .data("newData")
-                .build();
+    protected override fun buildObjectToUpdate(): ProgramRuleAction {
+        return programRuleAction.toBuilder()
+            .data("newData")
+            .build()
     }
 }

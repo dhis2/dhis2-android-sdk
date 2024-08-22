@@ -25,22 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.program
 
-package org.hisp.dhis.android.core.data.program;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionType
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleActionType;
+internal object ProgramRuleActionSamples {
+    @JvmStatic
+    val programRuleAction: ProgramRuleAction
+        get() {
+            var builder = ProgramRuleAction.builder()
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class ProgramRuleActionSamples {
-
-    public static ProgramRuleAction getProgramRuleAction() {
-        ProgramRuleAction.Builder builder = ProgramRuleAction.builder();
-
-        fillIdentifiableProperties(builder);
-        builder
+            fillIdentifiableProperties(builder)
+            builder
                 .id(1L)
                 .data("data")
                 .content("content")
@@ -54,7 +53,8 @@ public class ProgramRuleActionSamples {
                 .programRule(ObjectWithUid.create("pr"))
                 .option(ObjectWithUid.create("option"))
                 .optionGroup(ObjectWithUid.create("option_group"))
-                .build();
-        return builder.build();
-    }
+                .displayContent("displayContent")
+                .build()
+            return builder.build()
+        }
 }

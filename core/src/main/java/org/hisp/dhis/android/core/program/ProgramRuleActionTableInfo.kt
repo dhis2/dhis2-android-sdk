@@ -25,61 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.appendInNewArray
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
+object ProgramRuleActionTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        public override fun name(): String {
+            return "ProgramRuleAction"
+        }
 
-public final class ProgramRuleActionTableInfo {
-
-    private ProgramRuleActionTableInfo() {
+        public override fun columns(): Columns {
+            return Columns()
+        }
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramRuleAction";
+    class Columns : IdentifiableColumns() {
+        public override fun all(): Array<String> {
+            return appendInNewArray(
+                super.all(),
+                DATA,
+                CONTENT,
+                LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE,
+                PROGRAM_INDICATOR,
+                PROGRAM_STAGE_SECTION,
+                PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE,
+                DATA_ELEMENT,
+                PROGRAM_RULE,
+                OPTION,
+                OPTION_GROUP,
+                DISPLAYCONTENT,
+            )
         }
 
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends IdentifiableColumns {
-        public static final String DATA = "data";
-        public static final String CONTENT = "content";
-        public static final String LOCATION = "location";
-        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        public static final String PROGRAM_INDICATOR = "programIndicator";
-        public static final String PROGRAM_STAGE_SECTION = "programStageSection";
-        public static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
-        public static final String PROGRAM_RULE = "programRule";
-        public static final String PROGRAM_STAGE = "programStage";
-        public static final String DATA_ELEMENT = "dataElement";
-        public static final String OPTION = "option";
-        public static final String OPTION_GROUP = "optionGroup";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DATA,
-                    CONTENT,
-                    LOCATION,
-                    TRACKED_ENTITY_ATTRIBUTE,
-                    PROGRAM_INDICATOR,
-                    PROGRAM_STAGE_SECTION,
-                    PROGRAM_RULE_ACTION_TYPE,
-                    PROGRAM_STAGE,
-                    DATA_ELEMENT,
-                    PROGRAM_RULE,
-                    OPTION,
-                    OPTION_GROUP
-            );
+        companion object {
+            const val DATA: String = "data"
+            const val CONTENT: String = "content"
+            const val LOCATION: String = "location"
+            const val TRACKED_ENTITY_ATTRIBUTE: String = "trackedEntityAttribute"
+            const val PROGRAM_INDICATOR: String = "programIndicator"
+            const val PROGRAM_STAGE_SECTION: String = "programStageSection"
+            const val PROGRAM_RULE_ACTION_TYPE: String = "programRuleActionType"
+            const val PROGRAM_RULE: String = "programRule"
+            const val PROGRAM_STAGE: String = "programStage"
+            const val DATA_ELEMENT: String = "dataElement"
+            const val OPTION: String = "option"
+            const val OPTION_GROUP: String = "optionGroup"
+            const val DISPLAYCONTENT: String = "displayContent"
         }
     }
 }

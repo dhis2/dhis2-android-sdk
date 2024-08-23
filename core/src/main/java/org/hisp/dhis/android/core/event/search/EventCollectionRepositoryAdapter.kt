@@ -27,7 +27,13 @@
  */
 package org.hisp.dhis.android.core.event.search
 
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
@@ -37,7 +43,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRep
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.koin.core.annotation.Singleton
-import java.util.*
 import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
 @Singleton
@@ -116,12 +121,12 @@ internal class EventCollectionRepositoryAdapter(
             filter.dateFilter()?.let { period ->
                 datePeriodHelper.getStartDate(period)?.let {
                     // This is to ensure that comparison with date without time works as expected
-                    val date = addMillis(it, -1)
+                    val date = addMillis(it.toKtxInstant(), -1).toJavaDate()
                     filterRepo = filterRepo.byDataValue(deId).gt(DateUtils.DATE_FORMAT.format(date))
                 }
                 datePeriodHelper.getEndDate(period)?.let {
                     // This is to ensure that comparison with date without time works as expected
-                    val date = addMillis(it, 1)
+                    val date = addMillis(it.toKtxInstant(), 1).toJavaDate()
                     filterRepo = filterRepo.byDataValue(deId).lt(DateUtils.DATE_FORMAT.format(date))
                 }
             }
@@ -134,17 +139,21 @@ internal class EventCollectionRepositoryAdapter(
         return when (scope.orgUnitMode()) {
             OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
                 organisationUnitCollectionRepository.blockingGetUids()
+
             OrganisationUnitMode.CAPTURE ->
                 organisationUnitCollectionRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids()
+
             OrganisationUnitMode.CHILDREN ->
                 scope.orgUnits()?.map { orgUnit ->
                     organisationUnitCollectionRepository.byParentUid().eq(orgUnit).blockingGetUids() + orgUnit
                 }?.flatten()
+
             OrganisationUnitMode.DESCENDANTS ->
                 scope.orgUnits()?.map { orgUnit ->
                     organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
                 }?.flatten()
+
             OrganisationUnitMode.SELECTED ->
                 scope.orgUnits()
         }
@@ -191,10 +200,7 @@ internal class EventCollectionRepositoryAdapter(
         }
     }
 
-    private fun addMillis(date: Date, millis: Int): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar.add(Calendar.MILLISECOND, millis)
-        return calendar.time
+    private fun addMillis(instant: Instant, millis: Int): Instant {
+        return instant.plus(millis, DateTimeUnit.MILLISECOND, TimeZone.currentSystemDefault())
     }
 }

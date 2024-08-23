@@ -30,8 +30,13 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
@@ -40,6 +45,7 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.koin.core.annotation.Singleton
 import java.util.*
@@ -52,6 +58,7 @@ internal class OwnershipManagerImpl(
     private val programTempOwnerStore: ProgramTempOwnerStore,
     private val programOwnerStore: ProgramOwnerStore,
     private val parameterManager: TrackerExporterParameterManager,
+    private val clockProvider: ClockProvider,
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
@@ -71,7 +78,7 @@ internal class OwnershipManagerImpl(
                             .trackedEntityInstance(trackedEntityInstance)
                             .reason(reason)
                             .created(Date())
-                            .validUntil(getValidUntil())
+                            .validUntil(getValidUntil().toJavaDate())
                             .build(),
                     )
                 } else {
@@ -142,14 +149,12 @@ internal class OwnershipManagerImpl(
         }
     }
 
-    private fun getValidUntil(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = Date()
-        calendar.add(Calendar.HOUR_OF_DAY, validInHours)
-        return calendar.time
+    private fun getValidUntil(): Instant {
+        val currentInstant = clockProvider.clock.now()
+        return currentInstant.plus(HOURS_UNTIL_EXPIRATION, DateTimeUnit.HOUR, TimeZone.currentSystemDefault())
     }
 
     companion object {
-        const val validInHours = 2
+        const val HOURS_UNTIL_EXPIRATION = 2
     }
 }

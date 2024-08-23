@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.period.internal
 
 import kotlinx.datetime.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.PeriodType.Companion.firstDayOfTheWeek
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
@@ -21,7 +22,7 @@ internal class PeriodParser {
         val matchResult = regex.matchEntire(periodId)
         requireNotNull(matchResult) { "It has not been possible to generate a match for the period pattern." }
         val date = getDateFromPeriodId(matchResult, periodType)
-        return date.atStartOfDayIn(TimeZone.currentSystemDefault())
+        return date.atStartOfDayInSystem()
     }
 
     private fun getDateFromPeriodId(matchResult: MatchResult, periodType: PeriodType): LocalDate {

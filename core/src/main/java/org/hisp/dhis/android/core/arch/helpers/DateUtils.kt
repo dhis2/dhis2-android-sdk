@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
@@ -114,5 +117,9 @@ object DateUtils {
         val seconds = dateTime.second.zeroPrefixed()
 
         return "$year$month$day-$hour$minute$seconds"
+    }
+
+    internal fun LocalDate.atStartOfDayInSystem(): Instant {
+        return this.atStartOfDayIn(TimeZone.currentSystemDefault())
     }
 }

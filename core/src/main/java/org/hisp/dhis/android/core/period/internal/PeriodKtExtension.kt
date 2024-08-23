@@ -32,10 +32,10 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toLocalDateTime
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.generator.internal.PeriodKt
 import org.hisp.dhis.android.core.util.toLocalDate
@@ -55,7 +55,7 @@ internal fun PeriodKt.toPeriods(): Period {
 }
 
 private fun toStartDate(localDate: LocalDate): Date {
-    return Date.from(localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toJavaInstant())
+    return Date.from(localDate.atStartOfDayInSystem().toJavaInstant())
 }
 
 private fun toEndDate(localDate: LocalDate): Date {

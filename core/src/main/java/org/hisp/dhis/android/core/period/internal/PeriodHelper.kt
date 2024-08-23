@@ -40,7 +40,7 @@ class PeriodHelper internal constructor(
     private val periodStore: PeriodStore,
     private val periodForDataSetManager: PeriodForDataSetManager,
     private val parentPeriodGenerator: ParentPeriodGenerator,
-    private val periodParser: PeriodParser
+    private val periodParser: PeriodParser,
 ) {
     /**
      * Get a period object specifying a periodType and a date in the period.
@@ -52,7 +52,7 @@ class PeriodHelper internal constructor(
      */
     @Deprecated(
         "Use {@link #getPeriodForPeriodTypeAndDate(PeriodType, Date)} instead.",
-        ReplaceWith("getPeriodForPeriodTypeAndDate(periodType, date)")
+        ReplaceWith("getPeriodForPeriodTypeAndDate(periodType, date)"),
     )
     fun getPeriod(periodType: PeriodType, date: Date): Period {
         return blockingGetPeriodForPeriodTypeAndDate(periodType, date, 0)

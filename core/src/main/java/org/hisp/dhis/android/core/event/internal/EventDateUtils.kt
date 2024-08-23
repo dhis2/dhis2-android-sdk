@@ -27,17 +27,21 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.koin.core.annotation.Singleton
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @Singleton
-class EventDateUtils(
+internal class EventDateUtils(
     private val periodHelper: PeriodHelper,
+    private val clockProvider: ClockProvider,
 ) {
 
     /**
@@ -48,11 +52,11 @@ class EventDateUtils(
      * @param completeExpiryDays number of days for which the event is still editable after completion.
      * @return true or false
      */
-    fun isExpiredAfterCompletion(evaluationDate: Date?, completeDate: Date?, completeExpiryDays: Int): Boolean {
-        val referenceDate = evaluationDate ?: getCalendar().time
+    fun isExpiredAfterCompletion(evaluationDate: Instant?, completeDate: Instant?, completeExpiryDays: Int): Boolean {
+        val referenceDate = evaluationDate ?: currentDateInstant()
         return completeDate != null &&
             completeExpiryDays > 0 &&
-            completeDate.time + TimeUnit.DAYS.toMillis(completeExpiryDays.toLong()) < referenceDate.time
+            completeDate.plus(completeExpiryDays, DateTimeUnit.DAY, TimeZone.currentSystemDefault()) < referenceDate
     }
 
     /**
@@ -74,39 +78,31 @@ class EventDateUtils(
     ): Boolean {
         if (event.status() == EventStatus.COMPLETED && event.completedDate() == null) return false
 
-        val expiredBecauseOfCompletion =
-            if (event.status() == EventStatus.COMPLETED) {
-                isExpiredAfterCompletion(null, event.completedDate(), completeExpiryDays)
-            } else {
-                false
-            }
+        val expiredBecauseOfCompletion = event.takeIf { it.status() == EventStatus.COMPLETED }
+            ?.completedDate()?.time
+            ?.let { isExpiredAfterCompletion(null, Instant.fromEpochMilliseconds(it), completeExpiryDays) }
+            ?: false
 
         val expiredBecauseOfPeriod = (event.eventDate() ?: event.dueDate())?.let { eventDateOrDueDate ->
             programPeriodType?.let { periodType ->
+                val nextPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1)
+                    .startDate()?.let { Instant.fromEpochMilliseconds(it.time).plusDays(expiryDays) }
+                    ?: return false
 
-                var nextPeriod = periodHelper
-                    .blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1).startDate()!!
-                val currentDate: Date = getCalendar().time
-                if (expiryDays > 0) {
-                    val calendar: Calendar = getCalendar()
-                    calendar.time = nextPeriod
-                    calendar.add(Calendar.DAY_OF_YEAR, expiryDays)
-                    nextPeriod = calendar.time
-                }
-                nextPeriod <= currentDate
+                nextPeriod <= currentDateInstant()
             }
         } ?: false
 
         return expiredBecauseOfCompletion || expiredBecauseOfPeriod
     }
 
-    private fun getCalendar(): Calendar {
-        val calendar = periodHelper.calendar
+    private fun currentDateInstant(): Instant {
+        return clockProvider.clock.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+            .atStartOfDayInSystem()
+    }
 
-        calendar[Calendar.HOUR_OF_DAY] = 0
-        calendar[Calendar.MINUTE] = 0
-        calendar[Calendar.SECOND] = 0
-        calendar[Calendar.MILLISECOND] = 0
-        return calendar
+    private fun Instant.plusDays(days: Int): Instant {
+        return this.plus(days, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
     }
 }

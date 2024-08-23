@@ -78,7 +78,8 @@ class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<
 
     private Date fillTemporalValidityDate(String pattern) {
         try {
-            return new TrackedEntityAttributeReservedValueValidatorHelper().getExpiryDateCode(pattern);
+            return new Date(new TrackedEntityAttributeReservedValueValidatorHelper()
+                    .getExpiryDateCode(pattern).toEpochMilliseconds());
         } catch (IllegalStateException e) {
             return null;
         }

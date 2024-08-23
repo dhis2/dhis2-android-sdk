@@ -28,16 +28,17 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
-import java.util.*
+import java.util.Date
 
 object DateUtils {
 
@@ -50,58 +51,50 @@ object DateUtils {
     @JvmField
     val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
 
-    @JvmStatic
     @Suppress("MagicNumber")
-    fun dateWithOffset(date: Date, periods: Int, periodType: PeriodType): Date {
-        val calendar = CalendarProviderFactory.calendarProvider.calendar.clone() as Calendar
-
-        calendar.time = date
-
-        when (periodType) {
-            PeriodType.Daily -> calendar.add(Calendar.DATE, periods)
+    fun dateWithOffset(instant: Instant, periods: Int, periodType: PeriodType): Instant {
+        val instantWithOffset = when (periodType) {
+            PeriodType.Daily -> instant.plus(periods, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
             PeriodType.Weekly,
             PeriodType.WeeklySaturday,
             PeriodType.WeeklySunday,
             PeriodType.WeeklyThursday,
             PeriodType.WeeklyWednesday,
-            -> calendar.add(Calendar.WEEK_OF_YEAR, periods)
-            PeriodType.BiWeekly -> calendar.add(Calendar.WEEK_OF_YEAR, 2 * periods)
-            PeriodType.Monthly -> calendar.add(Calendar.MONTH, periods)
-            PeriodType.BiMonthly -> calendar.add(Calendar.MONTH, 2 * periods)
+            -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
+
+            PeriodType.BiWeekly -> instant.plus(periods * 2, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
+            PeriodType.Monthly -> instant.plus(periods, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+            PeriodType.BiMonthly -> instant.plus(periods * 2, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
             PeriodType.Quarterly,
             PeriodType.QuarterlyNov,
-            -> calendar.add(Calendar.MONTH, 3 * periods)
+            -> instant.plus(periods * 3, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+
             PeriodType.SixMonthly,
             PeriodType.SixMonthlyApril,
             PeriodType.SixMonthlyNov,
-            -> calendar.add(Calendar.MONTH, 6 * periods)
+            -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+
             PeriodType.Yearly,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
             PeriodType.FinancialOct,
             PeriodType.FinancialNov,
-            -> calendar.add(Calendar.YEAR, periods)
+            -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
         }
 
-        return calendar.time
+        return instantWithOffset
     }
 
-    @JvmStatic
     fun getStartDate(periods: List<Period>): Date? {
         return periods.mapNotNull { it.startDate() }.minByOrNull { it.time }
     }
 
-    @JvmStatic
     fun getEndDate(periods: List<Period>): Date? {
         return periods.mapNotNull { it.endDate() }.maxByOrNull { it.time }
     }
 
-    @JvmStatic
-    fun addMonths(date: Date, amount: Int): Date {
-        val c = CalendarProviderFactory.calendarProvider.calendar.clone() as Calendar
-        c.time = date
-        c.add(Calendar.MONTH, amount)
-        return c.time
+    fun addMonths(instant: Instant, amount: Int): Instant {
+        return instant.plus(amount, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
     }
 
     internal fun Int.zeroPrefixed(length: Int = 2): String = this.toString().padStart(length, '0')
@@ -121,5 +114,13 @@ object DateUtils {
 
     internal fun LocalDate.atStartOfDayInSystem(): Instant {
         return this.atStartOfDayIn(TimeZone.currentSystemDefault())
+    }
+
+    internal fun Date.toKtxInstant(): Instant {
+        return Instant.fromEpochMilliseconds(this.time)
+    }
+
+    internal fun Instant.toJavaDate(): Date {
+        return Date(this.toEpochMilliseconds())
     }
 }

@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -382,7 +384,8 @@ internal object ProgramIndicatorEvaluatorHelper {
         }
 
         val dateWithOffset = if (boundary.offsetPeriods() != null && boundary.offsetPeriodType() != null) {
-            DateUtils.dateWithOffset(date, boundary.offsetPeriods()!!, boundary.offsetPeriodType()!!)
+            DateUtils.dateWithOffset(date.toKtxInstant(), boundary.offsetPeriods()!!, boundary.offsetPeriodType()!!)
+                .toJavaDate()
         } else {
             date
         }

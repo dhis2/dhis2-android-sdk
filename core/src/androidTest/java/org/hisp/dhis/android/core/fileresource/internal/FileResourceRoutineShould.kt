@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,6 +49,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
             trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes(),
             trackedEntityAttributeValueCollectionRepository = d2.trackedEntityModule().trackedEntityAttributeValues(),
             trackedEntityDataValueCollectionRepository = d2.trackedEntityModule().trackedEntityDataValues(),
+            clockProvider = ClockProviderFactory.clockProvider
         )
     }
 

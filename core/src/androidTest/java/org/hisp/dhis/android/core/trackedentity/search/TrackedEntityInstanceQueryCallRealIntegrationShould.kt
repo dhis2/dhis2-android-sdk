@@ -28,11 +28,15 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.junit.Assert
 import org.junit.Before
-import java.util.*
 
 class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var repository: TrackedEntityInstanceQueryCollectionRepository
@@ -67,10 +71,10 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
     // @Test
     fun query_tracked_entity_instances_filter_program_start_date() {
         login()
-        val cal = Calendar.getInstance()
-        cal.add(Calendar.YEAR, -1)
+        val lastYear = ClockProviderFactory.clockProvider.clock.now()
+            .minus(1, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
         val queryResponse = repository.onlineOnly()
-            .byProgramStartDate().eq(cal.time).blockingGet()
+            .byProgramStartDate().eq(lastYear.toJavaDate()).blockingGet()
 
         assertThat(queryResponse).isNotEmpty()
     }
@@ -78,9 +82,9 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
     // @Test
     fun query_tracked_entity_instances_filter_program_end_date() {
         login()
-        val cal = Calendar.getInstance()
+        val now = ClockProviderFactory.clockProvider.clock.now()
         val queryResponse = repository.onlineOnly()
-            .byProgramEndDate().eq(cal.time)
+            .byProgramEndDate().eq(now.toJavaDate())
             .blockingGet()
 
         assertThat(queryResponse).isNotEmpty()

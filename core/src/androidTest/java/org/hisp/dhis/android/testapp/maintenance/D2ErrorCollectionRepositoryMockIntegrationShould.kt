@@ -25,76 +25,67 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.maintenance
 
-package org.hisp.dhis.android.testapp.maintenance;
+import com.google.common.truth.Truth
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toLocalDateTime
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+@RunWith(D2JunitRunner::class)
+class D2ErrorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void filter_d2_error_by_url() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet();
-        assertThat(d2Errors.size()).isEqualTo(1);
+    fun filter_d2_error_by_url() {
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet()
+        Truth.assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_d2_error_by_d2_error_code() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byD2ErrorCode().eq(D2ErrorCode.BAD_CREDENTIALS).blockingGet();
-        assertThat(d2Errors.size()).isEqualTo(1);
+    fun filter_d2_error_by_d2_error_code() {
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .byD2ErrorCode().eq(D2ErrorCode.BAD_CREDENTIALS).blockingGet()
+        Truth.assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_d2_error_by_d2_error_component() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byD2ErrorComponent().eq(D2ErrorComponent.Server).blockingGet();
-        assertThat(d2Errors.size()).isEqualTo(4);
+    fun filter_d2_error_by_d2_error_component() {
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .byD2ErrorComponent().eq(D2ErrorComponent.Server).blockingGet()
+        Truth.assertThat(d2Errors.size).isEqualTo(4)
     }
 
     @Test
-    public void filter_d2_error_by_error_description() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byErrorDescription().eq("Error processing response").blockingGet();
-        assertThat(d2Errors.size()).isEqualTo(1);
+    fun filter_d2_error_by_error_description() {
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .byErrorDescription().eq("Error processing response").blockingGet()
+        Truth.assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_d2_error_by_http_error_code() {
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byHttpErrorCode().eq(402).blockingGet();
-        assertThat(d2Errors.size()).isEqualTo(1);
+    fun filter_d2_error_by_http_error_code() {
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .byHttpErrorCode().eq(402).blockingGet()
+        Truth.assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_d2_error_by_created() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        Date startDate = cal.getTime();
+    fun filter_d2_error_by_created() {
+        val startDate = ClockProviderFactory.clockProvider.clock.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+            .atStartOfDayIn(TimeZone.currentSystemDefault()).toJavaDate()
 
-        List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
-                .byCreated().afterOrEqual(startDate).blockingGet();
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .byCreated().afterOrEqual(startDate).blockingGet()
 
-        assertThat(d2Errors.size()).isEqualTo(5);
+        Truth.assertThat(d2Errors.size).isEqualTo(5)
     }
 }

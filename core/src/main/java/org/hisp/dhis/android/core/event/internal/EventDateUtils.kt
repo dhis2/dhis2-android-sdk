@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.koin.core.annotation.Singleton
-import java.util.*
 
 @Singleton
 internal class EventDateUtils(
@@ -62,12 +61,10 @@ internal class EventDateUtils(
     /**
      * Check if an event is expired today.
      *
-     * @param eventDate         Date of the event (Can be either eventDate or dueDate, but can not be null).
-     * @param completeDate      date that event was completed (can be null).
-     * @param status            status of event (ACTIVE,COMPLETED,SCHEDULE,OVERDUE,SKIPPED,VISITED).
-     * @param completeExpiryDays       extra days to edit event when completed .
-     * @param programPeriodType period in which the event can be edited.
-     * @param expiryDays           extra days after period to edit event.
+     * @param event                 the event to check.
+     * @param completeExpiryDays    extra days to edit event when completed .
+     * @param programPeriodType     period in which the event can be edited.
+     * @param expiryDays            extra days after period to edit event.
      * @return true or false
      */
     fun isEventExpired(

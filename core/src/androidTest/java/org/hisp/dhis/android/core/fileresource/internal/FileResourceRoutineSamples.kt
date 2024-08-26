@@ -63,10 +63,8 @@ object FileResourceRoutineSamples {
     private val twoHoursAgo = ClockProviderFactory.clockProvider.clock.now()
         .minus(2, DateTimeUnit.HOUR, TimeZone.currentSystemDefault())
 
-
     private val threeHoursAgo = ClockProviderFactory.clockProvider.clock.now()
         .minus(3, DateTimeUnit.HOUR, TimeZone.currentSystemDefault())
-
 
     val fileResource1: FileResource by lazy {
         val uid = generator.generate()

@@ -147,7 +147,8 @@ internal object AnalyticsEvaluatorHelper {
                 val endDate = DateUtils.getEndDate(periods)
                 startDate?.let {
                     val earliest = DateUtils.dateWithOffset(
-                        startDate.toKtxInstant(), firstLastAggrYearOffset, PeriodType.Yearly).toJavaDate()
+                        startDate.toKtxInstant(), firstLastAggrYearOffset, PeriodType.Yearly,
+                    ).toJavaDate()
                     listOf(Period.builder().startDate(earliest).endDate(endDate).build())
                 } ?: periods
             }

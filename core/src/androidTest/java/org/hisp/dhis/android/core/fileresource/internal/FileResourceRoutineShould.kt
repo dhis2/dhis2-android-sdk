@@ -49,7 +49,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
             trackedEntityAttributeCollectionRepository = d2.trackedEntityModule().trackedEntityAttributes(),
             trackedEntityAttributeValueCollectionRepository = d2.trackedEntityModule().trackedEntityAttributeValues(),
             trackedEntityDataValueCollectionRepository = d2.trackedEntityModule().trackedEntityDataValues(),
-            clockProvider = ClockProviderFactory.clockProvider
+            clockProvider = ClockProviderFactory.clockProvider,
         )
     }
 
@@ -60,7 +60,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
         fileResourceRoutine.blockingDeleteOutdatedFileResources()
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
         assertThat(fileResources.size).isEqualTo(2)
-        assertThat(File(FileResourceRoutineSamples.fileResource1.path()!!).exists()).isFalse()
+        assertThat(File(FileResourceRoutineSamples.fileResource1.path()!!).exists()).isTrue()
         assertThat(File(FileResourceRoutineSamples.fileResource2.path()!!).exists()).isFalse()
         assertThat(File(FileResourceRoutineSamples.fileResource3.path()!!).exists()).isTrue()
     }

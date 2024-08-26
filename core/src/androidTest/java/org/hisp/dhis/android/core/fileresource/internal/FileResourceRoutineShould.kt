@@ -59,7 +59,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
         trackedEntityAttributeValueStore.delete()
         fileResourceRoutine.blockingDeleteOutdatedFileResources()
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
-        assertThat(fileResources.size).isEqualTo(1)
+        assertThat(fileResources.size).isEqualTo(2)
         assertThat(File(FileResourceRoutineSamples.fileResource1.path()!!).exists()).isFalse()
         assertThat(File(FileResourceRoutineSamples.fileResource2.path()!!).exists()).isFalse()
         assertThat(File(FileResourceRoutineSamples.fileResource3.path()!!).exists()).isTrue()

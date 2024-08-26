@@ -35,9 +35,14 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import java.io.IOException
 import java.math.BigInteger
 import java.nio.charset.Charset
@@ -54,9 +59,7 @@ import java.security.PublicKey
 import java.security.UnrecoverableEntryException
 import java.security.UnrecoverableKeyException
 import java.security.cert.CertificateException
-import java.util.Calendar
 import java.util.Date
-import java.util.GregorianCalendar
 import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
@@ -90,17 +93,17 @@ class AndroidSecureStore(context: Context) : SecureStore {
 
     @Suppress("MagicNumber", "ThrowsCount")
     private fun generateKeys(ks: KeyStore, context: Context) {
-        // Create a start and end time, for the validity range of the key pair that's about to be
-        // generated.
-        val start: Calendar = GregorianCalendar()
-        val end: Calendar = GregorianCalendar()
-        end.add(Calendar.YEAR, 10)
         val spec = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            // Create a start and end time, for the validity range of the key pair that's about to be
+            // generated.
+            val start = ClockProviderFactory.clockProvider.clock.now()
+            val end = start.plus(10, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
+
             KeyPairGeneratorSpec.Builder(context)
                 .setAlias(ALIAS)
                 .setSubject(X500Principal("CN=$ALIAS"))
                 .setSerialNumber(BigInteger.valueOf(1337))
-                .setStartDate(start.time).setEndDate(end.time)
+                .setStartDate(start.toJavaDate()).setEndDate(end.toJavaDate())
                 .build()
         } else {
             KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)

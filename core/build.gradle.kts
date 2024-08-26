@@ -219,3 +219,16 @@ tasks.dokkaJavadoc.configure {
         }
     }
 }
+
+tasks.dokkaHtml.configure {
+    dependsOn("kaptReleaseKotlin")
+
+    dokkaSourceSets {
+        configureEach {
+            perPackageOption {
+                matchingRegex.set(".*.internal.*")
+                suppress.set(true)
+            }
+        }
+    }
+}

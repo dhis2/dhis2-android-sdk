@@ -40,12 +40,12 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Java docs
-        run: ./gradlew :core:dokkaJavadoc
+        run: ./gradlew :core:dokkaHtml
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "core/build/dokka/javadoc/"
+          path: "core/build/dokka/html/"
 
   # Deployment job
   deploy:

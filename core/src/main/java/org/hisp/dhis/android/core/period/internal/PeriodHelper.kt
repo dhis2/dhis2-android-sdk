@@ -138,9 +138,11 @@ class PeriodHelper internal constructor(
     }
 
     companion object {
+        private const val MILLIS_IN_A_DAY = 86400000
+
         fun getDays(period: Period): Int {
             val diffInMillis = period.endDate()!!.time - period.startDate()!!.time
-            return ceil(diffInMillis / (1000 * 60 * 60 * 24).toDouble()).toInt()
+            return ceil(diffInMillis / MILLIS_IN_A_DAY.toDouble()).toInt()
         }
     }
 }

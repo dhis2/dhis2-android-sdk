@@ -84,9 +84,8 @@ internal class EventDateUtils(
             programPeriodType?.let { periodType ->
                 val nextPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1)
                     .startDate()?.let { Instant.fromEpochMilliseconds(it.time).plusDays(expiryDays) }
-                    ?: return false
 
-                nextPeriod <= currentDateInstant()
+                nextPeriod != null && nextPeriod <= currentDateInstant()
             }
         } ?: false
 

@@ -108,7 +108,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         customIconHref: String,
     ): ResponseBody {
         return client.get {
-            absoluteUrl(customIconHref)
+            absoluteUrl(customIconHref, false)
         }
     }
 

@@ -106,9 +106,10 @@ internal class FileResourceService(private val client: HttpServiceClient) {
 
     suspend fun getCustomIcon(
         customIconHref: String,
+        isExternalSource: Boolean = false
     ): ResponseBody {
         return client.get {
-            absoluteUrl(customIconHref)
+            absoluteUrl(customIconHref, isExternalSource)
         }
     }
 

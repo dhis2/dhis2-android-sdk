@@ -25,36 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.data.program;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramRuleActionSamples.programRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleActionType;
+@RunWith(D2JunitRunner::class)
+internal class ProgramRuleActionStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleAction>(
+        ProgramRuleActionStoreImpl(TestDatabaseAdapterFactory.get()),
+        ProgramRuleActionTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    protected override fun buildObject(): ProgramRuleAction {
+        return programRuleAction
+    }
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class ProgramRuleActionSamples {
-
-    public static ProgramRuleAction getProgramRuleAction() {
-        ProgramRuleAction.Builder builder = ProgramRuleAction.builder();
-
-        fillIdentifiableProperties(builder);
-        builder
-                .id(1L)
-                .data("data")
-                .content("content")
-                .location("location")
-                .trackedEntityAttribute(ObjectWithUid.create("tea"))
-                .programIndicator(ObjectWithUid.create("pi"))
-                .programStageSection(ObjectWithUid.create("pss"))
-                .programRuleActionType(ProgramRuleActionType.ASSIGN)
-                .programStage(ObjectWithUid.create("ps"))
-                .dataElement(ObjectWithUid.create("de"))
-                .programRule(ObjectWithUid.create("pr"))
-                .option(ObjectWithUid.create("option"))
-                .optionGroup(ObjectWithUid.create("option_group"))
-                .build();
-        return builder.build();
+    protected override fun buildObjectToUpdate(): ProgramRuleAction {
+        return programRuleAction.toBuilder()
+            .data("newData")
+            .build()
     }
 }

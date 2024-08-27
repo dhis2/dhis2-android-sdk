@@ -25,34 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.program
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionType
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramRuleActionSamples;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+internal object ProgramRuleActionSamples {
+    @JvmStatic
+    val programRuleAction: ProgramRuleAction
+        get() {
+            var builder = ProgramRuleAction.builder()
 
-@RunWith(D2JunitRunner.class)
-public class ProgramRuleActionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleAction> {
-
-    public ProgramRuleActionStoreIntegrationShould() {
-        super(new ProgramRuleActionStoreImpl(TestDatabaseAdapterFactory.get()), ProgramRuleActionTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected ProgramRuleAction buildObject() {
-        return ProgramRuleActionSamples.getProgramRuleAction();
-    }
-
-    @Override
-    protected ProgramRuleAction buildObjectToUpdate() {
-        return ProgramRuleActionSamples.getProgramRuleAction().toBuilder()
-                .data("newData")
-                .build();
-    }
+            fillIdentifiableProperties(builder)
+            builder
+                .id(1L)
+                .data("data")
+                .content("content")
+                .location("location")
+                .trackedEntityAttribute(ObjectWithUid.create("tea"))
+                .programIndicator(ObjectWithUid.create("pi"))
+                .programStageSection(ObjectWithUid.create("pss"))
+                .programRuleActionType(ProgramRuleActionType.ASSIGN)
+                .programStage(ObjectWithUid.create("ps"))
+                .dataElement(ObjectWithUid.create("de"))
+                .programRule(ObjectWithUid.create("pr"))
+                .option(ObjectWithUid.create("option"))
+                .optionGroup(ObjectWithUid.create("option_group"))
+                .displayContent("displayContent")
+                .build()
+            return builder.build()
+        }
 }

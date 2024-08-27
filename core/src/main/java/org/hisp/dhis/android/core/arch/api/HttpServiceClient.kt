@@ -65,6 +65,9 @@ class HttpServiceClient(
             if (requestBuilder.isAbsoluteUrl) {
                 attributes.put(AttributeKey<Boolean>("isAbsoluteUrl"), true)
             }
+            if (requestBuilder.isExternalRequest) {
+                attributes.put(AttributeKey<Boolean>("isExternalRequest"), true)
+            }
             requestBuilder.authorizationHeader?.let {
                 header(HttpHeaders.Authorization, it)
             }

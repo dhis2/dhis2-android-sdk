@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
@@ -72,7 +73,10 @@ class HttpServiceClient(
                 header(HttpHeaders.Authorization, it)
             }
             if (method == HttpMethod.Post || method == HttpMethod.Put) {
-                contentType(ContentType.Application.Json)
+                when (requestBuilder.body) {
+                    is MultiPartFormDataContent -> contentType(ContentType.MultiPart.FormData)
+                    else -> contentType(ContentType.Application.Json)
+                }
                 setBody(requestBuilder.body)
             }
         }

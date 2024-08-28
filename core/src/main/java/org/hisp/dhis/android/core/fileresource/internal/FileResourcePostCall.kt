@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import android.webkit.MimeTypeMap
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
@@ -86,12 +87,22 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun getFilePart(file: File): MultipartBody.Part {
+    private fun getFilePart(file: File): MultiPartFormDataContent {
         val extension = MimeTypeMap.getFileExtensionFromUrl(file.path)
         val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/*"
 
-        return MultipartBody.Part
-            .createFormData("file", file.name, file.asRequestBody(type.toMediaTypeOrNull()))
+        return MultiPartFormDataContent(
+            formData {
+                append(
+                    key = "file",
+                    value = file.readBytes(),
+                    headers = Headers.build {
+                        append(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"${file.name}\"")
+                        append(HttpHeaders.ContentType, type)
+                    },
+                )
+            },
+        )
     }
 
     private fun handleResponse(

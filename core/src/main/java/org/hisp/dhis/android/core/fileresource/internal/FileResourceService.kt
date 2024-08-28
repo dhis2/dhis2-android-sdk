@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import okhttp3.MultipartBody
+import io.ktor.client.request.forms.MultiPartFormDataContent
 import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
@@ -39,7 +39,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class FileResourceService(private val client: HttpServiceClient) {
 
-    suspend fun uploadFile(filePart: MultipartBody.Part): ResponseBody {
+    suspend fun uploadFile(filePart: MultiPartFormDataContent): ResponseBody {
         return client.post {
             url(FILE_RESOURCES)
             body(filePart)

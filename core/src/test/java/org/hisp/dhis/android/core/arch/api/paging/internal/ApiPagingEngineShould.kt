@@ -25,137 +25,127 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.paging.internal
 
-package org.hisp.dhis.android.core.arch.api.paging.internal;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine.calculateFirstPagination
+import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine.calculateLastPagination
+import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine.getPaginationList
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.runners.MockitoJUnitRunner
+import java.util.Arrays
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(MockitoJUnitRunner.class)
-public class ApiPagingEngineShould {
-
+@RunWith(MockitoJUnitRunner::class)
+class ApiPagingEngineShould {
     @Test
-    public void calculate_a_paging_list() throws IllegalArgumentException, IllegalStateException {
-        List<Paging> calculatedPagingList = ApiPagingEngine.getPaginationList(50, 179, 0);
-        Paging paging1 = Paging.create(1,50,0, 0, false);
-        Paging paging2 = Paging.create(2,50,0, 0, false);
-        Paging paging3 = Paging.create(3,50,0, 0, false);
-        Paging lastPaging = Paging.create(6,30,0, 1, true);
+    @Throws(IllegalArgumentException::class, IllegalStateException::class)
+    fun calculate_a_paging_list() {
+        var calculatedPagingList: List<Paging?> = getPaginationList(50, 179, 0)
+        var paging1 = Paging(1, 50, 0, 0, false)
+        var paging2 = Paging(2, 50, 0, 0, false)
+        var paging3 = Paging(3, 50, 0, 0, false)
+        var lastPaging = Paging(6, 30, 0, 1, true)
 
-        List<Paging> expectedPagingList = new ArrayList<>(Arrays.asList(paging1, paging2, paging3, lastPaging));
+        var expectedPagingList: List<Paging?> =
+            ArrayList(Arrays.asList(paging1, paging2, paging3, lastPaging))
 
-        assertThat(expectedPagingList).isEqualTo(calculatedPagingList);
+        Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
     }
 
     @Test
-    public void calculate_a_paging_list_if_only_one_page() throws IllegalArgumentException, IllegalStateException {
-        List<Paging> calculatedPagingList = ApiPagingEngine.getPaginationList(50, 33, 0);
-        Paging paging = Paging.create(1,33,0, 0, true);
-        List<Paging> expectedPagingList = new ArrayList<>(Collections.singletonList(paging));
+    @Throws(IllegalArgumentException::class, IllegalStateException::class)
+    fun calculate_a_paging_list_if_only_one_page() {
+        var calculatedPagingList: List<Paging?> = getPaginationList(50, 33, 0)
+        var paging = Paging(1, 33, 0, 0, true)
+        var expectedPagingList: List<Paging?> = ArrayList(listOf(paging))
 
-        assertThat(expectedPagingList).isEqualTo(calculatedPagingList);
+        Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
     }
 
     @Test
-    public void calculate_a_paging_list_with_previously_downloaded() throws IllegalArgumentException, IllegalStateException {
-        List<Paging> calculatedPagingList = ApiPagingEngine.getPaginationList(50, 85, 94);
-        Paging paging1 = Paging.create(10,10,4, 0, false);
-        Paging paging2 = Paging.create(3,50,0, 0, false);
-        Paging lastPaging = Paging.create(6,30,0, 1, true);
+    @Throws(IllegalArgumentException::class, IllegalStateException::class)
+    fun calculate_a_paging_list_with_previously_downloaded() {
+        var calculatedPagingList: List<Paging?> = getPaginationList(50, 85, 94)
+        var paging1 = Paging(10, 10, 4, 0, false)
+        var paging2 = Paging(3, 50, 0, 0, false)
+        var lastPaging = Paging(6, 30, 0, 1, true)
 
-        List<Paging> expectedPagingList = new ArrayList<>(Arrays.asList(paging1, paging2, lastPaging));
+        var expectedPagingList: List<Paging?> =
+            ArrayList(Arrays.asList(paging1, paging2, lastPaging))
 
-        assertThat(expectedPagingList).isEqualTo(calculatedPagingList);
+        Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
 
-        calculatedPagingList = ApiPagingEngine.getPaginationList(50, 4, 7);
-        paging1 = Paging.create(2,6,1, 1, false);
+        calculatedPagingList = getPaginationList(50, 4, 7)
+        paging1 = Paging(2, 6, 1, 1, false)
 
-        expectedPagingList = new ArrayList<>(Collections.singletonList(paging1));
+        expectedPagingList = ArrayList(listOf(paging1))
 
-        assertThat(expectedPagingList).isEqualTo(calculatedPagingList);
+        Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
     }
 
     @Test
-    public void calculate_first_pagination() throws IllegalArgumentException, IllegalStateException {
-        Paging calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 1, 13, 87);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                6,17, 2, 2, false));
+    @Throws(IllegalArgumentException::class, IllegalStateException::class)
+    fun calculate_first_pagination() {
+        var calculatedPaging = calculateFirstPagination(50, 1, 13, 87)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(6, 17, 2, 2, false))
 
-        calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 1, 10, 90);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                10,10, 0, 0, false));
+        calculatedPaging = calculateFirstPagination(50, 1, 10, 90)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(10, 10, 0, 0, false))
 
-        calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                20, 10, 3, 217);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                55,4, 1, 0, false));
+        calculatedPaging = calculateFirstPagination(20, 10, 3, 217)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(55, 4, 1, 0, false))
 
-        calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 0, 50, 0);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                1,50, 0, 0, false));
+        calculatedPaging = calculateFirstPagination(50, 0, 50, 0)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(1, 50, 0, 0, false))
 
-        calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 0, 4, 7);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                2,6, 1, 1, false));
+        calculatedPaging = calculateFirstPagination(50, 0, 4, 7)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(2, 6, 1, 1, false))
     }
 
     @Test
-    public void calculate_last_paging() throws IllegalArgumentException, IllegalStateException {
-        Paging calculatedPaging = ApiPagingEngine.calculateLastPagination(
-                50, 179, 4);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                6,30, 0, 1, true));
+    @Throws(IllegalArgumentException::class, IllegalStateException::class)
+    fun calculate_last_paging() {
+        var calculatedPaging = calculateLastPagination(50, 179, 4)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(6, 30, 0, 1, true))
 
-        calculatedPaging = ApiPagingEngine.calculateLastPagination(10, 5, 1);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                1,5,0, 0, true));
+        calculatedPaging = calculateLastPagination(10, 5, 1)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(1, 5, 0, 0, true))
 
-        calculatedPaging = ApiPagingEngine.calculateLastPagination(100, 32, 1);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                1,32,0, 0, true));
+        calculatedPaging = calculateLastPagination(100, 32, 1)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(1, 32, 0, 0, true))
 
-        calculatedPaging = ApiPagingEngine.calculateLastPagination(50, 1688, 34);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                36,47,5, 4, true));
+        calculatedPaging = calculateLastPagination(50, 1688, 34)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(36, 47, 5, 4, true))
 
-        calculatedPaging = ApiPagingEngine.calculateLastPagination(130, 536,5);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                27,20,0, 4, true));
+        calculatedPaging = calculateLastPagination(130, 536, 5)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(27, 20, 0, 4, true))
 
-        calculatedPaging = ApiPagingEngine.calculateLastPagination(50, 50,1);
-        assertThat(calculatedPaging).isEqualTo(Paging.create(
-                1,50,0, 0, true));
+        calculatedPaging = calculateLastPagination(50, 50, 1)
+        Truth.assertThat(calculatedPaging).isEqualTo(Paging(1, 50, 0, 0, true))
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_current_page_is_negative() throws IllegalArgumentException {
-        ApiPagingEngine.getPaginationList(-30, 179, 0);
+    @Test(expected = IllegalArgumentException::class)
+    @Throws(IllegalArgumentException::class)
+    fun throw_exception_if_current_page_is_negative() {
+        getPaginationList(-30, 179, 0)
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_page_is_negative() throws IllegalArgumentException {
-        ApiPagingEngine.getPaginationList(50, -50, 0);
+    @Test(expected = IllegalArgumentException::class)
+    @Throws(IllegalArgumentException::class)
+    fun throw_exception_if_page_is_negative() {
+        getPaginationList(50, -50, 0)
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_current_page_is_zero() throws IllegalArgumentException {
-        ApiPagingEngine.getPaginationList(0, 30, 0);
+    @Test(expected = IllegalArgumentException::class)
+    @Throws(IllegalArgumentException::class)
+    fun throw_exception_if_current_page_is_zero() {
+        getPaginationList(0, 30, 0)
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_page_is_zero() throws IllegalArgumentException {
-        ApiPagingEngine.getPaginationList(120, 0, 0);
+    @Test(expected = IllegalArgumentException::class)
+    @Throws(IllegalArgumentException::class)
+    fun throw_exception_if_page_is_zero() {
+        getPaginationList(120, 0, 0)
     }
 }

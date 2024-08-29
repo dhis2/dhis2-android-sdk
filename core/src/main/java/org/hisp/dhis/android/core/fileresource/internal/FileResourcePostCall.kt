@@ -76,7 +76,8 @@ internal class FileResourcePostCall(
         val file = FileResourceUtil.getFile(fileResource)
 
         return if (file != null) {
-            val filePart = getFilePart(file)
+            val fileName = fileResource.name() ?: file.name
+            val filePart = getFilePart(file, fileName)
             val responseBody = coroutineAPICallExecutor.wrap(storeError = true) {
                 fileResourceService.uploadFile(filePart)
             }.getOrThrow()
@@ -87,7 +88,7 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun getFilePart(file: File): MultiPartFormDataContent {
+    private fun getFilePart(file: File, fileName: String): MultiPartFormDataContent {
         val extension = MimeTypeMap.getFileExtensionFromUrl(file.path)
         val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/*"
 
@@ -97,7 +98,7 @@ internal class FileResourcePostCall(
                     key = "file",
                     value = file.readBytes(),
                     headers = Headers.build {
-                        append(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"${file.name}\"")
+                        append(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"$fileName\"")
                         append(HttpHeaders.ContentType, type)
                     },
                 )

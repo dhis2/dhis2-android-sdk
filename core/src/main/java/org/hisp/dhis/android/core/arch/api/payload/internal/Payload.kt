@@ -25,51 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.payload.internal
 
-package org.hisp.dhis.android.core.arch.api.payload.internal;
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class Payload<T> {
-
+class Payload<T> {
     @JsonProperty("pager")
-    Pager pager;
+    var pager: Pager? = null
 
     @JsonIgnore
-    List<T> items;
+    var items: List<T> = ArrayList()
 
-    public Payload() {
-        items = new ArrayList<>();
-        // explicit empty constructor
-    }
+    constructor()
 
-    public Payload(List<T> initialItems) {
-        items = initialItems;
+    constructor(initialItems: List<T>) {
+        items = initialItems
     }
 
     @JsonAnySetter
-    @SuppressWarnings("unused")
-    /* package */ void processItems(String key, List<T> values) {
-        this.items = values;
+    @Suppress("unused")
+    fun processItems(key: String, values: List<T>) {
+        this.items = values
     }
 
-    public static <E> Payload<E> emptyPayload() {
-        Payload<E> payload = new Payload<>();
-        payload.items = Collections.emptyList();
-        return payload;
+    fun pager(): Pager? {
+        return this.pager
     }
 
-    public Pager pager() {
-        return this.pager;
+    fun items(): List<T> {
+        return this.items
     }
 
-    public List<T> items() {
-        return this.items;
+    companion object {
+        fun <E> emptyPayload(): Payload<E> {
+            var payload = Payload<E>()
+            payload.items = emptyList()
+            return payload
+        }
     }
 }

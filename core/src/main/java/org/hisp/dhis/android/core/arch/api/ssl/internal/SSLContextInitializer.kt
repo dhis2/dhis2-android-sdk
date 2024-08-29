@@ -25,26 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.ssl.internal
 
-package org.hisp.dhis.android.core.arch.api.ssl.internal;
+import android.util.Log
+import java.security.NoSuchAlgorithmException
+import javax.net.ssl.SSLContext
 
-import android.util.Log;
-
-
-
-import java.security.NoSuchAlgorithmException;
-
-import javax.net.ssl.SSLContext;
-
-public final class SSLContextInitializer {
-
-    private SSLContextInitializer(){}
-
-    public static void  initializeSSLContext(){
+object SSLContextInitializer {
+    fun initializeSSLContext() {
         try {
-            SSLContext.getInstance("TLSv1.2");
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(SSLContextInitializer.class.getSimpleName(), e.toString());
+            SSLContext.getInstance("TLSv1.2")
+        } catch (e: NoSuchAlgorithmException) {
+            Log.e(SSLContextInitializer::class.java.simpleName, e.toString())
         }
     }
 }

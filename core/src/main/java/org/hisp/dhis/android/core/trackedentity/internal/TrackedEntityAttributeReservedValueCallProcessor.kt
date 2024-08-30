@@ -25,63 +25,56 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import java.util.Date
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
+internal class TrackedEntityAttributeReservedValueCallProcessor(
+    private val databaseAdapter: DatabaseAdapter,
+    private val handler: Handler<TrackedEntityAttributeReservedValue>,
+    organisationUnit: OrganisationUnit?,
+    private val pattern: String
+) : CallProcessor<TrackedEntityAttributeReservedValue> {
+    private val organisationUnitUid = if (organisationUnit == null) null else organisationUnit.uid()
+    private val temporalValidityDate: Date?
 
-import java.util.Date;
-import java.util.List;
-
-class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<TrackedEntityAttributeReservedValue> {
-
-    private final DatabaseAdapter databaseAdapter;
-    private final Handler<TrackedEntityAttributeReservedValue> handler;
-    private final String organisationUnitUid;
-    private final Date temporalValidityDate;
-    private final String pattern;
-
-    TrackedEntityAttributeReservedValueCallProcessor(DatabaseAdapter databaseAdapter,
-                                                     Handler<TrackedEntityAttributeReservedValue> handler,
-                                                     OrganisationUnit organisationUnit,
-                                                     String pattern) {
-            this.databaseAdapter = databaseAdapter;
-            this.handler = handler;
-            this.organisationUnitUid = organisationUnit == null ? null : organisationUnit.uid();
-            this.pattern = pattern;
-            this.temporalValidityDate = fillTemporalValidityDate(pattern);
+    init {
+        this.temporalValidityDate = fillTemporalValidityDate(pattern)
     }
 
-    @Override
-    public void process(List<TrackedEntityAttributeReservedValue> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
-
-                for (TrackedEntityAttributeReservedValue trackedEntityAttributeReservedValue : objectList) {
-                    handler.handle(trackedEntityAttributeReservedValue.toBuilder()
+    @Throws(D2Error::class)
+    override fun process(objectList: List<TrackedEntityAttributeReservedValue>) {
+        if (objectList.isNotEmpty()) {
+            create(databaseAdapter).executeD2CallTransactionally<Any?>({
+                for (trackedEntityAttributeReservedValue in objectList) {
+                    handler.handle(
+                        trackedEntityAttributeReservedValue.toBuilder()
                             .pattern(pattern)
                             .organisationUnit(organisationUnitUid)
                             .temporalValidityDate(temporalValidityDate)
-                            .build());
+                            .build()
+                    )
                 }
-
-                return null;
-            });
+                null
+            })
         }
     }
 
-    private Date fillTemporalValidityDate(String pattern) {
+    private fun fillTemporalValidityDate(pattern: String): Date? {
         try {
-            return new Date(new TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern).toEpochMilliseconds());
-        } catch (IllegalStateException e) {
-            return null;
+            return Date(
+                TrackedEntityAttributeReservedValueValidatorHelper()
+                    .getExpiryDateCode(pattern).toEpochMilliseconds()
+            )
+        } catch (e: IllegalStateException) {
+            return null
         }
     }
 }

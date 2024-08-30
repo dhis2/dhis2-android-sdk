@@ -25,37 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
+import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.Authority
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.user.Authority;
+internal class AuthorityCallProcessor(
+    private val databaseAdapter: DatabaseAdapter,
+    private val handler: Handler<Authority>
+) : CallProcessor<Authority> {
+    @Throws(D2Error::class)
+    override fun process(objectList: List<Authority>) {
+        AuthorityStoreImpl(databaseAdapter).delete()
 
-import java.util.List;
-
-class AuthorityCallProcessor implements CallProcessor<Authority> {
-
-    private final DatabaseAdapter databaseAdapter;
-    private final Handler<Authority> handler;
-
-    AuthorityCallProcessor(DatabaseAdapter databaseAdapter, Handler<Authority> handler) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-    }
-
-    @Override
-    public final void process(final List<Authority> objectList) throws D2Error {
-        new AuthorityStoreImpl(databaseAdapter).delete();
-
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList);
-                return null;
-            });
+        if (objectList.isNotEmpty()) {
+            create(databaseAdapter).executeD2CallTransactionally<Any?>({
+                handler.handleMany(objectList)
+                null
+            })
         }
     }
 }

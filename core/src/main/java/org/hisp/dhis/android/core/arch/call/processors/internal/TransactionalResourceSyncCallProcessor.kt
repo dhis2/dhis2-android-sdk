@@ -25,38 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.processors.internal
 
-package org.hisp.dhis.android.core.arch.call.processors.internal;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.resource.internal.Resource
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-
-import java.util.List;
-
-public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final GenericCallData data;
-    private final Handler<O> handler;
-    private final Resource.Type resourceType;
-
-    public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  Handler<O> handler,
-                                                  Resource.Type resourceType) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            D2CallExecutor.create(data.getDatabaseAdapter()).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList);
-                data.handleResource(resourceType);
-                return null;
-            });
+internal class TransactionalResourceSyncCallProcessor<O>(
+    private val data: GenericCallData,
+    private val handler: Handler<O>,
+    private val resourceType: Resource.Type
+) : CallProcessor<O> {
+    @Throws(D2Error::class)
+    override fun process(objectList: List<O>) {
+        if (objectList.isNotEmpty()) {
+            create(data.databaseAdapter).executeD2CallTransactionally<Any?>({
+                handler.handleMany(objectList)
+                data.handleResource(resourceType)
+                null
+            })
         }
     }
 }

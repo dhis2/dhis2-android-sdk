@@ -25,13 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.processors.internal
 
-package org.hisp.dhis.android.core.arch.call.processors.internal;
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.List;
-
-public interface CallProcessor<P> {
-    void process(List<P> objectList) throws D2Error;
+interface CallProcessor<P> {
+    @Throws(D2Error::class)
+    fun process(objectList: List<P>)
 }

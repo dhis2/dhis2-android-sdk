@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 
-class Payload<T> {
+internal class Payload<T> {
     @JsonProperty("pager")
     var pager: Pager? = null
 

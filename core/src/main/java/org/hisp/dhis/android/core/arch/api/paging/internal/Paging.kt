@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.api.paging.internal
 
-data class Paging(
+internal data class Paging(
     val page: Int,
     val pageSize: Int,
     val previousItemsToSkipCount: Int,

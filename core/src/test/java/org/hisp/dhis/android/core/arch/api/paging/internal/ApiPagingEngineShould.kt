@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine.getPa
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner
-import java.util.Arrays
 
 @RunWith(MockitoJUnitRunner::class)
 class ApiPagingEngineShould {
@@ -48,7 +47,7 @@ class ApiPagingEngineShould {
         var lastPaging = Paging(6, 30, 0, 1, true)
 
         var expectedPagingList: List<Paging?> =
-            ArrayList(Arrays.asList(paging1, paging2, paging3, lastPaging))
+            listOf(paging1, paging2, paging3, lastPaging)
 
         Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
     }
@@ -72,7 +71,7 @@ class ApiPagingEngineShould {
         var lastPaging = Paging(6, 30, 0, 1, true)
 
         var expectedPagingList: List<Paging?> =
-            ArrayList(Arrays.asList(paging1, paging2, lastPaging))
+            listOf(paging1, paging2, lastPaging)
 
         Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
 

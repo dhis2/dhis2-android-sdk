@@ -32,7 +32,7 @@ import kotlin.IllegalStateException
 import kotlin.math.ceil
 import kotlin.math.floor
 
-object ApiPagingEngine {
+internal object ApiPagingEngine {
     @JvmStatic
     @Throws(IllegalArgumentException::class)
     fun getPaginationList(currentPageSize: Int, requiredItemsCount: Int, itemsSkippedCount: Int): List<Paging> {

@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.arch.api.payload.internal
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
 
-data class Pager @JsonCreator constructor(
-    @JsonProperty("page") val page: Int,
-    @JsonProperty("pageCount") val pageCount: Int,
-    @JsonProperty("pageSize") val pageSize: Int,
-    @JsonProperty("total") val total: Int,
+internal data class Pager @JsonCreator constructor(
+    val page: Int,
+    val pageCount: Int,
+    val pageSize: Int,
+    val total: Int,
 )

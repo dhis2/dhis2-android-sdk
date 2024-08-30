@@ -31,7 +31,7 @@ import android.util.Log
 import java.security.NoSuchAlgorithmException
 import javax.net.ssl.SSLContext
 
-object SSLContextInitializer {
+internal object SSLContextInitializer {
     fun initializeSSLContext() {
         try {
             SSLContext.getInstance("TLSv1.2")

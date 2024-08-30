@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.option.Option
@@ -127,7 +128,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
                 OptionStoreImpl(d2.databaseAdapter())
             optionStore.insert(option)
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors()
-            null
+            Unit()
         }
     }
 }

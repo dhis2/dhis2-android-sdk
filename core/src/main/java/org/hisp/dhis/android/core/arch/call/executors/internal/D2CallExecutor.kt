@@ -25,78 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.executors.internal
 
-package org.hisp.dhis.android.core.arch.call.executors.internal;
+import android.util.Log
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
+import java.util.concurrent.Callable
 
-import android.util.Log;
+internal class D2CallExecutor(
+    private val databaseAdapter: DatabaseAdapter,
+    private val errorStore: D2ErrorStore
+) {
+    private val exceptionBuilder: D2Error.Builder = D2Error
+        .builder()
+        .errorComponent(D2ErrorComponent.SDK)
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl;
-
-import java.util.concurrent.Callable;
-
-@SuppressWarnings({"PMD.PreserveStackTrace"})
-public final class D2CallExecutor {
-
-    private final D2Error.Builder exceptionBuilder = D2Error
-            .builder()
-            .errorComponent(D2ErrorComponent.SDK);
-
-    private final DatabaseAdapter databaseAdapter;
-    private final D2ErrorStore errorStore;
-
-    public D2CallExecutor(DatabaseAdapter databaseAdapter, D2ErrorStore errorStore) {
-        this.databaseAdapter = databaseAdapter;
-        this.errorStore = errorStore;
-    }
-
-    public <C> C executeD2Call(Callable<C> call, boolean storeError) throws D2Error {
+    @Throws(D2Error::class)
+    fun <C> executeD2CallTransactionally(call: Callable<C>): C {
         try {
-            return call.call();
-        } catch (D2Error d2E) {
-            if (storeError) {
-                errorStore.insert(d2E);
-            }
-            throw d2E;
-        } catch (Exception e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
-            throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
+            return innerExecuteD2CallTransactionally(call)
+        } catch (d2E: D2Error) {
+            errorStore.insert(d2E)
+            throw d2E
         }
     }
 
-    public <C> C executeD2CallTransactionally(Callable<C> call) throws D2Error {
+    @Throws(D2Error::class)
+    private fun <C> innerExecuteD2CallTransactionally(call: Callable<C>): C {
+        var transaction = databaseAdapter.beginNewTransaction()
         try {
-            return innerExecuteD2CallTransactionally(call);
-        } catch (D2Error d2E) {
-            errorStore.insert(d2E);
-            throw d2E;
-        }
-    }
-
-    private <C> C innerExecuteD2CallTransactionally(Callable<C> call) throws D2Error {
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
-            C response = call.call();
-            transaction.setSuccessful();
-            return response;
-        } catch (D2Error d2E) {
-            throw d2E;
-        } catch (Exception e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
+            var response = call.call()
+            transaction.setSuccessful()
+            return response
+        } catch (d2E: D2Error) {
+            throw d2E
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName, e.toString())
             throw exceptionBuilder
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .errorDescription("Unexpected error calling " + call).build();
+                .errorCode(D2ErrorCode.UNEXPECTED)
+                .errorDescription("Unexpected error calling $call").build()
         } finally {
-            transaction.end();
+            transaction.end()
         }
     }
 
-    public static D2CallExecutor create(DatabaseAdapter databaseAdapter) {
-        return new D2CallExecutor(databaseAdapter, new D2ErrorStoreImpl(databaseAdapter));
+    companion object {
+        @JvmStatic
+        fun create(databaseAdapter: DatabaseAdapter): D2CallExecutor {
+            return D2CallExecutor(databaseAdapter, D2ErrorStoreImpl(databaseAdapter))
+        }
     }
 }

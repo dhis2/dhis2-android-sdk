@@ -38,7 +38,7 @@ import java.util.concurrent.Callable
 
 internal class D2CallExecutor(
     private val databaseAdapter: DatabaseAdapter,
-    private val errorStore: D2ErrorStore
+    private val errorStore: D2ErrorStore,
 ) {
     private val exceptionBuilder: D2Error.Builder = D2Error
         .builder()
@@ -55,6 +55,7 @@ internal class D2CallExecutor(
     }
 
     @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
     private fun <C> innerExecuteD2CallTransactionally(call: Callable<C>): C {
         var transaction = databaseAdapter.beginNewTransaction()
         try {

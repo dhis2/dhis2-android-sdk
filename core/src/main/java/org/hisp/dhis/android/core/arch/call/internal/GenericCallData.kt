@@ -25,30 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.internal
 
-package org.hisp.dhis.android.core.arch.call.internal;
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
-import com.google.auto.value.AutoValue;
+internal data class GenericCallData(
+    val databaseAdapter: DatabaseAdapter,
+    val httpServiceClient: HttpServiceClient,
+    val resourceHandler: ResourceHandler,
+    val versionManager: DHISVersionManager,
+) {
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-@AutoValue
-public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract HttpServiceClient httpServiceClient();
-    public abstract ResourceHandler resourceHandler();
-    public abstract DHISVersionManager versionManager();
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, HttpServiceClient httpClient,
-                                         ResourceHandler resourceHandler, DHISVersionManager versionManager) {
-        return new AutoValue_GenericCallData(databaseAdapter, httpClient, resourceHandler, versionManager);
-    }
-
-    public void handleResource(Resource.Type type) {
-        resourceHandler().handleResource(type);
+    fun handleResource(type: Resource.Type?) {
+        resourceHandler.handleResource(type)
     }
 }

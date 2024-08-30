@@ -55,7 +55,7 @@ abstract class BaseCallShould {
     internal lateinit var resourceHandler: ResourceHandler
 
     @Mock
-    protected lateinit var genericCallData: GenericCallData
+    internal lateinit var genericCallData: GenericCallData
 
     @Mock
     protected lateinit var transaction: Transaction
@@ -71,10 +71,10 @@ abstract class BaseCallShould {
 
         var httpClient = fromServerUrl("https://fake.dhis.org")
 
-        Mockito.`when`(genericCallData.databaseAdapter()).thenReturn(databaseAdapter)
-        Mockito.`when`(genericCallData.httpServiceClient()).thenReturn(httpClient)
+        Mockito.`when`(genericCallData.databaseAdapter).thenReturn(databaseAdapter)
+        Mockito.`when`(genericCallData.httpServiceClient).thenReturn(httpClient)
         Mockito.`when`(
-            genericCallData.resourceHandler(),
+            genericCallData.resourceHandler,
         ).thenReturn(resourceHandler)
 
         Mockito.`when`(

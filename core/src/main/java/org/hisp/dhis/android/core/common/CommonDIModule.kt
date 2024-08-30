@@ -46,7 +46,7 @@ internal class CommonDIModule {
         resourceHandler: ResourceHandler,
         versionManager: DHISVersionManager,
     ): GenericCallData {
-        return GenericCallData.create(
+        return GenericCallData(
             databaseAdapter,
             httpClient,
             resourceHandler,

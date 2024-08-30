@@ -63,7 +63,7 @@ internal class IndicatorEndpointCallFactory(
 
     override fun processor(): CallProcessor<Indicator> {
         return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
+            data.databaseAdapter,
             handler,
         )
     }

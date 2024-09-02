@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.resource.internal.Resource
 internal class TransactionalResourceSyncCallProcessor<O>(
     private val data: GenericCallData,
     private val handler: Handler<O>,
-    private val resourceType: Resource.Type
+    private val resourceType: Resource.Type,
 ) : CallProcessor<O> {
     @Throws(D2Error::class)
     override fun process(objectList: List<O>) {

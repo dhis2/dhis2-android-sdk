@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.user.Authority
 
 internal class AuthorityCallProcessor(
     private val databaseAdapter: DatabaseAdapter,
-    private val handler: Handler<Authority>
+    private val handler: Handler<Authority>,
 ) : CallProcessor<Authority> {
     @Throws(D2Error::class)
     override fun process(objectList: List<Authority>) {

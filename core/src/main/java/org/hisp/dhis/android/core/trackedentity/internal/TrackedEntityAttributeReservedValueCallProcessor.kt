@@ -40,7 +40,7 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
     private val databaseAdapter: DatabaseAdapter,
     private val handler: Handler<TrackedEntityAttributeReservedValue>,
     organisationUnit: OrganisationUnit?,
-    private val pattern: String
+    private val pattern: String,
 ) : CallProcessor<TrackedEntityAttributeReservedValue> {
     private val organisationUnitUid = if (organisationUnit == null) null else organisationUnit.uid()
     private val temporalValidityDate: Date?
@@ -59,7 +59,7 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
                             .pattern(pattern)
                             .organisationUnit(organisationUnitUid)
                             .temporalValidityDate(temporalValidityDate)
-                            .build()
+                            .build(),
                     )
                 }
                 null
@@ -71,7 +71,7 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
         try {
             return Date(
                 TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern).toEpochMilliseconds()
+                    .getExpiryDateCode(pattern).toEpochMilliseconds(),
             )
         } catch (e: IllegalStateException) {
             return null

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 object DateUtils {
 
     @JvmField

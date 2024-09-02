@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.call
 
-internal data class BaseD2Progress(
+data class BaseD2Progress(
     override val isComplete: Boolean = false,
     override val totalCalls: Int? = null,
     override val doneCalls: List<String?> = emptyList(),

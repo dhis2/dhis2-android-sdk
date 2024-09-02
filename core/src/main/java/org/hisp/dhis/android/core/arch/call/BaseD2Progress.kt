@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.arch.call
 
 data class BaseD2Progress(
-    override val isComplete: Boolean = false,
+    @get:JvmName("getIsComplete")
+    override val isComplete: Boolean,
     override val totalCalls: Int? = null,
     override val doneCalls: List<String?> = emptyList(),
-) : D2Progress() {
+) : D2Progress(isComplete, totalCalls, doneCalls) {
 
     fun toBuilder(): Builder {
         return Builder(isComplete, totalCalls, doneCalls)

@@ -31,18 +31,17 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
 
 data class AggregatedD2Progress(
+    @get:JvmName("getIsComplete")
     override val isComplete: Boolean = false,
     override val totalCalls: Int? = null,
     override val doneCalls: List<String?> = emptyList(),
     val dataSets: Map<String, D2ProgressStatus> = emptyMap(),
-) : D2Progress() {
+) : D2Progress(isComplete, totalCalls, doneCalls) {
+
+    fun dataSets(): Map<String, D2ProgressStatus> = dataSets
 
     fun toBuilder(): Builder {
         return Builder(isComplete, totalCalls, doneCalls, dataSets)
-    }
-
-    fun dataSets(): Map<String, D2ProgressStatus> {
-        return dataSets
     }
 
     class Builder(

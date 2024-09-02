@@ -27,12 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.call
 
-abstract class D2Progress {
-    abstract val isComplete: Boolean
+open class D2Progress(
+    @get:JvmName("getIsComplete")
+    open val isComplete: Boolean,
+    open val totalCalls: Int?,
+    open val doneCalls: List<String?>,
+) {
 
-    abstract val totalCalls: Int?
-
-    abstract val doneCalls: List<String?>
+    fun isComplete(): Boolean = isComplete
+    fun totalCalls(): Int? = totalCalls
+    fun doneCalls(): List<String?> = doneCalls
 
     fun lastCall(): String? {
         return if (doneCalls.isEmpty()) null else doneCalls.last()
@@ -42,19 +46,6 @@ abstract class D2Progress {
     fun percentage(): Double? {
         return totalCalls?.let { 100.0 * doneCalls.size / it }
     }
-
-    fun isComplete(): Boolean {
-        return isComplete
-    }
-
-    fun totalCalls(): Int? {
-        return totalCalls
-    }
-
-    fun doneCalls(): List<String?> {
-        return doneCalls
-    }
-
 
     abstract class Builder<T : Builder<T>> {
         abstract var isComplete: Boolean

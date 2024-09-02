@@ -25,20 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.queries.internal
 
-package org.hisp.dhis.android.core.arch.call.queries.internal;
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class EmptyQuery extends BaseQuery {
-
-    @Override
-    boolean isValid() {
-        return true;
-    }
-
-    public static EmptyQuery create() {
-        return new AutoValue_EmptyQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false);
-    }
-}
+internal class EmptyQuery() : BaseQueryKt(1, DEFAULT_PAGE_SIZE, false)

@@ -25,53 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
-
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-abstract class EventQuery extends BaseQuery {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @Nullable
-    abstract String orgUnit();
-
-    @NonNull
-    abstract Collection<String> uids();
-
-    @Nullable
-    abstract String lastUpdatedStr();
-
-    static Builder builder() {
-        return new AutoValue_EventQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .uids(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
-
-        abstract Builder orgUnit(String orgUnit);
-
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract Builder lastUpdatedStr(String lastUpdatedStr);
-
-        abstract EventQuery build();
-    }
+internal data class EventQuery (
+    val commonParams: TrackerQueryCommonParams,
+    val orgUnit: String?,
+    val uids: Collection<String?> = emptyList(),
+    val lastUpdatedStr: String?
+) : BaseQueryKt(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = true,
+) {
 }

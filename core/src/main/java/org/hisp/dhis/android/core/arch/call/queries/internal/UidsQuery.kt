@@ -25,19 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.queries.internal
 
-package org.hisp.dhis.android.core.arch.call.queries.internal;
 
-import com.google.auto.value.AutoValue;
-
-import java.util.Set;
-
-@AutoValue
-public abstract class UidsQuery extends BaseQuery {
-
-    public abstract Set<String> uids();
-
-    public static UidsQuery create(Set<String> uids) {
-        return new AutoValue_UidsQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false, uids);
-    }
-}
+internal data class UidsQuery(
+    val uids: Set<String?>
+) : BaseQueryKt(
+    page = 1, pageSize = DEFAULT_PAGE_SIZE,
+    paging = false)

@@ -66,9 +66,7 @@ data class TrackerD2Progress(
         }
 
         fun empty(totalCalls: Int?): TrackerD2Progress {
-            if (totalCalls != null && totalCalls < 0) {
-                throw IllegalArgumentException("Negative total calls")
-            }
+            require(!(totalCalls != null && totalCalls < 0)) { "Negative total calls" }
             return builder()
                 .isComplete(false)
                 .totalCalls(totalCalls)

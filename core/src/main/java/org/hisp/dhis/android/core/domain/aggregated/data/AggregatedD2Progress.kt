@@ -41,6 +41,10 @@ data class AggregatedD2Progress(
         return Builder(isComplete, totalCalls, doneCalls, dataSets)
     }
 
+    fun dataSets(): Map<String, D2ProgressStatus> {
+        return dataSets
+    }
+
     class Builder(
         override var isComplete: Boolean = false,
         override var totalCalls: Int? = null,

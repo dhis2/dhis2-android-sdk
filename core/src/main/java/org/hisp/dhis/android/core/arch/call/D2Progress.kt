@@ -43,6 +43,19 @@ abstract class D2Progress {
         return totalCalls?.let { 100.0 * doneCalls.size / it }
     }
 
+    fun isComplete(): Boolean {
+        return isComplete
+    }
+
+    fun totalCalls(): Int? {
+        return totalCalls
+    }
+
+    fun doneCalls(): List<String?> {
+        return doneCalls
+    }
+
+
     abstract class Builder<T : Builder<T>> {
         abstract var isComplete: Boolean
         abstract var totalCalls: Int?

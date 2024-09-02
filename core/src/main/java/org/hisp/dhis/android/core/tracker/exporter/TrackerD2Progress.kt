@@ -41,6 +41,10 @@ data class TrackerD2Progress(
         return Builder(isComplete, totalCalls, doneCalls, programs)
     }
 
+    fun programs(): Map<String, D2ProgressStatus> {
+        return programs
+    }
+
     class Builder(
         override var isComplete: Boolean = false,
         override var totalCalls: Int? = null,

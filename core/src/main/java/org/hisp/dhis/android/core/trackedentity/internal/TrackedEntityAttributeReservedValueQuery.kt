@@ -25,41 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKtJavaCompatible;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-
-@AutoValue
-public abstract class TrackedEntityAttributeReservedValueQuery extends BaseQueryKtJavaCompatible {
-
-    public abstract String trackedEntityAttributeUid();
-
-    public abstract Integer numberToReserve();
-
-    @Nullable
-    public abstract OrganisationUnit organisationUnit();
-
-    public abstract String trackedEntityAttributePattern();
-
-    public abstract Boolean storeError();
-
-    public static TrackedEntityAttributeReservedValueQuery create(String trackedEntityAttributeUid,
-                                                                  Integer numberToReserve,
-                                                                  OrganisationUnit organisationUnit,
-                                                                  String trackedEntityAttributePattern,
-                                                                  Boolean storeError) {
-
-        return new AutoValue_TrackedEntityAttributeReservedValueQuery(
-                trackedEntityAttributeUid,
-                numberToReserve,
-                organisationUnit,
-                trackedEntityAttributePattern,
-                storeError);
-    }
-}
+internal data class TrackedEntityAttributeReservedValueQuery(
+    val trackedEntityAttributeUid: String,
+    val numberToReserve: Int,
+    val organisationUnit: OrganisationUnit?,
+    val trackedEntityAttributePattern: String?,
+    val storeError: Boolean
+) : BaseQuery(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false,
+)

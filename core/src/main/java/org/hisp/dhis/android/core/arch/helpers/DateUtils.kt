@@ -51,6 +51,11 @@ object DateUtils {
     @JvmField
     val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
 
+    @JvmStatic
+    fun dateWithOffset(date: Date, periods: Int, periodType: PeriodType): Date {
+        return dateWithOffset(date.toKtxInstant(), periods, periodType).toJavaDate()
+    }
+
     @Suppress("MagicNumber")
     fun dateWithOffset(instant: Instant, periods: Int, periodType: PeriodType): Instant {
         val instantWithOffset = when (periodType) {
@@ -85,12 +90,19 @@ object DateUtils {
         return instantWithOffset
     }
 
+    @JvmStatic
     fun getStartDate(periods: List<Period>): Date? {
         return periods.mapNotNull { it.startDate() }.minByOrNull { it.time }
     }
 
+    @JvmStatic
     fun getEndDate(periods: List<Period>): Date? {
         return periods.mapNotNull { it.endDate() }.maxByOrNull { it.time }
+    }
+
+    @JvmStatic
+    fun addMonths(date: Date, amount: Int): Date {
+        return addMonths(date.toKtxInstant(), amount).toJavaDate()
     }
 
     fun addMonths(instant: Instant, amount: Int): Instant {

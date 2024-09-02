@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
@@ -88,7 +88,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
 
         return TrackedEntityInstanceQueryOnline(
             page = 1,
-            pageSize = BaseQueryKt.DEFAULT_PAGE_SIZE,
+            pageSize = BaseQuery.DEFAULT_PAGE_SIZE,
             paging = true,
             orgUnits = scope.orgUnits(),
             orgUnitMode = scope.orgUnitMode(),

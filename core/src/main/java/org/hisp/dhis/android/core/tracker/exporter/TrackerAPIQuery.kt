@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
@@ -40,7 +40,7 @@ internal data class TrackerAPIQuery(
     override val page: Int = 1,
     override val pageSize: Int = DEFAULT_PAGE_SIZE,
     override val paging: Boolean = true,
-) : BaseQueryKt(
+) : BaseQuery(
     page,
     pageSize,
     paging,

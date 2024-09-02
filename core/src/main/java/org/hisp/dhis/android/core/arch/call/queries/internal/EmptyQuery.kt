@@ -28,4 +28,4 @@
 package org.hisp.dhis.android.core.arch.call.queries.internal
 
 
-internal class EmptyQuery() : BaseQueryKt(1, DEFAULT_PAGE_SIZE, false)
+internal class EmptyQuery() : BaseQuery(1, DEFAULT_PAGE_SIZE, false)

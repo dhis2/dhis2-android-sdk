@@ -25,36 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call
 
-package org.hisp.dhis.android.core.arch.call;
+internal data class BaseD2Progress(
+    override val isComplete: Boolean = false,
+    override val totalCalls: Int? = null,
+    override val doneCalls: List<String?> = emptyList(),
+) : D2Progress() {
 
-import com.google.auto.value.AutoValue;
-
-import java.util.Collections;
-
-@AutoValue
-public abstract class BaseD2Progress extends D2Progress {
-
-    public static Builder builder() {
-        return new AutoValue_BaseD2Progress.Builder();
+    fun toBuilder(): Builder {
+        return Builder(isComplete, totalCalls, doneCalls)
     }
 
-    public abstract Builder toBuilder();
-
-    public static BaseD2Progress empty(Integer totalCalls) {
-        if (totalCalls != null && totalCalls < 0) {
-            throw new IllegalArgumentException("Negative total calls");
+    class Builder(
+        override var isComplete: Boolean = false,
+        override var totalCalls: Int? = null,
+        override var doneCalls: List<String?> = emptyList(),
+    ) : D2Progress.Builder<Builder>() {
+        override fun build(): BaseD2Progress {
+            return BaseD2Progress(isComplete, totalCalls, doneCalls)
         }
-        return BaseD2Progress.builder()
-            .isComplete(totalCalls != null && totalCalls == 0)
-            .totalCalls(totalCalls)
-            .doneCalls(Collections.emptyList())
-            .build();
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends D2Progress.Builder<Builder> {
+    companion object {
+        fun builder(): Builder {
+            return Builder()
+        }
 
-        public abstract BaseD2Progress build();
+        fun empty(totalCalls: Int?): BaseD2Progress {
+            if (totalCalls != null && totalCalls < 0) {
+                throw IllegalArgumentException("Negative total calls")
+            }
+            return builder()
+                .isComplete(totalCalls != null && totalCalls == 0)
+                .totalCalls(totalCalls)
+                .doneCalls(emptyList())
+                .build()
+        }
     }
 }

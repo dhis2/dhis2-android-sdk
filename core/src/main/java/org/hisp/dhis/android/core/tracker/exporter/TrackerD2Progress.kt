@@ -25,48 +25,53 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.exporter
 
-package org.hisp.dhis.android.core.tracker.exporter;
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
 
-import androidx.annotation.NonNull;
+data class TrackerD2Progress(
+    override val isComplete: Boolean = false,
+    override val totalCalls: Int? = null,
+    override val doneCalls: List<String?> = emptyList(),
+    val programs: Map<String, D2ProgressStatus> = emptyMap(),
+) : D2Progress() {
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.D2ProgressStatus;
-
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-public abstract class TrackerD2Progress extends D2Progress {
-
-    @NonNull
-    public abstract Map<String, D2ProgressStatus> programs();
-
-    public static Builder builder() {
-        return new AutoValue_TrackerD2Progress.Builder();
+    fun toBuilder(): Builder {
+        return Builder(isComplete, totalCalls, doneCalls, programs)
     }
 
-    public abstract Builder toBuilder();
+    class Builder(
+        override var isComplete: Boolean = false,
+        override var totalCalls: Int? = null,
+        override var doneCalls: List<String?> = emptyList(),
+        var programs: Map<String, D2ProgressStatus> = emptyMap(),
+    ) : D2Progress.Builder<Builder>() {
 
-    public static TrackerD2Progress empty(Integer totalCalls) {
-        if (totalCalls != null && totalCalls < 0) {
-            throw new IllegalArgumentException("Negative total calls");
+        fun programs(programs: Map<String, D2ProgressStatus>): Builder = apply {
+            this.programs = programs
         }
-        return TrackerD2Progress.builder()
+
+        override fun build(): TrackerD2Progress {
+            return TrackerD2Progress(isComplete, totalCalls, doneCalls, programs)
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return Builder()
+        }
+
+        fun empty(totalCalls: Int?): TrackerD2Progress {
+            if (totalCalls != null && totalCalls < 0) {
+                throw IllegalArgumentException("Negative total calls")
+            }
+            return builder()
                 .isComplete(false)
                 .totalCalls(totalCalls)
-                .doneCalls(Collections.emptyList())
-                .programs(Collections.emptyMap())
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends D2Progress.Builder<Builder> {
-
-        public abstract Builder programs(Map<String, D2ProgressStatus> programs);
-
-        public abstract TrackerD2Progress build();
+                .doneCalls(emptyList<String>())
+                .programs(emptyMap<String, D2ProgressStatus>())
+                .build()
+        }
     }
 }

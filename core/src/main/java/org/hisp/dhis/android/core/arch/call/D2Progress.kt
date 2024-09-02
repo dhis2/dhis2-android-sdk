@@ -25,49 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call
 
-package org.hisp.dhis.android.core.arch.call;
+abstract class D2Progress {
+    abstract val isComplete: Boolean
 
-import java.util.List;
+    abstract val totalCalls: Int?
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    abstract val doneCalls: List<String?>
 
-public abstract class D2Progress {
-
-    @NonNull
-    public abstract Boolean isComplete();
-
-    @Nullable
-    public abstract Integer totalCalls();
-
-    @NonNull
-    public abstract List<String> doneCalls();
-
-    @Nullable
-    public String lastCall() {
-        if (this.doneCalls().size() == 0) {
-            return null;
-        } else {
-            return this.doneCalls().get(this.doneCalls().size() - 1);
-        }
+    fun lastCall(): String? {
+        return if (doneCalls.isEmpty()) null else doneCalls.last()
     }
 
-    @Nullable
-    public Double percentage() {
-        Integer totalCalls = this.totalCalls();
-        if (totalCalls == null) {
-            return null;
-        } else {
-            return 100.0 * this.doneCalls().size() / totalCalls;
-        }
+    @Suppress("MagicNumber")
+    fun percentage(): Double? {
+        return totalCalls?.let { 100.0 * doneCalls.size / it }
     }
 
-    public abstract static class Builder<T extends Builder> {
-        public abstract T isComplete(Boolean isComplete);
+    abstract class Builder<T : Builder<T>> {
+        abstract var isComplete: Boolean
+        abstract var totalCalls: Int?
+        abstract var doneCalls: List<String?>
 
-        public abstract T totalCalls(Integer totalCalls);
+        abstract fun build(): D2Progress
 
-        public abstract T doneCalls(List<String> doneCalls);
+        @Suppress("UNCHECKED_CAST")
+        fun isComplete(isComplete: Boolean): T = apply { this.isComplete = isComplete } as T
+
+        @Suppress("UNCHECKED_CAST")
+        fun totalCalls(totalCalls: Int?): T = apply { this.totalCalls = totalCalls } as T
+
+        @Suppress("UNCHECKED_CAST")
+        fun doneCalls(doneCalls: List<String?>?): T = apply { this.doneCalls = doneCalls ?: emptyList() } as T
     }
 }

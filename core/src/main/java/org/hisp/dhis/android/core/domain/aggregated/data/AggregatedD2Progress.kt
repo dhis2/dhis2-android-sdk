@@ -25,48 +25,53 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.D2ProgressStatus
 
-import androidx.annotation.NonNull;
+data class AggregatedD2Progress(
+    override val isComplete: Boolean = false,
+    override val totalCalls: Int? = null,
+    override val doneCalls: List<String?> = emptyList(),
+    val dataSets: Map<String, D2ProgressStatus> = emptyMap(),
+) : D2Progress() {
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.D2ProgressStatus;
-
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-public abstract class AggregatedD2Progress extends D2Progress {
-
-    @NonNull
-    public abstract Map<String, D2ProgressStatus> dataSets();
-
-    public static Builder builder() {
-        return new AutoValue_AggregatedD2Progress.Builder();
+    fun toBuilder(): Builder {
+        return Builder(isComplete, totalCalls, doneCalls, dataSets)
     }
 
-    public abstract Builder toBuilder();
+    class Builder(
+        override var isComplete: Boolean = false,
+        override var totalCalls: Int? = null,
+        override var doneCalls: List<String?> = emptyList(),
+        var dataSets: Map<String, D2ProgressStatus> = emptyMap(),
+    ) : D2Progress.Builder<Builder>() {
 
-    public static AggregatedD2Progress empty(Integer totalCalls) {
-        if (totalCalls != null && totalCalls < 0) {
-            throw new IllegalArgumentException("Negative total calls");
+        fun dataSets(dataSets: Map<String, D2ProgressStatus>): Builder = apply {
+            this.dataSets = dataSets
         }
-        return AggregatedD2Progress.builder()
+
+        override fun build(): AggregatedD2Progress {
+            return AggregatedD2Progress(isComplete, totalCalls, doneCalls, dataSets)
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return Builder()
+        }
+
+        fun empty(totalCalls: Int?): AggregatedD2Progress {
+            if (totalCalls != null && totalCalls < 0) {
+                throw IllegalArgumentException("Negative total calls")
+            }
+            return builder()
                 .isComplete(false)
                 .totalCalls(totalCalls)
-                .doneCalls(Collections.emptyList())
-                .dataSets(Collections.emptyMap())
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends D2Progress.Builder<Builder> {
-
-        public abstract Builder dataSets(Map<String, D2ProgressStatus> dataSets);
-
-        public abstract AggregatedD2Progress build();
+                .doneCalls(emptyList<String>())
+                .dataSets(emptyMap<String, D2ProgressStatus>())
+                .build()
+        }
     }
 }

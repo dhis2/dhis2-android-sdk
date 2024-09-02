@@ -54,9 +54,7 @@ data class BaseD2Progress(
         }
 
         fun empty(totalCalls: Int?): BaseD2Progress {
-            if (totalCalls != null && totalCalls < 0) {
-                throw IllegalArgumentException("Negative total calls")
-            }
+            require(!(totalCalls != null && totalCalls < 0)) { "Negative total calls" }
             return builder()
                 .isComplete(totalCalls != null && totalCalls == 0)
                 .totalCalls(totalCalls)

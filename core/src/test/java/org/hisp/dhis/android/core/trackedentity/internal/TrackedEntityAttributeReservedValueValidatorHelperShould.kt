@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.clock.internal.setFixed
 import org.junit.Before
@@ -53,7 +52,7 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
         val pattern = "CURRENT_DATE(Y)"
         val expiryInstant = helper.getExpiryDateCode(pattern)
         val expectedInstant = LocalDate(2020, 1, 1)
-            .atStartOfDayIn(TimeZone.currentSystemDefault())
+            .atStartOfDayInSystem()
 
         assertThat(expiryInstant).isEqualTo(expectedInstant)
     }
@@ -63,7 +62,7 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
         val pattern = "CURRENT_DATE(M)"
         val expiryInstant = helper.getExpiryDateCode(pattern)
         val expectedInstant = LocalDate(2020, 1, 1)
-            .atStartOfDayIn(TimeZone.currentSystemDefault())
+            .atStartOfDayInSystem()
 
         assertThat(expiryInstant).isEqualTo(expectedInstant)
     }
@@ -73,7 +72,7 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
         val pattern = "CURRENT_DATE(w)"
         val expiryInstant = helper.getExpiryDateCode(pattern)
         val expectedInstant = LocalDate(2019, 12, 16)
-            .atStartOfDayIn(TimeZone.currentSystemDefault())
+            .atStartOfDayInSystem()
 
         assertThat(expiryInstant).isEqualTo(expectedInstant)
     }
@@ -83,7 +82,7 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
         val pattern = "CURRENT_DATE(YYYYMM) + RANDOM(###) + CURRENT_DATE(MMww)"
         val expiryInstant = helper.getExpiryDateCode(pattern)
         val expectedInstant = LocalDate(2019, 12, 16)
-            .atStartOfDayIn(TimeZone.currentSystemDefault())
+            .atStartOfDayInSystem()
 
         assertThat(expiryInstant).isEqualTo(expectedInstant)
     }
@@ -92,7 +91,7 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
     fun get_next_expiry_date() {
         val instant = helper.nextExpiryDate(yearly = true, monthly = false, weekly = false)
         val expectedInstant = LocalDate(2020, 1, 1)
-            .atStartOfDayIn(TimeZone.currentSystemDefault())
+            .atStartOfDayInSystem()
 
         assertThat(instant).isEqualTo(expectedInstant)
     }
@@ -101,7 +100,7 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
     fun get_expiry_date_from_pattern() {
         val expiryInstant = helper.getExpiryDateCode("CURRENT_DATE(YYYYMM) + RANDOM(###) + CURRENT_DATE(MMww)")
         val expectedInstant = LocalDate(2019, 12, 16)
-            .atStartOfDayIn(TimeZone.currentSystemDefault())
+            .atStartOfDayInSystem()
 
         assertThat(expiryInstant).isEqualTo(expectedInstant)
     }

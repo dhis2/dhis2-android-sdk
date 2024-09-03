@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import kotlinx.datetime.*
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.koin.core.annotation.Singleton
 
@@ -47,7 +48,7 @@ internal class TrackedEntityAttributeReservedValueValidatorHelper {
                 }
             }
 
-        return nextExpiryDate(flags.first, flags.second, flags.third)
+        return nextExpiryDate(yearly = flags.first, monthly = flags.second, weekly = flags.third)
     }
 
     fun getCurrentDatePatternStrList(pattern: String?): List<String> {
@@ -79,7 +80,7 @@ internal class TrackedEntityAttributeReservedValueValidatorHelper {
 
             else -> error("No expiry date available for this pattern.")
         }
-        return nextDate.atStartOfDayIn(TimeZone.currentSystemDefault())
+        return nextDate.atStartOfDayInSystem()
     }
 
     companion object {

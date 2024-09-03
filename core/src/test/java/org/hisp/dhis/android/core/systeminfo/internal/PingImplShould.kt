@@ -48,6 +48,7 @@ class PingImplShould {
 
     @Test
     fun get_should_return_success_when_ping_service_succeeds2() = runBlocking {
+        val expectedResponse = ""
         val mockEngine = MockEngine { respond(content = "") }
         val client = HttpClient(mockEngine)
         val httpServiceClient = HttpServiceClient(client)
@@ -55,7 +56,7 @@ class PingImplShould {
 
         val response = pingService.getPing()
         val result = response.bodyAsText()
-        assertThat("").isEqualTo(result)
+        assertThat(expectedResponse).isEqualTo(result)
     }
 
     @Test

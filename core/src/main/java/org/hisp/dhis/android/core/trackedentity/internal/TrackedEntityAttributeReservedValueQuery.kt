@@ -35,7 +35,7 @@ internal data class TrackedEntityAttributeReservedValueQuery(
     val numberToReserve: Int,
     val organisationUnit: OrganisationUnit?,
     val trackedEntityAttributePattern: String?,
-    val storeError: Boolean
+    val storeError: Boolean,
 ) : BaseQuery(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,

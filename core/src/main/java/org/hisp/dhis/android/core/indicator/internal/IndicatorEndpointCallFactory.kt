@@ -54,7 +54,7 @@ internal class IndicatorEndpointCallFactory(
                 return service.getIndicators(
                     IndicatorFields.allFields,
                     null,
-                    IndicatorFields.uid.`in`(query.uids()),
+                    IndicatorFields.uid.`in`(query.uids),
                     false,
                 )
             }

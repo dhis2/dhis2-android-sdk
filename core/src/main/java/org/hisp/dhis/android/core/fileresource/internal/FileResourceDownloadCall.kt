@@ -239,7 +239,7 @@ internal class FileResourceDownloadCall(
                 override suspend fun getCall(query: UidsQuery): Payload<FileResource> {
                     return fileResourceService.getFileResources(
                         FileResourceFields.allFields,
-                        FileResourceFields.uid.`in`(query.uids()),
+                        FileResourceFields.uid.`in`(query.uids),
                         false,
                     )
                 }

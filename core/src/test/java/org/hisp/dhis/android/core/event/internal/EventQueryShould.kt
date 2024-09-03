@@ -35,10 +35,9 @@ class EventQueryShould {
 
     @Test
     fun create_event_query_successfully() {
-        val eventQuery = EventQuery.builder()
-            .commonParams(TrackerQueryCommonParamsSamples.get())
-            .pageSize(50)
-            .build()
+        val eventQuery = EventQuery(
+            commonParams = TrackerQueryCommonParamsSamples.get(),
+        )
         Truth.assertThat(eventQuery).isNotNull()
     }
 }

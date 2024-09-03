@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.call.queries.internal
 
-
 internal data class UidsQuery(
-    val uids: Set<String?>
+    val uids: Set<String>,
 ) : BaseQuery(
-    page = 1, pageSize = DEFAULT_PAGE_SIZE,
-    paging = false)
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false,
+)

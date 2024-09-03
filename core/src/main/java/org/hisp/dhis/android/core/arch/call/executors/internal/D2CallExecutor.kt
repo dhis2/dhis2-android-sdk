@@ -25,48 +25,59 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.core.arch.call.executors.internal
 
-import android.database.sqlite.SQLiteException
 import android.util.Log
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.user.User
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
+import java.util.concurrent.Callable
 
-@Singleton
-internal class UserCall(
-    private val genericCallData: GenericCallData,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val userService: UserService,
-    private val userHandler: UserHandler,
-    private val dhisVersionManager: DHISVersionManager,
+internal class D2CallExecutor(
+    private val databaseAdapter: DatabaseAdapter,
+    private val errorStore: D2ErrorStore,
 ) {
+    private val exceptionBuilder: D2Error.Builder = D2Error
+        .builder()
+        .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
-    suspend fun call(): User {
-        val user =
-            coroutineAPICallExecutor.wrap {
-                userService.getUser(
-                    UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
-                )
-            }.getOrThrow()
-
-        val transaction = genericCallData.databaseAdapter.beginNewTransaction()
+    fun <C> executeD2CallTransactionally(call: Callable<C>): C {
         try {
-            userHandler.handle(user)
+            return innerExecuteD2CallTransactionally(call)
+        } catch (d2E: D2Error) {
+            errorStore.insert(d2E)
+            throw d2E
+        }
+    }
+
+    @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
+    private fun <C> innerExecuteD2CallTransactionally(call: Callable<C>): C {
+        var transaction = databaseAdapter.beginNewTransaction()
+        try {
+            var response = call.call()
             transaction.setSuccessful()
-        } catch (constraintException: SQLiteException) {
-            // TODO review
-            Log.d("CAll", "call: constraintException")
-        } catch (constraintException: android.database.SQLException) {
-            // TODO review
-            Log.d("CAll", "call: constraintException")
+            return response
+        } catch (d2E: D2Error) {
+            throw d2E
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName, e.toString())
+            throw exceptionBuilder
+                .errorCode(D2ErrorCode.UNEXPECTED)
+                .errorDescription("Unexpected error calling $call").build()
         } finally {
             transaction.end()
         }
-        return user
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(databaseAdapter: DatabaseAdapter): D2CallExecutor {
+            return D2CallExecutor(databaseAdapter, D2ErrorStoreImpl(databaseAdapter))
+        }
     }
 }

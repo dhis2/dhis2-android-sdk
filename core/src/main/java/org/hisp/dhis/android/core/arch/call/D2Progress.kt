@@ -25,48 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call
 
-package org.hisp.dhis.android.core.tracker.exporter;
+open class D2Progress(
+    @get:JvmName("getIsComplete")
+    open val isComplete: Boolean,
+    open val totalCalls: Int?,
+    open val doneCalls: List<String>,
+) {
 
-import androidx.annotation.NonNull;
+    fun isComplete(): Boolean = isComplete
+    fun totalCalls(): Int? = totalCalls
+    fun doneCalls(): List<String> = doneCalls
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.D2ProgressStatus;
-
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-public abstract class TrackerD2Progress extends D2Progress {
-
-    @NonNull
-    public abstract Map<String, D2ProgressStatus> programs();
-
-    public static Builder builder() {
-        return new AutoValue_TrackerD2Progress.Builder();
+    fun lastCall(): String? {
+        return if (doneCalls.isEmpty()) null else doneCalls.last()
     }
 
-    public abstract Builder toBuilder();
-
-    public static TrackerD2Progress empty(Integer totalCalls) {
-        if (totalCalls != null && totalCalls < 0) {
-            throw new IllegalArgumentException("Negative total calls");
-        }
-        return TrackerD2Progress.builder()
-                .isComplete(false)
-                .totalCalls(totalCalls)
-                .doneCalls(Collections.emptyList())
-                .programs(Collections.emptyMap())
-                .build();
+    @Suppress("MagicNumber")
+    fun percentage(): Double? {
+        return totalCalls?.let { 100.0 * doneCalls.size / it }
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends D2Progress.Builder<Builder> {
+    abstract class Builder<T : Builder<T>> {
+        abstract var isComplete: Boolean
+        abstract var totalCalls: Int?
+        abstract var doneCalls: List<String>
 
-        public abstract Builder programs(Map<String, D2ProgressStatus> programs);
+        abstract fun build(): D2Progress
 
-        public abstract TrackerD2Progress build();
+        @Suppress("UNCHECKED_CAST")
+        fun isComplete(isComplete: Boolean): T = apply { this.isComplete = isComplete } as T
+
+        @Suppress("UNCHECKED_CAST")
+        fun totalCalls(totalCalls: Int?): T = apply { this.totalCalls = totalCalls } as T
+
+        @Suppress("UNCHECKED_CAST")
+        fun doneCalls(doneCalls: List<String>?): T = apply { this.doneCalls = doneCalls ?: emptyList() } as T
     }
 }

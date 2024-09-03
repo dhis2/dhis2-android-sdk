@@ -25,30 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call
 
-package org.hisp.dhis.android.core.arch.call.internal;
+data class BaseD2Progress(
+    @get:JvmName("getIsComplete")
+    override val isComplete: Boolean,
+    override val totalCalls: Int? = null,
+    override val doneCalls: List<String> = emptyList(),
+) : D2Progress(isComplete, totalCalls, doneCalls) {
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-@AutoValue
-public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract HttpServiceClient httpServiceClient();
-    public abstract ResourceHandler resourceHandler();
-    public abstract DHISVersionManager versionManager();
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, HttpServiceClient httpClient,
-                                         ResourceHandler resourceHandler, DHISVersionManager versionManager) {
-        return new AutoValue_GenericCallData(databaseAdapter, httpClient, resourceHandler, versionManager);
+    fun toBuilder(): Builder {
+        return Builder(isComplete, totalCalls, doneCalls)
     }
 
-    public void handleResource(Resource.Type type) {
-        resourceHandler().handleResource(type);
+    class Builder(
+        override var isComplete: Boolean = false,
+        override var totalCalls: Int? = null,
+        override var doneCalls: List<String> = emptyList(),
+    ) : D2Progress.Builder<Builder>() {
+        override fun build(): BaseD2Progress {
+            return BaseD2Progress(isComplete, totalCalls, doneCalls)
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return Builder()
+        }
+
+        fun empty(totalCalls: Int?): BaseD2Progress {
+            require(!(totalCalls != null && totalCalls < 0)) { "Negative total calls" }
+            return builder()
+                .isComplete(totalCalls != null && totalCalls == 0)
+                .totalCalls(totalCalls)
+                .doneCalls(emptyList())
+                .build()
+        }
     }
 }

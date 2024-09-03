@@ -25,48 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.processors.internal
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.resource.internal.Resource
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.D2ProgressStatus;
-
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-public abstract class AggregatedD2Progress extends D2Progress {
-
-    @NonNull
-    public abstract Map<String, D2ProgressStatus> dataSets();
-
-    public static Builder builder() {
-        return new AutoValue_AggregatedD2Progress.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static AggregatedD2Progress empty(Integer totalCalls) {
-        if (totalCalls != null && totalCalls < 0) {
-            throw new IllegalArgumentException("Negative total calls");
+internal class TransactionalResourceSyncCallProcessor<O>(
+    private val data: GenericCallData,
+    private val handler: Handler<O>,
+    private val resourceType: Resource.Type,
+) : CallProcessor<O> {
+    @Throws(D2Error::class)
+    override fun process(objectList: List<O>) {
+        if (objectList.isNotEmpty()) {
+            create(data.databaseAdapter).executeD2CallTransactionally<Any?>({
+                handler.handleMany(objectList)
+                data.handleResource(resourceType)
+                null
+            })
         }
-        return AggregatedD2Progress.builder()
-                .isComplete(false)
-                .totalCalls(totalCalls)
-                .doneCalls(Collections.emptyList())
-                .dataSets(Collections.emptyMap())
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends D2Progress.Builder<Builder> {
-
-        public abstract Builder dataSets(Map<String, D2ProgressStatus> dataSets);
-
-        public abstract AggregatedD2Progress build();
     }
 }

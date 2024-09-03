@@ -25,49 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.internal
 
-package org.hisp.dhis.android.core.arch.call;
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
-import java.util.List;
+internal data class GenericCallData(
+    val databaseAdapter: DatabaseAdapter,
+    val httpServiceClient: HttpServiceClient,
+    val resourceHandler: ResourceHandler,
+    val versionManager: DHISVersionManager,
+) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-public abstract class D2Progress {
-
-    @NonNull
-    public abstract Boolean isComplete();
-
-    @Nullable
-    public abstract Integer totalCalls();
-
-    @NonNull
-    public abstract List<String> doneCalls();
-
-    @Nullable
-    public String lastCall() {
-        if (this.doneCalls().size() == 0) {
-            return null;
-        } else {
-            return this.doneCalls().get(this.doneCalls().size() - 1);
-        }
-    }
-
-    @Nullable
-    public Double percentage() {
-        Integer totalCalls = this.totalCalls();
-        if (totalCalls == null) {
-            return null;
-        } else {
-            return 100.0 * this.doneCalls().size() / totalCalls;
-        }
-    }
-
-    public abstract static class Builder<T extends Builder> {
-        public abstract T isComplete(Boolean isComplete);
-
-        public abstract T totalCalls(Integer totalCalls);
-
-        public abstract T doneCalls(List<String> doneCalls);
+    fun handleResource(type: Resource.Type?) {
+        resourceHandler.handleResource(type)
     }
 }

@@ -70,7 +70,7 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal c
     override fun processor(query: TrackedEntityAttributeReservedValueQuery):
         CallProcessor<TrackedEntityAttributeReservedValue> {
         return TrackedEntityAttributeReservedValueCallProcessor(
-            data.databaseAdapter(),
+            data.databaseAdapter,
             handler,
             query.organisationUnit(),
             query.trackedEntityAttributePattern(),

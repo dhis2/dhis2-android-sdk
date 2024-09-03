@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
-internal data class EventQuery (
+internal data class EventQuery(
     val commonParams: TrackerQueryCommonParams,
-    val orgUnit: String?,
+    val orgUnit: String? = null,
     val uids: Collection<String?> = emptyList(),
-    val lastUpdatedStr: String?
+    val lastUpdatedStr: String? = null,
 ) : BaseQuery(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,

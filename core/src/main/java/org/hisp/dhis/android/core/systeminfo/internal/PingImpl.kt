@@ -56,11 +56,8 @@ class PingImpl internal constructor(
     private suspend fun checkPing(): String {
         try {
             val response = pingService.getPing()
-            val responseBody = response.bodyAsText()
             return if (
-                response.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX &&
-                responseBody == "pong"
-            ) {
+                response.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX) {
                 "pong"
             } else {
                 throw IOException("Ping to the server failed with status code: ${response.status.value}")

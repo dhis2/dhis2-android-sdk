@@ -34,7 +34,7 @@ data class AggregatedD2Progress(
     @get:JvmName("getIsComplete")
     override val isComplete: Boolean = false,
     override val totalCalls: Int? = null,
-    override val doneCalls: List<String?> = emptyList(),
+    override val doneCalls: List<String> = emptyList(),
     val dataSets: Map<String, D2ProgressStatus> = emptyMap(),
 ) : D2Progress(isComplete, totalCalls, doneCalls) {
 
@@ -47,7 +47,7 @@ data class AggregatedD2Progress(
     class Builder(
         override var isComplete: Boolean = false,
         override var totalCalls: Int? = null,
-        override var doneCalls: List<String?> = emptyList(),
+        override var doneCalls: List<String> = emptyList(),
         var dataSets: Map<String, D2ProgressStatus> = emptyMap(),
     ) : D2Progress.Builder<Builder>() {
 

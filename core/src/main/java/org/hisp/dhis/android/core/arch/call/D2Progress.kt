@@ -31,12 +31,12 @@ open class D2Progress(
     @get:JvmName("getIsComplete")
     open val isComplete: Boolean,
     open val totalCalls: Int?,
-    open val doneCalls: List<String?>,
+    open val doneCalls: List<String>,
 ) {
 
     fun isComplete(): Boolean = isComplete
     fun totalCalls(): Int? = totalCalls
-    fun doneCalls(): List<String?> = doneCalls
+    fun doneCalls(): List<String> = doneCalls
 
     fun lastCall(): String? {
         return if (doneCalls.isEmpty()) null else doneCalls.last()
@@ -50,7 +50,7 @@ open class D2Progress(
     abstract class Builder<T : Builder<T>> {
         abstract var isComplete: Boolean
         abstract var totalCalls: Int?
-        abstract var doneCalls: List<String?>
+        abstract var doneCalls: List<String>
 
         abstract fun build(): D2Progress
 
@@ -61,6 +61,6 @@ open class D2Progress(
         fun totalCalls(totalCalls: Int?): T = apply { this.totalCalls = totalCalls } as T
 
         @Suppress("UNCHECKED_CAST")
-        fun doneCalls(doneCalls: List<String?>?): T = apply { this.doneCalls = doneCalls ?: emptyList() } as T
+        fun doneCalls(doneCalls: List<String>?): T = apply { this.doneCalls = doneCalls ?: emptyList() } as T
     }
 }

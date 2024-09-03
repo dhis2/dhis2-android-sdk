@@ -35,7 +35,8 @@ import org.koin.core.annotation.Singleton
 internal class PingService(private val client: HttpServiceClient) {
     suspend fun getPing(): HttpResponse {
         return client.get {
-            url("system/ping")
+            url("ping")
+            excludeCredentials()
         }
     }
 }

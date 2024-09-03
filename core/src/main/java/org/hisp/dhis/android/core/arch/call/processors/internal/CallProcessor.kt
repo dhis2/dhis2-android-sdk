@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.arch.call.processors.internal
 
 import org.hisp.dhis.android.core.maintenance.D2Error
 
-@FunctionalInterface
-internal interface CallProcessor<P> {
+internal fun interface CallProcessor<P> {
     @Throws(D2Error::class)
     fun process(objectList: List<P>)
 }

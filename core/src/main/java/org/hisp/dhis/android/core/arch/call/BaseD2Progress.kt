@@ -31,7 +31,7 @@ data class BaseD2Progress(
     @get:JvmName("getIsComplete")
     override val isComplete: Boolean,
     override val totalCalls: Int? = null,
-    override val doneCalls: List<String?> = emptyList(),
+    override val doneCalls: List<String> = emptyList(),
 ) : D2Progress(isComplete, totalCalls, doneCalls) {
 
     fun toBuilder(): Builder {
@@ -41,7 +41,7 @@ data class BaseD2Progress(
     class Builder(
         override var isComplete: Boolean = false,
         override var totalCalls: Int? = null,
-        override var doneCalls: List<String?> = emptyList(),
+        override var doneCalls: List<String> = emptyList(),
     ) : D2Progress.Builder<Builder>() {
         override fun build(): BaseD2Progress {
             return BaseD2Progress(isComplete, totalCalls, doneCalls)

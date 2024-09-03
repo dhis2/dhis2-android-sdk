@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Pager
-
 internal data class DataStorePagedEntry(
-    val pager: Pager,
     val entries: List<DataStorePageEntryItem>,
 )
 

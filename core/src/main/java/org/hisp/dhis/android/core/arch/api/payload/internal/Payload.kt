@@ -25,26 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.payload.internal
 
-package org.hisp.dhis.android.core.arch.api.ssl.internal;
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import android.util.Log;
+internal class Payload<T> {
+    @JsonProperty("pager")
+    var pager: Pager? = null
 
+    @JsonIgnore
+    var items: List<T> = ArrayList()
 
+    constructor()
 
-import java.security.NoSuchAlgorithmException;
+    constructor(initialItems: List<T>) {
+        items = initialItems
+    }
 
-import javax.net.ssl.SSLContext;
+    @JsonAnySetter
+    @Suppress("unused")
+    fun processItems(key: String, values: List<T>) {
+        this.items = values
+    }
 
-public final class SSLContextInitializer {
+    fun pager(): Pager? {
+        return this.pager
+    }
 
-    private SSLContextInitializer(){}
+    fun items(): List<T> {
+        return this.items
+    }
 
-    public static void  initializeSSLContext(){
-        try {
-            SSLContext.getInstance("TLSv1.2");
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(SSLContextInitializer.class.getSimpleName(), e.toString());
+    companion object {
+        fun <E> emptyPayload(): Payload<E> {
+            var payload = Payload<E>()
+            payload.items = emptyList()
+            return payload
         }
     }
 }

@@ -25,12 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.payload.internal
 
-package org.hisp.dhis.android.core.arch.api.filters.internal;
+import com.fasterxml.jackson.annotation.JsonCreator
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Which {
-}
+internal data class Pager @JsonCreator constructor(
+    val page: Int,
+    val pageCount: Int,
+    val pageSize: Int,
+    val total: Int,
+)

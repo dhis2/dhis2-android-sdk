@@ -25,42 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.ssl.internal
 
-package org.hisp.dhis.android.core.arch.api.payload.internal;
+import android.util.Log
+import java.security.NoSuchAlgorithmException
+import javax.net.ssl.SSLContext
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class Pager {
-    private final int page;
-    private final int pageCount;
-    private final int pageSize;
-    private final int total;
-
-    @JsonCreator
-    public Pager(@JsonProperty("page") int page,
-                 @JsonProperty("pageCount") int pageCount,
-                 @JsonProperty("pageSize") int pageSize,
-                 @JsonProperty("total") int total) {
-        this.page = page;
-        this.pageCount = pageCount;
-        this.pageSize = pageSize;
-        this.total = total;
-    }
-
-    public int page() {
-        return page;
-    }
-
-    public int pageCount() {
-        return pageCount;
-    }
-
-    public int pageSize() {
-        return pageSize;
-    }
-
-    public int total() {
-        return total;
+internal object SSLContextInitializer {
+    fun initializeSSLContext() {
+        try {
+            SSLContext.getInstance("TLSv1.2")
+        } catch (e: NoSuchAlgorithmException) {
+            Log.e(SSLContextInitializer::class.java.simpleName, e.toString())
+        }
     }
 }

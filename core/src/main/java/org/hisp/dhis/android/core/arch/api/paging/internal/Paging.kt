@@ -25,30 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.paging.internal
 
-package org.hisp.dhis.android.core.arch.api.paging.internal;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Paging {
-
-    public abstract int page();
-
-    public abstract int pageSize();
-
-    public abstract int previousItemsToSkipCount();
-
-    public abstract int posteriorItemsToSkipCount();
-
-    public abstract boolean isLastPage();
-
-    public static Paging create(int page, int pageSize, int previousItemsToSkipCount, int posteriorItemsToSkipCount,
-                                boolean isLastPage) {
-        return new AutoValue_Paging(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount, isLastPage);
-    }
-
-    public Boolean isFullPage() {
-        return this.isLastPage() || this.previousItemsToSkipCount() > 0 || this.posteriorItemsToSkipCount() > 0;
-    }
+internal data class Paging(
+    val page: Int,
+    val pageSize: Int,
+    val previousItemsToSkipCount: Int,
+    val posteriorItemsToSkipCount: Int,
+    val isLastPage: Boolean,
+) {
+    val isFullPage: Boolean
+        get() = this.isLastPage || (this.previousItemsToSkipCount > 0) || (this.posteriorItemsToSkipCount > 0)
 }

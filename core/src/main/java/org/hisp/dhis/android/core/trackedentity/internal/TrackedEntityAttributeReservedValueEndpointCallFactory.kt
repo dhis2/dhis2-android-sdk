@@ -73,7 +73,7 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal c
             data.databaseAdapter,
             handler,
             query.organisationUnit,
-            query.trackedEntityAttributePattern!!,
+            query.trackedEntityAttributePattern,
         )
     }
 }

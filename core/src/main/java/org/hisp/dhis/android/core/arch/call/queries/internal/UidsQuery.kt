@@ -25,30 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.queries.internal
 
-package org.hisp.dhis.android.core.arch.call.queries.internal;
-
-import kotlin.Deprecated;
-
-@Deprecated(message = "Use BaseQueryKt instead")
-public abstract class BaseQuery {
-    public static final int DEFAULT_PAGE_SIZE = 50;
-
-    public abstract int page();
-
-    public abstract int pageSize();
-
-    public abstract boolean paging();
-
-    boolean isValid() {
-        return true;
-    }
-
-    protected abstract static class Builder<T extends BaseQuery.Builder> {
-        public abstract T page(int page);
-
-        public abstract T pageSize(int pageSize);
-
-        public abstract T paging(boolean paging);
-    }
-}
+internal data class UidsQuery(
+    val uids: Set<String>,
+) : BaseQuery(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    paging = false,
+)

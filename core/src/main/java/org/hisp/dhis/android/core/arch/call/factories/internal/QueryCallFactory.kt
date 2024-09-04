@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
-internal fun interface QueryCallFactory<P, Q : BaseQueryKt> {
+internal fun interface QueryCallFactory<P, Q : BaseQuery> {
     suspend fun create(query: Q): List<P>
 }

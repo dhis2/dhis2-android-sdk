@@ -53,10 +53,10 @@ internal class DataElementEndpointCallFactory(
             override suspend fun getCall(query: UidsQuery): Payload<DataElement> {
                 return service.getDataElements(
                     DataElementFields.allFields,
-                    DataElementFields.uid.`in`(query.uids()),
+                    DataElementFields.uid.`in`(query.uids),
                     null,
                     accessReadFilter,
-                    query.paging(),
+                    query.paging,
                 )
             }
         }

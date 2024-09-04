@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
-internal fun interface QueryCall<P, Q : BaseQueryKt> {
+internal fun interface QueryCall<P, Q : BaseQuery> {
     suspend fun download(query: Q): List<P>
 }

@@ -38,5 +38,9 @@ internal data class FileResourceDownloadParams(
     val elementTypes: List<FileResourceElementType> = FileResourceElementType.entries,
     val dataDomainTypes: List<FileResourceDataDomainType> = FileResourceDataDomainType.entries,
     val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.entries,
+    val trackedEntityUids: List<String> = emptyList(),
+    val eventUids: List<String> = emptyList(),
+    val programUids: List<String> = emptyList(),
+    val dataSetUids: List<String> = emptyList(),
     val maxContentLength: Int? = null,
 ) : BaseScope

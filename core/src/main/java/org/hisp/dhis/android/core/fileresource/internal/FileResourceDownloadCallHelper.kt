@@ -30,9 +30,15 @@ package org.hisp.dhis.android.core.fileresource.internal
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementStoreImpl
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.CustomIconTableInfo
@@ -54,6 +60,9 @@ internal class FileResourceDownloadCallHelper(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
+    private val enrollmentStore: EnrollmentStore,
+    private val eventStore: EventStore,
+    private val dataSetElementStore: DataSetElementStoreImpl,
     private val dataValueStore: DataValueStore,
     private val customIconStore: CustomIconStore,
     private val dhisVersionManager: DHISVersionManager,
@@ -63,27 +72,47 @@ internal class FileResourceDownloadCallHelper(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
     ): List<MissingTrackerAttributeValue> {
-        val fileTypes =
-            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
-                params.valueTypes
-            } else {
-                params.valueTypes.filter { it == FileResourceValueType.IMAGE }
+        val fileTypes = params.valueTypes.filter { type ->
+            dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) || type == FileResourceValueType.IMAGE
+        }
+
+        val enrollmentWhereClause = WhereClauseBuilder().apply {
+            if (params.trackedEntityUids.isNotEmpty()) {
+                appendInKeyStringValues(
+                    TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                    params.trackedEntityUids,
+                )
             }
+            if (params.programUids.isNotEmpty()) {
+                appendInKeyStringValues(EnrollmentTableInfo.Columns.PROGRAM, params.programUids)
+            }
+        }
+
         val attributesWhereClause = WhereClauseBuilder()
             .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, fileTypes.map { it.valueType })
             .build()
+
         val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(attributesWhereClause)
-        val attributeValuesWhereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
+
+        val attributeValuesWhereClauseBuilder = WhereClauseBuilder().apply {
+            appendInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributes.map { it.uid() },
+                trackedEntityAttributes.map { it.uid() }
             )
-            .appendNotInKeyStringValues(
+            appendNotInKeyStringValues(
                 TrackedEntityAttributeValueTableInfo.Columns.VALUE,
-                existingFileResources,
+                existingFileResources
             )
-            .build()
-        return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClause)
+
+            if (enrollmentWhereClause.isEmpty.not()) {
+                appendInKeyStringValues(
+                    TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                    enrollmentStore.selectWhere(enrollmentWhereClause.build()).map { it.trackedEntityInstance()!! }
+                )
+            }
+        }
+
+        return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClauseBuilder.build())
             .map { av ->
                 val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
                 MissingTrackerAttributeValue(av, type)
@@ -99,11 +128,25 @@ internal class FileResourceDownloadCallHelper(
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
             .build()
         val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)
-        val dataValuesWhereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
-            .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.VALUE, existingFileResources)
-            .build()
-        return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause)
+
+        val dataValuesWhereClauseBuilder = WhereClauseBuilder().apply {
+            appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
+            appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.VALUE, existingFileResources)
+
+            val eventUids = params.programUids.takeIf { it.isNotEmpty() }
+                ?.let { programUids ->
+                    val eventWhereClause = WhereClauseBuilder()
+                        .appendInKeyStringValues(EventTableInfo.Columns.PROGRAM, programUids)
+                        .build()
+                    params.eventUids.union(eventStore.selectWhere(eventWhereClause).map { it.uid() }).toList()
+                } ?: params.eventUids
+
+            if (eventUids.isNotEmpty()) {
+                appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUids)
+            }
+        }
+
+        return trackedEntityDataValueStore.selectWhere(dataValuesWhereClauseBuilder.build())
     }
 
     fun getMissingAggregatedDataValues(
@@ -114,11 +157,26 @@ internal class FileResourceDownloadCallHelper(
             .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "AGGREGATE")
             .build()
-        val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)
+
+        val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause).toMutableList()
+
+        val filteredDataElementUids = params.dataSetUids.takeIf { it.isNotEmpty() }
+            ?.let { dataSetUids ->
+                val dataSetElementsWhereClause = WhereClauseBuilder()
+                    .appendInKeyStringValues(DataSetDataElementLinkTableInfo.Columns.DATA_SET, dataSetUids)
+                    .build()
+
+                val dataElementUidsFromDataSet = dataSetElementStore.selectWhere(dataSetElementsWhereClause)
+                    .map { it.dataElement().uid() }
+
+                dataElementUids.intersect(dataElementUidsFromDataSet.toSet()).toList()
+            } ?: dataElementUids
+
         val dataValuesWhereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(DataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
+            .appendInKeyStringValues(DataValueTableInfo.Columns.DATA_ELEMENT, filteredDataElementUids)
             .appendNotInKeyStringValues(DataValueTableInfo.Columns.VALUE, existingFileResources)
             .build()
+
         return dataValueStore.selectWhere(dataValuesWhereClause)
     }
 

@@ -63,6 +63,22 @@ class FileResourceDownloader internal constructor(
         download().blockingSubscribe()
     }
 
+    fun byTrackedEntityUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(trackedEntityUids = list) }
+    }
+
+    fun byEventUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(eventUids = list) }
+    }
+
+    fun byProgramUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(programUids = list) }
+    }
+
+    fun byDataSetUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(dataSetUids = list) }
+    }
+
     fun byValueType(): ListFilterConnector<FileResourceDownloader, FileResourceValueType> {
         return connectorFactory.listConnector { list -> params.copy(valueTypes = list) }
     }

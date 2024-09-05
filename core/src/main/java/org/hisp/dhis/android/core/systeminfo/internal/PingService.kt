@@ -36,10 +36,10 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class PingService(
     private val client: HttpServiceClient,
-    private val versionManager: DHISVersionManager
-    ) {
+    private val dhisVersionManager: DHISVersionManager,
+) {
     suspend fun getPing(): HttpResponse {
-        return if (versionManager.isGreaterThan(DHISVersion.V2_36)) {
+        return if (dhisVersionManager.isGreaterThan(DHISVersion.V2_36)) {
             client.get {
                 url("ping")
                 excludeCredentials()
@@ -49,6 +49,5 @@ internal class PingService(
                 url("system/ping")
             }
         }
-
     }
 }

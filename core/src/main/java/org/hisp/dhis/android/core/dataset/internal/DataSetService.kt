@@ -40,7 +40,7 @@ internal fun interface DataSetService {
     @GET("dataSets")
     suspend fun getDataSets(
         @Query("fields") @Which fields: Fields<DataSet>,
-        @Query("filter") @Where uids: Filter<DataSet, String>,
+        @Query("filter") @Where uids: Filter<DataSet>,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
     ): Payload<DataSet>

@@ -55,10 +55,12 @@ internal class PeriodStoreImpl(
         { cursor: Cursor -> Period.create(cursor) },
     ) {
     override fun selectByPeriodId(periodId: String?): Period? {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(PeriodTableInfo.Columns.PERIOD_ID, periodId)
-            .build()
-        return selectOneWhere(whereClause)
+        return periodId?.let {
+            val whereClause = WhereClauseBuilder()
+                .appendKeyStringValue(PeriodTableInfo.Columns.PERIOD_ID, it)
+                .build()
+            selectOneWhere(whereClause)
+        }
     }
 
     override fun selectPeriodByTypeAndDate(periodType: PeriodType, date: Date): Period? {

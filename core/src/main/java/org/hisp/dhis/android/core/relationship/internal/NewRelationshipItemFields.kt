@@ -27,26 +27,24 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEnrollment
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEvent
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemTrackedEntity
 
-internal object NewRelationshipItemFields {
+internal object NewRelationshipItemFields : BaseFields<NewTrackerImporterRelationshipItem>() {
     private const val TRACKED_ENTITY = "trackedEntity"
     private const val ENROLLMENT = "enrollment"
     private const val EVENT = "event"
 
-    private val fh = FieldsHelper<NewTrackerImporterRelationshipItem>()
-    val allFields: Fields<NewTrackerImporterRelationshipItem> = Fields.builder<NewTrackerImporterRelationshipItem>()
-        .fields(
-            fh.nestedField<NewTrackerImporterRelationshipItemTrackedEntity>(TRACKED_ENTITY)
-                .with(NewRelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            fh.nestedField<NewTrackerImporterRelationshipItemEnrollment>(ENROLLMENT)
-                .with(NewRelationshipItemEnrollmentFields.enrollment),
-            fh.nestedField<NewTrackerImporterRelationshipItemEvent>(EVENT)
-                .with(NewRelationshipItemEventFields.event),
-        ).build()
+    val allFields = Fields.from(
+        fh.nestedField<NewTrackerImporterRelationshipItemTrackedEntity>(TRACKED_ENTITY)
+            .with(NewRelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+        fh.nestedField<NewTrackerImporterRelationshipItemEnrollment>(ENROLLMENT)
+            .with(NewRelationshipItemEnrollmentFields.enrollment),
+        fh.nestedField<NewTrackerImporterRelationshipItemEvent>(EVENT)
+            .with(NewRelationshipItemEventFields.event),
+    )
 }

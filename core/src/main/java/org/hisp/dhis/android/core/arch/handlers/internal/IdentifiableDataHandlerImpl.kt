@@ -185,7 +185,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         relatives: RelationshipItemRelatives?,
     )
 
-    protected fun beforeCollectionHandled(
+    protected open fun beforeCollectionHandled(
         oCollection: Collection<O>,
         params: IdentifiableDataHandlerParams,
     ): Collection<O> {

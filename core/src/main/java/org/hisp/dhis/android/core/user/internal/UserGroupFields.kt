@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.user.UserGroup
 
-internal object UserGroupFields {
-    private val fh = FieldsHelper<UserGroup>()
-    val allFields: Fields<UserGroup> = Fields.builder<UserGroup>()
-        .fields(fh.getIdentifiableFields())
-        .build()
+internal object UserGroupFields : BaseFields<UserGroup>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+    )
 }

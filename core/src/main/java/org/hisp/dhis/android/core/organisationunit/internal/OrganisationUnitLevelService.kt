@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-fun interface OrganisationUnitLevelService {
+internal fun interface OrganisationUnitLevelService {
     @GET("organisationUnitLevels")
     suspend fun getOrganisationUnitLevels(
         @Query("fields") @Which fields: Fields<OrganisationUnitLevel>,

@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
@@ -53,6 +55,7 @@ internal class EventHandler(
     relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     eventStore: EventStore,
+    private val programStore: ProgramStore,
     private val trackedEntityDataValueHandler: TrackedEntityDataValueHandler,
     private val noteHandler: NoteHandler,
     private val noteVersionManager: NoteDHISVersionManager,
@@ -60,11 +63,25 @@ internal class EventHandler(
     private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Event>(eventStore, relationshipVersionManager, relationshipHandler) {
 
+    override fun beforeCollectionHandled(
+        oCollection: Collection<Event>,
+        params: IdentifiableDataHandlerParams,
+    ): Collection<Event> {
+        val programTypes = programStore.selectAll().associate { it.uid() to it.programType() }
+
+        val updatedEvents = oCollection.map {
+            it.takeUnless { programTypes[it.program()] == ProgramType.WITHOUT_REGISTRATION }
+                ?: it.toBuilder().enrollment(null).build()
+        }
+
+        return super.beforeCollectionHandled(updatedEvents, params)
+    }
+
     override fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
-            Log.i(this.javaClass.simpleName, "Event " + o.uid() + " has invalid geometry value")
+            Log.i(this::class.simpleName, "Event ${o.uid()} has an invalid geometry value")
             o.toBuilder().geometry(null).build()
         }
     }

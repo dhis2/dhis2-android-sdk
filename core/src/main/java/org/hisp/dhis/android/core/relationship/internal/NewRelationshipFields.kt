@@ -27,29 +27,27 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
 
-internal object NewRelationshipFields {
+internal object NewRelationshipFields : BaseFields<NewTrackerImporterRelationship>() {
     const val RELATIONSHIP = "relationship"
-    const val RELATIONSHIP_NAME = "relationshipName"
+    private const val RELATIONSHIP_NAME = "relationshipName"
     private const val RELATIONSHIP_TYPE = "relationshipType"
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
     private const val FROM = "from"
     private const val TO = "to"
 
-    private val fh = FieldsHelper<NewTrackerImporterRelationship>()
-
-    val allFields: Fields<NewTrackerImporterRelationship> = Fields.builder<NewTrackerImporterRelationship>().fields(
-        fh.field<String>(RELATIONSHIP),
-        fh.field<String>(RELATIONSHIP_NAME),
-        fh.field<String>(RELATIONSHIP_TYPE),
-        fh.field<String>(CREATED_AT),
-        fh.field<String>(UPDATED_AT),
+    val allFields = Fields.from(
+        fh.field(RELATIONSHIP),
+        fh.field(RELATIONSHIP_NAME),
+        fh.field(RELATIONSHIP_TYPE),
+        fh.field(CREATED_AT),
+        fh.field(UPDATED_AT),
         fh.nestedField<NewTrackerImporterRelationshipItem>(FROM).with(NewRelationshipItemFields.allFields),
         fh.nestedField<NewTrackerImporterRelationshipItem>(TO).with(NewRelationshipItemFields.allFields),
-    ).build()
+    )
 }

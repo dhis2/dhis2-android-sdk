@@ -91,7 +91,7 @@ class RelationshipTypeCollectionRepository internal constructor(
                         relationshipConstraintType,
                     )
                 }
-            },
+            }.build(),
         )
     }
 

@@ -119,7 +119,7 @@ internal class FileResourceDownloadCall(
         if (params.domainTypes.contains(FileResourceDomainType.DATA_VALUE) &&
             params.dataDomainTypes.contains(FileResourceDataDomainType.TRACKER)
         ) {
-            if (params.elementTypes.contains(FileResourceElementType.TRACED_ENTITY_ATTRIBUTE)) {
+            if (params.elementTypes.contains(FileResourceElementType.TRACKED_ENTITY_ATTRIBUTE)) {
                 val attributeDataValues = helper.getMissingTrackerAttributeValues(params, existingFileResources)
 
                 downloadAndPersistFiles(

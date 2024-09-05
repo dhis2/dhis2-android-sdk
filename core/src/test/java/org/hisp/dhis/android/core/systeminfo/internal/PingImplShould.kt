@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -37,22 +40,31 @@ import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class PingImplShould {
+    private val dhisVersionManager: DHISVersionManager = mock()
+
+    @Before
+    fun setUp() {
+        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_36)).doReturn(true)
+    }
 
     @Test
     fun get_should_return_success_when_ping_service_succeeds2() = runBlocking {
-        val expectedResponse = "pong"
-        val mockEngine = MockEngine { respond(content = expectedResponse) }
+        val expectedResponse = ""
+        val mockEngine = MockEngine { respond(content = "") }
         val client = HttpClient(mockEngine)
         val httpServiceClient = HttpServiceClient(client)
-        val pingService = PingService(httpServiceClient)
+        val pingService = PingService(httpServiceClient, dhisVersionManager)
 
         val response = pingService.getPing()
         val result = response.bodyAsText()
@@ -69,7 +81,7 @@ class PingImplShould {
         }
         val client = HttpClient(mockEngine)
         val httpServiceClient = HttpServiceClient(client)
-        val pingService = PingService(httpServiceClient)
+        val pingService = PingService(httpServiceClient, dhisVersionManager)
         val pingImpl = PingImpl(pingService)
 
         try {

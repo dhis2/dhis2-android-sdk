@@ -29,13 +29,25 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class PingService(private val client: HttpServiceClient) {
+internal class PingService(
+    private val client: HttpServiceClient,
+    private val dhisVersionManager: DHISVersionManager,
+) {
     suspend fun getPing(): HttpResponse {
-        return client.get {
-            url("system/ping")
+        return if (dhisVersionManager.isGreaterThan(DHISVersion.V2_36)) {
+            client.get {
+                url("ping")
+                excludeCredentials()
+            }
+        } else {
+            client.get {
+                url("system/ping")
+            }
         }
     }
 }

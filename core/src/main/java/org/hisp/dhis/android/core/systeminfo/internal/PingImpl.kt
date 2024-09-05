@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import io.ktor.client.statement.bodyAsText
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
@@ -56,10 +55,8 @@ class PingImpl internal constructor(
     private suspend fun checkPing(): String {
         try {
             val response = pingService.getPing()
-            val responseBody = response.bodyAsText()
             return if (
-                response.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX &&
-                responseBody == "pong"
+                response.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX
             ) {
                 "pong"
             } else {

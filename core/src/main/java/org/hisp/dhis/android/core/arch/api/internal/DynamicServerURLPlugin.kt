@@ -33,6 +33,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.URLBuilder
 import io.ktor.http.takeFrom
 import io.ktor.util.AttributeKey
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
 
 internal object DynamicServerURLPlugin {
     val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
@@ -51,7 +52,7 @@ internal object DynamicServerURLPlugin {
         return URLBuilder(transformedUrlString)
     }
     fun transformRequest(request: HttpRequestBuilder) {
-        if (!request.attributes.contains(AttributeKey<Boolean>("isAbsoluteUrl"))) {
+        if (!request.attributes.contains(isAbsouteUrlAttributeKey)) {
             val originalUrlBuilder = request.url
             val transformedUrlBuilder = transformUrl(originalUrlBuilder)
             originalUrlBuilder.parameters.clear()

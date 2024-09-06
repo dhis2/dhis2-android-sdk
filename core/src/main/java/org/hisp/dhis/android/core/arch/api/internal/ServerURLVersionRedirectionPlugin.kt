@@ -37,6 +37,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.http.takeFrom
 import io.ktor.util.AttributeKey
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 
@@ -65,7 +66,7 @@ internal object ServerURLVersionRedirectionPlugin {
     }
 
     private fun isInternal(request: HttpRequestBuilder): Boolean {
-        return !request.attributes.contains(AttributeKey<Boolean>("isAbsoluteUrl"))
+        return !request.attributes.contains(isAbsouteUrlAttributeKey)
     }
 
     private fun updateServerUrl(response: HttpResponse) {

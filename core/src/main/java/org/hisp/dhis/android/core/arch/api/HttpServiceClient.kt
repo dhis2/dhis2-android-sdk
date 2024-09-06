@@ -64,10 +64,10 @@ class HttpServiceClient(
                 }
             }
             if (requestBuilder.isAbsoluteUrl) {
-                attributes.put(AttributeKey<Boolean>("isAbsoluteUrl"), true)
+                attributes.put(isAbsouteUrlAttributeKey, true)
             }
             if (requestBuilder.isExternalRequest) {
-                attributes.put(AttributeKey<Boolean>("isExternalRequest"), true)
+                attributes.put(isExternalRequestAttributeKey, true)
             }
             requestBuilder.authorizationHeader?.let {
                 header(HttpHeaders.Authorization, it)
@@ -102,5 +102,9 @@ class HttpServiceClient(
 
     suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
         return request(HttpMethod.Delete, block)
+    }
+    companion object {
+        val isAbsouteUrlAttributeKey = AttributeKey<Boolean>("isAbsoluteUrl")
+        val isExternalRequestAttributeKey = AttributeKey<Boolean>("isExternalRequest")
     }
 }

@@ -46,6 +46,8 @@ import io.ktor.util.AttributeKey
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isExternalRequestAttributeKey
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -74,7 +76,7 @@ class RequestBuilderShould {
     fun build_url_correctly() = runTest {
         val mockEngine = MockEngine { request ->
             assertEquals("https://temporary-dhis-url.org/api/test", request.url.toString())
-            assertThat(request.attributes.contains(AttributeKey<Boolean>("isAbsoluteUrl"))).isFalse()
+            assertThat(request.attributes.contains(isAbsouteUrlAttributeKey)).isFalse()
 
             respondOk()
         }
@@ -92,8 +94,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals(true, request.attributes[AttributeKey<Boolean>("isAbsoluteUrl")])
-            assertEquals(false, request.attributes.contains(AttributeKey<Boolean>("isExternalRequest")))
+            assertEquals(true, request.attributes[isAbsouteUrlAttributeKey])
+            assertEquals(false, request.attributes.contains(isExternalRequestAttributeKey))
 
             respondOk()
         }
@@ -111,8 +113,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals(true, request.attributes[AttributeKey<Boolean>("isAbsoluteUrl")])
-            assertEquals(true, request.attributes[AttributeKey<Boolean>("isExternalRequest")])
+            assertEquals(true, request.attributes[isAbsouteUrlAttributeKey])
+            assertEquals(true, request.attributes[isExternalRequestAttributeKey])
 
             respondOk()
         }

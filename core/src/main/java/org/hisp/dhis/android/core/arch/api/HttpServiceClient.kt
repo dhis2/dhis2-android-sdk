@@ -104,7 +104,7 @@ class HttpServiceClient(
         return request(HttpMethod.Delete, block)
     }
     companion object {
-        val isAbsouteUrlAttributeKey = AttributeKey<Boolean>("isAbsoluteUrl")
-        val isExternalRequestAttributeKey = AttributeKey<Boolean>("isExternalRequest")
+        @PublishedApi internal val isAbsouteUrlAttributeKey = AttributeKey<Boolean>("isAbsoluteUrl")
+        @PublishedApi internal val isExternalRequestAttributeKey = AttributeKey<Boolean>("isExternalRequest")
     }
 }

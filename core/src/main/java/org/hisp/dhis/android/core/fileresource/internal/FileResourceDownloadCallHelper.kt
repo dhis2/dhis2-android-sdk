@@ -54,6 +54,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeV
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.koin.core.annotation.Singleton
 
+@Suppress("LongParameterList")
 @Singleton
 internal class FileResourceDownloadCallHelper(
     private val dataElementStore: DataElementStore,
@@ -153,7 +154,10 @@ internal class FileResourceDownloadCallHelper(
             params.trackedEntityUids.takeIf { it.isNotEmpty() }?.let { trackedEntityUids ->
                 val enrollmentUids = enrollmentStore.selectWhere(
                     WhereClauseBuilder()
-                        .appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityUids)
+                        .appendInKeyStringValues(
+                            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                            trackedEntityUids,
+                        )
                         .build()
                 ).map { it.uid() }
 

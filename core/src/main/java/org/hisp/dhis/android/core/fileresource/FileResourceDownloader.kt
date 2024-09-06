@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.koin.core.annotation.Singleton
 
+@Suppress("TooManyFunctions")
 @Singleton
 class FileResourceDownloader internal constructor(
     private val call: FileResourceDownloadCall,

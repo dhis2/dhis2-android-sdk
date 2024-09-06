@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
-import java.util.concurrent.Callable
 
 internal class D2CallExecutor(
     private val databaseAdapter: DatabaseAdapter,
@@ -45,7 +44,7 @@ internal class D2CallExecutor(
         .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
-    fun <C> executeD2CallTransactionally(call: Callable<C>): C {
+    fun <C> executeD2CallTransactionally(call: () -> C): C {
         try {
             return innerExecuteD2CallTransactionally(call)
         } catch (d2E: D2Error) {
@@ -56,10 +55,10 @@ internal class D2CallExecutor(
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    private fun <C> innerExecuteD2CallTransactionally(call: Callable<C>): C {
+    private fun <C> innerExecuteD2CallTransactionally(call: () -> C): C {
         var transaction = databaseAdapter.beginNewTransaction()
         try {
-            var response = call.call()
+            var response = call()
             transaction.setSuccessful()
             return response
         } catch (d2E: D2Error) {

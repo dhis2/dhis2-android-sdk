@@ -123,30 +123,51 @@ internal class FileResourceDownloadCallHelper(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
     ): List<TrackedEntityDataValue> {
-        val dataElementUidsWhereClause = WhereClauseBuilder()
-            .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
-            .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
-            .build()
-        val dataElementUids = dataElementStore.selectUidsWhere(dataElementUidsWhereClause)
+        val dataElementUids = dataElementStore.selectUidsWhere(
+            WhereClauseBuilder()
+                .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
+                .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
+                .build()
+        )
 
-        val dataValuesWhereClauseBuilder = WhereClauseBuilder().apply {
+        val dataValuesWhereClause = WhereClauseBuilder().apply {
             appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
             appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.VALUE, existingFileResources)
 
-            val eventUids = params.programUids.takeIf { it.isNotEmpty() }
-                ?.let { programUids ->
-                    val eventWhereClause = WhereClauseBuilder()
-                        .appendInKeyStringValues(EventTableInfo.Columns.PROGRAM, programUids)
-                        .build()
-                    params.eventUids.union(eventStore.selectWhere(eventWhereClause).map { it.uid() }).toList()
-                } ?: params.eventUids
+            val eventUids = buildEventUids(params)
 
             if (eventUids.isNotEmpty()) {
                 appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUids)
             }
+        }.build()
+
+        return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause)
+    }
+
+    private fun buildEventUids(params: FileResourceDownloadParams): List<String> {
+        val eventWhereClause = WhereClauseBuilder().apply {
+            if (params.programUids.isNotEmpty()) {
+                appendInKeyStringValues(EventTableInfo.Columns.PROGRAM, params.programUids)
+            }
+
+            params.trackedEntityUids.takeIf { it.isNotEmpty() }?.let { trackedEntityUids ->
+                val enrollmentUids = enrollmentStore.selectWhere(
+                    WhereClauseBuilder()
+                        .appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityUids)
+                        .build()
+                ).map { it.uid() }
+
+                if (enrollmentUids.isNotEmpty()) {
+                    appendInKeyStringValues(EventTableInfo.Columns.ENROLLMENT, enrollmentUids)
+                }
+            }
         }
 
-        return trackedEntityDataValueStore.selectWhere(dataValuesWhereClauseBuilder.build())
+        return if (eventWhereClause.isEmpty.not()) {
+            params.eventUids.union(eventStore.selectWhere(eventWhereClause.build()).map { it.uid() }).toList()
+        } else {
+            params.eventUids
+        }
     }
 
     fun getMissingAggregatedDataValues(

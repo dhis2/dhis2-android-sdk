@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.option.Option
@@ -92,7 +91,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
         val executor = D2CallExecutor.create(d2.databaseAdapter())
         val PROGRAM_RULE_UID = "program_rule_uid"
         val program = ObjectWithUid.create("nonexisent-program")
-        executor.executeD2CallTransactionally<Any?> {
+        executor.executeD2CallTransactionally<Unit> {
             ProgramRuleStoreImpl(d2.databaseAdapter()).insert(
                 ProgramRule.builder()
                     .uid(PROGRAM_RULE_UID).name("Rule").program(program).build(),
@@ -111,14 +110,13 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
             assertThat(rowsAffected).isEqualTo(1)
             assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(0)
             assertThat(d2.programModule().programRuleActions().blockingCount()).isEqualTo(0)
-            null
         }
     }
 
     private fun addOptionForeignKeyViolation() {
         val executor = D2CallExecutor.create(d2.databaseAdapter())
 
-        executor.executeD2CallTransactionally<Any> {
+        executor.executeD2CallTransactionally<Unit> {
             val optionSet = ObjectWithUid.create("no_option_set")
             val option = Option.builder()
                 .uid("option_uid")
@@ -128,7 +126,6 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
                 OptionStoreImpl(d2.databaseAdapter())
             optionStore.insert(option)
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors()
-            Unit()
         }
     }
 }

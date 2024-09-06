@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.wipe.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
-import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
@@ -39,26 +38,23 @@ internal class WipeModuleImpl(
 ) : WipeModule {
     @Throws(D2Error::class)
     override fun wipeEverything() {
-        return d2CallExecutor.executeD2CallTransactionally {
+        return d2CallExecutor.executeD2CallTransactionally<Unit> {
             wipeMetadataInternal()
             wipeDataInternal()
-            Unit()
         }
     }
 
     @Throws(D2Error::class)
     override fun wipeMetadata() {
-        return d2CallExecutor.executeD2CallTransactionally {
+        return d2CallExecutor.executeD2CallTransactionally<Unit> {
             wipeMetadataInternal()
-            Unit()
         }
     }
 
     @Throws(D2Error::class)
     override fun wipeData() {
-        return d2CallExecutor.executeD2CallTransactionally {
+        return d2CallExecutor.executeD2CallTransactionally<Unit> {
             wipeDataInternal()
-            Unit()
         }
     }
 

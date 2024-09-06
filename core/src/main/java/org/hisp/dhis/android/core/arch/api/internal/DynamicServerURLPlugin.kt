@@ -32,7 +32,6 @@ import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.URLBuilder
 import io.ktor.http.takeFrom
-import io.ktor.util.AttributeKey
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
 
 internal object DynamicServerURLPlugin {

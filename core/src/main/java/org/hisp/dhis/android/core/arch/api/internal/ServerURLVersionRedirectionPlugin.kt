@@ -36,7 +36,6 @@ import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.http.takeFrom
-import io.ktor.util.AttributeKey
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN

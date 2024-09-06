@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.util.AttributeKey
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isExternalRequestAttributeKey
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore

@@ -27,32 +27,45 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import io.ktor.http.URLBuilder
+import io.ktor.http.URLParserException
+import io.ktor.http.Url
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 internal object ServerUrlParser {
     @JvmStatic
+    @Suppress("ThrowsCount")
     @Throws(D2Error::class)
-    fun parse(url: String?): HttpUrl {
-        if (url == null) {
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.SERVER_URL_NULL)
-                .errorDescription("Server URL is null")
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
+    fun parse(url: String?): Url {
+        when {
+            url.isNullOrBlank() -> throw nullOrBlankUrlD2Error()
+            !url.startsWith("http") -> throw malformedUrlD2Error()
+            else -> try {
+                val urlBuilder = URLBuilder(url)
+                urlBuilder.encodedPathSegments = listOf("api/")
+                return urlBuilder.build()
+            } catch (e: URLParserException) {
+                throw malformedUrlD2Error()
+            }
         }
-        val urlWithSlashAndAPI = appendSlashAndAPI(url)
-        val httpUrl = appendSlashAndAPI(urlWithSlashAndAPI).toHttpUrlOrNull()
+    }
 
-        return httpUrl
-            ?: throw D2Error.builder()
-                .errorCode(D2ErrorCode.SERVER_URL_MALFORMED)
-                .errorDescription("Server URL is malformed")
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
+    private fun malformedUrlD2Error(): D2Error {
+        return urlD2Error(D2ErrorCode.SERVER_URL_MALFORMED, "Server URL is malformed")
+    }
+
+    private fun nullOrBlankUrlD2Error(): D2Error {
+        return urlD2Error(D2ErrorCode.SERVER_URL_NULL, "Server URL is null or blank")
+    }
+
+    private fun urlD2Error(d2ErrorCode: D2ErrorCode, description: String): D2Error {
+        return D2Error.builder()
+            .errorCode(d2ErrorCode)
+            .errorDescription(description)
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
     }
 
     fun trimAndRemoveTrailingSlash(url: String?): String? {
@@ -61,12 +74,5 @@ internal object ServerUrlParser {
 
     fun removeTrailingApi(url: String): String {
         return url.trimEnd('/').removeSuffix("/api")
-    }
-
-    private fun appendSlashAndAPI(url: String): String {
-        val trimmedUrl = url.trim().replace(" ", "")
-        val withSlash = if (trimmedUrl.endsWith("/")) trimmedUrl else "$trimmedUrl/"
-
-        return if (withSlash.endsWith("api/")) withSlash else withSlash + "api/"
     }
 }

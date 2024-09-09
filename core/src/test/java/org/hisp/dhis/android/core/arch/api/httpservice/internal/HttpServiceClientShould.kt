@@ -43,7 +43,6 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.junit.Assert.assertEquals
@@ -156,10 +155,10 @@ class HttpServiceClientShould {
         }
         buildHttpServiceClient(fileResourcemockEngine)
 
-        val response: ResponseBody = service.get {
+        val response: ByteArray = service.get {
             url("fileResourceSite")
         }
 
-        assertEquals("Raw body content", response.string())
+        assertEquals("Raw body content", String(response))
     }
 }

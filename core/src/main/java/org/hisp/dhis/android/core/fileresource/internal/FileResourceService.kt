@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import io.ktor.client.request.forms.MultiPartFormDataContent
-import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
@@ -39,7 +38,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class FileResourceService(private val client: HttpServiceClient) {
 
-    suspend fun uploadFile(filePart: MultiPartFormDataContent): ResponseBody {
+    suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {
         return client.post {
             url(FILE_RESOURCES)
             body(filePart)
@@ -71,7 +70,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
         dimension: String,
-    ): ResponseBody {
+    ): ByteArray {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
@@ -83,7 +82,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getFileFromTrackedEntityAttribute(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
-    ): ResponseBody {
+    ): ByteArray {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/file")
         }
@@ -93,7 +92,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         eventUid: String,
         dataElementUid: String,
         dimension: String,
-    ): ResponseBody {
+    ): ByteArray {
         return client.get {
             url("$EVENTS/files")
             parameters {
@@ -106,7 +105,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
 
     suspend fun getCustomIcon(
         customIconHref: String,
-    ): ResponseBody {
+    ): ByteArray {
         return client.get {
             absoluteUrl(customIconHref, false)
         }
@@ -118,7 +117,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         organisationUnit: String,
         categoryOptionCombo: String,
         dimension: String,
-    ): ResponseBody {
+    ): ByteArray {
         return client.get {
             url("$DATA_VALUES/files")
             parameters {

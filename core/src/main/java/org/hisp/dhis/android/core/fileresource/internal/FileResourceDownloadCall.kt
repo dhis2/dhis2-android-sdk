@@ -31,7 +31,6 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -184,7 +183,7 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> downloadAndPersistFiles(
         values: List<V>,
         maxContentLength: Int?,
-        download: suspend (V) -> ResponseBody?,
+        download: suspend (V) -> ByteArray?,
         getUid: (V) -> String?,
     ) {
         val fileResources = getFileResources(values, getUid)
@@ -276,7 +275,7 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> downloadFile(
         value: V,
         maxContentLength: Int?,
-        download: suspend (V) -> ResponseBody?,
+        download: suspend (V) -> ByteArray?,
         fileResource: FileResource,
     ): FileResource? {
         val acceptedContentLength = (maxContentLength == null) ||
@@ -285,8 +284,8 @@ internal class FileResourceDownloadCall(
 
         return try {
             if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
-                val responseBody = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
-                responseBody?.let {
+                val responseByteArray = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
+                responseByteArray?.let {
                     val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)
                     fileResource.toBuilder().path(file.absolutePath).build()
                 }

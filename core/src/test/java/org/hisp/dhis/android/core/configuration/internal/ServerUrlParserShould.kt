@@ -67,6 +67,12 @@ class ServerUrlParserShould {
     }
 
     @Test
+    fun parse_url_with_version() {
+        val expectedWithVersion = Url("http://dhis2.org/40/api/")
+        assertThat(parse("http://dhis2.org/40")).isEqualTo(expectedWithVersion)
+    }
+
+    @Test
     fun parse_url_slash_api() {
         assertThat(parse("http://dhis2.org/api")).isEqualTo(expected)
     }

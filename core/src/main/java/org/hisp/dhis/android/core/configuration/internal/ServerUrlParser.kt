@@ -44,7 +44,7 @@ internal object ServerUrlParser {
             !url.startsWith("http") -> throw malformedUrlD2Error()
             else -> try {
                 val urlBuilder = URLBuilder(url)
-                urlBuilder.encodedPathSegments = listOf("api/")
+                urlBuilder.encodedPathSegments += "api/"
                 return urlBuilder.build()
             } catch (e: URLParserException) {
                 throw malformedUrlD2Error()

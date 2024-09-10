@@ -30,6 +30,10 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementStoreImpl
+import org.hisp.dhis.android.core.dataset.internal.DataSetStoreImpl
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.icon.internal.CustomIconStoreImpl
 import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
@@ -51,6 +55,7 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
     protected val eventStore = EventStoreImpl(databaseAdapter)
     protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
     protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+    protected val dataValueStore = DataValueStoreImpl(databaseAdapter)
     protected val fileResourceStore = FileResourceStoreImpl(d2.databaseAdapter())
     protected val customIconStore = CustomIconStoreImpl(d2.databaseAdapter())
     private val optionSetStore = OptionSetStoreImpl(d2.databaseAdapter())
@@ -64,8 +69,12 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
     protected val trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
     protected val trackedEntityAttributeStore = TrackedEntityAttributeStoreImpl(databaseAdapter)
     protected val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+    protected val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
     protected val programStore = ProgramStoreImpl(databaseAdapter)
     protected val programStageStore = ProgramStageStoreImpl(databaseAdapter)
+
+    protected val dataSetStore = DataSetStoreImpl(databaseAdapter)
+    protected val dataSetElementStore = DataSetElementStoreImpl(databaseAdapter)
 
     @Before
     fun setUp() {
@@ -78,30 +87,39 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
         trackedEntityTypeStore.insert(FileResourceRoutineSamples.trackedEntityType)
         programStore.insert(FileResourceRoutineSamples.program)
         programStageStore.insert(FileResourceRoutineSamples.programStage1)
-        eventStore.insert(FileResourceRoutineSamples.event1)
-        trackedEntityDataValueStore.insert(FileResourceRoutineSamples.trackedEntityDataValue)
         optionSetStore.insert(FileResourceRoutineSamples.optionSet)
         trackedEntityAttributeStore.insert(FileResourceRoutineSamples.trackedEntityAttribute)
         trackedEntityInstanceStore.insert(FileResourceRoutineSamples.trackedEntityInstance)
         trackedEntityAttributeValueStore.insert(FileResourceRoutineSamples.trackedEntityAttributeValue)
+        enrollmentStore.insert(FileResourceRoutineSamples.enrollment)
+        eventStore.insert(FileResourceRoutineSamples.event1)
+        trackedEntityDataValueStore.insert(FileResourceRoutineSamples.trackedEntityDataValue)
+        dataElementStore.insert(FileResourceRoutineSamples.dataElement2)
+        dataSetStore.insert(FileResourceRoutineSamples.dataset)
+        dataSetElementStore.insert(FileResourceRoutineSamples.dataSetElement)
+        dataValueStore.insert(FileResourceRoutineSamples.dataValue1)
     }
 
     @After
     fun tearDown() {
-        organisationUnitStore.deleteById(FileResourceRoutineSamples.orgUnit1)
-        fileResourceStore.deleteById(FileResourceRoutineSamples.fileResource1)
-        fileResourceStore.deleteById(FileResourceRoutineSamples.fileResource2)
-        fileResourceStore.deleteById(FileResourceRoutineSamples.fileResource3)
-        categoryComboStore.deleteById(FileResourceRoutineSamples.categoryCombo)
-        dataElementStore.deleteById(FileResourceRoutineSamples.dataElement1)
-        trackedEntityTypeStore.deleteById(FileResourceRoutineSamples.trackedEntityType)
-        programStore.deleteById(FileResourceRoutineSamples.program)
-        programStageStore.deleteById(FileResourceRoutineSamples.programStage1)
-        eventStore.deleteById(FileResourceRoutineSamples.event1)
-        trackedEntityDataValueStore.deleteById(FileResourceRoutineSamples.trackedEntityDataValue)
-        optionSetStore.deleteById(FileResourceRoutineSamples.optionSet)
-        trackedEntityAttributeStore.deleteById(FileResourceRoutineSamples.trackedEntityAttribute)
-        trackedEntityInstanceStore.deleteById(FileResourceRoutineSamples.trackedEntityInstance)
-        trackedEntityAttributeValueStore.deleteById(FileResourceRoutineSamples.trackedEntityAttributeValue)
+        dataValueStore.deleteWhere(FileResourceRoutineSamples.dataValue1)
+        dataSetStore.delete(FileResourceRoutineSamples.dataset.uid())
+        dataElementStore.delete(FileResourceRoutineSamples.dataElement2.uid())
+        trackedEntityDataValueStore.deleteWhere(FileResourceRoutineSamples.trackedEntityDataValue)
+        eventStore.delete(FileResourceRoutineSamples.event1.uid())
+        enrollmentStore.delete(FileResourceRoutineSamples.enrollment.uid())
+        trackedEntityAttributeValueStore.deleteWhere(FileResourceRoutineSamples.trackedEntityAttributeValue)
+        trackedEntityInstanceStore.delete(FileResourceRoutineSamples.trackedEntityInstance.uid())
+        trackedEntityAttributeStore.delete(FileResourceRoutineSamples.trackedEntityAttribute.uid())
+        optionSetStore.delete(FileResourceRoutineSamples.optionSet.uid())
+        programStageStore.delete(FileResourceRoutineSamples.programStage1.uid())
+        programStore.delete(FileResourceRoutineSamples.program.uid())
+        trackedEntityTypeStore.delete(FileResourceRoutineSamples.trackedEntityType.uid())
+        dataElementStore.delete(FileResourceRoutineSamples.dataElement1.uid())
+        categoryComboStore.delete(FileResourceRoutineSamples.categoryCombo.uid())
+        fileResourceStore.delete(FileResourceRoutineSamples.fileResource3.uid()!!)
+        fileResourceStore.delete(FileResourceRoutineSamples.fileResource2.uid()!!)
+        fileResourceStore.delete(FileResourceRoutineSamples.fileResource1.uid()!!)
+        organisationUnitStore.delete(FileResourceRoutineSamples.orgUnit1.uid())
     }
 }

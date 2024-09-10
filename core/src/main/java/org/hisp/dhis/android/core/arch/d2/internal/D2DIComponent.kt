@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFa
 import org.hisp.dhis.android.core.dataset.internal.DataSetEndpointCallFactory
 import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCallHelper
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
@@ -112,4 +113,7 @@ internal class D2DIComponent(
 
     @get:VisibleForTesting
     val multiUserDatabaseManager: MultiUserDatabaseManager,
+
+    @get:VisibleForTesting
+    val fileResourceDownloadCallHelper: FileResourceDownloadCallHelper,
 )

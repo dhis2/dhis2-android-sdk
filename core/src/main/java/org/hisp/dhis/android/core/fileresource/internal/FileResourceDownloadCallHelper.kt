@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
@@ -49,9 +48,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
@@ -61,7 +62,7 @@ internal class FileResourceDownloadCallHelper(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val enrollmentStore: EnrollmentStore,
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val eventStore: EventStore,
     private val dataSetElementStore: DataSetElementStoreImpl,
     private val dataValueStore: DataValueStore,
@@ -77,18 +78,6 @@ internal class FileResourceDownloadCallHelper(
             dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) || type == FileResourceValueType.IMAGE
         }
 
-        val enrollmentWhereClause = WhereClauseBuilder().apply {
-            if (params.trackedEntityUids.isNotEmpty()) {
-                appendInKeyStringValues(
-                    TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                    params.trackedEntityUids,
-                )
-            }
-            if (params.programUids.isNotEmpty()) {
-                appendInKeyStringValues(EnrollmentTableInfo.Columns.PROGRAM, params.programUids)
-            }
-        }
-
         val attributesWhereClause = WhereClauseBuilder()
             .appendInKeyEnumValues(TrackedEntityAttributeTableInfo.Columns.VALUE_TYPE, fileTypes.map { it.valueType })
             .build()
@@ -96,20 +85,15 @@ internal class FileResourceDownloadCallHelper(
         val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(attributesWhereClause)
 
         val attributeValuesWhereClauseBuilder = WhereClauseBuilder().apply {
-            appendInKeyStringValues(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributes.map { it.uid() }
-            )
-            appendNotInKeyStringValues(
-                TrackedEntityAttributeValueTableInfo.Columns.VALUE,
-                existingFileResources
-            )
+            val attributes = trackedEntityAttributes.map { it.uid() }
+            appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, attributes)
+            appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.VALUE, existingFileResources)
 
-            if (enrollmentWhereClause.isEmpty.not()) {
-                appendInKeyStringValues(
-                    TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                    enrollmentStore.selectWhere(enrollmentWhereClause.build()).map { it.trackedEntityInstance()!! }
-                )
+            val teiParamsClause = getTrackedEntityWhereClauseFromParams(params)
+
+            if (teiParamsClause.isEmpty.not()) {
+                val teis = trackedEntityInstanceStore.selectUidsWhere(teiParamsClause.build())
+                appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teis)
             }
         }
 
@@ -128,50 +112,22 @@ internal class FileResourceDownloadCallHelper(
             WhereClauseBuilder()
                 .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
                 .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
-                .build()
+                .build(),
         )
 
         val dataValuesWhereClause = WhereClauseBuilder().apply {
             appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
             appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.VALUE, existingFileResources)
 
-            val eventUids = buildEventUids(params)
+            val eventWhereClause = getEventWhereClauseFromParams(params)
 
-            if (eventUids.isNotEmpty()) {
+            if (eventWhereClause.isEmpty.not()) {
+                val eventUids = eventStore.selectUidsWhere(eventWhereClause.build())
                 appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUids)
             }
         }.build()
 
         return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause)
-    }
-
-    private fun buildEventUids(params: FileResourceDownloadParams): List<String> {
-        val eventWhereClause = WhereClauseBuilder().apply {
-            if (params.programUids.isNotEmpty()) {
-                appendInKeyStringValues(EventTableInfo.Columns.PROGRAM, params.programUids)
-            }
-
-            params.trackedEntityUids.takeIf { it.isNotEmpty() }?.let { trackedEntityUids ->
-                val enrollmentUids = enrollmentStore.selectWhere(
-                    WhereClauseBuilder()
-                        .appendInKeyStringValues(
-                            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                            trackedEntityUids,
-                        )
-                        .build()
-                ).map { it.uid() }
-
-                if (enrollmentUids.isNotEmpty()) {
-                    appendInKeyStringValues(EventTableInfo.Columns.ENROLLMENT, enrollmentUids)
-                }
-            }
-        }
-
-        return if (eventWhereClause.isEmpty.not()) {
-            params.eventUids.union(eventStore.selectWhere(eventWhereClause.build()).map { it.uid() }).toList()
-        } else {
-            params.eventUids
-        }
     }
 
     fun getMissingAggregatedDataValues(
@@ -212,5 +168,56 @@ internal class FileResourceDownloadCallHelper(
             .appendNotInKeyStringValues(CustomIconTableInfo.Columns.FILE_RESOURCE, existingFileResources)
             .build()
         return customIconStore.selectWhere(customIconsWhereClause)
+    }
+
+    companion object {
+        fun getTrackedEntityWhereClauseFromParams(params: FileResourceDownloadParams): WhereClauseBuilder {
+            return WhereClauseBuilder().apply {
+                if (params.trackedEntityUids.isNotEmpty()) {
+                    appendInKeyStringValues(
+                        TrackedEntityInstanceTableInfo.Columns.UID,
+                        params.trackedEntityUids,
+                    )
+                }
+                if (params.programUids.isNotEmpty()) {
+                    val inProgramsWhere = WhereClauseBuilder()
+                        .appendInKeyStringValues(
+                            EnrollmentTableInfo.Columns.PROGRAM,
+                            params.programUids,
+                        ).build()
+
+                    val programSubQuery = "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+                        "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                        "WHERE $inProgramsWhere"
+
+                    appendInSubQuery(TrackedEntityInstanceTableInfo.Columns.UID, programSubQuery)
+                }
+            }
+        }
+
+        fun getEventWhereClauseFromParams(params: FileResourceDownloadParams): WhereClauseBuilder {
+            return WhereClauseBuilder().apply {
+                if (params.eventUids.isNotEmpty()) {
+                    appendInKeyStringValues(EventTableInfo.Columns.UID, params.eventUids)
+                }
+
+                if (params.programUids.isNotEmpty()) {
+                    appendInKeyStringValues(EventTableInfo.Columns.PROGRAM, params.programUids)
+                }
+
+                if (params.trackedEntityUids.isNotEmpty()) {
+                    val inTrackedEntitiesWhere = WhereClauseBuilder()
+                        .appendInKeyStringValues(
+                            EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                            params.trackedEntityUids,
+                        ).build()
+                    val enrollmentSubQuery = "SELECT ${EnrollmentTableInfo.Columns.UID} " +
+                        "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                        "WHERE $inTrackedEntitiesWhere"
+
+                    appendInSubQuery(EventTableInfo.Columns.ENROLLMENT, enrollmentSubQuery)
+                }
+            }
+        }
     }
 }

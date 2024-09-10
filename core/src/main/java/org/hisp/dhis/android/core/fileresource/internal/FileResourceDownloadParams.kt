@@ -43,4 +43,17 @@ internal data class FileResourceDownloadParams(
     val programUids: List<String> = emptyList(),
     val dataSetUids: List<String> = emptyList(),
     val maxContentLength: Int? = null,
-) : BaseScope
+) : BaseScope {
+
+    fun hasAnyTrackerData(): Boolean {
+        return trackedEntityUids.isNotEmpty() || eventUids.isNotEmpty() || programUids.isNotEmpty()
+    }
+
+    fun hasAnyAggregatedData(): Boolean {
+        return dataSetUids.isNotEmpty()
+    }
+
+    fun hasAnyData(): Boolean {
+        return hasAnyAggregatedData() || hasAnyTrackerData()
+    }
+}

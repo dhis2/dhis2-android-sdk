@@ -43,7 +43,7 @@ internal object ServerUrlParser {
             url.isNullOrBlank() -> throw nullOrBlankUrlD2Error()
             !url.startsWith("http") -> throw malformedUrlD2Error()
             else -> try {
-                val urlBuilder = URLBuilder(url)
+                val urlBuilder = URLBuilder(removeTrailingApi(url))
                 urlBuilder.encodedPathSegments += "api/"
                 return urlBuilder.build()
             } catch (e: URLParserException) {

@@ -78,10 +78,10 @@ internal class FileResourcePostCall(
         return if (file != null) {
             val fileName = fileResource.name() ?: file.name
             val filePart = getFilePart(file, fileName)
-            val responseBody = coroutineAPICallExecutor.wrap(storeError = true) {
+            val responseByteArray = coroutineAPICallExecutor.wrap(storeError = true) {
                 fileResourceService.uploadFile(filePart)
             }.getOrThrow()
-            handleResponse(responseBody.string(), fileResource, file, value)
+            handleResponse(String(responseByteArray), fileResource, file, value)
         } else {
             handleMissingFile(fileResource, value)
             null
@@ -107,13 +107,13 @@ internal class FileResourcePostCall(
     }
 
     private fun handleResponse(
-        responseBody: String,
+        responseString: String,
         fileResource: FileResource,
         file: File,
         value: FileResourceValue,
     ): String {
         try {
-            val downloadedFileResource = getDownloadedFileResource(responseBody)
+            val downloadedFileResource = getDownloadedFileResource(responseString)
             updateValue(fileResource, downloadedFileResource.uid(), value)
 
             val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
@@ -137,8 +137,8 @@ internal class FileResourcePostCall(
     }
 
     @Throws(IOException::class)
-    private fun getDownloadedFileResource(responseBody: String): FileResource {
-        val fileResourceResponse = objectMapper().readValue(responseBody, FileResourceResponse::class.java)
+    private fun getDownloadedFileResource(responseString: String): FileResource {
+        val fileResourceResponse = objectMapper().readValue(responseString, FileResourceResponse::class.java)
         return fileResourceResponse.response()!!.fileResource()!!
     }
 

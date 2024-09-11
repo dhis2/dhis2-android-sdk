@@ -62,7 +62,6 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
                             .build(),
                     )
                 }
-                null
             })
         }
     }

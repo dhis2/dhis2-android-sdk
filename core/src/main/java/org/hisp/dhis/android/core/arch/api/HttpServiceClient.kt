@@ -41,8 +41,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.util.AttributeKey
-import okhttp3.ResponseBody
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -64,10 +62,10 @@ class HttpServiceClient(
                 }
             }
             if (requestBuilder.isAbsoluteUrl) {
-                attributes.put(AttributeKey<Boolean>("isAbsoluteUrl"), true)
+                attributes.put(isAbsouteUrlAttributeKey, true)
             }
             if (requestBuilder.isExternalRequest) {
-                attributes.put(AttributeKey<Boolean>("isExternalRequest"), true)
+                attributes.put(isExternalRequestAttributeKey, true)
             }
             requestBuilder.authorizationHeader?.let {
                 header(HttpHeaders.Authorization, it)
@@ -80,9 +78,8 @@ class HttpServiceClient(
                 setBody(requestBuilder.body)
             }
         }
-        return if (T::class == ResponseBody::class) {
-            val byteArray: ByteArray = response.readBytes()
-            byteArray.toResponseBody(null) as T
+        return if (T::class == ByteArray::class) {
+            response.readBytes() as T
         } else {
             response.body()
         }
@@ -102,5 +99,10 @@ class HttpServiceClient(
 
     suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
         return request(HttpMethod.Delete, block)
+    }
+    companion object {
+        @PublishedApi internal val isAbsouteUrlAttributeKey = AttributeKey<Boolean>("isAbsoluteUrl")
+
+        @PublishedApi internal val isExternalRequestAttributeKey = AttributeKey<Boolean>("isExternalRequest")
     }
 }

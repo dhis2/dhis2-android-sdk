@@ -43,9 +43,8 @@ internal class AuthorityCallProcessor(
         AuthorityStoreImpl(databaseAdapter).delete()
 
         if (objectList.isNotEmpty()) {
-            create(databaseAdapter).executeD2CallTransactionally<Any?>({
+            create(databaseAdapter).executeD2CallTransactionally<Unit>({
                 handler.handleMany(objectList)
-                null
             })
         }
     }

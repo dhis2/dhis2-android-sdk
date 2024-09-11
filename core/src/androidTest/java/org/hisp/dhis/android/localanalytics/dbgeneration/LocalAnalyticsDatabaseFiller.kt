@@ -68,7 +68,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
     fun fillDatabase(metadataParams: LocalAnalyticsMetadataParams, dataParams: LocalAnalyticsDataParams) {
-        D2CallExecutor.create(da).executeD2CallTransactionally {
+        D2CallExecutor.create(da).executeD2CallTransactionally<Unit> {
             val metadata = fillMetadata(metadataParams)
             fillData(dataParams, metadata)
         }

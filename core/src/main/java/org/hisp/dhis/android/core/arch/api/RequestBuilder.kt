@@ -59,6 +59,10 @@ class RequestBuilder(private val baseUrl: String) {
         this.isExternalRequest = isExternalRequest
     }
 
+    fun excludeCredentials() {
+        this.isExternalRequest = true
+    }
+
     fun authorizationHeader(header: String?) {
         this.authorizationHeader = header
     }

@@ -43,9 +43,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSe
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormatWithDeleteValue
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
 import java.text.ParseException
+import java.util.concurrent.Callable
 
 @Singleton
 internal class TrackedEntityInstanceQueryCallFactory(
@@ -150,7 +152,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
                     eventStatus = getEventStatus(query),
                     trackedEntityType = query.trackedEntityType,
                     query = query.query,
-                    filter = toAPIFilterFormat(query.attributeFilter, upper = true),
+                    filter = toAPIFilterFormatWithDeleteValue(query.attributeFilter, upper = true),
                     assignedUserMode = query.assignedUserMode?.toString(),
                     lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
                     lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),

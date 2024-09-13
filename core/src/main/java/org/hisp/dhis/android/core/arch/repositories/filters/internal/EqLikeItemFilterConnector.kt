@@ -27,9 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
+import android.R
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+
 
 class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,

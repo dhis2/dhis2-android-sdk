@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2021, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,39 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import android.R
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 
-public final class EqLikeInItemFilterConnector<R extends BaseRepository> {
-
-    private final ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory;
-    private final String key;
-
-    EqLikeInItemFilterConnector(String key,
-                              ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-        this.key = key;
+class EqLikeInItemFilterConnector<R : BaseRepository> internal constructor(
+    private val key: String,
+    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
+) {
+    fun eq(value: String): R {
+        val item = RepositoryScopeFilterItem.builder()
+            .key(key).operator(FilterItemOperator.EQ).value(value).build()
+        return repositoryFactory.updated(item)
     }
 
-    public R eq(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.EQ).value(value).build();
-        return repositoryFactory.updated(item);
+    fun like(value: String): R {
+        val item = RepositoryScopeFilterItem.builder()
+            .key(key).operator(FilterItemOperator.LIKE).value(value).build()
+        return repositoryFactory.updated(item)
     }
 
-    public R like(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.LIKE).value(value).build();
-        return repositoryFactory.updated(item);
-    }
-
-    public R in(String value) {
-        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
-                .key(key).operator(FilterItemOperator.IN).value(value).build();
-        return repositoryFactory.updated(item);
+    fun `in`(value: String): R {
+        val item = RepositoryScopeFilterItem.builder()
+            .key(key).operator(FilterItemOperator.IN).value(value).build()
+        return repositoryFactory.updated(item)
     }
 }

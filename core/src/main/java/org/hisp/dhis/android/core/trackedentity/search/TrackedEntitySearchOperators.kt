@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeInItemFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilterConnector
@@ -124,7 +125,7 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    fun byAttribute(attributeId: String): EqLikeItemFilterConnector<R> {
+    fun byAttribute(attributeId: String): EqLikeInItemFilterConnector<R> {
         return byFilter(attributeId)
     }
 
@@ -141,8 +142,8 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    fun byFilter(attributeId: String): EqLikeItemFilterConnector<R> {
-        return connectorFactory.eqLikeItemC(attributeId) { filterItem: RepositoryScopeFilterItem ->
+    fun byFilter(attributeId: String): EqLikeInItemFilterConnector<R> {
+        return connectorFactory.eqLikeInItemC(attributeId) { filterItem: RepositoryScopeFilterItem ->
             scopeHelper.addFilter(scope, filterItem)
         }
     }
@@ -357,6 +358,17 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
     }
 
     /**
+     * Filter by Uids.
+     *
+     * @return Repository connector
+     */
+    fun byUIds(): ListFilterConnector<R, String> {
+        return connectorFactory.listConnector { uIds: List<String> ->
+            scope.toBuilder().uids(uIds).build()
+        }
+    }
+
+    /**
      * Whether to allow or not cached results for online queries. Its value is 'false' by default.
      *
      * @return Repository connector
@@ -440,9 +452,9 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @return Repository connector
      */
     fun orderByOrganisationUnitName(): EqFilterConnector<
-        R,
-        RepositoryScope.OrderByDirection,
-        > {
+            R,
+            RepositoryScope.OrderByDirection,
+            > {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME)
     }
 

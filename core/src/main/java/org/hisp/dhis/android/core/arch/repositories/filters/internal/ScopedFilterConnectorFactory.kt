@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
+import android.R
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.OrganisationUnitFilter
 import org.hisp.dhis.android.core.event.EventDataFilter
+
 
 internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
     private val repositoryFactory: ScopedRepositoryFactory<R, S>,
@@ -58,6 +60,17 @@ internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
         return EqLikeItemFilterConnector(key) { item: RepositoryScopeFilterItem ->
             repositoryFactory.updated(
                 baseScopeFactory.updated(item),
+            )
+        }
+    }
+
+    fun eqLikeInItemC(
+        key: String,
+        baseScopeFactory: BaseScopeFactory<S, RepositoryScopeFilterItem>
+    ): EqLikeInItemFilterConnector<R> {
+        return EqLikeInItemFilterConnector(key) { item: RepositoryScopeFilterItem ->
+            repositoryFactory.updated(
+                baseScopeFactory.updated(item)
             )
         }
     }

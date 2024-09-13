@@ -35,9 +35,6 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.*
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportTrackedEntityHandler
@@ -64,13 +61,7 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val trackerImportConflictParser: TrackerImportConflictParser = mock()
 
-    private val relationshipStore: RelationshipStore = mock()
-
     private val dataStatePropagator: DataStatePropagator = mock()
-
-    private val relationshipDHISVersionManager: RelationshipDHISVersionManager = mock()
-
-    private val relationshipCollectionRepository: RelationshipCollectionRepository = mock()
 
     private val jobReportTrackedEntityHandler: JobReportTrackedEntityHandler = mock()
 
@@ -87,8 +78,7 @@ class TrackedEntityInstanceImportHandlerShould {
     fun setUp() {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler, trackerImportConflictStore,
-            trackerImportConflictParser, relationshipStore, dataStatePropagator, relationshipDHISVersionManager,
-            relationshipCollectionRepository, jobReportTrackedEntityHandler,
+            trackerImportConflictParser, dataStatePropagator, jobReportTrackedEntityHandler,
         )
 
         whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)

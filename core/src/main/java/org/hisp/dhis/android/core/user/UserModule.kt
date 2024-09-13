@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 interface UserModule {
     fun authenticatedUser(): AuthenticatedUserObjectRepository
     fun userRoles(): UserRoleCollectionRepository
+    fun userGroups(): UserGroupCollectionRepository
     fun authorities(): AuthorityCollectionRepository
     fun user(): UserObjectRepository
     fun accountManager(): AccountManager

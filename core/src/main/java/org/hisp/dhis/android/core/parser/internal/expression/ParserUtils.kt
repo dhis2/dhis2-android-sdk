@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.parser.internal.expression
 
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionContains
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionContainsItems
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionFirstNonNull
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionGreatest
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIf
@@ -116,6 +118,8 @@ internal object ParserUtils {
         ExpressionParser.LEAST to FunctionLeast(),
         ExpressionParser.LOG to FunctionLog(),
         ExpressionParser.LOG10 to FunctionLog10(),
+        ExpressionParser.CONTAINS to FunctionContains(),
+        ExpressionParser.CONTAINS_ITEMS to FunctionContainsItems(),
 
         // Common variables
         ExpressionParser.OUG_BRACE to ItemOrgUnitGroup(),

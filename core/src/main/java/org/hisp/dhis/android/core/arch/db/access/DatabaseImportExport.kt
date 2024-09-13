@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.arch.db.access
 import java.io.File
 
 interface DatabaseImportExport {
-    fun importDatabase(file: File)
+    fun importDatabase(file: File): DatabaseExportMetadata
     fun exportLoggedUserDatabase(): File
 }

@@ -33,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,6 +48,7 @@ class GeneralSettingCallShould {
     private val generalSetting: GeneralSettings = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val appVersionManager: SettingsAppInfoManager = mock()
+    private val versionManager: DHISVersionManagerImpl = mock()
 
     private lateinit var generalSettingCall: GeneralSettingCall
 
@@ -56,7 +58,10 @@ class GeneralSettingCallShould {
             onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V1_1
         }
         whenAPICall { generalSetting }
-        generalSettingCall = GeneralSettingCall(handler, service, appVersionManager, coroutineAPICallExecutor)
+        whenever(generalSetting.bypassDHIS2VersionCheck()).thenReturn(true)
+        generalSettingCall = GeneralSettingCall(
+            handler, service, appVersionManager, coroutineAPICallExecutor, versionManager,
+        )
     }
 
     private fun whenAPICall(answer: Answer<GeneralSettings>) {
@@ -72,5 +77,14 @@ class GeneralSettingCallShould {
         generalSettingCall.download(false)
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)
+    }
+
+    @Test
+    fun handle_general_setting_and_set_bypass_DHIS2_version() = runTest {
+        whenever(service.generalSettings(any())) doAnswer { generalSetting }
+
+        generalSettingCall.download(false)
+        verify(handler).handleMany(listOfNotNull(generalSetting))
+        verify(versionManager).setBypassVersion(true)
     }
 }

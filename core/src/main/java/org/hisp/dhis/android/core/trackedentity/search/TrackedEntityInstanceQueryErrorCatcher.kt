@@ -59,7 +59,11 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
     private fun parseErrorMessage(errorBody: String): D2ErrorCode {
         return try {
             val parsed = objectMapper().readValue(errorBody, HttpMessageResponse::class.java)
-            if (parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
+            if (
+                parsed.httpStatusCode() == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+                parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT ||
+                parsed.httpStatusCode() == HttpsURLConnection.HTTP_FORBIDDEN
+            ) {
                 when {
                     parsed.message() == "maxteicountreached" -> D2ErrorCode.MAX_TEI_COUNT_REACHED
                     OutOfSearchScope.containsMatchIn(parsed.message()) -> D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE

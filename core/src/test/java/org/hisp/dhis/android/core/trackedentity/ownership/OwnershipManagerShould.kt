@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -51,6 +52,7 @@ class OwnershipManagerShould {
     private val dataStatePropagator: DataStatePropagator = mock()
     private val programTempOwnerStore: ProgramTempOwnerStore = mock()
     private val programOwnerStore: ProgramOwnerStore = mock()
+    private val parameterManager: TrackerExporterParameterManager = mock()
 
     private val httpResponse: HttpMessageResponse = mock()
 
@@ -68,6 +70,7 @@ class OwnershipManagerShould {
             dataStatePropagator,
             programTempOwnerStore,
             programOwnerStore,
+            parameterManager,
         )
     }
 

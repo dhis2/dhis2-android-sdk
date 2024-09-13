@@ -82,7 +82,7 @@ public abstract class TrackedEntityTypeAttribute implements CoreObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
+    public abstract static class Builder {
 
         public abstract Builder id(Long id);
 

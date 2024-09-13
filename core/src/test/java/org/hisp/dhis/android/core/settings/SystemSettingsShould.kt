@@ -38,6 +38,7 @@ class SystemSettingsShould : BaseObjectShould("settings/system_settings.json"), 
         val settings = objectMapper.readValue(jsonStream, SystemSettings::class.java)
         assertThat(settings.keyFlag).isEqualTo("sierra_leone")
         assertThat(settings.keyStyle).isEqualTo("light_blue/light_blue.css")
+        assertThat(settings.keyDefaultBaseMap).isEqualTo("keyDefaultBaseMap")
         assertThat(settings.keyBingMapsApiKey).isEqualTo("keyBingMapsApiKey")
     }
 }

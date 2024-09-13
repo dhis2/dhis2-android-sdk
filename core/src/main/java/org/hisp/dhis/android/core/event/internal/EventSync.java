@@ -55,7 +55,7 @@ abstract class EventSync extends TrackerBaseSync {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    static abstract class Builder extends TrackerBaseSync.Builder<Builder> {
+    abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
         abstract EventSync build();
     }
 }

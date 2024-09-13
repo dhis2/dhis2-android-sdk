@@ -40,6 +40,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationScopeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -67,10 +68,17 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract String uid();
 
     @Nullable
+    @JsonProperty
     public abstract String name();
 
     @Nullable
+    @JsonProperty
     public abstract String timestamp();
+
+    @NonNull
+    @JsonProperty
+    @ColumnAdapter(AnalyticsDhisVisualizationTypeColumnAdapter.class)
+    public abstract AnalyticsDhisVisualizationType type();
 
     public static AnalyticsDhisVisualization create(Cursor cursor) {
         return AutoValue_AnalyticsDhisVisualization.createFromCursor(cursor);
@@ -101,9 +109,21 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder name(String name);
 
-        @JsonProperty("timestamp")
         public abstract Builder timestamp(String timestamp);
 
-        public abstract AnalyticsDhisVisualization build();
+        public abstract Builder type(AnalyticsDhisVisualizationType type);
+
+        abstract AnalyticsDhisVisualization autoBuild();
+
+        abstract AnalyticsDhisVisualizationType type();
+
+        public AnalyticsDhisVisualization build() {
+            try {
+                type();
+            } catch (IllegalStateException e) {
+                type(AnalyticsDhisVisualizationType.VISUALIZATION);
+            }
+            return autoBuild();
+        }
     }
 }

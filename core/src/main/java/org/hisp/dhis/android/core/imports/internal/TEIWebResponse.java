@@ -60,7 +60,7 @@ public abstract class TEIWebResponse extends WebResponse {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends WebResponse.Builder<Builder> {
+    public abstract static class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(TEIImportSummaries response);
 
         public abstract TEIWebResponse build();

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.map.layer.internal.osm
 object OSMBaseMaps {
     val list: List<OSMBaseMap> = listOf(
         OSMBaseMap(
-            id = "l7rimUxoQu4",
+            id = "osmLight",
             name = "OSM Light",
             imageUrl = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}@2x.png",
             subdomains = listOf("a", "b", "c", "d"),
@@ -40,7 +40,7 @@ object OSMBaseMaps {
                 " &copy; <a href=\"https://carto.com/attribution\">Carto</a>",
         ),
         OSMBaseMap(
-            id = "k6QEWMytadd",
+            id = "openStreetMap",
             name = "OSM Detailed",
             imageUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             subdomains = listOf("a", "b", "c", "d"),

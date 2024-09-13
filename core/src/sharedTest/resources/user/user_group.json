@@ -1,0 +1,65 @@
+{
+  "href": "https://play.dhis2.org/android-current/api/userGroups/Kk12LkEWtXp",
+  "name": "_PROGRAM_TB program",
+  "created": "2018-03-09T23:04:50.114",
+  "lastUpdated": "2024-02-07T14:00:59.251",
+  "translations": [
+  ],
+  "externalAccess": false,
+  "publicAccess": "rw------",
+  "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+  },
+  "userGroupAccesses": [
+  ],
+  "userAccesses": [
+  ],
+  "access": {
+    "manage": true,
+    "externalize": true,
+    "write": true,
+    "read": true,
+    "update": true,
+    "delete": true
+  },
+  "favorites": [
+  ],
+  "sharing": {
+    "owner": "GOLswS44mh8",
+    "external": false,
+    "users": {
+    },
+    "userGroups": {
+    },
+    "public": "rw------"
+  },
+  "user": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+  },
+  "favorite": false,
+  "displayName": "_PROGRAM_TB program",
+  "id": "Kk12LkEWtXp",
+  "attributeValues": [
+  ],
+  "users": [
+    {
+      "id": "ERMxia28vpM",
+      "code": null,
+      "name": "Susan Barnes",
+      "displayName": "Susan Barnes",
+      "username": "android1"
+    }
+  ],
+  "managedGroups": [
+  ],
+  "managedByGroups": [
+  ]
+}

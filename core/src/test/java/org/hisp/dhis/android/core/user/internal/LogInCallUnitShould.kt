@@ -43,8 +43,6 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AuthenticatedUser
@@ -80,7 +78,6 @@ class LogInCallUnitShould : BaseCallShould() {
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
-    private val versionManager: DHISVersionManager = mock()
 
     @Before
     @Throws(Exception::class)
@@ -107,8 +104,6 @@ class LogInCallUnitShould : BaseCallShould() {
         generalSettingCall.stub {
             onBlocking { isDatabaseEncrypted() }.doReturn(false)
         }
-
-        whenever(versionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }
 
     private suspend fun login() = instantiateCall(USERNAME, PASSWORD, serverUrl)
@@ -118,7 +113,7 @@ class LogInCallUnitShould : BaseCallShould() {
             coroutineAPICallExecutor, userService, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-            LogInExceptions(credentialsSecureStore), accountManager, versionManager, apiErrorCatcher,
+            LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
         ).logIn(username, password, serverUrl)
     }
 

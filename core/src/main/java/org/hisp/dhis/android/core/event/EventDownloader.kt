@@ -71,18 +71,18 @@ class EventDownloader internal constructor(
     }
 
     fun byProgramUid(programUid: String): EventDownloader {
-        return cf.baseString(QueryParams.PROGRAM).eq(programUid)!!
+        return cf.baseString(QueryParams.PROGRAM).eq(programUid)
     }
 
     fun limitByOrgunit(limitByOrgunit: Boolean): EventDownloader {
-        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit)!!
+        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit)
     }
 
     fun limitByProgram(limitByProgram: Boolean): EventDownloader {
-        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram)!!
+        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram)
     }
 
     fun limit(limit: Int): EventDownloader {
-        return cf.integer(QueryParams.LIMIT).eq(limit)!!
+        return cf.integer(QueryParams.LIMIT).eq(limit)
     }
 }

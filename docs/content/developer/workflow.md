@@ -29,12 +29,15 @@ The number of maximum allowed accounts can be configured by the app (it defaults
 // Get the account list
 d2.userModule().accountManager().getAccounts();
 
-// Get/set the maximum number of accounts
-d2.userModule().accountManager().getMaxAccounts();
-d2.userModule().accountManager().setMaxAccounts();
+// Get the account for current user, or null if the user is not authenticated yet
+d2.userModule().accountManager().getCurrentAccount();
 
 // Delete account for current user
 d2.userModule().accountManager().deleteCurrentAccount();
+
+// Get/set the maximum number of accounts
+d2.userModule().accountManager().getMaxAccounts();
+d2.userModule().accountManager().setMaxAccounts();
 ```
 
 The accountManager exposes an observable that emits an event when the current account is deleted. It includes the reason why the account was deleted.
@@ -530,14 +533,6 @@ Data whose state is `ERROR` or `WARNING` cannot be uploaded. It is required to s
 
 As of version 2.37, a new tracker importer was introduced (`/api/tracker` endpoint). The default tracker importer is still the legacy one (`/api/trackedEntityInstances`), but you can opt-in to use this new tracker importer by using the Android Settings webapp (see [Synchronization](#android_sdk_synchronization_settings)). This is internal to the SDK; the API exposed to the app does not change.
 
-File resources must be uploaded in a different post call before tracker data upload. The query to post file resources is:
-
-```java
-d2.fileResourceModule().fileResources().upload();
-```
-
-More information about file resources in the section [*Dealing with FileResources*](#android_sdk_file_resources).
-
 #### Tracker conflicts
 
 Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
@@ -623,6 +618,16 @@ If the related trackedEntityInstance does not exist yet and there are attribute 
 ```java
 d2.trackedEntityModule().trackedEntityInstanceService()
     .inheritAttributes("fromTeiUid", "toTeiUid", "programUid");
+```
+
+In order to access the `dataElements` and `attributes` associated to a `relationshipConstraint`, they can be accessed through the `trackerDataView` property as in the following examples:
+
+```java
+relationshipType.toConstraint().trackerDataView().attributes();
+```
+
+```java
+relationshipType.toConstraint().trackerDataView().dataElements();
 ```
 
 ## Aggregated data { #android_sdk_aggregated_data }
@@ -781,13 +786,14 @@ This module contains methods to download the file resources associated with the 
 - **File resources download**.
 The `fileResourceDownloader()` offers methods to filter the fileResources we want to download. It will search for values that match the filters and whose file resource has not been previously downloaded.
 
-  ```java
+  ```kt
   d2.fileResourceModule().fileResourceDownloader()
-      .byDomainType().eq(FileResourceDomainType.TRACKER)
-      .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
-      .byValueType().in(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
-      .byMaxContentLength().eq(2000000)
-      .download();
+    .byDomainType().eq(FileResourceDomainType.DATA_VALUE)
+    .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
+    .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
+    .byValueType().in(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
+    .byMaxContentLength().eq(2000000)
+    .download()
   ```
 
   The SDK has a default maxContentLength of 6000000.

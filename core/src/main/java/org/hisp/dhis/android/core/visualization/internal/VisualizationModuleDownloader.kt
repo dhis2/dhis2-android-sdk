@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.koin.core.annotation.Singleton
@@ -40,7 +41,10 @@ internal class VisualizationModuleDownloader internal constructor(
     TypedModuleDownloader<List<Visualization>> {
 
     override suspend fun downloadMetadata(): List<Visualization> {
-        val visualizations = analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
+        val visualizations = analyticsDhisVisualizationStore.selectAll()
+            .filter { it.type() == AnalyticsDhisVisualizationType.VISUALIZATION }
+            .map { it.uid() }.toSet()
+
         return visualizationCall.download(visualizations)
     }
 }

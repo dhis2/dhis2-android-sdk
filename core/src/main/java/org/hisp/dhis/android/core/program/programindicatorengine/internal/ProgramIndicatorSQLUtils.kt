@@ -127,20 +127,6 @@ internal object ProgramIndicatorSQLUtils {
         }
     }
 
-    fun getColumnValueCast(
-        column: String,
-        valueType: ValueType?,
-    ): String {
-        return when {
-            valueType?.isNumeric == true ->
-                "CAST($column AS NUMERIC)"
-            valueType?.isBoolean == true ->
-                "CASE WHEN $column = 'true' THEN 1 ELSE 0 END"
-            else ->
-                column
-        }
-    }
-
     fun getDefaultValue(
         valueType: ValueType?,
     ): String {

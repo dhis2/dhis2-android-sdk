@@ -38,7 +38,7 @@ public abstract class HttpMessageResponse extends WebResponse {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends WebResponse.Builder<Builder> {
+    public abstract static class Builder extends WebResponse.Builder<Builder> {
 
         public abstract HttpMessageResponse build();
 

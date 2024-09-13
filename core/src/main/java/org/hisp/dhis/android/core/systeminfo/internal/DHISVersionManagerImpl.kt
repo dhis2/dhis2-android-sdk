@@ -43,11 +43,12 @@ internal class DHISVersionManagerImpl internal constructor(
     private var version: DHISVersion? = null
     private var patchVersion: DHISPatchVersion? = null
     private var smsVersion: SMSVersion? = null
+    private var bypassDHIS2Version: Boolean? = null
 
     override fun getVersion(): DHISVersion {
         return version
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { DHISVersion.getValue(it) }
+                systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
                     .also { dhisVersion -> version = dhisVersion }
             }
             ?: throw D2Error.builder()
@@ -60,7 +61,7 @@ internal class DHISVersionManagerImpl internal constructor(
     override fun getPatchVersion(): DHISPatchVersion? {
         return patchVersion
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { DHISPatchVersion.getValue(it) }
+                systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
                     .also { patch -> patchVersion = patch }
             }
     }
@@ -68,9 +69,13 @@ internal class DHISVersionManagerImpl internal constructor(
     override fun getSmsVersion(): SMSVersion? {
         return smsVersion
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { SMSVersion.getValue(it) }
+                systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
                     .also { sms -> smsVersion = sms }
             }
+    }
+
+    override fun getBypassVersion(): Boolean? {
+        return bypassDHIS2Version
     }
 
     override fun isVersion(version: DHISVersion): Boolean {
@@ -86,8 +91,12 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     internal fun setVersion(versionStr: String) {
-        version = DHISVersion.getValue(versionStr)
-        patchVersion = DHISPatchVersion.getValue(versionStr)
-        smsVersion = SMSVersion.getValue(versionStr)
+        version = DHISVersion.getValue(versionStr, getBypassVersion())
+        patchVersion = DHISPatchVersion.getValue(versionStr, getBypassVersion())
+        smsVersion = SMSVersion.getValue(versionStr, getBypassVersion())
+    }
+
+    override fun setBypassVersion(bypassDHIS2VersionCheck: Boolean?) {
+        bypassDHIS2Version = bypassDHIS2VersionCheck
     }
 }

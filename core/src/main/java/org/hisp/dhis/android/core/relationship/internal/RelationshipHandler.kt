@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,7 +39,6 @@ internal class RelationshipHandler(
     relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
     private val relationshipItemHandler: RelationshipItemHandler,
-    private val storeSelector: RelationshipItemElementStoreSelector,
 ) : IdentifiableHandlerImpl<Relationship>(relationshipStore) {
 
     override fun afterObjectHandled(o: Relationship, action: HandleAction) {
@@ -58,10 +56,6 @@ internal class RelationshipHandler(
 
     fun doesRelationshipExist(relationship: Relationship): Boolean {
         return getExistingRelationshipUid(relationship) != null
-    }
-
-    fun doesRelationshipItemExist(item: RelationshipItem): Boolean {
-        return storeSelector.getElementStore(item).exists(item.elementUid())
     }
 
     fun deleteLinkedRelationships(entityUid: String) {

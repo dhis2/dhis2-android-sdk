@@ -60,7 +60,7 @@ public abstract class SMSMetadataId implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract Builder id(Long id);
 
         public abstract Builder type(SMSConsts.MetadataType smsMetadataIdType);

@@ -96,6 +96,15 @@ class EventDateUtilsShould {
         assertThat(eventDateUtils.isEventExpired(event, 0, null, 2)).isFalse()
     }
 
+    @Test
+    fun `Should return is not expired if no event or due date provided`() {
+        whenever(event.status()) doReturn EventStatus.ACTIVE
+        whenever(event.eventDate()) doReturn null
+        whenever(event.dueDate()) doReturn null
+
+        assertThat(eventDateUtils.isEventExpired(event, 0, null, 2)).isFalse()
+    }
+
     private fun getCalendar(): Calendar {
         val calendar = Calendar.getInstance()
         calendar[Calendar.YEAR] = 2020

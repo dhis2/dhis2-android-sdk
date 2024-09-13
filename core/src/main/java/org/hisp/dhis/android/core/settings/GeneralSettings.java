@@ -116,6 +116,9 @@ public abstract class GeneralSettings implements CoreObject {
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> experimentalFeatures();
 
+    @Nullable
+    public abstract Boolean bypassDHIS2VersionCheck();
+
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
@@ -157,6 +160,8 @@ public abstract class GeneralSettings implements CoreObject {
         public abstract Builder messageOfTheDay(String messageOfTheDay);
 
         public abstract Builder experimentalFeatures(List<String> experimentalFeatures);
+
+        public abstract Builder bypassDHIS2VersionCheck(Boolean bypassDHIS2VersionCheck);
 
         public abstract GeneralSettings build();
     }

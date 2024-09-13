@@ -46,12 +46,10 @@ class TrackedEntityInstanceDownloadCallEnqueableMockIntegrationShould : BaseMock
     @Test
     fun should_continue_on_page_error() {
         val programTeis = "trackedentity/new_tracker_importer_tracked_entities.json"
-        val relationshipTei = "trackedentity/new_tracker_importer_tracked_entity_collection.json"
 
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(403)
         dhis2MockServer.enqueueMockResponse(programTeis)
-        dhis2MockServer.enqueueMockResponse(relationshipTei)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().blockingDownload()
 

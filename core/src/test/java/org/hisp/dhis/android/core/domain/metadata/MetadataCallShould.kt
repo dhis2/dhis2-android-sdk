@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
+import org.hisp.dhis.android.core.icon.internal.CustomIconModuleDownloader
 import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -60,6 +61,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 import org.junit.Assert.fail
 import org.junit.Before
@@ -81,6 +83,7 @@ class MetadataCallShould : BaseCallShould() {
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
     private val dataSetDownloader: DataSetModuleDownloader = mock()
     private val visualizationDownloader: VisualizationModuleDownloader = mock()
+    private val trackerVisualizationDownloader: TrackerVisualizationModuleDownloader = mock()
     private val constantDownloader: ConstantModuleDownloader = mock()
     private val indicatorDownloader: IndicatorModuleDownloader = mock()
     private val programIndicatorModuleDownloader: ProgramIndicatorModuleDownloader = mock()
@@ -92,6 +95,7 @@ class MetadataCallShould : BaseCallShould() {
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
     private val attributeModuleDownloader: AttributeModuleDownloader = mock()
     private val expressionDimensIndicatorModuleDownloader: ExpressionDimensionItemModuleDownloader = mock()
+    private val customIconDownloader: CustomIconModuleDownloader = mock()
 
     private val networkError: D2Error = D2Error.builder()
         .errorCode(D2ErrorCode.UNKNOWN_HOST)
@@ -136,6 +140,9 @@ class MetadataCallShould : BaseCallShould() {
         visualizationDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(emptyList())
         }
+        trackerVisualizationDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(emptyList())
+        }
         legendSetModuleDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
@@ -152,6 +159,9 @@ class MetadataCallShould : BaseCallShould() {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
         categoryDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
+        customIconDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
         }
         whenever(smsModule.configCase()).thenReturn(configCase)
@@ -173,6 +183,7 @@ class MetadataCallShould : BaseCallShould() {
             organisationUnitDownloader,
             dataSetDownloader,
             visualizationDownloader,
+            trackerVisualizationDownloader,
             constantDownloader,
             indicatorDownloader,
             programIndicatorModuleDownloader,
@@ -184,6 +195,7 @@ class MetadataCallShould : BaseCallShould() {
             legendSetModuleDownloader,
             attributeModuleDownloader,
             expressionDimensIndicatorModuleDownloader,
+            customIconDownloader,
         )
     }
 

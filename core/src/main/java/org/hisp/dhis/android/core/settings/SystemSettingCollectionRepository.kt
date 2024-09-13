@@ -75,6 +75,10 @@ class SystemSettingCollectionRepository internal constructor(
         return byKey().eq(SystemSettingKey.STYLE).one()
     }
 
+    fun defaultBaseMap(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.DEFAULT_BASE_MAP).one()
+    }
+
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<SystemSetting> = emptyMap()
     }

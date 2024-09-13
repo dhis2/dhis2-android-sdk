@@ -409,6 +409,8 @@ This table shows the functionality supported by the ProgramIndicator dimension i
 |                            | Log                  | Yes       | No          |
 |                            | Log10                | Yes       | No          |
 |                            | PeriodOffset         | Yes       | No          |
+|                            | Contains             | Yes       | Yes         |
+|                            | ContainsItems        | Yes       | Yes         |
 | **D2 functions:**          | D2AddDays            | No        | No          |
 |                            | D2Ceil               | No        | No          |
 |                            | D2Concatenate        | No        | No          |
@@ -503,11 +505,92 @@ This table shows the functionality supported by the ProgramIndicator dimension i
 | CUSTOM                          | No          |
 | DEFAULT                         | No          |
 
+## Tracker line list { #android_sdk_tracker_line_list }
+
+This kind of analytics is similar to those obtained through the Line Listing web app. It allows to generate line lists at event or enrollment level. These line list might include data elements, attributes, program indicators, variables and optionally filter those entries by the values in the their columns.
+
+A common use-case is to generate a list of event or enrollments that meet a certain criteria, such as a value within a particular range, or a certain status, or a certain date range.
+
+For example, a query that contains all the ACTIVE enrollments in the program "fbfJHSPpUQD" whose attribute "p4mRWMtCxtB" has a value between 40 and 50 would look like this. Note that the status is included as a filter, so there is not an explicit column for it.
+
+```kt
+d2.analyticsModule().trackerLineList()
+            .withEnrollmentOutput("fbfJHSPpUQD")
+            .withFilter(
+                TrackerLineListItem.ProgramStatusItem(
+                    filters = listOf(
+                        EnumFilter.EqualTo(EnrollmentStatus.ACTIVE.name)
+                    )
+                )
+            )
+            .withColumn(TrackerLineListItem.OrganisationUnitItem())
+            .withColumn(
+                TrackerLineListItem.ProgramAttribute(
+                    uid = "p4mRWMtCxtB",
+                    filters = listOf(
+                        DataFilter.GreaterThan("40"),
+                        DataFilter.LowerThan("50"),
+                    ),
+                ),
+            )
+            .evaluate()
+```
+
+The response is a Result object of TrackerLineListResponse, which has the following structure:
+
+```kt
+TrackerLineListResponse(
+  metadata = mapOf(
+      "p4mRWMtCxtB" to MetadataItem.TrackedEntityAttributeItem
+  ),
+  headers = listOf(
+    TrackerLineListItem.OrganisationUnitItem, 
+    TrackerLineListItem.ProgramAttribute
+  ), 
+  filters = listOf(
+    TrackerLineListItem.ProgramStatusItem
+  ),
+  rows = listOf(
+    listOf(
+      TrackerLineListValue(id = "ouItem", value = "Child 1"),
+      TrackerLineListValue(id = "p4mRWMtCxtB", value = "45")
+    ),
+    listOf(
+      TrackerLineListValue(id = "ouItem", value = "Child 2"),
+      TrackerLineListValue(id = "p4mRWMtCxtB", value = "49")
+    ),
+    listOf(
+      TrackerLineListValue(id = "ouItem", value = "Child 2"),
+      TrackerLineListValue(id = "p4mRWMtCxtB", value = "41")
+    )
+  )
+)
+```
+
+Optionally, it is possible to use a TrackerVisualization object (called EventVisualization in the API) to evaluate a predefined line list. The TrackerVisualization must have the type LINE_LIST. It is also possible to override a specific value.
+
+For example, this query uses the configuration in the TrackerVisualization "s85urBIkN0z" and adds or overrides the column ProgramStatusItem filtering by ACTIVE.
+
+```kt
+d2.analyticsModule().trackerLineList()
+  .withTrackerVisualization("s85urBIkN0z")
+  .withColumn(
+    TrackerLineListItem.ProgramStatusItem(
+      filters = listOf(
+        EnumFilter.EqualTo(EnrollmentStatus.ACTIVE.name)
+      )
+    )
+  )
+  .evaluate()
+```
+
+In order to use the TrackerVisualization objects, they must be set in the "Analytics" section of the Android Settings webapp. Currently, it is not possible to download on-demand visualizations from the server, just to downloaded through the Android Settings webapp.
+
 ## Event line list { #android_sdk_event_line_list }
 
-They are event-based analytics. If you are familiar with web analytic tools, it is very similar to Event Reports (line list).
+They are event-based analytics. If you are familiar with web analytic tools, it is very similar to Event Reports (line list). It is a simplified case of Tracker Line List.
 
-A common use-case it to generate an event line list of a repeatable stage in the context of a particular TEI in order to show the evolution of a particular value across the events. 
+A common use-case is to generate an event line list of a repeatable stage in the context of a particular TEI in order to show the evolution of a particular value across the events. 
 
 For example, let's suppose we have a repeatable stage with two dataElements (height and weight) and one indicator based on those values (BMI, Body Mass Index). We would like to show the evolution of those values across the events
 

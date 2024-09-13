@@ -75,6 +75,14 @@ public final class ProgramTableInfo {
         public static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
         public static final String FEATURE_TYPE = "featureType";
         public static final String ACCESS_LEVEL = "accessLevel";
+        public static final String ENROLLMENT_LABEL = "enrollmentLabel";
+        public static final String FOLLOW_UP_LABEL = "followUpLabel";
+        public static final String ORG_UNIT_LABEL = "orgUnitLabel";
+        public static final String RELATIONSHIP_LABEL = "relationshipLabel";
+        public static final String NOTE_LABEL = "noteLabel";
+        public static final String TRACKED_ENTITY_ATTRIBUTE_LABEL = "trackedEntityAttributeLabel";
+        public static final String PROGRAM_STAGE_LABEL = "programStageLabel";
+        public static final String EVENT_LABEL = "eventLabel";
 
         @Override
         public String[] all() {
@@ -102,7 +110,15 @@ public final class ProgramTableInfo {
                     MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
                     MAX_TEI_COUNT_TO_RETURN,
                     FEATURE_TYPE,
-                    ACCESS_LEVEL
+                    ACCESS_LEVEL,
+                    ENROLLMENT_LABEL,
+                    FOLLOW_UP_LABEL,
+                    ORG_UNIT_LABEL,
+                    RELATIONSHIP_LABEL,
+                    NOTE_LABEL,
+                    TRACKED_ENTITY_ATTRIBUTE_LABEL,
+                    PROGRAM_STAGE_LABEL,
+                    EVENT_LABEL
             );
         }
     }

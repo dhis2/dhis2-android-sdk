@@ -205,6 +205,38 @@ public abstract class Program extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
+    public abstract String enrollmentLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String followUpLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String orgUnitLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String relationshipLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String noteLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String trackedEntityAttributeLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String programStageLabel();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String eventLabel();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -220,7 +252,7 @@ public abstract class Program extends BaseNameableObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Program, Builder> {
 
         public abstract Builder id(Long id);
@@ -285,6 +317,22 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder featureType(FeatureType featureType);
 
         public abstract Builder accessLevel(AccessLevel accessLevel);
+
+        public abstract Builder enrollmentLabel(String enrollmentLabel);
+
+        public abstract Builder followUpLabel(String followUpLabel);
+
+        public abstract Builder orgUnitLabel(String orgUnitLabel);
+
+        public abstract Builder relationshipLabel(String relationshipLabel);
+
+        public abstract Builder noteLabel(String noteLabel);
+
+        public abstract Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel);
+
+        public abstract Builder programStageLabel(String programStageLabel);
+
+        public abstract Builder eventLabel(String eventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 

@@ -41,7 +41,7 @@ public abstract class BaseQuery {
         return true;
     }
 
-    protected static abstract class Builder<T extends BaseQuery.Builder> {
+    protected abstract static class Builder<T extends BaseQuery.Builder> {
         public abstract T page(int page);
 
         public abstract T pageSize(int pageSize);

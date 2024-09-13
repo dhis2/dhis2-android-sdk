@@ -63,6 +63,7 @@ internal class MultiUserDatabaseManagerForD2Manager(
             .serverUrl(serverUrl)
             .databaseCreationDate(DateUtils.DATE_FORMAT.format(Date()))
             .build()
+        ServerURLWrapper.setServerUrl(serverUrl)
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, config)
     }
 

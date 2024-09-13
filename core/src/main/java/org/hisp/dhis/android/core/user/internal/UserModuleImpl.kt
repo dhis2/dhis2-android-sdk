@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
+import org.hisp.dhis.android.core.user.UserGroupCollectionRepository
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.UserObjectRepository
 import org.hisp.dhis.android.core.user.UserRoleCollectionRepository
@@ -50,6 +51,7 @@ internal class UserModuleImpl(
     private val logInCall: LogInCall,
     private val authenticatedUser: AuthenticatedUserObjectRepository,
     private val userRoles: UserRoleCollectionRepository,
+    private val userGroups: UserGroupCollectionRepository,
     private val authorities: AuthorityCollectionRepository,
     private val userCredentials: UserCredentialsObjectRepository,
     private val user: UserObjectRepository,
@@ -63,6 +65,10 @@ internal class UserModuleImpl(
 
     override fun userRoles(): UserRoleCollectionRepository {
         return userRoles
+    }
+
+    override fun userGroups(): UserGroupCollectionRepository {
+        return userGroups
     }
 
     override fun authorities(): AuthorityCollectionRepository {

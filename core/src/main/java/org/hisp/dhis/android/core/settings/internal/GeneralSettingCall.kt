@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,6 +40,7 @@ internal class GeneralSettingCall(
     private val settingAppService: SettingAppService,
     private val appVersionManager: SettingsAppInfoManager,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val versionManager: DHISVersionManagerImpl,
 ) : BaseSettingCall<GeneralSettings>(coroutineAPICallExecutor) {
 
     private var cachedValue: GeneralSettings? = null
@@ -59,6 +61,7 @@ internal class GeneralSettingCall(
     override fun process(item: GeneralSettings?) {
         cachedValue = item
         val generalSettingsList = listOfNotNull(item)
+        versionManager.setBypassVersion(item?.bypassDHIS2VersionCheck())
         generalSettingHandler.handleMany(generalSettingsList)
     }
 
@@ -67,6 +70,6 @@ internal class GeneralSettingCall(
         appVersionManager.updateAppVersion()
         return coroutineAPICallExecutor.wrap(storeError = false) {
             settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
-        }.getOrThrow().encryptDB()
+        }.getOrThrow().also { versionManager.setBypassVersion(it.bypassDHIS2VersionCheck()) }.encryptDB()
     }
 }

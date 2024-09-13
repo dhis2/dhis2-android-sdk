@@ -41,6 +41,7 @@ class GeneralSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegration
     fun find_android_setting() {
         val generalSettings = d2.settingModule().generalSetting().blockingGet()
         assertThat(generalSettings!!.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS)
+        assertThat(generalSettings!!.bypassDHIS2VersionCheck()).isTrue()
     }
 
     @Test

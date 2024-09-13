@@ -196,6 +196,70 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void filter_by_enrollment_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byEnrollmentLabel().eq("Enrollment Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_follow_up_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byFollowUpLabel().eq("Follow up Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_org_unit_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byOrgUnitLabel().eq("OrgUnit Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_relationship_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byRelationshipLabel().eq("Relationship Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_note_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byNoteLabel().eq("Note Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_tracked_entity_attribute_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byTrackedEntityAttributeLabel().eq("TrackedEntityAttribute Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_program_stage_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byProgramStageLabel().eq("ProgramStage Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_event_label() {
+        List<Program> programs = d2.programModule().programs()
+                .byEventLabel().eq("Event Label")
+                .blockingGet();
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_field_color() {
         List<Program> programs = d2.programModule().programs()
                 .byColor().eq("#333")
@@ -206,7 +270,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void filter_by_field_icon() {
         List<Program> programs = d2.programModule().programs()
-                .byIcon().eq("program-icon")
+                .byIcon().eq("antenatal_icon")
                 .blockingGet();
         assertThat(programs.size()).isEqualTo(1);
     }

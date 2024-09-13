@@ -57,6 +57,7 @@ object AnalyticsDhisVisualizationTableInfo {
                 GROUP_NAME,
                 NAME,
                 TIME_STAMP,
+                TYPE,
             )
         }
 
@@ -68,6 +69,7 @@ object AnalyticsDhisVisualizationTableInfo {
             const val GROUP_NAME = "groupName"
             const val NAME = "name"
             const val TIME_STAMP = "timestamp"
+            const val TYPE = "type"
         }
     }
 }

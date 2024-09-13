@@ -10,6 +10,8 @@
       "allowGenerateNextVisit": false,
       "executionDateLabel": "Visit date",
       "dueDateLabel": "Due date",
+      "programStageLabel": "ProgramStage Label",
+      "eventLabel": "Event Label",
       "validCompleteOnly": true,
       "displayName": "Antenatal care visit - Program rules demo",
       "openAfterEnrollment": false,
@@ -30,7 +32,7 @@
       "reportDateToUse": "report_date_to_use",
       "style": {
         "color": "#444",
-        "icon": "program-stage-icon"
+        "icon": "visit_icon"
       },
       "access": {
         "read": true,

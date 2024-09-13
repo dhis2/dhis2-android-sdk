@@ -82,7 +82,7 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
 
         public abstract Builder id(Long id);

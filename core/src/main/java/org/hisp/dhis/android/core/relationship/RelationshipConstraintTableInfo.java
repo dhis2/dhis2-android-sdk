@@ -57,6 +57,8 @@ public final class RelationshipConstraintTableInfo {
         public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
         public static final String PROGRAM = "program";
         public static final String PROGRAM_STAGE = "programStage";
+        public static final String TRACKER_DATA_VIEW_ATTRIBUTES = "trackerDataViewAttributes";
+        public static final String TRACKER_DATA_VIEW_DATA_ELEMENTS = "trackerDataViewDataElements";
 
         @Override
         public String[] all() {
@@ -66,7 +68,9 @@ public final class RelationshipConstraintTableInfo {
                     RELATIONSHIP_ENTITY,
                     TRACKED_ENTITY_TYPE,
                     PROGRAM,
-                    PROGRAM_STAGE
+                    PROGRAM_STAGE,
+                    TRACKER_DATA_VIEW_ATTRIBUTES,
+                    TRACKER_DATA_VIEW_DATA_ELEMENTS
             );
         }
 

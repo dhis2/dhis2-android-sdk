@@ -125,7 +125,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder>
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityInstanceFilter, Builder> {
 
         public abstract Builder id(Long id);

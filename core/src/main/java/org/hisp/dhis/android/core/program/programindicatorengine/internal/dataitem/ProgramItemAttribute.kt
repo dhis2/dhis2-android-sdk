@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalIt
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.assumeProgramAttributeSyntax
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class ProgramItemAttribute : ProgramExpressionItem() {

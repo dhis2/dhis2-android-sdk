@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.icon.internal.CustomIconStoreImpl
 import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
@@ -51,6 +52,7 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
     protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
     protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
     protected val fileResourceStore = FileResourceStoreImpl(d2.databaseAdapter())
+    protected val customIconStore = CustomIconStoreImpl(d2.databaseAdapter())
     private val optionSetStore = OptionSetStoreImpl(d2.databaseAdapter())
 
     // Metadata stores

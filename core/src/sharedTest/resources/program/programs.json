@@ -20,6 +20,14 @@
       "version": 3,
       "selectIncidentDatesInFuture": false,
       "incidentDateLabel": "Incident Date",
+      "enrollmentLabel": "Enrollment Label",
+      "followUpLabel": "Follow up Label",
+      "orgUnitLabel": "OrgUnit Label",
+      "relationshipLabel": "Relationship Label",
+      "noteLabel": "Note Label",
+      "trackedEntityAttributeLabel": "TrackedEntityAttribute Label",
+      "programStageLabel": "ProgramStage Label",
+      "eventLabel": "Event Label",
       "displayIncidentDate": false,
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
@@ -31,7 +39,7 @@
       "maxTeiCountToReturn": 20,
       "style": {
         "color": "#333",
-        "icon": "program-icon"
+        "icon": "antenatal_icon"
       },
       "access": {
         "data": {

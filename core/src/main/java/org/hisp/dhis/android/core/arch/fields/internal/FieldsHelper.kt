@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Suppress("TooManyFunctions")
 internal class FieldsHelper<O> {
-    fun <T> field(fieldName: String): Property<O, T> {
+    fun <T> field(fieldName: String): Field<O, T> {
         return Field.create(fieldName)
     }
 

@@ -42,7 +42,11 @@ internal class SystemSettingsSplitter {
             .key(SystemSetting.SystemSettingKey.STYLE)
             .value(settings.keyStyle)
             .build()
+        val keyDefaultBaseMap = SystemSetting.builder()
+            .key(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP)
+            .value(settings.keyDefaultBaseMap)
+            .build()
 
-        return listOf(flag, style)
+        return listOf(flag, style, keyDefaultBaseMap)
     }
 }

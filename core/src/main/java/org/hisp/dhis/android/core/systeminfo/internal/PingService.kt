@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.GET
 
 internal interface PingService {
 
     @GET("system/ping")
-    suspend fun getPing(): String
+    suspend fun getPing(): Response<ResponseBody>
 }

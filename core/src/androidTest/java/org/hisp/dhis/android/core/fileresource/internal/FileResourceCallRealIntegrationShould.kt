@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.event.EventCreateProjection
-import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import java.io.File
 import java.util.*
@@ -122,7 +122,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
             .byProgramUid("eBAyeGv0exc").limit(5).blockingDownload()
 
         d2.fileResourceModule().fileResourceDownloader()
-            .byDomainType().eq(FileResourceDomainType.TRACKER)
+            .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
             .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
             .blockingDownload()
 

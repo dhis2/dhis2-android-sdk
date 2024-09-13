@@ -1,11 +1,10 @@
 [versions]
-gradle = "8.2.0"
+gradle = "8.3.1"
 kotlin = "1.9.21"
 ktlint = "11.5.1"
-jacoco = "0.8.10"
 sonarqube = "3.3"
 detekt = "1.18.0"
-dokka = "1.9.10"
+dokka = "1.9.20"
 
 targetSdkVersion = "34"
 minSdkVersion = "21"
@@ -14,7 +13,7 @@ libraryDesugaring = "2.0.4"
 
 # android
 annotation = "1.6.0"
-paging = "2.1.2"
+paging = "3.2.1"
 
 # java
 jackson = "2.13.4"
@@ -26,8 +25,9 @@ rxJava = "2.2.21"
 rxAndroid = "2.1.1"
 sqlCipher = "4.5.5"
 sqlLite = "2.2.0"
+zip4j = "2.11.5"
 smsCompression = "0.2.0"
-expressionParser = "1.0.33"
+expressionParser = "1.0.36"
 
 # Kotlin
 kotlinxDatetime = "0.4.1"
@@ -59,7 +59,6 @@ listenablefuture = "9999.0-empty-to-avoid-conflict-with-guava"
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
 kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ktlint = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
-jacoco = { group = "org.jacoco", name = "org.jacoco.core", version.ref = "jacoco" }
 
 desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "libraryDesugaring" }
 
@@ -67,7 +66,8 @@ rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxJa
 rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxAndroid" }
 
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
-androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 
 google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autoValue" }
 google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }
@@ -100,6 +100,8 @@ dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expres
 
 sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
 sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlLite" }
+
+zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j"}
 
 openid-appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
 listenablefuture-empty = { group = "com.google.guava", name = "listenablefuture", version.ref = "listenablefuture" }

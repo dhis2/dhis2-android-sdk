@@ -48,12 +48,21 @@ internal class DatabaseConfigurationHelper(
             .build()
     }
 
-    fun addAccount(
+    fun addOrUpdateAccount(
         configuration: DatabasesConfiguration?,
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        importStatus: DatabaseAccountImportStatus? = null,
     ): DatabasesConfiguration {
+        val dbName = databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt)
+        val importDb = importStatus?.let {
+            DatabaseAccountImportDB.builder()
+                .status(importStatus)
+                .protectedDbName("$dbName.protected")
+                .build()
+        }
+
         val existedAccount = configuration?.accounts()?.find {
             equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
         }
@@ -61,17 +70,25 @@ internal class DatabaseConfigurationHelper(
         val newAccount = existedAccount ?: DatabaseAccount.builder()
             .username(username)
             .serverUrl(serverUrl)
-            .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt))
+            .databaseName(dbName)
             .encrypted(encrypt)
             .databaseCreationDate(dateProvider.dateStr)
+            .importDB(importDb)
             .build()
 
+        return addOrUpdateAccount(configuration, newAccount)
+    }
+
+    fun addOrUpdateAccount(
+        configuration: DatabasesConfiguration?,
+        account: DatabaseAccount,
+    ): DatabasesConfiguration {
         val otherAccounts = configuration?.accounts()?.filterNot {
-            equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
+            equalsIgnoreProtocol(it.serverUrl(), account.serverUrl()) && it.username() == account.username()
         } ?: emptyList()
 
         return (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
-            .accounts(otherAccounts + newAccount)
+            .accounts(otherAccounts + account)
             .build()
     }
 

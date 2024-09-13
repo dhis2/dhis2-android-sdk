@@ -1,0 +1,59 @@
+{
+  "pager": {
+    "page": 1,
+    "total": 4,
+    "pageSize": 50,
+    "pageCount": 1
+  },
+  "externalMapLayers": [
+    {
+      "name": " Dark basemap",
+      "code": "DARK_BASEMAP",
+      "created": "2016-10-05T16:38:03.202",
+      "lastUpdated": "2024-02-09T10:20:17.044",
+      "mapService": "WMS",
+      "url": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png",
+      "attribution": "&copy; <a href=\\\"http://www.openstreetmap.org/copyright\\\">OpenStreetMap</a>, <a href=\\\"https://carto.com/attributions\\\">CARTO</a>",
+      "layers": "layer_test",
+      "imageFormat": "JPG",
+      "mapLayerPosition": "OVERLAY",
+      "displayName": " Dark basemap",
+      "id": "LOw2p0kPwua"
+    },
+    {
+      "name": "Aerial imagery of Dar-es-Salaam",
+      "created": "2016-10-05T16:28:27.586",
+      "lastUpdated": "2024-02-09T10:06:42.677",
+      "mapService": "XYZ",
+      "url": "https://a.tiles.mapbox.com/v4/worldbank-education.pebkgmlc/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoid29ybGRiYW5rLWVkdWNhdGlvbiIsImEiOiJIZ2VvODFjIn0.TDw5VdwGavwEsch53sAVxA",
+      "attribution": "OpenAerialMap / Tanzania Open Data Initiative",
+      "imageFormat": "PNG",
+      "mapLayerPosition": "BASEMAP",
+      "displayName": "Aerial imagery of Dar-es-Salaam",
+      "id": "ni2ZiTOZaPD"
+    },
+    {
+      "name": "Labels overlay",
+      "created": "2016-10-05T16:40:08.241",
+      "lastUpdated": "2016-10-05T16:40:08.241",
+      "mapService": "XYZ",
+      "url": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png",
+      "attribution": "&copy; <a href=\\\"http://www.openstreetmap.org/copyright\\\">OpenStreetMap</a>, <a href=\\\"https://carto.com/attributions\\\">CARTO</a>",
+      "imageFormat": "PNG",
+      "mapLayerPosition": "OVERLAY",
+      "displayName": "Labels overlay",
+      "id": "suB1SFdc6RD"
+    },
+    {
+      "name": "Terrain basemap",
+      "created": "2016-10-05T16:45:21.378",
+      "lastUpdated": "2016-10-05T16:49:13.324",
+      "mapService": "WMS",
+      "url": "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
+      "imageFormat": "PNG",
+      "mapLayerPosition": "BASEMAP",
+      "displayName": "Terrain basemap",
+      "id": "wNIQ8pNvSQd"
+    }
+  ]
+}

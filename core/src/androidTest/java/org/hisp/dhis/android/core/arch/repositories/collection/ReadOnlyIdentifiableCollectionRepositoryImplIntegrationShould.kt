@@ -84,6 +84,38 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
     }
 
     @Test
+    fun get_tracker_data_view_from_relationship_constraint() {
+        val relationshipType = relationshipTypeCollectionRepository
+            .byConstraint(
+                RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
+                RelationshipTypeSamples.TET_FOR_RELATIONSHIP_3_UID,
+                RelationshipConstraintType.FROM,
+            )
+            .withConstraints()
+            .blockingGet()
+
+        val fromTrackerDataView = relationshipType[0].fromConstraint()?.trackerDataView()
+        val toTrackerDataView = relationshipType[0].toConstraint()?.trackerDataView()
+
+        assertThat(fromTrackerDataView?.attributes()?.get(0))
+            .isEqualTo(RelationshipTypeSamples.ATTRIBUTE_1)
+        assertThat(fromTrackerDataView?.attributes()?.get(1))
+            .isEqualTo(RelationshipTypeSamples.ATTRIBUTE_2)
+        assertThat(fromTrackerDataView?.attributes()?.get(2))
+            .isEqualTo(RelationshipTypeSamples.ATTRIBUTE_3)
+
+        assertThat(fromTrackerDataView?.dataElements()?.get(0))
+            .isEqualTo(RelationshipTypeSamples.DATA_ELEMENT_1)
+        assertThat(fromTrackerDataView?.dataElements()?.get(1))
+            .isEqualTo(RelationshipTypeSamples.DATA_ELEMENT_2)
+
+        assertThat(toTrackerDataView?.attributes()?.get(0))
+            .isEqualTo(RelationshipTypeSamples.ATTRIBUTE_3)
+
+        assertThat(toTrackerDataView?.dataElements()?.isEmpty()).isTrue()
+    }
+
+    @Test
     fun get_relationship_2_from_object_repository_without_children() {
         val relationshipType =
             relationshipTypeCollectionRepository

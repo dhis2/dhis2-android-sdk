@@ -50,7 +50,7 @@ public abstract class ObjectWithUidWebResponse extends WebResponse {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends WebResponse.Builder<Builder> {
+    public abstract static class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(ObjectWithUid response);
 
         public abstract ObjectWithUidWebResponse build();

@@ -31,6 +31,7 @@ interface DHISVersionManager {
     fun getVersion(): DHISVersion
     fun getPatchVersion(): DHISPatchVersion?
     fun getSmsVersion(): SMSVersion?
+    fun getBypassVersion(): Boolean?
 
     /**
      * Check if the current version is equal to the version passed as parameter.
@@ -55,4 +56,6 @@ interface DHISVersionManager {
      * @return True if current version is greater or equal than the parameter.
      */
     fun isGreaterOrEqualThan(version: DHISVersion): Boolean
+
+    fun setBypassVersion(bypassDHIS2VersionCheck: Boolean?)
 }

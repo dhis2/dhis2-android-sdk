@@ -143,6 +143,20 @@ internal constructor(
         }
     }
 
+    protected inline fun <V> updateIfChanged(
+        newValue: V?,
+        propertyGetter: (M?) -> V?,
+        crossinline updater: (M?, V?) -> M,
+    ): org.hisp.dhis.android.core.common.Unit {
+        val obj = blockingGetWithoutChildren()
+        val currentValue = propertyGetter(obj)
+
+        if (currentValue != newValue) {
+            setObject(updater(obj, newValue))
+        }
+        return org.hisp.dhis.android.core.common.Unit()
+    }
+
     protected open fun propagateState(m: M?) {
         // Method is empty because is the default action.
     }

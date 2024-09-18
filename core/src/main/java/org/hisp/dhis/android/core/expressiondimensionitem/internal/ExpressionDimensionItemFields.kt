@@ -27,18 +27,16 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns
 
-internal object ExpressionDimensionItemFields {
-    private val fh = FieldsHelper<ExpressionDimensionItem>()
-
+internal object ExpressionDimensionItemFields : BaseFields<ExpressionDimensionItem>() {
     val uid = fh.uid()
 
-    val allFields: Fields<ExpressionDimensionItem> = Fields.builder<ExpressionDimensionItem>()
-        .fields(fh.getIdentifiableFields())
-        .fields(fh.field<String>(Columns.EXPRESSION))
-        .build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.EXPRESSION),
+    )
 }

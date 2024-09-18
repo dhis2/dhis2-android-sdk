@@ -27,19 +27,14 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
-internal object TrackerVisualizationDimensionRepetitionFields {
+internal object TrackerVisualizationDimensionRepetitionFields : BaseFields<TrackerVisualizationDimensionRepetition>() {
     private const val INDEXES = "indexes"
 
-    private val fh = FieldsHelper<TrackerVisualizationDimensionRepetition>()
-
-    val allFields: Fields<TrackerVisualizationDimensionRepetition> =
-        Fields.builder<TrackerVisualizationDimensionRepetition>()
-            .fields(
-                fh.field<String>(INDEXES),
-            )
-            .build()
+    val allFields = Fields.from(
+        fh.field(INDEXES),
+    )
 }

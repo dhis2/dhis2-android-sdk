@@ -65,10 +65,10 @@ internal class ProgramIndicatorExecutor constructor(
         return try {
             val result = CommonParser.visit(expression, visitor)
             val resultStr = AntlrParserUtils.castString(result)
-            if (ParserUtils.isNumeric(resultStr)) {
-                ParserUtils.fromDouble(resultStr.toDouble())
-            } else {
-                resultStr
+            when {
+                result is Double? -> ParserUtils.fromDouble(result)
+                ParserUtils.isNumeric(resultStr) -> ParserUtils.fromDouble(resultStr.toDouble())
+                else -> resultStr
             }
         } catch (e: IllegalArgumentException) {
             null

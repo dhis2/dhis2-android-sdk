@@ -27,23 +27,17 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
-internal object VisualizationDimensionFields {
+internal object VisualizationDimensionFields : BaseFields<VisualizationDimension>() {
     private const val ITEMS = "items"
 
-    private val fh = FieldsHelper<VisualizationDimension>()
-
-    val allFields: Fields<VisualizationDimension> =
-        Fields.builder<VisualizationDimension>()
-            .fields(
-                fh.field<String>(BaseIdentifiableObject.UID),
-                fh.nestedField<VisualizationDimensionItem>(ITEMS)
-                    .with(VisualizationDimensionItemFields.allFields),
-            )
-            .build()
+    val allFields = Fields.from(
+        fh.field(BaseIdentifiableObject.UID),
+        fh.nestedField<VisualizationDimensionItem>(ITEMS).with(VisualizationDimensionItemFields.allFields),
+    )
 }

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
 import org.hisp.dhis.android.core.note.internal.NoteHandler
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
@@ -51,6 +52,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class EventHandlerShould {
     private val eventStore: EventStore = mock()
+    private val programStore: ProgramStore = mock()
     private val trackedEntityDataValueHandler: TrackedEntityDataValueHandler = mock()
     private val trackedEntityDataValue: TrackedEntityDataValue = mock()
     private val noteHandler: NoteHandler = mock()
@@ -84,6 +86,7 @@ class EventHandlerShould {
             relationshipVersionManager,
             relationshipHandler,
             eventStore,
+            programStore,
             trackedEntityDataValueHandler,
             noteHandler,
             noteVersionManager,

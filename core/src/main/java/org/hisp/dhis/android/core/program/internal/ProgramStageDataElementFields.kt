@@ -27,32 +27,26 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
-import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns
 
-object ProgramStageDataElementFields {
+internal object ProgramStageDataElementFields : BaseFields<ProgramStageDataElement>() {
     const val RENDER_TYPE = "renderType"
 
-    private val fh = FieldsHelper<ProgramStageDataElement>()
-
-    val allFields: Fields<ProgramStageDataElement> = Fields.builder<ProgramStageDataElement>()
-        .fields(fh.getIdentifiableFields())
-        .fields(
-            fh.field<String>(ProgramStageDataElementTableInfo.Columns.DISPLAY_IN_REPORTS),
-            fh.nestedField<DataElement>(ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT)
-                .with(DataElementFields.allFields),
-            fh.field<Boolean>(ProgramStageDataElementTableInfo.Columns.COMPULSORY),
-            fh.field<Boolean>(ProgramStageDataElementTableInfo.Columns.ALLOW_PROVIDED_ELSEWHERE),
-            fh.field<Int>(ProgramStageDataElementTableInfo.Columns.SORT_ORDER),
-            fh.field<Boolean>(ProgramStageDataElementTableInfo.Columns.ALLOW_FUTURE_DATE),
-            fh.field<ValueTypeRendering>(RENDER_TYPE),
-            fh.nestedField<ObjectWithUid>(ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE)
-                .with(ObjectWithUid.uid),
-        ).build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DISPLAY_IN_REPORTS),
+        fh.field(Columns.COMPULSORY),
+        fh.field(Columns.ALLOW_PROVIDED_ELSEWHERE),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.ALLOW_FUTURE_DATE),
+        fh.field(RENDER_TYPE),
+        fh.nestedField<DataElement>(Columns.DATA_ELEMENT).with(DataElementFields.allFields),
+        fh.nestedField<ObjectWithUid>(Columns.PROGRAM_STAGE).with(ObjectWithUid.uid),
+    )
 }

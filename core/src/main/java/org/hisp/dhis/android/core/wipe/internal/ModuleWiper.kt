@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
-interface ModuleWiper {
+internal interface ModuleWiper {
     fun wipeMetadata()
     fun wipeData()
 }

@@ -73,6 +73,12 @@ public class DataValueImportHandlerShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
+        when(dataValue.attributeOptionCombo()).thenReturn("attributeOptionCombo");
+        when(dataValue.categoryOptionCombo()).thenReturn("categoryOptionCombo");
+        when(dataValue.dataElement()).thenReturn("dataElement");
+        when(dataValue.period()).thenReturn("period");
+        when(dataValue.organisationUnit()).thenReturn("organisationUnit");
+
         dataValueSet = new DataValueSet(Collections.singletonList(dataValue));
 
         dataValueImportHandler = new DataValueImportHandler(dataValueStore, dataValueConflictParser, dataValueConflictStore);

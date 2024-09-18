@@ -70,18 +70,21 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return updateObject(updateBuilder().organisationUnit(organisationUnitUid).build())
+        return updateIfChanged(organisationUnitUid, { it.organisationUnit() }) { tei: TrackedEntityInstance, value ->
+            updateBuilder(tei).organisationUnit(value).build()
+        }
     }
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
-        return updateObject(updateBuilder().geometry(geometry).build())
+        return updateIfChanged(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
+            updateBuilder(tei).geometry(value).build()
+        }
     }
 
     @Throws(D2Error::class)
-    private fun updateBuilder(): TrackedEntityInstance.Builder {
-        val trackedEntityInstance: TrackedEntityInstance = blockingGetWithoutChildren()!!
+    private fun updateBuilder(trackedEntityInstance: TrackedEntityInstance): TrackedEntityInstance.Builder {
         var state = trackedEntityInstance.aggregatedSyncState()
         if (state === State.RELATIONSHIP) {
             throw D2Error

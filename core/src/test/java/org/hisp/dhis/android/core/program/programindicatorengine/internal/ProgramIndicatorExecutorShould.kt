@@ -520,6 +520,24 @@ class ProgramIndicatorExecutorShould {
         assertThat(result).isNull()
     }
 
+    @Test
+    fun evaluate_infinite_indicator() {
+        setExpression("${att(attributeUid1)} / ${att(attributeUid2)}")
+        whenever(attributeValue1.value()) doReturn "7.8"
+        whenever(attributeValue2.value()) doReturn null
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("")
+    }
+
+    @Test
+    fun evaluate_null_over_null_indicator() {
+        setExpression("${att(attributeUid1)} / ${att(attributeUid2)}")
+        whenever(attributeValue1.value()) doReturn null
+        whenever(attributeValue2.value()) doReturn null
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("")
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------

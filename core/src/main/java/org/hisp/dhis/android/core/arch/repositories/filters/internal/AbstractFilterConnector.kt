@@ -81,7 +81,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V> internal construct
 
     fun getCommaSeparatedValues(values: Collection<V>?): String {
         return values?.let {
-            val wrappedValues = values.map { wrapValue(it) }
+            val wrappedValues = values.mapNotNull { wrapValue(it) }
             CollectionsHelper.commaAndSpaceSeparatedCollectionValues(wrappedValues)
         } ?: ""
     }

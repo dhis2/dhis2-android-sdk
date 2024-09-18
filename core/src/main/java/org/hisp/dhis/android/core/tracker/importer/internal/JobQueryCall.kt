@@ -94,17 +94,18 @@ internal class JobQueryCall internal constructor(
 
         @Suppress("TooGenericExceptionCaught", "UnusedPrivateMember")
         for (i in 0..attempts) {
-            val isComplete = try {
-                downloadAndHandle(jobId, jobObjects)
-                true
-            } catch (e: Throwable) {
-                if (e is D2Error && e.errorCode() == D2ErrorCode.JOB_REPORT_NOT_AVAILABLE) {
-                    false
-                } else {
+            val isComplete =
+                try {
+                    if (isReportAvailable(jobId)) {
+                        downloadReportAndHandle(jobId, jobObjects)
+                        true
+                    } else {
+                        false
+                    }
+                } catch (e: Throwable) {
                     handlerError(jobId, jobObjects)
                     true
                 }
-            }
 
             emit(progressManager.increaseProgress(JobReport::class.java, isComplete && isLastJob))
 
@@ -119,11 +120,27 @@ internal class JobQueryCall internal constructor(
         emit(progressManager.increaseProgress(FileResource::class.java, isLastJob))
     }
 
-    private suspend fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
-        val jobReport = coroutineAPICallExecutor.wrap(
-            storeError = false,
-            errorCatcher = JobQueryErrorCatcher(),
-        ) {
+    private suspend fun isReportAvailable(jobId: String): Boolean {
+        return try {
+            val jobProgressLog = coroutineAPICallExecutor.wrap(
+                storeError = true,
+                errorCatcher = JobQueryErrorCatcher(),
+            ) {
+                service.getJob(jobId)
+            }.getOrThrow()
+
+            jobProgressLog.any { it.completed }
+        } catch (e: D2Error) {
+            if (e.errorCode() == D2ErrorCode.JOB_REPORT_NOT_AVAILABLE) {
+                false
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private suspend fun downloadReportAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
+        val jobReport = coroutineAPICallExecutor.wrap {
             service.getJobReport(jobId)
         }.getOrThrow()
 

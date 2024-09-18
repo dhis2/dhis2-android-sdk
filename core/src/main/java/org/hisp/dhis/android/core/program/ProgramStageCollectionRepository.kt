@@ -76,11 +76,11 @@ class ProgramStageCollectionRepository internal constructor(
     }
 
     fun byExecutionDateLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
-        return cf.string(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL)
+        return cf.string(ProgramStageTableInfo.Columns.DISPLAY_EXECUTION_DATE_LABEL)
     }
 
     fun byDueDateLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
-        return cf.string(ProgramStageTableInfo.Columns.DUE_DATE_LABEL)
+        return cf.string(ProgramStageTableInfo.Columns.DISPLAY_DUE_DATE_LABEL)
     }
 
     fun byAllowGenerateNextVisit(): BooleanFilterConnector<ProgramStageCollectionRepository> {
@@ -168,11 +168,11 @@ class ProgramStageCollectionRepository internal constructor(
     }
 
     fun byProgramStageLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
-        return cf.string(ProgramStageTableInfo.Columns.PROGRAM_STAGE_LABEL)
+        return cf.string(ProgramStageTableInfo.Columns.DISPLAY_PROGRAM_STAGE_LABEL)
     }
 
     fun byEventLabel(): StringFilterConnector<ProgramStageCollectionRepository> {
-        return cf.string(ProgramStageTableInfo.Columns.EVENT_LABEL)
+        return cf.string(ProgramStageTableInfo.Columns.DISPLAY_EVENT_LABEL)
     }
 
     fun byColor(): StringFilterConnector<ProgramStageCollectionRepository> {

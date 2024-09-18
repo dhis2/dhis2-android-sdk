@@ -51,7 +51,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
     public void allow_access_to_all_tracked_entity_data_values() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet();
-        assertThat(trackedEntityAttributeValues.size()).isEqualTo(3);
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(4);
     }
 
     @Test

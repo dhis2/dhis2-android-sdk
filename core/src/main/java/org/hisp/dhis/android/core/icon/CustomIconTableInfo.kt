@@ -55,7 +55,7 @@ object CustomIconTableInfo {
             )
         }
 
-        override fun whereUpdate(): Array<String?> {
+        override fun whereUpdate(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 KEY,

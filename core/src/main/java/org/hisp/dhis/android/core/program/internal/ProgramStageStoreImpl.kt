@@ -57,8 +57,8 @@ internal class ProgramStageStoreImpl(
                     super.bindToStatement(o, w)
                     w.bind(9, o.description())
                     w.bind(10, o.displayDescription())
-                    w.bind(11, o.executionDateLabel())
-                    w.bind(12, o.dueDateLabel())
+                    w.bind(11, o.displayExecutionDateLabel())
+                    w.bind(12, o.displayDueDateLabel())
                     w.bind(13, o.allowGenerateNextVisit())
                     w.bind(14, o.validCompleteOnly())
                     w.bind(15, o.reportDateToUse())
@@ -80,8 +80,8 @@ internal class ProgramStageStoreImpl(
                     w.bind(31, o.featureType())
                     w.bind(32, o.enableUserAssignment())
                     w.bind(33, o.validationStrategy())
-                    w.bind(34, o.programStageLabel())
-                    w.bind(35, o.eventLabel())
+                    w.bind(34, o.displayProgramStageLabel())
+                    w.bind(35, o.displayEventLabel())
                 }
             }
         val CHILD_PROJECTION = SingleParentChildProjection(

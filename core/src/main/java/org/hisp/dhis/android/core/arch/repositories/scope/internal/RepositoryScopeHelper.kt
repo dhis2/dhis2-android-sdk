@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BaseAbstractFilterConnector.Companion.escapeQuotes
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
@@ -43,7 +44,7 @@ internal object RepositoryScopeHelper {
         val filterItem = RepositoryScopeFilterItem.builder()
             .key(IdentifiableColumns.UID)
             .operator(FilterItemOperator.EQ)
-            .value("'$uid'")
+            .value("'${escapeQuotes(uid)}'")
             .build()
         return withFilterItem(scope, filterItem)
     }

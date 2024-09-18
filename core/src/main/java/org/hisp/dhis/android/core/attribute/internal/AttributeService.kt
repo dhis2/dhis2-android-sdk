@@ -41,7 +41,7 @@ internal fun interface AttributeService {
     @GET("attributes")
     suspend fun getAttributes(
         @Query("fields") @Which fields: Fields<Attribute>,
-        @Query("filter") @Where uids: Filter<Attribute, String>,
+        @Query("filter") @Where uids: Filter<Attribute>,
         @Query("paging") paging: Boolean,
     ): Payload<Attribute>
 }

@@ -41,7 +41,7 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 @AutoValue
 public abstract class ObjectWithUid implements ObjectWithUidInterface {
 
-    public static final Field<ObjectWithUid, String> uid = Field.create(UID);
+    public static final Field<ObjectWithUid> uid = Field.create(UID);
 
     @Override
     @NonNull

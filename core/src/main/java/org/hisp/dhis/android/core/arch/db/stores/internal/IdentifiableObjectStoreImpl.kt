@@ -120,7 +120,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, updateStatement!!)
-        updateStatement!!.bind(builder.columns.size + 1, o.uid())
+        updateStatement!!.bind(builder.getColumns().size + 1, o.uid())
         executeUpdateDelete(updateStatement!!)
     }
 

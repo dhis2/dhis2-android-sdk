@@ -27,81 +27,85 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
-import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.program.ProgramType
 
-internal object ProgramFields {
-    const val PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes"
+internal object ProgramFields : BaseFields<Program>() {
+    private const val PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes"
     private const val CAPTURE_COORDINATES = "captureCoordinates"
-    const val PROGRAM_RULE_VARIABLES = "programRuleVariables"
+    private const val PROGRAM_RULE_VARIABLES = "programRuleVariables"
     private const val ACCESS = "access"
     private const val STYLE = "style"
-    const val PROGRAM_SECTIONS = "programSections"
+    private const val PROGRAM_SECTIONS = "programSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
 
-    private val fh = FieldsHelper<Program>()
+    private const val ENROLLMENT_DATE_LABEL = "enrollmentDateLabel"
+    private const val INCIDENT_DATE_LABEL = "incidentDateLabel"
 
     val uid = fh.uid()
 
-    val allFields: Fields<Program> = Fields.builder<Program>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field<Int>(ProgramTableInfo.Columns.VERSION),
-            fh.field<Boolean>(ProgramTableInfo.Columns.ONLY_ENROLL_ONCE),
-            fh.field<String>(ProgramTableInfo.Columns.ENROLLMENT_DATE_LABEL),
-            fh.field<Boolean>(ProgramTableInfo.Columns.DISPLAY_INCIDENT_DATE),
-            fh.field<String>(ProgramTableInfo.Columns.INCIDENT_DATE_LABEL),
-            fh.field<Boolean>(ProgramTableInfo.Columns.REGISTRATION),
-            fh.field<Boolean>(ProgramTableInfo.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
-            fh.field<Boolean>(ProgramTableInfo.Columns.DATA_ENTRY_METHOD),
-            fh.field<Boolean>(ProgramTableInfo.Columns.IGNORE_OVERDUE_EVENTS),
-            fh.field<Boolean>(ProgramTableInfo.Columns.SELECT_INCIDENT_DATES_IN_FUTURE),
-            fh.field<Boolean>(CAPTURE_COORDINATES),
-            fh.field<Boolean>(ProgramTableInfo.Columns.USE_FIRST_STAGE_DURING_REGISTRATION),
-            fh.field<Boolean>(ProgramTableInfo.Columns.DISPLAY_FRONT_PAGE_LIST),
-            fh.field<ProgramType>(ProgramTableInfo.Columns.PROGRAM_TYPE),
-            fh.nestedField<ProgramTrackedEntityAttribute>(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
-                ProgramTrackedEntityAttributeFields.allFields,
-            ),
-            fh.nestedFieldWithUid(ProgramTableInfo.Columns.RELATED_PROGRAM),
-            fh.nestedFieldWithUid(ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE),
-            fh.nestedFieldWithUid(ProgramTableInfo.Columns.CATEGORY_COMBO),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
-            fh.nestedField<ProgramRuleVariable>(PROGRAM_RULE_VARIABLES)
-                .with(ProgramRuleVariableFields.allFields),
-            fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-            fh.field<Int>(ProgramTableInfo.Columns.EXPIRY_DAYS),
-            fh.field<Int>(ProgramTableInfo.Columns.COMPLETE_EVENTS_EXPIRY_DAYS),
-            fh.field<PeriodType>(ProgramTableInfo.Columns.EXPIRY_PERIOD_TYPE),
-            fh.field<Int>(ProgramTableInfo.Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
-            fh.field<Int>(ProgramTableInfo.Columns.MAX_TEI_COUNT_TO_RETURN),
-            fh.field<FeatureType>(ProgramTableInfo.Columns.FEATURE_TYPE),
-            fh.field<AccessLevel>(ProgramTableInfo.Columns.ACCESS_LEVEL),
-            fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
-            fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
-            fh.field<String>(ProgramTableInfo.Columns.ENROLLMENT_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.FOLLOW_UP_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.ORG_UNIT_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.RELATIONSHIP_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.NOTE_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.PROGRAM_STAGE_LABEL),
-            fh.field<String>(ProgramTableInfo.Columns.EVENT_LABEL),
-        ).build()
+    private val commonFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.VERSION),
+        fh.field(Columns.ONLY_ENROLL_ONCE),
+        fh.field(Columns.DISPLAY_INCIDENT_DATE),
+        fh.field(Columns.REGISTRATION),
+        fh.field(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE),
+        fh.field(Columns.DATA_ENTRY_METHOD),
+        fh.field(Columns.IGNORE_OVERDUE_EVENTS),
+        fh.field(Columns.SELECT_INCIDENT_DATES_IN_FUTURE),
+        fh.field(CAPTURE_COORDINATES),
+        fh.field(Columns.USE_FIRST_STAGE_DURING_REGISTRATION),
+        fh.field(Columns.DISPLAY_FRONT_PAGE_LIST),
+        fh.field(Columns.PROGRAM_TYPE),
+        fh.nestedField<ProgramTrackedEntityAttribute>(PROGRAM_TRACKED_ENTITY_ATTRIBUTES)
+            .with(ProgramTrackedEntityAttributeFields.allFields),
+        fh.nestedFieldWithUid(Columns.RELATED_PROGRAM),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+        fh.nestedField<ProgramRuleVariable>(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariableFields.allFields),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.field(Columns.EXPIRY_DAYS),
+        fh.field(Columns.COMPLETE_EVENTS_EXPIRY_DAYS),
+        fh.field(Columns.EXPIRY_PERIOD_TYPE),
+        fh.field(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
+        fh.field(Columns.MAX_TEI_COUNT_TO_RETURN),
+        fh.field(Columns.FEATURE_TYPE),
+        fh.field(Columns.ACCESS_LEVEL),
+        fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+        fh.field(Columns.DISPLAY_ENROLLMENT_LABEL),
+        fh.field(Columns.DISPLAY_FOLLOW_UP_LABEL),
+        fh.field(Columns.DISPLAY_ORG_UNIT_LABEL),
+        fh.field(Columns.DISPLAY_RELATIONSHIP_LABEL),
+        fh.field(Columns.DISPLAY_NOTE_LABEL),
+        fh.field(Columns.DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL),
+        fh.field(Columns.DISPLAY_PROGRAM_STAGE_LABEL),
+        fh.field(Columns.DISPLAY_EVENT_LABEL),
+    )
+
+    val allFields = Fields.from(
+        commonFields.fields,
+        fh.field(Columns.DISPLAY_ENROLLMENT_DATE_LABEL),
+        fh.field(Columns.DISPLAY_INCIDENT_DATE_LABEL),
+    )
+
+    val allFieldsBefore35 = Fields.from(
+        commonFields.fields,
+        fh.field(ENROLLMENT_DATE_LABEL),
+        fh.field(INCIDENT_DATE_LABEL),
+    )
 }

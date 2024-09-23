@@ -39,7 +39,7 @@ internal fun interface ProgramStageWorkingListService {
 
     @GET("programStageWorkingLists")
     suspend fun getProgramStageWorkingLists(
-        @Query("filter") @Where uids: Filter<ProgramStageWorkingList, String>,
+        @Query("filter") @Where uids: Filter<ProgramStageWorkingList>,
         @Query("filter") accessDataReadFilter: String,
         @Query("fields") @Which fields: Fields<ProgramStageWorkingList>,
         @Query("paging") paging: Boolean,

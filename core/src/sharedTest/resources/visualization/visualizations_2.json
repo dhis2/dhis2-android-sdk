@@ -59,7 +59,8 @@
         {
           "dimensionItem": "2018",
           "dimensionItemType": "PERIOD"
-        }
+        },
+        null
       ]
     }
   ],

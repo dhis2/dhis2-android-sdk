@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -40,10 +39,10 @@ abstract class BaseSubQueryFilterConnector<R : BaseRepository> internal construc
     private val linkTable: String,
     private val linkParent: String,
 ) : AbstractFilterConnector<R, String>(repositoryFactory, scope, key) {
-    protected fun inTableWhere(clauseBuilder: WhereClauseBuilder): R {
+    protected fun inTableWhere(whereClause: String): R {
         return newWithUnwrappedScope(
             FilterItemOperator.IN,
-            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE ${clauseBuilder.build()})",
+            "(SELECT DISTINCT $linkParent FROM $linkTable WHERE $whereClause)",
         )
     }
 }

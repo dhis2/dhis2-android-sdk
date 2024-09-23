@@ -118,10 +118,12 @@ class EventQueryBundleFactoryShould {
                     assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
                     assertThat(bundle.commonParams().limit).isEqualTo(200)
                 }
+
                 2 -> {
                     assertThat(bundle.commonParams().programs.contains(p2)).isTrue()
                     assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
                 }
+
                 else -> {
                     fail("Not a valid bundle")
                 }
@@ -181,5 +183,49 @@ class EventQueryBundleFactoryShould {
         assertThat(bundles.size).isEqualTo(3)
         assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
         assertThat(bundles.filter { it.commonParams().program == null }.size).isEqualTo(1)
+    }
+
+    @Test
+    fun apply_specific_limit_by_orgunit_when_global_param_provided() {
+        val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.ALL_ORG_UNITS).build()
+        whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
+        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
+            listOf(
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build(),
+            ),
+        )
+
+        val params = ProgramDataDownloadParams.builder()
+            .limitByOrgunit(true)
+            .build()
+
+        val limits = bundleFactory.getQueries(params)
+
+        assertThat(limits.size).isEqualTo(4)
+        assertThat(limits.filter { it.commonParams().program == p1 }.size).isEqualTo(1)
+        assertThat(limits.filter { it.commonParams().program == null }.size).isEqualTo(3)
+    }
+
+    @Test
+    fun apply_user_limit_by_orgunit_when_user_program_param_provided() {
+        val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.ALL_ORG_UNITS).build()
+        whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
+        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
+            listOf(
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou1).build(),
+                OrganisationUnitProgramLink.builder().program(p1).organisationUnit(ou2).build(),
+            ),
+        )
+
+        val params = ProgramDataDownloadParams.builder()
+            .limitByOrgunit(true)
+            .program(p1)
+            .build()
+
+        val bundles = bundleFactory.getQueries(params)
+
+        assertThat(bundles.size).isEqualTo(2)
+        assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
     }
 }

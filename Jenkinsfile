@@ -12,6 +12,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Check style and quality'
+                    sh 'chmod +x ./runChecks.sh'
                     sh './runChecks.sh'
                 }
             }
@@ -66,7 +67,6 @@ pipeline {
                     // Do not deploy on PR builds
                     expression { env.CHANGE_ID == null }
                     anyOf {
-                        expression { env.GIT_BRANCH == "master" }
                         expression { env.GIT_BRANCH == "develop" }
                         expression { env.GIT_BRANCH ==~ /[0-9]+\.[0-9]+\.[0-9]+-rc/ }
                     }
@@ -75,13 +75,10 @@ pipeline {
             environment {
                 NEXUS_USERNAME = credentials('android-sonatype-nexus-username')
                 NEXUS_PASSWORD = credentials('android-sonatype-nexus-password')
-                GPG_KEY_ID = credentials('android-sdk-signing-public-key-id')
-                GPG_PASSPHRASE = credentials('android-sdk-signing-private-key-password')
-                GPG_KEY_LOCATION = credentials('android-sdk-signing-private-key-ring-file')
             }
             steps {
                 echo 'Deploy to Sonatype nexus'
-                sh './gradlew :core:publish'
+                sh './gradlew :core:publishToSonatype'
             }
         }
     }

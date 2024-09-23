@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
@@ -91,12 +92,14 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
          * COC_BY_DATASET_WHERE_CLAUSE
          *
          * - Prioritize data states. When grouping by dataset-orgunit-period-aoc, data values states must be prioritize.
-         * In order to do that, an auxiliary column is used. This column is assigend a numeric value (1, 2, 3 or 4)
+         * In order to do that, an auxiliary column is used. This column is assigned a numeric value (1, 2, 3 or 4)
          * depending on the data value state (SYNCED lower, ERROR higher). Then, the aggregation function MAX is used to
          * get the highest value. Clause SELECT_VALUE_STATE_ORDERING
          *
          * - There is value state and a completion state. An extra column "state" is added to have a single state for
          * the dataSetInstance. Prioritization is respected. Clause SELECT_STATE.
+         *
+         * - Only capture orgunits assigned to each dataSet are taken into account.
          *
          * - The "where" clause is build as usual by using the collection repository scope.
          */
@@ -227,6 +230,15 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
         private const val AOC_WHERE_CLAUSE = DATASET_TABLE_ALIAS + "." + DataSetTableInfo.Columns.CATEGORY_COMBO +
             EQ + AOC_TABLE_ALIAS + "." + CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO
 
+        private val ORGUNIT_ASSIGNED_WHERE_CLAUSE =
+            "EXISTS (SELECT 1 " +
+                "FROM ${DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name()} AS dsou " +
+                "WHERE dsou.${DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET} " +
+                "= $DATASET_UID_ALIAS " +
+                "AND dsou.${DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT} " +
+                "= $ORGANISATION_UNIT_UID_ALIAS" +
+                ")"
+
         private const val GROUP_BY_CLAUSE = " GROUP BY " +
             DATASET_UID + "," +
             PERIOD + "," +
@@ -236,7 +248,7 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
         private val SELECT_CLAUSE =
             "SELECT * FROM (" +
                 "$INNER_SELECT_CLAUSE " +
-                "WHERE $COC_BY_DATASET_WHERE_CLAUSE AND $AOC_WHERE_CLAUSE " +
+                "WHERE $COC_BY_DATASET_WHERE_CLAUSE AND $AOC_WHERE_CLAUSE AND $ORGUNIT_ASSIGNED_WHERE_CLAUSE " +
                 "$GROUP_BY_CLAUSE)"
 
         private val joinPeriod: String

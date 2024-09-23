@@ -27,19 +27,16 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.relationship.TrackerDataView
 
-internal object TrackerDataViewFields {
+internal object TrackerDataViewFields : BaseFields<TrackerDataView>() {
     private const val ATTRIBUTES = "attributes"
     private const val DATA_ELEMENTS = "dataElements"
 
-    private val fh = FieldsHelper<TrackerDataView>()
-
-    val allFields: Fields<TrackerDataView> = Fields.builder<TrackerDataView>()
-        .fields(
-            fh.field<String>(ATTRIBUTES),
-            fh.field<String>(DATA_ELEMENTS),
-        ).build()
+    val allFields = Fields.from(
+        fh.field(ATTRIBUTES),
+        fh.field(DATA_ELEMENTS),
+    )
 }

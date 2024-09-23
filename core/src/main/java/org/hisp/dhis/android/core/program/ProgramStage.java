@@ -1,31 +1,3 @@
-/*
- *  Copyright (c) 2004-2023, University of Oslo
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *  Redistributions of source code must retain the above copyright notice, this
- *  list of conditions and the following disclaimer.
- *
- *  Redistributions in binary form must reproduce the above copyright notice,
- *  this list of conditions and the following disclaimer in the documentation
- *  and/or other materials provided with the distribution.
- *  Neither the name of the HISP project nor the names of its contributors may
- *  be used to endorse or promote products derived from this software without
- *  specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
@@ -77,13 +49,31 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @JsonProperty()
     public abstract String displayDescription();
 
+    /**
+     * @deprecated since v41, replaced by {@link #displayExecutionDateLabel()}
+     */
+    @Deprecated(since = "41")
     @Nullable
-    @JsonProperty()
-    public abstract String executionDateLabel();
+    public String executionDateLabel() {
+        return displayExecutionDateLabel();
+    }
 
     @Nullable
     @JsonProperty()
-    public abstract String dueDateLabel();
+    public abstract String displayExecutionDateLabel();
+
+    /**
+     * @deprecated since v41, replaced by {@link #displayDueDateLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String dueDateLabel() {
+        return displayDueDateLabel();
+    }
+
+    @Nullable
+    @JsonProperty()
+    public abstract String displayDueDateLabel();
 
     @Nullable
     @JsonProperty()
@@ -106,9 +96,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract Boolean repeatable();
 
     /**
-     * @deprecated since 2.29, replaced by {@link #featureType()}
+     * @deprecated replaced by {@link #featureType()}
      */
-    @Deprecated
+    @Deprecated(since = "2.29")
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
@@ -193,13 +183,31 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @ColumnAdapter(ValidationStrategyColumnAdapter.class)
     public abstract ValidationStrategy validationStrategy();
 
+    /**
+     * @deprecated since v41, replaced by {@link #displayProgramStageLabel()}
+     */
+    @Deprecated(since = "41")
     @Nullable
-    @JsonProperty
-    public abstract String programStageLabel();
+    public String programStageLabel() {
+        return displayProgramStageLabel();
+    }
 
     @Nullable
-    @JsonProperty
-    public abstract String eventLabel();
+    @JsonProperty()
+    public abstract String displayProgramStageLabel();
+
+    /**
+     * @deprecated since v41, replaced by {@link #displayEventLabel()}
+     */
+    @Deprecated(since = "41")
+    @Nullable
+    public String eventLabel() {
+        return displayEventLabel();
+    }
+
+    @Nullable
+    @JsonProperty()
+    public abstract String displayEventLabel();
 
     @Nullable
     @JsonProperty()
@@ -227,9 +235,23 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder displayDescription(String displayDescription);
 
-        public abstract Builder executionDateLabel(String executionDateLabel);
+        /**
+         * @deprecated since v41, replaced by {@link #displayExecutionDateLabel(String displayExecutionDateLabel)}
+         */
+        public Builder executionDateLabel(String executionDateLabel) {
+            return displayExecutionDateLabel(executionDateLabel);
+        }
 
-        public abstract Builder dueDateLabel(String dueDateLabel);
+        public abstract Builder displayExecutionDateLabel(String displayExecutionDateLabel);
+
+        /**
+         * @deprecated since v41, replaced by {@link #displayDueDateLabel(String displayDueDateLabel)}
+         */
+        public Builder dueDateLabel(String dueDateLabel) {
+            return displayDueDateLabel(dueDateLabel);
+        }
+
+        public abstract Builder displayDueDateLabel(String displayDueDateLabel);
 
         public abstract Builder allowGenerateNextVisit(Boolean allowGenerateNextVisit);
 
@@ -282,9 +304,23 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
         public abstract Builder validationStrategy(ValidationStrategy validationStrategy);
 
-        public abstract Builder programStageLabel(String programStageLabel);
+        /**
+         * @deprecated since v41, replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel)}
+         */
+        public Builder programStageLabel(String programStageLabel) {
+            return displayProgramStageLabel(programStageLabel);
+        }
 
-        public abstract Builder eventLabel(String eventLabel);
+        public abstract Builder displayProgramStageLabel(String displayProgramStageLabel);
+
+        /**
+         * @deprecated since v41, replaced by {@link #displayEventLabel(String displayEventLabel)}
+         */
+        public Builder eventLabel(String eventLabel) {
+            return displayEventLabel(eventLabel);
+        }
+
+        public abstract Builder displayEventLabel(String displayEventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 

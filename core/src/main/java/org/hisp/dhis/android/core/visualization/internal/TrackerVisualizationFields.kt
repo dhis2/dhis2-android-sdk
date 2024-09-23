@@ -27,36 +27,29 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo.Columns
 
-internal object TrackerVisualizationFields {
+internal object TrackerVisualizationFields : BaseFields<TrackerVisualization>() {
     private const val COLUMNS = "columns"
     private const val FILTERS = "filters"
-
     internal const val ITEMS = "items"
 
-    private val fh = FieldsHelper<TrackerVisualization>()
     val uid = fh.uid()
 
-    val allFields: Fields<TrackerVisualization> =
-        Fields.builder<TrackerVisualization>()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.DESCRIPTION),
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.DISPLAY_DESCRIPTION),
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.TYPE),
-                fh.field<String>(TrackerVisualizationTableInfo.Columns.OUTPUT_TYPE),
-                fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.PROGRAM),
-                fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.PROGRAM_STAGE),
-                fh.nestedFieldWithUid(TrackerVisualizationTableInfo.Columns.TRACKED_ENTITY_TYPE),
-                fh.nestedField<TrackerVisualizationDimension>(COLUMNS)
-                    .with(TrackerVisualizationDimensionFields.allFields),
-                fh.nestedField<TrackerVisualizationDimension>(FILTERS)
-                    .with(TrackerVisualizationDimensionFields.allFields),
-            )
-            .build()
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DESCRIPTION),
+        fh.field(Columns.DISPLAY_DESCRIPTION),
+        fh.field(Columns.TYPE),
+        fh.field(Columns.OUTPUT_TYPE),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+        fh.nestedField<TrackerVisualizationDimension>(COLUMNS).with(TrackerVisualizationDimensionFields.allFields),
+        fh.nestedField<TrackerVisualizationDimension>(FILTERS).with(TrackerVisualizationDimensionFields.allFields),
+    )
 }

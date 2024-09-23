@@ -41,9 +41,9 @@ internal interface ProgramIndicatorService {
     @GET("programIndicators")
     suspend fun getProgramIndicator(
         @Query("fields") @Which fields: Fields<ProgramIndicator>,
-        @Query("filter") @Where displayInForm: Filter<ProgramIndicator, Boolean>?,
+        @Query("filter") @Where displayInForm: Filter<ProgramIndicator>?,
         @Query("filter") program: String?,
-        @Query("filter") @Where uids: Filter<ProgramIndicator, String>?,
+        @Query("filter") @Where uids: Filter<ProgramIndicator>?,
         @Query("paging") paging: Boolean,
     ): Payload<ProgramIndicator>
 }

@@ -54,8 +54,8 @@ public final class ProgramStageTableInfo {
     public static class Columns extends IdentifiableWithStyleColumns {
         public static final String DESCRIPTION = "description";
         public static final String DISPLAY_DESCRIPTION = "displayDescription";
-        public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
-        public static final String DUE_DATE_LABEL = "dueDateLabel";
+        public static final String DISPLAY_EXECUTION_DATE_LABEL = "displayExecutionDateLabel";
+        public static final String DISPLAY_DUE_DATE_LABEL = "displayDueDateLabel";
         public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
         public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
         public static final String REPORT_DATE_TO_USE = "reportDateToUse";
@@ -77,16 +77,16 @@ public final class ProgramStageTableInfo {
         public static final String VALIDATION_STRATEGY = "validationStrategy";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String ENABLE_USER_ASSIGNMENT = "enableUserAssignment";
-        public static final String PROGRAM_STAGE_LABEL = "programStageLabel";
-        public static final String EVENT_LABEL = "eventLabel";
+        public static final String DISPLAY_PROGRAM_STAGE_LABEL = "displayProgramStageLabel";
+        public static final String DISPLAY_EVENT_LABEL = "displayEventLabel";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DESCRIPTION,
                     DISPLAY_DESCRIPTION,
-                    EXECUTION_DATE_LABEL,
-                    DUE_DATE_LABEL,
+                    DISPLAY_EXECUTION_DATE_LABEL,
+                    DISPLAY_DUE_DATE_LABEL,
                     ALLOW_GENERATE_NEXT_VISIT,
                     VALID_COMPLETE_ONLY,
                     REPORT_DATE_TO_USE,
@@ -108,8 +108,8 @@ public final class ProgramStageTableInfo {
                     FEATURE_TYPE,
                     ENABLE_USER_ASSIGNMENT,
                     VALIDATION_STRATEGY,
-                    PROGRAM_STAGE_LABEL,
-                    EVENT_LABEL
+                    DISPLAY_PROGRAM_STAGE_LABEL,
+                    DISPLAY_EVENT_LABEL
             );
         }
     }

@@ -54,9 +54,9 @@ public final class ProgramTableInfo {
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String VERSION = "version";
         public static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
-        public static final String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
+        public static final String DISPLAY_ENROLLMENT_DATE_LABEL = "displayEnrollmentDateLabel";
         public static final String DISPLAY_INCIDENT_DATE = "displayIncidentDate";
-        public static final String INCIDENT_DATE_LABEL = "incidentDateLabel";
+        public static final String DISPLAY_INCIDENT_DATE_LABEL = "displayIncidentDateLabel";
         public static final String REGISTRATION = "registration";
         public static final String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
         public static final String DATA_ENTRY_METHOD = "dataEntryMethod";
@@ -75,23 +75,23 @@ public final class ProgramTableInfo {
         public static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
         public static final String FEATURE_TYPE = "featureType";
         public static final String ACCESS_LEVEL = "accessLevel";
-        public static final String ENROLLMENT_LABEL = "enrollmentLabel";
-        public static final String FOLLOW_UP_LABEL = "followUpLabel";
-        public static final String ORG_UNIT_LABEL = "orgUnitLabel";
-        public static final String RELATIONSHIP_LABEL = "relationshipLabel";
-        public static final String NOTE_LABEL = "noteLabel";
-        public static final String TRACKED_ENTITY_ATTRIBUTE_LABEL = "trackedEntityAttributeLabel";
-        public static final String PROGRAM_STAGE_LABEL = "programStageLabel";
-        public static final String EVENT_LABEL = "eventLabel";
+        public static final String DISPLAY_ENROLLMENT_LABEL = "displayEnrollmentLabel";
+        public static final String DISPLAY_FOLLOW_UP_LABEL = "displayFollowUpLabel";
+        public static final String DISPLAY_ORG_UNIT_LABEL = "displayOrgUnitLabel";
+        public static final String DISPLAY_RELATIONSHIP_LABEL = "displayRelationshipLabel";
+        public static final String DISPLAY_NOTE_LABEL = "displayNoteLabel";
+        public static final String DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL = "displayTrackedEntityAttributeLabel";
+        public static final String DISPLAY_PROGRAM_STAGE_LABEL = "displayProgramStageLabel";
+        public static final String DISPLAY_EVENT_LABEL = "displayEventLabel";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     VERSION,
                     ONLY_ENROLL_ONCE,
-                    ENROLLMENT_DATE_LABEL,
+                    DISPLAY_ENROLLMENT_DATE_LABEL,
                     DISPLAY_INCIDENT_DATE,
-                    INCIDENT_DATE_LABEL,
+                    DISPLAY_INCIDENT_DATE_LABEL,
                     REGISTRATION,
                     SELECT_ENROLLMENT_DATES_IN_FUTURE,
                     DATA_ENTRY_METHOD,
@@ -111,14 +111,14 @@ public final class ProgramTableInfo {
                     MAX_TEI_COUNT_TO_RETURN,
                     FEATURE_TYPE,
                     ACCESS_LEVEL,
-                    ENROLLMENT_LABEL,
-                    FOLLOW_UP_LABEL,
-                    ORG_UNIT_LABEL,
-                    RELATIONSHIP_LABEL,
-                    NOTE_LABEL,
-                    TRACKED_ENTITY_ATTRIBUTE_LABEL,
-                    PROGRAM_STAGE_LABEL,
-                    EVENT_LABEL
+                    DISPLAY_ENROLLMENT_LABEL,
+                    DISPLAY_FOLLOW_UP_LABEL,
+                    DISPLAY_ORG_UNIT_LABEL,
+                    DISPLAY_RELATIONSHIP_LABEL,
+                    DISPLAY_NOTE_LABEL,
+                    DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL,
+                    DISPLAY_PROGRAM_STAGE_LABEL,
+                    DISPLAY_EVENT_LABEL
             );
         }
     }

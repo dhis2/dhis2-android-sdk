@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
@@ -39,49 +39,44 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetElement
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.period.PeriodType
 
-internal object DataSetFields {
+internal object DataSetFields : BaseFields<DataSet>() {
     const val DATA_SET_ELEMENTS = "dataSetElements"
     const val INDICATORS = "indicators"
-    const val SECTIONS = "sections"
+    private const val SECTIONS = "sections"
     const val COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands"
     const val DATA_INPUT_PERIODS = "dataInputPeriods"
     private const val ACCESS = "access"
     private const val STYLE = "style"
 
-    private val fh = FieldsHelper<DataSet>()
-
     val uid = fh.uid()
 
-    val allFields: Fields<DataSet> = Fields.builder<DataSet>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field<PeriodType>(DataSetTableInfo.Columns.PERIOD_TYPE),
-            fh.nestedFieldWithUid(DataSetTableInfo.Columns.CATEGORY_COMBO),
-            fh.field<Boolean>(DataSetTableInfo.Columns.MOBILE),
-            fh.field<Int>(DataSetTableInfo.Columns.VERSION),
-            fh.field<Int>(DataSetTableInfo.Columns.EXPIRY_DAYS),
-            fh.field<Int>(DataSetTableInfo.Columns.TIMELY_DAYS),
-            fh.field<Boolean>(DataSetTableInfo.Columns.NOTIFY_COMPLETING_USER),
-            fh.field<Int>(DataSetTableInfo.Columns.OPEN_FUTURE_PERIODS),
-            fh.field<Boolean>(DataSetTableInfo.Columns.FIELD_COMBINATION_REQUIRED),
-            fh.field<Boolean>(DataSetTableInfo.Columns.VALID_COMPLETE_ONLY),
-            fh.field<Boolean>(DataSetTableInfo.Columns.NO_VALUE_REQUIRES_COMMENT),
-            fh.field<Boolean>(DataSetTableInfo.Columns.SKIP_OFFLINE),
-            fh.field<Boolean>(DataSetTableInfo.Columns.DATA_ELEMENT_DECORATION),
-            fh.field<Boolean>(DataSetTableInfo.Columns.RENDER_AS_TABS),
-            fh.field<Boolean>(DataSetTableInfo.Columns.RENDER_HORIZONTALLY),
-            fh.nestedFieldWithUid(DataSetTableInfo.Columns.WORKFLOW),
-            fh.nestedField<DataSetElement>(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
-            fh.nestedFieldWithUid(INDICATORS),
-            fh.nestedField<Section>(SECTIONS).with(SectionFields.allFields),
-            fh.nestedField<DataElementOperand>(COMPULSORY_DATA_ELEMENT_OPERANDS)
-                .with(DataElementOperandFields.allFields),
-            fh.nestedField<DataInputPeriod>(DATA_INPUT_PERIODS).with(DataInputPeriodFields.allFields),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
-            fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-        ).build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.PERIOD_TYPE),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+        fh.field(Columns.MOBILE),
+        fh.field(Columns.VERSION),
+        fh.field(Columns.EXPIRY_DAYS),
+        fh.field(Columns.TIMELY_DAYS),
+        fh.field(Columns.NOTIFY_COMPLETING_USER),
+        fh.field(Columns.OPEN_FUTURE_PERIODS),
+        fh.field(Columns.FIELD_COMBINATION_REQUIRED),
+        fh.field(Columns.VALID_COMPLETE_ONLY),
+        fh.field(Columns.NO_VALUE_REQUIRES_COMMENT),
+        fh.field(Columns.SKIP_OFFLINE),
+        fh.field(Columns.DATA_ELEMENT_DECORATION),
+        fh.field(Columns.RENDER_AS_TABS),
+        fh.field(Columns.RENDER_HORIZONTALLY),
+        fh.nestedFieldWithUid(Columns.WORKFLOW),
+        fh.nestedField<DataSetElement>(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
+        fh.nestedFieldWithUid(INDICATORS),
+        fh.nestedField<Section>(SECTIONS).with(SectionFields.allFields),
+        fh.nestedField<DataElementOperand>(COMPULSORY_DATA_ELEMENT_OPERANDS).with(DataElementOperandFields.allFields),
+        fh.nestedField<DataInputPeriod>(DATA_INPUT_PERIODS).with(DataInputPeriodFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+    )
 }

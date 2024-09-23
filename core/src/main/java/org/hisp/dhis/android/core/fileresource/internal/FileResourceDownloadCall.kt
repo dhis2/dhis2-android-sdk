@@ -93,7 +93,8 @@ internal class FileResourceDownloadCall(
         existingFileResources: List<String>,
     ) {
         if (params.domainTypes.contains(FileResourceDomainType.DATA_VALUE) &&
-            params.dataDomainTypes.contains(FileResourceDataDomainType.AGGREGATED)
+            params.dataDomainTypes.contains(FileResourceDataDomainType.AGGREGATED) &&
+            !params.hasAnyTrackerData()
         ) {
             val dataValues = helper.getMissingAggregatedDataValues(params, existingFileResources)
 
@@ -116,9 +117,10 @@ internal class FileResourceDownloadCall(
 
     private suspend fun downloadTrackerValues(params: FileResourceDownloadParams, existingFileResources: List<String>) {
         if (params.domainTypes.contains(FileResourceDomainType.DATA_VALUE) &&
-            params.dataDomainTypes.contains(FileResourceDataDomainType.TRACKER)
+            params.dataDomainTypes.contains(FileResourceDataDomainType.TRACKER) &&
+            !params.hasAnyAggregatedData()
         ) {
-            if (params.elementTypes.contains(FileResourceElementType.TRACED_ENTITY_ATTRIBUTE)) {
+            if (params.elementTypes.contains(FileResourceElementType.TRACKED_ENTITY_ATTRIBUTE)) {
                 val attributeDataValues = helper.getMissingTrackerAttributeValues(params, existingFileResources)
 
                 downloadAndPersistFiles(
@@ -166,7 +168,7 @@ internal class FileResourceDownloadCall(
     }
 
     private suspend fun downloadCustomIcons(params: FileResourceDownloadParams, existingFileResources: List<String>) {
-        if (params.domainTypes.contains(FileResourceDomainType.ICON)) {
+        if (params.domainTypes.contains(FileResourceDomainType.ICON) && !params.hasAnyData()) {
             val iconKeys: List<CustomIcon> = helper.getMissingCustomIcons(existingFileResources)
 
             downloadAndPersistFiles(

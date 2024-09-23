@@ -41,6 +41,10 @@ import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
@@ -116,6 +120,7 @@ object FileResourceRoutineSamples {
         .valueType(ValueType.FILE_RESOURCE)
         .aggregationType(AggregationType.SUM.name)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .domainType("TRACKER")
         .build()
 
     val trackedEntityType: TrackedEntityType = TrackedEntityType.builder()
@@ -135,11 +140,24 @@ object FileResourceRoutineSamples {
         .formType(FormType.DEFAULT)
         .build()
 
+    val trackedEntityInstance: TrackedEntityInstance = TrackedEntityInstance.builder()
+        .uid(generator.generate())
+        .trackedEntityType(trackedEntityType.uid())
+        .build()
+
+    val enrollment: Enrollment = Enrollment.builder()
+        .uid(generator.generate())
+        .program(program.uid())
+        .trackedEntityInstance(trackedEntityInstance.uid())
+        .organisationUnit(orgUnit1.uid())
+        .build()
+
     val event1: Event = Event.builder()
         .uid(generator.generate())
         .program(program.uid())
         .programStage(programStage1.uid())
         .organisationUnit(orgUnit1.uid())
+        .enrollment(enrollment.uid())
         .build()
 
     val trackedEntityDataValue: TrackedEntityDataValue = TrackedEntityDataValue.builder()
@@ -158,15 +176,39 @@ object FileResourceRoutineSamples {
         .optionSet(ObjectWithUid.create(optionSet.uid()))
         .build()
 
-    val trackedEntityInstance: TrackedEntityInstance = TrackedEntityInstance.builder()
-        .uid(generator.generate())
-        .trackedEntityType(trackedEntityType.uid())
-        .build()
-
     val trackedEntityAttributeValue: TrackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
         .trackedEntityAttribute(trackedEntityAttribute.uid())
         .trackedEntityInstance(trackedEntityInstance.uid())
         .value(fileResource2.uid())
+        .build()
+
+    val dataElement2: DataElement = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 2")
+        .valueType(ValueType.FILE_RESOURCE)
+        .aggregationType(AggregationType.SUM.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .domainType("AGGREGATE")
+        .build()
+
+    val dataset: DataSet = DataSet.builder()
+        .uid(generator.generate())
+        .displayName("Dataset")
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val dataSetElement: DataSetElement = DataSetElement.builder()
+        .dataElement(ObjectWithUid.fromIdentifiable(dataElement2))
+        .dataSet(ObjectWithUid.fromIdentifiable(dataset))
+        .build()
+
+    val dataValue1: DataValue = DataValue.builder()
+        .dataElement(dataElement2.uid())
+        .value(fileResource1.uid())
+        .organisationUnit("DiszpKrYNg8")
+        .period("2019")
+        .attributeOptionCombo("Gmbgme7z9BF")
+        .categoryOptionCombo("Gmbgme7z9BF")
         .build()
 
     private fun getFile(fileName: String): File {

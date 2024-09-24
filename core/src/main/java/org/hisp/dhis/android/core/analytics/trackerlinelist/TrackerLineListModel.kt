@@ -36,17 +36,20 @@ import org.hisp.dhis.android.core.event.EventStatus
 
 sealed class TrackerLineListItem(val id: String) {
 
-    data class OrganisationUnitItem(val filters: List<OrganisationUnitFilter> = emptyList()) :
-        TrackerLineListItem(Label.OrganisationUnit)
+    data class OrganisationUnitItem(
+        val programUid: String? = null,
+        val filters: List<OrganisationUnitFilter> = emptyList()
+    ) :
+        TrackerLineListItem(Label.OrganisationUnit + (programUid?.let { ".$it" } ?: ""))
 
     data class LastUpdated(override val filters: List<DateFilter> = emptyList()) :
         TrackerLineListItem(Label.LastUpdated), DateItem
 
-    data class IncidentDate(override val filters: List<DateFilter> = emptyList()) :
-        TrackerLineListItem(Label.IncidentDate), DateItem
+    data class IncidentDate(val programUid: String? = null, override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.IncidentDate + (programUid?.let { ".$it" } ?: "")), DateItem
 
-    data class EnrollmentDate(override val filters: List<DateFilter> = emptyList()) :
-        TrackerLineListItem(Label.EnrollmentDate), DateItem
+    data class EnrollmentDate(val programUid: String? = null, override val filters: List<DateFilter> = emptyList()) :
+        TrackerLineListItem(Label.EnrollmentDate + (programUid?.let { ".$it" } ?: "")), DateItem
 
     data class ScheduledDate(override val filters: List<DateFilter> = emptyList()) :
         TrackerLineListItem(Label.ScheduledDate), DateItem
@@ -76,8 +79,11 @@ sealed class TrackerLineListItem(val id: String) {
         val stageDataElementIdx = eventDataElementId(programStage, dataElement)
     }
 
-    data class ProgramStatusItem(val filters: List<EnumFilter<EnrollmentStatus>> = emptyList()) :
-        TrackerLineListItem(Label.ProgramStatus)
+    data class ProgramStatusItem(
+        val programUid: String? = null,
+        val filters: List<EnumFilter<EnrollmentStatus>> = emptyList()
+    ) :
+        TrackerLineListItem(Label.ProgramStatus + (programUid?.let { ".$it" } ?: ""))
 
     data class EventStatusItem(val filters: List<EnumFilter<EventStatus>> = emptyList()) :
         TrackerLineListItem(Label.EventStatus)

@@ -33,5 +33,8 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 internal object TrackerLineListSQLLabel {
     const val EventAlias = ProgramIndicatorSQLUtils.event
     const val EnrollmentAlias = ProgramIndicatorSQLUtils.enrollment
+    const val TrackedEntityInstanceAlias = "teiAlias"
+    const val programStageAlias = "programStageAlias"
     const val OrgunitAlias = "ou"
+    const val subOrgunitAlias = "subou"
 }

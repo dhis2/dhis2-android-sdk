@@ -117,4 +117,16 @@ internal class ProgramIndicatorEvaluator(
             ),
         )
     }
+
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments(
+            "ProgramIndicator is not supported in TRACKED_ENTITY_INSTANCE output type",
+        )
+    }
+
+    override fun getWhereSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments(
+            "ProgramIndicator is not supported in TRACKED_ENTITY_INSTANCE output type",
+        )
+    }
 }

@@ -70,6 +70,14 @@ internal class CategoryEvaluator(
         throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
+    }
+
+    override fun getWhereSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
+    }
+
     companion object {
         private const val coccolAlias = "COCCOL"
         private const val ccolAlias = "CCOL"

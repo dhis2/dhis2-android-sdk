@@ -45,11 +45,19 @@ internal class EventDateEvaluator(
         throw AnalyticsException.InvalidArguments("EventDate is not supported in ENROLLMENT output type")
     }
 
+    override fun getWhereSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("EventDate is not supported in TRACKED_ENTITY_INSTANCE output type")
+    }
+
     override fun getWhereSQLForEvent(): String {
         return getDateWhereClause()
     }
 
     override fun getSelectSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("EventDate is not supported in ENROLLMENT output type")
+    }
+
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("EventDate is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 }

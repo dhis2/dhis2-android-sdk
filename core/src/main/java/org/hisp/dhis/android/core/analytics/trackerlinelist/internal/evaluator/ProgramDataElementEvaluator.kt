@@ -33,9 +33,13 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.programStageAlias
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
 
 internal class ProgramDataElementEvaluator(
@@ -49,6 +53,33 @@ internal class ProgramDataElementEvaluator(
     }
 
     override fun getSelectSQLForEnrollment(): String {
+        val enrollmentSelectClause = "= $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}"
+        val eventSelectClause = getEventSelectClause(enrollmentSelectClause)
+        return getSelectClause(eventSelectClause)
+    }
+
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        val enrollmentSelectClause = "IN (SELECT " +
+            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+            "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+            "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+            "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
+            "AND $EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} IN ( " +
+            "SELECT $programStageAlias.${ProgramStageTableInfo.Columns.PROGRAM} " +
+            "FROM  ${ProgramStageTableInfo.TABLE_INFO.name()} $programStageAlias " +
+            "WHERE $programStageAlias.${ProgramStageTableInfo.Columns.UID} = '${item.programStage}') " +
+            "ORDER BY $EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE} DESC " +
+            "LIMIT 1 )"
+
+        val eventSelectClause = getEventSelectClause(enrollmentSelectClause)
+        return getSelectClause(eventSelectClause)
+    }
+
+    override fun getCommonWhereSQL(): String {
+        return DataFilterHelper.getWhereClause(item.id, item.filters)
+    }
+
+    private fun getEventSelectClause(enrollmentSelectClause: String): String {
         /** eventIdx meaning:
          * -> 0: newest event
          * -> -1: newest event - 1 (second newest event)
@@ -57,9 +88,9 @@ internal class ProgramDataElementEvaluator(
          */
         val eventIdx = item.repetitionIndexes?.firstOrNull() ?: 0
 
-        val eventSelectClause = "IN (SELECT ${EventTableInfo.Columns.UID} " +
+        return "IN (SELECT ${EventTableInfo.Columns.UID} " +
             "FROM ${EventTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
+            "WHERE ${EventTableInfo.Columns.ENROLLMENT} $enrollmentSelectClause " +
             (item.programStage.let { "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' " }) +
             "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} ${if (eventIdx <= 0) "DESC" else "ASC"} " +
             "LIMIT 1 " +
@@ -70,12 +101,6 @@ internal class ProgramDataElementEvaluator(
                     eventIdx - 1
                 }
             })"
-
-        return getSelectClause(eventSelectClause)
-    }
-
-    override fun getCommonWhereSQL(): String {
-        return DataFilterHelper.getWhereClause(item.id, item.filters)
     }
 
     private fun getSelectClause(selectEventClause: String): String {

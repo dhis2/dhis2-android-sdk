@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
 internal class EnrollmentDateEvaluator(
-    item: TrackerLineListItem.EnrollmentDate,
+    private val item: TrackerLineListItem.EnrollmentDate,
 ) : BaseDateEvaluator(item) {
 
     override fun getCommonSelectSQL(): String {
@@ -42,5 +44,14 @@ internal class EnrollmentDateEvaluator(
 
     override fun getCommonWhereSQL(): String {
         return getDateWhereClause()
+    }
+
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        return "SELECT $EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE} " +
+            "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+            "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+            "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
+            "AND $EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${item.programUid}' " +
+            "ORDER BY $EnrollmentAlias.${EnrollmentTableInfo.Columns.LAST_UPDATED} DESC LIMIT 1 "
     }
 }

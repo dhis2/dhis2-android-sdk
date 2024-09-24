@@ -38,7 +38,7 @@ sealed class TrackerLineListItem(val id: String) {
 
     data class OrganisationUnitItem(
         val programUid: String? = null,
-        val filters: List<OrganisationUnitFilter> = emptyList()
+        val filters: List<OrganisationUnitFilter> = emptyList(),
     ) :
         TrackerLineListItem(Label.OrganisationUnit + (programUid?.let { ".$it" } ?: ""))
 
@@ -81,7 +81,7 @@ sealed class TrackerLineListItem(val id: String) {
 
     data class ProgramStatusItem(
         val programUid: String? = null,
-        val filters: List<EnumFilter<EnrollmentStatus>> = emptyList()
+        val filters: List<EnumFilter<EnrollmentStatus>> = emptyList(),
     ) :
         TrackerLineListItem(Label.ProgramStatus + (programUid?.let { ".$it" } ?: ""))
 

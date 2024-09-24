@@ -158,7 +158,7 @@ internal class TrackerLineListService(
 
     private fun getTrackedEntityInstanceSqlClause(
         params: TrackerLineListParams,
-        context: TrackerLineListContext
+        context: TrackerLineListContext,
     ): String {
         return "SELECT " +
             "${getTrackedEntityInstanceSelectColumns(params, context)} " +

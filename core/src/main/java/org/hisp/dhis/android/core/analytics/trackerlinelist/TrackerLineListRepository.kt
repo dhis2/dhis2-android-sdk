@@ -39,6 +39,8 @@ interface TrackerLineListRepository {
 
     fun withEnrollmentOutput(programId: String): TrackerLineListRepository
 
+    fun withTrackedEntityInstanceOutput(trackedEntityType: String): TrackerLineListRepository
+
     fun withColumn(column: TrackerLineListItem): TrackerLineListRepository
 
     fun withFilter(filter: TrackerLineListItem): TrackerLineListRepository

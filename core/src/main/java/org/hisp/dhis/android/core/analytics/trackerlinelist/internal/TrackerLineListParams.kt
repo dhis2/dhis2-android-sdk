@@ -37,6 +37,7 @@ internal data class TrackerLineListParams(
     val outputType: TrackerLineListOutputType?,
     val programId: String?,
     val programStageId: String?,
+    val trackedEntityType: String?,
     val columns: List<TrackerLineListItem>,
     val filters: List<TrackerLineListItem>,
     val pageConfig: PageConfig = DefaultPaging,

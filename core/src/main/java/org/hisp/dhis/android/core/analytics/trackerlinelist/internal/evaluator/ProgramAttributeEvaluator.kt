@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
 
 internal class ProgramAttributeEvaluator(
@@ -60,5 +62,13 @@ internal class ProgramAttributeEvaluator(
             column = TrackedEntityAttributeValueTableInfo.Columns.VALUE,
             valueType = attribute.valueType(),
         )
+    }
+
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        return "SELECT ${getColumnSql()} " +
+            "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+            "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
+            "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '${item.id}'"
     }
 }

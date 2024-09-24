@@ -112,9 +112,9 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
         val event3 = generator.generate()
         createDefaultTrackerEvent(event3, enrollment1, eventDate = period201911.startDate())
 
-        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "8") //   0 3
-        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "19") // -1 2
-        helper.insertTrackedEntityDataValue(event3, dataElement1.uid(), "2") //  -2 1
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "8")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "19")
+        helper.insertTrackedEntityDataValue(event3, dataElement1.uid(), "2")
     }
 
     @Test

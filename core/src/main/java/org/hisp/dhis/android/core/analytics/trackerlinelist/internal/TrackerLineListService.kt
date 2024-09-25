@@ -172,7 +172,7 @@ internal class TrackerLineListService(
             } +
             "WHERE " +
             "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE} = " +
-            "'${params.trackedEntityType!!}' AND " +
+            "'${params.trackedEntityTypeId!!}' AND " +
             "${getTrackedEntityInstanceWhereClause(params, context)} " +
             appendPaging(params.pageConfig)
     }

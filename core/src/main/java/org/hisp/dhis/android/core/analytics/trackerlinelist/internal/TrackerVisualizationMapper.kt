@@ -60,7 +60,7 @@ internal class TrackerVisualizationMapper(
             trackerVisualization = trackerVisualization.uid(),
             programId = trackerVisualization.program()?.uid(),
             programStageId = trackerVisualization.programStage()?.uid(),
-            trackedEntityType = trackerVisualization.trackedEntityType()?.uid(),
+            trackedEntityTypeId = trackerVisualization.trackedEntityType()?.uid(),
             outputType = mapOutputType(trackerVisualization.outputType()),
             columns = mapDimensions(trackerVisualization.columns(), trackerVisualization),
             filters = mapDimensions(trackerVisualization.filters(), trackerVisualization),

@@ -61,11 +61,11 @@ internal class TrackerLineListRepositoryImpl(
         }
     }
 
-    override fun withTrackedEntityInstanceOutput(trackedEntityType: String): TrackerLineListRepositoryImpl {
+    override fun withTrackedEntityInstanceOutput(trackedEntityTypeId: String): TrackerLineListRepositoryImpl {
         return updateParams {
             params.copy(
                 outputType = TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE,
-                trackedEntityType = trackedEntityType,
+                trackedEntityTypeId = trackedEntityTypeId,
             )
         }
     }

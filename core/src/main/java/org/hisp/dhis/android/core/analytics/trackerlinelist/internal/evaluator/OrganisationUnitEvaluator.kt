@@ -82,7 +82,7 @@ internal class OrganisationUnitEvaluator(
                 "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
                 "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
                 "AND $EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${item.programUid}' " +
-                "ORDER BY $EnrollmentAlias.${EnrollmentTableInfo.Columns.LAST_UPDATED} DESC LIMIT 1"
+                "ORDER BY $EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE} DESC LIMIT 1"
         }
     }
 

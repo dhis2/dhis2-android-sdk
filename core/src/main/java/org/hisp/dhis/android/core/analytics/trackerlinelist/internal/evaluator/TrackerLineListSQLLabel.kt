@@ -35,6 +35,6 @@ internal object TrackerLineListSQLLabel {
     const val EnrollmentAlias = ProgramIndicatorSQLUtils.enrollment
     const val TrackedEntityInstanceAlias = "teiAlias"
     const val programStageAlias = "programStageAlias"
-    const val OrgunitAlias = "orgUnit"
-    const val subOrgunitAlias = "subOrgUnit"
+    const val orgUnitAlias = "orgUnit"
+    const val subOrgUnitAlias = "subOrgUnit"
 }

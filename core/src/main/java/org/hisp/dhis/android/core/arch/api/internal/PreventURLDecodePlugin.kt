@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,31 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal;
+package org.hisp.dhis.android.core.arch.api.internal
 
-import java.io.IOException;
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.http.takeFrom
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+internal object PreventURLDecodePlugin {
+    val instance = createClientPlugin(name = "PreventURLDecodePlugin") {
+        onRequest { request, _ ->
+            replaceEncodedCharacters(request)
+        }
+    }
 
-public class PreventURLDecodeInterceptor implements Interceptor {
+    private fun replaceEncodedCharacters(request: HttpRequestBuilder) {
+        val encodedUrl = request.url.toString()
 
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
-        String encodedUrl = request.url().toString();
+        val nonEncodedUrl = encodedUrl
+            .replace("%2C", ",")
+            .replace("%5B", "[")
+            .replace("%5D", "]")
+            .replace("%3A", ":")
 
-        String nonEncodedUrl = encodedUrl
-                .replace("%2C", ",")
-                .replace("%5B", "[")
-                .replace("%5D", "]")
-                .replace("%3A", ":");
-
-        Request newRequest = request.newBuilder()
-                .url(nonEncodedUrl)
-                .build();
-
-        return chain.proceed(newRequest);
+        request.url.parameters.clear()
+        request.url.takeFrom(nonEncodedUrl)
     }
 }

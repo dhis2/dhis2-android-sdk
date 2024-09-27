@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,49 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import okhttp3.Interceptor
-import okhttp3.Response
+import io.ktor.client.plugins.api.Send
+import io.ktor.client.plugins.api.createClientPlugin
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isExternalRequestAttributeKey
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
-import java.io.IOException
 
 @Singleton
-internal class ParentAuthenticator(
+@PublishedApi
+internal class ParentAuthenticatorPlugin(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
     private val openIDConnectAuthenticator: OpenIDConnectAuthenticator,
     private val cookieHelper: CookieAuthenticatorHelper,
-) :
-    Interceptor {
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val req = chain.request()
-
-        // Header has already been explicitly added in UserService.authenticate
-        val isLoginCall = req.header(AUTHORIZATION_KEY) != null
-
-        return if (isLoginCall) {
-            handleLoginCall(chain)
-        } else {
-            val credentials = credentialsSecureStore.get()
-            return when {
-                credentials?.password != null ->
-                    passwordAndCookieAuthenticator.handlePasswordCall(chain, credentials)
-                credentials?.openIDConnectState != null ->
-                    openIDConnectAuthenticator.handleTokenCall(chain, credentials)
-                else -> chain.proceed(req)
+) {
+    val instance = createClientPlugin(name = "ParentAuthenticatorPlugin") {
+        on(Send) { request ->
+            val isLoginCall = request.headers[AUTHORIZATION_KEY] != null
+            if (isLoginCall) {
+                cookieHelper.removeCookie()
+                val call = proceed(request)
+                cookieHelper.storeCookieIfSentByServer(call.response)
+                call
+            } else {
+                val credentials = credentialsSecureStore.get()
+                when {
+                    request.attributes.contains(isExternalRequestAttributeKey) -> {
+                        proceed(request)
+                    }
+                    credentials?.password != null -> {
+                        passwordAndCookieAuthenticator.handlePasswordCall(this, request, credentials)
+                    }
+                    credentials?.openIDConnectState != null -> {
+                        openIDConnectAuthenticator.handleTokenCall(this, request, credentials)
+                    }
+                    else -> {
+                        proceed(request)
+                    }
+                }
             }
         }
-    }
-
-    private fun handleLoginCall(chain: Interceptor.Chain): Response {
-        cookieHelper.removeCookie()
-        val res = chain.proceed(chain.request())
-        cookieHelper.storeCookieIfSentByServer(res)
-        return res
     }
 }

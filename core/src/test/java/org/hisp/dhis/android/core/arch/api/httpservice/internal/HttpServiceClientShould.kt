@@ -75,7 +75,7 @@ class HttpServiceClientShould {
     private fun buildHttpServiceClient(mockEngine: MockEngine) {
         client = HttpClient(mockEngine) {
             install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
+                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
                 register(ContentType.Application.Json, converter)
             }
         }

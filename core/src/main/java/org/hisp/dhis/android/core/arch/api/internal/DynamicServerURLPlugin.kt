@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.internal
 
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.http.URLBuilder
+import io.ktor.http.takeFrom
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
 
-internal class DynamicServerURLInterceptor : Interceptor {
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        return chain.proceed(transformRequest(chain.request()))
-    }
-
-    companion object {
-        fun transformRequest(request: Request): Request {
-            val transformedUrl = transformUrl(request.url.toString())?.let { it.toHttpUrlOrNull() }
-            return transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
+internal object DynamicServerURLPlugin {
+    val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
+        onRequest { request, _ ->
+            transformRequest(request)
         }
-
-        fun transformUrl(url: String?): String? {
-            return url?.let {
-                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
-
-                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
-                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
-                } else {
-                    url
-                }
-            }
+    }
+    private fun transformUrl(urlBuilder: URLBuilder): URLBuilder {
+        val urlString = urlBuilder.buildString()
+        val afterAPI = ServerURLWrapper.extractAfterAPI(urlString)
+        val transformedUrlString = if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+            ServerURLWrapper.serverUrl + "/api/" + afterAPI
+        } else {
+            urlString
+        }
+        return URLBuilder(transformedUrlString)
+    }
+    fun transformRequest(request: HttpRequestBuilder) {
+        if (!request.attributes.contains(isAbsouteUrlAttributeKey)) {
+            val originalUrlBuilder = request.url
+            val transformedUrlBuilder = transformUrl(originalUrlBuilder)
+            originalUrlBuilder.parameters.clear()
+            originalUrlBuilder.takeFrom(transformedUrlBuilder)
         }
     }
 }

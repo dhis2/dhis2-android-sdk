@@ -35,26 +35,24 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.jackson.JacksonConverter
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
-import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal object HttpServiceClientFactory {
     internal fun ktor(
         okHttpClient: OkHttpClient,
         d2Configuration: D2Configuration,
-        authenticator: ParentAuthenticatorPlugin,
     ): HttpClient {
         val client = HttpClient(OkHttp) {
             engine {
                 preconfigured = okHttpClient
             }
             install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper(), true)
+                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
                 register(ContentType.Application.Json, converter)
             }
             expectSuccess = true
             followRedirects = false
-            addKtorPlugins(d2Configuration, authenticator)
+            addKtorPlugins(d2Configuration)
         }
         return client
     }

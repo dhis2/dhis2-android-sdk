@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.ProgramStageAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.programStageAlias
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo
@@ -65,9 +65,9 @@ internal class ProgramDataElementEvaluator(
             "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
             "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
             "AND $EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} IN ( " +
-            "SELECT $programStageAlias.${ProgramStageTableInfo.Columns.PROGRAM} " +
-            "FROM  ${ProgramStageTableInfo.TABLE_INFO.name()} $programStageAlias " +
-            "WHERE $programStageAlias.${ProgramStageTableInfo.Columns.UID} = '${item.programStage}') " +
+            "SELECT $ProgramStageAlias.${ProgramStageTableInfo.Columns.PROGRAM} " +
+            "FROM  ${ProgramStageTableInfo.TABLE_INFO.name()} $ProgramStageAlias " +
+            "WHERE $ProgramStageAlias.${ProgramStageTableInfo.Columns.UID} = '${item.programStage}') " +
             "ORDER BY $EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE} DESC " +
             "LIMIT 1 )"
 

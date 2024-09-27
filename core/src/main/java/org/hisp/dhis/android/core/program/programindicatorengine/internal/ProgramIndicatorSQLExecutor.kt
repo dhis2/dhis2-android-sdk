@@ -46,8 +46,8 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.antlr.Parser
@@ -89,9 +89,9 @@ internal class ProgramIndicatorSQLExecutor(
 
         val targetTable = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "${EventTableInfo.TABLE_INFO.name()} as $event"
+                "${EventTableInfo.TABLE_INFO.name()} as $EventAlias"
             AnalyticsType.ENROLLMENT, null ->
-                "${EnrollmentTableInfo.TABLE_INFO.name()} as $enrollment"
+                "${EnrollmentTableInfo.TABLE_INFO.name()} as $EnrollmentAlias"
         }
 
         val contextWhereClause = when (programIndicator.analyticsType()) {

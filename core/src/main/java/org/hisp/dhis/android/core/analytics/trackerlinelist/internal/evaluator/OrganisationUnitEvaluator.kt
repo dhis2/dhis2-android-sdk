@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilt
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.orgUnitAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgUnitAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.SubOrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.subOrgUnitAlias
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -59,7 +59,7 @@ internal class OrganisationUnitEvaluator(
     private val orgunitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(context.databaseAdapter)
 
     override fun getCommonSelectSQL(): String {
-        return "$orgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
+        return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
     }
 
     override fun getCommonWhereSQL(): String {
@@ -72,13 +72,13 @@ internal class OrganisationUnitEvaluator(
 
     override fun getSelectSQLForTrackedEntityInstance(): String {
         return if (item.programUid.isNullOrBlank()) {
-            "$orgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
+            "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
         } else {
-            "SELECT $subOrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME} " +
+            "SELECT $SubOrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME} " +
                 "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
-                "JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $subOrgUnitAlias " +
+                "JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $SubOrgUnitAlias " +
                 "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} = " +
-                "$subOrgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} " +
+                "$SubOrgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} " +
                 "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
                 "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
                 "AND $EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${item.programUid}' " +
@@ -153,7 +153,7 @@ internal class OrganisationUnitEvaluator(
     }
 
     private fun inPathOf(orgunit: String): String {
-        return "$orgUnitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
+        return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
     }
 
     private fun getChildren(orgunits: List<String>): List<String> {

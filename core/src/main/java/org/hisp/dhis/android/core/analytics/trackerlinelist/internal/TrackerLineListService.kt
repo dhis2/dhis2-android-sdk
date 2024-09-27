@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLine
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.orgUnitAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -127,9 +127,9 @@ internal class TrackerLineListService(
             "ON $EventAlias.${EventTableInfo.Columns.ENROLLMENT} = " +
             "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
             if (params.hasOrgunit()) {
-                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $orgUnitAlias " +
+                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgUnitAlias " +
                     "ON $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT} = " +
-                    "$orgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+                    "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} "
             } else {
                 ""
             } +
@@ -144,9 +144,9 @@ internal class TrackerLineListService(
             "${getEnrollmentSelectColumns(params, context)} " +
             "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
             if (params.hasOrgunit()) {
-                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $orgUnitAlias " +
+                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgUnitAlias " +
                     "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} = " +
-                    "$orgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+                    "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} "
             } else {
                 ""
             } +
@@ -164,9 +164,9 @@ internal class TrackerLineListService(
             "${getTrackedEntityInstanceSelectColumns(params, context)} " +
             "FROM ${TrackedEntityInstanceTableInfo.TABLE_INFO.name()} $TrackedEntityInstanceAlias " +
             if (params.hasOrgunit()) {
-                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $orgUnitAlias " +
+                "LEFT JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $OrgUnitAlias " +
                     "ON $TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT} = " +
-                    "$orgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} "
+                    "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} "
             } else {
                 ""
             } +

@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VEventCount : ExpressionItem {
@@ -45,12 +45,12 @@ internal class VEventCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val eventSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.UID}"
+                "$EventAlias.${EventTableInfo.Columns.UID}"
             AnalyticsType.ENROLLMENT, null ->
                 // This case is not supported in DHIS2
                 "(SELECT ${EventTableInfo.Columns.UID} " +
                     "FROM ${EventTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $enrollment.${EnrollmentTableInfo.Columns.UID}" +
+                    "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}" +
                     ")"
         }
 

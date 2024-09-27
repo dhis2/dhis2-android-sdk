@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 
 internal object TrackerLineListSQLLabel {
-    const val EventAlias = ProgramIndicatorSQLUtils.event
-    const val EnrollmentAlias = ProgramIndicatorSQLUtils.enrollment
+    const val EventAlias = ProgramIndicatorSQLUtils.EventAlias
+    const val EnrollmentAlias = ProgramIndicatorSQLUtils.EnrollmentAlias
     const val TrackedEntityInstanceAlias = "teiAlias"
-    const val programStageAlias = "programStageAlias"
-    const val orgUnitAlias = "orgUnit"
-    const val subOrgUnitAlias = "subOrgUnit"
+    const val ProgramStageAlias = "programStageAlias"
+    const val OrgUnitAlias = "orgUnit"
+    const val SubOrgUnitAlias = "subOrgUnit"
 }

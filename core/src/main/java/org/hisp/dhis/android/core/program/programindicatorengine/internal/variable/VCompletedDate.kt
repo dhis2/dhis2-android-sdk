@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VCompletedDate : ProgramExpressionItem() {
@@ -51,9 +51,9 @@ internal class VCompletedDate : ProgramExpressionItem() {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
+                "$EventAlias.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
             AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
         }
     }
 }

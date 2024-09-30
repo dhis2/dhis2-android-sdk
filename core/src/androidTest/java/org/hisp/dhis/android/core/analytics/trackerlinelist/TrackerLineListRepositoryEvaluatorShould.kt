@@ -422,7 +422,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         assertThat(resultNoPaging.getOrThrow().rows.size).isEqualTo(2)
     }
 
-    private fun createDefaultEnrollment(
+    internal fun createDefaultEnrollment(
         teiUid: String,
         enrollmentUid: String,
         programUid: String = program.uid(),

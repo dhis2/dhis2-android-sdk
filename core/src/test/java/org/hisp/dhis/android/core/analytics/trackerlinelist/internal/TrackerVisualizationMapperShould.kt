@@ -99,6 +99,7 @@ class TrackerVisualizationMapperShould {
 
         assertThat(programStatus).isEqualTo(
             TrackerLineListItem.ProgramStatusItem(
+                null,
                 listOf(
                     EnumFilter.In(
                         listOf(

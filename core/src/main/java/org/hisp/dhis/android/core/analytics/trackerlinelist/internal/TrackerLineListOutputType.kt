@@ -31,4 +31,5 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 internal enum class TrackerLineListOutputType {
     EVENT,
     ENROLLMENT,
+    TRACKED_ENTITY_INSTANCE,
 }

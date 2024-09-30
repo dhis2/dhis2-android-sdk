@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VDueDate : ProgramExpressionItem() {
@@ -45,7 +45,7 @@ internal class VDueDate : ProgramExpressionItem() {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.DUE_DATE}"
+                "$EventAlias.${EventTableInfo.Columns.DUE_DATE}"
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
                     column = EventTableInfo.Columns.DUE_DATE,

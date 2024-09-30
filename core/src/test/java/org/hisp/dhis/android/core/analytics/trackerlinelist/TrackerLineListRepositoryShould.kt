@@ -43,7 +43,7 @@ class TrackerLineListRepositoryShould {
 
     private val service: TrackerLineListService = mock()
 
-    private val initialParams = TrackerLineListParams(null, null, null, null, listOf(), listOf())
+    private val initialParams = TrackerLineListParams(null, null, null, null, null, listOf(), listOf())
 
     private val paramsCaptor = argumentCaptor<TrackerLineListParams>()
 

@@ -50,7 +50,7 @@ internal class VProgramStageName : ProgramExpressionItem() {
                 "(SELECT ${ProgramStageTableInfo.Columns.NAME} " +
                     "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} ps " +
                     "WHERE ps.${IdentifiableColumns.UID} = " +
-                    "${ProgramIndicatorSQLUtils.event}.${EventTableInfo.Columns.PROGRAM_STAGE}" +
+                    "${ProgramIndicatorSQLUtils.EventAlias}.${EventTableInfo.Columns.PROGRAM_STAGE}" +
                     ")"
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(

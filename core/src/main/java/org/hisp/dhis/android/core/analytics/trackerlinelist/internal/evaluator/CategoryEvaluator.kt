@@ -41,19 +41,19 @@ internal class CategoryEvaluator(
 ) : TrackerLineListEvaluator() {
 
     override fun getSelectSQLForEvent(): String {
-        return "SELECT $coAlias.${CategoryOptionTableInfo.Columns.DISPLAY_NAME} " +
-            "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} $coccolAlias " +
-            "JOIN ${CategoryOptionTableInfo.TABLE_INFO.name()} $coAlias ON " +
-            "$coccolAlias.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} = " +
+        return "SELECT $COAlias.${CategoryOptionTableInfo.Columns.DISPLAY_NAME} " +
+            "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} $COCCOLAlias " +
+            "JOIN ${CategoryOptionTableInfo.TABLE_INFO.name()} $COAlias ON " +
+            "$COCCOLAlias.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} = " +
             "${CategoryOptionTableInfo.Columns.UID} " +
-            "WHERE $coccolAlias.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO} = " +
+            "WHERE $COCCOLAlias.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO} = " +
             "$EventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO} " +
             "AND EXISTS ( " +
             "SELECT 1 " +
-            "FROM ${CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name()} $ccolAlias " +
-            "WHERE $ccolAlias.${CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY} = '${item.uid}' " +
-            "AND $coccolAlias.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} = " +
-            "$ccolAlias.${CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} " +
+            "FROM ${CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name()} $CCOLAlias " +
+            "WHERE $CCOLAlias.${CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY} = '${item.uid}' " +
+            "AND $COCCOLAlias.${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} = " +
+            "$CCOLAlias.${CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} " +
             ") " +
             "AND " + DataFilterHelper.getWhereClause(CategoryOptionTableInfo.Columns.UID, item.filters)
     }
@@ -70,9 +70,17 @@ internal class CategoryEvaluator(
         throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
+    }
+
+    override fun getWhereSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
+    }
+
     companion object {
-        private const val coccolAlias = "COCCOL"
-        private const val ccolAlias = "CCOL"
-        private const val coAlias = "CO"
+        private const val COCCOLAlias = "COCCOL"
+        private const val CCOLAlias = "CCOL"
+        private const val COAlias = "CO"
     }
 }

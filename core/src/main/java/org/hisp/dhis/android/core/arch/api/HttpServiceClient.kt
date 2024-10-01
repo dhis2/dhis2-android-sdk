@@ -40,7 +40,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import io.ktor.util.AttributeKey
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -62,10 +61,10 @@ class HttpServiceClient(
                 }
             }
             if (requestBuilder.isAbsoluteUrl) {
-                attributes.put(isAbsouteUrlAttributeKey, true)
+                header(IsAbsouteUrlHeader, true)
             }
             if (requestBuilder.isExternalRequest) {
-                attributes.put(isExternalRequestAttributeKey, true)
+                header(IsExternalRequestHeader, true)
             }
             requestBuilder.authorizationHeader?.let {
                 header(HttpHeaders.Authorization, it)
@@ -101,8 +100,8 @@ class HttpServiceClient(
         return request(HttpMethod.Delete, block)
     }
     companion object {
-        @PublishedApi internal val isAbsouteUrlAttributeKey = AttributeKey<Boolean>("isAbsoluteUrl")
+        @PublishedApi internal val IsAbsouteUrlHeader = "isAbsoluteUrl"
 
-        @PublishedApi internal val isExternalRequestAttributeKey = AttributeKey<Boolean>("isExternalRequest")
+        @PublishedApi internal val IsExternalRequestHeader = "isExternalRequest"
     }
 }

@@ -58,7 +58,7 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
     }
 
     private fun isInternal(request: Request): Boolean {
-        return !(request.header(IsExternalRequestHeader) != null)
+        return request.header(IsExternalRequestHeader) == null
     }
 
     companion object {

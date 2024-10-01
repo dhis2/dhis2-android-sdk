@@ -77,7 +77,6 @@ class RequestBuilderShould {
     fun build_url_correctly() = runTest {
         val mockEngine = MockEngine { request ->
             assertEquals("https://temporary-dhis-url.org/api/test", request.url.toString())
-//            assertThat(request.attributes.contains(isAbsouteUrlAttributeKey)).isFalse()
             assertThat(request.headers.contains(IsAbsouteUrlHeader)).isFalse()
 
             respondOk()

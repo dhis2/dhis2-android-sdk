@@ -60,6 +60,7 @@ class HttpServiceClient(
                     parameters.append(key, value)
                 }
             }
+            header("Connection", "close")
             if (requestBuilder.isAbsoluteUrl) {
                 header(IsAbsouteUrlHeader, true)
             }

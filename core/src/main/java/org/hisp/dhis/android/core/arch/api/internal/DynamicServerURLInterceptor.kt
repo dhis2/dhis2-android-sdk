@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.testutils
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsAbsouteUrlHeader
+import java.io.IOException
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.serialization.jackson.JacksonConverter
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+internal class DynamicServerURLInterceptor : Interceptor {
 
-internal object HttpServiceClientFactory {
-    fun fromDHIS2MockServer(server: Dhis2MockServer): HttpServiceClient {
-        return fromServerUrl(server.baseEndpoint)
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        return chain.proceed(transformRequest(chain.request()))
     }
 
-    fun fromServerUrl(serverUrl: String): HttpServiceClient {
-        val client = HttpClient(OkHttp) {
-            install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
-                register(ContentType.Application.Json, converter)
+    companion object {
+        fun transformRequest(request: Request): Request {
+            return if (request.header(IsAbsouteUrlHeader) != null) {
+                request.newBuilder()
+                    .removeHeader(IsAbsouteUrlHeader)
+                    .build()
+            } else {
+                val transformedUrl = transformUrl(request.url.toString())?.let { it.toHttpUrlOrNull() }
+                transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
             }
-            expectSuccess = true
         }
-        return HttpServiceClient(client, serverUrl + "api/")
+
+        fun transformUrl(url: String?): String? {
+            return url?.let {
+                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
+
+                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
+                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
+                } else {
+                    url
+                }
+            }
+        }
     }
 }

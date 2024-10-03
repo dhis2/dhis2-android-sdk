@@ -31,7 +31,7 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
-import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -39,8 +39,8 @@ import org.koin.core.annotation.Singleton
 @Module
 internal class APIClientDIModule {
     @Singleton
-    fun okHttpClient(d2Configuration: D2Configuration): OkHttpClient {
-        return OkHttpClientFactory.okHttpClient(d2Configuration)
+    fun okHttpClient(d2Configuration: D2Configuration, parentAuthenticator: ParentAuthenticator): OkHttpClient {
+        return OkHttpClientFactory.okHttpClient(d2Configuration, parentAuthenticator)
     }
 
     @Singleton
@@ -48,10 +48,9 @@ internal class APIClientDIModule {
     fun ktor(
         okHttpClient: OkHttpClient,
         d2Configuration: D2Configuration,
-        authenticator: ParentAuthenticatorPlugin,
     ): HttpClient {
         return try {
-            HttpServiceClientFactory.ktor(okHttpClient, d2Configuration, authenticator)
+            HttpServiceClientFactory.ktor(okHttpClient, d2Configuration)
         } catch (d2Error: D2Error) {
             Log.e("APIClientDIModule", d2Error.message!!)
             throw RuntimeException("Can't instantiate ktor")

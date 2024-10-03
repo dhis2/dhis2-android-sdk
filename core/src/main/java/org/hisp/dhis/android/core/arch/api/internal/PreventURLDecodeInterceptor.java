@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api.internal;
 
-import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.http.URLBuilder
-import io.ktor.http.takeFrom
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
+import java.io.IOException;
+import java.util.Map;
 
-internal object DynamicServerURLPlugin {
-    val instance = createClientPlugin(name = "DynamicServerURLPlugin") {
-        onRequest { request, _ ->
-            transformRequest(request)
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class PreventURLDecodeInterceptor implements Interceptor {
+
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+        String encodedUrl = request.url().toString();
+
+        Map<String, String> replacements = Map.of(
+                "%2C", ",",
+                "%5B", "[",
+                "%5D", "]",
+                "%3A", ":"
+        );
+
+        String nonEncodedUrl = encodedUrl;
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            nonEncodedUrl = nonEncodedUrl.replace(entry.getKey(), entry.getValue());
         }
-    }
-    private fun transformUrl(urlBuilder: URLBuilder): URLBuilder {
-        val urlString = urlBuilder.buildString()
-        val afterAPI = ServerURLWrapper.extractAfterAPI(urlString)
-        val transformedUrlString = if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
-            ServerURLWrapper.serverUrl + "/api/" + afterAPI
-        } else {
-            urlString
-        }
-        return URLBuilder(transformedUrlString)
-    }
-    fun transformRequest(request: HttpRequestBuilder) {
-        if (!request.attributes.contains(isAbsouteUrlAttributeKey)) {
-            val originalUrlBuilder = request.url
-            val transformedUrlBuilder = transformUrl(originalUrlBuilder)
-            originalUrlBuilder.parameters.clear()
-            originalUrlBuilder.takeFrom(transformedUrlBuilder)
-        }
+
+        Request newRequest = request.newBuilder()
+                .url(nonEncodedUrl)
+                .build();
+
+        return chain.proceed(newRequest);
     }
 }

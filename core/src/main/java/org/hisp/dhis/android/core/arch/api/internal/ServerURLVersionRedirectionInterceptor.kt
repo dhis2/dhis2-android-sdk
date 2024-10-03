@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.arch.api.internal
 
-import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.http.takeFrom
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
+import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
+import java.io.IOException
 
-internal object PreventURLDecodePlugin {
-    val instance = createClientPlugin(name = "PreventURLDecodePlugin") {
-        onRequest { request, _ ->
-            replaceEncodedCharacters(request)
+internal class ServerURLVersionRedirectionInterceptor : Interceptor {
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        var response = chain.proceed(request)
+
+        var redirects = 0
+        while (response.isRedirect && redirects <= MaxRedirects) {
+            val location = response.header(LOCATION_KEY)
+            if (isInternal(request)) {
+                location?.let { ServerURLWrapper.setServerUrl(it) }
+            }
+            response.close()
+
+            val redirectReq = location?.let { request.newBuilder().url(it).build() } ?: request
+
+            response = chain.proceed(redirectReq)
+            redirects++
         }
+        return response
     }
 
-    private fun replaceEncodedCharacters(request: HttpRequestBuilder) {
-        val encodedUrl = request.url.toString()
+    private fun isInternal(request: Request): Boolean {
+        return request.header(IsExternalRequestHeader) == null
+    }
 
-        val nonEncodedUrl = encodedUrl
-            .replace("%2C", ",")
-            .replace("%5B", "[")
-            .replace("%5D", "]")
-            .replace("%3A", ":")
-
-        request.url.parameters.clear()
-        request.url.takeFrom(nonEncodedUrl)
+    companion object {
+        const val MaxRedirects = 20
     }
 }

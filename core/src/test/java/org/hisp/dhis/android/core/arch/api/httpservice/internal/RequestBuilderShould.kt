@@ -43,14 +43,16 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isAbsouteUrlAttributeKey
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.isExternalRequestAttributeKey
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsAbsouteUrlHeader
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RequestBuilderShould {
 
     private lateinit var mockEngine: MockEngine
@@ -75,7 +77,7 @@ class RequestBuilderShould {
     fun build_url_correctly() = runTest {
         val mockEngine = MockEngine { request ->
             assertEquals("https://temporary-dhis-url.org/api/test", request.url.toString())
-            assertThat(request.attributes.contains(isAbsouteUrlAttributeKey)).isFalse()
+            assertThat(request.headers.contains(IsAbsouteUrlHeader)).isFalse()
 
             respondOk()
         }
@@ -93,8 +95,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals(true, request.attributes[isAbsouteUrlAttributeKey])
-            assertEquals(false, request.attributes.contains(isExternalRequestAttributeKey))
+            assertEquals("true", request.headers.get(IsAbsouteUrlHeader))
+            assertEquals(false, request.headers.contains(IsExternalRequestHeader))
 
             respondOk()
         }
@@ -112,8 +114,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals(true, request.attributes[isAbsouteUrlAttributeKey])
-            assertEquals(true, request.attributes[isExternalRequestAttributeKey])
+            assertEquals("true", request.headers[IsAbsouteUrlHeader])
+            assertEquals("true", request.headers[IsExternalRequestHeader])
 
             respondOk()
         }

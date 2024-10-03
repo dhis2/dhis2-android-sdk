@@ -32,12 +32,10 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMethodScopedEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Assert.fail
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-@Ignore("Test start failing after change in ANDROSDK-1923")
 class LogInOfflineCallMockIntegrationShould : BaseMockIntegrationTestMethodScopedEmptyEnqueable() {
 
     @Test

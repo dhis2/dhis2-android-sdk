@@ -125,11 +125,11 @@ class LatestAppVersionCallShould {
     fun resolve_correct_apk_distribution_version_repeated() = runTest {
         mockUserGroups(listOf("uid1", "uid2"))
 
-        val version2_r = mockApkDistributionVersion(listOf("uid2"), false, "1.1.0")
-        mockVersions(listOf(version1, version2, version3, version2_r))
+        val version2_rep = mockApkDistributionVersion(listOf("uid2"), false, "1.1.1")
+        mockVersions(listOf(version1, version2, version3, version2_rep))
 
         val result = latestAppVersionCall.resolveApkDistributionVersion()
-        assertThat("1.1.0").isEqualTo(result?.version)
+        assertThat("1.1.1").isEqualTo(result?.version)
     }
 
     @Test
@@ -140,4 +140,17 @@ class LatestAppVersionCallShould {
         val result = latestAppVersionCall.resolveApkDistributionVersion()
         assertThat("2.0.0").isEqualTo(result?.version)
     }
+
+
+    @Test
+    fun resolve_correct_apk_distribution_version_repeated_default() = runTest {
+        mockUserGroups(listOf("uid1", "uid2"))
+
+        val version_rep_default = mockApkDistributionVersion(listOf("uid2"), true, "1.1.1")
+        mockVersions(listOf(version1, version2, version3, version_rep_default))
+
+        val result = latestAppVersionCall.resolveApkDistributionVersion()
+        assertThat("1.1.1").isEqualTo(result?.version)
+    }
+
 }

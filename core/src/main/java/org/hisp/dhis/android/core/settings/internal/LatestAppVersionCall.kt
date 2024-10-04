@@ -64,7 +64,9 @@ internal class LatestAppVersionCall(
             } ?: false
         }
 
-        val availableVersions = filteredVersions + versions.find { it.isDefault == true }!!
+        val defaultVersions = versions.filter { it.isDefault == true }
+
+        val availableVersions = filteredVersions + defaultVersions
 
         return availableVersions.maxWithOrNull(versionComparator.comparator)
     }

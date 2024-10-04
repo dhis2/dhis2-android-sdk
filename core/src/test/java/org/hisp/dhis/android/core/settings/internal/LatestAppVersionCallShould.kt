@@ -141,7 +141,6 @@ class LatestAppVersionCallShould {
         assertThat("2.0.0").isEqualTo(result?.version)
     }
 
-
     @Test
     fun resolve_correct_apk_distribution_version_repeated_default() = runTest {
         mockUserGroups(listOf("uid1", "uid2"))
@@ -152,5 +151,4 @@ class LatestAppVersionCallShould {
         val result = latestAppVersionCall.resolveApkDistributionVersion()
         assertThat("1.1.1").isEqualTo(result?.version)
     }
-
 }

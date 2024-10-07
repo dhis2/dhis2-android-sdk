@@ -47,6 +47,8 @@ class RequestBuilder(private val baseUrl: String) {
     var parameters: MutableList<Pair<String, String>> = mutableListOf()
         private set
 
+    var headers: MutableList<Pair<String, String>> = mutableListOf()
+
     private val parametersBuilder = ParametersBuilder(parameters)
 
     fun url(url: String) {
@@ -73,5 +75,9 @@ class RequestBuilder(private val baseUrl: String) {
 
     fun parameters(block: ParametersBuilder.() -> Unit) {
         parametersBuilder.apply(block)
+    }
+
+    fun header(name: String, value: String) {
+        headers.add(name to value)
     }
 }

@@ -146,6 +146,25 @@ class RequestBuilderShould {
     }
 
     @Test
+    fun build_request_with_custom_headers() = runTest {
+        val mockEngine = MockEngine { request ->
+            assertEquals("value1", request.headers["header1"])
+            assertEquals("value2", request.headers["header2"])
+
+            respondOk()
+        }
+
+        val client = HttpClient(mockEngine)
+        val service = HttpServiceClient(client)
+
+        service.get<String> {
+            url("test")
+            header("header1", "value1")
+            header("header2", "value2")
+        }
+    }
+
+    @Test
     fun build_POST_request_with_JSON_body_correctly() = runTest {
         val mockEngine = MockEngine { request ->
             assertEquals(HttpMethod.Post, request.method)

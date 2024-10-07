@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.header
 import io.ktor.client.request.request
@@ -60,16 +61,7 @@ class HttpServiceClient(
                     parameters.append(key, value)
                 }
             }
-            header("Connection", "close")
-            if (requestBuilder.isAbsoluteUrl) {
-                header(IsAbsouteUrlHeader, true)
-            }
-            if (requestBuilder.isExternalRequest) {
-                header(IsExternalRequestHeader, true)
-            }
-            requestBuilder.authorizationHeader?.let {
-                header(HttpHeaders.Authorization, it)
-            }
+            addHeaders(requestBuilder)
             if (method == HttpMethod.Post || method == HttpMethod.Put) {
                 when (requestBuilder.body) {
                     is MultiPartFormDataContent -> contentType(ContentType.MultiPart.FormData)
@@ -82,6 +74,23 @@ class HttpServiceClient(
             response.readBytes() as T
         } else {
             response.body()
+        }
+    }
+
+    @PublishedApi
+    internal fun HttpRequestBuilder.addHeaders(requestBuilder: RequestBuilder) {
+        requestBuilder.headers.forEach { (key, value) ->
+            header(key, value)
+        }
+        header("Connection", "close")
+        if (requestBuilder.isAbsoluteUrl) {
+            header(IsAbsouteUrlHeader, true)
+        }
+        if (requestBuilder.isExternalRequest) {
+            header(IsExternalRequestHeader, true)
+        }
+        requestBuilder.authorizationHeader?.let {
+            header(HttpHeaders.Authorization, it)
         }
     }
 

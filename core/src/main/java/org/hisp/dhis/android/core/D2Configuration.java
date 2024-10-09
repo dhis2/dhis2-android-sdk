@@ -37,6 +37,10 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
+import org.jetbrains.annotations.NotNull;
+
 import okhttp3.Interceptor;
 
 @AutoValue
@@ -63,6 +67,9 @@ public abstract class D2Configuration {
     @NonNull
     public abstract List<Interceptor> networkInterceptors();
 
+    @NotNull
+    public abstract FileResizerHelper.Dimension fileResizerDimension();
+
     @NonNull
     public abstract Context context();
 
@@ -74,6 +81,7 @@ public abstract class D2Configuration {
                 .connectTimeoutInSeconds(30)
                 .writeTimeoutInSeconds(30)
                 .networkInterceptors(Collections.emptyList())
+                .fileResizerDimension(FileResizerHelper.Dimension.MEDIUM)
                 .interceptors(Collections.emptyList());
     }
 
@@ -92,10 +100,14 @@ public abstract class D2Configuration {
 
         public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
 
+        public abstract Builder fileResizerDimension(FileResizerHelper.Dimension dimension);
+
         public abstract Builder interceptors(List<Interceptor> interceptors);
 
         public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
 
         public abstract D2Configuration build();
+
+
     }
 }

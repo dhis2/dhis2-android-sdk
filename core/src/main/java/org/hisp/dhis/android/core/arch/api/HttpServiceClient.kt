@@ -82,7 +82,6 @@ class HttpServiceClient(
         requestBuilder.headers.forEach { (key, value) ->
             header(key, value)
         }
-        header("Connection", "close")
         if (requestBuilder.isAbsoluteUrl) {
             header(IsAbsouteUrlHeader, true)
         }

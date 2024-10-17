@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.koin.core.annotation.Singleton
+import java.io.EOFException
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -92,8 +93,17 @@ internal class APIErrorMapper {
     }
 
     private fun ioException(errorBuilder: D2Error.Builder, e: IOException): D2Error {
+        val errorCode =
+            if (e.cause is EOFException) {
+                // This errorcode is used to consider the error as "offline".
+                // The combination of ktor and the mockserver produces this exception when the mockserver is down.
+                D2ErrorCode.SERVER_CONNECTION_ERROR
+            } else {
+                D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+            }
+
         return logAndAppendOriginal(errorBuilder, e)
-            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+            .errorCode(errorCode)
             .errorDescription("API call threw IOException")
             .build()
     }

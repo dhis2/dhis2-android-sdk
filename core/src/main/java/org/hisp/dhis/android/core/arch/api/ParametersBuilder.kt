@@ -50,7 +50,10 @@ class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
 
     fun <T> attribute(pair: Pair<String, T?>) {
         pair.second?.let { nonNullSecond ->
-            parameters.add(pair.first to nonNullSecond.toString())
+            when (nonNullSecond) {
+                is List<*> -> nonNullSecond.forEach { parameters.add(pair.first to it.toString()) }
+                else -> parameters.add(pair.first to nonNullSecond.toString())
+            }
         }
     }
 

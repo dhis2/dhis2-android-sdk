@@ -45,7 +45,7 @@ internal class ValidationRuleService(private val client: HttpServiceClient) {
             url("validationRules")
             parameters {
                 fields(fields)
-                attribute("filter" to uidsFilterString)
+                attribute("filter", uidsFilterString)
                 paging(paging)
             }
         }
@@ -59,8 +59,8 @@ internal class ValidationRuleService(private val client: HttpServiceClient) {
         return client.get {
             url("validationRules")
             parameters {
-                attribute("dataSet" to dataSetUid)
-                attribute("fields" to id)
+                attribute("dataSet", dataSetUid)
+                attribute("fields", id)
                 paging(paging)
             }
         }

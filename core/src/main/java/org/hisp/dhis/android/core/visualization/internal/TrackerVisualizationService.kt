@@ -45,7 +45,7 @@ internal class TrackerVisualizationService(private val client: HttpServiceClient
             url("$TRACKER_VISUALIZATIONS/$uid")
             parameters {
                 fields(fields)
-                attribute("filter" to accessFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

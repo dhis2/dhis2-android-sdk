@@ -51,11 +51,11 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
             url("$TRACKED_ENTITIES_API/$trackedEntityInstanceUid")
             parameters {
                 fields(fields)
-                attribute(PROGRAM to program)
-                attribute(PROGRAM_STATUS to programStatus)
-                attribute(ENROLLMENT_ENROLLED_AFTER to programStartDate)
-                attribute(INCLUDE_DELETED to includeDeleted)
-                orgUnitMode.forEach { (key, value) -> attribute(key to value) }
+                attribute(PROGRAM, program)
+                attribute(PROGRAM_STATUS, programStatus)
+                attribute(ENROLLMENT_ENROLLED_AFTER, programStartDate)
+                attribute(INCLUDE_DELETED, includeDeleted)
+                orgUnitMode.forEach { (key, value) -> attribute(key, value) }
             }
         }
     }
@@ -91,27 +91,27 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
             url(TRACKED_ENTITIES_API)
             parameters {
                 fields(fields)
-                trackedEntityInstances.forEach { (key, value) -> attribute(key to value) }
-                orgUnits.forEach { (key, value) -> attribute(key to value) }
-                orgUnitMode.forEach { (key, value) -> attribute(key to value) }
-                attribute(PROGRAM to program)
-                attribute(PROGRAM_STAGE to programStage)
-                attribute(ENROLLMENT_ENROLLED_AFTER to programStartDate)
-                attribute(ENROLLMENT_ENROLLED_BEFORE to programEndDate)
-                attribute(PROGRAM_STATUS to programStatus)
-                attribute(ENROLLMENT_OCCURRED_AFTER to programIncidentStartDate)
-                attribute(ENROLLMENT_OCCURRED_BEFORE to programIncidentEndDate)
-                attribute(FOLLOW_UP to followUp)
-                attribute(EVENT_START_DATE to eventStartDate)
-                attribute(EVENT_END_DATE to eventEndDate)
-                attribute(EVENT_STATUS to eventStatus)
-                attribute(TRACKED_ENTITY_TYPE to trackedEntityType)
-                attribute(FILTER to filter)
-                attribute(ASSIGNED_USER_MODE to assignedUserMode)
-                attribute(UPDATED_AFTER to lastUpdatedStartDate)
-                attribute(UPDATED_BEFORE to lastUpdatedEndDate)
-                attribute(ORDER to order)
-                attribute(INCLUDE_DELETED to includeDeleted)
+                trackedEntityInstances.forEach { (key, value) -> attribute(key, value) }
+                orgUnits.forEach { (key, value) -> attribute(key, value) }
+                orgUnitMode.forEach { (key, value) -> attribute(key, value) }
+                attribute(PROGRAM, program)
+                attribute(PROGRAM_STAGE, programStage)
+                attribute(ENROLLMENT_ENROLLED_AFTER, programStartDate)
+                attribute(ENROLLMENT_ENROLLED_BEFORE, programEndDate)
+                attribute(PROGRAM_STATUS, programStatus)
+                attribute(ENROLLMENT_OCCURRED_AFTER, programIncidentStartDate)
+                attribute(ENROLLMENT_OCCURRED_BEFORE, programIncidentEndDate)
+                attribute(FOLLOW_UP, followUp)
+                attribute(EVENT_START_DATE, eventStartDate)
+                attribute(EVENT_END_DATE, eventEndDate)
+                attribute(EVENT_STATUS, eventStatus)
+                attribute(TRACKED_ENTITY_TYPE, trackedEntityType)
+                attribute(FILTER, filter)
+                attribute(ASSIGNED_USER_MODE, assignedUserMode)
+                attribute(UPDATED_AFTER, lastUpdatedStartDate)
+                attribute(UPDATED_BEFORE, lastUpdatedEndDate)
+                attribute(ORDER, order)
+                attribute(INCLUDE_DELETED, includeDeleted)
                 paging(paging)
                 page(page)
                 pageSize(pageSize)
@@ -164,29 +164,29 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
             url(EVENTS_API)
             parameters {
                 fields(fields)
-                attribute(ORG_UNIT to orgUnit)
-                orgUnitMode.forEach { (key, value) -> attribute(key to value) }
-                attribute(STATUS to status)
-                attribute(PROGRAM to program)
-                attribute(PROGRAM_STAGE to programStage)
-                attribute(PROGRAM_STATUS to programStatus)
-                attribute(FILTER to filter)
-                attribute(FILTER_ATTRIBUTES to filterAttributes)
-                attribute(FOLLOW_UP to followUp)
-                attribute(OCCURRED_AFTER to occurredAfter)
-                attribute(OCCURRED_BEFORE to occurredBefore)
-                attribute(SCHEDULED_AFTER to scheduledAfter)
-                attribute(SCHEDULED_BEFORE to scheduledBefore)
-                attribute(ENROLLMENT_ENROLLED_AFTER to enrollmentEnrolledAfter)
-                attribute(ENROLLMENT_ENROLLED_BEFORE to enrollmentEnrolledBefore)
-                attribute(ENROLLMENT_OCCURRED_AFTER to enrollmentOccurredAfter)
-                attribute(ENROLLMENT_OCCURRED_BEFORE to enrollmentOccurredBefore)
-                attribute(ORDER to order)
-                attribute(ASSIGNED_USER_MODE to assignedUserMode)
-                attribute(UPDATED_AFTER to updatedAfter)
-                attribute(UPDATED_BEFORE to updatedBefore)
-                attribute(INCLUDE_DELETED to includeDeleted)
-                eventUid.forEach { (key, value) -> attribute(key to value) }
+                attribute(ORG_UNIT, orgUnit)
+                orgUnitMode.forEach { (key, value) -> attribute(key, value) }
+                attribute(STATUS, status)
+                attribute(PROGRAM, program)
+                attribute(PROGRAM_STAGE, programStage)
+                attribute(PROGRAM_STATUS, programStatus)
+                attribute(FILTER, filter)
+                attribute(FILTER_ATTRIBUTES, filterAttributes)
+                attribute(FOLLOW_UP, followUp)
+                attribute(OCCURRED_AFTER, occurredAfter)
+                attribute(OCCURRED_BEFORE, occurredBefore)
+                attribute(SCHEDULED_AFTER, scheduledAfter)
+                attribute(SCHEDULED_BEFORE, scheduledBefore)
+                attribute(ENROLLMENT_ENROLLED_AFTER, enrollmentEnrolledAfter)
+                attribute(ENROLLMENT_ENROLLED_BEFORE, enrollmentEnrolledBefore)
+                attribute(ENROLLMENT_OCCURRED_AFTER, enrollmentOccurredAfter)
+                attribute(ENROLLMENT_OCCURRED_BEFORE, enrollmentOccurredBefore)
+                attribute(ORDER, order)
+                attribute(ASSIGNED_USER_MODE, assignedUserMode)
+                attribute(UPDATED_AFTER, updatedAfter)
+                attribute(UPDATED_BEFORE, updatedBefore)
+                attribute(INCLUDE_DELETED, includeDeleted)
+                eventUid.forEach { (key, value) -> attribute(key, value) }
                 paging(paging)
                 page(page)
                 pageSize(pageSize)
@@ -203,8 +203,8 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
             url(EVENTS_API)
             parameters {
                 fields(fields)
-                eventUid?.forEach { (key, value) -> attribute(key to value) }
-                orgUnitMode?.forEach { (key, value) -> attribute(key to value) }
+                eventUid?.forEach { (key, value) -> attribute(key, value) }
+                orgUnitMode?.forEach { (key, value) -> attribute(key, value) }
             }
         }
     }

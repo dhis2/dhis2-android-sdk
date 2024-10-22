@@ -47,11 +47,11 @@ internal class DataApprovalService(private val client: HttpServiceClient) {
             url("dataApprovals/multiple")
             parameters {
                 fields(fields)
-                attribute("lastUpdated" to lastUpdated)
-                attribute("wf" to workflow)
-                attribute("pe" to periods)
-                attribute("ou" to organisationUnit)
-                attribute("aoc" to attributeOptionCombo)
+                attribute("lastUpdated", lastUpdated)
+                attribute("wf", workflow)
+                attribute("pe", periods)
+                attribute("ou", organisationUnit)
+                attribute("aoc", attributeOptionCombo)
             }
         }
     }

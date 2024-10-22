@@ -41,8 +41,8 @@ internal class TrackedEntityAttributeReservedValueService(private val client: Ht
         return client.get {
             url("trackedEntityAttributes/$trackedEntityAttributeUid/generateAndReserve")
             parameters {
-                attribute("numberToReserve" to numberToReserve)
-                attribute("ORG_UNIT_CODE" to orgUnitCode)
+                attribute("numberToReserve", numberToReserve)
+                attribute("ORG_UNIT_CODE", orgUnitCode)
             }
         }
     }

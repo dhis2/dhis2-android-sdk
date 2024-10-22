@@ -52,11 +52,11 @@ internal class DataSetCompleteRegistrationService(private val client: HttpServic
             url("completeDataSetRegistrations")
             parameters {
                 fields(fields)
-                attribute("lastUpdated" to lastUpdated)
-                attribute("dataSet" to dataSetUids)
-                attribute("period" to periodIds)
-                attribute("orgUnit" to organisationUnitIds)
-                attribute("children" to children)
+                attribute("lastUpdated", lastUpdated)
+                attribute("dataSet", dataSetUids)
+                attribute("period", periodIds)
+                attribute("orgUnit", organisationUnitIds)
+                attribute("children", children)
                 paging(paging)
             }
         }
@@ -91,12 +91,12 @@ internal class DataSetCompleteRegistrationService(private val client: HttpServic
         return client.delete {
             url("completeDataSetRegistrations")
             parameters {
-                attribute("ds" to dataSet)
-                attribute("pe" to periodId)
-                attribute("ou" to orgUnit)
-                attribute("cc" to categoryComboUid)
-                attribute("cp" to categoryOptionUids)
-                attribute("multiOu" to multiOrganisationUnit)
+                attribute("ds", dataSet)
+                attribute("pe", periodId)
+                attribute("ou", orgUnit)
+                attribute("cc", categoryComboUid)
+                attribute("cp", categoryOptionUids)
+                attribute("multiOu", multiOrganisationUnit)
             }
         }
     }

@@ -24,8 +24,8 @@ class CustomService(private val client: HttpServiceClient) {
         return client.get {
             url("end-point/$path")
             parameters{
-                attribute("field" to field)
-                attribute("filter" to filter)
+                attribute("field", field)
+                attribute("filter", filter)
                 paging(paging)
                 page(page)
                 pageSize(pageSize)

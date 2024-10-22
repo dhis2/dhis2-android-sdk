@@ -56,7 +56,7 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         return client.get {
             url("$DATA_STORE/$namespace")
             parameters {
-                attribute("fields" to fields)
+                attribute("fields", fields)
                 page(page)
                 pageSize(pageSize)
             }

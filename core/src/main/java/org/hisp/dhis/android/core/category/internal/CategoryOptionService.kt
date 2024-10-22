@@ -47,8 +47,8 @@ internal class CategoryOptionService(private val client: HttpServiceClient) {
             url("categoryOptions")
             parameters {
                 fields(fields)
-                attribute("filter" to categoryUidsFilterString)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", categoryUidsFilterString)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }
@@ -60,7 +60,7 @@ internal class CategoryOptionService(private val client: HttpServiceClient) {
         return client.get {
             url("categoryOptions/orgUnits")
             parameters {
-                attribute("categoryOptions" to categoryOptions)
+                attribute("categoryOptions", categoryOptions)
             }
         }
     }

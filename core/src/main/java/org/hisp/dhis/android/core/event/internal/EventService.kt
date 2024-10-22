@@ -41,7 +41,7 @@ internal class EventService(private val client: HttpServiceClient) {
         return client.post {
             url(EVENTS)
             parameters {
-                attribute(STRATEGY to strategy)
+                attribute(STRATEGY, strategy)
             }
             body(events)
         }
@@ -76,23 +76,23 @@ internal class EventService(private val client: HttpServiceClient) {
             url(EVENTS)
             parameters {
                 fields(fields)
-                attribute(ORG_UNIT to orgUnit)
-                attribute(OU_MODE to orgUnitMode)
-                attribute(STATUS to status)
-                attribute(PROGRAM to program)
-                attribute(PROGRAM_STAGE to programStage)
-                attribute(PROGRAM_STATUS to programStatus)
-                attribute(FOLLOW_UP to followUp)
-                attribute(EVENT_START_DATE to startDate)
-                attribute(EVENT_END_DATE to endDate)
-                attribute(DUE_START_DATE to dueDateStart)
-                attribute(DUE_END_DATE to dueDateEnd)
-                attribute(ORDER to order)
-                attribute(ASSIGNED_USER_MODE to assignedUserMode)
-                attribute(LAST_UPDATED_START_DATE to lastUpdatedStartDate)
-                attribute(LAST_UPDATED_END_DATE to lastUpdatedEndDate)
-                attribute(INCLUDE_DELETED to includeDeleted)
-                attribute(EVENT to eventUid)
+                attribute(ORG_UNIT, orgUnit)
+                attribute(OU_MODE, orgUnitMode)
+                attribute(STATUS, status)
+                attribute(PROGRAM, program)
+                attribute(PROGRAM_STAGE, programStage)
+                attribute(PROGRAM_STATUS, programStatus)
+                attribute(FOLLOW_UP, followUp)
+                attribute(EVENT_START_DATE, startDate)
+                attribute(EVENT_END_DATE, endDate)
+                attribute(DUE_START_DATE, dueDateStart)
+                attribute(DUE_END_DATE, dueDateEnd)
+                attribute(ORDER, order)
+                attribute(ASSIGNED_USER_MODE, assignedUserMode)
+                attribute(LAST_UPDATED_START_DATE, lastUpdatedStartDate)
+                attribute(LAST_UPDATED_END_DATE, lastUpdatedEndDate)
+                attribute(INCLUDE_DELETED, includeDeleted)
+                attribute(EVENT, eventUid)
                 filter(filter)
                 paging(paging)
                 page(page)
@@ -110,7 +110,7 @@ internal class EventService(private val client: HttpServiceClient) {
             url("$EVENTS/$eventUid")
             parameters {
                 fields(fields)
-                attribute(OU_MODE to orgUnitMode)
+                attribute(OU_MODE, orgUnitMode)
             }
         }
     }
@@ -124,8 +124,8 @@ internal class EventService(private val client: HttpServiceClient) {
             url(EVENTS)
             parameters {
                 fields(fields)
-                attribute(EVENT to eventUid)
-                attribute(OU_MODE to orgUnitMode)
+                attribute(EVENT, eventUid)
+                attribute(OU_MODE, orgUnitMode)
             }
         }
     }

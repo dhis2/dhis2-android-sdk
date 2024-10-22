@@ -48,7 +48,7 @@ internal class ProgramStageWorkingListService(private val client: HttpServiceCli
             parameters {
                 fields(fields)
                 filter(uids)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

@@ -74,7 +74,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
-                attribute(dimension to dimension)
+                attribute(dimension, dimension)
             }
         }
     }
@@ -96,9 +96,9 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$EVENTS/files")
             parameters {
-                attribute("eventUid" to eventUid)
-                attribute("dataElementUid" to dataElementUid)
-                attribute("dimension" to dimension)
+                attribute("eventUid", eventUid)
+                attribute("dataElementUid", dataElementUid)
+                attribute("dimension", dimension)
             }
         }
     }
@@ -121,11 +121,11 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$DATA_VALUES/files")
             parameters {
-                attribute("de" to dataElement)
-                attribute("pe" to period)
-                attribute("ou" to organisationUnit)
-                attribute("co" to categoryOptionCombo)
-                attribute("dimension" to dimension)
+                attribute("de", dataElement)
+                attribute("pe", period)
+                attribute("ou", organisationUnit)
+                attribute("co", categoryOptionCombo)
+                attribute("dimension", dimension)
             }
         }
     }

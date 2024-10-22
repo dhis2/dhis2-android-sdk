@@ -47,7 +47,7 @@ internal class DataSetService(private val client: HttpServiceClient) {
             parameters {
                 fields(fields)
                 filter(uids)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

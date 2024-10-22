@@ -48,13 +48,13 @@ internal class ApiService(private val client: HttpServiceClient) {
         return client.get {
             url("metadata")
             parameters {
-                attribute("dataElements:fields" to dataElements)
-                attribute("categoryOptionCombos:fields" to categoryOptionCombos)
-                attribute("organisationUnits:fields" to organisationUnits)
-                attribute("users:fields" to users)
-                attribute("trackedEntityTypes:fields" to trackedEntityTypes)
-                attribute("trackedEntityAttributes:fields" to trackedEntityAttributes)
-                attribute("programs:fields" to programs)
+                attribute("dataElements:fields", dataElements)
+                attribute("categoryOptionCombos:fields", categoryOptionCombos)
+                attribute("organisationUnits:fields", organisationUnits)
+                attribute("users:fields", users)
+                attribute("trackedEntityTypes:fields", trackedEntityTypes)
+                attribute("trackedEntityAttributes:fields", trackedEntityAttributes)
+                attribute("programs:fields", programs)
             }
         }
     }

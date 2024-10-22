@@ -46,8 +46,8 @@ internal class IconService(private val client: HttpServiceClient) {
             url(ICONS)
             parameters {
                 fields(fields)
-                attribute("keys" to keys)
-                attribute("type" to type)
+                attribute("keys", keys)
+                attribute("type", type)
                 paging(paging)
             }
         }

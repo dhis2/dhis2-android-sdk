@@ -47,7 +47,7 @@ internal class TrackedEntityTypeService(private val client: HttpServiceClient) {
             parameters {
                 fields(fields)
                 filter(idFilter)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

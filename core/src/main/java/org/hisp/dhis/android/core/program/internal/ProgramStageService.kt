@@ -45,8 +45,8 @@ internal class ProgramStageService(private val client: HttpServiceClient) {
             url("programStages")
             parameters {
                 fields(fields)
-                attribute("filter" to programUidsFilterString)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", programUidsFilterString)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

@@ -48,7 +48,7 @@ internal class TrackedEntityInstanceFilterService(private val client: HttpServic
             parameters {
                 fields(fields)
                 filter(uids)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }
@@ -65,7 +65,7 @@ internal class TrackedEntityInstanceFilterService(private val client: HttpServic
             parameters {
                 fields(fields)
                 filter(uids)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

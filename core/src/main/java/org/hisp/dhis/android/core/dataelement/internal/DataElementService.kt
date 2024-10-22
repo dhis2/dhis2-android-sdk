@@ -49,7 +49,7 @@ internal class DataElementService(private val client: HttpServiceClient) {
                 fields(fields)
                 filter(uids)
                 filter(lastUpdated)
-                attribute("filter" to accessReadFilter)
+                attribute("filter", accessReadFilter)
                 paging(paging)
             }
         }

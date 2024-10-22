@@ -44,7 +44,7 @@ internal class ProgramRuleService(private val client: HttpServiceClient) {
             url("programRules")
             parameters {
                 fields(fields)
-                attribute("filter" to programUidsFilterString)
+                attribute("filter", programUidsFilterString)
                 paging(paging)
             }
         }

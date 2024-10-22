@@ -46,7 +46,7 @@ internal class OptionService(private val client: HttpServiceClient) {
             url("options")
             parameters {
                 fields(fields)
-                attribute("filter" to optionSetUidsFilterString)
+                attribute("filter", optionSetUidsFilterString)
                 paging(paging)
                 page(page)
                 pageSize(pageSize)

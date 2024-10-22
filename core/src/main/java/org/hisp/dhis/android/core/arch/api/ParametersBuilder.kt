@@ -48,10 +48,20 @@ class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
         }
     }
 
-    fun <T> attribute(pair: Pair<String, T?>) {
-        pair.second?.let { nonNullSecond ->
-            parameters.add(pair.first to nonNullSecond.toString())
-        }
+    fun attribute(attribute: String, value: String?) {
+        value?.let { parameters.add(attribute to it) }
+    }
+
+    fun attribute(attribute: String, value: Int?) {
+        value?.let { parameters.add(attribute to it.toString()) }
+    }
+
+    fun attribute(attribute: String, value: Boolean?) {
+        value?.let { parameters.add(attribute to it.toString()) }
+    }
+
+    fun attribute(attribute: String, value: List<String?>?) {
+        value?.let { it.filterNotNull().forEach { parameters.add(attribute to it) } }
     }
 
     fun paging(paging: Boolean) {

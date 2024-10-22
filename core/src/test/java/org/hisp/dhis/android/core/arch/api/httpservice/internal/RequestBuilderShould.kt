@@ -226,7 +226,10 @@ class RequestBuilderShould {
             assertEquals(
                 "https://temporary-dhis-url.org/api/test" +
                     "?param1=value1" +
-                    "&param2=value2" +
+                    "&param2=5" +
+                    "&param3=true" +
+                    "&listParam=value3" +
+                    "&listParam=value4" +
                     "&paging=true" +
                     "&page=2" +
                     "&pageSize=15",
@@ -242,8 +245,10 @@ class RequestBuilderShould {
         service.get<String> {
             url("test")
             parameters {
-                attribute("param1" to "value1")
-                attribute("param2" to "value2")
+                attribute("param1", "value1")
+                attribute("param2", 5)
+                attribute("param3", true)
+                attribute("listParam", listOf("value3", "value4"))
 
                 paging(paging)
                 page(page)

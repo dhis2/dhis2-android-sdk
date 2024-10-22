@@ -53,8 +53,8 @@ internal class TrackerImporterService(private val client: HttpServiceClient) {
         return client.post {
             url(TRACKER_URL)
             parameters {
-                attribute(ATOMIC_MODE to atomicMode)
-                attribute(IMPORT_STRATEGY to importStrategy)
+                attribute(ATOMIC_MODE, atomicMode)
+                attribute(IMPORT_STRATEGY, importStrategy)
             }
             body(payload)
         }

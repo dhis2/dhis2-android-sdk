@@ -52,12 +52,12 @@ internal class DataValueService(private val client: HttpServiceClient) {
             url("dataValueSets")
             parameters {
                 fields(fields)
-                attribute("lastUpdated" to lastUpdated)
-                attribute("dataSet" to dataSetUids)
-                attribute("period" to periodIds)
-                attribute("orgUnit" to orgUnitUids)
-                attribute("children" to children)
-                attribute("includeDeleted" to includeDeleted)
+                attribute("lastUpdated", lastUpdated)
+                attribute("dataSet", dataSetUids)
+                attribute("period", periodIds)
+                attribute("orgUnit", orgUnitUids)
+                attribute("children", children)
+                attribute("includeDeleted", includeDeleted)
                 paging(paging)
             }
         }

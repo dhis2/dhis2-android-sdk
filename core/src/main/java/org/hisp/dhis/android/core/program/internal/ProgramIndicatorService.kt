@@ -49,7 +49,7 @@ internal class ProgramIndicatorService(private val client: HttpServiceClient) {
             parameters {
                 fields(fields)
                 filter(displayInForm)
-                attribute("filter" to program)
+                attribute("filter", program)
                 filter(uids)
                 paging(paging)
             }

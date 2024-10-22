@@ -46,7 +46,7 @@ internal class EventFilterService(private val client: HttpServiceClient) {
             url("eventFilters")
             parameters {
                 filter(uids)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 fields(fields)
                 paging(paging)
             }

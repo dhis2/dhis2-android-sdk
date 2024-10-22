@@ -47,7 +47,7 @@ internal class RelationshipTypeService(private val client: HttpServiceClient) {
             parameters {
                 fields(fields)
                 filter(lastUpdated)
-                attribute("filter" to accessDataReadFilter)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

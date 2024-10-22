@@ -51,7 +51,7 @@ internal class OrganisationUnitService(private val client: HttpServiceClient) {
             parameters {
                 fields(fields)
                 filter(filter)
-                attribute(ORDER to order)
+                attribute(ORDER, order)
                 paging(paging)
                 pageSize(pageSize)
                 page(page)

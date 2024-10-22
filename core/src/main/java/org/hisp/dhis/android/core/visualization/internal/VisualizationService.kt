@@ -46,7 +46,7 @@ internal class VisualizationService(private val client: HttpServiceClient) {
             url("$VISUALIZATIONS/$uid")
             parameters {
                 fields(fields)
-                attribute("filter" to accessFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }
@@ -62,7 +62,7 @@ internal class VisualizationService(private val client: HttpServiceClient) {
             url("$VISUALIZATIONS/$uid")
             parameters {
                 fields(fields)
-                attribute("filter" to accessFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

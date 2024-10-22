@@ -44,7 +44,7 @@ internal class OptionGroupService(private val client: HttpServiceClient) {
             url("optionGroups")
             parameters {
                 fields(fields)
-                attribute("filter" to dataSetUidsFilter)
+                attribute("filter", dataSetUidsFilter)
                 paging(paging)
             }
         }

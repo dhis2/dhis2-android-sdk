@@ -42,8 +42,8 @@ internal class OwnershipService(private val client: HttpServiceClient) {
         return client.post {
             url("$OWNERSHIP_URL/override")
             parameters {
-                attribute(PROGRAM to program)
-                attribute(REASON to reason)
+                attribute(PROGRAM, program)
+                attribute(REASON, reason)
             }
             body(trackedEntity)
         }
@@ -57,8 +57,8 @@ internal class OwnershipService(private val client: HttpServiceClient) {
         return client.put {
             url("$OWNERSHIP_URL/transfer")
             parameters {
-                attribute(PROGRAM to program)
-                attribute(ORG_UNIT to ou)
+                attribute(PROGRAM, program)
+                attribute(ORG_UNIT, ou)
             }
             body(trackedEntity)
         }

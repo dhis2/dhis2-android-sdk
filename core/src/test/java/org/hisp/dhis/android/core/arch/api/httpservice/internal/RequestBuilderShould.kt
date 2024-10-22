@@ -227,6 +227,8 @@ class RequestBuilderShould {
                 "https://temporary-dhis-url.org/api/test" +
                     "?param1=value1" +
                     "&param2=value2" +
+                    "&listParam=value3" +
+                    "&listParam=value4" +
                     "&paging=true" +
                     "&page=2" +
                     "&pageSize=15",
@@ -244,6 +246,7 @@ class RequestBuilderShould {
             parameters {
                 attribute("param1" to "value1")
                 attribute("param2" to "value2")
+                attribute("listParam" to listOf("value3", "value4"))
 
                 paging(paging)
                 page(page)

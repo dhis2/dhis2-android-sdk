@@ -3,7 +3,7 @@ const path = require('path');
 const docsDir = './docs/content/developer/'
 
 const generateFileIndexMap = () => {
-	const indexFilePath = 'docs/dhis2_android_sdk_developer_guide_INDEX.yml'
+	const indexFilePath = './docs/dhis2_android_sdk_developer_guide_INDEX.yml'
     const indexContent = fs.readFileSync(indexFilePath, 'utf8');
     const lines = indexContent.split('\n');
     const filePositionMap = new Map();

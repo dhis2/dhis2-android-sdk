@@ -122,7 +122,7 @@ const mainFileLoop = () => {
 			let content = fs.readFileSync(filePath, 'utf8');
 			// add index header
 			const position = filePositionMap.get(file);
-			content = addSidebarPositionToFiles(content);
+			content = addSidebarPositionToFiles(content, position);
 			// convert emphasis contexts
 			content = convertAdmonitions(content, file);
 			// strip ref links

@@ -26,30 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.core.data.category
 
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 
-@RunWith(D2JunitRunner::class)
-class CategoryOptionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<CategoryOption>(
-    CategoryOptionStoreImpl(TestDatabaseAdapterFactory.get()),
-    CategoryOptionTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
-    override fun buildObject(): CategoryOption {
-        return CategoryOptionSamples.getCategoryOptionDatabase()
-    }
+internal object CategorySamples {
+    fun getCategoryDatabase(): Category {
+        val builder: Category.Builder = Category.builder()
 
-    override fun buildObjectToUpdate(): CategoryOption {
-        return CategoryOptionSamples.getCategoryOptionDatabase()
-            .toBuilder()
-            .displayName("UpdatedCategoryOption")
-            .build()
+        fillIdentifiableProperties(builder)
+        return builder.build()
     }
 }

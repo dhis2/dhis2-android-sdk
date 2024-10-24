@@ -28,28 +28,28 @@
 
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryTableInfo
+import org.hisp.dhis.android.core.data.category.CategorySamples
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class CategoryOptionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<CategoryOption>(
-    CategoryOptionStoreImpl(TestDatabaseAdapterFactory.get()),
-    CategoryOptionTableInfo.TABLE_INFO,
+class CategoryStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Category> (
+    CategoryStoreImpl(TestDatabaseAdapterFactory.get()),
+    CategoryTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get()
 ) {
-    override fun buildObject(): CategoryOption {
-        return CategoryOptionSamples.getCategoryOptionDatabase()
+    override fun buildObject(): Category {
+        return CategorySamples.getCategoryDatabase()
     }
 
-    override fun buildObjectToUpdate(): CategoryOption {
-        return CategoryOptionSamples.getCategoryOptionDatabase()
+    override fun buildObjectToUpdate(): Category {
+        return CategorySamples.getCategoryDatabase()
             .toBuilder()
-            .displayName("UpdatedCategoryOption")
+            .displayName("UpdatedCategory")
             .build()
     }
 }

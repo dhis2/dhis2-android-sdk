@@ -10,7 +10,7 @@ const generateFileIndexMap = () => {
 
     let position = 1;
     lines.forEach((line) => {
-        const match = line.match(/"docs/content/developer/(.+\.md)/);
+        const match = line.match(/docs/content/developer/(.+\.md)/g);
         if (match) {
             const filePath = match[1];
             filePositionMap.set(filePath, position);

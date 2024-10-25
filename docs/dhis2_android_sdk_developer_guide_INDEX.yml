@@ -1,9 +1,9 @@
-- About this guide: "@github(dhis2/dhis2-android-sdk, docs/content/developer/about-this-guide.md, master)"
-- 'Compatibility: SDK / core / Android': "@github(dhis2/dhis2-android-sdk, docs/content/developer/compatibility.md, master)"
 - Overview: "@github(dhis2/dhis2-android-sdk, docs/content/developer/overview.md, master)"
+- Compatibility: "@github(dhis2/dhis2-android-sdk, docs/content/developer/compatibility.md, master)"
 - Getting started: "@github(dhis2/dhis2-android-sdk, docs/content/developer/getting-started.md, master)"
 - Modules and repositories: "@github(dhis2/dhis2-android-sdk, docs/content/developer/modules-and-repositories.md, master)"
 - Database: "@github(dhis2/dhis2-android-sdk, docs/content/developer/database.md, master)"
+- Data Store: "@github(dhis2/dhis2-android-sdk, docs/content/developer/data-store.md)"
 - Workflow: "@github(dhis2/dhis2-android-sdk, docs/content/developer/workflow.md, master)"
 - Analytics: "@github(dhis2/dhis2-android-sdk, docs/content/developer/analytics.md, master)"
 - Settings: "@github(dhis2/dhis2-android-sdk, docs/content/developer/settings.md, master)"
@@ -22,4 +22,4 @@
 - APK distribution: "@github(dhis2/dhis2-android-sdk, docs/content/developer/apk-distribution.md, master)"
 - Debugging: "@github(dhis2/dhis2-android-sdk, docs/content/developer/debugging.md, master)"
 - Known issues: "@github(dhis2/dhis2-android-sdk, docs/content/developer/known-issues.md, master)"
-
+- About this guide: "@github(dhis2/dhis2-android-sdk, docs/content/developer/about-this-guide.md, master)"

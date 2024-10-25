@@ -26,18 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.program
+package org.hisp.dhis.android.core.data.trackedentity
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 
-internal object ProgramStageSectionProgramIndicatorLinkSamples {
-    val programStageSectionProgramIndicatorLink: ProgramStageSectionProgramIndicatorLink
+internal object TrackedEntityAttributeLegendSetLinkSamples {
+    val trackedEntityAttributeLegendSetLink: TrackedEntityAttributeLegendSetLink
         get() {
-            return ProgramStageSectionProgramIndicatorLink.builder()
+            return TrackedEntityAttributeLegendSetLink.builder()
                 .id(1L)
-                .programStageSection("program_stage_section_uid")
-                .programIndicator("program_indicator_uid")
+                .trackedEntityAttribute("tracked_entity_attribute_uid")
+                .legendSet("legend_set_uid")
+                .sortOrder(1)
                 .build()
         }
 }

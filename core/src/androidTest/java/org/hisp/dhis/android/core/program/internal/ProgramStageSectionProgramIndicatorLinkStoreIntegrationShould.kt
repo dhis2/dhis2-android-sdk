@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples
 import org.hisp.dhis.android.core.data.program.ProgramStageSectionProgramIndicatorLinkSamples
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStoreImpl
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory

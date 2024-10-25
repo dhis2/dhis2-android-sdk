@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.option.OptionSamples
 import org.hisp.dhis.android.core.option.Option
@@ -39,10 +38,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class OptionStoreIntegrationShould: IdentifiableObjectStoreAbstractIntegrationShould<Option>(
+class OptionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Option>(
     OptionStoreImpl(TestDatabaseAdapterFactory.get()),
     OptionTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): Option {
         return OptionSamples.option

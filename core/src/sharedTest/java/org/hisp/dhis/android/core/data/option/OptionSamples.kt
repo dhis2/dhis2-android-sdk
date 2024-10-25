@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.data.option
 
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 import org.hisp.dhis.android.core.option.Option
 

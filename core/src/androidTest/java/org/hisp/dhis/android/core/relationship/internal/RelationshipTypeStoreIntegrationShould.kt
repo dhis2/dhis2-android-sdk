@@ -38,10 +38,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class RelationshipTypeStoreIntegrationShould: IdentifiableObjectStoreAbstractIntegrationShould<RelationshipType>(
+class RelationshipTypeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<RelationshipType>(
     RelationshipTypeStoreImpl(TestDatabaseAdapterFactory.get()),
     RelationshipTypeTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): RelationshipType {
         return RelationshipTypeSamples.RELATIONSHIP_TYPE_1

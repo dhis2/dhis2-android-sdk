@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.data.category.CategoryComboSamples
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.indicator.IndicatorTypeSamples
 import org.hisp.dhis.android.core.indicator.IndicatorType
@@ -39,10 +37,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class IndicatoryTypeStoreIntegrationShould: IdentifiableObjectStoreAbstractIntegrationShould<IndicatorType> (
+class IndicatoryTypeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<IndicatorType> (
     IndicatorTypeStoreImpl(TestDatabaseAdapterFactory.get()),
     IndicatorTypeTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): IndicatorType {
         return IndicatorTypeSamples.indicatorType

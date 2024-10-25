@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class CategoryStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Category> (
     CategoryStoreImpl(TestDatabaseAdapterFactory.get()),
     CategoryTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): Category {
         return CategorySamples.getCategoryDatabase()

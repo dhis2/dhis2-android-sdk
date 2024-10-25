@@ -37,10 +37,10 @@ import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataSetValidationRuleLinkStoreIntegrationShould: LinkStoreAbstractIntegrationShould<DataSetValidationRuleLink>(
+class DataSetValidationRuleLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataSetValidationRuleLink>(
     DataSetValidationRuleLinkStoreImpl(TestDatabaseAdapterFactory.get()),
     DataSetValidationRuleLinkTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {
         return DataSetValidationRuleLinkSamples.dataSetValidationRuleLink.dataSet()!!

@@ -37,10 +37,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataValueStoreIntegrationShould: ObjectWithoutUidStoreAbstractIntegrationShould<DataValue> (
+class DataValueStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataValue> (
     DataValueStoreImpl(TestDatabaseAdapterFactory.get()),
     DataValueTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): DataValue {
         return DataValueSamples.getDataValueDatabase()
@@ -51,7 +51,5 @@ class DataValueStoreIntegrationShould: ObjectWithoutUidStoreAbstractIntegrationS
             .toBuilder()
             .value("updatedValue")
             .build()
-
     }
-
 }

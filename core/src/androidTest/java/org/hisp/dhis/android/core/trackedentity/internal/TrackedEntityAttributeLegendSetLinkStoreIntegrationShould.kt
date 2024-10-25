@@ -37,11 +37,12 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class TrackedEntityAttributeLegendSetLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<TrackedEntityAttributeLegendSetLink>(
-    TrackedEntityAttributeLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
+class TrackedEntityAttributeLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<TrackedEntityAttributeLegendSetLink>(
+        TrackedEntityAttributeLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
     override fun addMasterUid(): String {
         return TrackedEntityAttributeLegendSetLinkSamples.trackedEntityAttributeLegendSetLink.trackedEntityAttribute()
     }

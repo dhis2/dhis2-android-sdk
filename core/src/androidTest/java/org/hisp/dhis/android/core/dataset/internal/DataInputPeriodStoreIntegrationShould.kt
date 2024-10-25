@@ -38,10 +38,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataInputPeriodStoreIntegrationShould: LinkStoreAbstractIntegrationShould<DataInputPeriod> (
+class DataInputPeriodStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataInputPeriod> (
     DataInputPeriodStoreImpl(TestDatabaseAdapterFactory.get()),
     DataInputPeriodTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {
         return DataInputPeriodSamples.getDataInputPeriod().dataSet()!!.uid()

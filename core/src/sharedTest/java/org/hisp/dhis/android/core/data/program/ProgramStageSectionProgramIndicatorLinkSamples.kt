@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.data.program
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
 
 internal object ProgramStageSectionProgramIndicatorLinkSamples {

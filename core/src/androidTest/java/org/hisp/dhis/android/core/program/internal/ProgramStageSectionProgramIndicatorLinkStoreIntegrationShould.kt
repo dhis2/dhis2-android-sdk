@@ -37,13 +37,15 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class ProgramStageSectionProgramIndicatorLinkStoreIntegrationShould: LinkStoreAbstractIntegrationShould<ProgramStageSectionProgramIndicatorLink>(
-    ProgramStageSectionProgramIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
+class ProgramStageSectionProgramIndicatorLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<ProgramStageSectionProgramIndicatorLink>(
+        ProgramStageSectionProgramIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
     override fun addMasterUid(): String {
-        return ProgramStageSectionProgramIndicatorLinkSamples.programStageSectionProgramIndicatorLink.programStageSection()!!
+        return ProgramStageSectionProgramIndicatorLinkSamples.programStageSectionProgramIndicatorLink
+            .programStageSection()!!
     }
 
     override fun buildObject(): ProgramStageSectionProgramIndicatorLink {

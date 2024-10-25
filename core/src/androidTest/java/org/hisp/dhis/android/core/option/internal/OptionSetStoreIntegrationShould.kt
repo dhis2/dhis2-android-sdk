@@ -38,10 +38,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class OptionSetStoreIntegrationShould: IdentifiableObjectStoreAbstractIntegrationShould<OptionSet>(
+class OptionSetStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<OptionSet>(
     OptionSetStoreImpl(TestDatabaseAdapterFactory.get()),
     OptionSetTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): OptionSet {
         return OptionSetSamples.optionSet

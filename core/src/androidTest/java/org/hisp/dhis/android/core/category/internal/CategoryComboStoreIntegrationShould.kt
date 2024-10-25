@@ -40,7 +40,7 @@ import org.junit.runner.RunWith
 class CategoryComboStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<CategoryCombo>(
     CategoryComboStoreImpl(TestDatabaseAdapterFactory.get()),
     CategoryComboTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): CategoryCombo {
         return CategoryComboSamples.getCategoryComboDatabase()

@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.data.dataapproval
 
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 

@@ -38,10 +38,10 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataApprovalStoreIntegrationShould: ObjectWithoutUidStoreAbstractIntegrationShould<DataApproval>(
+class DataApprovalStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataApproval>(
     DataApprovalStoreImpl(TestDatabaseAdapterFactory.get()),
     DataApprovalTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): DataApproval {
         return DataApprovalSamples.getDataApprovalDatabase()
@@ -52,7 +52,5 @@ class DataApprovalStoreIntegrationShould: ObjectWithoutUidStoreAbstractIntegrati
             .toBuilder()
             .state(DataApprovalState.ACCEPTED_HERE)
             .build()
-
     }
-
 }

@@ -42,7 +42,7 @@ class DataSetCompleteRegistrationStoreIntegrationShould :
     ObjectWithoutUidStoreAbstractIntegrationShould<DataSetCompleteRegistration>(
         DataSetCompleteRegistrationStoreImpl(TestDatabaseAdapterFactory.get()),
         DataSetCompleteRegistrationTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get()
+        TestDatabaseAdapterFactory.get(),
     ) {
 
     override fun buildObject(): DataSetCompleteRegistration {

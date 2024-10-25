@@ -38,5 +38,5 @@ internal object DataSetValidationRuleLinkSamples {
                 .dataSet("dataset_uid")
                 .validationRule("validation_rule_uid")
                 .build()
-            }
+        }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.DataSetElementSamples
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-public class CategoryOptionSamples {
-
-    public static CategoryOption getCategoryOption() {
-        CategoryOption.Builder builder = CategoryOption.builder();
-
-        fillNameableProperties(builder);
-        return builder
-                .id(1L)
-                .startDate(CREATED)
-                .endDate(LAST_UPDATED)
-                .access(AccessHelper.createForDataWrite(false))
-                .build();
+@RunWith(D2JunitRunner::class)
+class DataSetElementStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataSetElement> (
+    DataSetElementStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataSetElementLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun addMasterUid(): String {
+        return DataSetElementSamples.getDataSetElement().dataSet()!!.uid()
     }
-    public static CategoryOption getCategoryOptionDatabase() {
-        CategoryOption.Builder builder = CategoryOption.builder();
 
-        fillNameableProperties(builder);
-        return builder.build();
+    override fun buildObject(): DataSetElement {
+        return DataSetElementSamples.getDataSetElement()
+    }
+
+    override fun buildObjectWithOtherMasterUid(): DataSetElement {
+        return DataSetElementSamples.getDataSetElement()
+            .toBuilder()
+            .dataSet(ObjectWithUid.create("updated_data_set_uid"))
+            .build()
     }
 }

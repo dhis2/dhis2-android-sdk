@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.data.trackedentity
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-public class CategoryOptionSamples {
-
-    public static CategoryOption getCategoryOption() {
-        CategoryOption.Builder builder = CategoryOption.builder();
-
-        fillNameableProperties(builder);
-        return builder
+internal object TrackedEntityAttributeLegendSetLinkSamples {
+    val trackedEntityAttributeLegendSetLink: TrackedEntityAttributeLegendSetLink
+        get() {
+            return TrackedEntityAttributeLegendSetLink.builder()
                 .id(1L)
-                .startDate(CREATED)
-                .endDate(LAST_UPDATED)
-                .access(AccessHelper.createForDataWrite(false))
-                .build();
-    }
-    public static CategoryOption getCategoryOptionDatabase() {
-        CategoryOption.Builder builder = CategoryOption.builder();
-
-        fillNameableProperties(builder);
-        return builder.build();
-    }
+                .trackedEntityAttribute("tracked_entity_attribute_uid")
+                .legendSet("legend_set_uid")
+                .sortOrder(1)
+                .build()
+        }
 }

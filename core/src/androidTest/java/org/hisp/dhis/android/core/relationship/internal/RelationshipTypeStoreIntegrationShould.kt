@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples
+import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.TO_CONSTRAINT_2
+import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-public class CategoryOptionSamples {
-
-    public static CategoryOption getCategoryOption() {
-        CategoryOption.Builder builder = CategoryOption.builder();
-
-        fillNameableProperties(builder);
-        return builder
-                .id(1L)
-                .startDate(CREATED)
-                .endDate(LAST_UPDATED)
-                .access(AccessHelper.createForDataWrite(false))
-                .build();
+@RunWith(D2JunitRunner::class)
+class RelationshipTypeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<RelationshipType>(
+    RelationshipTypeStoreImpl(TestDatabaseAdapterFactory.get()),
+    RelationshipTypeTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): RelationshipType {
+        return RelationshipTypeSamples.RELATIONSHIP_TYPE_1
     }
-    public static CategoryOption getCategoryOptionDatabase() {
-        CategoryOption.Builder builder = CategoryOption.builder();
 
-        fillNameableProperties(builder);
-        return builder.build();
+    override fun buildObjectToUpdate(): RelationshipType {
+        return RelationshipTypeSamples.RELATIONSHIP_TYPE_1
+            .toBuilder()
+            .toConstraint(TO_CONSTRAINT_2)
+            .build()
     }
 }

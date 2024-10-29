@@ -122,6 +122,7 @@ class RelationshipCollectionRepository internal constructor(
                     r.toBuilder()
                         .syncState(State.TO_POST)
                         .created(clockProvider.clock.now().toJavaDate())
+                        .lastUpdated(clockProvider.clock.now().toJavaDate())
                         .deleted(false)
                         .build()
                 }

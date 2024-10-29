@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory.clockProvider
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildrenAppender
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
@@ -119,6 +121,7 @@ class RelationshipCollectionRepository internal constructor(
                 relationshipHandler.handle(relationshipWithUid) { r: Relationship ->
                     r.toBuilder()
                         .syncState(State.TO_POST)
+                        .created(clockProvider.clock.now().toJavaDate())
                         .deleted(false)
                         .build()
                 }

@@ -73,24 +73,34 @@ internal class EventDateUtils(
         programPeriodType: PeriodType?,
         expiryDays: Int,
     ): Boolean {
-        if (event.status() == EventStatus.COMPLETED && event.completedDate() == null) return false
-
-        val expiredBecauseOfCompletion = event.takeIf { it.status() == EventStatus.COMPLETED }
-            ?.completedDate()?.time
-            ?.let { isExpiredAfterCompletion(null, Instant.fromEpochMilliseconds(it), completeExpiryDays) }
-            ?: false
-
-        val expiredBecauseOfPeriod = (event.eventDate() ?: event.dueDate())?.let { eventDateOrDueDate ->
-            programPeriodType?.let { periodType ->
-                val nextPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1)
-                    .startDate()?.let { Instant.fromEpochMilliseconds(it.time).plusDays(expiryDays) }
-
-                nextPeriod != null && nextPeriod <= currentDateInstant()
-            }
-        } ?: false
-
-        return expiredBecauseOfCompletion || expiredBecauseOfPeriod
+        return when {
+            event.status() == EventStatus.COMPLETED && event.completedDate() == null -> false
+            isExpiredBecauseOfCompletion(event, completeExpiryDays) -> true
+            isExpiredBecauseOfPeriod(event, programPeriodType, expiryDays) -> true
+            else -> false
+        }
     }
+
+    private fun isExpiredBecauseOfCompletion(
+        event: Event,
+        completeExpiryDays: Int,
+    ) = event.takeIf { it.status() == EventStatus.COMPLETED }
+        ?.completedDate()?.time
+        ?.let { isExpiredAfterCompletion(null, Instant.fromEpochMilliseconds(it), completeExpiryDays) }
+        ?: false
+
+    private fun isExpiredBecauseOfPeriod(
+        event: Event,
+        programPeriodType: PeriodType?,
+        expiryDays: Int,
+    ) = (event.eventDate() ?: event.dueDate())?.let { eventDateOrDueDate ->
+        programPeriodType?.let { periodType ->
+            val nextPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1)
+                .startDate()?.let { Instant.fromEpochMilliseconds(it.time).plusDays(expiryDays) }
+
+            nextPeriod != null && expiryDays > 0 && nextPeriod <= currentDateInstant()
+        }
+    } ?: false
 
     private fun currentDateInstant(): Instant {
         return clockProvider.clock.now()

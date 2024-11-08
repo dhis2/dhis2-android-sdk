@@ -74,7 +74,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
-                attribute(dimension, dimension)
+                attribute("dimension", dimension)
             }
         }
     }

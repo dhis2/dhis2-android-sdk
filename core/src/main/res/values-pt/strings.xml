@@ -27,9 +27,22 @@
   -->
 
 <resources>
-    <string name="E1001">Você não tem acesso ao tipo%s</string>
-    <string name="E1002">O %s já existe. (%s: %s)</string>
-    <string name="E1003">%s está fora do seu escopo de pesquisa</string>
-    <string name="E1005">O tipo %s não pôde ser encontrado</string>
+    <!-- Tracker import errors -->
+    <string name="E1000">Você não tem acesso a %s</string>
+    <string name="E1001">Você não tem acesso ao tipo %s</string>
+    <string name="E1002">%s já existe. (%s: %s)</string>
+    <string name="E1003">%s está fora do escopo da sua pesquisa</string>
+    <string name="E1005">%s do tipo não pôde ser encontrado</string>
     <string name="E1006">O atributo %s não existe</string>
+    <string name="E1007">O atributo não corresponde ao tipo de valor `%s`. (Erro: %s)</string>
+    <string name="E1008">O estágio do programa %s não tem referência a um programa. Verifique a configuração do estágio do programa</string>
+    <string name="E1009">O arquivo já foi atribuído. (Arquivo: %s )</string>
+    <string name="E1032">%s do evento não foi encontrado no servidor. (Evento: %s)</string>
+    <string name="E1063">%s não foi encontrado no servidor. (%s: %s)</string>
+    <string name="E1064">O valor do atributo `%s` para o atributo `%s` não é exclusivo. (Atributo: %s)</string>
+    <string name="E1069">%sdo programa ligados à inscrição não foi encontrado no servidor. (Programa: %s, Inscrição: %s)</string>
+    <string name="E1081">A inscrição não foi encontrada no servidor. (Inscrição: %s)</string>
+    <string name="E1084">A referência do arquivo não foi encontrada no servidor. (Recurso de arquivo: %s)</string>
+    <string name="E1100">Você não tem autorização para apagar %s. (%s: %s)</string>
+    <string name="E1103">Você não tem autoridade para apagar a inscrição. (Inscrição: %s)</string>
 </resources>

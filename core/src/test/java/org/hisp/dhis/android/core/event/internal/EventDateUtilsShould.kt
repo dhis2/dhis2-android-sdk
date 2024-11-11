@@ -79,19 +79,14 @@ class EventDateUtilsShould {
     }
 
     @Test
-    fun should_return_is_not_expired_if_within_expiry_days() {
+    fun should_return_correct_expiration_provided_expiry_days() {
         whenever(event.status()) doReturn EventStatus.ACTIVE
         whenever(event.eventDate()) doReturn Date(thirdJanuary.toEpochMilliseconds())
 
         assertThat(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 10)).isFalse()
-    }
-
-    @Test
-    fun should_return_is_expired_if_out_of_expiry_days() {
-        whenever(event.status()) doReturn EventStatus.ACTIVE
-        whenever(event.eventDate()) doReturn Date(thirdJanuary.toEpochMilliseconds())
-
         assertThat(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 2)).isTrue()
+        // According to dhis2 core logic, default expiry days is 0 and represent no expiration.
+        assertThat(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 0)).isFalse()
     }
 
     @Test

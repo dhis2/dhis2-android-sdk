@@ -105,7 +105,7 @@ internal class EventServiceImpl(
             eventDateUtils.isEventExpired(
                 event = event,
                 completeExpiryDays = program?.completeEventsExpiryDays() ?: 0,
-                programPeriodType = programStage?.periodType() ?: program?.expiryPeriodType(),
+                programPeriodType = program?.expiryPeriodType(),
                 expiryDays = program?.expiryDays() ?: 0,
             ) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.EXPIRED)

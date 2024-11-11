@@ -140,4 +140,16 @@ object FileResizerHelper {
         MEDIUM(512),
         LARGE(1024),
     }
+
+    open class DimensionSizeB(val name: String, val maxSizeB: Long) {
+        companion object {
+            val SMALL = FixedImageOption("SMALL", 400000L)
+            val MEDIUM = FixedImageOption("MEDIUM", 1600000L)
+            const val ORIGINAL_NAME = "ORIGINAL"
+
+            fun create(name: String, maxSizeB: Long): DimensionSizeB = CustomImageOption(name, maxSizeB)
+        }
+        class FixedImageOption(name: String, maxSizeB: Long) : DimensionSizeB(name, maxSizeB)
+        private class CustomImageOption(name: String, maxSizeB: Long) : DimensionSizeB(name, maxSizeB)
+    }
 }

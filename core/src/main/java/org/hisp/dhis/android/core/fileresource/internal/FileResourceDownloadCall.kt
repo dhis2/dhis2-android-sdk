@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
@@ -47,10 +47,12 @@ import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeImageDimension
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.koin.core.annotation.Singleton
+import kotlin.math.min
 
 @SuppressWarnings("LongParameterList", "MagicNumber")
 @Singleton
@@ -101,13 +103,13 @@ internal class FileResourceDownloadCall(
             downloadAndPersistFiles(
                 values = dataValues,
                 maxContentLength = params.maxContentLength,
-                download = { v ->
+                download = { v, f ->
                     fileResourceService.getFileFromDataValue(
                         v.dataElement()!!,
                         v.period()!!,
                         v.organisationUnit()!!,
                         v.attributeOptionCombo()!!,
-                        FileResizerHelper.Dimension.MEDIUM.name,
+                        computeImageDimension(f, params.maxContentLength?.toLong()),
                     )
                 },
                 getUid = { v -> v.value() },
@@ -126,13 +128,13 @@ internal class FileResourceDownloadCall(
                 downloadAndPersistFiles(
                     values = attributeDataValues,
                     maxContentLength = params.maxContentLength,
-                    download = { v ->
+                    download = { v, f ->
                         when (v.valueType) {
                             ValueType.IMAGE ->
                                 fileResourceService.getImageFromTrackedEntityAttribute(
                                     v.value.trackedEntityInstance()!!,
                                     v.value.trackedEntityAttribute()!!,
-                                    FileResizerHelper.Dimension.MEDIUM.name,
+                                    computeImageDimension(f, params.maxContentLength?.toLong()),
                                 )
 
                             ValueType.FILE_RESOURCE ->
@@ -154,11 +156,11 @@ internal class FileResourceDownloadCall(
                 downloadAndPersistFiles(
                     values = trackerDataValues,
                     maxContentLength = params.maxContentLength,
-                    download = { v ->
+                    download = { v, f ->
                         fileResourceService.getFileFromEventValue(
                             v.event()!!,
                             v.dataElement()!!,
-                            FileResizerHelper.Dimension.MEDIUM.name,
+                            computeImageDimension(f, params.maxContentLength?.toLong()),
                         )
                     },
                     getUid = { v -> v.value() },
@@ -174,7 +176,7 @@ internal class FileResourceDownloadCall(
             downloadAndPersistFiles(
                 values = iconKeys,
                 maxContentLength = params.maxContentLength,
-                download = { v ->
+                download = { v, _ ->
                     fileResourceService.getCustomIcon(v.href())
                 },
                 getUid = { v -> v.fileResource().uid() },
@@ -185,7 +187,7 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> downloadAndPersistFiles(
         values: List<V>,
         maxContentLength: Int?,
-        download: suspend (V) -> ByteArray?,
+        download: suspend (V, Long?) -> ByteArray?,
         getUid: (V) -> String?,
     ) {
         val fileResources = getFileResources(values, getUid)
@@ -264,6 +266,7 @@ internal class FileResourceDownloadCall(
                     is Result.Success -> {
                         Pair(frResult.value, value)
                     }
+
                     is Result.Failure -> {
                         Log.v(FileResourceDownloadCall::class.java.canonicalName, frResult.failure.errorDescription())
                         null
@@ -277,16 +280,17 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> downloadFile(
         value: V,
         maxContentLength: Int?,
-        download: suspend (V) -> ByteArray?,
+        download: suspend (V, Long?) -> ByteArray?,
         fileResource: FileResource,
     ): FileResource? {
+        val contentLength = fileResource.contentLength()
         val acceptedContentLength = (maxContentLength == null) ||
-            (fileResource.contentLength() == null) ||
-            (fileResource.contentLength()!! <= maxContentLength)
+            (contentLength == null) ||
+            (min(fileResource.contentLength()!!.toLong(), DimensionSizeB.SMALL.maxSizeB) <= maxContentLength)
 
         return try {
             if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
-                val responseByteArray = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
+                val responseByteArray = coroutineAPICallExecutor.wrap { download(value, contentLength) }.getOrThrow()
                 responseByteArray?.let {
                     val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)
                     fileResource.toBuilder().path(file.absolutePath).build()

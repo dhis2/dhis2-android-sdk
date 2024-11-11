@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB.Companion.ORIGINAL_NAME
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
 import java.io.*
@@ -145,5 +147,27 @@ internal object FileResourceUtil {
 
     private fun logMessage(e: Exception) {
         e.message?.let { Log.v(FileResourceUtil::class.java.canonicalName, it) }
+    }
+
+    fun computeImageDimension(orignalContentLength: Long?, maxContentLength: Long? = null): String {
+        if (orignalContentLength == null || maxContentLength == null) return DimensionSizeB.MEDIUM.name
+
+        // Create list with dynamically set ORIGINAL size
+        val sizes = listOf(
+            DimensionSizeB.SMALL,
+            DimensionSizeB.MEDIUM,
+            DimensionSizeB.create(ORIGINAL_NAME, orignalContentLength),
+        )
+
+        // Filter out sizes requiring upscaling
+        val validSizes = sizes.filter { it.maxSizeB <= orignalContentLength }
+
+        // Step 3: Remove ORIGINAL if it exceeds MEDIUM max size
+        val limitedSizes = validSizes.filterNot {
+            it.name == ORIGINAL_NAME && it.maxSizeB > DimensionSizeB.MEDIUM.maxSizeB
+        }
+
+        // Select the largest size within maxContentLength
+        return limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: limitedSizes.first().name
     }
 }

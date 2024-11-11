@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeImageDimension
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
 import org.junit.Test
@@ -55,5 +56,27 @@ class FileResourceUtilShould {
         assertThat(getExtension("file.name.pdf")).isEqualTo("pdf")
 
         assertThat(getExtension("file")).isNull()
+    }
+
+    @Test
+    fun should_compute_correct_image_dimension() {
+        // Original image is smaller than SMALL
+        assertThat(computeImageDimension(300000L, 200000L)).isEqualTo("ORIGINAL")
+        assertThat(computeImageDimension(300000L, 1500000L)).isEqualTo("ORIGINAL")
+
+        // Original image is smaller than MEDIUM
+        assertThat(computeImageDimension(1000000L, 300000L)).isEqualTo("SMALL")
+        assertThat(computeImageDimension(1000000L, 500000L)).isEqualTo("SMALL")
+        assertThat(computeImageDimension(1000000L, 1200000L)).isEqualTo("ORIGINAL")
+
+        // Original image is heavier than MEDIUM
+        assertThat(computeImageDimension(2000000L, 300000L)).isEqualTo("SMALL")
+        assertThat(computeImageDimension(2000000L, 500000L)).isEqualTo("SMALL")
+        assertThat(computeImageDimension(2000000L, 2000000L)).isEqualTo("MEDIUM")
+
+        // null content lengths default to MEDIUM
+        assertThat(computeImageDimension(null, null)).isEqualTo("MEDIUM")
+        assertThat(computeImageDimension(300000L, null)).isEqualTo("MEDIUM")
+        assertThat(computeImageDimension(null, 300000L)).isEqualTo("MEDIUM")
     }
 }

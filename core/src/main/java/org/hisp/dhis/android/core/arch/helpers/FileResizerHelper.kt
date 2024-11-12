@@ -145,10 +145,10 @@ object FileResizerHelper {
     internal sealed class DimensionSize(val name: String, val maxSizeB: Long) {
         object Small : DimensionSize("SMALL", 400000L)
         object Medium : DimensionSize("MEDIUM", 1600000L)
-        object NotSupported: DimensionSize("NOT_SUPPORTED", 0L)
+        object NotSupported : DimensionSize("NOT_SUPPORTED", 0L)
         data class Original(val originalMaxSizeB: Long) : DimensionSize(ORIGIANL_NAME, originalMaxSizeB)
 
-        companion object{
+        companion object {
             const val ORIGIANL_NAME = "ORIGINAL"
         }
     }

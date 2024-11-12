@@ -287,7 +287,9 @@ internal class FileResourceDownloadCall(
         val scalingDimension = computeScalingDimension(contentLength, maxContentLength?.toLong(), fileIsImage)
 
         return try {
-            if (scalingDimension != DimensionSize.NotSupported.name && FileResourceInternalAccessor.isStored(fileResource)) {
+            if (scalingDimension != DimensionSize.NotSupported.name &&
+                FileResourceInternalAccessor.isStored(fileResource)
+            ) {
                 val responseByteArray = coroutineAPICallExecutor.wrap { download(value, scalingDimension) }.getOrThrow()
                 responseByteArray?.let {
                     val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)

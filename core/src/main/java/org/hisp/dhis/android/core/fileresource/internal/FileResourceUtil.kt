@@ -152,9 +152,9 @@ internal object FileResourceUtil {
     internal fun computeScalingDimension(
         orignalContentLength: Long?,
         maxContentLength: Long?,
-        fileIsImage: Boolean
+        fileIsImage: Boolean,
     ): String {
-        if (fileIsImage) {
+        return if (fileIsImage) {
             if (orignalContentLength == null || maxContentLength == null) return DimensionSize.Medium.name
 
             // Create list with dynamically set ORIGINAL size
@@ -176,9 +176,9 @@ internal object FileResourceUtil {
             }
 
             // Select the largest size within maxContentLength
-            return limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: DimensionSize.NotSupported.name
+            limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: DimensionSize.NotSupported.name
         } else {
-            return when {
+            when {
                 orignalContentLength == null || maxContentLength == null -> DimensionSize.ORIGIANL_NAME
                 orignalContentLength <= maxContentLength -> DimensionSize.ORIGIANL_NAME
                 else -> DimensionSize.NotSupported.name

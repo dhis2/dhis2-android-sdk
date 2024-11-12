@@ -90,6 +90,5 @@ class FileResourceUtilShould {
         // null content lengths default to ORIGINAL
         assertThat(computeScalingDimension(100, null, false)).isEqualTo("ORIGINAL")
         assertThat(computeScalingDimension(null, 100L, false)).isEqualTo("ORIGINAL")
-
     }
 }

@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
 import java.io.*
 import java.net.URLConnection
-import kotlin.math.min
 
 @Suppress("TooManyFunctions")
 internal object FileResourceUtil {
@@ -150,37 +149,40 @@ internal object FileResourceUtil {
         e.message?.let { Log.v(FileResourceUtil::class.java.canonicalName, it) }
     }
 
-    internal fun computeImageDimension(orignalContentLength: Long?, maxContentLength: Long? = null): String {
-        if (orignalContentLength == null || maxContentLength == null) return DimensionSizeB.Medium.name
+    internal fun computeScalingDimension(
+        orignalContentLength: Long?,
+        maxContentLength: Long?,
+        fileIsImage: Boolean
+    ): String {
+        if (fileIsImage) {
+            if (orignalContentLength == null || maxContentLength == null) return DimensionSize.Medium.name
 
-        // Create list with dynamically set ORIGINAL size
-        val originalSize = DimensionSizeB.Original(orignalContentLength)
-        val sizes = listOf(
-            DimensionSizeB.Small,
-            DimensionSizeB.Medium,
-            originalSize,
-        )
+            // Create list with dynamically set ORIGINAL size
+            val originalSize = DimensionSize.Original(orignalContentLength)
+            val sizes = listOf(
+                DimensionSize.Small,
+                DimensionSize.Medium,
+                originalSize,
+            )
 
-        // Filter out sizes requiring upscaling
-        val validSizes = sizes.filter { it.maxSizeB <= orignalContentLength }
+            // Filter out sizes requiring upscaling
+            val validSizes = sizes.filter {
+                it.name == DimensionSize.ORIGIANL_NAME || it.maxSizeB < orignalContentLength
+            }
 
-        // Step 3: Remove ORIGINAL if it exceeds MEDIUM max size
-        val limitedSizes = validSizes.filterNot {
-            it.name == originalSize.name && it.maxSizeB > DimensionSizeB.Medium.maxSizeB
+            // Step 3: Remove ORIGINAL if it exceeds MEDIUM max size
+            val limitedSizes = validSizes.filterNot {
+                it.name == originalSize.name && it.maxSizeB > DimensionSize.Medium.maxSizeB
+            }
+
+            // Select the largest size within maxContentLength
+            return limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: DimensionSize.NotSupported.name
+        } else {
+            return when {
+                orignalContentLength == null || maxContentLength == null -> DimensionSize.ORIGIANL_NAME
+                orignalContentLength <= maxContentLength -> DimensionSize.ORIGIANL_NAME
+                else -> DimensionSize.NotSupported.name
+            }
         }
-
-        // Select the largest size within maxContentLength
-        return limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: limitedSizes.first().name
-    }
-
-    internal fun isContentLengthAccepted(
-        fileIsImage: Boolean,
-        maxContentLength: Int?,
-        contentLength: Long?,
-    ): Boolean {
-        return (maxContentLength == null) ||
-            (contentLength == null) ||
-            (fileIsImage.not() && contentLength <= maxContentLength) ||
-            (fileIsImage && min(contentLength, DimensionSizeB.Small.maxSizeB) <= maxContentLength)
     }
 }

@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeImageDimension
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeScalingDimension
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.isContentLengthAccepted
 import org.junit.Test
 
 class FileResourceUtilShould {
@@ -62,45 +61,35 @@ class FileResourceUtilShould {
     @Test
     fun should_compute_correct_image_dimension() {
         // Original image is smaller than SMALL
-        assertThat(computeImageDimension(300000L, 200000L)).isEqualTo("ORIGINAL")
-        assertThat(computeImageDimension(300000L, 1500000L)).isEqualTo("ORIGINAL")
+        assertThat(computeScalingDimension(300000L, 200000L, true)).isEqualTo("NOT_SUPPORTED")
+        assertThat(computeScalingDimension(300000L, 1500000L, true)).isEqualTo("ORIGINAL")
 
         // Original image is smaller than MEDIUM
-        assertThat(computeImageDimension(1000000L, 300000L)).isEqualTo("SMALL")
-        assertThat(computeImageDimension(1000000L, 500000L)).isEqualTo("SMALL")
-        assertThat(computeImageDimension(1000000L, 1200000L)).isEqualTo("ORIGINAL")
+        assertThat(computeScalingDimension(1000000L, 300000L, true)).isEqualTo("NOT_SUPPORTED")
+        assertThat(computeScalingDimension(1000000L, 500000L, true)).isEqualTo("SMALL")
+        assertThat(computeScalingDimension(1000000L, 1200000L, true)).isEqualTo("ORIGINAL")
 
-        // Original image is heavier than MEDIUM
-        assertThat(computeImageDimension(2000000L, 300000L)).isEqualTo("SMALL")
-        assertThat(computeImageDimension(2000000L, 500000L)).isEqualTo("SMALL")
-        assertThat(computeImageDimension(2000000L, 2000000L)).isEqualTo("MEDIUM")
+        // Original image is larger than MEDIUM
+        assertThat(computeScalingDimension(2000000L, 300000L, true)).isEqualTo("NOT_SUPPORTED")
+        assertThat(computeScalingDimension(2000000L, 500000L, true)).isEqualTo("SMALL")
+        assertThat(computeScalingDimension(2000000L, 2000000L, true)).isEqualTo("MEDIUM")
 
         // null content lengths default to MEDIUM
-        assertThat(computeImageDimension(null, null)).isEqualTo("MEDIUM")
-        assertThat(computeImageDimension(300000L, null)).isEqualTo("MEDIUM")
-        assertThat(computeImageDimension(null, 300000L)).isEqualTo("MEDIUM")
+        assertThat(computeScalingDimension(null, null, true)).isEqualTo("MEDIUM")
+        assertThat(computeScalingDimension(300000L, null, true)).isEqualTo("MEDIUM")
+        assertThat(computeScalingDimension(null, 300000L, true)).isEqualTo("MEDIUM")
     }
 
     @Test
-    fun should_compute_content_length_of_image_is_accepted() {
-        assertThat(isContentLengthAccepted(true, 100, null)).isTrue()
-        assertThat(isContentLengthAccepted(true, null, 100L)).isTrue()
+    fun should_compute_correct_non_image_dimension() {
+        // content length over max content length downaload is NOT supported
+        assertThat(computeScalingDimension(10, 5L, false)).isEqualTo("NOT_SUPPORTED")
+        // content lenght smaller than max content length is allowed
+        assertThat(computeScalingDimension(5, 10L, false)).isEqualTo("ORIGINAL")
 
-        assertThat(isContentLengthAccepted(true, 10, 5L)).isTrue()
-        // should accept because max content length is higher than small size
-        assertThat(isContentLengthAccepted(true, 450000, 500000L)).isTrue()
-        // should NOT accept because max content length is lower than small size and content length
-        assertThat(isContentLengthAccepted(true, 350000, 500000L)).isFalse()
-    }
+        // null content lengths default to ORIGINAL
+        assertThat(computeScalingDimension(100, null, false)).isEqualTo("ORIGINAL")
+        assertThat(computeScalingDimension(null, 100L, false)).isEqualTo("ORIGINAL")
 
-    @Test
-    fun should_compute_content_length_of_non_image_is_accepted() {
-        assertThat(isContentLengthAccepted(false, 100, null)).isTrue()
-        assertThat(isContentLengthAccepted(false, null, 100L)).isTrue()
-
-        assertThat(isContentLengthAccepted(false, 10, 5)).isTrue()
-        // should NOT accept because max content is lower than content, independently of small size
-        assertThat(isContentLengthAccepted(false, 450000, 500000L)).isFalse()
-        assertThat(isContentLengthAccepted(false, 350000, 500000L)).isFalse()
     }
 }

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.koin.core.annotation.Singleton
 
@@ -74,7 +75,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
-                attribute(dimension, dimension)
+                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -98,7 +99,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
             parameters {
                 attribute("eventUid", eventUid)
                 attribute("dataElementUid", dataElementUid)
-                attribute("dimension", dimension)
+                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -125,7 +126,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
                 attribute("pe", period)
                 attribute("ou", organisationUnit)
                 attribute("co", categoryOptionCombo)
-                attribute("dimension", dimension)
+                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }

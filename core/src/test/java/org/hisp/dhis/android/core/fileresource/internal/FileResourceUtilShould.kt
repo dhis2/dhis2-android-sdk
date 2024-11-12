@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeImageDimension
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.isContentLengthAccepted
 import org.junit.Test
 
 class FileResourceUtilShould {
@@ -78,5 +79,28 @@ class FileResourceUtilShould {
         assertThat(computeImageDimension(null, null)).isEqualTo("MEDIUM")
         assertThat(computeImageDimension(300000L, null)).isEqualTo("MEDIUM")
         assertThat(computeImageDimension(null, 300000L)).isEqualTo("MEDIUM")
+    }
+
+    @Test
+    fun should_compute_content_length_of_image_is_accepted() {
+        assertThat(isContentLengthAccepted(true, 100, null)).isTrue()
+        assertThat(isContentLengthAccepted(true, null, 100L)).isTrue()
+
+        assertThat(isContentLengthAccepted(true, 10, 5L)).isTrue()
+        // should accept because max content length is higher than small size
+        assertThat(isContentLengthAccepted(true, 450000, 500000L)).isTrue()
+        // should NOT accept because max content length is lower than small size and content length
+        assertThat(isContentLengthAccepted(true, 350000, 500000L)).isFalse()
+    }
+
+    @Test
+    fun should_compute_content_length_of_non_image_is_accepted() {
+        assertThat(isContentLengthAccepted(false, 100, null)).isTrue()
+        assertThat(isContentLengthAccepted(false, null, 100L)).isTrue()
+
+        assertThat(isContentLengthAccepted(false, 10, 5)).isTrue()
+        // should NOT accept because max content is lower than content, independently of small size
+        assertThat(isContentLengthAccepted(false, 450000, 500000L)).isFalse()
+        assertThat(isContentLengthAccepted(false, 350000, 500000L)).isFalse()
     }
 }

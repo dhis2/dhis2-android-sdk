@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB.Companion.ORIGINAL_NAME
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
 import java.io.*
 import java.net.URLConnection
+import kotlin.math.min
 
+@Suppress("TooManyFunctions")
 internal object FileResourceUtil {
 
     fun getFile(fileResource: FileResource): File? {
@@ -149,14 +150,15 @@ internal object FileResourceUtil {
         e.message?.let { Log.v(FileResourceUtil::class.java.canonicalName, it) }
     }
 
-    fun computeImageDimension(orignalContentLength: Long?, maxContentLength: Long? = null): String {
-        if (orignalContentLength == null || maxContentLength == null) return DimensionSizeB.MEDIUM.name
+    internal fun computeImageDimension(orignalContentLength: Long?, maxContentLength: Long? = null): String {
+        if (orignalContentLength == null || maxContentLength == null) return DimensionSizeB.Medium.name
 
         // Create list with dynamically set ORIGINAL size
+        val originalSize = DimensionSizeB.Original(orignalContentLength)
         val sizes = listOf(
-            DimensionSizeB.SMALL,
-            DimensionSizeB.MEDIUM,
-            DimensionSizeB.create(ORIGINAL_NAME, orignalContentLength),
+            DimensionSizeB.Small,
+            DimensionSizeB.Medium,
+            originalSize,
         )
 
         // Filter out sizes requiring upscaling
@@ -164,10 +166,21 @@ internal object FileResourceUtil {
 
         // Step 3: Remove ORIGINAL if it exceeds MEDIUM max size
         val limitedSizes = validSizes.filterNot {
-            it.name == ORIGINAL_NAME && it.maxSizeB > DimensionSizeB.MEDIUM.maxSizeB
+            it.name == originalSize.name && it.maxSizeB > DimensionSizeB.Medium.maxSizeB
         }
 
         // Select the largest size within maxContentLength
         return limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: limitedSizes.first().name
+    }
+
+    internal fun isContentLengthAccepted(
+        fileIsImage: Boolean,
+        maxContentLength: Int?,
+        contentLength: Long?,
+    ): Boolean {
+        return (maxContentLength == null) ||
+            (contentLength == null) ||
+            (fileIsImage.not() && contentLength <= maxContentLength) ||
+            (fileIsImage && min(contentLength, DimensionSizeB.Small.maxSizeB) <= maxContentLength)
     }
 }

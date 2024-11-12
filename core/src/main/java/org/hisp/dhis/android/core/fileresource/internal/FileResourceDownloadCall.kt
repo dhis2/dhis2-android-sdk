@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSizeB
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
@@ -48,11 +47,11 @@ import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeImageDimension
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.isContentLengthAccepted
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.koin.core.annotation.Singleton
-import kotlin.math.min
 
 @SuppressWarnings("LongParameterList", "MagicNumber")
 @Singleton
@@ -284,12 +283,11 @@ internal class FileResourceDownloadCall(
         fileResource: FileResource,
     ): FileResource? {
         val contentLength = fileResource.contentLength()
-        val acceptedContentLength = (maxContentLength == null) ||
-            (contentLength == null) ||
-            (min(fileResource.contentLength()!!.toLong(), DimensionSizeB.SMALL.maxSizeB) <= maxContentLength)
+        val fileIsImage = fileResource.contentType()?.startsWith("image") ?: false
+        val isContentLengthAccepted = isContentLengthAccepted(fileIsImage, maxContentLength, contentLength)
 
         return try {
-            if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
+            if (isContentLengthAccepted && FileResourceInternalAccessor.isStored(fileResource)) {
                 val responseByteArray = coroutineAPICallExecutor.wrap { download(value, contentLength) }.getOrThrow()
                 responseByteArray?.let {
                     val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)

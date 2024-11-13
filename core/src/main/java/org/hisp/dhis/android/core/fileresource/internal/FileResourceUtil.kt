@@ -29,11 +29,13 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
 import java.io.*
 import java.net.URLConnection
 
+@Suppress("TooManyFunctions")
 internal object FileResourceUtil {
 
     fun getFile(fileResource: FileResource): File? {
@@ -145,5 +147,42 @@ internal object FileResourceUtil {
 
     private fun logMessage(e: Exception) {
         e.message?.let { Log.v(FileResourceUtil::class.java.canonicalName, it) }
+    }
+
+    internal fun computeScalingDimension(
+        orignalContentLength: Long?,
+        maxContentLength: Long?,
+        fileIsImage: Boolean,
+    ): String {
+        return if (fileIsImage) {
+            if (orignalContentLength == null || maxContentLength == null) return DimensionSize.Medium.name
+
+            // Create list with dynamically set ORIGINAL size
+            val originalSize = DimensionSize.Original(orignalContentLength)
+            val sizes = listOf(
+                DimensionSize.Small,
+                DimensionSize.Medium,
+                originalSize,
+            )
+
+            // Filter out sizes requiring upscaling
+            val validSizes = sizes.filter {
+                it.name == DimensionSize.ORIGIANL_NAME || it.maxSizeB < orignalContentLength
+            }
+
+            // Step 3: Remove ORIGINAL if it exceeds MEDIUM max size
+            val limitedSizes = validSizes.filterNot {
+                it.name == originalSize.name && it.maxSizeB > DimensionSize.Medium.maxSizeB
+            }
+
+            // Select the largest size within maxContentLength
+            limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: DimensionSize.NotSupported.name
+        } else {
+            when {
+                orignalContentLength == null || maxContentLength == null -> DimensionSize.ORIGIANL_NAME
+                orignalContentLength <= maxContentLength -> DimensionSize.ORIGIANL_NAME
+                else -> DimensionSize.NotSupported.name
+            }
+        }
     }
 }

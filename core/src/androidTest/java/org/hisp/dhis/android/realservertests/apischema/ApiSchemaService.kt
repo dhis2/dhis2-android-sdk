@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.realservertests.apischema
 
-import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import retrofit2.http.GET
-import retrofit2.http.Query
 
-internal interface ApiSchemaService {
-    @GET("schemas")
-    fun getSchema(
-        @Query("fields") @Which fields: Fields<ApiSchema>,
-    ): Single<Payload<ApiSchema>>
+internal class ApiSchemaService(private val client: HttpServiceClient) {
+    suspend fun getSchema(
+        fields: Fields<ApiSchema>,
+    ): Payload<ApiSchema> {
+        return client.get {
+            url("schemas")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 }

@@ -67,6 +67,7 @@ internal class ProgramRuleActionStoreImpl(
                     w.bind(16, getUidOrNull(o.programRule()))
                     w.bind(17, getUidOrNull(o.option()))
                     w.bind(18, getUidOrNull(o.optionGroup()))
+                    w.bind(19, o.displayContent())
                 }
             }
 

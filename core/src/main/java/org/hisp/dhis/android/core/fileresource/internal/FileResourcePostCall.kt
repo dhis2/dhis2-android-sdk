@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.content.Context
 import android.util.Log
 import android.webkit.MimeTypeMap
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
@@ -75,33 +76,44 @@ internal class FileResourcePostCall(
         val file = FileResourceUtil.getFile(fileResource)
 
         return if (file != null) {
-            val filePart = getFilePart(file)
-            val responseBody = coroutineAPICallExecutor.wrap(storeError = true) {
+            val fileName = fileResource.name() ?: file.name
+            val filePart = getFilePart(file, fileName)
+            val responseByteArray = coroutineAPICallExecutor.wrap(storeError = true) {
                 fileResourceService.uploadFile(filePart)
             }.getOrThrow()
-            handleResponse(responseBody.string(), fileResource, file, value)
+            handleResponse(String(responseByteArray), fileResource, file, value)
         } else {
             handleMissingFile(fileResource, value)
             null
         }
     }
 
-    private fun getFilePart(file: File): MultipartBody.Part {
+    private fun getFilePart(file: File, fileName: String): MultiPartFormDataContent {
         val extension = MimeTypeMap.getFileExtensionFromUrl(file.path)
         val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/*"
 
-        return MultipartBody.Part
-            .createFormData("file", file.name, file.asRequestBody(type.toMediaTypeOrNull()))
+        return MultiPartFormDataContent(
+            formData {
+                append(
+                    key = "file",
+                    value = file.readBytes(),
+                    headers = Headers.build {
+                        append(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"$fileName\"")
+                        append(HttpHeaders.ContentType, type)
+                    },
+                )
+            },
+        )
     }
 
     private fun handleResponse(
-        responseBody: String,
+        responseString: String,
         fileResource: FileResource,
         file: File,
         value: FileResourceValue,
     ): String {
         try {
-            val downloadedFileResource = getDownloadedFileResource(responseBody)
+            val downloadedFileResource = getDownloadedFileResource(responseString)
             updateValue(fileResource, downloadedFileResource.uid(), value)
 
             val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
@@ -125,8 +137,8 @@ internal class FileResourcePostCall(
     }
 
     @Throws(IOException::class)
-    private fun getDownloadedFileResource(responseBody: String): FileResource {
-        val fileResourceResponse = objectMapper().readValue(responseBody, FileResourceResponse::class.java)
+    private fun getDownloadedFileResource(responseString: String): FileResource {
+        val fileResourceResponse = objectMapper().readValue(responseString, FileResourceResponse::class.java)
         return fileResourceResponse.response()!!.fileResource()!!
     }
 

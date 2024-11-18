@@ -1,14 +1,14 @@
 [versions]
-dhis2AndroidSdkVersion = "1.10.1-SNAPSHOT"
-dhis2AndroidSdkCode = "294"
+dhis2AndroidSdkVersion = "1.11.0-SNAPSHOT"
+dhis2AndroidSdkCode = "295"
 
-gradle = "8.3.1"
-kotlin = "1.9.21"
-ktlint = "11.5.1"
+gradle = "8.6.1"
+kotlin = "2.0.20"
+ktlint = "12.1.1"
 sonarqube = "3.3"
-detekt = "1.18.0"
+detekt = "1.21.0"
 dokka = "1.9.20"
-nexusPublish = "1.3.0"
+nexusPublish = "2.0.0"
 
 targetSdkVersion = "34"
 minSdkVersion = "21"
@@ -23,8 +23,8 @@ paging = "3.2.1"
 jackson = "2.13.4"
 autoValue = "1.10.2"
 autoValueCursor = "2.0.1"
-retrofit = "2.9.0"
-okHttp = "4.10.0"
+okHttp = "4.12.0"
+ktor = "2.1.3"
 rxJava = "2.2.21"
 rxAndroid = "2.1.1"
 sqlCipher = "4.5.5"
@@ -34,10 +34,10 @@ smsCompression = "0.2.0"
 expressionParser = "1.0.36"
 
 # Kotlin
-kotlinxDatetime = "0.4.1"
+kotlinxDatetime = "0.6.0"
 coroutines = "1.6.4"
-koin = "3.5.0"
-koinKsp = "1.3.0"
+koin = "3.5.6"
+koinKsp = "1.3.1"
 
 # test dependencies
 coreTesting = "2.2.0"
@@ -48,8 +48,6 @@ truth = "1.1.3"
 testRunner = "1.5.2"
 testRules = "1.5.0"
 equalsVerifier = "3.14"
-flipper = "0.83.0"
-soloader = "0.10.5"
 liveDataTesting = "1.3.0"
 
 # open id
@@ -90,9 +88,12 @@ jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-modul
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okHttp" }
-retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "retrofit" }
-retrofit-rxjava2 = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "retrofit" }
+
+ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
+ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor"}
+ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor"}
+ktor-jackson = { group = "io.ktor", name = "ktor-serialization-jackson", version.ref = "ktor"}
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor"}
 
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -119,11 +120,6 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 livedata-testing-ktx = { group = "com.jraska.livedata", name = "testing-ktx", version.ref = "liveDataTesting" }
-
-facebook-flipper-core = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
-facebook-flipper-noop = { group = "com.facebook.flipper", name = "flipper-noop", version.ref = "flipper" }
-facebook-flipper-network = { group = "com.facebook.flipper", name = "flipper-network-plugin", version.ref = "flipper" }
-facebook-soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import io.ktor.http.Url
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.parse
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.removeTrailingApi
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser.trimAndRemoveTrailingSlash
@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ServerUrlParserShould {
-    private val expected = "http://dhis2.org/api/".toHttpUrlOrNull()
+    private val expected = Url("http://dhis2.org/api/")
 
     @Test(expected = D2Error::class)
     fun return_error_empty_string() {
@@ -64,6 +64,12 @@ class ServerUrlParserShould {
     @Test
     fun parse_url_slash() {
         assertThat(parse("http://dhis2.org/")).isEqualTo(expected)
+    }
+
+    @Test
+    fun parse_url_with_version() {
+        val expectedWithVersion = Url("http://dhis2.org/40/api/")
+        assertThat(parse("http://dhis2.org/40")).isEqualTo(expectedWithVersion)
     }
 
     @Test

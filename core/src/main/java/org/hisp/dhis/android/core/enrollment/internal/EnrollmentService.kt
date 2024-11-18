@@ -27,23 +27,26 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface EnrollmentService {
-    @GET("$ENROLLMENTS/{$ENROLLMENT_UID}")
+@Singleton
+internal class EnrollmentService(private val client: HttpServiceClient) {
     suspend fun getEnrollmentSingle(
-        @Path(ENROLLMENT_UID) enrollmentUid: String?,
-        @Query(FIELDS) @Which fields: Fields<Enrollment>,
-    ): Enrollment
+        enrollmentUid: String?,
+        fields: Fields<Enrollment>,
+    ): Enrollment {
+        return client.get {
+            url("$ENROLLMENTS/$enrollmentUid")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
     companion object {
         const val ENROLLMENTS = "enrollments"
-        const val ENROLLMENT_UID = "enrollmentUid"
-        const val FIELDS = "fields"
     }
 }

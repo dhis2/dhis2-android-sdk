@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.api.internal;
 
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -41,11 +42,17 @@ public class PreventURLDecodeInterceptor implements Interceptor {
         Request request = chain.request();
         String encodedUrl = request.url().toString();
 
-        String nonEncodedUrl = encodedUrl
-                .replace("%2C", ",")
-                .replace("%5B", "[")
-                .replace("%5D", "]")
-                .replace("%3A", ":");
+        Map<String, String> replacements = Map.of(
+                "%2C", ",",
+                "%5B", "[",
+                "%5D", "]",
+                "%3A", ":"
+        );
+
+        String nonEncodedUrl = encodedUrl;
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            nonEncodedUrl = nonEncodedUrl.replace(entry.getKey(), entry.getValue());
+        }
 
         Request newRequest = request.newBuilder()
                 .url(nonEncodedUrl)

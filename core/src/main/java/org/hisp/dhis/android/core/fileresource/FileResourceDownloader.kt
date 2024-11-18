@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.koin.core.annotation.Singleton
 
+@Suppress("TooManyFunctions")
 @Singleton
 class FileResourceDownloader internal constructor(
     private val call: FileResourceDownloadCall,
@@ -61,6 +62,22 @@ class FileResourceDownloader internal constructor(
 
     fun blockingDownload() {
         download().blockingSubscribe()
+    }
+
+    fun byTrackedEntityUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(trackedEntityUids = list) }
+    }
+
+    fun byEventUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(eventUids = list) }
+    }
+
+    fun byProgramUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(programUids = list) }
+    }
+
+    fun byDataSetUid(): ListFilterConnector<FileResourceDownloader, String> {
+        return connectorFactory.listConnector { list -> params.copy(dataSetUids = list) }
     }
 
     fun byValueType(): ListFilterConnector<FileResourceDownloader, FileResourceValueType> {

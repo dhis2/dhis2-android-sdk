@@ -27,20 +27,27 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryCombo
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface CategoryComboService {
-    @GET("categoryCombos")
+@Singleton
+internal class CategoryComboService(private val client: HttpServiceClient) {
     suspend fun getCategoryCombos(
-        @Query("fields") @Which fields: Fields<CategoryCombo>,
-        @Query("filter") @Where uids: Filter<CategoryCombo>,
-        @Query("paging") paging: Boolean?,
-    ): Payload<CategoryCombo>
+        fields: Fields<CategoryCombo>,
+        uids: Filter<CategoryCombo>,
+        paging: Boolean,
+    ): Payload<CategoryCombo> {
+        return client.get {
+            url("categoryCombos")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

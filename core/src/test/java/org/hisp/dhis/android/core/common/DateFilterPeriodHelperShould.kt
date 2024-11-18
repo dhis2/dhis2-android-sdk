@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.common
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.period.clock.internal.FixedClockProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.junit.Before
 import org.junit.Test
@@ -40,10 +41,11 @@ class DateFilterPeriodHelperShould {
 
     @Before
     fun setUp() {
-        val calendarProvider = CalendarProviderFactory.createFixed()
+        val fixedDate = LocalDateTime(2019, 12, 10, 10, 30)
+        val clockProvider = FixedClockProvider(fixedDate)
 
         dateFilterPeriodHelper =
-            DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))
+            DateFilterPeriodHelper(clockProvider, ParentPeriodGeneratorImpl.create(clockProvider))
     }
 
     @Test

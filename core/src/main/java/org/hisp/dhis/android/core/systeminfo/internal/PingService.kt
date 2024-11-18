@@ -27,12 +27,27 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import okhttp3.ResponseBody
-import retrofit2.Response
-import retrofit2.http.GET
+import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 
-internal interface PingService {
-
-    @GET("system/ping")
-    suspend fun getPing(): Response<ResponseBody>
+@Singleton
+internal class PingService(
+    private val client: HttpServiceClient,
+    private val dhisVersionManager: DHISVersionManager,
+) {
+    suspend fun getPing(): HttpResponse {
+        return if (dhisVersionManager.isGreaterThan(DHISVersion.V2_36)) {
+            client.get {
+                url("ping")
+                excludeCredentials()
+            }
+        } else {
+            client.get {
+                url("system/ping")
+            }
+        }
+    }
 }

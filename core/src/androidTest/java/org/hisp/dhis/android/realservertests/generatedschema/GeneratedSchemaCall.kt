@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.realservertests.generatedschema
 
-import io.reactivex.Single
-import retrofit2.Retrofit
+import org.hisp.dhis.android.realservertests.apischema.KtorFactory.HttpTestClient
 
 internal class GeneratedSchemaCall internal constructor(
-    private val retrofit: Retrofit,
+    private val httpClient: HttpTestClient,
     private val instanceVersion: String,
 ) {
-    fun download(schemaId: String): Single<GeneratedSchema> {
-        return retrofit.create(GeneratedSchemaService::class.java).getSchema(instanceVersion, schemaId)
+    suspend fun download(schemaId: String): GeneratedSchema {
+        return GeneratedSchemaService(httpClient).getSchema(instanceVersion, schemaId)
     }
 }

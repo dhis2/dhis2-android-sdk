@@ -28,15 +28,13 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import android.util.Log
-import okhttp3.Request
-import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.koin.core.annotation.Singleton
-import retrofit2.Call
-import retrofit2.HttpException
-import retrofit2.Response
+import java.io.EOFException
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -47,12 +45,12 @@ import javax.net.ssl.SSLException
 @Suppress("TooManyFunctions")
 internal class APIErrorMapper {
 
-    fun mapRetrofitException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
+    fun mapHttpException(throwable: Throwable, errorBuilder: D2Error.Builder): D2Error {
         return when (throwable) {
             is SocketTimeoutException -> socketTimeoutException(errorBuilder, throwable)
             is UnknownHostException -> unknownHostException(errorBuilder, throwable)
             is ConnectException -> connectException(errorBuilder, throwable)
-            is HttpException -> httpException(errorBuilder, throwable)
+            is D2HttpException -> httpException(errorBuilder, throwable)
             is SSLException -> sslException(errorBuilder, throwable)
             is IOException -> ioException(errorBuilder, throwable)
             is Exception -> unexpectedException(errorBuilder, throwable)
@@ -95,16 +93,25 @@ internal class APIErrorMapper {
     }
 
     private fun ioException(errorBuilder: D2Error.Builder, e: IOException): D2Error {
+        val errorCode =
+            if (e.cause is EOFException) {
+                // This errorcode is used to consider the error as "offline".
+                // The combination of ktor and the mockserver produces this exception when the mockserver is down.
+                D2ErrorCode.SERVER_CONNECTION_ERROR
+            } else {
+                D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+            }
+
         return logAndAppendOriginal(errorBuilder, e)
-            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+            .errorCode(errorCode)
             .errorDescription("API call threw IOException")
             .build()
     }
 
-    private fun httpException(errorBuilder: D2Error.Builder, e: HttpException): D2Error {
+    private fun httpException(errorBuilder: D2Error.Builder, e: D2HttpException): D2Error {
         return logAndAppendOriginal(errorBuilder, e)
-            .url(e.response()?.raw()?.request?.url?.toString())
-            .httpErrorCode(e.response()!!.code())
+            .url(e.response.requestUrl)
+            .httpErrorCode(e.response.statusCode)
             .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
             .errorDescription("API call threw HttpException")
             .build()
@@ -117,14 +124,9 @@ internal class APIErrorMapper {
             .build()
     }
 
-    fun getBaseErrorBuilder(call: Call<*>): D2Error.Builder {
+    fun getBaseErrorBuilder(response: D2HttpResponse): D2Error.Builder {
         return getBaseErrorBuilder()
-            .url(getUrl(call.request()))
-    }
-
-    fun getBaseErrorBuilder(response: Response<*>): D2Error.Builder {
-        return getBaseErrorBuilder()
-            .url(getUrl(response.raw().request))
+            .url(response.requestUrl)
     }
 
     fun getBaseErrorBuilder(): D2Error.Builder {
@@ -132,38 +134,26 @@ internal class APIErrorMapper {
             .errorComponent(D2ErrorComponent.Server)
     }
 
-    private fun getUrl(request: Request?): String? {
-        return request?.url?.toString()?.let {
-            DynamicServerURLInterceptor.transformUrl(it)
-        }
-    }
-
     fun responseException(
         errorBuilder: D2Error.Builder,
-        response: Response<*>,
+        response: D2HttpResponse,
         errorCode: D2ErrorCode?,
-        errorBody: String?,
     ): D2Error {
         val code = errorCode ?: D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
-        val serverMessage = errorBody ?: getServerMessage(response)
+        val serverMessage = response.errorBody.takeIf { it.isNotEmpty() } ?: getServerMessage(response)
         Log.e(this.javaClass.simpleName, serverMessage)
         return errorBuilder
             .errorCode(code)
-            .httpErrorCode(response.code())
+            .httpErrorCode(response.statusCode)
             .errorDescription("API call failed, server message: $serverMessage")
             .build()
     }
 
-    private fun getIfNotEmpty(message: String?): String? {
-        return if (!message.isNullOrEmpty()) message else null
-    }
-
-    private fun getServerMessage(response: Response<*>): String {
+    private fun getServerMessage(response: D2HttpResponse): String {
         val message =
             try {
-                getIfNotEmpty(response.message())
-                    ?: getIfNotEmpty(response.errorBody()!!.string())
-                    ?: getIfNotEmpty(response.errorBody().toString())
+                getIfNotEmpty(response.message)
+                    ?: response.errorBody
             } catch (e: IOException) {
                 null
             }
@@ -171,18 +161,10 @@ internal class APIErrorMapper {
         return message ?: "No server message"
     }
 
-    fun getErrorBody(response: Response<*>): String {
-        val errorBody =
-            try {
-                getIfNotEmpty(response.errorBody()!!.string()) ?: getIfNotEmpty(response.errorBody().toString())
-            } catch (e: IOException) {
-                null
-            }
-
-        return errorBody ?: noErrorMessage
-    }
-
     companion object {
         internal const val noErrorMessage: String = "No error message"
+        internal fun getIfNotEmpty(message: String?): String? {
+            return if (!message.isNullOrEmpty()) message else null
+        }
     }
 }

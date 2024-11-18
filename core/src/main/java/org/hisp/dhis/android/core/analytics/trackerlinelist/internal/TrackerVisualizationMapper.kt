@@ -60,6 +60,7 @@ internal class TrackerVisualizationMapper(
             trackerVisualization = trackerVisualization.uid(),
             programId = trackerVisualization.program()?.uid(),
             programStageId = trackerVisualization.programStage()?.uid(),
+            trackedEntityTypeId = trackerVisualization.trackedEntityType()?.uid(),
             outputType = mapOutputType(trackerVisualization.outputType()),
             columns = mapDimensions(trackerVisualization.columns(), trackerVisualization),
             filters = mapDimensions(trackerVisualization.filters(), trackerVisualization),
@@ -70,6 +71,7 @@ internal class TrackerVisualizationMapper(
         return when (type) {
             TrackerVisualizationOutputType.ENROLLMENT -> TrackerLineListOutputType.ENROLLMENT
             TrackerVisualizationOutputType.EVENT -> TrackerLineListOutputType.EVENT
+            TrackerVisualizationOutputType.TRACKED_ENTITY_INSTANCE -> TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE
             else -> null
         }
     }
@@ -86,6 +88,7 @@ internal class TrackerVisualizationMapper(
                 "PROGRAM_ATTRIBUTE" -> mapProgramAttribute(item)
                 "PROGRAM_DATA_ELEMENT" -> mapProgramDataElement(item, trackerVisualization)
                 "DATA_X" -> mapDataX(item)
+                "CATEGORY" -> mapCategory(item)
                 "ORGANISATION_UNIT_GROUP_SET" ->
                     throw AnalyticsException.InvalidArguments("Dimension ORGANISATION_UNIT_GROUP_SET IS not supported")
 
@@ -96,6 +99,7 @@ internal class TrackerVisualizationMapper(
 
     private fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return TrackerLineListItem.OrganisationUnitItem(
+            programUid = item.program()?.uid(),
             filters = item.items()?.mapNotNull { it.uid() }?.mapNotNull { uid ->
                 val relativeOrgunit = RelativeOrganisationUnit.entries.find { it.name == uid }
 
@@ -132,8 +136,8 @@ internal class TrackerVisualizationMapper(
     private fun mapPeriod(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return when (item.dimension()) {
             "lastUpdated" -> TrackerLineListItem.LastUpdated(mapDateFilters(item))
-            "incidentDate" -> TrackerLineListItem.IncidentDate(mapDateFilters(item))
-            "enrollmentDate" -> TrackerLineListItem.EnrollmentDate(mapDateFilters(item))
+            "incidentDate" -> TrackerLineListItem.IncidentDate(mapRelatedProgram(item), mapDateFilters(item))
+            "enrollmentDate" -> TrackerLineListItem.EnrollmentDate(mapRelatedProgram(item), mapDateFilters(item))
             "scheduledDate" -> TrackerLineListItem.ScheduledDate(mapDateFilters(item))
             "eventDate" -> TrackerLineListItem.EventDate(mapDateFilters(item))
             else -> null
@@ -171,6 +175,7 @@ internal class TrackerVisualizationMapper(
             "createdBy" -> TrackerLineListItem.CreatedBy
             "lastUpdatedBy" -> TrackerLineListItem.LastUpdatedBy
             "programStatus" -> TrackerLineListItem.ProgramStatusItem(
+                programUid = item.program()?.uid(),
                 filters = item.items()?.mapNotNull { e -> EnrollmentStatus.entries.find { it.name == e.uid() } }
                     .takeIf { !it.isNullOrEmpty() }
                     ?.let { statuses -> listOf(EnumFilter.In(statuses)) }
@@ -185,6 +190,16 @@ internal class TrackerVisualizationMapper(
             )
 
             else -> null
+        }
+    }
+
+    internal fun mapCategory(item: TrackerVisualizationDimension): TrackerLineListItem? {
+        val filters = item.items()
+            .takeIf { !it.isNullOrEmpty() }
+            ?.let { listOf(DataFilter.In(it.map { it.uid() })) }
+            ?: emptyList()
+        return item.dimension()?.let { uid ->
+            TrackerLineListItem.Category(uid, filters)
         }
     }
 
@@ -242,5 +257,9 @@ internal class TrackerVisualizationMapper(
                 }
             }
         } ?: emptyList()
+    }
+
+    internal fun mapRelatedProgram(item: TrackerVisualizationDimension): String? {
+        return item.program()?.uid()
     }
 }

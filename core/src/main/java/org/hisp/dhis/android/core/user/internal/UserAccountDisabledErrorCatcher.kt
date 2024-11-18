@@ -29,13 +29,11 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.koin.core.annotation.Singleton
-import retrofit2.HttpException
-import retrofit2.Response
 import java.net.HttpURLConnection
 
 @Singleton
@@ -49,7 +47,7 @@ internal class UserAccountDisabledErrorCatcher(
         return true
     }
 
-    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
+    override fun catchError(response: D2HttpResponse): D2ErrorCode? {
         return try {
             accountManager.deleteCurrentAccountAndEmit(AccountDeletionReason.ACCOUNT_DISABLED)
             D2ErrorCode.USER_ACCOUNT_DISABLED
@@ -58,27 +56,11 @@ internal class UserAccountDisabledErrorCatcher(
         }
     }
 
-    fun isUserAccountLocked(response: Response<*>, errorBody: String?): Boolean {
+    fun isUserAccountLocked(response: D2HttpResponse): Boolean {
         return try {
-            val isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-            val responseErrorBody = objectMapper.readValue(errorBody, HttpMessageResponse::class.java)
+            val isUnauthorized = response.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED
+            val responseErrorBody = objectMapper.readValue(response.errorBody, HttpMessageResponse::class.java)
             isUnauthorized && responseErrorBody.message().contains("Account disabled")
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    fun catchError(throwable: Throwable): D2ErrorCode? {
-        val response = (throwable as HttpException).response()!!
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        return catchError(response, errorBody)
-    }
-
-    fun isUserAccountLocked(throwable: Throwable): Boolean {
-        return try {
-            val response = (throwable as HttpException).response()!!
-            val errorBody = response.errorBody()?.string()
-            isUserAccountLocked(response, errorBody)
         } catch (e: Exception) {
             false
         }

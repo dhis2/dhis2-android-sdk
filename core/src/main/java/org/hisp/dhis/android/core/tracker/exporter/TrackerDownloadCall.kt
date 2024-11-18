@@ -280,8 +280,8 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
         for (paging in pagingList) {
             val pageQuery = query.copy(
-                pageSize = paging.pageSize(),
-                page = paging.page(),
+                pageSize = paging.pageSize,
+                page = paging.page,
             )
 
             val items = getItems(pageQuery)
@@ -299,7 +299,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
             downloadedItemsForCombination += itemsToPersist.size
 
-            if (items.size < paging.pageSize()) {
+            if (items.size < paging.pageSize) {
                 emptyProgram = true
                 break
             }
@@ -309,12 +309,12 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     private fun getItemsToPersist(paging: Paging, pageItems: List<T>): List<T> {
-        return if (paging.isFullPage && pageItems.size > paging.previousItemsToSkipCount()) {
+        return if (paging.isFullPage && pageItems.size > paging.previousItemsToSkipCount) {
             val toIndex = min(
                 pageItems.size,
-                paging.pageSize() - paging.posteriorItemsToSkipCount(),
+                paging.pageSize - paging.posteriorItemsToSkipCount,
             )
-            pageItems.subList(paging.previousItemsToSkipCount(), toIndex)
+            pageItems.subList(paging.previousItemsToSkipCount, toIndex)
         } else {
             pageItems
         }

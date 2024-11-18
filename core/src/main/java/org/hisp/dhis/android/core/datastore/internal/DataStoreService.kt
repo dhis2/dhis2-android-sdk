@@ -27,60 +27,83 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
-import retrofit2.http.*
 
-internal interface DataStoreService {
-    @GET(DATA_STORE)
-    suspend fun getNamespaces(): List<String>
+@Singleton
+internal class DataStoreService(private val client: HttpServiceClient) {
+    suspend fun getNamespaces(): List<String> {
+        return client.get {
+            url(DATA_STORE)
+        }
+    }
 
-    @GET("$DATA_STORE/{$NAMESPACE}")
     suspend fun getNamespaceKeys(
-        @Path(NAMESPACE) namespace: String,
-    ): List<String>
+        namespace: String,
+    ): List<String> {
+        return client.get {
+            url("$DATA_STORE/$namespace")
+        }
+    }
 
-    @GET("$DATA_STORE/{$NAMESPACE}")
     suspend fun getNamespaceValues38(
-        @Path(NAMESPACE) namespace: String,
-        @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int,
-        @Query("fields") fields: String = ".",
-    ): DataStorePagedEntry
+        namespace: String,
+        page: Int,
+        pageSize: Int,
+        fields: String = ".",
+    ): DataStorePagedEntry {
+        return client.get {
+            url("$DATA_STORE/$namespace")
+            parameters {
+                attribute("fields", fields)
+                page(page)
+                pageSize(pageSize)
+            }
+        }
+    }
 
-    @GET("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun getNamespaceKeyValue(
-        @Path(NAMESPACE) namespace: String,
-        @Path(KEY) key: String,
-    ): Any
+        namespace: String,
+        key: String,
+    ): Any {
+        return client.get {
+            url("$DATA_STORE/$namespace/$key")
+        }
+    }
 
-    @POST("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun postNamespaceKeyValue(
-        @Path(NAMESPACE) namespace: String,
-        @Path(KEY) key: String,
-        @Body value: Any?,
-    ): HttpMessageResponse
+        namespace: String,
+        key: String,
+        value: Any?,
+    ): HttpMessageResponse {
+        return client.post {
+            url("$DATA_STORE/$namespace/$key")
+            body(value)
+        }
+    }
 
-    @PUT("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun putNamespaceKeyValue(
-        @Path(NAMESPACE) namespace: String,
-        @Path(KEY) key: String,
-        @Body value: Any?,
-    ): HttpMessageResponse
+        namespace: String,
+        key: String,
+        value: Any?,
+    ): HttpMessageResponse {
+        return client.put {
+            url("$DATA_STORE/$namespace/$key")
+            body(value)
+        }
+    }
 
-    @DELETE("$DATA_STORE/{$NAMESPACE}/{$KEY}")
     suspend fun deleteNamespaceKeyValue(
-        @Path(NAMESPACE) namespace: String,
-        @Path(KEY) key: String,
-    ): HttpMessageResponse
+        namespace: String,
+        key: String,
+    ): HttpMessageResponse {
+        return client.delete {
+            url("$DATA_STORE/$namespace/$key")
+        }
+    }
 
     companion object {
         private const val DATA_STORE = "dataStore"
-        private const val NAMESPACE = "namespace"
-        private const val KEY = "key"
     }
 }
-
-@Singleton
-internal fun service(retrofit: Retrofit): DataStoreService = retrofit.create(DataStoreService::class.java)

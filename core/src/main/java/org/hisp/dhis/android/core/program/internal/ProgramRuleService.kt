@@ -27,18 +27,26 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.ProgramRule
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface ProgramRuleService {
-    @GET("programRules")
+@Singleton
+internal class ProgramRuleService(private val client: HttpServiceClient) {
     suspend fun getProgramRules(
-        @Query("fields") @Which fields: Fields<ProgramRule>,
-        @Query("filter") programUidsFilterString: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<ProgramRule>
+        fields: Fields<ProgramRule>,
+        programUidsFilterString: String,
+        paging: Boolean,
+    ): Payload<ProgramRule> {
+        return client.get {
+            url("programRules")
+            parameters {
+                fields(fields)
+                attribute("filter", programUidsFilterString)
+                paging(paging)
+            }
+        }
+    }
 }

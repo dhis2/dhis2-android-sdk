@@ -27,19 +27,32 @@
  */
 package org.hisp.dhis.android.realservertests.apischema.tests
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.FormType
+import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
-import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.AccessLevel
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
+import org.hisp.dhis.android.core.program.ProgramRuleActionType
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType
+import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
+import org.hisp.dhis.android.core.visualization.DisplayDensity
+import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
+import org.hisp.dhis.android.core.visualization.LegendStrategy
+import org.hisp.dhis.android.core.visualization.VisualizationType
 import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.checkEnum
 import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.entry
 import org.hisp.dhis.android.realservertests.apischema.ApiSchema
@@ -48,10 +61,10 @@ import org.junit.Assert
 
 class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
 
-    // @Test
-    fun check_no_enum_have_been_updated_on_server() {
-        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38)
-        val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.retrofit()).download().blockingGet()
+//    @Test
+    fun check_no_enum_have_been_updated_on_server() = runTest {
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_39)
+        val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.httpServiceClient()).download()
         val constantsMap: Map<String, List<String>?> = apiSchemas.flatMap { apiSchema ->
             apiSchema.properties.filter { it.propertyType == "CONSTANT" }
         }.toSet().associate { fullKlassToSimpleKlass(it.klass) to it.constants }

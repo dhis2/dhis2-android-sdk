@@ -131,7 +131,9 @@
     "globalSettings": {
       "completionSpinner": "true",
       "disableReferrals": "true",
-      "disableCollapsibleSections": "false"
+      "disableCollapsibleSections": "false",
+      "minimumLocationAccuracy": "7",
+      "disableManualLocation": "false"
     },
     "specificSettings": {
       "IpHINAT79UW": {
@@ -141,13 +143,16 @@
         "disableCollapsibleSections": "false",
         "itemHeader": {
           "programIndicator": "kALwOyvVvdT"
-        }
+        },
+        "minimumLocationAccuracy": "5",
+        "disableManualLocation": "true"
       },
       "IpHINAT79UQ": {
         "completionSpinner": "true",
         "optionalSearch": "true",
         "disableReferrals": "false",
-        "disableCollapsibleSections": "true"
+        "disableCollapsibleSections": "true",
+        "disableManualLocation": "false"
       }
     }
   }

@@ -106,6 +106,10 @@ class ProgramRuleActionCollectionRepository internal constructor(
         return cf.string(ProgramRuleActionTableInfo.Columns.OPTION_GROUP)
     }
 
+    fun byDisplayContent(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.DISPLAYCONTENT)
+    }
+
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<ProgramRuleAction> = emptyMap()
     }

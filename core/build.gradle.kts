@@ -28,7 +28,7 @@
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.16"
+    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.24"
     id("kotlin-android")
     id("kotlin-kapt")
     id("maven-publish-conventions")
@@ -140,9 +140,13 @@ dependencies {
     // Square libraries
     api(libs.okhttp)
     api(libs.okhttp.mockwebserver)
-    api(libs.retrofit.core)
-    api(libs.retrofit.jackson)
-    api(libs.retrofit.rxjava2)
+
+    // Ktor
+    api(libs.ktor)
+    api(libs.ktor.okhttp)
+    api(libs.ktor.negotiation)
+    api(libs.ktor.jackson)
+    api(libs.ktor.client.mock)
 
     // Kotlin
     api(libs.kotlinx.datetime)
@@ -190,14 +194,6 @@ dependencies {
     }
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.paging.testing)
-
-    debugImplementation(libs.facebook.soloader)
-    debugImplementation(libs.facebook.flipper.core)
-    debugImplementation(libs.facebook.flipper.network) {
-        exclude(group = "com.squareup.okhttp3")
-    }
-
-    releaseImplementation(libs.facebook.flipper.noop)
 }
 
 detekt {

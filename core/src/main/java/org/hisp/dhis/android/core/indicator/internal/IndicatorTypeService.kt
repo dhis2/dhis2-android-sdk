@@ -27,21 +27,29 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface IndicatorTypeService {
-    @GET("indicatorTypes")
+@Singleton
+internal class IndicatorTypeService(private val client: HttpServiceClient) {
     suspend fun getIndicatorTypes(
-        @Query("fields") @Which fields: Fields<IndicatorType>,
-        @Query("filter") @Where lastUpdated: Filter<IndicatorType>?,
-        @Query("filter") @Where uids: Filter<IndicatorType>,
-        @Query("paging") paging: Boolean,
-    ): Payload<IndicatorType>
+        fields: Fields<IndicatorType>,
+        lastUpdated: Filter<IndicatorType>?,
+        uids: Filter<IndicatorType>,
+        paging: Boolean,
+    ): Payload<IndicatorType> {
+        return client.get {
+            url("indicatorTypes")
+            parameters {
+                fields(fields)
+                filter(lastUpdated)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -98,7 +98,7 @@ internal class ProgramIndicatorEvaluator(
         val whereClause = ProgramIndicatorEvaluatorHelper
             .getEventWhereClause(programIndicator, evaluationItem, metadata, queryMods)
 
-        val rawClause = "SELECT * FROM ${EventTableInfo.TABLE_INFO.name()} $event WHERE $whereClause"
+        val rawClause = "SELECT * FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias WHERE $whereClause"
         return eventStore.selectRawQuery(rawClause).map { it.uid() }
     }
 
@@ -127,7 +127,7 @@ internal class ProgramIndicatorEvaluator(
                 queryMods,
             )
 
-        val rawClause = "SELECT * FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollment WHERE $whereClause"
+        val rawClause = "SELECT * FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias WHERE $whereClause"
         return enrollmentStore.selectRawQuery(rawClause).map { it.uid() }
     }
 

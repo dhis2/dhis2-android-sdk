@@ -192,10 +192,10 @@ internal class MetadataCall(
 
         try {
             val encrypt = generalSettingCall.isDatabaseEncrypted()
-            multiUserDatabaseManager.changeEncryptionIfRequired(
-                credentialsSecureStore.get(),
-                encrypt,
-            )
+            val credentials = credentialsSecureStore.get()
+                ?: throw IllegalArgumentException("Credentials are not set")
+
+            multiUserDatabaseManager.changeEncryptionIfRequired(credentials, encrypt)
         } catch (ignored: Exception) {
         }
     }

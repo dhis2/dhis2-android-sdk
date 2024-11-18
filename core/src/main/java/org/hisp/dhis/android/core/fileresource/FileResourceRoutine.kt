@@ -29,6 +29,10 @@
 package org.hisp.dhis.android.core.fileresource
 
 import io.reactivex.Completable
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
@@ -36,6 +40,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -44,7 +49,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.koin.core.annotation.Singleton
 import java.io.File
-import java.util.Calendar
 import java.util.Date
 
 @Singleton
@@ -57,6 +61,7 @@ internal class FileResourceRoutine(
     private val fileResourceStore: FileResourceStore,
     private val customIconStore: CustomIconStore,
     private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository,
+    private val clockProvider: ClockProvider,
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {
         return Completable.fromCallable {
@@ -93,13 +98,13 @@ internal class FileResourceRoutine(
             trackedEntityDataValues.map(TrackedEntityDataValue::value) +
             customIcons.map { it.fileResource().uid() }
 
-        val calendar = Calendar.getInstance().apply {
-            add(Calendar.HOUR_OF_DAY, -2)
-        }
+        val lastUpdatedBefore = after ?: clockProvider.clock.now()
+            .minus(2, DateTimeUnit.HOUR, TimeZone.currentSystemDefault()).toJavaDate()
+
         val fileResources = fileResourceCollectionRepository
             .byUid().notIn(fileResourceUids.mapNotNull { it })
             .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.ICON)
-            .byLastUpdated().before(after ?: calendar.time)
+            .byLastUpdated().before(lastUpdatedBefore)
             .blockingGet()
 
         blockingDeleteFileResources(fileResources)

@@ -27,20 +27,27 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface TrackedEntityAttributeService {
-    @GET("trackedEntityAttributes")
+@Singleton
+internal class TrackedEntityAttributeService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityAttributes(
-        @Query("fields") @Which fields: Fields<TrackedEntityAttribute>,
-        @Query("filter") @Where idFilter: Filter<TrackedEntityAttribute>,
-        @Query("paging") paging: Boolean,
-    ): Payload<TrackedEntityAttribute>
+        fields: Fields<TrackedEntityAttribute>,
+        idFilter: Filter<TrackedEntityAttribute>,
+        paging: Boolean,
+    ): Payload<TrackedEntityAttribute> {
+        return client.get {
+            url("trackedEntityAttributes")
+            parameters {
+                fields(fields)
+                filter(idFilter)
+                paging(paging)
+            }
+        }
+    }
 }

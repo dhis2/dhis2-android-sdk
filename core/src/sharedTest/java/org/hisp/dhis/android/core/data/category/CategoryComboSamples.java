@@ -45,4 +45,10 @@ public class CategoryComboSamples {
                 .name(name)
                 .build();
     }
+    public static CategoryCombo getCategoryComboDatabase() {
+        CategoryCombo.Builder builder = CategoryCombo.builder();
+
+        fillIdentifiableProperties(builder);
+        return builder.build();
+    }
 }

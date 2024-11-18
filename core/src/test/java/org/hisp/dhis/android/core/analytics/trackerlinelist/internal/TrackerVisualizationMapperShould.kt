@@ -99,11 +99,46 @@ class TrackerVisualizationMapperShould {
 
         assertThat(programStatus).isEqualTo(
             TrackerLineListItem.ProgramStatusItem(
+                null,
                 listOf(
                     EnumFilter.In(
                         listOf(
                             EnrollmentStatus.ACTIVE,
                             EnrollmentStatus.CANCELLED,
+                        ),
+                    ),
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun should_map_categories() {
+        val categoryType = "CATEGORY"
+        val categoryId = "categoryId"
+        val categoryOption1 = "categoryOption1"
+        val categoryOption2 = "categoryOption2"
+
+        val item = TrackerVisualizationDimension.builder()
+            .dimensionType(categoryType)
+            .dimension(categoryId)
+            .items(
+                listOf(
+                    ObjectWithUid.create(categoryOption1),
+                    ObjectWithUid.create(categoryOption2),
+                ),
+            )
+            .build()
+        val category = mapper.mapCategory(item)
+
+        assertThat(category).isEqualTo(
+            TrackerLineListItem.Category(
+                categoryId,
+                listOf(
+                    DataFilter.In(
+                        listOf(
+                            categoryOption1,
+                            categoryOption2,
                         ),
                     ),
                 ),

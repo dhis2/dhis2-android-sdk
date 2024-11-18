@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 
 internal data class DataValueQuery(
     val bundle: AggregatedDataCallBundle,
-) : BaseQueryKt(
+) : BaseQuery(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
     paging = false,

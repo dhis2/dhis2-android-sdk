@@ -45,6 +45,7 @@ class TrackerLineListParamsShould {
             outputType = TrackerLineListOutputType.EVENT,
             programId = null,
             programStageId = "program_stage_uid",
+            trackedEntityTypeId = null,
             columns = listOf(
                 TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.GreaterThan("5"))),
                 TrackerLineListItem.ProgramIndicator("indicator"),
@@ -58,6 +59,7 @@ class TrackerLineListParamsShould {
             outputType = null,
             programId = "program_uid",
             programStageId = null,
+            trackedEntityTypeId = null,
             columns = listOf(
                 TrackerLineListItem.ProgramAttribute("attribute", listOf(DataFilter.NotEqualTo("10"))),
             ),
@@ -88,6 +90,7 @@ class TrackerLineListParamsShould {
             outputType = TrackerLineListOutputType.ENROLLMENT,
             programId = "programId",
             programStageId = null,
+            trackedEntityTypeId = null,
             columns = listOf(
                 TrackerLineListItem.ProgramDataElement(
                     "dataElement",

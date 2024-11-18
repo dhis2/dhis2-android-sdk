@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -54,8 +55,13 @@ class PingImpl internal constructor(
     private suspend fun checkPing(): String {
         try {
             val response = pingService.getPing()
-            return response.takeIf { it.isSuccessful }?.body()?.string().takeIf { it == "pong" }
-                ?: throw IOException("Ping to the server failed with status code: ${response.code()}")
+            return if (
+                response.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX
+            ) {
+                "pong"
+            } else {
+                throw IOException("Ping to the server failed with status code: ${response.status.value}")
+            }
         } catch (e: Exception) {
             throw toD2Error(e)
         }

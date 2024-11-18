@@ -32,15 +32,20 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgunitAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgUnitAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.SubOrgUnitAlias
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
 
 internal class OrganisationUnitEvaluator(
@@ -54,7 +59,7 @@ internal class OrganisationUnitEvaluator(
     private val orgunitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(context.databaseAdapter)
 
     override fun getCommonSelectSQL(): String {
-        return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
+        return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
     }
 
     override fun getCommonWhereSQL(): String {
@@ -62,6 +67,22 @@ internal class OrganisationUnitEvaluator(
             "1"
         } else {
             return item.filters.joinToString(" AND ") { getFilterWhereClause(it) }
+        }
+    }
+
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        return if (item.programUid.isNullOrBlank()) {
+            "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
+        } else {
+            "SELECT $SubOrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME} " +
+                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+                "JOIN ${OrganisationUnitTableInfo.TABLE_INFO.name()} $SubOrgUnitAlias " +
+                "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} = " +
+                "$SubOrgUnitAlias.${OrganisationUnitTableInfo.Columns.UID} " +
+                "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
+                "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.UID} " +
+                "AND $EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${item.programUid}' " +
+                "ORDER BY $EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE} DESC LIMIT 1"
         }
     }
 
@@ -132,7 +153,7 @@ internal class OrganisationUnitEvaluator(
     }
 
     private fun inPathOf(orgunit: String): String {
-        return "$OrgunitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
+        return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
     }
 
     private fun getChildren(orgunits: List<String>): List<String> {

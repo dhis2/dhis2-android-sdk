@@ -92,10 +92,11 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE,
+        attributeOptionCombo: String? = null,
     ) {
         val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
-            .eventDate(eventDate).deleted(deleted).status(status).build()
+            .eventDate(eventDate).deleted(deleted).status(status).attributeOptionCombo(attributeOptionCombo).build()
         EventStoreImpl(databaseAdapter).insert(event)
     }
 
@@ -110,6 +111,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         created: Date? = null,
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE,
+        attributeOptionCombo: String? = null,
     ) {
         createEvent(
             eventUid = eventUid,
@@ -122,6 +124,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             lastUpdated = lastUpdated,
             eventDate = eventDate,
             status = status,
+            attributeOptionCombo = attributeOptionCombo,
         )
     }
 

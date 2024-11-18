@@ -27,17 +27,22 @@
  */
 package org.hisp.dhis.android.core.common
 
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.internal.CalendarProvider
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.koin.core.annotation.Singleton
-import java.util.Calendar
 import java.util.Date
 
 @Singleton
 internal class DateFilterPeriodHelper(
-    private val calendarProvider: CalendarProvider,
+    private val clockProvider: ClockProvider,
     private val parentPeriodGenerator: ParentPeriodGenerator,
 ) {
 
@@ -125,8 +130,9 @@ internal class DateFilterPeriodHelper(
     }
 
     private fun addDaysToCurrentDate(days: Int): Date {
-        val calendar = calendarProvider.calendar.clone() as Calendar
-        calendar.add(Calendar.DATE, days)
-        return calendar.time
+        val now = clockProvider.clock.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val newInstant = now.date.plus(days, DateTimeUnit.DAY).atTime(now.time)
+            .toInstant(TimeZone.currentSystemDefault())
+        return Date(newInstant.toEpochMilliseconds())
     }
 }

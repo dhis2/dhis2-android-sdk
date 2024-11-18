@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.internal
 import android.os.Build
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.D2Configuration
 import java.util.concurrent.TimeUnit
 
@@ -44,15 +43,6 @@ internal object OkHttpClientFactory {
             .addInterceptor(ServerURLVersionRedirectionInterceptor())
             .addInterceptor(authenticator)
             .addInterceptor(PreventURLDecodeInterceptor())
-            .addInterceptor(
-                Interceptor { chain: Interceptor.Chain ->
-                    val originalRequest = chain.request()
-                    val withUserAgent = originalRequest.newBuilder()
-                        .header("User-Agent", getUserAgent(d2Configuration))
-                        .build()
-                    chain.proceed(withUserAgent)
-                },
-            )
             .readTimeout(d2Configuration.readTimeoutInSeconds().toLong(), TimeUnit.SECONDS)
             .connectTimeout(d2Configuration.connectTimeoutInSeconds().toLong(), TimeUnit.SECONDS)
             .writeTimeout(d2Configuration.writeTimeoutInSeconds().toLong(), TimeUnit.SECONDS)
@@ -72,15 +62,5 @@ internal object OkHttpClientFactory {
         }
 
         return client.build()
-    }
-
-    private fun getUserAgent(d2Configuration: D2Configuration): String {
-        return String.format(
-            "%s/%s/%s/Android_%s",
-            d2Configuration.appName(),
-            BuildConfig.VERSION_NAME, // SDK version
-            d2Configuration.appVersion(),
-            Build.VERSION.SDK_INT, // Android Version
-        )
     }
 }

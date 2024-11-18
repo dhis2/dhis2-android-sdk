@@ -27,18 +27,26 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.OptionGroup
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface OptionGroupService {
-    @GET("optionGroups")
+@Singleton
+internal class OptionGroupService(private val client: HttpServiceClient) {
     suspend fun optionGroups(
-        @Query("fields") @Which fields: Fields<OptionGroup>,
-        @Query("filter") dataSetUidsFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<OptionGroup>
+        fields: Fields<OptionGroup>,
+        dataSetUidsFilter: String,
+        paging: Boolean,
+    ): Payload<OptionGroup> {
+        return client.get {
+            url("optionGroups")
+            parameters {
+                fields(fields)
+                attribute("filter", dataSetUidsFilter)
+                paging(paging)
+            }
+        }
+    }
 }

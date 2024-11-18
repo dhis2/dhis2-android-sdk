@@ -27,21 +27,29 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.EventFilter
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface EventFilterService {
-    @GET("eventFilters")
+@Singleton
+internal class EventFilterService(private val client: HttpServiceClient) {
     suspend fun getEventFilters(
-        @Query("filter") @Where uids: Filter<EventFilter>,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("fields") @Which fields: Fields<EventFilter>,
-        @Query("paging") paging: Boolean,
-    ): Payload<EventFilter>
+        uids: Filter<EventFilter>,
+        accessDataReadFilter: String,
+        fields: Fields<EventFilter>,
+        paging: Boolean,
+    ): Payload<EventFilter> {
+        return client.get {
+            url("eventFilters")
+            parameters {
+                filter(uids)
+                attribute("filter", accessDataReadFilter)
+                fields(fields)
+                paging(paging)
+            }
+        }
+    }
 }

@@ -54,7 +54,7 @@ internal class IndicatorEndpointCallFactory(
                 return service.getIndicators(
                     IndicatorFields.allFields,
                     null,
-                    IndicatorFields.uid.`in`(query.uids()),
+                    IndicatorFields.uid.`in`(query.uids),
                     false,
                 )
             }
@@ -63,7 +63,7 @@ internal class IndicatorEndpointCallFactory(
 
     override fun processor(): CallProcessor<Indicator> {
         return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
+            data.databaseAdapter,
             handler,
         )
     }

@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VEnrollmentCount : ExpressionItem {
@@ -47,9 +47,9 @@ internal class VEnrollmentCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val enrollmentSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.ENROLLMENT}"
+                "$EventAlias.${EventTableInfo.Columns.ENROLLMENT}"
             AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.UID}"
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}"
         }
 
         return "DISTINCT $enrollmentSelector"

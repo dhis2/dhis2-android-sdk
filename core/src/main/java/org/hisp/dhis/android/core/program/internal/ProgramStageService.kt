@@ -27,19 +27,28 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.ProgramStage
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface ProgramStageService {
-    @GET("programStages")
+@Singleton
+internal class ProgramStageService(private val client: HttpServiceClient) {
     suspend fun getProgramStages(
-        @Query("fields") @Which fields: Fields<ProgramStage>,
-        @Query("filter") programUidsFilterString: String,
-        @Query("filter") accessDataReadFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Payload<ProgramStage>
+        fields: Fields<ProgramStage>,
+        programUidsFilterString: String,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): Payload<ProgramStage> {
+        return client.get {
+            url("programStages")
+            parameters {
+                fields(fields)
+                attribute("filter", programUidsFilterString)
+                attribute("filter", accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 }

@@ -27,22 +27,28 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.POST
-import retrofit2.http.Path
+import org.koin.core.annotation.Singleton
 
-internal interface RelationshipService {
+@Singleton
+internal class RelationshipService(private val client: HttpServiceClient) {
 
-    @DELETE("$RELATIONSHIPS/{uid}")
-    suspend fun deleteRelationship(@Path("uid") relationship: String): RelationshipDeleteWebResponse
+    suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse {
+        return client.delete {
+            url("$RELATIONSHIPS/$relationship")
+        }
+    }
 
-    @POST(RELATIONSHIPS)
-    suspend fun postRelationship(@Body payload: RelationshipPayload): RelationshipWebResponse
+    suspend fun postRelationship(payload: RelationshipPayload): RelationshipWebResponse {
+        return client.post {
+            url(RELATIONSHIPS)
+            body(payload)
+        }
+    }
 
     companion object {
-        const val RELATIONSHIPS = "relationships"
+        private const val RELATIONSHIPS = "relationships"
     }
 }

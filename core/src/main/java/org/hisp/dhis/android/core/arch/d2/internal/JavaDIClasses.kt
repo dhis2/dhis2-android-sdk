@@ -35,8 +35,6 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPassw
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.hisp.dhis.android.core.period.internal.PeriodParser
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.DataSetsStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.FileResourceCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
@@ -46,8 +44,6 @@ internal val javaDIClasses = module {
     single<ForeignKeyCleaner> { ForeignKeyCleanerImpl(get(), get()) }
     single { FileResourceCleaner(get(), get(), get()) }
     single { NoteUniquenessManager(get()) }
-    single { PeriodHelper(get(), get(), get(), get(), get()) }
-    single { PeriodParser(get()) }
     single { DatabaseEncryptionPasswordManager(get(), get()) }
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }

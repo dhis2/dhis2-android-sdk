@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -44,8 +46,8 @@ import org.hisp.dhis.android.core.program.*
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryParser
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryTarget
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import java.util.*
@@ -133,7 +135,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 when (entry.key) {
                     is Dimension.Period -> {
                         appendProgramIndicatorPeriodClauses(
-                            defaultColumn = "$event.${EventTableInfo.Columns.EVENT_DATE}",
+                            defaultColumn = "$EventAlias.${EventTableInfo.Columns.EVENT_DATE}",
                             programIndicator = programIndicator,
                             dimensions = entry.value,
                             builder = this,
@@ -186,7 +188,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 when (entry.key) {
                     is Dimension.Period ->
                         appendProgramIndicatorPeriodClauses(
-                            defaultColumn = "$enrollment.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}",
+                            defaultColumn = "$EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}",
                             programIndicator = programIndicator,
                             dimensions = entry.value,
                             builder = this,
@@ -291,7 +293,7 @@ internal object ProgramIndicatorEvaluatorHelper {
             AnalyticsBoundaryTarget.EventDate -> {
                 val column = EventTableInfo.Columns.EVENT_DATE
                 val targetColumn = when (analyticsType) {
-                    AnalyticsType.EVENT -> "$event.$column"
+                    AnalyticsType.EVENT -> "$EventAlias.$column"
                     AnalyticsType.ENROLLMENT -> ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(column)
                 }
                 boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
@@ -301,7 +303,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 val column = EnrollmentTableInfo.Columns.ENROLLMENT_DATE
                 val targetColumn = when (analyticsType) {
                     AnalyticsType.EVENT -> ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(column)
-                    AnalyticsType.ENROLLMENT -> "$enrollment.$column"
+                    AnalyticsType.ENROLLMENT -> "$EnrollmentAlias.$column"
                 }
                 boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
             }
@@ -310,7 +312,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 val column = EnrollmentTableInfo.Columns.INCIDENT_DATE
                 val targetColumn = when (analyticsType) {
                     AnalyticsType.EVENT -> ProgramIndicatorSQLUtils.getEnrollmentColumnForEventWhereClause(column)
-                    AnalyticsType.ENROLLMENT -> "$enrollment.$column"
+                    AnalyticsType.ENROLLMENT -> "$EnrollmentAlias.$column"
                 }
                 boundaries.map { getBoundaryCondition(targetColumn, it, startDate, endDate) }
             }
@@ -382,7 +384,8 @@ internal object ProgramIndicatorEvaluatorHelper {
         }
 
         val dateWithOffset = if (boundary.offsetPeriods() != null && boundary.offsetPeriodType() != null) {
-            DateUtils.dateWithOffset(date, boundary.offsetPeriods()!!, boundary.offsetPeriodType()!!)
+            DateUtils.dateWithOffset(date.toKtxInstant(), boundary.offsetPeriods()!!, boundary.offsetPeriodType()!!)
+                .toJavaDate()
         } else {
             date
         }

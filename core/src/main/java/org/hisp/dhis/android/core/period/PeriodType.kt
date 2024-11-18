@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.period
 
+import kotlinx.datetime.DayOfWeek
 import java.lang.IllegalArgumentException
-import java.util.*
 import kotlin.Throws
 
 @Suppress("MagicNumber")
@@ -48,33 +48,33 @@ enum class PeriodType(
     Monthly(-11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b", 8),
     BiMonthly(-5, 1, "\\b(\\d{4})(\\d{2})B\\b", 9),
     Quarterly(-4, 1, "\\b(\\d{4})Q(\\d)\\b", 10),
-    SixMonthly(-4, 1, "\\b(\\d{4})S(\\d)\\b", 11),
-    SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b", 12),
-    SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b", 13),
-    Yearly(-4, 1, "\\b(\\d{4})\\b", 14),
-    FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 15),
-    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 16),
-    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 17),
-    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 18),
+    QuarterlyNov(-4, 1, "\\b(\\d{4})NovQ(\\d)\\b", 11),
+    SixMonthly(-4, 1, "\\b(\\d{4})S(\\d)\\b", 12),
+    SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b", 13),
+    SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b", 14),
+    Yearly(-4, 1, "\\b(\\d{4})\\b", 15),
+    FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 16),
+    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 17),
+    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 18),
+    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 19),
     ;
 
     companion object {
         @JvmStatic
         @Throws(IllegalArgumentException::class)
         fun periodTypeFromPeriodId(periodId: String): PeriodType {
-            return values().find {
+            return entries.find {
                 periodId.matches(it.pattern.toRegex())
             } ?: throw IllegalArgumentException("The period id does not match any period type")
         }
 
-        @JvmStatic
-        fun firstDayOfTheWeek(periodType: PeriodType?): Int {
+        fun firstDayOfTheWeek(periodType: PeriodType?): DayOfWeek {
             return when (periodType) {
-                WeeklySunday -> Calendar.SUNDAY
-                WeeklyWednesday -> Calendar.WEDNESDAY
-                WeeklyThursday -> Calendar.THURSDAY
-                WeeklySaturday -> Calendar.SATURDAY
-                else -> Calendar.MONDAY
+                WeeklySunday -> DayOfWeek.SUNDAY
+                WeeklyWednesday -> DayOfWeek.WEDNESDAY
+                WeeklyThursday -> DayOfWeek.THURSDAY
+                WeeklySaturday -> DayOfWeek.SATURDAY
+                else -> DayOfWeek.MONDAY
             }
         }
     }

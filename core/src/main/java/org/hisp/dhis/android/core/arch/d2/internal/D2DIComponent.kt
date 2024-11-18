@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.d2.internal
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.*
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFa
 import org.hisp.dhis.android.core.dataset.internal.DataSetEndpointCallFactory
 import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCallHelper
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
 import org.hisp.dhis.android.core.period.internal.PeriodHandler
@@ -50,7 +52,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandle
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
 
 @Singleton
 @Suppress("LongParameterList")
@@ -66,7 +67,7 @@ internal class D2DIComponent(
     val appContext: Context,
 
     @get:VisibleForTesting
-    val retrofit: Retrofit,
+    val httpServiceClient: HttpServiceClient,
 
     @get:VisibleForTesting
     val coroutineApiCallExecutor: CoroutineAPICallExecutor,
@@ -112,4 +113,7 @@ internal class D2DIComponent(
 
     @get:VisibleForTesting
     val multiUserDatabaseManager: MultiUserDatabaseManager,
+
+    @get:VisibleForTesting
+    val fileResourceDownloadCallHelper: FileResourceDownloadCallHelper,
 )

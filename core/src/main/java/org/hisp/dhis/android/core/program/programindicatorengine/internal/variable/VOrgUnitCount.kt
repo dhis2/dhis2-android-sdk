@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VOrgUnitCount : ExpressionItem {
@@ -52,9 +52,9 @@ internal class VOrgUnitCount : ExpressionItem {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val eventSelector = when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.ORGANISATION_UNIT}"
+                "$EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}"
             AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT}"
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.ORGANISATION_UNIT}"
         }
 
         return "DISTINCT $eventSelector"

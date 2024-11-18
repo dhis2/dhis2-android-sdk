@@ -27,34 +27,48 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationAPI36
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface VisualizationService {
+@Singleton
+internal class VisualizationService(private val client: HttpServiceClient) {
 
-    @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
     suspend fun getSingleVisualization(
-        @Path(VISUALIZATION_UID) uid: String,
-        @Query("fields") @Which fields: Fields<Visualization>,
-        @Query("filter") accessFilter: String,
-        @Query("paging") paging: Boolean,
-    ): Visualization
+        uid: String,
+        fields: Fields<Visualization>,
+        accessFilter: String,
+        paging: Boolean,
+    ): Visualization {
+        return client.get {
+            url("$VISUALIZATIONS/$uid")
+            parameters {
+                fields(fields)
+                attribute("filter", accessFilter)
+                paging(paging)
+            }
+        }
+    }
 
-    @GET("$VISUALIZATIONS/{$VISUALIZATION_UID}")
     suspend fun getSingleVisualizations36(
-        @Path(VISUALIZATION_UID) uid: String,
-        @Query("fields") @Which fields: Fields<Visualization>,
-        @Query("filter") accessFilter: String,
-        @Query("paging") paging: Boolean,
-    ): VisualizationAPI36
+        uid: String,
+        fields: Fields<Visualization>,
+        accessFilter: String,
+        paging: Boolean,
+    ): VisualizationAPI36 {
+        return client.get {
+            url("$VISUALIZATIONS/$uid")
+            parameters {
+                fields(fields)
+                attribute("filter", accessFilter)
+                paging(paging)
+            }
+        }
+    }
 
     companion object {
         const val VISUALIZATIONS = "visualizations"
-        const val VISUALIZATION_UID = "visualizationUid"
     }
 }

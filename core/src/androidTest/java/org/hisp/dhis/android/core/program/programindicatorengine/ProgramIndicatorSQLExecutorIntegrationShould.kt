@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201912
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
@@ -55,7 +56,6 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
-import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.cons
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -910,6 +910,46 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 filter = "(${de(programStage1.uid(), dataElement1.uid())} > 0) == true",
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.COUNT,
+            ),
+        ).isEqualTo("1")
+    }
+
+    @Test
+    fun should_evaluate_or_comparison() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = day20191101,
+        )
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "2")
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = `var`("event_count"),
+                filter = "${de(programStage1.uid(), dataElement1.uid())} == 2 || " +
+                    "${de(programStage1.uid(), dataElement1.uid())} == 4",
+                analyticsType = AnalyticsType.EVENT,
+                aggregationType = AggregationType.COUNT,
+                periods = listOf(period201912),
+            ),
+        ).isEqualTo("0")
+
+        assertThat(
+            evaluateProgramIndicator(
+                expression = `var`("event_count"),
+                filter = "${de(programStage1.uid(), dataElement1.uid())} == 2 || " +
+                    "${de(programStage1.uid(), dataElement1.uid())} == 4",
+                analyticsType = AnalyticsType.EVENT,
+                aggregationType = AggregationType.COUNT,
+                periods = listOf(period201911),
             ),
         ).isEqualTo("1")
     }

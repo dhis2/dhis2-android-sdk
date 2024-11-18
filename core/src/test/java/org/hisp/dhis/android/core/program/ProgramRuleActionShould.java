@@ -55,6 +55,7 @@ public class ProgramRuleActionShould extends BaseObjectShould implements ObjectS
         assertThat(programRuleAction.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-14T21:17:41.033"));
         assertThat(programRuleAction.content()).isEqualTo("It is suggested that an explanation is provided when the Apgar score is below 4");
+        assertThat(programRuleAction.displayContent()).isEqualTo("Il est suggéré de fournir une explication lorsque le score d'Apgar est inférieur à 4");
         assertThat(programRuleAction.data()).isNull();
         assertThat(programRuleAction.location()).isNull();
         assertThat(programRuleAction.trackedEntityAttribute()).isNull();

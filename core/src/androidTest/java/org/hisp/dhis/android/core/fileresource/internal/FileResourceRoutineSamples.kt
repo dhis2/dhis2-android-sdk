@@ -29,6 +29,10 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -37,11 +41,16 @@ import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
 import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -50,24 +59,22 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import java.io.File
-import java.util.Calendar
 import java.util.Date
 
 object FileResourceRoutineSamples {
     private val generator = UidGeneratorImpl()
 
-    private val twoHoursAgo = Calendar.getInstance().apply {
-        add(Calendar.HOUR_OF_DAY, -2)
-    }
-    private val threeHoursAgo = Calendar.getInstance().apply {
-        add(Calendar.HOUR_OF_DAY, -3)
-    }
+    private val twoHoursAgo = ClockProviderFactory.clockProvider.clock.now()
+        .minus(2, DateTimeUnit.HOUR, TimeZone.currentSystemDefault())
+
+    private val threeHoursAgo = ClockProviderFactory.clockProvider.clock.now()
+        .minus(3, DateTimeUnit.HOUR, TimeZone.currentSystemDefault())
 
     val fileResource1: FileResource by lazy {
         val uid = generator.generate()
         FileResource.builder()
             .uid(uid)
-            .lastUpdated(twoHoursAgo.time)
+            .lastUpdated(twoHoursAgo.toJavaDate())
             .domain(FileResourceDomain.DATA_VALUE)
             .path(getFile("first-file").path)
             .build()
@@ -77,7 +84,7 @@ object FileResourceRoutineSamples {
         val uid = generator.generate()
         FileResource.builder()
             .uid(uid)
-            .lastUpdated(threeHoursAgo.time)
+            .lastUpdated(threeHoursAgo.toJavaDate())
             .domain(FileResourceDomain.DATA_VALUE)
             .path(getFile("second-file").path)
             .build()
@@ -113,6 +120,7 @@ object FileResourceRoutineSamples {
         .valueType(ValueType.FILE_RESOURCE)
         .aggregationType(AggregationType.SUM.name)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .domainType("TRACKER")
         .build()
 
     val trackedEntityType: TrackedEntityType = TrackedEntityType.builder()
@@ -132,11 +140,24 @@ object FileResourceRoutineSamples {
         .formType(FormType.DEFAULT)
         .build()
 
+    val trackedEntityInstance: TrackedEntityInstance = TrackedEntityInstance.builder()
+        .uid(generator.generate())
+        .trackedEntityType(trackedEntityType.uid())
+        .build()
+
+    val enrollment: Enrollment = Enrollment.builder()
+        .uid(generator.generate())
+        .program(program.uid())
+        .trackedEntityInstance(trackedEntityInstance.uid())
+        .organisationUnit(orgUnit1.uid())
+        .build()
+
     val event1: Event = Event.builder()
         .uid(generator.generate())
         .program(program.uid())
         .programStage(programStage1.uid())
         .organisationUnit(orgUnit1.uid())
+        .enrollment(enrollment.uid())
         .build()
 
     val trackedEntityDataValue: TrackedEntityDataValue = TrackedEntityDataValue.builder()
@@ -155,15 +176,39 @@ object FileResourceRoutineSamples {
         .optionSet(ObjectWithUid.create(optionSet.uid()))
         .build()
 
-    val trackedEntityInstance: TrackedEntityInstance = TrackedEntityInstance.builder()
-        .uid(generator.generate())
-        .trackedEntityType(trackedEntityType.uid())
-        .build()
-
     val trackedEntityAttributeValue: TrackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
         .trackedEntityAttribute(trackedEntityAttribute.uid())
         .trackedEntityInstance(trackedEntityInstance.uid())
         .value(fileResource2.uid())
+        .build()
+
+    val dataElement2: DataElement = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 2")
+        .valueType(ValueType.FILE_RESOURCE)
+        .aggregationType(AggregationType.SUM.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .domainType("AGGREGATE")
+        .build()
+
+    val dataset: DataSet = DataSet.builder()
+        .uid(generator.generate())
+        .displayName("Dataset")
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val dataSetElement: DataSetElement = DataSetElement.builder()
+        .dataElement(ObjectWithUid.fromIdentifiable(dataElement2))
+        .dataSet(ObjectWithUid.fromIdentifiable(dataset))
+        .build()
+
+    val dataValue1: DataValue = DataValue.builder()
+        .dataElement(dataElement2.uid())
+        .value(fileResource1.uid())
+        .organisationUnit("DiszpKrYNg8")
+        .period("2019")
+        .attributeOptionCombo("Gmbgme7z9BF")
+        .categoryOptionCombo("Gmbgme7z9BF")
         .build()
 
     private fun getFile(fileName: String): File {

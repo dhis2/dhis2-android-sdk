@@ -30,4 +30,4 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
-interface DatabaseConfigurationInsecureStore : ObjectKeyValueStore<DatabasesConfiguration>
+internal interface DatabaseConfigurationInsecureStore : ObjectKeyValueStore<DatabasesConfiguration>

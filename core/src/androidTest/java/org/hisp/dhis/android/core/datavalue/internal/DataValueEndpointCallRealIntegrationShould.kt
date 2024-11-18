@@ -79,9 +79,9 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
             allOrganisationUnitUidsSet = emptySet(),
         )
 
-        val resourceHandler = getGenericCallData(d2).resourceHandler()
+        val resourceHandler = getGenericCallData(d2).resourceHandler
         val apiDownloader: APIDownloader = APIDownloaderImpl(resourceHandler)
-        val dataValueService = d2.retrofit().create(DataValueService::class.java)
+        val dataValueService = DataValueService(d2.httpServiceClient())
 
         return DataValueCall(dataValueService, dataValueHandler, apiDownloader)
             .download(DataValueQuery(bundle))

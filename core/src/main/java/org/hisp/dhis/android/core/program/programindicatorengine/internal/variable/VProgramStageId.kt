@@ -43,7 +43,7 @@ internal class VProgramStageId : ProgramExpressionItem() {
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "${ProgramIndicatorSQLUtils.event}.${EventTableInfo.Columns.PROGRAM_STAGE}"
+                "${ProgramIndicatorSQLUtils.EventAlias}.${EventTableInfo.Columns.PROGRAM_STAGE}"
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
                     column = EventTableInfo.Columns.PROGRAM_STAGE,

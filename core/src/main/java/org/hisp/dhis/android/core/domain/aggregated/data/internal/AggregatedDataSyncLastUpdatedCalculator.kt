@@ -27,9 +27,15 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.koin.core.annotation.Singleton
-import java.util.*
+import java.util.Date
 
 @Singleton
 internal class AggregatedDataSyncLastUpdatedCalculator(
@@ -54,14 +60,11 @@ internal class AggregatedDataSyncLastUpdatedCalculator(
         ) {
             null
         } else {
-            getDateMinus24Hours(syncValue.lastUpdated())
+            getDateMinus24Hours(syncValue.lastUpdated().toKtxInstant()).toJavaDate()
         }
     }
 
-    private fun getDateMinus24Hours(date: Date): Date {
-        val cal = Calendar.getInstance()
-        cal.time = date
-        cal.add(Calendar.DATE, -1)
-        return cal.time
+    private fun getDateMinus24Hours(instant: Instant): Instant {
+        return instant.minus(1, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
     }
 }

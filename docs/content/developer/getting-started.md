@@ -6,7 +6,7 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.10.1"
+    implementation "org.hisp.dhis:android-core:1.11.0"
     ...
 }
 ```
@@ -25,8 +25,6 @@ allprojects {
 Check [compatibility here](#android_sdk_compatibility).
 
 ## D2 initialization { #android_sdk_initialization }
-
-<!--TODO-->
 
 In order to start using the SDK, the first step is to initialize a `D2` object. The helper class `D2Manager` offers static methods to setup and initialize the `D2` instance. Also, it ensures that `D2` is a singleton across the application.
 

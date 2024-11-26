@@ -1,3 +1,5 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -203,9 +205,7 @@ detekt {
     buildUponDefaultConfig = false
 }
 
-tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
-
+tasks.withType<DokkaTask>().configureEach {
     dokkaSourceSets {
         configureEach {
             perPackageOption {
@@ -214,4 +214,8 @@ tasks.dokkaJavadoc.configure {
             }
         }
     }
+}
+
+tasks.dokkaJavadoc.configure {
+    dependsOn("kaptReleaseKotlin")
 }

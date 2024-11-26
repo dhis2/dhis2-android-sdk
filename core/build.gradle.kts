@@ -31,10 +31,10 @@ plugins {
     id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.24"
     id("kotlin-android")
     id("kotlin-kapt")
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.16.3"
     id("maven-publish-conventions")
     id("jacoco-conventions")
     alias(libs.plugins.detekt)
+    alias(libs.plugins.api.compatibility)
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))

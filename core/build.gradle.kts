@@ -34,6 +34,7 @@ plugins {
     id("maven-publish-conventions")
     id("jacoco-conventions")
     alias(libs.plugins.detekt)
+    alias(libs.plugins.api.compatibility)
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))

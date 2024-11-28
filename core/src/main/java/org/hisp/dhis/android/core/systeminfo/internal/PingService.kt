@@ -39,7 +39,7 @@ internal class PingService(
     private val dhisVersionManager: DHISVersionManager,
 ) {
     suspend fun getPing(): HttpResponse {
-        return if (dhisVersionManager.isGreaterThan(DHISVersion.V2_36)) {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
             client.get {
                 url("ping")
                 excludeCredentials()

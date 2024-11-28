@@ -3,7 +3,7 @@
 - Getting started: "@github(dhis2/dhis2-android-sdk, docs/content/developer/getting-started.md, master)"
 - Modules and repositories: "@github(dhis2/dhis2-android-sdk, docs/content/developer/modules-and-repositories.md, master)"
 - Database: "@github(dhis2/dhis2-android-sdk, docs/content/developer/database.md, master)"
-- Data Store: "@github(dhis2/dhis2-android-sdk, docs/content/developer/data-store.md)"
+- Data Store: "@github(dhis2/dhis2-android-sdk, docs/content/developer/data-store.md, master)"
 - Workflow: "@github(dhis2/dhis2-android-sdk, docs/content/developer/workflow.md, master)"
 - Analytics: "@github(dhis2/dhis2-android-sdk, docs/content/developer/analytics.md, master)"
 - Settings: "@github(dhis2/dhis2-android-sdk, docs/content/developer/settings.md, master)"

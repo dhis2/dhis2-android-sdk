@@ -1,5 +1,5 @@
 [versions]
-dhis2AndroidSdkVersion = "1.11.0-SNAPSHOT"
+dhis2AndroidSdkVersion = "1.11.0.1-SNAPSHOT"
 dhis2AndroidSdkCode = "295"
 
 gradle = "8.6.1"

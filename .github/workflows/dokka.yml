@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - ANDROSDK-1941
 
   workflow_dispatch:
 

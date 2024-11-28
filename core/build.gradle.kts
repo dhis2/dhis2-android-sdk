@@ -214,6 +214,22 @@ tasks.withType<DokkaTask>().configureEach {
             }
         }
     }
+    dokkaSourceSets {
+        configureEach {
+            moduleName.set("DHIS2 Android SDK")
+        }
+    }
+
+    val dokkaBaseConfiguration = """
+    {
+      "customAssets": ["${file("../assets/logo-icon.svg")}"]
+    }
+    """
+    pluginsMapConfiguration.set(
+        mapOf(
+            "org.jetbrains.dokka.base.DokkaBase" to dokkaBaseConfiguration,
+        ),
+    )
 }
 
 tasks.dokkaJavadoc.configure {

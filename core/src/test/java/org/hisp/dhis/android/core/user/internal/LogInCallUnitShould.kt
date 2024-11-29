@@ -178,6 +178,21 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     @Test
+    fun invoke_server_with_correct_parameters_including_two_factor_after_call() = runTest {
+        whenever(
+            userService.login(
+                credentialsCaptor.capture()
+            ),
+        ).thenReturn(loginResponse)
+
+        login(TWO_FACTOR_CODE)
+
+        assertThat(USERNAME).isEqualTo(credentialsCaptor.firstValue.username)
+        assertThat(PASSWORD).isEqualTo(credentialsCaptor.firstValue.password)
+        assertThat(TWO_FACTOR_CODE).isEqualTo(credentialsCaptor.firstValue.twoFactorCode)
+    }
+
+    @Test
     @Throws(D2Error::class)
     fun not_invoke_stores_on_exception_on_call() = runTest {
         whenLoginAPICall { throw d2Error }
@@ -208,6 +223,13 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         login()
         verifySuccess()
+    }
+
+    @Test
+    fun throw_d2_error_if_two_factor_code_is_invalid() = runTest {
+        whenLoginAPICall { LoginResponse(loginStatus = D2ErrorCode.INCORRECT_TWO_FACTOR_CODE.toString()) }
+        
+        assertD2Error(D2ErrorCode.INCORRECT_TWO_FACTOR_CODE) { login(TWO_FACTOR_CODE) }
     }
 
     // Offline support
@@ -271,6 +293,7 @@ class LogInCallUnitShould : BaseCallShould() {
         private const val USERNAME = "test_username"
         private const val UID = "test_uid"
         private const val PASSWORD = "test_password"
+        private const val TWO_FACTOR_CODE = "test_password"
         private const val baseEndpoint = "https://dhis-instance.org"
         private const val serverUrl = baseEndpoint
     }

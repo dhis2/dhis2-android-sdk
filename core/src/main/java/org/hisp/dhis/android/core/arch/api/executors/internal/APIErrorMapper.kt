@@ -85,11 +85,17 @@ internal class APIErrorMapper {
     }
 
     private fun sslException(errorBuilder: D2Error.Builder, sslException: SSLException): D2Error {
-        return logAndAppendOriginal(errorBuilder, sslException)
-            .errorDescription(sslException.message)
-            .errorCode(D2ErrorCode.SSL_ERROR)
-            .errorDescription("API call threw SSLException")
-            .build()
+        return if (sslException.cause?.message?.contains("TLSV1_UNRECOGNIZED_NAME") == true) {
+            logAndAppendOriginal(errorBuilder, sslException)
+                .errorCode(D2ErrorCode.UNKNOWN_HOST)
+                .errorDescription("API call failed due to SSLException from wrong host")
+                .build()
+        } else {
+            logAndAppendOriginal(errorBuilder, sslException)
+                .errorCode(D2ErrorCode.SSL_ERROR)
+                .errorDescription("API call threw SSLException")
+                .build()
+        }
     }
 
     private fun ioException(errorBuilder: D2Error.Builder, e: IOException): D2Error {

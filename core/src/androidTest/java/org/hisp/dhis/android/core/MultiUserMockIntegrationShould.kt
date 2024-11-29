@@ -46,7 +46,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         }
 
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint, null)
         d2.databaseAdapter().insert(
             CategoryOptionTableInfo.TABLE_INFO.name(),
             null,
@@ -56,12 +56,12 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         d2.userModule().blockingLogOut()
 
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u2", "p2", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn("u2", "p2", dhis2MockServer.baseEndpoint, null)
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(0)
         d2.userModule().blockingLogOut()
 
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint, null)
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
     }
 
@@ -71,7 +71,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
             d2.userModule().blockingLogOut()
         }
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint, null)
         d2.databaseAdapter().insert(
             CategoryOptionTableInfo.TABLE_INFO.name(),
             null,
@@ -82,12 +82,12 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
         val server2 = Dhis2MockServer(0)
         server2.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u2", "p2", server2.baseEndpoint)
+        d2.userModule().blockingLogIn("u2", "p2", server2.baseEndpoint, null)
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(0)
         d2.userModule().blockingLogOut()
 
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint, null)
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
     }
 

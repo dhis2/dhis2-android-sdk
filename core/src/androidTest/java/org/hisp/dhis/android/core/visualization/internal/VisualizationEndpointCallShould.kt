@@ -47,7 +47,7 @@ class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() 
         }
 
         dhis2MockServer.enqueueLoginResponses()
-        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogIn("u1", "pass1", dhis2MockServer.baseEndpoint, null)
 
         dhis2MockServer.enqueueMockResponse("visualization/visualizations_1.json")
         dhis2MockServer.enqueueMockResponse("visualization/visualizations_2.json")

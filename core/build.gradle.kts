@@ -1,3 +1,5 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -204,9 +206,7 @@ detekt {
     buildUponDefaultConfig = false
 }
 
-tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
-
+tasks.withType<DokkaTask>().configureEach {
     dokkaSourceSets {
         configureEach {
             perPackageOption {
@@ -215,4 +215,24 @@ tasks.dokkaJavadoc.configure {
             }
         }
     }
+    dokkaSourceSets {
+        configureEach {
+            moduleName.set("DHIS2 Android SDK")
+        }
+    }
+
+    val dokkaBaseConfiguration = """
+    {
+      "customAssets": ["${file("../assets/logo-icon.svg")}"]
+    }
+    """
+    pluginsMapConfiguration.set(
+        mapOf(
+            "org.jetbrains.dokka.base.DokkaBase" to dokkaBaseConfiguration,
+        ),
+    )
+}
+
+tasks.dokkaJavadoc.configure {
+    dependsOn("kaptReleaseKotlin")
 }

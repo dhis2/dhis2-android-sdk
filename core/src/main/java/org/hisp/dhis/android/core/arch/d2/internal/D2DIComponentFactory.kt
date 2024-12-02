@@ -74,6 +74,7 @@ import org.hisp.dhis.android.core.user.UserDIModule
 import org.hisp.dhis.android.core.validation.ValidationDIModule
 import org.hisp.dhis.android.core.visualization.VisualizationDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
+import org.hisp.dhis.android.network.NetworkDIModule
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module
 
@@ -115,6 +116,7 @@ internal object D2DIComponentFactory {
                     MaintenanceDIModule().module,
                     MapDIModule().module,
                     NoteDIModule().module,
+                    NetworkDIModule().module,
                     OptionDIModule().module,
                     OrganisationUnitDIModule().module,
                     ParserDIModule().module,

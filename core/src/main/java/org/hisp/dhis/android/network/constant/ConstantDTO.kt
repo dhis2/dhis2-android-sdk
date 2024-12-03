@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.constant
 
-@Singleton
-internal class ConstantCoroutineCallFactory(
-    data: GenericCallData,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val handler: ConstantHandler,
-    private val constnatGetCall: ConstantGetCallInterface,
-) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectInterface
+import org.hisp.dhis.android.network.common.Pager
+import org.hisp.dhis.android.network.common.Payload
 
-    override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
-        return object : ConstantCallFetcher(coroutineAPICallExecutor) {
-            override suspend fun getCall(): List<Constant> {
-                return constnatGetCall.getCall()
-            }
-        }
-    }
+@Serializable
+internal class ConstantPayload(
+    override val pager: Pager? = null,
+    @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
+) : Payload<ConstantDTO>(pager, items)
 
-    override fun processor(): CallProcessor<Constant> {
-        return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter,
-            handler,
-        )
-    }
-}
+@Serializable
+data class ConstantDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String = "",
+    override val lastUpdated: String = "",
+    override val deleted: Boolean? = null,
+    val value: Double? = null,
+) : BaseIdentifiableObjectInterface

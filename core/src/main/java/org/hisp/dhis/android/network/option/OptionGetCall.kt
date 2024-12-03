@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.network.option
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.internal.OptionGetCallInterface
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.Payload
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class OptionCall internal constructor(
-    private val optionGetCall: OptionGetCallInterface,
-    private val handler: OptionHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Option> {
-    override suspend fun download(uids: Set<String>): List<Option> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            { partitionUids: Set<String> ->
-                val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
-
-                apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                    optionGetCall.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
-                }
-            },
-        )
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
-        private const val PAGE_SIZE = 5000
+internal class OptionGetCall(
+    private val client: HttpServiceClientKotlinx,
+    private val optionService: OptionService = OptionService(client),
+) : OptionGetCallInterface {
+    override suspend fun getOptions(
+        fields: Fields<Option>,
+        optionSetUidsFilterString: String,
+        paging: Boolean,
+        page: Int,
+        pageSize: Int,
+    ): Payload<Option> {
+        val apiPayload = optionService.fetchOptions(fields, optionSetUidsFilterString, paging, page, pageSize)
+        return apiPayload.mapItems(::optionApiToDomainMapper)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.option.Option
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.option
 
-@Singleton
-class OptionCall internal constructor(
-    private val optionGetCall: OptionGetCallInterface,
-    private val handler: OptionHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Option> {
-    override suspend fun download(uids: Set<String>): List<Option> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            { partitionUids: Set<String> ->
-                val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectInterface
+import org.hisp.dhis.android.network.common.ObjectWithStyle
+import org.hisp.dhis.android.network.common.ObjectWithUidInterface
+import org.hisp.dhis.android.network.common.Pager
+import org.hisp.dhis.android.network.common.Payload
 
-                apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                    optionGetCall.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
-                }
-            },
-        )
-    }
+@Serializable
+internal class OptionPayload(
+    override val pager: Pager? = null,
+    @SerialName("options") override val items: List<OptionDTO> = emptyList(),
+) : Payload<OptionDTO>(pager, items)
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
-        private const val PAGE_SIZE = 5000
-    }
-}
+@Serializable
+internal data class OptionDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String = "",
+    override val lastUpdated: String = "",
+    override val deleted: Boolean? = null,
+    val sortOrder: Int? = null,
+    val optionSet: ObjectWithUidInterface? = null,
+    val style: ObjectWithStyle? = null,
+) : BaseIdentifiableObjectInterface

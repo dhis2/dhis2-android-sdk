@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+package org.hisp.dhis.android.network.option
+
+import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
-import org.koin.core.annotation.Singleton
 
-@Singleton
-class OptionCall internal constructor(
-    private val optionGetCall: OptionGetCallInterface,
-    private val handler: OptionHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Option> {
-    override suspend fun download(uids: Set<String>): List<Option> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            { partitionUids: Set<String> ->
-                val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
-
-                apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                    optionGetCall.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
-                }
-            },
+internal fun optionApiToDomainMapper(item: OptionDTO): Option {
+    return Option.builder()
+        .uid(item.uid)
+        .code(item.code)
+        .name(item.name)
+        .displayName(item.displayName)
+        .created(item.created)
+        .lastUpdated(item.lastUpdated)
+        .deleted(item.deleted)
+        .sortOrder(item.sortOrder)
+        .optionSet(
+            ObjectWithUid.create(item.optionSet?.uid),
         )
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
-        private const val PAGE_SIZE = 5000
-    }
+        .style(
+            ObjectStyle.builder()
+                .icon(item.style?.icon)
+                .color(item.style?.color)
+                .build(),
+        )
+        .build()
 }

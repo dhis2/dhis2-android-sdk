@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.network.option
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.Option
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-@Singleton
-internal class OptionService(private val client: HttpServiceClient) {
-    suspend fun getOptions(
+internal class OptionService(val client: HttpServiceClientKotlinx) {
+    suspend fun fetchOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,
         paging: Boolean,
         page: Int,
         pageSize: Int,
-    ): Payload<Option> {
+    ): OptionPayload {
         return client.get {
             url("options")
             parameters {

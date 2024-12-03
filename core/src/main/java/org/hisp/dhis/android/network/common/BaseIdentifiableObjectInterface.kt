@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+package org.hisp.dhis.android.network.common
 
-internal class Payload<T> : PayloadInterface<T> {
-    @JsonProperty("pager")
-    override var pager: Pager? = null
-
-    @JsonIgnore
-    override var items: List<T> = ArrayList()
-
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    override fun pager(): Pager? {
-        return this.pager
-    }
-
-    override fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
-    }
+interface BaseIdentifiableObjectInterface {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: String?
+    val lastUpdated: String?
+    val deleted: Boolean?
 }

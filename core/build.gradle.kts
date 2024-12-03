@@ -37,6 +37,7 @@ plugins {
     id("jacoco-conventions")
     alias(libs.plugins.detekt)
     alias(libs.plugins.api.compatibility)
+    id("org.jetbrains.kotlin.plugin.serialization") version "${libs.versions.kotlin.get()}"
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
@@ -149,6 +150,7 @@ dependencies {
     api(libs.ktor.okhttp)
     api(libs.ktor.negotiation)
     api(libs.ktor.jackson)
+    api(libs.ktor.serialization.kotlinx.json)
     api(libs.ktor.client.mock)
 
     // Kotlin

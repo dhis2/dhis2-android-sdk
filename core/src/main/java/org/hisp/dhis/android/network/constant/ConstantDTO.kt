@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+package org.hisp.dhis.android.network.constant
 
-internal class Payload<T> : PayloadInterface<T> {
-    @JsonProperty("pager")
-    override var pager: Pager? = null
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectInterface
+import org.hisp.dhis.android.network.common.Pager
+import org.hisp.dhis.android.network.common.Payload
 
-    @JsonIgnore
-    override var items: List<T> = ArrayList()
+@Serializable
+internal class ConstantPayload(
+    override val pager: Pager? = null,
+    @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
+) : Payload<ConstantDTO>(pager, items)
 
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    override fun pager(): Pager? {
-        return this.pager
-    }
-
-    override fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
-    }
-}
+@Serializable
+data class ConstantDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String = "",
+    override val lastUpdated: String = "",
+    override val deleted: Boolean? = null,
+    val value: Double? = null,
+) : BaseIdentifiableObjectInterface

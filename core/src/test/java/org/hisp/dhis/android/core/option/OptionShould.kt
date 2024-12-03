@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
+package org.hisp.dhis.android.core.option
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.common.ObjectWithStyle
+import org.hisp.dhis.android.network.option.OptionDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-internal class Payload<T> : PayloadInterface<T> {
-    @JsonProperty("pager")
-    override var pager: Pager? = null
+class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
 
-    @JsonIgnore
-    override var items: List<T> = ArrayList()
+    @Throws(IOException::class, ParseException::class)
+    @Test
+    override fun map_from_json_string() {
+        var option = deserialize(OptionDTO.serializer())
 
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    override fun pager(): Pager? {
-        return this.pager
-    }
-
-    override fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
+        Truth.assertThat(option.uid).isEqualTo("Y1ILwhy5VDY")
+        Truth.assertThat(option.code).isEqualTo("0-14 years")
+        Truth.assertThat(option.created).isEqualTo("2014-08-18T12:39:16.000")
+        Truth.assertThat(option.lastUpdated).isEqualTo("2014-08-18T12:39:16.000")
+        Truth.assertThat(option.name).isEqualTo("0-14 years")
+        Truth.assertThat(option.displayName).isEqualTo("0-14 years")
+        Truth.assertThat(option.sortOrder).isEqualTo(1)
+        Truth.assertThat(option.optionSet!!.uid).isEqualTo("VQ2lai3OfVG")
+        Truth.assertThat(option.style).isEqualTo(ObjectWithStyle("#000", "my-icon-name"))
     }
 }

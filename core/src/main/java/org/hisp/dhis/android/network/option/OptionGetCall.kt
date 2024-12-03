@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
+package org.hisp.dhis.android.network.option
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.internal.OptionGetCallInterface
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.Payload
+import org.koin.core.annotation.Singleton
 
-internal class Payload<T> : PayloadInterface<T> {
-    @JsonProperty("pager")
-    override var pager: Pager? = null
-
-    @JsonIgnore
-    override var items: List<T> = ArrayList()
-
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    override fun pager(): Pager? {
-        return this.pager
-    }
-
-    override fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
+@Singleton
+internal class OptionGetCall(
+    private val client: HttpServiceClientKotlinx,
+    private val optionService: OptionService = OptionService(client),
+) : OptionGetCallInterface {
+    override suspend fun getOptions(
+        fields: Fields<Option>,
+        optionSetUidsFilterString: String,
+        paging: Boolean,
+        page: Int,
+        pageSize: Int,
+    ): Payload<Option> {
+        val apiPayload = optionService.fetchOptions(fields, optionSetUidsFilterString, paging, page, pageSize)
+        return apiPayload.mapItems(::optionApiToDomainMapper)
     }
 }

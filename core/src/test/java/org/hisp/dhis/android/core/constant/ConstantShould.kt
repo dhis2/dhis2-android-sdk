@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
+package org.hisp.dhis.android.core.constant
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.constant.ConstantDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-internal class Payload<T> : PayloadInterface<T> {
-    @JsonProperty("pager")
-    override var pager: Pager? = null
+class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), ObjectShould {
 
-    @JsonIgnore
-    override var items: List<T> = ArrayList()
+    @Throws(IOException::class, ParseException::class)
+    @Test
+    override fun map_from_json_string() {
+        val constant = deserialize(ConstantDTO.serializer())
 
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    override fun pager(): Pager? {
-        return this.pager
-    }
-
-    override fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
+        Truth.assertThat(constant.created).isEqualTo("2013-03-11T16:39:33.083")
+        Truth.assertThat(constant.lastUpdated).isEqualTo("2013-03-11T16:39:33.083")
+        Truth.assertThat(constant.name).isEqualTo("Pi")
+        Truth.assertThat(constant.displayName).isEqualTo("Pi")
+        Truth.assertThat(constant.value).isEqualTo(3.14)
+        Truth.assertThat(constant.uid).isEqualTo("bCqvfPR02Im")
     }
 }

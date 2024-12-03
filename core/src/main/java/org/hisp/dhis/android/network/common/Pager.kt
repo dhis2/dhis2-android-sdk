@@ -26,23 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant.internal
+package org.hisp.dhis.android.network.common
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+import kotlinx.serialization.Serializable
 
-@Singleton
-internal class ConstantService(private val client: HttpServiceClient) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
-        return client.get {
-            url("constants")
-            parameters {
-                fields(fields)
-                paging(paging)
-            }
-        }
-    }
-}
+@Serializable
+internal data class Pager(
+    val page: Int,
+    val pageCount: Int,
+    val pageSize: Int,
+    val total: Int,
+)

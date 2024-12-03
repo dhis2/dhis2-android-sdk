@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.common.ObjectWithStyle
-import org.hisp.dhis.android.network.option.OptionDTO
-import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
+package org.hisp.dhis.android.core.arch.json.internal
 
-class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 
-    @Throws(IOException::class, ParseException::class)
-    @Test
-    override fun map_from_json_string() {
-        var option = deserialize(OptionDTO.serializer())
-
-        Truth.assertThat(option.uid).isEqualTo("Y1ILwhy5VDY")
-        Truth.assertThat(option.code).isEqualTo("0-14 years")
-        Truth.assertThat(option.created).isEqualTo("2014-08-18T12:39:16.000")
-        Truth.assertThat(option.lastUpdated).isEqualTo("2014-08-18T12:39:16.000")
-        Truth.assertThat(option.name).isEqualTo("0-14 years")
-        Truth.assertThat(option.displayName).isEqualTo("0-14 years")
-        Truth.assertThat(option.sortOrder).isEqualTo(1)
-        Truth.assertThat(option.optionSet!!.uid).isEqualTo("VQ2lai3OfVG")
-        Truth.assertThat(option.style).isEqualTo(ObjectWithStyle("#000", "my-icon-name"))
+object KotlinxJsonParser {
+    @OptIn(ExperimentalSerializationApi::class)
+    val instance: Json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        explicitNulls = false
     }
 }

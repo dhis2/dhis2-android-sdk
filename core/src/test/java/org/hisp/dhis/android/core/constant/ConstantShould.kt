@@ -25,40 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.constant
 
-package org.hisp.dhis.android.core.constant;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.constant.ConstantDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ConstantShould extends BaseObjectShould implements ObjectShould {
-
-    public ConstantShould() {
-        super("constant/constant.json");
-    }
-
-    @Override
+    @Throws(IOException::class, ParseException::class)
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Constant constant = objectMapper.readValue(jsonStream, Constant.class);
+    override fun map_from_json_string() {
+        val constant = deserialize(ConstantDTO.serializer())
 
-        // we need to make sure that jackson is parsing dates in correct way
-        assertThat(constant.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
-        assertThat(constant.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
-
-        // check if all properties are present and correspond to values in payload
-        assertThat(constant.name()).isEqualTo("Pi");
-        assertThat(constant.displayName()).isEqualTo("Pi");
-        assertThat(constant.value()).isEqualTo(3.14);
-        assertThat(constant.uid()).isEqualTo("bCqvfPR02Im");
+        Truth.assertThat(constant.created).isEqualTo("2013-03-11T16:39:33.083")
+        Truth.assertThat(constant.lastUpdated).isEqualTo("2013-03-11T16:39:33.083")
+        Truth.assertThat(constant.name).isEqualTo("Pi")
+        Truth.assertThat(constant.displayName).isEqualTo("Pi")
+        Truth.assertThat(constant.value).isEqualTo(3.14)
+        Truth.assertThat(constant.uid).isEqualTo("bCqvfPR02Im")
     }
 }

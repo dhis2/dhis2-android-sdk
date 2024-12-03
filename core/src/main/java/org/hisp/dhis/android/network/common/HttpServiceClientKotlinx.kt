@@ -45,11 +45,11 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.RequestBuilder
 import org.hisp.dhis.android.core.arch.api.internal.addKtorPlugins
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -63,14 +63,7 @@ constructor(
             preconfigured = okHttpClient
         }
         install(ContentNegotiation) {
-            json(
-                Json {
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                    coerceInputValues = true
-                    explicitNulls = false
-                },
-            )
+            json(KotlinxJsonParser.instance)
         }
         expectSuccess = true
         followRedirects = false

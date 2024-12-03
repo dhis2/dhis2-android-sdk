@@ -37,11 +37,10 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ConstantGetCall(
     private val httpClient: HttpServiceClientKotlinx,
-    private val service: ConstantService = ConstantService(httpClient)
+    private val service: ConstantService = ConstantService(httpClient),
 ) : ConstantGetCallInterface {
-    suspend override fun getCall(): List<Constant> {
+    override suspend fun getCall(): List<Constant> {
         val constantDtoList: ConstantPayload = service.constants(ConstantFields.allFields, false)
-
         return constantDtoList.items.map { item -> constantApiToDomainMapper(item) }
     }
 }

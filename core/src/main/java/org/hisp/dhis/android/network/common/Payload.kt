@@ -47,4 +47,10 @@ internal open class Payload<T>(
     override fun pager(): Pager? {
         return pager
     }
+
+    fun <P> mapItems(
+        transform: (T) -> P,
+    ): Payload<P> {
+        return Payload(pager, items.map(transform))
+    }
 }

@@ -26,11 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network
+package org.hisp.dhis.android.network.dependencyInjection
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 
 @Module
-@ComponentScan
+@ComponentScan("org.hisp.dhis.android.network")
 internal class NetworkDIModule

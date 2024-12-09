@@ -129,5 +129,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "apiCompatibility" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]

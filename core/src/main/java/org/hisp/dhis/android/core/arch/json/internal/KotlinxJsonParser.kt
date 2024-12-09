@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.json.internal
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
-object KotlinxJsonParser {
-    @OptIn(ExperimentalSerializationApi::class)
+internal object KotlinxJsonParser {
     val instance: Json = Json {
         isLenient = true
         ignoreUnknownKeys = true

@@ -1,5 +1,6 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 
+
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -37,7 +38,7 @@ plugins {
     id("jacoco-conventions")
     alias(libs.plugins.detekt)
     alias(libs.plugins.api.compatibility)
-    id("org.jetbrains.kotlin.plugin.serialization") version "${libs.versions.kotlin.get()}"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
@@ -63,6 +64,10 @@ android {
 
         buildConfigField("long", "VERSION_CODE", libs.versions.dhis2AndroidSdkCode.get())
         buildConfigField("String", "VERSION_NAME", "\"$version\"")
+
+        kotlinOptions {
+            freeCompilerArgs += "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
+        }
     }
 
     compileOptions {

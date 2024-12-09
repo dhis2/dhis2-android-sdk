@@ -44,7 +44,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.RequestBuilder
@@ -53,8 +52,7 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class HttpServiceClientKotlinx
-@OptIn(ExperimentalSerializationApi::class)
+internal class HttpServiceClientKotlinx
 constructor(
     val okHttpClient: OkHttpClient,
     val d2Configuration: D2Configuration,
@@ -69,9 +67,8 @@ constructor(
         followRedirects = false
         addKtorPlugins(d2Configuration)
     },
-    @PublishedApi internal var baseUrl: String = "https://temporary-dhis-url.org/api/",
+    internal var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
-    @PublishedApi
     internal suspend inline fun <reified T> request(
         requestMethod: HttpMethod,
         block: RequestBuilder.() -> Unit,
@@ -100,7 +97,6 @@ constructor(
         }
     }
 
-    @PublishedApi
     internal fun HttpRequestBuilder.addHeaders(requestBuilder: RequestBuilder) {
         requestBuilder.headers.forEach { (key, value) ->
             header(key, value)
@@ -133,10 +129,7 @@ constructor(
     }
 
     companion object {
-        @PublishedApi
-        internal val IsAbsouteUrlHeader = "isAbsoluteUrl"
-
-        @PublishedApi
-        internal val IsExternalRequestHeader = "isExternalRequest"
+        internal const val IsAbsouteUrlHeader = "isAbsoluteUrl"
+        internal const val IsExternalRequestHeader = "isExternalRequest"
     }
 }

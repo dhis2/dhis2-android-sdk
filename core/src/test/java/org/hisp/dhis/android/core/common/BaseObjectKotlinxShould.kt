@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.common
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import java.io.InputStream
 
 open class BaseObjectKotlinxShould(private val jsonPath: String) {
 
-    @OptIn(ExperimentalSerializationApi::class)
     private val jsonParser = KotlinxJsonParser.instance
 
     private val jsonStream: InputStream =

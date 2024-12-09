@@ -28,10 +28,13 @@
 
 package org.hisp.dhis.android.core.arch.api.payload.internal
 
-interface PayloadInterface<T> {
+internal interface PayloadInterface<T> {
     val pager: Any?
     val items: List<T>
 
+    @Deprecated("Use pager attribute instead", replaceWith = ReplaceWith("pager"))
     fun pager(): Any?
+
+    @Deprecated("Use items attribute instead", replaceWith = ReplaceWith("items"))
     fun items(): List<T>
 }

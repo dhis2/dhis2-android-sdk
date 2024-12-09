@@ -41,7 +41,7 @@ internal class ConstantPayload(
 ) : Payload<ConstantDTO>(pager, items)
 
 @Serializable
-data class ConstantDTO(
+internal data class ConstantDTO(
     @SerialName("id") override val uid: String,
     override val code: String? = null,
     override val name: String? = null,

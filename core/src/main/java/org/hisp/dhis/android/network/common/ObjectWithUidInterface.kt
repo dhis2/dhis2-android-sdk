@@ -32,6 +32,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ObjectWithUidInterface(
+internal data class ObjectWithUidInterface(
     @SerialName("id") val uid: String,
 )

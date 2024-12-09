@@ -31,7 +31,7 @@ package org.hisp.dhis.android.network.common
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ObjectWithStyle(
+internal data class ObjectWithStyle(
     val color: String? = null,
     val icon: String? = null,
 )

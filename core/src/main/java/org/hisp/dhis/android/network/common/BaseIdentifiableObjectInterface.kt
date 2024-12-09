@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.network.common
 
-interface BaseIdentifiableObjectInterface {
+internal interface BaseIdentifiableObjectInterface {
     val uid: String
     val code: String?
     val name: String?

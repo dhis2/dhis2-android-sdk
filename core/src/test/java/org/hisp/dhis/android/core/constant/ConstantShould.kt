@@ -32,12 +32,9 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.constant.ConstantDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), ObjectShould {
 
-    @Throws(IOException::class, ParseException::class)
     @Test
     override fun map_from_json_string() {
         val constant = deserialize(ConstantDTO.serializer())

@@ -33,12 +33,9 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.common.ObjectWithStyle
 import org.hisp.dhis.android.network.option.OptionDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
 
-    @Throws(IOException::class, ParseException::class)
     @Test
     override fun map_from_json_string() {
         var option = deserialize(OptionDTO.serializer())

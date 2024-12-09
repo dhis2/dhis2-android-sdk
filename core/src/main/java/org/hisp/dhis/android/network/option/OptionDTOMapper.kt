@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+package org.hisp.dhis.android.network.option
 
-internal class Payload<T> : PayloadInterface<T> {
-    @JsonProperty("pager")
-    override var pager: Pager? = null
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.option.Option
 
-    @JsonIgnore
-    override var items: List<T> = ArrayList()
-
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    override fun pager(): Pager? {
-        return this.pager
-    }
-
-    override fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
-    }
+internal fun optionApiToDomainMapper(item: OptionDTO): Option {
+    return Option.builder()
+        .uid(item.uid)
+        .code(item.code)
+        .name(item.name)
+        .displayName(item.displayName)
+        .created(item.created)
+        .lastUpdated(item.lastUpdated)
+        .deleted(item.deleted)
+        .sortOrder(item.sortOrder)
+        .optionSet(
+            ObjectWithUid.create(item.optionSet?.uid),
+        )
+        .style(
+            ObjectStyle.builder()
+                .icon(item.style?.icon)
+                .color(item.style?.color)
+                .build(),
+        )
+        .build()
 }

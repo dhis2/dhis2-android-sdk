@@ -26,21 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.constant
+package org.hisp.dhis.android.core.constant.internal
 
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.internal.ConstantFields
-import org.hisp.dhis.android.core.constant.internal.ConstantGetCallInterface
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ConstantGetCall(
-    private val httpClient: HttpServiceClientKotlinx,
-    private val service: ConstantService = ConstantService(httpClient),
-) : ConstantGetCallInterface {
-    override suspend fun getCall(): List<Constant> {
-        val constantDtoList: ConstantPayload = service.constants(ConstantFields.allFields, false)
-        return constantDtoList.items.map { item -> constantApiToDomainMapper(item) }
-    }
+internal fun interface ConstantNetworkHandler {
+    suspend fun getConstants(): List<Constant>
 }

@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class OptionCall internal constructor(
-    private val optionGetCall: OptionGetCallInterface,
+    private val networkHandler: OptionNetworkHandler,
     private val handler: OptionHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<Option> {
@@ -48,7 +48,7 @@ class OptionCall internal constructor(
                 val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
 
                 apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                    optionGetCall.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
+                    networkHandler.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
                 }
             },
         )

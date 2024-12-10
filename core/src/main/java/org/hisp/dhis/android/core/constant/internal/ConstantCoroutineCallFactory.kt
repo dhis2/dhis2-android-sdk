@@ -41,13 +41,13 @@ internal class ConstantCoroutineCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val handler: ConstantHandler,
-    private val constnatGetCall: ConstantGetCallInterface,
+    private val networkHandler: ConstantNetworkHandler,
 ) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
 
     override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
         return object : ConstantCallFetcher(coroutineAPICallExecutor) {
             override suspend fun getCall(): List<Constant> {
-                return constnatGetCall.getCall()
+                return networkHandler.getConstants()
             }
         }
     }

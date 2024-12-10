@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 internal class OptionService(val client: HttpServiceClientKotlinx) {
-    suspend fun fetchOptions(
+    suspend fun options(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,
         paging: Boolean,

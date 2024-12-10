@@ -29,16 +29,16 @@ package org.hisp.dhis.android.network.option
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.internal.OptionGetCallInterface
+import org.hisp.dhis.android.core.option.internal.OptionNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.Payload
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OptionGetCall(
-    private val client: HttpServiceClientKotlinx,
-    private val optionService: OptionService = OptionService(client),
-) : OptionGetCallInterface {
+internal class OptionNetworkHandlerImpl(
+    private val httpClient: HttpServiceClientKotlinx,
+    private val service: OptionService = OptionService(httpClient),
+) : OptionNetworkHandler {
     override suspend fun getOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,
@@ -46,7 +46,7 @@ internal class OptionGetCall(
         page: Int,
         pageSize: Int,
     ): Payload<Option> {
-        val apiPayload = optionService.fetchOptions(fields, optionSetUidsFilterString, paging, page, pageSize)
+        val apiPayload = service.options(fields, optionSetUidsFilterString, paging, page, pageSize)
         return apiPayload.mapItems(::optionApiToDomainMapper)
     }
 }

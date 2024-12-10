@@ -30,14 +30,17 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.user.internal.ConnectLogoutHandler
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class PasswordAndCookieAuthenticator(
     private val userIdHelper: UserIdAuthenticatorHelper,
     private val cookieHelper: CookieAuthenticatorHelper,
-) {
+    private val logoutHandler: ConnectLogoutHandler,
+    ) {
 
     companion object {
         private const val LOGIN_ACTION = "login.action"
@@ -51,12 +54,18 @@ internal class PasswordAndCookieAuthenticator(
             if (useCookie) cookieHelper.addCookieHeader(builder) else addPasswordHeader(builder, credentials)
         val res = chain.proceed(builderWithAuthentication.build())
 
+        val isFromLoginCall = res.request.url.encodedPath.contains("auth/login")
+
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
             res.close()
             cookieHelper.removeCookie()
             val newReqWithBasicAuth = addPasswordHeader(userIdHelper.builderWithUserId(chain), credentials).build()
             chain.proceed(newReqWithBasicAuth)
-        } else {
+        } else if (res.code == 401 && !isFromLoginCall && ServerURLWrapper.serverUrl?.contains(res.request.url.host) == true) {
+            logoutHandler.logOut()
+            res
+        }
+        else {
             res
         }
 

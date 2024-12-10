@@ -48,13 +48,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.HashMap;
 
-import io.reactivex.functions.Consumer;
 import io.reactivex.observers.TestObserver;
-import io.reactivex.subscribers.TestSubscriber;
 import kotlin.Unit;
-import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -98,6 +94,7 @@ public class ParentAuthenticatorShould {
 
         UserIdAuthenticatorHelper userIdHelper = new UserIdAuthenticatorHelper(userIdStore);
 
+        ServerURLWrapper.setServerUrl(mockWebServer.getHostName());
         connectLogoutHandler = new ConnectLogoutHandler(credentialsSecureStore);
 
         Interceptor authenticator = new ParentAuthenticator(
@@ -115,10 +112,7 @@ public class ParentAuthenticatorShould {
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
         mockWebServer.enqueue(new MockResponse());
 
-        Credentials credentials = new Credentials("test_user", "test_server", "test_password", null);
-
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        when(userIdStore.get()).thenReturn("user-id");
+        givenACredentials();
 
         okHttpClient.newCall(
                         new Request.Builder()
@@ -132,24 +126,9 @@ public class ParentAuthenticatorShould {
     }
 
     @Test
-    public void invoke_log_out_if_call_response_401() throws IOException, InterruptedException {
-        Credentials credentials = new Credentials("test_user", "test_server", "test_password", null);
-
-        when(credentialsSecureStore.get()).thenReturn(credentials);
-        when(userIdStore.get()).thenReturn("user-id");
-
-        ServerURLWrapper.setServerUrl(mockWebServer.getHostName());
-
-        Response response = new Response.Builder()
-                .request(new Request.Builder().url(mockWebServer.url("/auth/login/")).build())
-                .protocol(Protocol.HTTP_2)
-                .code(200)
-                .message("success")
-                .header("set-cookie", "182718728172817")
-                .body(ResponseBody.create("", MediaType.parse("application/json")))
-                .build();
-
-        cookieHelper.storeCookieIfSentByServer(response);
+    public void invoke_log_out_if_call_response_is_unauthorized() throws IOException, InterruptedException {
+        givenACredentials();
+        configureCookie();
 
         TestObserver<Unit> testObserver = connectLogoutHandler.logOutObservable().test();
 
@@ -164,10 +143,17 @@ public class ParentAuthenticatorShould {
         testObserver.assertValue(Unit.INSTANCE);
     }
 
+    private void givenACredentials() {
+        Credentials credentials = new Credentials("test_user", "test_server", "test_password", null);
+
+        when(credentialsSecureStore.get()).thenReturn(credentials);
+        when(userIdStore.get()).thenReturn("user-id");
+    }
+
     @Test
     public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
         mockWebServer.enqueue(new MockResponse());
-        
+
         okHttpClient.newCall(
                         new Request.Builder()
                                 .url(mockWebServer.url("/api/me/"))
@@ -181,5 +167,18 @@ public class ParentAuthenticatorShould {
     @After
     public void tearDown() throws IOException {
         mockWebServer.shutdown();
+    }
+
+    private void configureCookie() {
+        Response response = new Response.Builder()
+                .request(new Request.Builder().url(mockWebServer.url("/auth/login/")).build())
+                .protocol(Protocol.HTTP_2)
+                .code(200)
+                .message("success")
+                .header("set-cookie", "182718728172817")
+                .body(ResponseBody.create("", MediaType.parse("application/json")))
+                .build();
+
+        cookieHelper.storeCookieIfSentByServer(response);
     }
 }

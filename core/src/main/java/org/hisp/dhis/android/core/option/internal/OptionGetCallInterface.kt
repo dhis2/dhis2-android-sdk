@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadInterface
 import org.hisp.dhis.android.core.option.Option
 
-internal interface OptionGetCallInterface {
+internal fun interface OptionGetCallInterface {
     suspend fun getOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,

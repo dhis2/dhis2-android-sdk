@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.constant.internal
 
 import org.hisp.dhis.android.core.constant.Constant
 
-internal interface ConstantGetCallInterface {
+internal fun interface ConstantGetCallInterface {
     suspend fun getCall(): List<Constant>
 }

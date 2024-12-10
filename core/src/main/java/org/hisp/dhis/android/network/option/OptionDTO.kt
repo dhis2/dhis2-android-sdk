@@ -30,9 +30,9 @@ package org.hisp.dhis.android.network.option
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.BaseIdentifiableObjectInterface
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.ObjectWithStyle
-import org.hisp.dhis.android.network.common.ObjectWithUidInterface
+import org.hisp.dhis.android.network.common.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.Pager
 import org.hisp.dhis.android.network.common.Payload
 
@@ -45,13 +45,7 @@ internal class OptionPayload(
 @Serializable
 internal data class OptionDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = null,
-    override val name: String? = null,
-    override val displayName: String? = null,
-    override val created: String = "",
-    override val lastUpdated: String = "",
-    override val deleted: Boolean? = null,
     val sortOrder: Int? = null,
-    val optionSet: ObjectWithUidInterface? = null,
+    val optionSet: ObjectWithUidDTO? = null,
     val style: ObjectWithStyle? = null,
-) : BaseIdentifiableObjectInterface
+) : BaseIdentifiableObjectDTO()

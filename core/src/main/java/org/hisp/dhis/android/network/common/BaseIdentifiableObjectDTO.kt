@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.android.network.common
 
-internal interface BaseIdentifiableObjectInterface {
-    val uid: String
-    val code: String?
-    val name: String?
-    val displayName: String?
-    val created: String?
-    val lastUpdated: String?
-    val deleted: Boolean?
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal abstract class BaseIdentifiableObjectDTO {
+    abstract val uid: String
+    open val code: String? = null
+    open val name: String? = null
+    open val displayName: String? = null
+    open val created: String = ""
+    open val lastUpdated: String = ""
+    open val deleted: Boolean? = null
 }

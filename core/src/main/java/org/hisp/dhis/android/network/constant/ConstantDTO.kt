@@ -30,7 +30,7 @@ package org.hisp.dhis.android.network.constant
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.BaseIdentifiableObjectInterface
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.Pager
 import org.hisp.dhis.android.network.common.Payload
 
@@ -43,11 +43,5 @@ internal class ConstantPayload(
 @Serializable
 internal data class ConstantDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = null,
-    override val name: String? = null,
-    override val displayName: String? = null,
-    override val created: String = "",
-    override val lastUpdated: String = "",
-    override val deleted: Boolean? = null,
     val value: Double? = null,
-) : BaseIdentifiableObjectInterface
+) : BaseIdentifiableObjectDTO()

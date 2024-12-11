@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
@@ -40,7 +40,7 @@ internal class OldEventEndpointCallFactory(
     private val service: EventService,
 ) : EventEndpointCallFactory() {
 
-    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
+    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): PayloadJackson<Event> {
         return service.getEvents(
             fields = EventFields.allFields,
             orgUnit = getOrgunits(eventQuery)?.firstOrNull(),
@@ -56,7 +56,7 @@ internal class OldEventEndpointCallFactory(
         )
     }
 
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): PayloadJackson<Event> {
         return service.getEventSingle(
             eventUid = item.itemUid,
             fields = EventFields.asRelationshipFields,

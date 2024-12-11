@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.attribute.internal
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.koin.core.annotation.Singleton
 
@@ -41,7 +41,7 @@ internal class AttributeService(private val client: HttpServiceClient) {
         fields: Fields<Attribute>,
         uids: Filter<Attribute>,
         paging: Boolean,
-    ): Payload<Attribute> {
+    ): PayloadJackson<Attribute> {
         return client.get {
             url("attributes")
             parameters {

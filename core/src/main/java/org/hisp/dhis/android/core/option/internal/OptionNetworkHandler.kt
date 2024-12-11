@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadInterface
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.Option
 
 internal fun interface OptionNetworkHandler {
@@ -39,5 +39,5 @@ internal fun interface OptionNetworkHandler {
         paging: Boolean,
         page: Int,
         pageSize: Int,
-    ): PayloadInterface<Option>
+    ): Payload<Option>
 }

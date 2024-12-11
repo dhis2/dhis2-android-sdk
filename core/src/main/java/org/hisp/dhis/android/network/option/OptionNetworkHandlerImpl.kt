@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.internal.OptionNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.Payload
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,7 +45,7 @@ internal class OptionNetworkHandlerImpl(
         paging: Boolean,
         page: Int,
         pageSize: Int,
-    ): Payload<Option> {
+    ): PayloadJson<Option> {
         val apiPayload = service.options(fields, optionSetUidsFilterString, paging, page, pageSize)
         return apiPayload.mapItems(::optionApiToDomainMapper)
     }

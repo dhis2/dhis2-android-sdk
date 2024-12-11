@@ -33,7 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
@@ -48,7 +48,7 @@ import java.util.*
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class OrganisationUnitCallUnitShould {
-    private val organisationUnitPayload: Payload<OrganisationUnit> = mock()
+    private val organisationUnitPayload: PayloadJackson<OrganisationUnit> = mock()
     private val organisationUnitService: OrganisationUnitService = mock()
 
     // Captors for the organisationUnitService arguments:

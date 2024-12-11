@@ -31,7 +31,7 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.koin.core.annotation.Singleton
@@ -56,7 +56,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         fields: Fields<FileResource>,
         fileResources: Filter<FileResource>,
         paging: Boolean,
-    ): Payload<FileResource> {
+    ): PayloadJackson<FileResource> {
         return client.get {
             url(FILE_RESOURCES)
             parameters {

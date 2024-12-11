@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -66,9 +66,9 @@ internal class VisualizationCall(
                             accessFilter = accessFilter,
                             paging = false,
                         )
-                        Payload(listOf(visualization))
+                        PayloadJackson(listOf(visualization))
                     } catch (ignored: Exception) {
-                        Payload()
+                        PayloadJackson()
                     }
                 }
             } else {
@@ -84,9 +84,9 @@ internal class VisualizationCall(
                             accessFilter = accessFilter,
                             paging = false,
                         )
-                        Payload(listOf(visualization36.toVisualization()))
+                        PayloadJackson(listOf(visualization36.toVisualization()))
                     } catch (ignored: Exception) {
-                        Payload()
+                        PayloadJackson()
                     }
                 }
             }

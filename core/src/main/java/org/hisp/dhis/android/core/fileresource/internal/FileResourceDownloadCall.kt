@@ -32,7 +32,7 @@ import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -238,7 +238,7 @@ internal class FileResourceDownloadCall(
                 MAX_UID_LIST_SIZE,
                 coroutineAPICallExecutor,
             ) {
-                override suspend fun getCall(query: UidsQuery): Payload<FileResource> {
+                override suspend fun getCall(query: UidsQuery): PayloadJackson<FileResource> {
                     return fileResourceService.getFileResources(
                         FileResourceFields.allFields,
                         FileResourceFields.uid.`in`(query.uids),

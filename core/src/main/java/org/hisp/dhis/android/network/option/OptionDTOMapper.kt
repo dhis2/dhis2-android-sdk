@@ -38,7 +38,7 @@ internal fun optionApiToDomainMapper(item: OptionDTO): Option {
         .code(item.code)
         .name(item.name)
         .displayName(item.displayName)
-        .created(item.created)
+        .created(item.created!!)
         .lastUpdated(item.lastUpdated)
         .deleted(item.deleted)
         .sortOrder(item.sortOrder)

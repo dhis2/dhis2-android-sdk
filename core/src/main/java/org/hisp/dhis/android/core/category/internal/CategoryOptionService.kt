@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
 import org.koin.core.annotation.Singleton
@@ -42,7 +42,7 @@ internal class CategoryOptionService(private val client: HttpServiceClient) {
         categoryUidsFilterString: String,
         accessDataReadFilter: String,
         paging: Boolean,
-    ): Payload<CategoryOption> {
+    ): PayloadJackson<CategoryOption> {
         return client.get {
             url("categoryOptions")
             parameters {

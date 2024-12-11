@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.koin.core.annotation.Singleton
 
@@ -39,7 +39,7 @@ internal class ProgramRuleService(private val client: HttpServiceClient) {
         fields: Fields<ProgramRule>,
         programUidsFilterString: String,
         paging: Boolean,
-    ): Payload<ProgramRule> {
+    ): PayloadJackson<ProgramRule> {
         return client.get {
             url("programRules")
             parameters {

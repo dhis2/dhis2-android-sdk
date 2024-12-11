@@ -33,7 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.AssignedUserMode
@@ -73,7 +73,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private val dhisVersionManager: DHISVersionManager = mock()
     private val searchGrid: SearchGrid = mock()
     private val teis: List<TrackedEntityInstance> = mock()
-    private val eventPayload: Payload<Event> = mock()
+    private val eventPayload: PayloadJackson<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
     private val order: List<TrackedEntityInstanceQueryScopeOrderByItem> =
         listOf(TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER)
@@ -339,7 +339,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         }
     }
 
-    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> Payload<Event>) {
+    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> PayloadJackson<Event>) {
         eventService.stub {
             onBlocking {
                 getEvents(

@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.program.Program
@@ -65,7 +65,7 @@ class ProgramEndpointCallShould : BaseCallShould() {
     private val filterCaptor = argumentCaptor<Filter<Program>>()
     private val accesDataReadFilter = argumentCaptor<String>()
 
-    private val apiCall: Payload<Program> = Payload.emptyPayload()
+    private val apiCall: PayloadJackson<Program> = PayloadJackson.emptyPayload()
 
     private val mockedApiDownloader: APIDownloader = mock()
 

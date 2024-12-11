@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadInterface
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.CoreObject
@@ -40,21 +40,21 @@ internal interface APIDownloader {
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: suspend (Set<String>) -> PayloadInterface<P>,
+        pageDownloader: suspend (Set<String>) -> Payload<P>,
     ): List<P>
 
     suspend fun <P, O> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
         handler: Handler<P>,
-        pageDownloader: suspend (Set<String>) -> PayloadInterface<O>,
+        pageDownloader: suspend (Set<String>) -> Payload<O>,
         transform: (O) -> P,
     ): List<P>
 
     suspend fun <P> downloadPartitioned(
         uids: Set<String>,
         pageSize: Int,
-        pageDownloader: suspend (Set<String>) -> PayloadInterface<P>,
+        pageDownloader: suspend (Set<String>) -> Payload<P>,
     ): List<P>
 
     suspend fun <K, V> downloadPartitionedMap(
@@ -67,17 +67,17 @@ internal interface APIDownloader {
     suspend fun <P, O : CoreObject> downloadLink(
         masterUid: String,
         handler: LinkHandler<P, O>,
-        downloader: suspend (String) -> PayloadInterface<P>,
+        downloader: suspend (String) -> Payload<P>,
         transform: ((P) -> O),
     ): List<P>
 
     suspend fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
-        downloader: suspend (String?) -> PayloadInterface<P>,
+        downloader: suspend (String?) -> Payload<P>,
     ): List<P>
 
-    suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend () -> PayloadInterface<P>): List<P>
+    suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend () -> Payload<P>): List<P>
 
     suspend fun <P> downloadListAsCoroutine(handler: Handler<P>, downloader: suspend () -> List<P>): List<P>
 
@@ -85,6 +85,6 @@ internal interface APIDownloader {
 
     suspend fun <P> downloadPagedPayload(
         pageSize: Int,
-        downloader: suspend (page: Int, pageSize: Int) -> PayloadInterface<P>,
-    ): PayloadInterface<P>
+        downloader: suspend (page: Int, pageSize: Int) -> Payload<P>,
+    ): Payload<P>
 }

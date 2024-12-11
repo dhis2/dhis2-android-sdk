@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.payload;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -53,7 +53,8 @@ public class ProgramPayloadShould extends BaseObjectShould implements ObjectShou
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Payload<Program> payload = objectMapper.readValue(jsonStream, new TypeReference<Payload<Program>>() {});
+        PayloadJackson<Program> payload = objectMapper.readValue(jsonStream, new TypeReference<PayloadJackson<Program>>() {
+        });
 
         List<Program> programs = payload.items();
 

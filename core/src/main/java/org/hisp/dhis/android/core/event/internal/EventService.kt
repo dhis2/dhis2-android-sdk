@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.koin.core.annotation.Singleton
@@ -71,7 +71,7 @@ internal class EventService(private val client: HttpServiceClient) {
         lastUpdatedEndDate: String? = null,
         includeDeleted: Boolean,
         eventUid: String? = null,
-    ): Payload<Event> {
+    ): PayloadJackson<Event> {
         return client.get {
             url(EVENTS)
             parameters {
@@ -119,7 +119,7 @@ internal class EventService(private val client: HttpServiceClient) {
         eventUid: String,
         fields: Fields<Event>,
         orgUnitMode: String,
-    ): Payload<Event> {
+    ): PayloadJackson<Event> {
         return client.get {
             url(EVENTS)
             parameters {

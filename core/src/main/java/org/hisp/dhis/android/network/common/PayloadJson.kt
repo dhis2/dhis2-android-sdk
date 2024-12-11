@@ -30,13 +30,13 @@ package org.hisp.dhis.android.network.common
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadInterface
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 
 @Serializable
-internal open class Payload<T>(
+internal open class PayloadJson<T>(
     @Transient override val pager: Pager? = null,
     @Transient override val items: List<T> = emptyList(),
-) : PayloadInterface<T> {
+) : Payload<T> {
 
     constructor(itemList: List<T>) : this(null, itemList)
 
@@ -50,7 +50,7 @@ internal open class Payload<T>(
 
     fun <P> mapItems(
         transform: (T) -> P,
-    ): Payload<P> {
-        return Payload(pager, items.map(transform))
+    ): PayloadJson<P> {
+        return PayloadJson(pager, items.map(transform))
     }
 }

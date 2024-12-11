@@ -31,7 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
@@ -91,7 +91,7 @@ class EventEndpointCallShould {
         assertThat(request.path).doesNotContain(startDateStr)
     }
 
-    private suspend fun givenAEventCallByPagination(page: Int, pageCount: Int): Payload<Event> {
+    private suspend fun givenAEventCallByPagination(page: Int, pageCount: Int): PayloadJackson<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = get(),
             page = page,
@@ -101,7 +101,7 @@ class EventEndpointCallShould {
         return givenACallForQuery(eventQuery)
     }
 
-    private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): Payload<Event> {
+    private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): PayloadJackson<Event> {
         return OldEventEndpointCallFactory(eventService).getCollectionCall(eventQuery)
     }
 
@@ -109,7 +109,7 @@ class EventEndpointCallShould {
         orgUnit: String,
         program: String?,
         startDate: String? = null,
-    ): Payload<Event> {
+    ): PayloadJackson<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 listOf(),

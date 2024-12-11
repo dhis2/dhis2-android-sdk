@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.IconType
@@ -64,7 +64,7 @@ internal class CustomIconCall(
                         paging = false,
                     )
                 } catch (ignored: Exception) {
-                    Payload()
+                    PayloadJackson()
                 }
             }
         } else {

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.koin.core.annotation.Singleton
 
@@ -41,7 +41,7 @@ internal class IconService(private val client: HttpServiceClient) {
         keys: String,
         type: String?,
         paging: Boolean,
-    ): Payload<CustomIcon> {
+    ): PayloadJackson<CustomIcon> {
         return client.get {
             url(ICONS)
             parameters {

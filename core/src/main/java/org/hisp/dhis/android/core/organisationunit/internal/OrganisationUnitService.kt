@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.koin.core.annotation.Singleton
 
@@ -45,7 +45,7 @@ internal class OrganisationUnitService(private val client: HttpServiceClient) {
         paging: Boolean,
         pageSize: Int,
         page: Int,
-    ): Payload<OrganisationUnit> {
+    ): PayloadJackson<OrganisationUnit> {
         return client.get {
             url(ORGANISATION_UNITS)
             parameters {

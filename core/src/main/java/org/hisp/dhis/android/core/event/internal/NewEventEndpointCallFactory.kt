@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
@@ -45,7 +45,7 @@ internal class NewEventEndpointCallFactory(
     private val parameterManager: TrackerExporterParameterManager,
 ) : EventEndpointCallFactory() {
 
-    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
+    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): PayloadJackson<Event> {
         return service.getEvents(
             fields = NewEventFields.allFields,
             orgUnit = eventQuery.orgUnit,
@@ -61,7 +61,7 @@ internal class NewEventEndpointCallFactory(
         ).let { mapPayload(it) }
     }
 
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
+    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): PayloadJackson<Event> {
         return service.getEventSingle(
             eventUid = parameterManager.getEventsParameter(listOf(item.itemUid)),
             fields = NewEventFields.asRelationshipFields,
@@ -69,8 +69,8 @@ internal class NewEventEndpointCallFactory(
         ).let { mapPayload(it) }
     }
 
-    private fun mapPayload(payload: TrackerPayload<NewTrackerImporterEvent>): Payload<Event> {
+    private fun mapPayload(payload: TrackerPayload<NewTrackerImporterEvent>): PayloadJackson<Event> {
         val newItems = payload.items().map { t -> NewTrackerImporterEventTransformer.deTransform(t) }
-        return Payload(newItems)
+        return PayloadJackson(newItems)
     }
 }

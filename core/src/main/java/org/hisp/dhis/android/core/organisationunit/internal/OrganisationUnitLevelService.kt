@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.koin.core.annotation.Singleton
 
@@ -38,7 +38,7 @@ internal class OrganisationUnitLevelService(private val client: HttpServiceClien
     suspend fun getOrganisationUnitLevels(
         fields: Fields<OrganisationUnitLevel>,
         paging: Boolean,
-    ): Payload<OrganisationUnitLevel> {
+    ): PayloadJackson<OrganisationUnitLevel> {
         return client.get {
             url("organisationUnitLevels")
             parameters {

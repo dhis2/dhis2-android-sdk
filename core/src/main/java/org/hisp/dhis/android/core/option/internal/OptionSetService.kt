@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option.internal
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.option.OptionSet
 import org.koin.core.annotation.Singleton
 
@@ -40,7 +40,7 @@ internal class OptionSetService(private val client: HttpServiceClient) {
         fields: Fields<OptionSet>,
         filter: Filter<OptionSet>,
         paging: Boolean,
-    ): Payload<OptionSet> {
+    ): PayloadJackson<OptionSet> {
         return client.get {
             url("optionSets")
             parameters {

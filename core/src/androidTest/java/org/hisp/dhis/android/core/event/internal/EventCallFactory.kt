@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
@@ -41,7 +41,7 @@ internal object EventCallFactory {
         orgUnit: String?,
         pageSize: Int,
         uids: Collection<String> = emptyList(),
-    ): Payload<Event> {
+    ): PayloadJackson<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 program = null,

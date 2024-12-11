@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataelement.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
@@ -50,7 +50,7 @@ internal class DataElementEndpointCallFactory(
     override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<DataElement> {
         return object : UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
             var accessReadFilter = "access." + AccessFields.read.eq(true).generateString()
-            override suspend fun getCall(query: UidsQuery): Payload<DataElement> {
+            override suspend fun getCall(query: UidsQuery): PayloadJackson<DataElement> {
                 return service.getDataElements(
                     DataElementFields.allFields,
                     DataElementFields.uid.`in`(query.uids),

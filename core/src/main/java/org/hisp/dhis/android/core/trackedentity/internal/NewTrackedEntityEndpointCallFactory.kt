@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.internal.NewEventFields
@@ -62,7 +62,7 @@ internal class NewTrackedEntityEndpointCallFactory(
     private val parameterManager: TrackerExporterParameterManager,
 ) : TrackedEntityEndpointCallFactory() {
 
-    override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
+    override suspend fun getCollectionCall(query: TrackerAPIQuery): PayloadJackson<TrackedEntityInstance> {
         return trackedExporterService.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
@@ -92,7 +92,9 @@ internal class NewTrackedEntityEndpointCallFactory(
         ).let { NewTrackerImporterTrackedEntityTransformer.deTransform(it) }
     }
 
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {
+    override suspend fun getRelationshipEntityCall(
+        item: RelationshipItemRelative,
+    ): PayloadJackson<TrackedEntityInstance> {
         return trackedExporterService.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.asRelationshipFields,
             trackedEntityInstanceUid = item.itemUid,
@@ -101,7 +103,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             programStatus = null,
             programStartDate = null,
             includeDeleted = true,
-        ).let { Payload(listOf(NewTrackerImporterTrackedEntityTransformer.deTransform(it))) }
+        ).let { PayloadJackson(listOf(NewTrackerImporterTrackedEntityTransformer.deTransform(it))) }
     }
 
     override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
@@ -228,9 +230,11 @@ internal class NewTrackedEntityEndpointCallFactory(
         )
     }
 
-    private fun mapPayload(payload: TrackerPayload<NewTrackerImporterTrackedEntity>): Payload<TrackedEntityInstance> {
+    private fun mapPayload(
+        payload: TrackerPayload<NewTrackerImporterTrackedEntity>,
+    ): PayloadJackson<TrackedEntityInstance> {
         val newItems = payload.items().map { t -> NewTrackerImporterTrackedEntityTransformer.deTransform(t) }
-        return Payload(newItems)
+        return PayloadJackson(newItems)
     }
 
     private fun getRelatedProgramUid(item: RelationshipItemRelative): String? {

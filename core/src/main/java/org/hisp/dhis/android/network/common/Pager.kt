@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.network.common
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import kotlinx.serialization.Serializable
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ConstantShould extends BaseObjectShould implements ObjectShould {
-
-    public ConstantShould() {
-        super("constant/constant.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Constant constant = objectMapper.readValue(jsonStream, Constant.class);
-
-        // we need to make sure that jackson is parsing dates in correct way
-        assertThat(constant.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
-        assertThat(constant.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
-
-        // check if all properties are present and correspond to values in payload
-        assertThat(constant.name()).isEqualTo("Pi");
-        assertThat(constant.displayName()).isEqualTo("Pi");
-        assertThat(constant.value()).isEqualTo(3.14);
-        assertThat(constant.uid()).isEqualTo("bCqvfPR02Im");
-    }
-}
+@Serializable
+internal data class Pager(
+    val page: Int,
+    val pageCount: Int,
+    val pageSize: Int,
+    val total: Int,
+)

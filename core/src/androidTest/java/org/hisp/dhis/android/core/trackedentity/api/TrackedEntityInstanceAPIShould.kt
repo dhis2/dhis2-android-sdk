@@ -32,7 +32,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -432,7 +432,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         }.getOrThrow()
     }
 
-    private suspend fun getTrackedEntity(teiUid: String): Payload<TrackedEntityInstance> {
+    private suspend fun getTrackedEntity(teiUid: String): PayloadJackson<TrackedEntityInstance> {
         return executor.wrap {
             trackedEntityInstanceService
                 .getTrackedEntityInstance(

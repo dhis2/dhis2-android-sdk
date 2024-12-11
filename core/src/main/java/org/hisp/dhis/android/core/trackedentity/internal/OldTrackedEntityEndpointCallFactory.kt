@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -45,7 +45,7 @@ internal class OldTrackedEntityEndpointCallFactory(
     private val queryCallFactory: TrackedEntityInstanceQueryCallFactory,
 ) : TrackedEntityEndpointCallFactory() {
 
-    override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
+    override suspend fun getCollectionCall(query: TrackerAPIQuery): PayloadJackson<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             fields = TrackedEntityInstanceFields.allFields,
             trackedEntityInstances = getUidStr(query),
@@ -77,7 +77,9 @@ internal class OldTrackedEntityEndpointCallFactory(
         )
     }
 
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {
+    override suspend fun getRelationshipEntityCall(
+        item: RelationshipItemRelative,
+    ): PayloadJackson<TrackedEntityInstance> {
         return trackedEntityInstanceService.getTrackedEntityInstance(
             fields = TrackedEntityInstanceFields.asRelationshipFields,
             trackedEntityInstance = item.itemUid,

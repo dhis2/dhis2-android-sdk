@@ -94,6 +94,7 @@ ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor"}
 ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor"}
 ktor-jackson = { group = "io.ktor", name = "ktor-serialization-jackson", version.ref = "ktor"}
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor"}
 
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -128,5 +129,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "apiCompatibility" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+internal interface Payload<T> {
+    val pager: Any?
+    val items: List<T>
 
-internal class Payload<T> {
-    @JsonProperty("pager")
-    var pager: Pager? = null
+    @Deprecated("Use pager attribute instead", replaceWith = ReplaceWith("pager"))
+    fun pager(): Any?
 
-    @JsonIgnore
-    var items: List<T> = ArrayList()
-
-    constructor()
-
-    constructor(initialItems: List<T>) {
-        items = initialItems
-    }
-
-    @JsonAnySetter
-    @Suppress("unused")
-    fun processItems(key: String, values: List<T>) {
-        this.items = values
-    }
-
-    fun pager(): Pager? {
-        return this.pager
-    }
-
-    fun items(): List<T> {
-        return this.items
-    }
-
-    companion object {
-        fun <E> emptyPayload(): Payload<E> {
-            var payload = Payload<E>()
-            payload.items = emptyList()
-            return payload
-        }
-    }
+    @Deprecated("Use items attribute instead", replaceWith = ReplaceWith("items"))
+    fun items(): List<T>
 }

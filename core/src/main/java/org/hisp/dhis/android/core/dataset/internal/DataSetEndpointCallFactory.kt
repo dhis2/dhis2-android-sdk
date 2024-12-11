@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
@@ -55,7 +55,7 @@ internal class DataSetEndpointCallFactory(
             var accessDataReadFilter =
                 "access.data." + DataAccessFields.read.eq(true).generateString()
 
-            override suspend fun getCall(query: UidsQuery): Payload<DataSet> {
+            override suspend fun getCall(query: UidsQuery): PayloadJackson<DataSet> {
                 return dataSetService.getDataSets(
                     DataSetFields.allFields,
                     DataSetFields.uid.`in`(query.uids),

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -62,7 +62,9 @@ internal class TrackedEntityInstanceDownloadCall(
         return queryFactory.getQueries(params)
     }
 
-    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<TrackedEntityInstance>, D2Error> {
+    override suspend fun getPayloadResult(
+        query: TrackerAPIQuery,
+    ): Result<PayloadJackson<TrackedEntityInstance>, D2Error> {
         return coroutineCallExecutor.wrap(storeError = true) {
             trackerCallFactory.getTrackedEntityCall().getCollectionCall(query)
         }

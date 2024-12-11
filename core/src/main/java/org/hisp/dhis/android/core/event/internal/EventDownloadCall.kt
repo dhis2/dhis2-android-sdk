@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
@@ -64,7 +64,7 @@ internal class EventDownloadCall internal constructor(
         return eventQueryBundleFactory.getQueries(params)
     }
 
-    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<Event>, D2Error> {
+    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<PayloadJackson<Event>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
             trackerParentCallFactory.getEventCall().getCollectionCall(query)
         }

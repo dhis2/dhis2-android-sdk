@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.legendset.internal
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.koin.core.annotation.Singleton
 
@@ -41,7 +41,7 @@ internal class LegendSetService(private val client: HttpServiceClient) {
         fields: Fields<LegendSet>,
         uids: Filter<LegendSet>,
         paging: Boolean,
-    ): Payload<LegendSet> {
+    ): PayloadJackson<LegendSet> {
         return client.get {
             url("legendSets")
             parameters {

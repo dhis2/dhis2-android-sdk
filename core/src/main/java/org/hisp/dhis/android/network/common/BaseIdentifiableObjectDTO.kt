@@ -26,23 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant.internal
+package org.hisp.dhis.android.network.common
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.constant.Constant
-import org.koin.core.annotation.Singleton
+// @Serializable
+internal interface BaseIdentifiableObjectDTO {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: String?
+    val lastUpdated: String?
+    val deleted: Boolean?
 
-@Singleton
-internal class ConstantService(private val client: HttpServiceClient) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean): Payload<Constant> {
-        return client.get {
-            url("constants")
-            parameters {
-                fields(fields)
-                paging(paging)
-            }
-        }
+    companion object {
+        val CODE = null
+        val NAME = null
+        val DISPLAY_NAME = null
+        const val CREATED = ""
+        const val LAST_UPDATED = ""
+        val DELETED = null
     }
 }

@@ -32,7 +32,7 @@ import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.user.UserGroupCollectionRepository
 import org.hisp.dhis.android.core.user.UserModule
@@ -83,7 +83,7 @@ class LatestAppVersionCallShould {
     }
 
     private suspend fun mockVersions(versions: List<ApkDistributionVersion>) {
-        val payload = mock<Payload<ApkDistributionVersion>> {
+        val payload = mock<PayloadJackson<ApkDistributionVersion>> {
             on { items() } doReturn versions
         }
         whenever(service.versions()).thenReturn(payload)

@@ -32,20 +32,15 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Constant.Builder.class)
 public abstract class Constant extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract Double value();
 
     public static Builder builder() {
@@ -59,7 +54,6 @@ public abstract class Constant extends BaseIdentifiableObject implements CoreObj
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

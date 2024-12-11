@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.koin.core.annotation.Singleton
 
@@ -40,7 +40,7 @@ internal class ProgramStageService(private val client: HttpServiceClient) {
         programUidsFilterString: String,
         accessDataReadFilter: String,
         paging: Boolean,
-    ): Payload<ProgramStage> {
+    ): PayloadJackson<ProgramStage> {
         return client.get {
             url("programStages")
             parameters {

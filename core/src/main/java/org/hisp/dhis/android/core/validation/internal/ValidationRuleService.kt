@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.validation.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.koin.core.annotation.Singleton
@@ -40,7 +40,7 @@ internal class ValidationRuleService(private val client: HttpServiceClient) {
         fields: Fields<ValidationRule>,
         uidsFilterString: String,
         paging: Boolean,
-    ): Payload<ValidationRule> {
+    ): PayloadJackson<ValidationRule> {
         return client.get {
             url("validationRules")
             parameters {
@@ -55,7 +55,7 @@ internal class ValidationRuleService(private val client: HttpServiceClient) {
         dataSetUid: String,
         id: String,
         paging: Boolean,
-    ): Payload<ObjectWithUid> {
+    ): PayloadJackson<ObjectWithUid> {
         return client.get {
             url("validationRules")
             parameters {

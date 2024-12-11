@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -94,12 +96,16 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
 
         val results = mutableListOf<P>()
+        val startTime = System.currentTimeMillis()
 
         partitions.forEach { partition ->
             val transformedItems = pageDownloader(partition).items().map { transform(it) }
             results.addAll(transformedItems)
         }
-
+        Log.i(
+            "META",
+            "Elapsed time: ${System.currentTimeMillis() - startTime} ms",
+        )
         return results
     }
 
@@ -164,7 +170,10 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         return items
     }
 
-    override suspend fun <P> downloadCoroutines(handler: Handler<P>, downloader: suspend () -> Payload<P>): List<P> {
+    override suspend fun <P> downloadCoroutines(
+        handler: Handler<P>,
+        downloader: suspend () -> Payload<P>,
+    ): List<P> {
         return downloader.invoke().items()
             .also { handler.handleMany(it) }
     }
@@ -198,6 +207,6 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
             }
         }
 
-        return Payload(itemsList)
+        return PayloadJackson(itemsList)
     }
 }

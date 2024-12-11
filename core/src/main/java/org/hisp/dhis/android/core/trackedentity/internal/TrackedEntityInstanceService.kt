@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
@@ -57,7 +57,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         fields: Fields<TrackedEntityInstance>,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
-    ): Payload<TrackedEntityInstance> {
+    ): PayloadJackson<TrackedEntityInstance> {
         return client.get {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
@@ -109,7 +109,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         lastUpdatedStartDate: String?,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
-    ): Payload<TrackedEntityInstance> {
+    ): PayloadJackson<TrackedEntityInstance> {
         return client.get {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {

@@ -25,41 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option
 
-package org.hisp.dhis.android.core.option;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.common.ObjectWithStyle
+import org.hisp.dhis.android.network.option.OptionDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.junit.Test;
+class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class OptionShould extends BaseObjectShould implements ObjectShould {
-
-    public OptionShould() {
-        super("option/option.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Option option = objectMapper.readValue(jsonStream, Option.class);
+    override fun map_from_json_string() {
+        var option = deserialize(OptionDTO.serializer())
 
-        assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY");
-        assertThat(option.code()).isEqualTo("0-14 years");
-        assertThat(option.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.name()).isEqualTo("0-14 years");
-        assertThat(option.displayName()).isEqualTo("0-14 years");
-        assertThat(option.sortOrder()).isEqualTo(1);
-        assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
-        assertThat(option.style()).isEqualTo(ObjectStyle.builder().color("#000").icon("my-icon-name").build());
+        Truth.assertThat(option.uid).isEqualTo("Y1ILwhy5VDY")
+        Truth.assertThat(option.code).isEqualTo("0-14 years")
+        Truth.assertThat(option.created).isEqualTo("2014-08-18T12:39:16.000")
+        Truth.assertThat(option.lastUpdated).isEqualTo("2014-08-18T12:39:16.000")
+        Truth.assertThat(option.name).isEqualTo("0-14 years")
+        Truth.assertThat(option.displayName).isEqualTo("0-14 years")
+        Truth.assertThat(option.sortOrder).isEqualTo(1)
+        Truth.assertThat(option.optionSet!!.uid).isEqualTo("VQ2lai3OfVG")
+        Truth.assertThat(option.style).isEqualTo(ObjectWithStyle("#000", "my-icon-name"))
     }
 }

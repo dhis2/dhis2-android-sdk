@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
@@ -50,7 +50,7 @@ internal class IndicatorTypeEndpointCallFactory(
         return object :
             UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
 
-            override suspend fun getCall(query: UidsQuery): Payload<IndicatorType> {
+            override suspend fun getCall(query: UidsQuery): PayloadJackson<IndicatorType> {
                 return service.getIndicatorTypes(
                     IndicatorTypeFields.allFields,
                     null,

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.call.fetchers.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -38,7 +38,7 @@ internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
     private val limit: Int,
     private val apiCallExecutor: CoroutineAPICallExecutor,
 ) : CoroutineCallFetcher<P> {
-    protected abstract suspend fun getCall(query: UidsQuery): Payload<P>
+    protected abstract suspend fun getCall(query: UidsQuery): PayloadJackson<P>
 
     @Throws(D2Error::class)
     override suspend fun fetch(): List<P> {

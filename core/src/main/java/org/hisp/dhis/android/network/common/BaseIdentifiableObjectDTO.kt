@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.network.common
 
-//@Serializable
+// @Serializable
 internal interface BaseIdentifiableObjectDTO {
     val uid: String
     val code: String?
@@ -42,8 +42,8 @@ internal interface BaseIdentifiableObjectDTO {
         val CODE = null
         val NAME = null
         val DISPLAY_NAME = null
-        val CREATED = ""
-        val LAST_UPDATED = ""
+        const val CREATED = ""
+        const val LAST_UPDATED = ""
         val DELETED = null
     }
 }

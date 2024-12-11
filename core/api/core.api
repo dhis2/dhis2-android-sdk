@@ -12747,6 +12747,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISVersion : java/lang
 	public static final field V2_39 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final field V2_40 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final field V2_41 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
+	public static final field V2_42 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final fun allowedVersionsAsStr ()[Ljava/lang/String;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static final fun getValue (Ljava/lang/String;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;

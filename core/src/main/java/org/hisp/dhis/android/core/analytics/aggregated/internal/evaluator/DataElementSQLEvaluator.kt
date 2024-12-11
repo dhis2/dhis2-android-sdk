@@ -61,7 +61,7 @@ internal class DataElementSQLEvaluator(
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("ComplexMethod", "LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -96,13 +96,7 @@ internal class DataElementSQLEvaluator(
                     "WHERE $whereClause"
             }
             AggregationType.AVERAGE_SUM_ORG_UNIT -> {
-                "SELECT SUM(${dvColumns.VALUE}) " +
-                    "FROM (" +
-                    "SELECT AVG(${dvColumns.VALUE}) AS ${dvColumns.VALUE} " +
-                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE $whereClause " +
-                    "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
-                    ")"
+                aggregateByDataValueAndSumOrgunit("AVG", whereClause)
             }
             AggregationType.FIRST -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
@@ -124,10 +118,15 @@ internal class DataElementSQLEvaluator(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
+            AggregationType.MAX_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit("MAX", whereClause)
+            }
+            AggregationType.MIN_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit("MIN", whereClause)
+            }
+
             AggregationType.LAST_LAST_ORG_UNIT,
             AggregationType.FIRST_FIRST_ORG_UNIT,
-            AggregationType.MAX_SUM_ORG_UNIT,
-            AggregationType.MIN_SUM_ORG_UNIT,
 
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -136,6 +135,19 @@ internal class DataElementSQLEvaluator(
             AggregationType.NONE,
             -> throw AnalyticsException.UnsupportedAggregationType(aggregator)
         }
+    }
+
+    private fun aggregateByDataValueAndSumOrgunit(
+        dataValueAggregator: String,
+        whereClause: String,
+    ): String {
+        return "SELECT SUM(${dvColumns.VALUE}) " +
+            "FROM (" +
+            "SELECT $dataValueAggregator(${dvColumns.VALUE}) AS ${dvColumns.VALUE} " +
+            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE $whereClause " +
+            "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
+            ")"
     }
 
     private fun firstOrLastValueClauseByOrgunit(whereClause: String, minOrMax: String): String {

@@ -494,13 +494,17 @@ This table shows the functionality supported by the ProgramIndicator dimension i
 | LAST_AVERAGE_ORG_UNIT           | Yes         |
 | LAST_IN_PERIOD                  | Yes         |
 | LAST_IN_PERIOD_AVERAGE_ORG_UNIT | Yes         |
+| LAST_LAST_ORG_UNIT              |             |
 | FIRST                           | Yes         |
 | FIRST_AVERAGE_ORG_UNIT          | Yes         |
+| FIRST_FIRST_ORG_UNIT            |             |
 | COUNT                           | Yes         |
 | STDDEV                          | No          |
 | VARIANCE                        | No          |
 | MIN                             | Yes         |
+| MIN_SUM_ORG_UNIT                | Yes         |
 | MAX                             | Yes         |
+| MAX_SUM_ORG_UNIT                | Yes         |
 | NONE                            | No          |
 | CUSTOM                          | No          |
 | DEFAULT                         | No          |

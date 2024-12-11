@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns as dvColumns
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class EventDataItemSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
@@ -63,7 +64,7 @@ internal class EventDataItemSQLEvaluator(
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("ComplexMethod", "LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -99,13 +100,7 @@ internal class EventDataItemSQLEvaluator(
                     "WHERE $whereClause"
             }
             AggregationType.AVERAGE_SUM_ORG_UNIT -> {
-                "SELECT SUM($valueColumn) " +
-                    "FROM (" +
-                    "SELECT AVG($valueColumn) as $valueColumn " +
-                    "FROM $fromClause " +
-                    "WHERE $whereClause " +
-                    "GROUP BY $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
-                    ")"
+                aggregateByDataValueAndSumOrgunit("AVG", valueColumn, fromClause, whereClause)
             }
             AggregationType.FIRST -> {
                 "SELECT SUM($valueColumn) " +
@@ -127,10 +122,14 @@ internal class EventDataItemSQLEvaluator(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
             }
+            AggregationType.MAX_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit("MAX", valueColumn, fromClause, whereClause)
+            }
+            AggregationType.MIN_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit("MIN", valueColumn, fromClause, whereClause)
+            }
             AggregationType.LAST_LAST_ORG_UNIT,
             AggregationType.FIRST_FIRST_ORG_UNIT,
-            AggregationType.MAX_SUM_ORG_UNIT,
-            AggregationType.MIN_SUM_ORG_UNIT,
 
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -167,6 +166,21 @@ internal class EventDataItemSQLEvaluator(
             "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
             "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
             "$EventAlias.${EventTableInfo.Columns.ENROLLMENT} "
+
+    private fun aggregateByDataValueAndSumOrgunit(
+        dataValueAggregator: String,
+        valueColumn: String,
+        fromClause: String,
+        whereClause: String,
+    ): String {
+        return "SELECT SUM($valueColumn) " +
+            "FROM (" +
+            "SELECT $dataValueAggregator($valueColumn) as $valueColumn " +
+            "FROM $fromClause " +
+            "WHERE $whereClause " +
+            "GROUP BY $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
+            ")"
+    }
 
     private fun firstOrLastValueClauseByOrunit(
         valueColumn: String,

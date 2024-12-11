@@ -420,6 +420,20 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
                 aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
             ),
         ).isEqualTo(null)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.MAX_SUM_ORG_UNIT,
+            ),
+        ).isEqualTo("13")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.MIN_SUM_ORG_UNIT,
+            ),
+        ).isEqualTo("11")
     }
 
     @Test

@@ -178,6 +178,14 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
                 pe = period202001,
             ),
         ).isEqualTo(null)
+
+        assertThat(
+            evaluateEventDataElement(deAggregation = AggregationType.MAX_SUM_ORG_UNIT, pe = period2019Q4),
+        ).isEqualTo("30")
+
+        assertThat(
+            evaluateEventDataElement(deAggregation = AggregationType.MIN_SUM_ORG_UNIT, pe = period2019Q4),
+        ).isEqualTo("30")
     }
 
     @Test
@@ -251,6 +259,14 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001),
         ).isEqualTo(null)
+
+        assertThat(
+            evaluateEventAttribute(atAggregation = AggregationType.MAX_SUM_ORG_UNIT, pe = period2019Q4),
+        ).isEqualTo("8")
+
+        assertThat(
+            evaluateEventAttribute(atAggregation = AggregationType.MIN_SUM_ORG_UNIT, pe = period2019Q4),
+        ).isEqualTo("8")
     }
 
     @Test

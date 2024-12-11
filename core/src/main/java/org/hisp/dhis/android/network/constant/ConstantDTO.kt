@@ -32,16 +32,22 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.Pager
-import org.hisp.dhis.android.network.common.Payload
+import org.hisp.dhis.android.network.common.PayloadJson
 
 @Serializable
 internal class ConstantPayload(
     override val pager: Pager? = null,
     @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
-) : Payload<ConstantDTO>(pager, items)
+) : PayloadJson<ConstantDTO>(pager, items)
 
 @Serializable
 internal data class ConstantDTO(
     @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
     val value: Double? = null,
-) : BaseIdentifiableObjectDTO()
+) : BaseIdentifiableObjectDTO

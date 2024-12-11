@@ -34,18 +34,24 @@ import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.ObjectWithStyle
 import org.hisp.dhis.android.network.common.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.Pager
-import org.hisp.dhis.android.network.common.Payload
+import org.hisp.dhis.android.network.common.PayloadJson
 
 @Serializable
 internal class OptionPayload(
     override val pager: Pager? = null,
     @SerialName("options") override val items: List<OptionDTO> = emptyList(),
-) : Payload<OptionDTO>(pager, items)
+) : PayloadJson<OptionDTO>(pager, items)
 
 @Serializable
 internal data class OptionDTO(
     @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
     val sortOrder: Int? = null,
     val optionSet: ObjectWithUidDTO? = null,
     val style: ObjectWithStyle? = null,
-) : BaseIdentifiableObjectDTO()
+) : BaseIdentifiableObjectDTO

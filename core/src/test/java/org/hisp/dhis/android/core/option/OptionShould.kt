@@ -38,7 +38,7 @@ class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould
 
     @Test
     override fun map_from_json_string() {
-        var option = deserialize(OptionDTO.serializer())
+        val option = deserialize(OptionDTO.serializer())
 
         Truth.assertThat(option.uid).isEqualTo("Y1ILwhy5VDY")
         Truth.assertThat(option.code).isEqualTo("0-14 years")

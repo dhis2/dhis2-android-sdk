@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,19 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship
 
-interface RelationshipService {
-    fun hasAccessPermission(relationshipType: RelationshipType): Boolean
-
-    fun getRelationshipTypesForTrackedEntities(
-        trackedEntityType: String,
-        programUid: String? = null,
-    ): List<RelationshipTypeWithEntitySide>
-
-    fun getRelationshipTypesForEnrollments(
-        programUid: String,
-    ): List<RelationshipTypeWithEntitySide>
-
-    fun getRelationshipTypesForEvents(
-        programStageUid: String,
-    ): List<RelationshipTypeWithEntitySide>
-}
+data class RelationshipTypeWithEntitySide(
+    val relationshipType: RelationshipType,
+    val entitySide: RelationshipConstraintType,
+)

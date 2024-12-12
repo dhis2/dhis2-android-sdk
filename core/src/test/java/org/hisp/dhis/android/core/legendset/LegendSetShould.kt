@@ -25,43 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset
 
-package org.hisp.dhis.android.core.legendset;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.legendset.LegendSetDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class LegendSetShould : BaseObjectKotlinxShould("legendset/legend_set.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class LegendSetShould extends BaseObjectShould implements ObjectShould {
-
-    public LegendSetShould() {
-        super("legendset/legend_set.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        LegendSet legendSet = objectMapper.readValue(jsonStream, LegendSet.class);
+    override fun map_from_json_string() {
+        val legendSet = deserialize(LegendSetDTO.serializer())
 
-        assertThat(legendSet.uid()).isEqualTo("TiOkbpGEud4");
-        assertThat(legendSet.name()).isEqualTo("Age 15y interval");
-        assertThat(legendSet.displayName()).isEqualTo("Age 15y interval");
-        assertThat(legendSet.code()).isEqualTo("AGE15YINT");
-        assertThat(legendSet.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2017-06-02T11:41:01.999"));
-        assertThat(legendSet.created()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2017-06-02T11:40:33.452"));
-        assertThat(legendSet.symbolizer()).isEqualTo("color");
+        Truth.assertThat(legendSet.uid).isEqualTo("TiOkbpGEud4")
+        Truth.assertThat(legendSet.name).isEqualTo("Age 15y interval")
+        Truth.assertThat(legendSet.displayName).isEqualTo("Age 15y interval")
+        Truth.assertThat(legendSet.code).isEqualTo("AGE15YINT")
+        Truth.assertThat(legendSet.lastUpdated).isEqualTo("2017-06-02T11:41:01.999")
+        Truth.assertThat(legendSet.created).isEqualTo("2017-06-02T11:40:33.452")
+        Truth.assertThat(legendSet.symbolizer).isEqualTo("color")
 
-        assertThat(legendSet.legends().get(0).uid()).isEqualTo("BzQkRWHS7lu");
-        assertThat(legendSet.legends().get(0).name()).isEqualTo("45 - 60");
-        assertThat(legendSet.legends().get(1).uid()).isEqualTo("kEf6QhFVMab");
-        assertThat(legendSet.legends().get(1).name()).isEqualTo("15 - 30");
+        Truth.assertThat(legendSet.legends[0].uid).isEqualTo("BzQkRWHS7lu")
+        Truth.assertThat(legendSet.legends[0].name).isEqualTo("45 - 60")
+        Truth.assertThat(legendSet.legends[1].uid).isEqualTo("kEf6QhFVMab")
+        Truth.assertThat(legendSet.legends[1].name).isEqualTo("15 - 30")
     }
 }

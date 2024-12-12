@@ -12717,6 +12717,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 	public static final field V2_39_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_40_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_41_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public static final field V2_42_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getMajorVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public final fun getSmsVersion ()Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;

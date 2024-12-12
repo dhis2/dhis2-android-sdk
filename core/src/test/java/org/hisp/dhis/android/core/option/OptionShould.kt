@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.common.ObjectWithStyle
+import org.hisp.dhis.android.network.common.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.option.OptionDTO
 import org.junit.Test
 
@@ -48,6 +48,6 @@ class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould
         Truth.assertThat(option.displayName).isEqualTo("0-14 years")
         Truth.assertThat(option.sortOrder).isEqualTo(1)
         Truth.assertThat(option.optionSet!!.uid).isEqualTo("VQ2lai3OfVG")
-        Truth.assertThat(option.style).isEqualTo(ObjectWithStyle("#000", "my-icon-name"))
+        Truth.assertThat(option.style).isEqualTo(ObjectWithStyleDTO("#000", "my-icon-name"))
     }
 }

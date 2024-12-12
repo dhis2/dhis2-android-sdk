@@ -191,7 +191,10 @@ public class Dhis2MockServer {
             public MockResponse dispatch(RecordedRequest request) {
 
                 String path = request.getPath();
-                if (path.startsWith("/api/me?")) {
+                if (path.startsWith("/api/auth/login")) {
+                    return createMockResponse(AUTH_LOGIN_SUCCESS);
+                }
+                else if (path.startsWith("/api/me?")) {
                     return createMockResponse(USER_JSON);
                 } else if ("/api/me/authorization".equals(path)) {
                     return createMockResponse(AUTHORITIES_JSON);

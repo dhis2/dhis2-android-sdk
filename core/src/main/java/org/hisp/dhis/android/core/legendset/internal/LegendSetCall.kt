@@ -35,13 +35,13 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LegendSetCall(
-    private val service: LegendSetService,
+    private val networkHandler: LegendSetNetworkHandler,
     private val handler: LegendSetHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<LegendSet> {
     override suspend fun download(uids: Set<String>): List<LegendSet> {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
-            service.getLegendSets(LegendSetFields.allFields, LegendSetFields.uid.`in`(partitionUids), false)
+            networkHandler.getLegendSets(LegendSetFields.allFields, LegendSetFields.uid.`in`(partitionUids), false)
         }
     }
 

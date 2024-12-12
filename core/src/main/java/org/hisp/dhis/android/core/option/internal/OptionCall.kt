@@ -44,14 +44,13 @@ class OptionCall internal constructor(
             uids,
             MAX_UID_LIST_SIZE,
             handler,
-            { partitionUids: Set<String> ->
-                val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
+        ) { partitionUids: Set<String> ->
+            val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
 
-                apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                    networkHandler.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
-                }
-            },
-        )
+            apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
+                networkHandler.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
+            }
+        }
     }
 
     companion object {

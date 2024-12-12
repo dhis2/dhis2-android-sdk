@@ -31,16 +31,10 @@ package org.hisp.dhis.android.network.option
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.ObjectWithStyle
+import org.hisp.dhis.android.network.common.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.Pager
+import org.hisp.dhis.android.network.common.PagerDTO
 import org.hisp.dhis.android.network.common.PayloadJson
-
-@Serializable
-internal class OptionPayload(
-    override val pager: Pager? = null,
-    @SerialName("options") override val items: List<OptionDTO> = emptyList(),
-) : PayloadJson<OptionDTO>(pager, items)
 
 @Serializable
 internal data class OptionDTO(
@@ -53,5 +47,11 @@ internal data class OptionDTO(
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
     val sortOrder: Int? = null,
     val optionSet: ObjectWithUidDTO? = null,
-    val style: ObjectWithStyle? = null,
+    val style: ObjectWithStyleDTO? = null,
 ) : BaseIdentifiableObjectDTO
+
+@Serializable
+internal class OptionPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("options") override val items: List<OptionDTO> = emptyList(),
+) : PayloadJson<OptionDTO>(pager, items)

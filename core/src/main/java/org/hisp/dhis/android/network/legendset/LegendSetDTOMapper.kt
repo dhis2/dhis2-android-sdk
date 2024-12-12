@@ -26,28 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.constant
+package org.hisp.dhis.android.network.legendset
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.PagerDTO
-import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-@Serializable
-internal data class ConstantDTO(
-    @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val value: Double? = null,
-) : BaseIdentifiableObjectDTO
+internal fun legendSetApiToDomainMapper(item: LegendSetDTO): LegendSet {
+    return LegendSet.builder()
+        .uid(item.uid)
+        .code(item.code)
+        .name(item.name)
+        .displayName(item.displayName)
+        .created(item.created)
+        .lastUpdated(item.lastUpdated)
+        .deleted(item.deleted)
+        .symbolizer(item.symbolizer)
+        .legends(item.legends.map { legendApiToDomainMapper(it) })
+        .build()
+}
 
-@Serializable
-internal class ConstantPayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
-) : PayloadJson<ConstantDTO>(pager, items)
+internal fun legendApiToDomainMapper(item: LegendDTO): Legend {
+    return Legend.builder()
+        .uid(item.uid)
+        .code(item.code)
+        .name(item.name)
+        .displayName(item.displayName)
+        .created(item.created)
+        .lastUpdated(item.lastUpdated)
+        .deleted(item.deleted)
+        .startValue(item.startValue)
+        .endValue(item.endValue)
+        .color(item.color)
+        .build()
+}

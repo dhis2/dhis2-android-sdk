@@ -31,7 +31,9 @@ package org.hisp.dhis.android.network.common
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ObjectWithStyle(
-    val color: String? = null,
-    val icon: String? = null,
+internal data class PagerDTO(
+    val page: Int,
+    val pageCount: Int,
+    val pageSize: Int,
+    val total: Int,
 )

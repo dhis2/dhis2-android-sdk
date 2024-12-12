@@ -52,6 +52,10 @@ repositories {
 group = rootProject.group
 version = rootProject.version
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
 

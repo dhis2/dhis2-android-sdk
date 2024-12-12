@@ -27,6 +27,7 @@ class RelationshipServiceShould {
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val relationshipTypeRepository: RelationshipTypeCollectionRepository = mock()
     private lateinit var relationshipService: RelationshipService
 
     @Before
@@ -35,6 +36,7 @@ class RelationshipServiceShould {
             programRepository,
             programStageRepository,
             trackedEntityTypeRepository,
+            relationshipTypeRepository,
         )
     }
 

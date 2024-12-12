@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal
+package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.legendset.LegendSet
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-@Singleton
-internal class LegendSetService(private val client: HttpServiceClient) {
-    suspend fun getLegendSets(
+internal class LegendSetService(private val client: HttpServiceClientKotlinx) {
+    suspend fun legendSets(
         fields: Fields<LegendSet>,
         uids: Filter<LegendSet>,
         paging: Boolean,
-    ): PayloadJackson<LegendSet> {
+    ): LegendSetPayload {
         return client.get {
             url("legendSets")
             parameters {

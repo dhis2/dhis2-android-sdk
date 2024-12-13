@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.network.common
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+
 // @Serializable
 internal interface BaseIdentifiableObjectDTO {
     val uid: String
@@ -42,8 +44,20 @@ internal interface BaseIdentifiableObjectDTO {
         val CODE = null
         val NAME = null
         val DISPLAY_NAME = null
-        const val CREATED = ""
-        const val LAST_UPDATED = ""
+        val CREATED = null
+        val LAST_UPDATED = null
         val DELETED = null
     }
+}
+
+internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where
+      T : BaseIdentifiableObject.Builder<T> {
+    uid(item.uid)
+    code(item.code)
+    name(item.name)
+    displayName(item.displayName)
+    item.created?.let { created(it) } ?: { created(null) }
+    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
+    deleted(item.deleted)
+    return this
 }

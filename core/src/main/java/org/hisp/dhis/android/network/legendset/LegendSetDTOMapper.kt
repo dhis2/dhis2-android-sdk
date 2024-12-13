@@ -30,16 +30,11 @@ package org.hisp.dhis.android.network.legendset
 
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
 
 internal fun legendSetApiToDomainMapper(item: LegendSetDTO): LegendSet {
     return LegendSet.builder()
-        .uid(item.uid)
-        .code(item.code)
-        .name(item.name)
-        .displayName(item.displayName)
-        .created(item.created)
-        .lastUpdated(item.lastUpdated)
-        .deleted(item.deleted)
+        .applyBaseIdentifiableFields(item)
         .symbolizer(item.symbolizer)
         .legends(item.legends.map { legendApiToDomainMapper(it) })
         .build()
@@ -47,13 +42,7 @@ internal fun legendSetApiToDomainMapper(item: LegendSetDTO): LegendSet {
 
 internal fun legendApiToDomainMapper(item: LegendDTO): Legend {
     return Legend.builder()
-        .uid(item.uid)
-        .code(item.code)
-        .name(item.name)
-        .displayName(item.displayName)
-        .created(item.created)
-        .lastUpdated(item.lastUpdated)
-        .deleted(item.deleted)
+        .applyBaseIdentifiableFields(item)
         .startValue(item.startValue)
         .endValue(item.endValue)
         .color(item.color)

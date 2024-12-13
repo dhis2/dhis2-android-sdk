@@ -44,6 +44,7 @@ internal class PasswordAndCookieAuthenticator(
 
     companion object {
         private const val LOGIN_ACTION = "login.action"
+        private const val LOGIN_URL = "dhis-web-login"
         const val LOCATION_KEY = "Location"
     }
 
@@ -60,22 +61,28 @@ internal class PasswordAndCookieAuthenticator(
             res.close()
             cookieHelper.removeCookie()
             val newReqWithBasicAuth = addPasswordHeader(userIdHelper.builderWithUserId(chain), credentials).build()
-            chain.proceed(newReqWithBasicAuth)
-        } else if (res.code == 401 && !isFromLoginCall && ServerURLWrapper.serverUrl?.contains(res.request.url.host) == true) {
-            logoutHandler.logOut()
-            res
-        }
-        else {
-            res
+            val res = chain.proceed(newReqWithBasicAuth)
+
+            logoutOrReturnRes(res, isFromLoginCall)
+        } else {
+            logoutOrReturnRes(res, isFromLoginCall)
         }
 
         cookieHelper.storeCookieIfSentByServer(finalRes)
         return finalRes
     }
 
+    private fun logoutOrReturnRes(res: Response, isFromLoginCall: Boolean) =
+        if (res.code == 401 && !isFromLoginCall && ServerURLWrapper.serverUrl?.contains(res.request.url.host) == true) {
+            logoutHandler.logOut()
+            res
+        } else {
+            res
+        }
+
     private fun hasAuthenticationFailed(res: Response): Boolean {
         val location = res.header(LOCATION_KEY)
-        return res.isRedirect && location != null && location.contains(LOGIN_ACTION)
+        return res.isRedirect && location != null && (location.contains(LOGIN_ACTION) || location.contains(LOGIN_URL))
     }
 
     private fun addPasswordHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {

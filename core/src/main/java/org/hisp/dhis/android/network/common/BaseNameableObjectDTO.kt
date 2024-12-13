@@ -46,7 +46,7 @@ internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
 }
 
 internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
-        T : BaseNameableObject.Builder<T> {
+      T : BaseNameableObject.Builder<T> {
     applyBaseIdentifiableFields(item)
     shortName(item.shortName)
     displayShortName(item.displayShortName)

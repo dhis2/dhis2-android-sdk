@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute.internal
+package org.hisp.dhis.android.network.attribute
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class AttributeService(private val client: HttpServiceClient) {
-    suspend fun getAttributes(
+internal class AttributeService(private val client: HttpServiceClientKotlinx) {
+    suspend fun attributes(
         fields: Fields<Attribute>,
         uids: Filter<Attribute>,
         paging: Boolean,
-    ): PayloadJackson<Attribute> {
+    ): AttributePayload {
         return client.get {
             url("attributes")
             parameters {

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.attribute
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.attribute.AttributeDTO
 import org.junit.Test
 
@@ -45,7 +44,7 @@ class AttributeShould : BaseObjectKotlinxShould("attribute/attribute.json"), Obj
         Truth.assertThat(attribute.displayName).isEqualTo("Name Pattern")
         Truth.assertThat(attribute.lastUpdated).isEqualTo("2020-07-06T06:27:19.164")
         Truth.assertThat(attribute.created).isEqualTo("2020-07-06T06:27:19.164")
-        Truth.assertThat(attribute.valueType).isEqualTo(ValueType.TEXT)
+        Truth.assertThat(attribute.valueType).isEqualTo("TEXT")
         Truth.assertThat(attribute.unique).isEqualTo(false)
         Truth.assertThat(attribute.mandatory).isEqualTo(false)
         Truth.assertThat(attribute.programStageAttribute).isEqualTo(true)

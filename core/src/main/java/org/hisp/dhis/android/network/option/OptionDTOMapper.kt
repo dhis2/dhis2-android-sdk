@@ -31,16 +31,11 @@ package org.hisp.dhis.android.network.option
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
 
 internal fun optionApiToDomainMapper(item: OptionDTO): Option {
     return Option.builder()
-        .uid(item.uid)
-        .code(item.code)
-        .name(item.name)
-        .displayName(item.displayName)
-        .created(item.created)
-        .lastUpdated(item.lastUpdated)
-        .deleted(item.deleted)
+        .applyBaseIdentifiableFields(item)
         .sortOrder(item.sortOrder)
         .optionSet(
             ObjectWithUid.create(item.optionSet?.uid),

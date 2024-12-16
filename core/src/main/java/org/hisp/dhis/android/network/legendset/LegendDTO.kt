@@ -26,16 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.constant
+package org.hisp.dhis.android.network.legendset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.PagerDTO
-import org.hisp.dhis.android.network.common.PayloadJson
 
 @Serializable
-internal data class ConstantDTO(
+internal data class LegendDTO(
     @SerialName("id") override val uid: String,
     override val code: String? = BaseIdentifiableObjectDTO.CODE,
     override val name: String? = BaseIdentifiableObjectDTO.NAME,
@@ -43,11 +41,7 @@ internal data class ConstantDTO(
     override val created: String? = BaseIdentifiableObjectDTO.CREATED,
     override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val value: Double? = null,
+    val startValue: Double? = null,
+    val endValue: Double? = null,
+    val color: String? = null,
 ) : BaseIdentifiableObjectDTO
-
-@Serializable
-internal class ConstantPayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
-) : PayloadJson<ConstantDTO>(pager, items)

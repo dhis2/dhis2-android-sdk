@@ -25,39 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset
 
-package org.hisp.dhis.android.core.legendset;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.legendset.LegendDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class LegendShould : BaseObjectKotlinxShould("legendset/legend.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class LegendShould extends BaseObjectShould implements ObjectShould {
-
-    public LegendShould() {
-        super("legendset/legend.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Legend legend = objectMapper.readValue(jsonStream, Legend.class);
+    override fun map_from_json_string() {
+        val legend = deserialize(LegendDTO.serializer())
 
-        assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X");
-        assertThat(legend.name()).isEqualTo("30 - 40");
-        assertThat(legend.displayName()).isEqualTo("30 - 40");
-        assertThat(legend.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"));
-        assertThat(legend.created()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"));
-        assertThat(legend.startValue()).isEqualTo(30.5);
-        assertThat(legend.endValue()).isEqualTo(40);
-        assertThat(legend.color()).isEqualTo("#d9f0a3");
+        Truth.assertThat(legend.uid).isEqualTo("ZUUGJnvX40X")
+        Truth.assertThat(legend.name).isEqualTo("30 - 40")
+        Truth.assertThat(legend.displayName).isEqualTo("30 - 40")
+        Truth.assertThat(legend.lastUpdated).isEqualTo("2017-06-02T11:40:44.279")
+        Truth.assertThat(legend.created).isEqualTo("2017-06-02T11:40:44.279")
+        Truth.assertThat(legend.startValue).isEqualTo(30.5)
+        Truth.assertThat(legend.endValue).isEqualTo(40)
+        Truth.assertThat(legend.color).isEqualTo("#d9f0a3")
     }
 }

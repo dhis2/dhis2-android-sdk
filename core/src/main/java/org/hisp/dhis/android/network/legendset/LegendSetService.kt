@@ -26,28 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.constant
+package org.hisp.dhis.android.network.legendset
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.PagerDTO
-import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-@Serializable
-internal data class ConstantDTO(
-    @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val value: Double? = null,
-) : BaseIdentifiableObjectDTO
-
-@Serializable
-internal class ConstantPayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
-) : PayloadJson<ConstantDTO>(pager, items)
+internal class LegendSetService(private val client: HttpServiceClientKotlinx) {
+    suspend fun legendSets(
+        fields: Fields<LegendSet>,
+        uids: Filter<LegendSet>,
+        paging: Boolean,
+    ): LegendSetPayload {
+        return client.get {
+            url("legendSets")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
+}

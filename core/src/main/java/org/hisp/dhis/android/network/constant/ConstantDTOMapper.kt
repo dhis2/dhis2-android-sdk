@@ -29,16 +29,11 @@
 package org.hisp.dhis.android.network.constant
 
 import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
 
 internal fun constantApiToDomainMapper(item: ConstantDTO): Constant {
     return Constant.builder()
-        .uid(item.uid)
-        .code(item.code)
-        .name(item.name)
-        .displayName(item.displayName)
-        .created(item.created)
-        .lastUpdated(item.lastUpdated)
-        .deleted(item.deleted)
+        .applyBaseIdentifiableFields(item)
         .value(item.value)
         .build()
 }

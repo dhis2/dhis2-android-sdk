@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset
 
-package org.hisp.dhis.android.network.constant
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.legendset.LegendSetDTO
+import org.junit.Test
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.PagerDTO
-import org.hisp.dhis.android.network.common.PayloadJson
+class LegendSetShould : BaseObjectKotlinxShould("legendset/legend_set.json"), ObjectShould {
 
-@Serializable
-internal data class ConstantDTO(
-    @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val value: Double? = null,
-) : BaseIdentifiableObjectDTO
+    @Test
+    override fun map_from_json_string() {
+        val legendSet = deserialize(LegendSetDTO.serializer())
 
-@Serializable
-internal class ConstantPayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("constants") override val items: List<ConstantDTO> = emptyList(),
-) : PayloadJson<ConstantDTO>(pager, items)
+        Truth.assertThat(legendSet.uid).isEqualTo("TiOkbpGEud4")
+        Truth.assertThat(legendSet.name).isEqualTo("Age 15y interval")
+        Truth.assertThat(legendSet.displayName).isEqualTo("Age 15y interval")
+        Truth.assertThat(legendSet.code).isEqualTo("AGE15YINT")
+        Truth.assertThat(legendSet.lastUpdated).isEqualTo("2017-06-02T11:41:01.999")
+        Truth.assertThat(legendSet.created).isEqualTo("2017-06-02T11:40:33.452")
+        Truth.assertThat(legendSet.symbolizer).isEqualTo("color")
+
+        Truth.assertThat(legendSet.legends[0].uid).isEqualTo("BzQkRWHS7lu")
+        Truth.assertThat(legendSet.legends[0].name).isEqualTo("45 - 60")
+        Truth.assertThat(legendSet.legends[1].uid).isEqualTo("kEf6QhFVMab")
+        Truth.assertThat(legendSet.legends[1].name).isEqualTo("15 - 30")
+    }
+}

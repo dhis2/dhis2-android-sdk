@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.legendset
 
-package org.hisp.dhis.android.core.legendset.internal
-
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class LegendSetService(private val client: HttpServiceClient) {
-    suspend fun getLegendSets(
+internal class LegendSetNetworkHandlerImpl(
+    private val httpClient: HttpServiceClientKotlinx,
+    private val service: LegendSetService = LegendSetService(httpClient),
+) : LegendSetNetworkHandler {
+    override suspend fun getLegendSets(
         fields: Fields<LegendSet>,
         uids: Filter<LegendSet>,
         paging: Boolean,
-    ): PayloadJackson<LegendSet> {
-        return client.get {
-            url("legendSets")
-            parameters {
-                fields(fields)
-                filter(uids)
-                paging(paging)
-            }
-        }
+    ): PayloadJson<LegendSet> {
+        val apiPayload = service.legendSets(fields, uids, paging)
+        return apiPayload.mapItems(::legendSetApiToDomainMapper)
     }
 }

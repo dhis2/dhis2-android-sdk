@@ -26,12 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.core.legendset.internal
 
-import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-@Serializable
-internal data class ObjectWithStyle(
-    val color: String? = null,
-    val icon: String? = null,
-)
+internal fun interface LegendSetNetworkHandler {
+    suspend fun getLegendSets(
+        fields: Fields<LegendSet>,
+        uids: Filter<LegendSet>,
+        paging: Boolean,
+    ): Payload<LegendSet>
+}

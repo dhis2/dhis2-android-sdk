@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 
 @Serializable
 internal open class PayloadJson<T>(
-    @Transient override val pager: Pager? = null,
+    @Transient override val pager: PagerDTO? = null,
     @Transient override val items: List<T> = emptyList(),
 ) : Payload<T> {
 
@@ -44,7 +44,7 @@ internal open class PayloadJson<T>(
         return items
     }
 
-    override fun pager(): Pager? {
+    override fun pager(): PagerDTO? {
         return pager
     }
 

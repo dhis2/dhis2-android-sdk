@@ -44,10 +44,10 @@ class CategoryShould : BaseObjectKotlinxShould("category/category.json"), Object
 
         assertThat(category.uid()).isEqualTo("KfdsGBcoiCa")
         assertThat(category.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"),
         )
         assertThat(category.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"),
         )
 
         assertThat(category.name()).isEqualTo("Births attended by")

@@ -36,9 +36,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionNetworkHandlerImpl(
-    private val httpClient: HttpServiceClientKotlinx,
-    private val service: OptionService = OptionService(httpClient),
+    httpClient: HttpServiceClientKotlinx,
 ) : OptionNetworkHandler {
+    private val service: OptionService = OptionService(httpClient)
+
     override suspend fun getOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,

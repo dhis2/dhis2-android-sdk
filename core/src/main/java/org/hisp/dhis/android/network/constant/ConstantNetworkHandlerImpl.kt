@@ -36,9 +36,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ConstantNetworkHandlerImpl(
-    private val httpClient: HttpServiceClientKotlinx,
-    private val service: ConstantService = ConstantService(httpClient),
+    httpClient: HttpServiceClientKotlinx,
 ) : ConstantNetworkHandler {
+    private val service: ConstantService = ConstantService(httpClient)
+
     override suspend fun getConstants(): List<Constant> {
         val constantDtoList = service.constants(ConstantFields.allFields, false)
         return constantDtoList.items.map { item -> constantDtoToDomainMapper(item) }

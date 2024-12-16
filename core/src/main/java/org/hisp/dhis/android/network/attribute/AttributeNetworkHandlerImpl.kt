@@ -37,9 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AttributeNetworkHandlerImpl(
-    private val httpClient: HttpServiceClientKotlinx,
-    private val service: AttributeService = AttributeService(httpClient),
+    httpClient: HttpServiceClientKotlinx,
 ) : AttributeNetworkHandler {
+    private val service: AttributeService = AttributeService(httpClient)
+
     override suspend fun getAttributes(
         fields: Fields<Attribute>,
         uids: Filter<Attribute>,

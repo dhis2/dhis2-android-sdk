@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class CategoryCall(
     private val handler: CategoryHandler,
-    private val service: CategoryService,
+    private val networkHandler: CategoryNetworkHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<Category> {
 
@@ -49,7 +49,7 @@ internal class CategoryCall(
             MAX_UID_LIST_SIZE,
             handler,
         ) { partitionUids: Set<String> ->
-            service.getCategories(
+            networkHandler.categories(
                 CategoryFields.allFields,
                 CategoryFields.uid.`in`(partitionUids),
                 paging = false,

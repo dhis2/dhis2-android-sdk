@@ -41,6 +41,6 @@ internal class ConstantNetworkHandlerImpl(
 ) : ConstantNetworkHandler {
     override suspend fun getConstants(): List<Constant> {
         val constantDtoList = service.constants(ConstantFields.allFields, false)
-        return constantDtoList.items.map { item -> constantApiToDomainMapper(item) }
+        return constantDtoList.items.map { item -> constantDtoToDomainMapper(item) }
     }
 }

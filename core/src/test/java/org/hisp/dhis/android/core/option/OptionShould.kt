@@ -28,26 +28,31 @@
 package org.hisp.dhis.android.core.option
 
 import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.common.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.option.OptionDTO
+import org.hisp.dhis.android.network.option.optionDtoToDomainMapper
 import org.junit.Test
 
 class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val option = deserialize(OptionDTO.serializer())
+        val optionDTO = deserialize(OptionDTO.serializer())
+        val option = optionDtoToDomainMapper(optionDTO)
 
-        Truth.assertThat(option.uid).isEqualTo("Y1ILwhy5VDY")
-        Truth.assertThat(option.code).isEqualTo("0-14 years")
-        Truth.assertThat(option.created).isEqualTo("2014-08-18T12:39:16.000")
-        Truth.assertThat(option.lastUpdated).isEqualTo("2014-08-18T12:39:16.000")
-        Truth.assertThat(option.name).isEqualTo("0-14 years")
-        Truth.assertThat(option.displayName).isEqualTo("0-14 years")
-        Truth.assertThat(option.sortOrder).isEqualTo(1)
-        Truth.assertThat(option.optionSet!!.uid).isEqualTo("VQ2lai3OfVG")
-        Truth.assertThat(option.style).isEqualTo(ObjectWithStyleDTO("#000", "my-icon-name"))
+        Truth.assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY")
+        Truth.assertThat(option.code()).isEqualTo("0-14 years")
+        Truth.assertThat(option.created())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2014-08-18T12:39:16.000"))
+        Truth.assertThat(option.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2014-08-18T12:39:16.000"))
+        Truth.assertThat(option.name()).isEqualTo("0-14 years")
+        Truth.assertThat(option.displayName()).isEqualTo("0-14 years")
+        Truth.assertThat(option.sortOrder()).isEqualTo(1)
+        Truth.assertThat(option.optionSet()?.uid()).isEqualTo("VQ2lai3OfVG")
+        Truth.assertThat(option.style()).isEqualTo(ObjectWithStyleDTO("#000", "my-icon-name"))
     }
 }

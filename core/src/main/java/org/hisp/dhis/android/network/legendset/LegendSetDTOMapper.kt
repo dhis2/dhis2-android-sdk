@@ -32,15 +32,15 @@ import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
 
-internal fun legendSetApiToDomainMapper(item: LegendSetDTO): LegendSet {
+internal fun legendSetDtoToDomainMapper(item: LegendSetDTO): LegendSet {
     return LegendSet.builder()
         .applyBaseIdentifiableFields(item)
         .symbolizer(item.symbolizer)
-        .legends(item.legends.map { legendApiToDomainMapper(it) })
+        .legends(item.legends.map { legendDtoToDomainMapper(it) })
         .build()
 }
 
-internal fun legendApiToDomainMapper(item: LegendDTO): Legend {
+internal fun legendDtoToDomainMapper(item: LegendDTO): Legend {
     return Legend.builder()
         .applyBaseIdentifiableFields(item)
         .startValue(item.startValue)

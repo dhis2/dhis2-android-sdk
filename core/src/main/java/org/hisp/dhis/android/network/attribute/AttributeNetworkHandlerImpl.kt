@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.attribute
 
-package org.hisp.dhis.android.core.attribute.internal
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.core.attribute.internal.AttributeNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class AttributeCall(
-    private val networkHandler: AttributeNetworkHandler,
-    private val handler: AttributeHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Attribute> {
-    override suspend fun download(uids: Set<String>): List<Attribute> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
-            networkHandler.getAttributes(AttributeFields.allFields, AttributeFields.uid.`in`(partitionUids), false)
-        }
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 130
+internal class AttributeNetworkHandlerImpl(
+    private val httpClient: HttpServiceClientKotlinx,
+    private val service: AttributeService = AttributeService(httpClient),
+) : AttributeNetworkHandler {
+    override suspend fun getAttributes(
+        fields: Fields<Attribute>,
+        uids: Filter<Attribute>,
+        paging: Boolean,
+    ): PayloadJson<Attribute> {
+        val apiPayload = service.attributes(fields, uids, paging)
+        return apiPayload.mapItems(::attributeApiToDomainMapper)
     }
 }

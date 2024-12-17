@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute.internal
+package org.hisp.dhis.android.network.common
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.attribute.Attribute
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.common.BaseNameableObject
 
-@Singleton
-internal class AttributeCall(
-    private val networkHandler: AttributeNetworkHandler,
-    private val handler: AttributeHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Attribute> {
-    override suspend fun download(uids: Set<String>): List<Attribute> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
-            networkHandler.getAttributes(AttributeFields.allFields, AttributeFields.uid.`in`(partitionUids), false)
-        }
-    }
+// @Serializable
+internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
 
     companion object {
-        private const val MAX_UID_LIST_SIZE = 130
+        val SHORT_NAME = null
+        val DISPLAY_SHORT_NAME = null
+        val DESCRIPTION = null
+        val DISPLAY_DESCRIPTION = null
     }
+}
+
+internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
+      T : BaseNameableObject.Builder<T> {
+    applyBaseIdentifiableFields(item)
+    shortName(item.shortName)
+    displayShortName(item.displayShortName)
+    description(item.description)
+    displayDescription(item.displayDescription)
+    return this
 }

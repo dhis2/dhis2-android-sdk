@@ -10829,6 +10829,9 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipCollectio
 	public synthetic fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
 	public fun blockingAdd (Lorg/hisp/dhis/android/core/relationship/Relationship;)Ljava/lang/String;
 	public final fun byCreated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DateFilterConnector;
+	public final fun byDeleted ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
+	public final fun byItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Z)Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
 	public final fun byLastUpdated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DateFilterConnector;
 	public final fun byName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byRelationshipType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;

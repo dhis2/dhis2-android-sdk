@@ -98,6 +98,7 @@ class LogInCallUnitShould : BaseCallShould() {
         userService.stub {
             onBlocking { getUser(any()) }.doAnswer { apiUser }
         }
+        whenOldLoginAPICall { apiUser }
         whenever(userStore.selectFirst()).thenReturn(dbUser)
         whenever(userStore.selectByUid(any())).thenReturn(dbUser)
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
@@ -128,6 +129,12 @@ class LogInCallUnitShould : BaseCallShould() {
     private fun whenLoginAPICall(answer: Answer<LoginResponse>) {
         userService.stub {
             onBlocking { login(any()) }.doAnswer(answer)
+        }
+    }
+
+    private fun whenOldLoginAPICall(answer: Answer<User>) {
+        userService.stub {
+            onBlocking { authenticate(any(), any()) }.doAnswer(answer)
         }
     }
 
@@ -228,7 +235,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun throw_d2_error_if_two_factor_code_is_invalid() = runTest {
         whenLoginAPICall { LoginResponse(loginStatus = D2ErrorCode.INCORRECT_TWO_FACTOR_CODE.toString()) }
-        
+
         assertD2Error(D2ErrorCode.INCORRECT_TWO_FACTOR_CODE) { login(TWO_FACTOR_CODE) }
     }
 
@@ -273,6 +280,17 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         assertD2Error(D2ErrorCode.BAD_CREDENTIALS) { login() }
+    }
+
+    @Test
+    fun invoke_old_login_when_login_fail_with_no_dhis2_server() = runTest {
+        whenLoginAPICall { throw d2Error }
+        whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.NO_DHIS2_SERVER)
+
+        login()
+
+        verify(userService).login(any())
+        verify(userService).authenticate(any(), any())
     }
 
     private fun verifySuccess() {

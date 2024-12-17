@@ -36,9 +36,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionNetworkHandlerImpl(
-    private val httpClient: HttpServiceClientKotlinx,
-    private val service: OptionService = OptionService(httpClient),
+    httpClient: HttpServiceClientKotlinx,
 ) : OptionNetworkHandler {
+    private val service: OptionService = OptionService(httpClient)
+
     override suspend fun getOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,
@@ -47,6 +48,6 @@ internal class OptionNetworkHandlerImpl(
         pageSize: Int,
     ): PayloadJson<Option> {
         val apiPayload = service.options(fields, optionSetUidsFilterString, paging, page, pageSize)
-        return apiPayload.mapItems(::optionApiToDomainMapper)
+        return apiPayload.mapItems(::optionDtoToDomainMapper)
     }
 }

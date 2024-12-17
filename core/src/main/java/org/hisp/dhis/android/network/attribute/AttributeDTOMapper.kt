@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.common.applyBaseNameableFields
 
-internal fun attributeApiToDomainMapper(item: AttributeDTO): Attribute {
+internal fun attributeDtoToDomainMapper(item: AttributeDTO): Attribute {
     return Attribute.builder()
         .applyBaseNameableFields(item)
         .valueType(item.valueType?.let { ValueType.valueOf(item.valueType) })

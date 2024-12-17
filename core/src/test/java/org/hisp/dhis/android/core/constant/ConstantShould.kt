@@ -28,22 +28,27 @@
 package org.hisp.dhis.android.core.constant
 
 import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.constant.ConstantDTO
+import org.hisp.dhis.android.network.constant.constantDtoToDomainMapper
 import org.junit.Test
 
 class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val constant = deserialize(ConstantDTO.serializer())
+        val constantDTO = deserialize(ConstantDTO.serializer())
+        val constant = constantDtoToDomainMapper(constantDTO)
 
-        Truth.assertThat(constant.created).isEqualTo("2013-03-11T16:39:33.083")
-        Truth.assertThat(constant.lastUpdated).isEqualTo("2013-03-11T16:39:33.083")
-        Truth.assertThat(constant.name).isEqualTo("Pi")
-        Truth.assertThat(constant.displayName).isEqualTo("Pi")
-        Truth.assertThat(constant.value).isEqualTo(3.14)
-        Truth.assertThat(constant.uid).isEqualTo("bCqvfPR02Im")
+        Truth.assertThat(constant.created())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2013-03-11T16:39:33.083"))
+        Truth.assertThat(constant.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2013-03-11T16:39:33.083"))
+        Truth.assertThat(constant.name()).isEqualTo("Pi")
+        Truth.assertThat(constant.displayName()).isEqualTo("Pi")
+        Truth.assertThat(constant.value()).isEqualTo(3.14)
+        Truth.assertThat(constant.uid()).isEqualTo("bCqvfPR02Im")
     }
 }

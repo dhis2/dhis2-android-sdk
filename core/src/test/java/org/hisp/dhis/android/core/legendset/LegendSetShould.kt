@@ -28,28 +28,35 @@
 package org.hisp.dhis.android.core.legendset
 
 import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.legendset.LegendSetDTO
+import org.hisp.dhis.android.network.legendset.legendSetDtoToDomainMapper
 import org.junit.Test
 
 class LegendSetShould : BaseObjectKotlinxShould("legendset/legend_set.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val legendSet = deserialize(LegendSetDTO.serializer())
+        val legendSetDTO = deserialize(LegendSetDTO.serializer())
+        val legendSet = legendSetDtoToDomainMapper(legendSetDTO)
 
-        Truth.assertThat(legendSet.uid).isEqualTo("TiOkbpGEud4")
-        Truth.assertThat(legendSet.name).isEqualTo("Age 15y interval")
-        Truth.assertThat(legendSet.displayName).isEqualTo("Age 15y interval")
-        Truth.assertThat(legendSet.code).isEqualTo("AGE15YINT")
-        Truth.assertThat(legendSet.lastUpdated).isEqualTo("2017-06-02T11:41:01.999")
-        Truth.assertThat(legendSet.created).isEqualTo("2017-06-02T11:40:33.452")
-        Truth.assertThat(legendSet.symbolizer).isEqualTo("color")
+        Truth.assertThat(legendSet.uid()).isEqualTo("TiOkbpGEud4")
+        Truth.assertThat(legendSet.name()).isEqualTo("Age 15y interval")
+        Truth.assertThat(legendSet.displayName()).isEqualTo("Age 15y interval")
+        Truth.assertThat(legendSet.code()).isEqualTo("AGE15YINT")
+        Truth.assertThat(legendSet.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2017-06-02T11:41:01.999"))
+        Truth.assertThat(legendSet.created())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2017-06-02T11:40:33.452"))
+        Truth.assertThat(legendSet.symbolizer()).isEqualTo("color")
 
-        Truth.assertThat(legendSet.legends[0].uid).isEqualTo("BzQkRWHS7lu")
-        Truth.assertThat(legendSet.legends[0].name).isEqualTo("45 - 60")
-        Truth.assertThat(legendSet.legends[1].uid).isEqualTo("kEf6QhFVMab")
-        Truth.assertThat(legendSet.legends[1].name).isEqualTo("15 - 30")
+        val legends = legendSet.legends()
+
+        Truth.assertThat(legends?.getOrNull(0)?.uid()).isEqualTo("BzQkRWHS7lu")
+        Truth.assertThat(legends?.getOrNull(0)?.name()).isEqualTo("45 - 60")
+        Truth.assertThat(legends?.getOrNull(1)?.uid()).isEqualTo("kEf6QhFVMab")
+        Truth.assertThat(legends?.getOrNull(1)?.name()).isEqualTo("15 - 30")
     }
 }

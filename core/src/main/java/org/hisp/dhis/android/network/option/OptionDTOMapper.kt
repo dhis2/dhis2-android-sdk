@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
 
-internal fun optionApiToDomainMapper(item: OptionDTO): Option {
+internal fun optionDtoToDomainMapper(item: OptionDTO): Option {
     return Option.builder()
         .applyBaseIdentifiableFields(item)
         .sortOrder(item.sortOrder)

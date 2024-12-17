@@ -37,15 +37,16 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LegendSetNetworkHandlerImpl(
-    private val httpClient: HttpServiceClientKotlinx,
-    private val service: LegendSetService = LegendSetService(httpClient),
+    httpClient: HttpServiceClientKotlinx,
 ) : LegendSetNetworkHandler {
+    private val service: LegendSetService = LegendSetService(httpClient)
+
     override suspend fun getLegendSets(
         fields: Fields<LegendSet>,
         uids: Filter<LegendSet>,
         paging: Boolean,
     ): PayloadJson<LegendSet> {
         val apiPayload = service.legendSets(fields, uids, paging)
-        return apiPayload.mapItems(::legendSetApiToDomainMapper)
+        return apiPayload.mapItems(::legendSetDtoToDomainMapper)
     }
 }

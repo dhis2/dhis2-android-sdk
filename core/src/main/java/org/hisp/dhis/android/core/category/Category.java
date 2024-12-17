@@ -32,6 +32,9 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -42,12 +45,15 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.List;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_Category.Builder.class)
 public abstract class Category extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
+    @JsonProperty()
     public abstract String dataDimensionType();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreCategoryOptionListColumnAdapter.class)
     public abstract List<CategoryOption> categoryOptions();
 
@@ -62,6 +68,7 @@ public abstract class Category extends BaseIdentifiableObject implements CoreObj
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

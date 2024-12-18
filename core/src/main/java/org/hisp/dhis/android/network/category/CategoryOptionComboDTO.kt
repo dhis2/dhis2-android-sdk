@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.category
 
-@Singleton
-internal class CategoryComboService(private val client: HttpServiceClient) {
-    suspend fun getCategoryCombos(
-        fields: Fields<CategoryCombo>,
-        uids: Filter<CategoryCombo>,
-        paging: Boolean,
-    ): PayloadJackson<CategoryCombo> {
-        return client.get {
-            url("categoryCombos")
-            parameters {
-                fields(fields)
-                filter(uids)
-                paging(paging)
-            }
-        }
-    }
-}
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.ObjectWithUidDTO
+
+@Serializable
+internal data class CategoryOptionComboDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO

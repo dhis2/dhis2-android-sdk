@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.realservertests.apischema
 
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.FieldsHelper
 
 internal object ApiSchemaFields : BaseFields<ApiSchema>() {
     private const val PROPERTIES = "properties"

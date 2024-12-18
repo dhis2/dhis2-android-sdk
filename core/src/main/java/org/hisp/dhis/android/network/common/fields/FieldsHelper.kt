@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.fields.internal
+package org.hisp.dhis.android.network.common.fields
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.NestedField
-import org.hisp.dhis.android.network.common.fields.Property
 
 @Suppress("TooManyFunctions")
 internal class FieldsHelper<O> {

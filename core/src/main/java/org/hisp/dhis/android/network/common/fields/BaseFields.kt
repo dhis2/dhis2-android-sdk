@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.network.common.fields
 
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-
 internal open class BaseFields<T> {
     protected val fh: FieldsHelper<T> = FieldsHelper()
 }

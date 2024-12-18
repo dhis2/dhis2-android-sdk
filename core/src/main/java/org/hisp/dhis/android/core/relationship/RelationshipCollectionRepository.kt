@@ -197,11 +197,13 @@ class RelationshipCollectionRepository internal constructor(
         return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible)
     }
 
+    /**
+     * Filter the relationship linked to the searchItem. The difference with [getByItem] is that this method allows
+     * chaining other filters.
+     * @param searchItem Relationship item
+     * @return Relationship collection repository
+     */
     fun byItem(searchItem: RelationshipItem): RelationshipCollectionRepository {
-        return byItem(searchItem, includeDeleted = false)
-    }
-
-    fun byItem(searchItem: RelationshipItem, includeDeleted: Boolean): RelationshipCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
             RelationshipItemTableInfo.TABLE_INFO.name(),
             RelationshipItemTableInfo.Columns.RELATIONSHIP,
@@ -216,11 +218,7 @@ class RelationshipCollectionRepository internal constructor(
                     appendKeyStringValue(searchItem.elementType(), elementId)
                 }
             }.build(),
-        ).apply {
-            if (!includeDeleted) {
-                byDeleted().isFalse
-            }
-        }
+        )
     }
 
     fun byUid(): StringFilterConnector<RelationshipCollectionRepository> {

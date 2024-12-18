@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.relationship.TrackerDataView
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.relationship.TrackerDataView
 
 internal object TrackerDataViewFields : BaseFields<TrackerDataView>() {
     private const val ATTRIBUTES = "attributes"

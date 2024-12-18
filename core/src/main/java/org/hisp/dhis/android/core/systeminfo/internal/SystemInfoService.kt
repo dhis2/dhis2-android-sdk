@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Singleton

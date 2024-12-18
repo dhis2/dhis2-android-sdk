@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.icon.internal
 
+import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.icon.CustomIcon
 
 internal object CustomIconFields : BaseFields<CustomIcon>() {
     private const val KEY = "key"

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ExternalMapLayerFields : BaseFields<ExternalMapLayer>() {
     private const val URL = "url"

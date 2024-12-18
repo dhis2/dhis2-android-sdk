@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object DataElementOperandFields : BaseFields<DataElementOperand>() {
     val allFields = Fields.from(

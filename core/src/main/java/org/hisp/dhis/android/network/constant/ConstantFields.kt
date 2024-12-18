@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.constant
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantTableInfo
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ConstantFields : BaseFields<Constant>() {
     val allFields = Fields.from(

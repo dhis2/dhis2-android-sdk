@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns
 import org.hisp.dhis.android.core.relationship.TrackerDataView
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object RelationshipConstraintFields : BaseFields<RelationshipConstraint>() {
     private const val TRACKER_DATA_VIEW = "trackerDataView"

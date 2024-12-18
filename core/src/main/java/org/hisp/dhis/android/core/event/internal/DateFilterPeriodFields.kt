@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.common.DateFilterPeriod
 
 internal object DateFilterPeriodFields : BaseFields<DateFilterPeriod>() {
     private const val START_BUFFER = "startBuffer"

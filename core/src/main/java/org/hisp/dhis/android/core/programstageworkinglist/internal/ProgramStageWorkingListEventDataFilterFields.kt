@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ProgramStageWorkingListEventDataFilterFields : BaseFields<ProgramStageWorkingListEventDataFilter>() {
     private const val API_IN = "in"

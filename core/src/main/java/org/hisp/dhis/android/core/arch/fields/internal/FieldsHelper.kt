@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.fields.internal
 
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.NestedField
-import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.NestedField
+import org.hisp.dhis.android.network.common.fields.Property
 
 @Suppress("TooManyFunctions")
 internal class FieldsHelper<O> {

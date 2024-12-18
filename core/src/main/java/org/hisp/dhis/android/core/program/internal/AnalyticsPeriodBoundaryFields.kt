@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object AnalyticsPeriodBoundaryFields : BaseFields<AnalyticsPeriodBoundary>() {
     val allFields = Fields.from(

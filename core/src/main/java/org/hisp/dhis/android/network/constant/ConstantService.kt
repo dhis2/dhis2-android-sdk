@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.constant
 
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ConstantService(private val client: HttpServiceClientKotlinx) {
     suspend fun getConstants(fields: Fields<Constant>, paging: Boolean): ConstantPayload {

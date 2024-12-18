@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 
 internal object NewNoteFields : BaseFields<NewTrackerImporterNote>() {
     const val UID = "note"

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
 internal object TrackerVisualizationDimensionRepetitionFields : BaseFields<TrackerVisualizationDimensionRepetition>() {
     private const val INDEXES = "indexes"

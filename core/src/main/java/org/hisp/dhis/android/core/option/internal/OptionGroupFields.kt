@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
 
 internal object OptionGroupFields : BaseFields<OptionGroup>() {
     const val OPTIONS = "options"

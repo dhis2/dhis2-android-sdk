@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ProgramTrackedEntityAttributeFields : BaseFields<ProgramTrackedEntityAttribute>() {
     const val RENDER_TYPE = "renderType"

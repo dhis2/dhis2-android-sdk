@@ -30,9 +30,9 @@ package org.hisp.dhis.android.network.constant
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.PayloadJson
 
 @Serializable
 internal data class ConstantDTO(

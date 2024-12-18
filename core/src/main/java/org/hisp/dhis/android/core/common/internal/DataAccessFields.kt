@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
+import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.common.DataAccess
 
 internal object DataAccessFields : BaseFields<DataAccess>() {
     private const val READ = "read"

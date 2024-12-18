@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
@@ -38,6 +35,9 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.Property
 
 internal object UserFields : BaseFields<User>() {
     const val USERNAME = "username"

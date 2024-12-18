@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ExpressionDimensionItemFields : BaseFields<ExpressionDimensionItem>() {
     val uid = fh.uid()

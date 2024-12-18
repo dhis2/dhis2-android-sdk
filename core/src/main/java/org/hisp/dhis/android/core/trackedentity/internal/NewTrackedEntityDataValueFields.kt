@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
 
 internal object NewTrackedEntityDataValueFields : BaseFields<NewTrackerImporterTrackedEntityDataValue>() {
     private const val DATA_ELEMENT = "dataElement"

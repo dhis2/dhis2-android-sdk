@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
+import org.hisp.dhis.android.network.common.fields.BaseFields
 
 internal object RelationshipItemEnrollmentFields : BaseFields<RelationshipItemEnrollment>() {
     private const val ENROLLMENT = "enrollment"

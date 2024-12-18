@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object AttributeValuesFields : BaseFields<AttributeValue>() {
     const val VALUE = "value"

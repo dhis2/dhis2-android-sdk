@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class LegendSetService(private val client: HttpServiceClientKotlinx) {
     suspend fun getLegendSets(

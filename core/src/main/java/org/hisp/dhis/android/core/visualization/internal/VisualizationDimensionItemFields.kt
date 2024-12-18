@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 internal object VisualizationDimensionItemFields : BaseFields<VisualizationDimensionItem>() {
     private const val DIMENSION_ITEM = "dimensionItem"

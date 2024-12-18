@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object DataValueFields : BaseFields<DataValue>() {
     const val ORGANISATION_UNIT = "orgUnit"

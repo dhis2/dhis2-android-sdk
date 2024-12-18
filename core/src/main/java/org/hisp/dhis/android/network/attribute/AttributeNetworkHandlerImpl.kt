@@ -46,7 +46,7 @@ internal class AttributeNetworkHandlerImpl(
         uids: Filter<Attribute>,
         paging: Boolean,
     ): PayloadJson<Attribute> {
-        val apiPayload = service.attributes(fields, uids, paging)
+        val apiPayload = service.getAttributes(fields, uids, paging)
         return apiPayload.mapItems(::attributeDtoToDomainMapper)
     }
 }

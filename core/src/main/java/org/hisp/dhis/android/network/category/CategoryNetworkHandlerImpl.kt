@@ -46,7 +46,7 @@ internal class CategoryNetworkHandlerImpl(
         uids: Filter<Category>,
         paging: Boolean,
     ): PayloadJson<Category> {
-        val apiPayload = service.categories(fields, uids, paging)
+        val apiPayload = service.getCategories(fields, uids, paging)
         return apiPayload.mapItems(::categoryDtoToDomainMapper)
     }
 }

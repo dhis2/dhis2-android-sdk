@@ -30,10 +30,10 @@ package org.hisp.dhis.android.network.option
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.ObjectWithStyleDTO
-import org.hisp.dhis.android.network.common.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.PagerDTO
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 
 @Serializable

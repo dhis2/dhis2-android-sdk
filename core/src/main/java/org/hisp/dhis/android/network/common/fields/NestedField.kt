@@ -25,31 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.common.fields
 
-package org.hisp.dhis.android.network.common
+internal data class NestedField<Parent, Child> internal constructor(
+    override val name: String,
+    val children: List<Property<Child>> = emptyList(),
+) : Property<Parent> {
+    @SafeVarargs
+    fun with(vararg properties: Property<Child>): NestedField<Parent, Child> {
+        return with(listOf(*properties))
+    }
 
-import org.hisp.dhis.android.core.common.BaseNameableObject
+    fun with(properties: List<Property<Child>>?): NestedField<Parent, Child> {
+        return properties?.let {
+            NestedField(name, it)
+        } ?: create(name)
+    }
 
-internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
-    val shortName: String?
-    val displayShortName: String?
-    val description: String?
-    val displayDescription: String?
+    fun with(childFields: Fields<Child>): NestedField<Parent, Child> {
+        return with(childFields.fields)
+    }
 
     companion object {
-        val SHORT_NAME = null
-        val DISPLAY_SHORT_NAME = null
-        val DESCRIPTION = null
-        val DISPLAY_DESCRIPTION = null
+        @JvmStatic
+        fun <T, K> create(name: String): NestedField<T, K> {
+            return NestedField(name, emptyList())
+        }
     }
-}
-
-internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
-      T : BaseNameableObject.Builder<T> {
-    applyBaseIdentifiableFields(item)
-    shortName(item.shortName)
-    displayShortName(item.displayShortName)
-    description(item.description)
-    displayDescription(item.displayDescription)
-    return this
 }

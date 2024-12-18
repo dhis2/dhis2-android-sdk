@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.fields.internal
+package org.hisp.dhis.android.network.common.fields
 
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
 

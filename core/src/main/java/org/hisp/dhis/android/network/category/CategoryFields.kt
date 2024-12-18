@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryTableInfo
 

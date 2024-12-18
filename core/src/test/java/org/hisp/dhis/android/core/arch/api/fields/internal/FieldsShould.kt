@@ -31,6 +31,7 @@ import com.google.common.truth.Truth
 import nl.jqno.equalsverifier.EqualsVerifier
 import nl.jqno.equalsverifier.Warning
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

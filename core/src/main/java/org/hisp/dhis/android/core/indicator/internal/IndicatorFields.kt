@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.indicator.Indicator

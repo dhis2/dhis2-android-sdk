@@ -52,8 +52,7 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class HttpServiceClientKotlinx
-constructor(
+internal class HttpServiceClientKotlinx(
     val okHttpClient: OkHttpClient,
     val d2Configuration: D2Configuration,
     val client: HttpClient = HttpClient(OkHttp) {
@@ -102,10 +101,10 @@ constructor(
             header(key, value)
         }
         if (requestBuilder.isAbsoluteUrl) {
-            header(IsAbsouteUrlHeader, true)
+            header(IS_ABSOLUTE_URL_HEADER, true)
         }
         if (requestBuilder.isExternalRequest) {
-            header(IsExternalRequestHeader, true)
+            header(IS_EXTERNAL_REQUEST_HEADER, true)
         }
         requestBuilder.authorizationHeader?.let {
             header(HttpHeaders.Authorization, it)
@@ -129,7 +128,7 @@ constructor(
     }
 
     companion object {
-        internal const val IsAbsouteUrlHeader = "isAbsoluteUrl"
-        internal const val IsExternalRequestHeader = "isExternalRequest"
+        internal const val IS_ABSOLUTE_URL_HEADER = "isAbsoluteUrl"
+        internal const val IS_EXTERNAL_REQUEST_HEADER = "isExternalRequest"
     }
 }

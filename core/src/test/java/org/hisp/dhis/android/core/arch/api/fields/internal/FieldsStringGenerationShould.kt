@@ -124,6 +124,8 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
 import org.hisp.dhis.android.network.attribute.AttributeFields
 import org.hisp.dhis.android.network.category.CategoryComboFields
 import org.hisp.dhis.android.network.category.CategoryFields
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields

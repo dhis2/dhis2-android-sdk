@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 

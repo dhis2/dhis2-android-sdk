@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.common
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
 @Serializable
 internal open class PayloadJson<T>(

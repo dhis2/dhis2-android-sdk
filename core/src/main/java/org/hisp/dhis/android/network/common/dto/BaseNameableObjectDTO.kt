@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+package org.hisp.dhis.android.network.common.dto
 
-internal interface Filter<T> {
-    val field: Field<T>
-    val operator: String
-    val values: Collection<String>
-    fun generateString(): String
+import org.hisp.dhis.android.core.common.BaseNameableObject
+
+internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
+
+    companion object {
+        val SHORT_NAME = null
+        val DISPLAY_SHORT_NAME = null
+        val DESCRIPTION = null
+        val DISPLAY_DESCRIPTION = null
+    }
+}
+
+internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
+      T : BaseNameableObject.Builder<T> {
+    applyBaseIdentifiableFields(item)
+    shortName(item.shortName)
+    displayShortName(item.displayShortName)
+    description(item.description)
+    displayDescription(item.displayDescription)
+    return this
 }

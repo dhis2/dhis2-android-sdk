@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource

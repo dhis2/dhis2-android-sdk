@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.user.User
 import org.koin.core.annotation.Singleton
 

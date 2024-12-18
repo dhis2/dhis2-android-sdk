@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.fields.internal
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter
+package org.hisp.dhis.android.network.common.dto
 
-internal data class Field<Parent> internal constructor(override val name: String) : Property<Parent> {
+import kotlinx.serialization.Serializable
 
-    fun <V> eq(value: V): Filter<Parent> {
-        return SingleValueFilter.eq(this, value.toString())
-    }
-
-    fun gt(value: String): Filter<Parent> {
-        return SingleValueFilter.gt(this, value)
-    }
-
-    fun like(value: String): Filter<Parent> {
-        return SingleValueFilter.like(this, value)
-    }
-
-    fun `in`(values: Collection<String>): Filter<Parent> {
-        return InFilter.create(this, values)
-    }
-
-    companion object {
-        @JvmStatic
-        fun <T> create(name: String): Field<T> {
-            return Field(name)
-        }
-    }
-}
+@Serializable
+internal data class ObjectWithStyleDTO(
+    val color: String? = null,
+    val icon: String? = null,
+)

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.network.option
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 internal fun optionDtoToDomainMapper(item: OptionDTO): Option {
     return Option.builder()

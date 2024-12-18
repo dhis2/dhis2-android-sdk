@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.realservertests.apischema
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 
 internal class ApiSchemaService(private val client: HttpServiceClient) {

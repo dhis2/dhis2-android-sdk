@@ -43,7 +43,7 @@ internal class AttributeNetworkHandlerImpl(
         val apiPayload = service.getAttributes(
             AttributeFields.allFields,
             AttributeFields.uid.`in`(attributeUids),
-            false
+            false,
         )
         return apiPayload.mapItems(::attributeDtoToDomainMapper)
     }

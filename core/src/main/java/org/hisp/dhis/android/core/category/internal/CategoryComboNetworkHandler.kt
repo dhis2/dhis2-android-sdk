@@ -33,6 +33,6 @@ import org.hisp.dhis.android.core.category.CategoryCombo
 
 internal fun interface CategoryComboNetworkHandler {
     suspend fun getCategoryCombos(
-        categoryComboUids: Set<String>
+        categoryComboUids: Set<String>,
     ): Payload<CategoryCombo>
 }

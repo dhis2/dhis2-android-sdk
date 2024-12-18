@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.attribute.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.attribute.Attribute
 
 internal fun interface AttributeNetworkHandler {
     suspend fun getAttributes(
-        fields: Fields<Attribute>,
-        uids: Filter<Attribute>,
-        paging: Boolean,
+        attributeUids: Set<String>,
     ): Payload<Attribute>
 }

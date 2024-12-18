@@ -25,46 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.category.CategoryDTO
+import org.hisp.dhis.android.network.category.categoryDtoToDomainMapper
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class CategoryShould : BaseObjectKotlinxShould("category/category.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CategoryShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryShould() {
-        super("category/category.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Category category = objectMapper.readValue(jsonStream, Category.class);
+    override fun map_from_json_string() {
+        val categoryDTO = deserialize(CategoryDTO.serializer())
+        val category = categoryDtoToDomainMapper(categoryDTO)
 
-        assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");
+        assertThat(category.uid()).isEqualTo("KfdsGBcoiCa")
         assertThat(category.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"),
+        )
         assertThat(category.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"),
+        )
 
-        // names
-        assertThat(category.name()).isEqualTo("Births attended by");
-        assertThat(category.displayName()).isEqualTo("Births attended by");
+        assertThat(category.name()).isEqualTo("Births attended by")
+        assertThat(category.displayName()).isEqualTo("Births attended by")
 
-        // checking options
-        assertThat(category.categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");
-        assertThat(category.categoryOptions().get(1).uid()).isEqualTo("TXGfLxZlInA");
-        assertThat(category.categoryOptions().get(2).uid()).isEqualTo("QgULqw9YDu2");
-        assertThat(category.categoryOptions().get(3).uid()).isEqualTo("OjIOxG7vgna");
-        assertThat(category.categoryOptions().get(4).uid()).isEqualTo("uZUnebiT5DI");
-        assertThat(category.categoryOptions().get(5).uid()).isEqualTo("HTHvCohKoXt");
+        val categoryOptions = category.categoryOptions()
+
+        assertThat(categoryOptions?.getOrNull(0)?.uid()).isEqualTo("TNYQzTHdoxL")
+        assertThat(categoryOptions?.getOrNull(1)?.uid()).isEqualTo("TXGfLxZlInA")
+        assertThat(categoryOptions?.getOrNull(2)?.uid()).isEqualTo("QgULqw9YDu2")
+        assertThat(categoryOptions?.getOrNull(3)?.uid()).isEqualTo("OjIOxG7vgna")
+        assertThat(categoryOptions?.getOrNull(4)?.uid()).isEqualTo("uZUnebiT5DI")
+        assertThat(categoryOptions?.getOrNull(5)?.uid()).isEqualTo("HTHvCohKoXt")
     }
 }

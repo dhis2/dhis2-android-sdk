@@ -28,16 +28,12 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.attribute.internal.AttributeFields
 import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
-import org.hisp.dhis.android.core.category.internal.CategoryComboFields
-import org.hisp.dhis.android.core.category.internal.CategoryFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionFields
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
-import org.hisp.dhis.android.core.constant.internal.ConstantFields
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields
@@ -61,11 +57,9 @@ import org.hisp.dhis.android.core.icon.internal.CustomIconFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeFields
 import org.hisp.dhis.android.core.legendset.internal.LegendFields
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerFields
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
 import org.hisp.dhis.android.core.note.internal.NoteFields
-import org.hisp.dhis.android.core.option.internal.OptionFields
 import org.hisp.dhis.android.core.option.internal.OptionGroupFields
 import org.hisp.dhis.android.core.option.internal.OptionSetFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
@@ -127,6 +121,12 @@ import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationFie
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
+import org.hisp.dhis.android.network.attribute.AttributeFields
+import org.hisp.dhis.android.network.category.CategoryComboFields
+import org.hisp.dhis.android.network.category.CategoryFields
+import org.hisp.dhis.android.network.constant.ConstantFields
+import org.hisp.dhis.android.network.legendset.LegendSetFields
+import org.hisp.dhis.android.network.option.OptionFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith

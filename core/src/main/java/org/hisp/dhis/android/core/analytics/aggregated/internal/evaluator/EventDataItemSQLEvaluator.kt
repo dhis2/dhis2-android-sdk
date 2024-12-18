@@ -110,6 +110,9 @@ internal class EventDataItemSQLEvaluator(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
             }
+            AggregationType.FIRST_FIRST_ORG_UNIT -> {
+                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, "MIN")
+            }
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD,
             -> {
@@ -122,14 +125,15 @@ internal class EventDataItemSQLEvaluator(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
             }
+            AggregationType.LAST_LAST_ORG_UNIT -> {
+                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, "MAX")
+            }
             AggregationType.MAX_SUM_ORG_UNIT -> {
                 aggregateByDataValueAndSumOrgunit("MAX", valueColumn, fromClause, whereClause)
             }
             AggregationType.MIN_SUM_ORG_UNIT -> {
                 aggregateByDataValueAndSumOrgunit("MIN", valueColumn, fromClause, whereClause)
             }
-            AggregationType.LAST_LAST_ORG_UNIT,
-            AggregationType.FIRST_FIRST_ORG_UNIT,
 
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -201,6 +205,23 @@ internal class EventDataItemSQLEvaluator(
         return "SELECT SUM($valueColumn) AS $valueColumn " +
             "FROM ($firstOrLastValueClause) " +
             "GROUP BY ${EventTableInfo.Columns.ORGANISATION_UNIT}"
+    }
+
+    private fun firstOrLastValueGlobally(
+        valueColumn: String,
+        fromClause: String,
+        whereClause: String,
+        minOrMax: String,
+    ): String {
+        val firstOrLastValueClause = "SELECT " +
+            "$valueColumn, " +
+            "$minOrMax($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "FROM $fromClause " +
+            "WHERE $whereClause " +
+            "AND $EventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL "
+
+        return "SELECT $valueColumn " +
+            "FROM ($firstOrLastValueClause)"
     }
 
     private fun appendDataWhereClause(

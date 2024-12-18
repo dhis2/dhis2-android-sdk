@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColu
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class DataElementSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
@@ -106,6 +107,9 @@ internal class DataElementSQLEvaluator(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
             }
+            AggregationType.FIRST_FIRST_ORG_UNIT -> {
+                firstOrLastValueGlobally(whereClause, "MIN")
+            }
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD,
             -> {
@@ -118,15 +122,15 @@ internal class DataElementSQLEvaluator(
                 "SELECT AVG(${dvColumns.VALUE}) " +
                     "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
             }
+            AggregationType.LAST_LAST_ORG_UNIT -> {
+                firstOrLastValueGlobally(whereClause, "MAX")
+            }
             AggregationType.MAX_SUM_ORG_UNIT -> {
                 aggregateByDataValueAndSumOrgunit("MAX", whereClause)
             }
             AggregationType.MIN_SUM_ORG_UNIT -> {
                 aggregateByDataValueAndSumOrgunit("MIN", whereClause)
             }
-
-            AggregationType.LAST_LAST_ORG_UNIT,
-            AggregationType.FIRST_FIRST_ORG_UNIT,
 
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -169,6 +173,21 @@ internal class DataElementSQLEvaluator(
         return "SELECT SUM(${dvColumns.VALUE}) as ${dvColumns.VALUE} " +
             "FROM ($firstOrLastValueClause)" +
             "GROUP BY ${dvColumns.ORGANISATION_UNIT}"
+    }
+
+    private fun firstOrLastValueGlobally(whereClause: String, minOrMax: String): String {
+        val orderColumn = "SELECT ${peColumns.START_DATE} || ${peColumns.END_DATE} " +
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} pe " +
+            "WHERE pe.${peColumns.PERIOD_ID} = ${dvColumns.PERIOD}"
+
+        val firstOrLastValueClause = "SELECT " +
+            "${dvColumns.VALUE}, " +
+            "$minOrMax(($orderColumn)) " +
+            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE $whereClause"
+
+        return "SELECT ${dvColumns.VALUE} " +
+            "FROM ($firstOrLastValueClause)"
     }
 
     private fun appendDataWhereClause(

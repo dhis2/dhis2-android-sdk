@@ -368,6 +368,20 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         assertThat(
             evaluateAggregation(
                 periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST_FIRST_ORG_UNIT,
+            ),
+        ).isEqualTo("8")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST_FIRST_ORG_UNIT,
+            ),
+        ).isEqualTo(null)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
                 aggregator = AggregationType.LAST,
             ),
         ).isEqualTo("13")
@@ -418,6 +432,20 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
             evaluateAggregation(
                 periodId = period202012.periodId()!!,
                 aggregator = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+            ),
+        ).isEqualTo(null)
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.LAST_LAST_ORG_UNIT,
+            ),
+        ).isEqualTo("5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.LAST_LAST_ORG_UNIT,
             ),
         ).isEqualTo(null)
 

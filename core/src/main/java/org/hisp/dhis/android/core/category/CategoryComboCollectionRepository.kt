@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboChildrenAppender
-import org.hisp.dhis.android.core.category.internal.CategoryComboFields
+import org.hisp.dhis.android.network.category.CategoryComboFields
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.koin.core.annotation.Singleton
 

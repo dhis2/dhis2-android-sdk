@@ -39,13 +39,7 @@ internal class CategoryComboCall(
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<CategoryCombo> {
     override suspend fun download(uids: Set<String>): List<CategoryCombo> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String> ->
-            networkHandler.getCategoryCombos(
-                CategoryComboFields.allFields,
-                CategoryComboFields.uid.`in`(partitionUids),
-                paging = false,
-            )
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getCategoryCombos)
     }
 
     companion object {

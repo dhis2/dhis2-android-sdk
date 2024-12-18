@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryCombo
 
 internal fun interface CategoryComboNetworkHandler {
     suspend fun getCategoryCombos(
-        fields: Fields<CategoryCombo>,
-        uids: Filter<CategoryCombo>,
-        paging: Boolean,
+        categoryComboUids: Set<String>
     ): Payload<CategoryCombo>
 }

@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.legendset.LegendSet
 
 internal fun interface LegendSetNetworkHandler {
     suspend fun getLegendSets(
-        fields: Fields<LegendSet>,
-        uids: Filter<LegendSet>,
-        paging: Boolean,
+        legendSetUids: Set<String>,
     ): Payload<LegendSet>
 }

@@ -40,9 +40,7 @@ internal class LegendSetCall(
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<LegendSet> {
     override suspend fun download(uids: Set<String>): List<LegendSet> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
-            networkHandler.getLegendSets(LegendSetFields.allFields, LegendSetFields.uid.`in`(partitionUids), false)
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getLegendSets)
     }
 
     companion object {

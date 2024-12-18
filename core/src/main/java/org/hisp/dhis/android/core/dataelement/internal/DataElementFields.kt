@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo.Columns
 import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
+import org.hisp.dhis.android.network.legendset.LegendSetFields
 
 internal object DataElementFields : BaseFields<DataElement>() {
     private const val STYLE = "style"

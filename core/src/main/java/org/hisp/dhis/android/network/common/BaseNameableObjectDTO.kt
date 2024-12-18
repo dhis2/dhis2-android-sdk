@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.common
 
 import org.hisp.dhis.android.core.common.BaseNameableObject
 
-// @Serializable
 internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
     val shortName: String?
     val displayShortName: String?

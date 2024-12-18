@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.common
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
-// @Serializable
 internal interface BaseIdentifiableObjectDTO {
     val uid: String
     val code: String?

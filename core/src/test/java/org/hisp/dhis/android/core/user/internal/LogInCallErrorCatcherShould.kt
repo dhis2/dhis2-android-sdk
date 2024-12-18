@@ -28,15 +28,13 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import okhttp3.ResponseBody
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import retrofit2.Response
 
 @RunWith(JUnit4::class)
 class LogInCallErrorCatcherShould {
@@ -53,9 +51,13 @@ class LogInCallErrorCatcherShould {
         val responseError =
             "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401," +
                 "\"status\":\"ERROR\",\"message\":\"Unauthorized\"}"
-        val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
+        val response = D2HttpResponse(
+            statusCode = 401,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
     }
 
     @Test
@@ -63,9 +65,13 @@ class LogInCallErrorCatcherShould {
         val responseError =
             "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401," +
                 "\"status\":\"ERROR\",\"message\":\"Something new\"}"
-        val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
+        val response = D2HttpResponse(
+            statusCode = 401,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
     }
 
     @Test
@@ -73,24 +79,36 @@ class LogInCallErrorCatcherShould {
         val responseError =
             "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401," +
                 "\"status\":\"ERROR\",\"message\":\"Account locked\"}"
-        val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.USER_ACCOUNT_LOCKED)
+        val response = D2HttpResponse(
+            statusCode = 401,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.USER_ACCOUNT_LOCKED)
     }
 
     @Test
     fun return_no_dhis_server_for_another_json() {
         val responseError = "{\"other\":\"JSON\"}"
-        val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER)
+        val response = D2HttpResponse(
+            statusCode = 401,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER)
     }
 
     @Test
     fun return_no_dhis_server_for_non_json() {
         val responseError = "<html>ERROR</html>"
-        val response = Response.error<Any>(401, ResponseBody.create(null, responseError))
-        val errorBody = APIErrorMapper().getErrorBody(response)
-        assertThat(catcher.catchError(response, errorBody)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER)
+        val response = D2HttpResponse(
+            statusCode = 401,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER)
     }
 }

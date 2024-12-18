@@ -27,65 +27,108 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import okhttp3.MultipartBody
-import okhttp3.ResponseBody
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.fileresource.FileResource
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
-internal interface FileResourceService {
+@Singleton
+internal class FileResourceService(private val client: HttpServiceClient) {
 
-    @Multipart
-    @POST(FILE_RESOURCES)
-    suspend fun uploadFile(@Part filePart: MultipartBody.Part): ResponseBody
+    suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {
+        return client.post {
+            url(FILE_RESOURCES)
+            body(filePart)
+        }
+    }
 
-    @GET("$FILE_RESOURCES/{$FILE_RESOURCE}")
-    suspend fun getFileResource(@Path(FILE_RESOURCE) fileResource: String): FileResource
+    suspend fun getFileResource(fileResource: String): FileResource {
+        return client.get {
+            url("$FILE_RESOURCES/$fileResource")
+        }
+    }
 
-    @GET(FILE_RESOURCES)
     suspend fun getFileResources(
-        @Query("fields") @Which fields: Fields<FileResource>,
-        @Query("filter") @Where fileResources: Filter<FileResource>,
-        @Query("paging") paging: Boolean,
-    ): Payload<FileResource>
+        fields: Fields<FileResource>,
+        fileResources: Filter<FileResource>,
+        paging: Boolean,
+    ): Payload<FileResource> {
+        return client.get {
+            url(FILE_RESOURCES)
+            parameters {
+                fields(fields)
+                filter(fileResources)
+                paging(paging)
+            }
+        }
+    }
 
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/image")
     suspend fun getImageFromTrackedEntityAttribute(
-        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
-        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
-        @Query("dimension") dimension: String,
-    ): ResponseBody
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+        dimension: String,
+    ): ByteArray {
+        return client.get {
+            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
+            parameters {
+                attribute("dimension", dimension)
+            }
+        }
+    }
 
-    @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/file")
     suspend fun getFileFromTrackedEntityAttribute(
-        @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
-        @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
-    ): ResponseBody
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+    ): ByteArray {
+        return client.get {
+            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/file")
+        }
+    }
 
-    @GET("$EVENTS/files")
     suspend fun getFileFromEventValue(
-        @Query("eventUid") eventUid: String,
-        @Query("dataElementUid") dataElementUid: String,
-        @Query("dimension") dimension: String,
-    ): ResponseBody
+        eventUid: String,
+        dataElementUid: String,
+        dimension: String,
+    ): ByteArray {
+        return client.get {
+            url("$EVENTS/files")
+            parameters {
+                attribute("eventUid", eventUid)
+                attribute("dataElementUid", dataElementUid)
+                attribute("dimension", dimension)
+            }
+        }
+    }
 
-    @GET
     suspend fun getCustomIcon(
-        @Url customIconHref: String,
-    ): ResponseBody
+        customIconHref: String,
+    ): ByteArray {
+        return client.get {
+            absoluteUrl(customIconHref, false)
+        }
+    }
 
-    @GET("$DATA_VALUES/files")
     suspend fun getFileFromDataValue(
-        @Query("de") dataElement: String,
-        @Query("pe") period: String,
-        @Query("ou") organisationUnit: String,
-        @Query("co") categoryOptionCombo: String,
-        @Query("dimension") dimension: String,
-    ): ResponseBody
+        dataElement: String,
+        period: String,
+        organisationUnit: String,
+        categoryOptionCombo: String,
+        dimension: String,
+    ): ByteArray {
+        return client.get {
+            url("$DATA_VALUES/files")
+            parameters {
+                attribute("de", dataElement)
+                attribute("pe", period)
+                attribute("ou", organisationUnit)
+                attribute("co", categoryOptionCombo)
+                attribute("dimension", dimension)
+            }
+        }
+    }
 
     companion object {
         const val FILE_RESOURCES = "fileResources"

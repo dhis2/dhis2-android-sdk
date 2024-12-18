@@ -61,6 +61,8 @@ internal class ProgramConfigurationSettingStoreImpl(
                 w.bind(4, o.disableReferrals())
                 w.bind(5, o.disableCollapsibleSections())
                 w.bind(6, o.itemHeader()?.programIndicator())
+                w.bind(7, o.minimumLocationAccuracy())
+                w.bind(8, o.disableManualLocation())
             }
 
         private val WHERE_UPDATE_BINDER =

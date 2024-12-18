@@ -157,7 +157,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         test_export_and_reimport(beforeExport = {
             // Change encryption
             d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
-                d2.d2DIComponent.credentialsSecureStore.get(),
+                d2.d2DIComponent.credentialsSecureStore.get()!!,
                 encrypt = true,
             )
         })

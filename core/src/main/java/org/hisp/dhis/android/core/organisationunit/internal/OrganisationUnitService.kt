@@ -27,43 +27,40 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface OrganisationUnitService {
+@Singleton
+internal class OrganisationUnitService(private val client: HttpServiceClient) {
 
     @Suppress("LongParameterList")
-    @GET(ORGANISATION_UNITS)
     suspend fun getOrganisationUnits(
-        @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,
-        @Query(FILTER) @Where filter: Filter<OrganisationUnit>,
-        @Query(ORDER) order: String,
-        @Query(PAGING) paging: Boolean,
-        @Query(PAGE_SIZE) pageSize: Int,
-        @Query(PAGE) page: Int,
-    ): Payload<OrganisationUnit>
-
-    @GET(ORGANISATION_UNITS)
-    suspend fun getSearchOrganisationUnits(
-        @Query(FIELDS) @Which fields: Fields<OrganisationUnit>,
-        @Query(FILTER) @Where filter: Filter<OrganisationUnit>,
-        @Query(ORDER) order: String,
-        @Query(PAGING) paging: Boolean,
-    ): Payload<OrganisationUnit>
+        fields: Fields<OrganisationUnit>,
+        filter: Filter<OrganisationUnit>,
+        order: String,
+        paging: Boolean,
+        pageSize: Int,
+        page: Int,
+    ): Payload<OrganisationUnit> {
+        return client.get {
+            url(ORGANISATION_UNITS)
+            parameters {
+                fields(fields)
+                filter(filter)
+                attribute(ORDER, order)
+                paging(paging)
+                pageSize(pageSize)
+                page(page)
+            }
+        }
+    }
 
     companion object {
         const val ORGANISATION_UNITS = "organisationUnits"
-        const val FIELDS = "fields"
-        const val FILTER = "filter"
-        const val PAGING = "paging"
         const val ORDER = "order"
-        const val PAGE = "page"
-        const val PAGE_SIZE = "pageSize"
     }
 }

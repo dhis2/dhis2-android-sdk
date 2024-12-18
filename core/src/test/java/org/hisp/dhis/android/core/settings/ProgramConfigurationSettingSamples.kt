@@ -42,6 +42,8 @@ object ProgramConfigurationSettingSamples {
                     .programIndicator("programIndicator")
                     .build(),
             )
+            .minimumLocationAccuracy(5)
+            .disableManualLocation(false)
             .build()
     }
 }

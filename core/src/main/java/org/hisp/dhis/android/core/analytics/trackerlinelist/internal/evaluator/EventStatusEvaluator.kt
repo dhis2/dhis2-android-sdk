@@ -46,11 +46,19 @@ internal class EventStatusEvaluator(
         throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
     }
 
+    override fun getSelectSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("EventStatus is not supported in TRACKED_ENTITY_INSTANCE output type")
+    }
+
     override fun getWhereSQLForEvent(): String {
         return getWhereClause()
     }
 
     override fun getWhereSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
+    }
+
+    override fun getWhereSQLForTrackedEntityInstance(): String {
+        throw AnalyticsException.InvalidArguments("EventStatus is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 }

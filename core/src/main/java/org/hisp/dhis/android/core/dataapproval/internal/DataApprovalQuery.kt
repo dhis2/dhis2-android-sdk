@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataapproval.internal
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
 internal data class DataApprovalQuery(
     val workflowsUids: Collection<String>,
@@ -35,7 +35,7 @@ internal data class DataApprovalQuery(
     val periodIds: Collection<String>,
     val attributeOptionCombosUids: Collection<String>,
     val lastUpdatedStr: String?,
-) : BaseQueryKt(
+) : BaseQuery(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
     paging = false,

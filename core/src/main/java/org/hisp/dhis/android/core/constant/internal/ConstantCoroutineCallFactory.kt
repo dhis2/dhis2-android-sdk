@@ -54,7 +54,7 @@ internal class ConstantCoroutineCallFactory(
 
     override fun processor(): CallProcessor<Constant> {
         return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter(),
+            data.databaseAdapter,
             handler,
         )
     }

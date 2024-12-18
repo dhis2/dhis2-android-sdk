@@ -80,9 +80,9 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean onlyEnrollOnce();
 
     /**
-     * @deprecated replaced by {@link #displayEnrollmentDateLabel()}
+     * @deprecated since v41, replaced by {@link #displayEnrollmentDateLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String enrollmentDateLabel() {
         return displayEnrollmentDateLabel();
@@ -97,9 +97,9 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean displayIncidentDate();
 
     /**
-     * @deprecated replaced by {@link #displayIncidentDateLabel()}
+     * @deprecated since v41, replaced by {@link #displayIncidentDateLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String incidentDateLabel() {
         return displayIncidentDateLabel();
@@ -130,9 +130,9 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean selectIncidentDatesInFuture();
 
     /**
-     * @deprecated replaced by {@link #featureType()}
+     * @deprecated since 2.29, replaced by {@link #featureType()}
      */
-    @Deprecated(since = "2.29")
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
@@ -222,9 +222,9 @@ public abstract class Program extends BaseNameableObject
     public abstract AccessLevel accessLevel();
 
     /**
-     * @deprecated replaced by {@link #displayEnrollmentLabel()}
+     * @deprecated since v41, replaced by {@link #displayEnrollmentLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String enrollmentLabel() {
         return displayEnrollmentLabel();
@@ -235,9 +235,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayEnrollmentLabel();
 
     /**
-     * @deprecated replaced by {@link #displayFollowUpLabel()}
+     * @deprecated since v41, replaced by {@link #displayFollowUpLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String followUpLabel() {
         return displayFollowUpLabel();
@@ -248,9 +248,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayFollowUpLabel();
 
     /**
-     * @deprecated replaced by {@link #displayOrgUnitLabel()}
+     * @deprecated since v41, replaced by {@link #displayOrgUnitLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String orgUnitLabel() {
         return displayOrgUnitLabel();
@@ -261,9 +261,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayOrgUnitLabel();
 
     /**
-     * @deprecated replaced by {@link #displayRelationshipLabel()}
+     * @deprecated since v41, replaced by {@link #displayRelationshipLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String relationshipLabel() {
         return displayRelationshipLabel();
@@ -274,9 +274,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayRelationshipLabel();
 
     /**
-     * @deprecated replaced by {@link #displayNoteLabel()}
+     * @deprecated since v41, replaced by {@link #displayNoteLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String noteLabel() {
         return displayNoteLabel();
@@ -287,9 +287,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayNoteLabel();
 
     /**
-     * @deprecated replaced by {@link #displayTrackedEntityAttributeLabel()}
+     * @deprecated since v41, replaced by {@link #displayTrackedEntityAttributeLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String trackedEntityAttributeLabel() {
         return displayTrackedEntityAttributeLabel();
@@ -300,9 +300,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayTrackedEntityAttributeLabel();
 
     /**
-     * @deprecated replaced by {@link #displayProgramStageLabel()}
+     * @deprecated since v41, replaced by {@link #displayProgramStageLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String programStageLabel() {
         return displayProgramStageLabel();
@@ -313,9 +313,9 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayProgramStageLabel();
 
     /**
-     * @deprecated replaced by {@link #displayEventLabel()}
+     * @deprecated since v41, replaced by {@link #displayEventLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String eventLabel() {
         return displayEventLabel();
@@ -382,9 +382,9 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder selectIncidentDatesInFuture(Boolean selectIncidentDatesInFuture);
 
         /**
-         * @deprecated replaced by {@link #featureType()}
+         * @deprecated since 2.29, replaced by {@link #featureType()}
          */
-        @Deprecated(since = "2.29")
+        @Deprecated
         abstract Builder captureCoordinates(Boolean captureCoordinates);
 
         public abstract Builder useFirstStageDuringRegistration(Boolean useFirstStageDuringRegistration);

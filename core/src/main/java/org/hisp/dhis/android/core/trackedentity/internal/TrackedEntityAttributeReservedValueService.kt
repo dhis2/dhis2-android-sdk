@@ -27,20 +27,23 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-fun interface TrackedEntityAttributeReservedValueService {
-    @GET("trackedEntityAttributes/{$TRACKED_ENTITY_ATTRIBUTE_UID}/generateAndReserve")
+@Singleton
+internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClient) {
     suspend fun generateAndReserveWithOrgUnitCode(
-        @Path(TRACKED_ENTITY_ATTRIBUTE_UID) trackedEntityAttributeUid: String,
-        @Query("numberToReserve") numberToReserve: Int,
-        @Query("ORG_UNIT_CODE") orgUnitCode: String?,
-    ): List<TrackedEntityAttributeReservedValue>
-
-    companion object {
-        const val TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid"
+        trackedEntityAttributeUid: String,
+        numberToReserve: Int,
+        orgUnitCode: String?,
+    ): List<TrackedEntityAttributeReservedValue> {
+        return client.get {
+            url("trackedEntityAttributes/$trackedEntityAttributeUid/generateAndReserve")
+            parameters {
+                attribute("numberToReserve", numberToReserve)
+                attribute("ORG_UNIT_CODE", orgUnitCode)
+            }
+        }
     }
 }

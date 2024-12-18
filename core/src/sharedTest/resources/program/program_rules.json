@@ -17,6 +17,7 @@
           "id": "UUwZWS8uirn",
           "programRuleActionType": "SHOWERROR",
           "content": "The hemoglobin value cannot be above 99",
+          "displayContent": "La valeur d'hémoglobine ne peut pas être supérieure à 99",
           "dataElement": {
             "id": "vANAXwtLwcT"
           }

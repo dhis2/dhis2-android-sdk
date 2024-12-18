@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
-import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
 import java.io.*
@@ -71,12 +70,12 @@ internal object FileResourceUtil {
         return writeInputStream(inputStream, destinationFile, sourceFile.length())
     }
 
-    fun saveFileFromResponse(body: ResponseBody, fileResource: FileResource, context: Context): File {
+    fun saveFileFromResponse(body: ByteArray, fileResource: FileResource, context: Context): File {
         val destinationFile = File(
             FileResourceDirectoryHelper.getFileResourceDirectory(context),
             generateFileName(fileResource.uid()!!, getExtension(fileResource.name()!!)),
         )
-        writeInputStream(body.byteStream(), destinationFile, body.contentLength())
+        writeInputStream(ByteArrayInputStream(body), destinationFile, body.size.toLong())
         return destinationFile
     }
 

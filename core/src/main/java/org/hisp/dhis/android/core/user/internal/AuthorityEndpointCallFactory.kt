@@ -60,6 +60,6 @@ internal class AuthorityEndpointCallFactory constructor(
     }
 
     override fun processor(): CallProcessor<Authority> {
-        return AuthorityCallProcessor(data.databaseAdapter(), handler)
+        return AuthorityCallProcessor(data.databaseAdapter, handler)
     }
 }

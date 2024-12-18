@@ -27,17 +27,24 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface OrganisationUnitLevelService {
-    @GET("organisationUnitLevels")
+@Singleton
+internal class OrganisationUnitLevelService(private val client: HttpServiceClient) {
     suspend fun getOrganisationUnitLevels(
-        @Query("fields") @Which fields: Fields<OrganisationUnitLevel>,
-        @Query("paging") paging: Boolean,
-    ): Payload<OrganisationUnitLevel>
+        fields: Fields<OrganisationUnitLevel>,
+        paging: Boolean,
+    ): Payload<OrganisationUnitLevel> {
+        return client.get {
+            url("organisationUnitLevels")
+            parameters {
+                fields(fields)
+                paging(paging)
+            }
+        }
+    }
 }

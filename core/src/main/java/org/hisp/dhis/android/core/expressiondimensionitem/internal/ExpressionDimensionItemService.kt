@@ -27,20 +27,28 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import retrofit2.http.*
+import org.koin.core.annotation.Singleton
 
-internal fun interface ExpressionDimensionItemService {
+@Singleton
+internal class ExpressionDimensionItemService(private val client: HttpServiceClient) {
 
-    @GET("expressionDimensionItems")
     suspend fun getExpressionDimensionItems(
-        @Query("filter") @Where uids: Filter<ExpressionDimensionItem>,
-        @Query("fields") @Which fields: Fields<ExpressionDimensionItem>,
-        @Query("paging") paging: Boolean,
-    ): Payload<ExpressionDimensionItem>
+        uids: Filter<ExpressionDimensionItem>,
+        fields: Fields<ExpressionDimensionItem>,
+        paging: Boolean,
+    ): Payload<ExpressionDimensionItem> {
+        return client.get {
+            url("expressionDimensionItems")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

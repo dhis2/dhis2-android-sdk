@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQueryKt
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
 internal data class DataSetCompleteRegistrationQuery(
     val dataSetUids: Collection<String>,
     val periodIds: Collection<String>,
     val rootOrgUnitUids: Collection<String>,
     val lastUpdatedStr: String?,
-) : BaseQueryKt(
+) : BaseQuery(
     page = 1,
     pageSize = DEFAULT_PAGE_SIZE,
     paging = false,

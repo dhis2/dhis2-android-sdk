@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
+import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -41,7 +42,6 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import retrofit2.Retrofit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventEndpointCallShould {
@@ -102,9 +102,7 @@ class EventEndpointCallShould {
     }
 
     private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return OldEventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-        ).getCollectionCall(eventQuery)
+        return OldEventEndpointCallFactory(eventService).getCollectionCall(eventQuery)
     }
 
     private suspend fun givenAEventCallByOrgUnitAndProgram(
@@ -130,14 +128,16 @@ class EventEndpointCallShould {
     }
 
     companion object {
-        private lateinit var retrofit: Retrofit
         private lateinit var mockWebServer: Dhis2MockServer
+        private lateinit var httpServiceClient: HttpServiceClient
+        private lateinit var eventService: EventService
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
             mockWebServer = Dhis2MockServer(0)
-            retrofit = RetrofitFactory.fromDHIS2MockServer(mockWebServer)
+            httpServiceClient = HttpServiceClientFactory.fromDHIS2MockServer(mockWebServer)
+            eventService = EventService(httpServiceClient)
         }
 
         @AfterClass

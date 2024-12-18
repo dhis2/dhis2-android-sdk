@@ -43,8 +43,8 @@ internal class PasswordAndCookieAuthenticator(
     ) {
 
     companion object {
-        private const val LOGIN_ACTION = "login.action"
         private const val LOGIN_URL = "dhis-web-login"
+        private val LOGIN_KEY_LIST = listOf("login.action", LOGIN_URL)
         const val LOCATION_KEY = "Location"
     }
 
@@ -82,7 +82,7 @@ internal class PasswordAndCookieAuthenticator(
 
     private fun hasAuthenticationFailed(res: Response): Boolean {
         val location = res.header(LOCATION_KEY)
-        return res.isRedirect && location != null && (location.contains(LOGIN_ACTION) || location.contains(LOGIN_URL))
+        return res.isRedirect && location != null && LOGIN_KEY_LIST.any { location.contains(it) }
     }
 
     private fun addPasswordHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {

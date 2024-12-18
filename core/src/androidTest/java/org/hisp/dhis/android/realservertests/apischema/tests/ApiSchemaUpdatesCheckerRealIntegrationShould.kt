@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.realservertests.apischema.tests
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
@@ -60,10 +61,10 @@ import org.junit.Assert
 
 class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
 
-    // @Test
-    fun check_no_enum_have_been_updated_on_server() {
-        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_38, null)
-        val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.retrofit()).download().blockingGet()
+//    @Test
+    fun check_no_enum_have_been_updated_on_server() = runTest {
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_39, null)
+        val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.httpServiceClient()).download()
         val constantsMap: Map<String, List<String>?> = apiSchemas.flatMap { apiSchema ->
             apiSchema.properties.filter { it.propertyType == "CONSTANT" }
         }.toSet().associate { fullKlassToSimpleKlass(it.klass) to it.constants }

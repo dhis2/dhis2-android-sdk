@@ -39,9 +39,8 @@ internal class TransactionalNoResourceSyncCallProcessor<O>(
     @Throws(D2Error::class)
     override fun process(objectList: List<O>) {
         if (objectList.isNotEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally<Any?> {
+            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally<Unit> {
                 handler.handleMany(objectList)
-                null
             }
         }
     }

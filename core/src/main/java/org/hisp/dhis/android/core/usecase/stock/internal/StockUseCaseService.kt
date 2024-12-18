@@ -27,11 +27,16 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import retrofit2.http.GET
+import org.koin.core.annotation.Singleton
 
-internal interface StockUseCaseService {
+@Singleton
+internal class StockUseCaseService(private val client: HttpServiceClient) {
 
-    @GET("dataStore/USE_CASES/stockUseCases")
-    suspend fun stockUseCases(): List<InternalStockUseCase>
+    suspend fun stockUseCases(): List<InternalStockUseCase> {
+        return client.get {
+            url("dataStore/USE_CASES/stockUseCases")
+        }
+    }
 }

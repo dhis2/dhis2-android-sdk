@@ -141,6 +141,8 @@ internal class DatabaseImportExportImpl(
         }
 
         val credentials = credentialsStore.get()
+            ?: throw IllegalArgumentException("Credentials are not set")
+
         val userConfiguration = multiUserDatabaseManager.getAccount(
             username = credentials.username,
             serverUrl = credentials.serverUrl,

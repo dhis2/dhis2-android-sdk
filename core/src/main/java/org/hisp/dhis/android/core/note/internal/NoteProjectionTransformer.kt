@@ -50,7 +50,7 @@ internal class NoteProjectionTransformer(
             .event(o.event())
             .enrollment(o.enrollment())
             .value(o.value())
-            .storedBy(credentialsSecureStore.get().username)
+            .storedBy(credentialsSecureStore.get()?.username)
             .storedDate(BaseIdentifiableObject.dateToDateStr(Date()))
             .deleted(false)
             .build()

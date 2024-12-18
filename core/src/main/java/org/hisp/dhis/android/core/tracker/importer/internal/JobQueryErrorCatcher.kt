@@ -29,16 +29,16 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import retrofit2.Response
 import java.net.HttpURLConnection
 
 internal class JobQueryErrorCatcher : APICallErrorCatcher {
 
     override fun mustBeStored(): Boolean = false
 
-    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode? {
-        return if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+    override fun catchError(response: D2HttpResponse): D2ErrorCode? {
+        return if (response.statusCode == HttpURLConnection.HTTP_NOT_FOUND) {
             D2ErrorCode.JOB_REPORT_NOT_AVAILABLE
         } else {
             null

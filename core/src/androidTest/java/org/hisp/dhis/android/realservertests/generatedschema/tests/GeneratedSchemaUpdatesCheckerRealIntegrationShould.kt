@@ -27,8 +27,16 @@
  */
 package org.hisp.dhis.android.realservertests.generatedschema.tests
 
-import okhttp3.OkHttpClient
-import org.hisp.dhis.android.core.common.*
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.FormType
+import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
@@ -36,14 +44,24 @@ import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
-import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.AccessLevel
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
+import org.hisp.dhis.android.core.program.ProgramRuleActionType
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.SectionRenderingType
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
+import org.hisp.dhis.android.core.visualization.DisplayDensity
+import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
+import org.hisp.dhis.android.core.visualization.LegendStrategy
+import org.hisp.dhis.android.core.visualization.LegendStyle
+import org.hisp.dhis.android.core.visualization.VisualizationType
 import org.hisp.dhis.android.realservertests.EnumTestHelper
 import org.hisp.dhis.android.realservertests.EnumTestHelper.Companion.entry
-import org.hisp.dhis.android.realservertests.OutsideRetrofitFactory
+import org.hisp.dhis.android.realservertests.apischema.KtorFactory
 import org.hisp.dhis.android.realservertests.generatedschema.GeneratedSchemaCall
 import org.junit.Assert
 
@@ -51,12 +69,12 @@ class GeneratedSchemaUpdatesCheckerRealIntegrationShould {
     private val baseUrl = "https://raw.githubusercontent.com/dhis2/dhis2-json-schema-generator/json-schemas/schemas/"
     private val instanceVersion = "v2.38.1"
 
-    // @Test
-    fun check_no_enum_have_been_updated_on_generated_schemas() {
-        val retrofit = OutsideRetrofitFactory.retrofit(baseUrl, OkHttpClient())
-        val generatedSchemaCall = GeneratedSchemaCall(retrofit, instanceVersion)
+//    @Test
+    fun check_no_enum_have_been_updated_on_generated_schemas() = runTest {
+        val httpClient = KtorFactory.getClient(baseUrl)
+        val generatedSchemaCall = GeneratedSchemaCall(httpClient, instanceVersion)
         val constantsMap: Map<String, List<String>?> = enumsMap.mapValues {
-            generatedSchemaCall.download(it.key).blockingGet().enum
+            generatedSchemaCall.download(it.key).enum
         }
 
         val errorList = enumsMap.mapNotNull { EnumTestHelper.checkEnum(it, constantsMap[it.key]) }

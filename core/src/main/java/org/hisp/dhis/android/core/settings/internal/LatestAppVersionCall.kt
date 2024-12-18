@@ -46,22 +46,29 @@ internal class LatestAppVersionCall(
 
     override suspend fun tryFetch(storeError: Boolean): Result<LatestAppVersion, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = storeError) {
-            val userGroupUids = userModule.userGroups().blockingGetUids()
-
-            val versions = settingAppService.versions().items()
-
-            val filteredVersions = versions.filter { version ->
-                version.userGroups?.any { userGroupUid ->
-                    userGroupUids.contains(userGroupUid)
-                } ?: false
-            }
-
-            val version = filteredVersions.maxWithOrNull(versionComparator.comparator)
-                ?: versions.find { it.isDefault == true }
+            val version = resolveApkDistributionVersion()
 
             version?.let { LatestAppVersion.builder().version(it.version).downloadURL(it.downloadURL).build() }
                 ?: settingAppService.latestAppVersion()
         }
+    }
+
+    internal suspend fun resolveApkDistributionVersion(): ApkDistributionVersion? {
+        val userGroupUids = userModule.userGroups().blockingGetUids()
+
+        val versions = settingAppService.versions().items()
+
+        val filteredVersions = versions.filter { version ->
+            version.userGroups?.any { userGroupUid ->
+                userGroupUids.contains(userGroupUid)
+            } ?: false
+        }
+
+        val defaultVersions = versions.filter { it.isDefault == true }
+
+        val availableVersions = filteredVersions + defaultVersions
+
+        return availableVersions.maxWithOrNull(versionComparator.comparator)
     }
 
     override fun process(item: LatestAppVersion?) {

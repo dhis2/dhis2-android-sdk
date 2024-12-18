@@ -58,7 +58,7 @@ class ChunkedSecureStore(private val internalStore: SecureStore) : KeyValueStore
     }
 
     override fun removeData(key: String) {
-        allKeys
+        getAllKeys()
             .filter {
                 it == key || it == lenKey(key) || chunkKeyRegex(key).matches(it)
             }
@@ -67,8 +67,8 @@ class ChunkedSecureStore(private val internalStore: SecureStore) : KeyValueStore
             }
     }
 
-    override fun getAllKeys(): MutableSet<String> {
-        return internalStore.allKeys
+    override fun getAllKeys(): Set<String> {
+        return internalStore.getAllKeys()
     }
 
     private fun getLen(key: String): Int? {

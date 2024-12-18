@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VIncidentDate : ExpressionItem {
@@ -51,7 +51,7 @@ internal class VIncidentDate : ExpressionItem {
                     column = EnrollmentTableInfo.Columns.INCIDENT_DATE,
                 )
             AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.INCIDENT_DATE}"
+                "$EnrollmentAlias.${EnrollmentTableInfo.Columns.INCIDENT_DATE}"
         }
     }
 }

@@ -28,27 +28,41 @@
 
 package org.hisp.dhis.android.core.user.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.user.User
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal interface UserService {
-    @GET("me")
+@Singleton
+internal class UserService(private val client: HttpServiceClient) {
     suspend fun authenticate(
-        @Header("Authorization") credentials: String,
-        @Query("fields") @Which fields: Fields<User>,
-    ): User
+        credentials: String,
+        fields: Fields<User>,
+    ): User {
+        return client.get {
+            url("me")
+            authorizationHeader(credentials)
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @POST("auth/login")
-    suspend fun login(
-        @Body payload: LoginPayload,
-    ): LoginResponse
+    suspend fun getUser(fields: Fields<User>): User {
+        return client.get {
+            url("me")
+            parameters {
+                fields(fields)
+            }
+        }
+    }
 
-    @GET("me")
-    suspend fun getUser(@Query("fields") @Which fields: Fields<User>): User
+    suspend fun login(payload: LoginPayload): LoginResponse {
+        return client.post {
+            url("auth/login")
+            parameters {
+                body(payload)
+            }
+        }
+    }
 }

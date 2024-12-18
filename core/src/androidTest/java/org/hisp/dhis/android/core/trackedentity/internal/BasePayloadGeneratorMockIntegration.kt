@@ -238,7 +238,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     ) {
         val relationshipType = RelationshipTypeStoreImpl(databaseAdapter).selectFirst()
         val executor = D2CallExecutor.create(databaseAdapter)
-        executor.executeD2CallTransactionally<Any?> {
+        executor.executeD2CallTransactionally<Unit> {
             RelationshipStoreImpl(databaseAdapter).insert(
                 RelationshipSamples.get230(relationshipUid, from, to).toBuilder()
                     .relationshipType(relationshipType!!.uid())
@@ -258,7 +258,6 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
                     .build(),
             )
             ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
-            null
         }
     }
 

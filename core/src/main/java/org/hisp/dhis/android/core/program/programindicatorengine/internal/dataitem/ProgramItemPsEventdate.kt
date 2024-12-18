@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class ProgramItemPsEventdate : ProgramExpressionItem() {
@@ -54,7 +54,7 @@ internal class ProgramItemPsEventdate : ProgramExpressionItem() {
 
         return when (visitor.programIndicatorSQLContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EventTableInfo.Columns.EVENT_DATE}"
+                "$EventAlias.${EventTableInfo.Columns.EVENT_DATE}"
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
                     column = EventTableInfo.Columns.EVENT_DATE,

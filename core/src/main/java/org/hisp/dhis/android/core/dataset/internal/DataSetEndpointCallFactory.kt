@@ -58,7 +58,7 @@ internal class DataSetEndpointCallFactory(
             override suspend fun getCall(query: UidsQuery): Payload<DataSet> {
                 return dataSetService.getDataSets(
                     DataSetFields.allFields,
-                    DataSetFields.uid.`in`(query.uids()),
+                    DataSetFields.uid.`in`(query.uids),
                     accessDataReadFilter,
                     false,
                 )

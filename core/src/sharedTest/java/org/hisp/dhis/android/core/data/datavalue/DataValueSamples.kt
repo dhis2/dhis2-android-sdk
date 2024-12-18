@@ -59,4 +59,23 @@ object DataValueSamples {
             .followUp(true)
             .build()
     }
+
+    fun getDataValueDatabase(): DataValue {
+        return DataValue.builder()
+            .id(1L)
+            .syncState(State.TO_POST)
+            .deleted(false)
+            .dataElement("dataElement")
+            .period("period")
+            .organisationUnit("organisationUnit")
+            .categoryOptionCombo("categoryOptionCombo")
+            .attributeOptionCombo("attributeOptionCombo")
+            .value("value")
+            .storedBy("storedBy")
+            .created(CREATED)
+            .lastUpdated(LAST_UPDATED)
+            .comment("Hey!")
+            .followUp(true)
+            .build()
+    }
 }

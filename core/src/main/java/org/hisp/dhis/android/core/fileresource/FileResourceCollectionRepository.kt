@@ -110,7 +110,7 @@ class FileResourceCollectionRepository internal constructor(
         return try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)
-            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).build()
+            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()
             store.insert(fileResource)
             fileResource.uid()!!
         } catch (e: Exception) {

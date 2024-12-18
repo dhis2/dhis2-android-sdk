@@ -36,7 +36,7 @@ enum class FileResourceValueType(internal val valueType: ValueType) {
 
 enum class FileResourceElementType {
     DATA_ELEMENT,
-    TRACED_ENTITY_ATTRIBUTE,
+    TRACKED_ENTITY_ATTRIBUTE,
 }
 
 enum class FileResourceDataDomainType {

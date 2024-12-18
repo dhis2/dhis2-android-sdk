@@ -156,7 +156,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         migration.apply()
 
-        val migrated = databasesConfigurationStore.get()
+        val migrated = databasesConfigurationStore.get()!!
 
         assertThat(migrated.accounts().size).isEqualTo(1)
         migrated.accounts().first().let {
@@ -175,7 +175,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     fun migrate_empty_from_old_database_configuration() {
-        DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(null)
+        DatabaseConfigurationInsecureStoreOld.get(insecureStore).remove()
 
         migration.apply()
 

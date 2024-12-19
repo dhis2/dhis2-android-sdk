@@ -25,39 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import kotlinx.serialization.Serializable
 
-public enum FeatureType {
-
+@Serializable
+enum class FeatureType(@JvmField val featureType: String, @JvmField val geometryType: String) {
     POINT("POINT", "Point"),
     POLYGON("POLYGON", "Polygon"),
     MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
     NONE("NONE", "None"),
-    SYMBOL("SYMBOL", "Symbol");
+    SYMBOL("SYMBOL", "Symbol"),
+    ;
 
-    private final String featureType;
-    private final String geometryType;
-
-    FeatureType(String featureType, String geometryType) {
-        this.featureType = featureType;
-        this.geometryType = geometryType;
-    }
-
-    public String getFeatureType() {
-        return featureType;
-    }
-
-    public String getGeometryType() {
-        return geometryType;
-    }
-
-    public static FeatureType valueOfFeatureType(String featureType) {
-        for (FeatureType value : values()) {
-            if (value.featureType.equals(featureType) || value.geometryType.equals(featureType)) {
-                return value;
+    companion object {
+        @JvmStatic
+        fun valueOfFeatureType(featureType: String): FeatureType? {
+            for (value in entries) {
+                if (value.featureType == featureType || value.geometryType == featureType) {
+                    return value
+                }
             }
+            return null
         }
-        return null;
     }
 }

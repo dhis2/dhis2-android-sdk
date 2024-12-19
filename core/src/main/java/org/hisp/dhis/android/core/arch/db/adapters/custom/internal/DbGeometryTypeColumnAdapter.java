@@ -56,7 +56,7 @@ public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureTyp
     @Override
     public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
         if (value != null) {
-            contentValues.put("geometryType", value.getGeometryType());
+            contentValues.put("geometryType", value.geometryType);
         }
     }
 }

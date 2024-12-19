@@ -41,12 +41,12 @@ internal fun legendSetDtoToDomainMapper(item: LegendSetDTO): LegendSet {
         .build()
 }
 
-internal fun legendDtoToDomainMapper(item: LegendDTO, legendSetUid: String? = null): Legend {
-    return Legend.builder().apply {
-        applyBaseIdentifiableFields(item)
-        legendSetUid?.let { legendSet(ObjectWithUid.create(legendSetUid)) }
-        startValue(item.startValue)
-        endValue(item.endValue)
-        color(item.color)
-    }.build()
+internal fun legendDtoToDomainMapper(item: LegendDTO, legendSetUid: String): Legend {
+    return Legend.builder()
+        .applyBaseIdentifiableFields(item)
+        .legendSet(ObjectWithUid.create(legendSetUid))
+        .startValue(item.startValue)
+        .endValue(item.endValue)
+        .color(item.color)
+        .build()
 }

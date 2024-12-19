@@ -40,7 +40,7 @@ class CategoryOptionComboShould : BaseObjectKotlinxShould("category/category_opt
     @Test
     override fun map_from_json_string() {
         val categoryOptionComboDTO = deserialize(CategoryOptionComboDTO.serializer())
-        val categoryOptionCombo = categoryOptionComboDtoToDomainMapper(categoryOptionComboDTO)
+        val categoryOptionCombo = categoryOptionComboDtoToDomainMapper(categoryOptionComboDTO, "categoryComboUid")
 
         assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca")
         assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963")

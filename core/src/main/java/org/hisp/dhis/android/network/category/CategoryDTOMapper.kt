@@ -54,11 +54,11 @@ internal fun categoryComboDtoToDomainMapper(item: CategoryComboDTO): CategoryCom
 
 internal fun categoryOptionComboDtoToDomainMapper(
     item: CategoryOptionComboDTO,
-    categoryComboUid: String? = null,
+    categoryComboUid: String,
 ): CategoryOptionCombo {
-    return CategoryOptionCombo.builder().apply {
-        applyBaseIdentifiableFields(item)
-        categoryComboUid?.let { categoryCombo(ObjectWithUid.create(categoryComboUid)) }
-        categoryOptions(item.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
-    }.build()
+    return CategoryOptionCombo.builder()
+        .applyBaseIdentifiableFields(item)
+        .categoryCombo(ObjectWithUid.create(categoryComboUid))
+        .categoryOptions(item.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
+        .build()
 }

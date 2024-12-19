@@ -46,7 +46,7 @@ internal class LegendSetNetworkHandlerImpl(
         uids: Filter<LegendSet>,
         paging: Boolean,
     ): PayloadJson<LegendSet> {
-        val apiPayload = service.legendSets(fields, uids, paging)
+        val apiPayload = service.getLegendSets(fields, uids, paging)
         return apiPayload.mapItems(::legendSetDtoToDomainMapper)
     }
 }

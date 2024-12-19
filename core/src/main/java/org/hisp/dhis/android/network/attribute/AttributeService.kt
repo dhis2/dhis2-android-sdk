@@ -36,7 +36,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AttributeService(private val client: HttpServiceClientKotlinx) {
-    suspend fun attributes(
+    suspend fun getAttributes(
         fields: Fields<Attribute>,
         uids: Filter<Attribute>,
         paging: Boolean,

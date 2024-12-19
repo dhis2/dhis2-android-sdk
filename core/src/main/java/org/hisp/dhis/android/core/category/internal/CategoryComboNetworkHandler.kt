@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryCombo
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CategoryComboShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryComboShould() {
-        super("category/category_combo.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        CategoryCombo combo = objectMapper.readValue(jsonStream, CategoryCombo.class);
-
-        assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
-        assertThat(combo.code()).isEqualTo("BIRTHS");
-        assertThat(combo.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203"));
-        assertThat(combo.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"));
-        assertThat(combo.name()).isEqualTo("Births");
-        assertThat(combo.displayName()).isEqualTo("Births");
-        assertThat(combo.isDefault()).isFalse();
-
-        // categories
-        assertThat(combo.categories().get(0).uid()).isEqualTo("KfdsGBcoiCa");
-        assertThat(combo.categories().get(1).uid()).isEqualTo("cX5k9anHEHd");
-    }
+internal fun interface CategoryComboNetworkHandler {
+    suspend fun getCategoryCombos(
+        fields: Fields<CategoryCombo>,
+        uids: Filter<CategoryCombo>,
+        paging: Boolean,
+    ): Payload<CategoryCombo>
 }

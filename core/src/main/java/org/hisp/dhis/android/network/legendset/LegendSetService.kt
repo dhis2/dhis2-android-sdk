@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 internal class LegendSetService(private val client: HttpServiceClientKotlinx) {
-    suspend fun legendSets(
+    suspend fun getLegendSets(
         fields: Fields<LegendSet>,
         uids: Filter<LegendSet>,
         paging: Boolean,

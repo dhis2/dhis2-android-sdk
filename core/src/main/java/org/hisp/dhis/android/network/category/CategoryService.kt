@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryService(private val client: HttpServiceClientKotlinx) {
-    suspend fun categories(
+    suspend fun getCategories(
         fields: Fields<Category>,
         uids: Filter<Category>,
         paging: Boolean,

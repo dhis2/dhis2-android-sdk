@@ -47,7 +47,7 @@ internal class OptionNetworkHandlerImpl(
         page: Int,
         pageSize: Int,
     ): PayloadJson<Option> {
-        val apiPayload = service.options(fields, optionSetUidsFilterString, paging, page, pageSize)
+        val apiPayload = service.getOptions(fields, optionSetUidsFilterString, paging, page, pageSize)
         return apiPayload.mapItems(::optionDtoToDomainMapper)
     }
 }

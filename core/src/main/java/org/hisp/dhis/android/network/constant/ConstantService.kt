@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 internal class ConstantService(private val client: HttpServiceClientKotlinx) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean): ConstantPayload {
+    suspend fun getConstants(fields: Fields<Constant>, paging: Boolean): ConstantPayload {
         return client.get {
             url("constants")
             parameters {

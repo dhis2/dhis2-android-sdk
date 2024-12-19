@@ -34,13 +34,13 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryComboCall(
-    private val service: CategoryComboService,
+    private val networkHandler: CategoryComboNetworkHandler,
     private val handler: CategoryComboHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<CategoryCombo> {
     override suspend fun download(uids: Set<String>): List<CategoryCombo> {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String> ->
-            service.getCategoryCombos(
+            networkHandler.getCategoryCombos(
                 CategoryComboFields.allFields,
                 CategoryComboFields.uid.`in`(partitionUids),
                 paging = false,

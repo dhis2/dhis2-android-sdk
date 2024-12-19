@@ -25,32 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset
+package org.hisp.dhis.android.core.category
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.legendset.LegendDTO
-import org.hisp.dhis.android.network.legendset.legendDtoToDomainMapper
+import org.hisp.dhis.android.network.category.CategoryComboDTO
+import org.hisp.dhis.android.network.category.categoryComboDtoToDomainMapper
 import org.junit.Test
 
-class LegendShould : BaseObjectKotlinxShould("legendset/legend.json"), ObjectShould {
+class CategoryComboShould : BaseObjectKotlinxShould("category/category_combo.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val legendDTO = deserialize(LegendDTO.serializer())
-        val legend = legendDtoToDomainMapper(legendDTO, "legendSetUid")
+        val comboDTO = deserialize(CategoryComboDTO.serializer())
+        val combo = categoryComboDtoToDomainMapper(comboDTO)
 
-        Truth.assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X")
-        Truth.assertThat(legend.name()).isEqualTo("30 - 40")
-        Truth.assertThat(legend.displayName()).isEqualTo("30 - 40")
-        Truth.assertThat(legend.lastUpdated())
-            .isEqualTo(BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"))
-        Truth.assertThat(legend.created())
-            .isEqualTo(BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"))
-        Truth.assertThat(legend.startValue()).isEqualTo(30.5)
-        Truth.assertThat(legend.endValue()).isEqualTo(40)
-        Truth.assertThat(legend.color()).isEqualTo("#d9f0a3")
+        assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm")
+        assertThat(combo.code()).isEqualTo("BIRTHS")
+        assertThat(combo.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203"),
+        )
+        assertThat(combo.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"),
+        )
+        assertThat(combo.name()).isEqualTo("Births")
+        assertThat(combo.displayName()).isEqualTo("Births")
+        assertThat(combo.isDefault()).isFalse()
+
+        val categories = combo.categories()
+
+        assertThat(categories?.getOrNull(0)?.uid()).isEqualTo("KfdsGBcoiCa")
+        assertThat(categories?.getOrNull(1)?.uid()).isEqualTo("cX5k9anHEHd")
+
+        val categoryOptionCombos = combo.categoryOptionCombos()
+
+        assertThat(categoryOptionCombos?.getOrNull(0)?.uid()).isEqualTo("b19Ye0TWs1D")
+        assertThat(categoryOptionCombos?.getOrNull(1)?.uid()).isEqualTo("YEmiuCcgNQI")
+        assertThat(categoryOptionCombos?.getOrNull(2)?.uid()).isEqualTo("vP9xV78M67W")
     }
 }

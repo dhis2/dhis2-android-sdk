@@ -25,28 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.internal.CategoryNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.PagerDTO
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class CategoryNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
-) : CategoryNetworkHandler {
-    private val service: CategoryService = CategoryService(httpClient)
+@Serializable
+internal data class CategoryComboDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val isDefault: Boolean? = null,
+    val categories: List<ObjectWithUidDTO> = emptyList(),
+    val categoryOptionCombos: List<CategoryOptionComboDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO
 
-    override suspend fun categories(
-        fields: Fields<Category>,
-        uids: Filter<Category>,
-        paging: Boolean,
-    ): PayloadJson<Category> {
-        val apiPayload = service.getCategories(fields, uids, paging)
-        return apiPayload.mapItems(::categoryDtoToDomainMapper)
-    }
-}
+@Serializable
+internal class CategoryComboPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("categoryCombos") override val items: List<CategoryComboDTO> = emptyList(),
+) : PayloadJson<CategoryComboDTO>(pager, items)

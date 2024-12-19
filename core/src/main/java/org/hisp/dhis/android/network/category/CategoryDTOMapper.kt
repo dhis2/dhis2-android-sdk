@@ -29,13 +29,36 @@
 package org.hisp.dhis.android.network.category
 
 import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
 
 internal fun categoryDtoToDomainMapper(item: CategoryDTO): Category {
     return Category.builder()
         .applyBaseIdentifiableFields(item)
         .dataDimensionType(item.dataDimensionType)
+        .categoryOptions(item.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
+        .build()
+}
+
+internal fun categoryComboDtoToDomainMapper(item: CategoryComboDTO): CategoryCombo {
+    return CategoryCombo.builder()
+        .applyBaseIdentifiableFields(item)
+        .isDefault(item.isDefault)
+        .categories(item.categories.map { Category.builder().uid(it.uid).build() })
+        .categoryOptionCombos(item.categoryOptionCombos.map { categoryOptionComboDtoToDomainMapper(it, item.uid) })
+        .build()
+}
+
+internal fun categoryOptionComboDtoToDomainMapper(
+    item: CategoryOptionComboDTO,
+    categoryComboUid: String,
+): CategoryOptionCombo {
+    return CategoryOptionCombo.builder()
+        .applyBaseIdentifiableFields(item)
+        .categoryCombo(ObjectWithUid.create(categoryComboUid))
         .categoryOptions(item.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
         .build()
 }

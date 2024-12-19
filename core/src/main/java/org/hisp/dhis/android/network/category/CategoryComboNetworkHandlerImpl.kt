@@ -29,24 +29,24 @@ package org.hisp.dhis.android.network.category
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.internal.CategoryNetworkHandler
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryNetworkHandlerImpl(
+internal class CategoryComboNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
-) : CategoryNetworkHandler {
-    private val service: CategoryService = CategoryService(httpClient)
+) : CategoryComboNetworkHandler {
+    private val service: CategoryComboService = CategoryComboService(httpClient)
 
-    override suspend fun categories(
-        fields: Fields<Category>,
-        uids: Filter<Category>,
+    override suspend fun getCategoryCombos(
+        fields: Fields<CategoryCombo>,
+        uids: Filter<CategoryCombo>,
         paging: Boolean,
-    ): PayloadJson<Category> {
-        val apiPayload = service.getCategories(fields, uids, paging)
-        return apiPayload.mapItems(::categoryDtoToDomainMapper)
+    ): PayloadJson<CategoryCombo> {
+        val apiPayload = service.getCategoryCombos(fields, uids, paging)
+        return apiPayload.mapItems(::categoryComboDtoToDomainMapper)
     }
 }

@@ -47,7 +47,7 @@ import org.koin.core.annotation.Singleton
 @Suppress("LongParameterList")
 internal class LogInCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val userService: UserService,
+    private val networkHandler: UserNetworkHandler,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val userHandler: UserHandler,
@@ -81,7 +81,7 @@ internal class LogInCall(
                 importDB(trimmedServerUrl, credentials)
             } else {
                 val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                    userService.authenticate(
+                    networkHandler.authenticate(
                         okhttp3.Credentials.basic(username, password!!),
                         UserFields.allFieldsWithoutOrgUnit,
                     )
@@ -185,7 +185,7 @@ internal class LogInCall(
         var credentials: Credentials? = null
         return try {
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                userService.authenticate(
+                networkHandler.authenticate(
                     "Bearer ${openIDConnectState.idToken}",
                     UserFields.allFieldsWithoutOrgUnit,
                 )

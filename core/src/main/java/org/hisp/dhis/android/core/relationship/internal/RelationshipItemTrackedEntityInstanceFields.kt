@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.network.common.fields.BaseFields
 
 internal object RelationshipItemTrackedEntityInstanceFields : BaseFields<RelationshipItemTrackedEntityInstance>() {
     private const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"

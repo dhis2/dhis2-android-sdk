@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.validation.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ValidationRuleExpressionFields : BaseFields<ValidationRuleExpression>() {
     const val EXPRESSION = "expression"

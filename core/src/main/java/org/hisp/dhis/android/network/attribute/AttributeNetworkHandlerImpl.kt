@@ -27,12 +27,10 @@
  */
 package org.hisp.dhis.android.network.attribute
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,12 +39,12 @@ internal class AttributeNetworkHandlerImpl(
 ) : AttributeNetworkHandler {
     private val service: AttributeService = AttributeService(httpClient)
 
-    override suspend fun getAttributes(
-        fields: Fields<Attribute>,
-        uids: Filter<Attribute>,
-        paging: Boolean,
-    ): PayloadJson<Attribute> {
-        val apiPayload = service.getAttributes(fields, uids, paging)
+    override suspend fun getAttributes(attributeUids: Set<String>): Payload<Attribute> {
+        val apiPayload = service.getAttributes(
+            AttributeFields.allFields,
+            AttributeFields.uid.`in`(attributeUids),
+            false,
+        )
         return apiPayload.mapItems(::attributeDtoToDomainMapper)
     }
 }

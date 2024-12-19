@@ -40,7 +40,7 @@ import org.koin.core.annotation.Singleton
 internal class UserCall(
     private val genericCallData: GenericCallData,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val userService: UserService,
+    private val networkHandler: UserNetworkHandler,
     private val userHandler: UserHandler,
     private val dhisVersionManager: DHISVersionManager,
 ) {
@@ -49,7 +49,7 @@ internal class UserCall(
     suspend fun call(): User {
         val user =
             coroutineAPICallExecutor.wrap {
-                userService.getUser(
+                networkHandler.getUser(
                     UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
                 )
             }.getOrThrow()

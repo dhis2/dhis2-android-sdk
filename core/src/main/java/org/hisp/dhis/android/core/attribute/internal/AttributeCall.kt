@@ -40,9 +40,7 @@ internal class AttributeCall(
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<Attribute> {
     override suspend fun download(uids: Set<String>): List<Attribute> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
-            networkHandler.getAttributes(AttributeFields.allFields, AttributeFields.uid.`in`(partitionUids), false)
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getAttributes)
     }
 
     companion object {

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.network.legendset
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 internal fun legendSetDtoToDomainMapper(item: LegendSetDTO): LegendSet {
     return LegendSet.builder()

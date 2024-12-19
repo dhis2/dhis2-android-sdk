@@ -57,8 +57,8 @@ internal data class UserDTO(
     val phoneNumber: String? = null,
     val nationality: String? = null,
     val userCredentials: UserCredentialsDTO? = null,
-    val organisationUnits: List<OrganisationUnitDTO>? = null,
-    val teiSearchOrganisationUnits: List<OrganisationUnitDTO>? = null,
-    val userRoles: List<UserRoleDTO>? = null,
-    val userGroups: List<UserGroupDTO>? = null,
+    val organisationUnits: List<OrganisationUnitDTO>? = emptyList(),
+    val teiSearchOrganisationUnits: List<OrganisationUnitDTO>? = emptyList(),
+    val userRoles: List<UserRoleDTO>? = emptyList(),
+    val userGroups: List<UserGroupDTO>? = emptyList(),
 ) : BaseIdentifiableObjectDTO

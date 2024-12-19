@@ -35,5 +35,5 @@ internal data class UserCredentialsDTO(
     val username: String? = null,
     val name: String? = null,
     val displayName: String? = null,
-    val userRoles: List<UserRoleDTO>? = null,
+    val userRoles: List<UserRoleDTO>? = emptyList(),
 )

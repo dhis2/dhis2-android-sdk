@@ -38,7 +38,7 @@ enum class FeatureType(@JvmField val featureType: String, @JvmField val geometry
     SYMBOL("SYMBOL", "Symbol"),
     ;
 
-    companion object {
+    internal companion object {
         @JvmStatic
         fun valueOfFeatureType(featureType: String): FeatureType? {
             for (value in entries) {

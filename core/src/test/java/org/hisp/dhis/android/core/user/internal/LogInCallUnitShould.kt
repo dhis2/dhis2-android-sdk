@@ -56,7 +56,7 @@ import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
-    private val userService: UserService = mock()
+    private val userNetworkHandler: UserNetworkHandler = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val userHandler: UserHandler = mock()
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
@@ -110,7 +110,7 @@ class LogInCallUnitShould : BaseCallShould() {
 
     private suspend fun instantiateCall(username: String?, password: String?, serverUrl: String?): User {
         return LogInCall(
-            coroutineAPICallExecutor, userService, credentialsSecureStore,
+            coroutineAPICallExecutor, userNetworkHandler, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
@@ -118,7 +118,7 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private fun whenAPICall(answer: Answer<User>) {
-        userService.stub {
+        userNetworkHandler.stub {
             onBlocking { authenticate(any(), any()) }.doAnswer(answer)
         }
     }
@@ -158,7 +158,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun invoke_server_with_correct_parameters_after_call() = runTest {
         whenever(
-            userService.authenticate(
+            userNetworkHandler.authenticate(
                 credentialsCaptor.capture(),
                 filterCaptor.capture(),
             ),

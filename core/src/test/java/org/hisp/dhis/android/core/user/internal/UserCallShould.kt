@@ -28,7 +28,14 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -44,10 +51,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.stubbing.Answer
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class UserCallShould : BaseCallShould() {
-    private val userService: UserService = mock()
+    private val userNetworkHandler: UserNetworkHandler = mock()
     private val userHandler: UserHandler = mock()
     private val userCall: User = mock()
     private val dhisVersionManager: DHISVersionManager = mock()
@@ -62,14 +70,20 @@ class UserCallShould : BaseCallShould() {
         whenAPICall { userCall }
 
         userSyncCall = {
-            UserCall(genericCallData, coroutineAPICallExecutor, userService, userHandler, dhisVersionManager).call()
+            UserCall(
+                genericCallData,
+                coroutineAPICallExecutor,
+                userNetworkHandler,
+                userHandler,
+                dhisVersionManager
+            ).call()
         }
 
         whenever(dhisVersionManager.getVersion()).thenReturn(DHISVersion.V2_39)
     }
 
     private fun whenAPICall(answer: Answer<User>) {
-        userService.stub {
+        userNetworkHandler.stub {
             onBlocking { getUser(any()) }.doAnswer(answer)
         }
     }

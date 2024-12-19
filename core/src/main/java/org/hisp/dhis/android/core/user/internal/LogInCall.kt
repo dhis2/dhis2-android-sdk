@@ -237,7 +237,8 @@ internal class LogInCall(
             return user
 
         } catch (d2Error: D2Error) {
-            if (d2Error.errorCode() == D2ErrorCode.NO_DHIS2_SERVER) {
+            if (d2Error.errorCode() == D2ErrorCode.NO_DHIS2_SERVER ||
+                d2Error.errorCode() == D2ErrorCode.UNEXPECTED) {
                 credentialsSecureStore.set(credentials)
 
                 val user =  oldLogin(credentials)

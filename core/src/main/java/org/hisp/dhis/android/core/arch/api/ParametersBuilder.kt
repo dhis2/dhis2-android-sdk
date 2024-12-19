@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
 class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
     internal fun <T> fields(fields: Fields<T>) {

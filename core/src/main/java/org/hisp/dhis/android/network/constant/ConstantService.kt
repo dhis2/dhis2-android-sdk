@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.network.constant
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ConstantService(private val client: HttpServiceClientKotlinx) {
-    suspend fun constants(fields: Fields<Constant>, paging: Boolean): ConstantPayload {
+    suspend fun getConstants(fields: Fields<Constant>, paging: Boolean): ConstantPayload {
         return client.get {
             url("constants")
             parameters {

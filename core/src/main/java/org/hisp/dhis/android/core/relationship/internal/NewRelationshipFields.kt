@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object NewRelationshipFields : BaseFields<NewTrackerImporterRelationship>() {
     const val RELATIONSHIP = "relationship"

@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
 import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object EventQueryCriteriaFields : BaseFields<EventQueryCriteria>() {
     const val DATA_FILTERS = "dataFilters"

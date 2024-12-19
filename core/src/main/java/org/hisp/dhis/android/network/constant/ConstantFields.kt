@@ -25,39 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal
+package org.hisp.dhis.android.network.constant
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.constant.ConstantTableInfo
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class SingleValueFilter<T> private constructor(
-    override val field: Field<T>,
-    override val operator: String,
-    override val values: Collection<String>,
-) : Filter<T> {
-    override fun generateString(): String {
-        return "${field.name}:$operator:${values.first()}"
-    }
-
-    companion object {
-        private fun <T> create(
-            field: Field<T>,
-            operator: String,
-            value: String,
-        ): Filter<T> {
-            // If the filter is incomplete, return null so the filter is not included in the request.
-            return SingleValueFilter(field, operator, listOf(value))
-        }
-
-        fun <T> gt(field: Field<T>, value: String): Filter<T> {
-            return create(field, "gt", value)
-        }
-
-        fun <T> eq(field: Field<T>, value: String): Filter<T> {
-            return create(field, "eq", value)
-        }
-
-        fun <T> like(field: Field<T>, value: String): Filter<T> {
-            return create(field, "like", value)
-        }
-    }
+internal object ConstantFields : BaseFields<Constant>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(ConstantTableInfo.Columns.VALUE),
+    )
 }

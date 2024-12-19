@@ -25,13 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.legendset
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.legendset.internal.LegendFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import kotlinx.serialization.Serializable
+internal object LegendSetFields : BaseFields<LegendSet>() {
+    const val LEGENDS = "legends"
 
-@Serializable
-internal data class ObjectWithStyleDTO(
-    val color: String? = null,
-    val icon: String? = null,
-)
+    val uid: Field<LegendSet> = fh.uid()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SYMBOLIZER),
+        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+    )
+}

@@ -34,12 +34,10 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryComboHandler constructor(
+internal class CategoryComboHandler(
     store: CategoryComboStore,
     private val optionComboHandler: CategoryOptionComboHandler,
     private val categoryCategoryComboLinkHandler: CategoryCategoryComboLinkHandler,
@@ -47,13 +45,7 @@ internal class CategoryComboHandler constructor(
 ) : IdentifiableHandlerImpl<CategoryCombo>(store) {
 
     override fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {
-        optionComboHandler.handleMany(
-            CategoryComboInternalAccessor.accessCategoryOptionCombos(o),
-        ) { optionCombo: CategoryOptionCombo ->
-            optionCombo.toBuilder()
-                .categoryCombo(ObjectWithUid.create(o.uid()))
-                .build()
-        }
+        optionComboHandler.handleMany(CategoryComboInternalAccessor.accessCategoryOptionCombos(o))
         categoryCategoryComboLinkHandler.handleMany(
             o.uid(),
             o.categories(),

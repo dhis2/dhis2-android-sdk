@@ -25,39 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.category.CategoryOptionComboDTO
+import org.hisp.dhis.android.network.category.categoryOptionComboDtoToDomainMapper
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class CategoryOptionComboShould : BaseObjectKotlinxShould("category/category_option_combo.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CategoryOptionComboShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryOptionComboShould() {
-        super("category/category_option_combo.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        CategoryOptionCombo categoryOptionCombo = objectMapper.readValue(jsonStream, CategoryOptionCombo.class);
+    override fun map_from_json_string() {
+        val categoryOptionComboDTO = deserialize(CategoryOptionComboDTO.serializer())
+        val categoryOptionCombo = categoryOptionComboDtoToDomainMapper(categoryOptionComboDTO, "categoryComboUid")
 
-        assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca");
-        assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");
-
+        assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca")
+        assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963")
         assertThat(categoryOptionCombo.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"),
+        )
         assertThat(categoryOptionCombo.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
-
-        assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
-        assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"),
+        )
+        assertThat(categoryOptionCombo.name()).isEqualTo("0-11m")
+        assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m")
     }
 }

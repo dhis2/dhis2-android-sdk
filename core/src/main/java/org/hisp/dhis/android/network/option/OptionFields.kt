@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal
+package org.hisp.dhis.android.network.option
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.OptionTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
-internal interface Filter<T> {
-    val field: Field<T>
-    val operator: String
-    val values: Collection<String>
-    fun generateString(): String
+internal object OptionFields : BaseFields<Option>() {
+    private const val STYLE = "style"
+
+    val uid: Field<Option> = fh.uid()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SORT_ORDER),
+        fh.nestedFieldWithUid(Columns.OPTION_SET),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+    )
 }

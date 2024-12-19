@@ -26,12 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.category
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
 @Serializable
-internal data class ObjectWithUidDTO(
-    @SerialName("id") val uid: String,
-)
+internal data class CategoryDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val dataDimensionType: String? = null,
+    val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO
+
+@Serializable
+internal class CategoryPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("categories") override val items: List<CategoryDTO> = emptyList(),
+) : PayloadJson<CategoryDTO>(pager, items)

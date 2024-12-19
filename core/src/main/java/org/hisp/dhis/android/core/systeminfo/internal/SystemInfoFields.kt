@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object SystemInfoFields : BaseFields<SystemInfo>() {
     val allFields = Fields.from(

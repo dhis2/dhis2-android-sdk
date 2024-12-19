@@ -25,32 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.category
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.common.BaseNameableObject
-
-// @Serializable
-internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
-    val shortName: String?
-    val displayShortName: String?
-    val description: String?
-    val displayDescription: String?
-
-    companion object {
-        val SHORT_NAME = null
-        val DISPLAY_SHORT_NAME = null
-        val DESCRIPTION = null
-        val DISPLAY_DESCRIPTION = null
+@Singleton
+internal class CategoryComboService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getCategoryCombos(
+        fields: Fields<CategoryCombo>,
+        uids: Filter<CategoryCombo>,
+        paging: Boolean,
+    ): CategoryComboPayload {
+        return client.get {
+            url("categoryCombos")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
     }
-}
-
-internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
-      T : BaseNameableObject.Builder<T> {
-    applyBaseIdentifiableFields(item)
-    shortName(item.shortName)
-    displayShortName(item.displayShortName)
-    description(item.description)
-    displayDescription(item.displayDescription)
-    return this
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+package org.hisp.dhis.android.network.category
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
-    val uid: Field<LegendSet> = fh.uid()
+@Serializable
+internal data class CategoryComboDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val isDefault: Boolean? = null,
+    val categories: List<ObjectWithUidDTO> = emptyList(),
+    val categoryOptionCombos: List<CategoryOptionComboDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO
 
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
-    )
-}
+@Serializable
+internal class CategoryComboPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("categoryCombos") override val items: List<CategoryComboDTO> = emptyList(),
+) : PayloadJson<CategoryComboDTO>(pager, items)

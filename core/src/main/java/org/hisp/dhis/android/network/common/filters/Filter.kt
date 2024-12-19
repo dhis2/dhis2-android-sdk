@@ -25,43 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.fields.internal
+package org.hisp.dhis.android.network.common.filters
 
-internal data class Fields<T>(val fields: List<Property<T>>) {
+import org.hisp.dhis.android.network.common.fields.Field
 
-    fun generateString(): String {
-        return generateStringFromFields(fields.toList())
-    }
-
-    companion object {
-        fun <K> from(vararg properties: Property<K>): Fields<K> {
-            require(properties.isNotEmpty()) { "At least one property must be provided." }
-            return Fields(properties.toList())
-        }
-
-        fun <K> from(
-            properties: Collection<Property<K>>,
-            vararg additionalProperties: Property<K> = emptyArray(),
-        ): Fields<K> {
-            require(properties.isNotEmpty()) { "At least one property must be provided." }
-            val allFields = properties.toMutableList()
-            allFields.addAll(additionalProperties)
-            return Fields(allFields)
-        }
-
-        private fun generateStringFromFields(properties: List<Property<*>>): String {
-            val fieldsStringList = properties.map { field ->
-                when (field) {
-                    is Field<*> -> field.name
-                    is NestedField<*, *> ->
-                        field.name +
-                            if (field.children.isNotEmpty()) "[${generateStringFromFields(field.children)}]" else ""
-
-                    else -> throw IllegalArgumentException("Unsupported type of Property: ${field.javaClass}")
-                }
-            }
-            val fieldsString = fieldsStringList.joinToString(",")
-            return fieldsString
-        }
-    }
+internal interface Filter<T> {
+    val field: Field<T>
+    val operator: String
+    val values: Collection<String>
+    fun generateString(): String
 }

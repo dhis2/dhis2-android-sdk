@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionTableInfo.Columns
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object OptionFields : BaseFields<Option>() {
-    private const val STYLE = "style"
+internal object CategoryComboFields : BaseFields<CategoryCombo>() {
+    const val CATEGORIES = "categories"
+    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
-    val uid: Field<Option> = fh.uid()
+    val uid = fh.uid()
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),
-        fh.field(Columns.SORT_ORDER),
-        fh.nestedFieldWithUid(Columns.OPTION_SET),
-        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.field(Columns.IS_DEFAULT),
+        fh.nestedFieldWithUid(CATEGORIES),
+        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
     )
 }

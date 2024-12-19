@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object ProgramStageWorkingListAttributeValueFilterFields :
     BaseFields<ProgramStageWorkingListAttributeValueFilter>() {

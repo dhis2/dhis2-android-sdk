@@ -25,27 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+package org.hisp.dhis.android.network.category
 
-internal class InFilter<T>(
-    override val field: Field<T>,
-    override val operator: String,
-    override val values: Collection<String>,
-) : Filter<T> {
-    override fun generateString(): String {
-        val valuesString = values.joinToString(",")
-        return "${field.name}:$operator:[$valuesString]"
-    }
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
-    companion object {
-        fun <T> create(
-            field: Field<T>,
-            values: Collection<String>,
-        ): Filter<T> {
-            // If the filter is incomplete, return null so the filter is not included in the request.
-            return InFilter(field, "in", values)
-        }
-    }
-}
+@Serializable
+internal data class CategoryOptionComboDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO

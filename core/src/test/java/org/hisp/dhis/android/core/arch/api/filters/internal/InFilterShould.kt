@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.filters.InFilter
 import org.junit.Assert.*
 import org.junit.Test
 

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.network.constant
 
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.internal.ConstantFields
 import org.hisp.dhis.android.core.constant.internal.ConstantNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
@@ -41,7 +40,7 @@ internal class ConstantNetworkHandlerImpl(
     private val service: ConstantService = ConstantService(httpClient)
 
     override suspend fun getConstants(): List<Constant> {
-        val constantDtoList = service.constants(ConstantFields.allFields, false)
+        val constantDtoList = service.getConstants(ConstantFields.allFields, false)
         return constantDtoList.items.map { item -> constantDtoToDomainMapper(item) }
     }
 }

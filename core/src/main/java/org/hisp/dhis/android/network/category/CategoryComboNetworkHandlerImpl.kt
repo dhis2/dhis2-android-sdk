@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.fields.internal
+package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.InFilter
-import org.hisp.dhis.android.core.arch.api.filters.internal.SingleValueFilter
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-internal data class Field<Parent> internal constructor(override val name: String) : Property<Parent> {
+@Singleton
+internal class CategoryComboNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : CategoryComboNetworkHandler {
+    private val service: CategoryComboService = CategoryComboService(httpClient)
 
-    fun <V> eq(value: V): Filter<Parent> {
-        return SingleValueFilter.eq(this, value.toString())
-    }
-
-    fun gt(value: String): Filter<Parent> {
-        return SingleValueFilter.gt(this, value)
-    }
-
-    fun like(value: String): Filter<Parent> {
-        return SingleValueFilter.like(this, value)
-    }
-
-    fun `in`(values: Collection<String>): Filter<Parent> {
-        return InFilter.create(this, values)
-    }
-
-    companion object {
-        @JvmStatic
-        fun <T> create(name: String): Field<T> {
-            return Field(name)
-        }
+    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): Payload<CategoryCombo> {
+        val apiPayload = service.getCategoryCombos(
+            CategoryComboFields.allFields,
+            CategoryComboFields.uid.`in`(categoryComboUids),
+            paging = false,
+        )
+        return apiPayload.mapItems(::categoryComboDtoToDomainMapper)
     }
 }

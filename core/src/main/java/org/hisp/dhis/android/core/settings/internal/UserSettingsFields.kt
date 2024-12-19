@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.UserSettingsTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object UserSettingsFields : BaseFields<UserSettings>() {
     val allFields = Fields.from(

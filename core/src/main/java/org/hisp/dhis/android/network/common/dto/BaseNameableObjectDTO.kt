@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryTableInfo
+package org.hisp.dhis.android.network.common.dto
 
-internal object CategoryFields : BaseFields<Category>() {
-    const val CATEGORY_OPTIONS = "categoryOptions"
+import org.hisp.dhis.android.core.common.BaseNameableObject
 
-    val uid = fh.uid()
+internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
 
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-        fh.field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE),
-    )
+    companion object {
+        val SHORT_NAME = null
+        val DISPLAY_SHORT_NAME = null
+        val DESCRIPTION = null
+        val DISPLAY_DESCRIPTION = null
+    }
+}
+
+internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
+      T : BaseNameableObject.Builder<T> {
+    applyBaseIdentifiableFields(item)
+    shortName(item.shortName)
+    displayShortName(item.displayShortName)
+    description(item.description)
+    displayDescription(item.displayDescription)
+    return this
 }

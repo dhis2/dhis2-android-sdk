@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 internal class UserService(private val client: HttpServiceClientKotlinx) {

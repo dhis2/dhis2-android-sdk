@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.legendset.internal.LegendChildrenAppender
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
+import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

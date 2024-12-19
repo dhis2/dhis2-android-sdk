@@ -40,7 +40,7 @@ class LegendShould : BaseObjectKotlinxShould("legendset/legend.json"), ObjectSho
     @Test
     override fun map_from_json_string() {
         val legendDTO = deserialize(LegendDTO.serializer())
-        val legend = legendDtoToDomainMapper(legendDTO)
+        val legend = legendDtoToDomainMapper(legendDTO, "legendSetUid")
 
         Truth.assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X")
         Truth.assertThat(legend.name()).isEqualTo("30 - 40")

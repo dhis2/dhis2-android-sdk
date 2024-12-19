@@ -25,39 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.common.filters
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.network.common.fields.Field
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-
-// @Serializable
-internal interface BaseIdentifiableObjectDTO {
-    val uid: String
-    val code: String?
-    val name: String?
-    val displayName: String?
-    val created: String?
-    val lastUpdated: String?
-    val deleted: Boolean?
+internal class SingleValueFilter<T> private constructor(
+    override val field: Field<T>,
+    override val operator: String,
+    override val values: Collection<String>,
+) : Filter<T> {
+    override fun generateString(): String {
+        return "${field.name}:$operator:${values.first()}"
+    }
 
     companion object {
-        val CODE = null
-        val NAME = null
-        val DISPLAY_NAME = null
-        val CREATED = null
-        val LAST_UPDATED = null
-        val DELETED = null
-    }
-}
+        private fun <T> create(
+            field: Field<T>,
+            operator: String,
+            value: String,
+        ): Filter<T> {
+            // If the filter is incomplete, return null so the filter is not included in the request.
+            return SingleValueFilter(field, operator, listOf(value))
+        }
 
-internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where
-      T : BaseIdentifiableObject.Builder<T> {
-    uid(item.uid)
-    code(item.code)
-    name(item.name)
-    displayName(item.displayName)
-    item.created?.let { created(it) } ?: { created(null) }
-    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
-    deleted(item.deleted)
-    return this
+        fun <T> gt(field: Field<T>, value: String): Filter<T> {
+            return create(field, "gt", value)
+        }
+
+        fun <T> eq(field: Field<T>, value: String): Filter<T> {
+            return create(field, "eq", value)
+        }
+
+        fun <T> like(field: Field<T>, value: String): Filter<T> {
+            return create(field, "like", value)
+        }
+    }
 }

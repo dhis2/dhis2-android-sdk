@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant.internal
+package org.hisp.dhis.android.network.common.fields
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
+internal data class NestedField<Parent, Child> internal constructor(
+    override val name: String,
+    val children: List<Property<Child>> = emptyList(),
+) : Property<Parent> {
+    @SafeVarargs
+    fun with(vararg properties: Property<Child>): NestedField<Parent, Child> {
+        return with(listOf(*properties))
+    }
 
-internal object ConstantFields : BaseFields<Constant>() {
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(ConstantTableInfo.Columns.VALUE),
-    )
+    fun with(properties: List<Property<Child>>?): NestedField<Parent, Child> {
+        return properties?.let {
+            NestedField(name, it)
+        } ?: create(name)
+    }
+
+    fun with(childFields: Fields<Child>): NestedField<Parent, Child> {
+        return with(childFields.fields)
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T, K> create(name: String): NestedField<T, K> {
+            return NestedField(name, emptyList())
+        }
+    }
 }

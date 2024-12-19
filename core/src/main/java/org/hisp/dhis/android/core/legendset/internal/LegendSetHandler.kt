@@ -29,26 +29,18 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class LegendSetHandler constructor(
+internal class LegendSetHandler(
     legendSetStore: LegendSetStore,
     private val legendHandler: LegendHandler,
     private val legendCleaner: LegendSetLegendOrphanCleaner,
 ) : IdentifiableHandlerImpl<LegendSet>(legendSetStore) {
 
     override fun afterObjectHandled(o: LegendSet, action: HandleAction) {
-        legendHandler.handleMany(
-            o.legends(),
-        ) { legend: Legend ->
-            legend.toBuilder()
-                .legendSet(ObjectWithUid.create(o.uid()))
-                .build()
-        }
+        legendHandler.handleMany(o.legends())
 
         if (action === HandleAction.Update) {
             legendCleaner.deleteOrphan(o, o.legends())

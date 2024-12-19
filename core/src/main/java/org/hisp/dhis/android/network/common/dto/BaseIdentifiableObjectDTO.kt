@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.fields.internal
 
-internal data class NestedField<Parent, Child> internal constructor(
-    override val name: String,
-    val children: List<Property<Child>> = emptyList(),
-) : Property<Parent> {
-    @SafeVarargs
-    fun with(vararg properties: Property<Child>): NestedField<Parent, Child> {
-        return with(listOf(*properties))
-    }
+package org.hisp.dhis.android.network.common.dto
 
-    fun with(properties: List<Property<Child>>?): NestedField<Parent, Child> {
-        return properties?.let {
-            NestedField(name, it)
-        } ?: create(name)
-    }
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
-    fun with(childFields: Fields<Child>): NestedField<Parent, Child> {
-        return with(childFields.fields)
-    }
+internal interface BaseIdentifiableObjectDTO {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: String?
+    val lastUpdated: String?
+    val deleted: Boolean?
 
     companion object {
-        @JvmStatic
-        fun <T, K> create(name: String): NestedField<T, K> {
-            return NestedField(name, emptyList())
-        }
+        val CODE = null
+        val NAME = null
+        val DISPLAY_NAME = null
+        val CREATED = null
+        val LAST_UPDATED = null
+        val DELETED = null
     }
+}
+
+internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where
+      T : BaseIdentifiableObject.Builder<T> {
+    uid(item.uid)
+    code(item.code)
+    name(item.name)
+    displayName(item.displayName)
+    item.created?.let { created(it) } ?: { created(null) }
+    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
+    deleted(item.deleted)
+    return this
 }

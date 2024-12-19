@@ -26,37 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseNameableObject
 
-internal interface BaseIdentifiableObjectDTO {
-    val uid: String
-    val code: String?
-    val name: String?
-    val displayName: String?
-    val created: String?
-    val lastUpdated: String?
-    val deleted: Boolean?
+internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
 
     companion object {
-        val CODE = null
-        val NAME = null
-        val DISPLAY_NAME = null
-        val CREATED = null
-        val LAST_UPDATED = null
-        val DELETED = null
+        val SHORT_NAME = null
+        val DISPLAY_SHORT_NAME = null
+        val DESCRIPTION = null
+        val DISPLAY_DESCRIPTION = null
     }
 }
 
-internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where
-      T : BaseIdentifiableObject.Builder<T> {
-    uid(item.uid)
-    code(item.code)
-    name(item.name)
-    displayName(item.displayName)
-    item.created?.let { created(it) } ?: { created(null) }
-    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
-    deleted(item.deleted)
+internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
+      T : BaseNameableObject.Builder<T> {
+    applyBaseIdentifiableFields(item)
+    shortName(item.shortName)
+    displayShortName(item.displayShortName)
+    description(item.description)
+    displayDescription(item.displayDescription)
     return this
 }

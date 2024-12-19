@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.fields.internal
+package org.hisp.dhis.android.network.common.filters
 
-internal data class NestedField<Parent, Child> internal constructor(
-    override val name: String,
-    val children: List<Property<Child>> = emptyList(),
-) : Property<Parent> {
-    @SafeVarargs
-    fun with(vararg properties: Property<Child>): NestedField<Parent, Child> {
-        return with(listOf(*properties))
-    }
+import org.hisp.dhis.android.network.common.fields.Field
 
-    fun with(properties: List<Property<Child>>?): NestedField<Parent, Child> {
-        return properties?.let {
-            NestedField(name, it)
-        } ?: create(name)
-    }
-
-    fun with(childFields: Fields<Child>): NestedField<Parent, Child> {
-        return with(childFields.fields)
+internal class SingleValueFilter<T> private constructor(
+    override val field: Field<T>,
+    override val operator: String,
+    override val values: Collection<String>,
+) : Filter<T> {
+    override fun generateString(): String {
+        return "${field.name}:$operator:${values.first()}"
     }
 
     companion object {
-        @JvmStatic
-        fun <T, K> create(name: String): NestedField<T, K> {
-            return NestedField(name, emptyList())
+        private fun <T> create(
+            field: Field<T>,
+            operator: String,
+            value: String,
+        ): Filter<T> {
+            // If the filter is incomplete, return null so the filter is not included in the request.
+            return SingleValueFilter(field, operator, listOf(value))
+        }
+
+        fun <T> gt(field: Field<T>, value: String): Filter<T> {
+            return create(field, "gt", value)
+        }
+
+        fun <T> eq(field: Field<T>, value: String): Filter<T> {
+            return create(field, "eq", value)
+        }
+
+        fun <T> like(field: Field<T>, value: String): Filter<T> {
+            return create(field, "like", value)
         }
     }
 }

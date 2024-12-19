@@ -28,15 +28,12 @@
 
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.Option
 
 internal fun interface OptionNetworkHandler {
     suspend fun getOptions(
-        fields: Fields<Option>,
-        optionSetUidsFilterString: String,
-        paging: Boolean,
+        optionUids: Set<String>,
         page: Int,
         pageSize: Int,
     ): Payload<Option>

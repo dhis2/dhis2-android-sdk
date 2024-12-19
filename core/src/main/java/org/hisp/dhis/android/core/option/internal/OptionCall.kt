@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
 import org.koin.core.annotation.Singleton
 
@@ -45,10 +44,8 @@ class OptionCall internal constructor(
             MAX_UID_LIST_SIZE,
             handler,
         ) { partitionUids: Set<String> ->
-            val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(partitionUids).generateString()
-
             apiDownloader.downloadPagedPayload(PAGE_SIZE) { page, pageSize ->
-                networkHandler.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
+                networkHandler.getOptions(partitionUids, page, pageSize)
             }
         }
     }

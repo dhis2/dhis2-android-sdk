@@ -30,7 +30,7 @@ package org.hisp.dhis.android.network.attribute
 
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.common.ValueType
-import org.hisp.dhis.android.network.common.applyBaseNameableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 internal fun attributeDtoToDomainMapper(item: AttributeDTO): Attribute {
     return Attribute.builder()

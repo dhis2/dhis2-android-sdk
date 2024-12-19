@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.koin.core.annotation.Singleton
 
 @Singleton

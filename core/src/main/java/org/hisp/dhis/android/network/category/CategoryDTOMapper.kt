@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 internal fun categoryDtoToDomainMapper(item: CategoryDTO): Category {
     return Category.builder()

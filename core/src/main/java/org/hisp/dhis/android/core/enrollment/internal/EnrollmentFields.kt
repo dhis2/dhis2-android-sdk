@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns
 import org.hisp.dhis.android.core.event.Event
@@ -37,6 +35,8 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteFields
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object EnrollmentFields : BaseFields<Enrollment>() {
     const val UID = "enrollment"

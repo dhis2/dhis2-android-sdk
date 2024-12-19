@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.network.constant
 
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.internal.ConstantFields
 import org.hisp.dhis.android.core.constant.internal.ConstantNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton

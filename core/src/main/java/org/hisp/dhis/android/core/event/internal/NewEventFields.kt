@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
@@ -36,6 +34,8 @@ import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.internal.NewRelationshipFields
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityDataValueFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object NewEventFields : BaseFields<NewTrackerImporterEvent>() {
     private const val UID = "event"

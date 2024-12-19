@@ -25,13 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.common.fields
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.hisp.dhis.android.network.common.filters.InFilter
+import org.hisp.dhis.android.network.common.filters.SingleValueFilter
 
-import kotlinx.serialization.Serializable
+internal data class Field<Parent> internal constructor(override val name: String) : Property<Parent> {
 
-@Serializable
-internal data class ObjectWithStyleDTO(
-    val color: String? = null,
-    val icon: String? = null,
-)
+    fun <V> eq(value: V): Filter<Parent> {
+        return SingleValueFilter.eq(this, value.toString())
+    }
+
+    fun gt(value: String): Filter<Parent> {
+        return SingleValueFilter.gt(this, value)
+    }
+
+    fun like(value: String): Filter<Parent> {
+        return SingleValueFilter.like(this, value)
+    }
+
+    fun `in`(values: Collection<String>): Filter<Parent> {
+        return InFilter.create(this, values)
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T> create(name: String): Field<T> {
+            return Field(name)
+        }
+    }
+}

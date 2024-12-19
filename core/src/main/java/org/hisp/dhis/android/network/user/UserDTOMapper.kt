@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.network.common.GeometryDTO
 import org.hisp.dhis.android.network.common.OrganisationUnitDTO
 import org.hisp.dhis.android.network.common.OrganisationUnitGroupDTO
-import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
-import org.hisp.dhis.android.network.common.applyBaseNameableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 internal fun userDTOtoDomainMapper(item: UserDTO): User {
     return User.builder()

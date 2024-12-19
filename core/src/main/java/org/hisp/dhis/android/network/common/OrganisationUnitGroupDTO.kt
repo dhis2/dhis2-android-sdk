@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.common
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 
 @Serializable
 internal data class OrganisationUnitGroupDTO(

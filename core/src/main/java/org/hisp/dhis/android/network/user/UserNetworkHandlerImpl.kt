@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Singleton

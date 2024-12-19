@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.util.SqlAggregator
 import org.koin.core.annotation.Singleton
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns as tavColumns
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns as dvColumns
@@ -100,39 +101,39 @@ internal class EventDataItemSQLEvaluator(
                     "WHERE $whereClause"
             }
             AggregationType.AVERAGE_SUM_ORG_UNIT -> {
-                aggregateByDataValueAndSumOrgunit("AVG", valueColumn, fromClause, whereClause)
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.AVG, valueColumn, fromClause, whereClause)
             }
             AggregationType.FIRST -> {
                 "SELECT SUM($valueColumn) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.FIRST)})"
             }
             AggregationType.FIRST_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.FIRST)})"
             }
             AggregationType.FIRST_FIRST_ORG_UNIT -> {
-                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, "MIN")
+                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, ValuePosition.FIRST)
             }
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD,
             -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.LAST)})"
             }
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
             -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.LAST)})"
             }
             AggregationType.LAST_LAST_ORG_UNIT -> {
-                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, "MAX")
+                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, ValuePosition.LAST)
             }
             AggregationType.MAX_SUM_ORG_UNIT -> {
-                aggregateByDataValueAndSumOrgunit("MAX", valueColumn, fromClause, whereClause)
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.MAX, valueColumn, fromClause, whereClause)
             }
             AggregationType.MIN_SUM_ORG_UNIT -> {
-                aggregateByDataValueAndSumOrgunit("MIN", valueColumn, fromClause, whereClause)
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.MIN, valueColumn, fromClause, whereClause)
             }
 
             AggregationType.CUSTOM,
@@ -186,16 +187,16 @@ internal class EventDataItemSQLEvaluator(
             ")"
     }
 
-    private fun firstOrLastValueClauseByOrunit(
+    private fun firstOrLastValueByOrunit(
         valueColumn: String,
         fromClause: String,
         whereClause: String,
-        minOrMax: String,
+        position: ValuePosition,
     ): String {
         val firstOrLastValueClause = "SELECT " +
             "$valueColumn, " +
             "$EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
-            "$minOrMax($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "${position.aggregator}($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
             "FROM $fromClause " +
             "WHERE $whereClause " +
             "AND $EventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
@@ -211,11 +212,11 @@ internal class EventDataItemSQLEvaluator(
         valueColumn: String,
         fromClause: String,
         whereClause: String,
-        minOrMax: String,
+        position: ValuePosition,
     ): String {
         val firstOrLastValueClause = "SELECT " +
             "$valueColumn, " +
-            "$minOrMax($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "${position.aggregator}($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
             "FROM $fromClause " +
             "WHERE $whereClause " +
             "AND $EventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL "

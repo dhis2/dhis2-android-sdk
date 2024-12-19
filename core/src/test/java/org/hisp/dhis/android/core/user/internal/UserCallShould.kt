@@ -75,7 +75,7 @@ class UserCallShould : BaseCallShould() {
                 coroutineAPICallExecutor,
                 userNetworkHandler,
                 userHandler,
-                dhisVersionManager
+                dhisVersionManager,
             ).call()
         }
 

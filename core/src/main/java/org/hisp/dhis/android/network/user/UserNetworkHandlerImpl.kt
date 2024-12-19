@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class UserService(private val client: HttpServiceClient) {
-    suspend fun authenticate(
+internal class UserNetworkHandlerImpl(
+    private val httpClient: HttpServiceClientKotlinx,
+    private val service: UserService = UserService(httpClient),
+) : UserNetworkHandler {
+    override suspend fun authenticate(
         credentials: String,
         fields: Fields<User>,
     ): User {
-        return client.get {
-            url("me")
-            authorizationHeader(credentials)
-            parameters {
-                fields(fields)
-            }
-        }
+        val apiUser = service.authenticate(credentials, fields)
+        return userDTOtoDomainMapper(apiUser)
     }
 
-    suspend fun getUser(fields: Fields<User>): User {
-        return client.get {
-            url("me")
-            parameters {
-                fields(fields)
-            }
-        }
+    override suspend fun getUser(
+        fields: Fields<User>,
+    ): User {
+        val apiUser = service.getUser(fields)
+        return userDTOtoDomainMapper(apiUser)
     }
 }

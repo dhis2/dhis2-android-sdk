@@ -28,37 +28,24 @@
 package org.hisp.dhis.android.core.category
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.category.CategoryDTO
+import org.hisp.dhis.android.network.categoryoption.CategoryOptionOrganisationUnitsDTO
 import org.junit.Test
 
-class CategoryShould : BaseObjectKotlinxShould("category/category.json"), ObjectShould {
+class CategoryOptionOrganisationUnitsShould :
+    BaseObjectKotlinxShould("category/category_option_orgunits.json"),
+    ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val categoryDTO = deserialize(CategoryDTO.serializer())
-        val category = categoryDTO.toDomain()
+        val categoryOptionOrganisationUnitsDTO = deserialize(CategoryOptionOrganisationUnitsDTO.serializer())
+        val linksMap = categoryOptionOrganisationUnitsDTO.toDomain()
 
-        assertThat(category.uid()).isEqualTo("KfdsGBcoiCa")
-        assertThat(category.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"),
-        )
-        assertThat(category.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"),
-        )
-
-        assertThat(category.name()).isEqualTo("Births attended by")
-        assertThat(category.displayName()).isEqualTo("Births attended by")
-
-        val categoryOptions = category.categoryOptions()
-
-        assertThat(categoryOptions?.getOrNull(0)?.uid()).isEqualTo("TNYQzTHdoxL")
-        assertThat(categoryOptions?.getOrNull(1)?.uid()).isEqualTo("TXGfLxZlInA")
-        assertThat(categoryOptions?.getOrNull(2)?.uid()).isEqualTo("QgULqw9YDu2")
-        assertThat(categoryOptions?.getOrNull(3)?.uid()).isEqualTo("OjIOxG7vgna")
-        assertThat(categoryOptions?.getOrNull(4)?.uid()).isEqualTo("uZUnebiT5DI")
-        assertThat(categoryOptions?.getOrNull(5)?.uid()).isEqualTo("HTHvCohKoXt")
+        assertThat(linksMap.size).isEqualTo(3)
+        assertThat(linksMap.keys).containsExactly("as6ygGvUGNg", "TNYQzTHdoxL", "TXGfLxZlInA")
+        assertThat(linksMap["as6ygGvUGNg"]).containsExactly("DiszpKrYNg8")
+        assertThat(linksMap["TNYQzTHdoxL"]).containsExactly("DiszpKrYNg8")
+        assertThat(linksMap["TXGfLxZlInA"]).containsExactly(null)
     }
 }

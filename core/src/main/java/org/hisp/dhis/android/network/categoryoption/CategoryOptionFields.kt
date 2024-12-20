@@ -25,25 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.categoryoption
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object CategoryComboFields : BaseFields<CategoryCombo>() {
-    const val CATEGORIES = "categories"
-    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
-
+internal object CategoryOptionFields : BaseFields<CategoryOption>() {
+    private const val ACCESS = "access"
+    internal const val ORGANISATION_UNITS = "organisationUnits"
     val uid = fh.uid()
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.IS_DEFAULT),
-        fh.nestedFieldWithUid(CATEGORIES),
-        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
+        fh.getNameableFields(),
+        fh.field(CategoryOptionTableInfo.Columns.START_DATE),
+        fh.field(CategoryOptionTableInfo.Columns.END_DATE),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
     )
 }

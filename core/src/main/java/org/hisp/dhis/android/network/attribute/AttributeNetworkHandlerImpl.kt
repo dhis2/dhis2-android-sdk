@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.attribute
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,7 +39,7 @@ internal class AttributeNetworkHandlerImpl(
 ) : AttributeNetworkHandler {
     private val service: AttributeService = AttributeService(httpClient)
 
-    override suspend fun getAttributes(attributeUids: Set<String>): Payload<Attribute> {
+    override suspend fun getAttributes(attributeUids: Set<String>): PayloadJson<Attribute> {
         val apiPayload = service.getAttributes(
             AttributeFields.allFields,
             AttributeFields.uid.`in`(attributeUids),

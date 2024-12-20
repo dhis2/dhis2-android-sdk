@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,43 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.network.categorycombo
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnits
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryOptionService(private val client: HttpServiceClient) {
+internal class CategoryComboNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : CategoryComboNetworkHandler {
+    private val service: CategoryComboService = CategoryComboService(httpClient)
 
-    suspend fun getCategoryOptions(
-        fields: Fields<CategoryOption>,
-        categoryUidsFilterString: String,
-        accessDataReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<CategoryOption> {
-        return client.get {
-            url("categoryOptions")
-            parameters {
-                fields(fields)
-                attribute("filter", categoryUidsFilterString)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
-
-    suspend fun getCategoryOptionOrgUnits(
-        categoryOptions: String,
-    ): CategoryOptionOrganisationUnits {
-        return client.get {
-            url("categoryOptions/orgUnits")
-            parameters {
-                attribute("categoryOptions", categoryOptions)
-            }
-        }
+    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): PayloadJson<CategoryCombo> {
+        val apiPayload = service.getCategoryCombos(
+            CategoryComboFields.allFields,
+            CategoryComboFields.uid.`in`(categoryComboUids),
+            paging = false,
+        )
+        return apiPayload.mapItems(CategoryComboDTO::toDomain)
     }
 }

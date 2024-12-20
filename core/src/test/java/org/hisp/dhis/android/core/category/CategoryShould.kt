@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.category.CategoryDTO
-import org.hisp.dhis.android.network.category.categoryDtoToDomainMapper
 import org.junit.Test
 
 class CategoryShould : BaseObjectKotlinxShould("category/category.json"), ObjectShould {
@@ -40,7 +39,7 @@ class CategoryShould : BaseObjectKotlinxShould("category/category.json"), Object
     @Test
     override fun map_from_json_string() {
         val categoryDTO = deserialize(CategoryDTO.serializer())
-        val category = categoryDtoToDomainMapper(categoryDTO)
+        val category = categoryDTO.toDomain()
 
         assertThat(category.uid()).isEqualTo("KfdsGBcoiCa")
         assertThat(category.created()).isEqualTo(

@@ -37,7 +37,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class CategoryOptionOrganisationUnitsCall(
     private val handler: CategoryOptionOrganisationUnitLinkHandler,
-    private val service: CategoryOptionService,
+    private val networkHandler: CategoryOptionNetworkHandler,
     private val dhisVersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader,
 ) {
@@ -46,7 +46,7 @@ internal class CategoryOptionOrganisationUnitsCall(
         private const val QUERY_WITHOUT_UIDS_LENGTH = ("categoryOptions/orgUnits?categoryOptions=").length
     }
 
-    suspend fun download(uids: Set<String>): Map<String, List<String>> {
+    suspend fun download(uids: Set<String>): Map<String, List<String?>> {
         return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
             apiDownloader.downloadPartitionedMap(
                 uids = uids,
@@ -56,7 +56,7 @@ internal class CategoryOptionOrganisationUnitsCall(
                     data.forEach { handleEntry(it) }
                 },
                 pageDownloader = { partitionUids: Set<String> ->
-                    service.getCategoryOptionOrgUnits(partitionUids.joinToString(","))
+                    networkHandler.getCategoryOptionOrgUnits(partitionUids)
                 },
             )
         } else {

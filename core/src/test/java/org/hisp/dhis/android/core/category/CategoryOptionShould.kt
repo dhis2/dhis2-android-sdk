@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.core.category
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.koin.core.annotation.Singleton
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.categoryoption.CategoryOptionDTO
+import org.junit.Test
 
-@Singleton
-internal class CategoryComboNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
-) : CategoryComboNetworkHandler {
-    private val service: CategoryComboService = CategoryComboService(httpClient)
+class CategoryOptionShould : BaseObjectKotlinxShould("category/category_option.json"), ObjectShould {
 
-    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): Payload<CategoryCombo> {
-        val apiPayload = service.getCategoryCombos(
-            CategoryComboFields.allFields,
-            CategoryComboFields.uid.`in`(categoryComboUids),
-            paging = false,
+    @Test
+    override fun map_from_json_string() {
+        val optionDTO = deserialize(CategoryOptionDTO.serializer())
+        val option = optionDTO.toDomain()
+
+        assertThat(option.uid()).isEqualTo("cQYFfHX9oIT")
+        assertThat(option.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"),
         )
-        return apiPayload.mapItems(::categoryComboDtoToDomainMapper)
+        assertThat(option.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"),
+        )
+
+        assertThat(option.name()).isEqualTo("Green")
+        assertThat(option.shortName()).isEqualTo("Green")
+        assertThat(option.displayName()).isEqualTo("Green")
+        assertThat(option.displayShortName()).isEqualTo("Green")
+
+        assertThat(option.startDate()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-01T00:00:00.000"),
+        )
+        assertThat(option.endDate()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-05-01T00:00:00.000"),
+        )
     }
 }

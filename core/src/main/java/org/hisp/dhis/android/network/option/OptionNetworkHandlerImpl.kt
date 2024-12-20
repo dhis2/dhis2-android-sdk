@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.network.option
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.core.option.internal.OptionNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,7 +40,7 @@ internal class OptionNetworkHandlerImpl(
 ) : OptionNetworkHandler {
     private val service: OptionService = OptionService(httpClient)
 
-    override suspend fun getOptions(optionUids: Set<String>, page: Int, pageSize: Int): Payload<Option> {
+    override suspend fun getOptions(optionUids: Set<String>, page: Int, pageSize: Int): PayloadJson<Option> {
         val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(optionUids).generateString()
         val apiPayload = service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
         return apiPayload.mapItems(::optionDtoToDomainMapper)

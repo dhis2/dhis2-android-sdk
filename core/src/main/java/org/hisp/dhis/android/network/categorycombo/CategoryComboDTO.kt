@@ -26,12 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.categorycombo
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.network.category.CategoryOptionComboDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
@@ -39,7 +40,7 @@ import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class CategoryDTO(
+internal data class CategoryComboDTO(
     @SerialName("id") override val uid: String,
     override val code: String? = BaseIdentifiableObjectDTO.CODE,
     override val name: String? = BaseIdentifiableObjectDTO.NAME,
@@ -47,20 +48,22 @@ internal data class CategoryDTO(
     override val created: String? = BaseIdentifiableObjectDTO.CREATED,
     override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val dataDimensionType: String? = null,
-    val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
+    val isDefault: Boolean? = null,
+    val categories: List<ObjectWithUidDTO> = emptyList(),
+    val categoryOptionCombos: List<CategoryOptionComboDTO> = emptyList(),
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): Category {
-        return Category.builder()
+    fun toDomain(): CategoryCombo {
+        return CategoryCombo.builder()
             .applyBaseIdentifiableFields(this)
-            .dataDimensionType(this.dataDimensionType)
-            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
+            .isDefault(this.isDefault)
+            .categories(this.categories.map { Category.builder().uid(it.uid).build() })
+            .categoryOptionCombos(this.categoryOptionCombos.map { it.toDomain(this.uid) })
             .build()
     }
 }
 
 @Serializable
-internal class CategoryPayload(
+internal class CategoryComboPayload(
     override val pager: PagerDTO? = null,
-    @SerialName("categories") override val items: List<CategoryDTO> = emptyList(),
-) : PayloadJson<CategoryDTO>(pager, items)
+    @SerialName("categoryCombos") override val items: List<CategoryComboDTO> = emptyList(),
+) : PayloadJson<CategoryComboDTO>(pager, items)

@@ -25,32 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.categoryoption
 
-package org.hisp.dhis.android.network.category
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.koin.core.annotation.Singleton
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.PagerDTO
+@Singleton
+internal class CategoryOptionService(private val client: HttpServiceClientKotlinx) {
 
-@Serializable
-internal data class CategoryComboDTO(
-    @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val isDefault: Boolean? = null,
-    val categories: List<ObjectWithUidDTO> = emptyList(),
-    val categoryOptionCombos: List<CategoryOptionComboDTO> = emptyList(),
-) : BaseIdentifiableObjectDTO
+    suspend fun getCategoryOptions(
+        fields: Fields<CategoryOption>,
+        categoryUidsFilterString: String,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): CategoryOptionPayload {
+        return client.get {
+            url("categoryOptions")
+            parameters {
+                fields(fields)
+                attribute("filter", categoryUidsFilterString)
+                attribute("filter", accessDataReadFilter)
+                paging(paging)
+            }
+        }
+    }
 
-@Serializable
-internal class CategoryComboPayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("categoryCombos") override val items: List<CategoryComboDTO> = emptyList(),
-) : PayloadJson<CategoryComboDTO>(pager, items)
+    suspend fun getCategoryOptionOrgUnits(
+        categoryOptions: String,
+    ): CategoryOptionOrganisationUnitsDTO {
+        return client.get {
+            url("categoryOptions/orgUnits")
+            parameters {
+                attribute("categoryOptions", categoryOptions)
+            }
+        }
+    }
+}

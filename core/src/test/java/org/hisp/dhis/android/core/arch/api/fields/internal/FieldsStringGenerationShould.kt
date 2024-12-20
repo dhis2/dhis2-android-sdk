@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
-import org.hisp.dhis.android.core.category.internal.CategoryOptionFields
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
@@ -122,8 +121,9 @@ import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionF
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
 import org.hisp.dhis.android.network.attribute.AttributeFields
-import org.hisp.dhis.android.network.category.CategoryComboFields
 import org.hisp.dhis.android.network.category.CategoryFields
+import org.hisp.dhis.android.network.categorycombo.CategoryComboFields
+import org.hisp.dhis.android.network.categoryoption.CategoryOptionFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields

@@ -25,30 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.categoryoption.CategoryOptionOrganisationUnitsDTO
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
+class CategoryOptionOrganisationUnitsShould :
+    BaseObjectKotlinxShould("category/category_option_orgunits.json"),
+    ObjectShould {
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class CategoryOptionOrganisationUnitsShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryOptionOrganisationUnitsShould() {
-        super("category/category_option_orgunits.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        CategoryOptionOrganisationUnits links =
-                objectMapper.readValue(jsonStream, CategoryOptionOrganisationUnits.class);
+    override fun map_from_json_string() {
+        val categoryOptionOrganisationUnitsDTO = deserialize(CategoryOptionOrganisationUnitsDTO.serializer())
+        val linksMap = categoryOptionOrganisationUnitsDTO.toDomain()
 
-        assertThat(links.size()).isEqualTo(3);
+        assertThat(linksMap.size).isEqualTo(3)
+        assertThat(linksMap.keys).containsExactly("as6ygGvUGNg", "TNYQzTHdoxL", "TXGfLxZlInA")
+        assertThat(linksMap["as6ygGvUGNg"]).containsExactly("DiszpKrYNg8")
+        assertThat(linksMap["TNYQzTHdoxL"]).containsExactly("DiszpKrYNg8")
+        assertThat(linksMap["TXGfLxZlInA"]).containsExactly(null)
     }
 }

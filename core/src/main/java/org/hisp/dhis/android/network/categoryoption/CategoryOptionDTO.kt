@@ -26,20 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.categoryoption
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
-internal data class CategoryDTO(
+internal data class CategoryOptionDTO(
     @SerialName("id") override val uid: String,
     override val code: String? = BaseIdentifiableObjectDTO.CODE,
     override val name: String? = BaseIdentifiableObjectDTO.NAME,
@@ -47,20 +48,26 @@ internal data class CategoryDTO(
     override val created: String? = BaseIdentifiableObjectDTO.CREATED,
     override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val dataDimensionType: String? = null,
-    val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
-) : BaseIdentifiableObjectDTO {
-    fun toDomain(): Category {
-        return Category.builder()
-            .applyBaseIdentifiableFields(this)
-            .dataDimensionType(this.dataDimensionType)
-            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
-            .build()
+    override val shortName: String? = BaseNameableObjectDTO.SHORT_NAME,
+    override val displayShortName: String? = BaseNameableObjectDTO.DISPLAY_SHORT_NAME,
+    override val description: String? = BaseNameableObjectDTO.DESCRIPTION,
+    override val displayDescription: String? = BaseNameableObjectDTO.DISPLAY_DESCRIPTION,
+    val startDate: String? = null,
+    val endDate: String? = null,
+    val access: AccessDTO? = null,
+) : BaseNameableObjectDTO {
+    fun toDomain(): CategoryOption {
+        return CategoryOption.builder().apply {
+            applyBaseNameableFields(this@CategoryOptionDTO)
+            startDate?.let { startDate(DateUtils.DATE_FORMAT.parse(startDate)) }
+            endDate?.let { endDate(DateUtils.DATE_FORMAT.parse(endDate)) }
+            access?.let { access(access.toDomain()) }
+        }.build()
     }
 }
 
 @Serializable
-internal class CategoryPayload(
+internal class CategoryOptionPayload(
     override val pager: PagerDTO? = null,
-    @SerialName("categories") override val items: List<CategoryDTO> = emptyList(),
-) : PayloadJson<CategoryDTO>(pager, items)
+    @SerialName("categoryOptions") override val items: List<CategoryOptionDTO> = emptyList(),
+) : PayloadJson<CategoryOptionDTO>(pager, items)

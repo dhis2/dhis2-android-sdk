@@ -45,6 +45,6 @@ internal class CategoryNetworkHandlerImpl(
             CategoryFields.uid.`in`(categoryUids),
             paging = false,
         )
-        return apiPayload.mapItems(::categoryDtoToDomainMapper)
+        return apiPayload.mapItems(CategoryDTO::toDomain)
     }
 }

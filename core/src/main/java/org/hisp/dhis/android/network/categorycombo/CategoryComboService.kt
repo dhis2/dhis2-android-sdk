@@ -25,40 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.categorycombo
 
-package org.hisp.dhis.android.network.category
-
-import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-internal fun categoryDtoToDomainMapper(item: CategoryDTO): Category {
-    return Category.builder()
-        .applyBaseIdentifiableFields(item)
-        .dataDimensionType(item.dataDimensionType)
-        .categoryOptions(item.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
-        .build()
-}
-
-internal fun categoryComboDtoToDomainMapper(item: CategoryComboDTO): CategoryCombo {
-    return CategoryCombo.builder()
-        .applyBaseIdentifiableFields(item)
-        .isDefault(item.isDefault)
-        .categories(item.categories.map { Category.builder().uid(it.uid).build() })
-        .categoryOptionCombos(item.categoryOptionCombos.map { categoryOptionComboDtoToDomainMapper(it, item.uid) })
-        .build()
-}
-
-internal fun categoryOptionComboDtoToDomainMapper(
-    item: CategoryOptionComboDTO,
-    categoryComboUid: String,
-): CategoryOptionCombo {
-    return CategoryOptionCombo.builder()
-        .applyBaseIdentifiableFields(item)
-        .categoryCombo(ObjectWithUid.create(categoryComboUid))
-        .categoryOptions(item.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
-        .build()
+@Singleton
+internal class CategoryComboService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getCategoryCombos(
+        fields: Fields<CategoryCombo>,
+        uids: Filter<CategoryCombo>,
+        paging: Boolean,
+    ): CategoryComboPayload {
+        return client.get {
+            url("categoryCombos")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

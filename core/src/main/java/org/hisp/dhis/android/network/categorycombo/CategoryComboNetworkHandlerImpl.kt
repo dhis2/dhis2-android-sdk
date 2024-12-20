@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.categorycombo
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -45,6 +45,6 @@ internal class CategoryComboNetworkHandlerImpl(
             CategoryComboFields.uid.`in`(categoryComboUids),
             paging = false,
         )
-        return apiPayload.mapItems(::categoryComboDtoToDomainMapper)
+        return apiPayload.mapItems(CategoryComboDTO::toDomain)
     }
 }

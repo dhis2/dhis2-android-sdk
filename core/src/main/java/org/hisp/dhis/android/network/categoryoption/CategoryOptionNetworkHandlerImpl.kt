@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
+package org.hisp.dhis.android.network.categoryoption
+
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionNetworkHandler
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryOptionCall(
-    private val handler: CategoryOptionHandler,
-    private val networkHandler: CategoryOptionNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<CategoryOption> {
+internal class CategoryOptionNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : CategoryOptionNetworkHandler {
+    private val service: CategoryOptionService = CategoryOptionService(httpClient)
 
-    companion object {
-        private const val QUERY_WITHOUT_UIDS_LENGTH = (
-            "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
-                "displayShortName,description,displayDescription,startDate,endDate,access[data[read,write]]" +
-                "&filter=categories.id:in:[]&filter=access.data.read:eq:true&paging=false"
-            ).length
+    override suspend fun getCategoryOptions(categoryOptionUids: Set<String>): Payload<CategoryOption> {
+        val apiPayload = service.getCategoryOptions(
+            CategoryOptionFields.allFields,
+            "categories." + ObjectWithUid.uid.`in`(categoryOptionUids).generateString(),
+            "access.data." + DataAccessFields.read.eq(true).generateString(),
+            paging = false,
+        )
+        return apiPayload.mapItems(CategoryOptionDTO::toDomain)
     }
 
-    override suspend fun download(uids: Set<String>): List<CategoryOption> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
-            handler,
-            networkHandler::getCategoryOptions,
-        )
+    override suspend fun getCategoryOptionOrgUnits(categoryOptionUids: Set<String>): Map<String, List<String?>> {
+        return service.getCategoryOptionOrgUnits(categoryOptionUids.joinToString(",")).toDomain()
     }
 }

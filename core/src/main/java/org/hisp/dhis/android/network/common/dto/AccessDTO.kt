@@ -25,25 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.common.dto
 
-internal object CategoryComboFields : BaseFields<CategoryCombo>() {
-    const val CATEGORIES = "categories"
-    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.Access
 
-    val uid = fh.uid()
+@Serializable
+internal data class AccessDTO(
+    val read: Boolean = true,
+    val write: Boolean = true,
+    val data: DataAccessDTO? = null,
+) {
 
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.IS_DEFAULT),
-        fh.nestedFieldWithUid(CATEGORIES),
-        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
-    )
+    fun toDomain(): Access {
+        return Access.builder()
+            .read(this.read)
+            .write(this.write)
+            .data(this.data?.toDomain())
+            .build()
+    }
 }

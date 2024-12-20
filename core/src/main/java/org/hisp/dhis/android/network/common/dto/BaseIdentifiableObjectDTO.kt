@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+package org.hisp.dhis.android.network.common.dto
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
-    val uid: Field<LegendSet> = fh.uid()
+internal interface BaseIdentifiableObjectDTO {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: String?
+    val lastUpdated: String?
+    val deleted: Boolean?
 
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
-    )
+    companion object {
+        val CODE = null
+        val NAME = null
+        val DISPLAY_NAME = null
+        val CREATED = null
+        val LAST_UPDATED = null
+        val DELETED = null
+    }
+}
+
+internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where
+      T : BaseIdentifiableObject.Builder<T> {
+    uid(item.uid)
+    code(item.code)
+    name(item.name)
+    displayName(item.displayName)
+    item.created?.let { created(it) } ?: { created(null) }
+    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
+    deleted(item.deleted)
+    return this
 }

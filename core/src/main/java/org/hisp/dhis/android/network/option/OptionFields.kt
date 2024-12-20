@@ -25,13 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.option
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.OptionTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+internal object OptionFields : BaseFields<Option>() {
+    private const val STYLE = "style"
 
-@Serializable
-internal data class ObjectWithUidDTO(
-    @SerialName("id") val uid: String,
-)
+    val uid: Field<Option> = fh.uid()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SORT_ORDER),
+        fh.nestedFieldWithUid(Columns.OPTION_SET),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+    )
+}

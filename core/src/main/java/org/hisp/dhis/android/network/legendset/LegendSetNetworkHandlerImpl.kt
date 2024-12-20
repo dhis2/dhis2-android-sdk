@@ -27,12 +27,10 @@
  */
 package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,12 +39,12 @@ internal class LegendSetNetworkHandlerImpl(
 ) : LegendSetNetworkHandler {
     private val service: LegendSetService = LegendSetService(httpClient)
 
-    override suspend fun getLegendSets(
-        fields: Fields<LegendSet>,
-        uids: Filter<LegendSet>,
-        paging: Boolean,
-    ): PayloadJson<LegendSet> {
-        val apiPayload = service.getLegendSets(fields, uids, paging)
+    override suspend fun getLegendSets(legendSetUids: Set<String>): Payload<LegendSet> {
+        val apiPayload = service.getLegendSets(
+            LegendSetFields.allFields,
+            LegendSetFields.uid.`in`(legendSetUids),
+            false,
+        )
         return apiPayload.mapItems(::legendSetDtoToDomainMapper)
     }
 }

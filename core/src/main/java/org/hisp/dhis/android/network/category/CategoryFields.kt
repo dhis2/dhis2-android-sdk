@@ -25,15 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.category
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryTableInfo
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import kotlinx.serialization.Serializable
+internal object CategoryFields : BaseFields<Category>() {
+    const val CATEGORY_OPTIONS = "categoryOptions"
 
-@Serializable
-internal data class PagerDTO(
-    val page: Int,
-    val pageCount: Int,
-    val pageSize: Int,
-    val total: Int,
-)
+    val uid = fh.uid()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.nestedFieldWithUid(CATEGORY_OPTIONS),
+        fh.field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE),
+    )
+}

@@ -25,31 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.category
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import org.hisp.dhis.android.core.common.BaseNameableObject
+internal object CategoryComboFields : BaseFields<CategoryCombo>() {
+    const val CATEGORIES = "categories"
+    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
-internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
-    val shortName: String?
-    val displayShortName: String?
-    val description: String?
-    val displayDescription: String?
+    val uid = fh.uid()
 
-    companion object {
-        val SHORT_NAME = null
-        val DISPLAY_SHORT_NAME = null
-        val DESCRIPTION = null
-        val DISPLAY_DESCRIPTION = null
-    }
-}
-
-internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where
-      T : BaseNameableObject.Builder<T> {
-    applyBaseIdentifiableFields(item)
-    shortName(item.shortName)
-    displayShortName(item.displayShortName)
-    description(item.description)
-    displayDescription(item.displayDescription)
-    return this
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.IS_DEFAULT),
+        fh.nestedFieldWithUid(CATEGORIES),
+        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
+    )
 }

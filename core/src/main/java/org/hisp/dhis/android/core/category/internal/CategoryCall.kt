@@ -44,16 +44,6 @@ internal class CategoryCall(
     }
 
     override suspend fun download(uids: Set<String>): List<Category> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            networkHandler.categories(
-                CategoryFields.allFields,
-                CategoryFields.uid.`in`(partitionUids),
-                paging = false,
-            )
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getCategories)
     }
 }

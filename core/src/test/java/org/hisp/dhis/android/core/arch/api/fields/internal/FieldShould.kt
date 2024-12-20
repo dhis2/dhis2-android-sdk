@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 import com.google.common.truth.Truth
 import nl.jqno.equalsverifier.EqualsVerifier
 import nl.jqno.equalsverifier.Warning
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.NestedField
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

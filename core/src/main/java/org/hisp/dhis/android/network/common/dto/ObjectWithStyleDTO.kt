@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionTableInfo.Columns
+package org.hisp.dhis.android.network.common.dto
 
-internal object OptionFields : BaseFields<Option>() {
-    private const val STYLE = "style"
+import kotlinx.serialization.Serializable
 
-    val uid: Field<Option> = fh.uid()
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SORT_ORDER),
-        fh.nestedFieldWithUid(Columns.OPTION_SET),
-        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-    )
-}
+@Serializable
+internal data class ObjectWithStyleDTO(
+    val color: String? = null,
+    val icon: String? = null,
+)

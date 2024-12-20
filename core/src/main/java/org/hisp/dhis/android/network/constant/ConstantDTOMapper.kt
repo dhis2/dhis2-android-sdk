@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.network.constant
 
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.network.common.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 internal fun constantDtoToDomainMapper(item: ConstantDTO): Constant {
     return Constant.builder()

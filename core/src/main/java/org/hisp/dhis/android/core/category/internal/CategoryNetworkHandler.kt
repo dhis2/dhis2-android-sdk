@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.Category
 
 internal fun interface CategoryNetworkHandler {
-    suspend fun categories(
-        fields: Fields<Category>,
-        uids: Filter<Category>,
-        paging: Boolean,
+    suspend fun getCategories(
+        categoryUids: Set<String>,
     ): Payload<Category>
 }

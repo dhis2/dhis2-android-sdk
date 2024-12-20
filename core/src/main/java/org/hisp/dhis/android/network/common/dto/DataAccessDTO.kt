@@ -25,28 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.common.dto
 
-@Singleton
-internal class CategoryComboService(private val client: HttpServiceClientKotlinx) {
-    suspend fun getCategoryCombos(
-        fields: Fields<CategoryCombo>,
-        uids: Filter<CategoryCombo>,
-        paging: Boolean,
-    ): CategoryComboPayload {
-        return client.get {
-            url("categoryCombos")
-            parameters {
-                fields(fields)
-                filter(uids)
-                paging(paging)
-            }
-        }
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.DataAccess
+
+@Serializable
+internal data class DataAccessDTO(
+    val read: Boolean = true,
+    val write: Boolean = true,
+) {
+
+    fun toDomain(): DataAccess {
+        return DataAccess.builder()
+            .read(this.read)
+            .write(this.write)
+            .build()
     }
 }

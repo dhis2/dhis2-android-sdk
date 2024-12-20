@@ -25,26 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
+package org.hisp.dhis.android.network.categoryoption
+
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionNetworkHandler
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryComboNetworkHandlerImpl(
+internal class CategoryOptionNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
-) : CategoryComboNetworkHandler {
-    private val service: CategoryComboService = CategoryComboService(httpClient)
+) : CategoryOptionNetworkHandler {
+    private val service: CategoryOptionService = CategoryOptionService(httpClient)
 
-    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): Payload<CategoryCombo> {
-        val apiPayload = service.getCategoryCombos(
-            CategoryComboFields.allFields,
-            CategoryComboFields.uid.`in`(categoryComboUids),
+    override suspend fun getCategoryOptions(categoryOptionUids: Set<String>): PayloadJson<CategoryOption> {
+        val apiPayload = service.getCategoryOptions(
+            CategoryOptionFields.allFields,
+            "categories." + ObjectWithUid.uid.`in`(categoryOptionUids).generateString(),
+            "access.data." + DataAccessFields.read.eq(true).generateString(),
             paging = false,
         )
-        return apiPayload.mapItems(::categoryComboDtoToDomainMapper)
+        return apiPayload.mapItems(CategoryOptionDTO::toDomain)
+    }
+
+    override suspend fun getCategoryOptionOrgUnits(categoryOptionUids: Set<String>): Map<String, List<String?>> {
+        return service.getCategoryOptionOrgUnits(categoryOptionUids.joinToString(",")).toDomain()
     }
 }

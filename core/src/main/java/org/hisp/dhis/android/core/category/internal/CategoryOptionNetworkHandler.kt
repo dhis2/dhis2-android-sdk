@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category.internal
 
-import static com.google.common.truth.Truth.assertThat;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryOption
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+internal interface CategoryOptionNetworkHandler {
+    suspend fun getCategoryOptions(
+        categoryOptionUids: Set<String>,
+    ): Payload<CategoryOption>
 
-import java.io.IOException;
-import java.text.ParseException;
-
-public class CategoryOptionOrganisationUnitsShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryOptionOrganisationUnitsShould() {
-        super("category/category_option_orgunits.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        CategoryOptionOrganisationUnits links =
-                objectMapper.readValue(jsonStream, CategoryOptionOrganisationUnits.class);
-
-        assertThat(links.size()).isEqualTo(3);
-    }
+    suspend fun getCategoryOptionOrgUnits(
+        categoryOptionUids: Set<String>,
+    ): Map<String, List<String?>>
 }

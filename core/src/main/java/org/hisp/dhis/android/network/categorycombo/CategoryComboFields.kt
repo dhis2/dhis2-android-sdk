@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.categorycombo
 
-package org.hisp.dhis.android.core.category;
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import java.util.HashMap;
-import java.util.List;
+internal object CategoryComboFields : BaseFields<CategoryCombo>() {
+    const val CATEGORIES = "categories"
+    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
-public class CategoryOptionOrganisationUnits extends HashMap<String, List<String>> {
+    val uid = fh.uid()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.IS_DEFAULT),
+        fh.nestedFieldWithUid(CATEGORIES),
+        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
+    )
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.network.common
 
-public enum FeatureType {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 
-    POINT("POINT", "Point"),
-    POLYGON("POLYGON", "Polygon"),
-    MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
-    NONE("NONE", "None"),
-    SYMBOL("SYMBOL", "Symbol");
-
-    private final String featureType;
-    private final String geometryType;
-
-    FeatureType(String featureType, String geometryType) {
-        this.featureType = featureType;
-        this.geometryType = geometryType;
-    }
-
-    public String getFeatureType() {
-        return featureType;
-    }
-
-    public String getGeometryType() {
-        return geometryType;
-    }
-
-    public static FeatureType valueOfFeatureType(String featureType) {
-        for (FeatureType value : values()) {
-            if (value.featureType.equals(featureType) || value.geometryType.equals(featureType)) {
-                return value;
-            }
-        }
-        return null;
-    }
-}
+@Serializable
+internal data class OrganisationUnitGroupDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String? = null,
+    override val lastUpdated: String? = null,
+    override val deleted: Boolean? = null,
+    val shortname: String? = null,
+    val displayShortname: String? = null,
+) : BaseIdentifiableObjectDTO

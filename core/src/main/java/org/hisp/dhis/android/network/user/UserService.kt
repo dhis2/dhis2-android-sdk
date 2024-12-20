@@ -26,37 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.network.user
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.common.FeatureType;
-
-public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureType> {
-
-    @Override
-    public FeatureType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex("geometryType");
-        String sourceValue = cursor.getString(columnIndex);
-
-        FeatureType featureType = null;
-        if (sourceValue != null) {
-            try {
-                featureType = Enum.valueOf(FeatureType.class, sourceValue);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
+internal class UserService(private val client: HttpServiceClientKotlinx) {
+    suspend fun authenticate(
+        credentials: String,
+        fields: Fields<User>,
+    ): UserDTO {
+        return client.get {
+            url("me")
+            authorizationHeader(credentials)
+            parameters {
+                fields(fields)
             }
         }
-        return featureType;
     }
 
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
-        if (value != null) {
-            contentValues.put("geometryType", value.geometryType);
+    suspend fun getUser(fields: Fields<User>): UserDTO {
+        return client.get {
+            url("me")
+            parameters {
+                fields(fields)
+            }
         }
     }
 }

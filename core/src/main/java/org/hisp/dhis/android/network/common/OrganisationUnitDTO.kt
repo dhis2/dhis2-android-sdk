@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.network.common
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.common.FeatureType;
-
-public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureType> {
-
-    @Override
-    public FeatureType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex("geometryType");
-        String sourceValue = cursor.getString(columnIndex);
-
-        FeatureType featureType = null;
-        if (sourceValue != null) {
-            try {
-                featureType = Enum.valueOf(FeatureType.class, sourceValue);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
-            }
-        }
-        return featureType;
-    }
-
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
-        if (value != null) {
-            contentValues.put("geometryType", value.geometryType);
-        }
-    }
-}
+@Serializable
+internal data class OrganisationUnitDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String? = null,
+    override val lastUpdated: String? = null,
+    override val deleted: Boolean? = null,
+    override val shortName: String? = null,
+    override val displayShortName: String? = null,
+    override val description: String? = null,
+    override val displayDescription: String? = null,
+    val parent: ObjectWithUidDTO? = null,
+    val path: String? = null,
+    val openingDate: String? = null,
+    val closedDate: String? = null,
+    val level: Int? = null,
+    val coordinates: String? = null,
+    val featureType: String? = null,
+    val geometry: GeometryDTO? = null,
+    val programs: List<ObjectWithUidDTO>? = emptyList(),
+    val dataSets: List<ObjectWithUidDTO>? = emptyList(),
+    val ancestors: List<OrganisationUnitDTO>? = emptyList(),
+    val organisationUnitGroups: List<OrganisationUnitGroupDTO>? = emptyList(),
+    val displayNamePath: List<String>? = emptyList(),
+) : BaseNameableObjectDTO

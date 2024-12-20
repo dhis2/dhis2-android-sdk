@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.user.internal
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+internal interface UserNetworkHandler {
+    suspend fun authenticate(
+        credentials: String,
+        fields: Fields<User>,
+    ): User
 
-import org.hisp.dhis.android.core.common.FeatureType;
-
-public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureType> {
-
-    @Override
-    public FeatureType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex("geometryType");
-        String sourceValue = cursor.getString(columnIndex);
-
-        FeatureType featureType = null;
-        if (sourceValue != null) {
-            try {
-                featureType = Enum.valueOf(FeatureType.class, sourceValue);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
-            }
-        }
-        return featureType;
-    }
-
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
-        if (value != null) {
-            contentValues.put("geometryType", value.geometryType);
-        }
-    }
+    suspend fun getUser(
+        fields: Fields<User>,
+    ): User
 }

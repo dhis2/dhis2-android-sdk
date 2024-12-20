@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class CreateEventUtils {
 
@@ -63,7 +63,7 @@ public class CreateEventUtils {
         event.put(Columns.CREATED, DATE);
         event.put(Columns.LAST_UPDATED, DATE);
         event.put(Columns.STATUS, STATUS.name());
-        event.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
+        event.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.featureType);
         event.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
         event.put(Columns.PROGRAM, program);
         event.put(Columns.PROGRAM_STAGE, programStage);

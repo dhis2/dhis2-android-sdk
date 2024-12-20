@@ -25,38 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+import kotlinx.serialization.Serializable
 
-import android.content.ContentValues;
-import android.database.Cursor;
+@Serializable
+enum class FeatureType(@JvmField val featureType: String, @JvmField val geometryType: String) {
+    POINT("POINT", "Point"),
+    POLYGON("POLYGON", "Polygon"),
+    MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
+    NONE("NONE", "None"),
+    SYMBOL("SYMBOL", "Symbol"),
+    ;
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.common.FeatureType;
-
-public class DbGeometryTypeColumnAdapter implements ColumnTypeAdapter<FeatureType> {
-
-    @Override
-    public FeatureType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex("geometryType");
-        String sourceValue = cursor.getString(columnIndex);
-
-        FeatureType featureType = null;
-        if (sourceValue != null) {
-            try {
-                featureType = Enum.valueOf(FeatureType.class, sourceValue);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown FeatureType type", exception);
+    internal companion object {
+        @JvmStatic
+        fun valueOfFeatureType(featureType: String): FeatureType? {
+            for (value in entries) {
+                if (value.featureType == featureType || value.geometryType == featureType) {
+                    return value
+                }
             }
-        }
-        return featureType;
-    }
-
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, FeatureType value) {
-        if (value != null) {
-            contentValues.put("geometryType", value.geometryType);
+            return null
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 
-@Singleton
-internal class UserService(private val client: HttpServiceClient) {
-    suspend fun authenticate(
-        credentials: String,
-        fields: Fields<User>,
-    ): User {
-        return client.get {
-            url("me")
-            authorizationHeader(credentials)
-            parameters {
-                fields(fields)
-            }
-        }
-    }
-
-    suspend fun getUser(fields: Fields<User>): User {
-        return client.get {
-            url("me")
-            parameters {
-                fields(fields)
-            }
-        }
-    }
-}
+@Serializable
+internal data class UserRoleDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String? = null,
+    override val lastUpdated: String? = null,
+    override val deleted: Boolean? = null,
+) : BaseIdentifiableObjectDTO

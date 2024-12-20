@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,7 +39,7 @@ internal class LegendSetNetworkHandlerImpl(
 ) : LegendSetNetworkHandler {
     private val service: LegendSetService = LegendSetService(httpClient)
 
-    override suspend fun getLegendSets(legendSetUids: Set<String>): Payload<LegendSet> {
+    override suspend fun getLegendSets(legendSetUids: Set<String>): PayloadJson<LegendSet> {
         val apiPayload = service.getLegendSets(
             LegendSetFields.allFields,
             LegendSetFields.uid.`in`(legendSetUids),

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.categorycombo
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,7 +39,7 @@ internal class CategoryComboNetworkHandlerImpl(
 ) : CategoryComboNetworkHandler {
     private val service: CategoryComboService = CategoryComboService(httpClient)
 
-    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): Payload<CategoryCombo> {
+    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): PayloadJson<CategoryCombo> {
         val apiPayload = service.getCategoryCombos(
             CategoryComboFields.allFields,
             CategoryComboFields.uid.`in`(categoryComboUids),

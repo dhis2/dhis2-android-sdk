@@ -45,6 +45,6 @@ internal class AttributeNetworkHandlerImpl(
             AttributeFields.uid.`in`(attributeUids),
             false,
         )
-        return apiPayload.mapItems(::attributeDtoToDomainMapper)
+        return apiPayload.mapItems(AttributeDTO::toDomain)
     }
 }

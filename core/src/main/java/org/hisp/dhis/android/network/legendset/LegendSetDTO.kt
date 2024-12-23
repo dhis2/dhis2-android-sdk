@@ -30,9 +30,11 @@ package org.hisp.dhis.android.network.legendset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class LegendSetDTO(
@@ -45,7 +47,15 @@ internal data class LegendSetDTO(
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
     val symbolizer: String? = null,
     val legends: List<LegendDTO> = emptyList(),
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): LegendSet {
+        return LegendSet.builder()
+            .applyBaseIdentifiableFields(this)
+            .symbolizer(symbolizer)
+            .legends(legends.map { it.toDomain(uid) })
+            .build()
+    }
+}
 
 @Serializable
 internal class LegendSetPayload(

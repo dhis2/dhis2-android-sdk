@@ -25,39 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option
 
-package org.hisp.dhis.android.core.option;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class OptionGroupShould : BaseObjectKotlinxShould("option/option_group.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class OptionGroupShould extends BaseObjectShould implements ObjectShould {
-
-    public OptionGroupShould() {
-        super("option/option_group.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        OptionGroup optionGroup = objectMapper.readValue(jsonStream, OptionGroup.class);
+    override fun map_from_json_string() {
+        val optionGroupDTO = deserialize(OptionGroupDTO.serializer())
+        val optionGroup = optionGroupDTO.toDomain()
 
-        assertThat(optionGroup.uid()).isEqualTo("j3JYGVCIEdz");
-        assertThat(optionGroup.name()).isEqualTo("Option group");
-        assertThat(optionGroup.displayName()).isEqualTo("Option group");
+        assertThat(optionGroup.uid()).isEqualTo("j3JYGVCIEdz")
+        assertThat(optionGroup.name()).isEqualTo("Option group")
+        assertThat(optionGroup.displayName()).isEqualTo("Option group")
         assertThat(optionGroup.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"),
+        )
         assertThat(optionGroup.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"));
-        assertThat(optionGroup.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
-        assertThat(optionGroup.options().get(0).uid()).isEqualTo("Y1ILwhy5VDY");
-        assertThat(optionGroup.options().get(1).uid()).isEqualTo("egT1YqFWsVk");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"),
+        )
+        assertThat(optionGroup.optionSet()!!.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(optionGroup.options()!![0].uid()).isEqualTo("Y1ILwhy5VDY")
+        assertThat(optionGroup.options()!![1].uid()).isEqualTo("egT1YqFWsVk")
     }
 }

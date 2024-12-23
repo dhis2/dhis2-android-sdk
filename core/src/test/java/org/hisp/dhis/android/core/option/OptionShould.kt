@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.option.OptionDTO
-import org.hisp.dhis.android.network.option.optionDtoToDomainMapper
 import org.junit.Test
 
 class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
@@ -40,7 +39,7 @@ class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould
     @Test
     override fun map_from_json_string() {
         val optionDTO = deserialize(OptionDTO.serializer())
-        val option = optionDtoToDomainMapper(optionDTO)
+        val option = optionDTO.toDomain()
 
         Truth.assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY")
         Truth.assertThat(option.code()).isEqualTo("0-14 years")

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.attribute.AttributeDTO
-import org.hisp.dhis.android.network.attribute.attributeDtoToDomainMapper
 import org.junit.Test
 
 class AttributeShould : BaseObjectKotlinxShould("attribute/attribute.json"), ObjectShould {
@@ -41,7 +40,7 @@ class AttributeShould : BaseObjectKotlinxShould("attribute/attribute.json"), Obj
     @Test
     override fun map_from_json_string() {
         val attributeDTO = deserialize(AttributeDTO.serializer())
-        val attribute = attributeDtoToDomainMapper(attributeDTO)
+        val attribute = attributeDTO.toDomain()
 
         Truth.assertThat(attribute.uid()).isEqualTo("r6KOit2qCGw")
         Truth.assertThat(attribute.name()).isEqualTo("Name Pattern")

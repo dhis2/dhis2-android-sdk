@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.legendset.LegendSetDTO
-import org.hisp.dhis.android.network.legendset.legendSetDtoToDomainMapper
 import org.junit.Test
 
 class LegendSetShould : BaseObjectKotlinxShould("legendset/legend_set.json"), ObjectShould {
@@ -40,7 +39,7 @@ class LegendSetShould : BaseObjectKotlinxShould("legendset/legend_set.json"), Ob
     @Test
     override fun map_from_json_string() {
         val legendSetDTO = deserialize(LegendSetDTO.serializer())
-        val legendSet = legendSetDtoToDomainMapper(legendSetDTO)
+        val legendSet = legendSetDTO.toDomain()
 
         Truth.assertThat(legendSet.uid()).isEqualTo("TiOkbpGEud4")
         Truth.assertThat(legendSet.name()).isEqualTo("Age 15y interval")

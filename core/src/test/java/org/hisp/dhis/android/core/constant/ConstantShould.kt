@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.constant.ConstantDTO
-import org.hisp.dhis.android.network.constant.constantDtoToDomainMapper
 import org.junit.Test
 
 class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), ObjectShould {
@@ -40,7 +39,7 @@ class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), Object
     @Test
     override fun map_from_json_string() {
         val constantDTO = deserialize(ConstantDTO.serializer())
-        val constant = constantDtoToDomainMapper(constantDTO)
+        val constant = constantDTO.toDomain()
 
         Truth.assertThat(constant.created())
             .isEqualTo(BaseIdentifiableObject.parseDate("2013-03-11T16:39:33.083"))

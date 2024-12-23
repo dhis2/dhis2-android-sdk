@@ -33,6 +33,8 @@ import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
 import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
 import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
 
 internal class ServerURLVersionRedirectionInterceptor : Interceptor {
 
@@ -49,7 +51,14 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
             }
             response.close()
 
-            val redirectReq = location?.let { request.newBuilder().url(it).build() } ?: request
+            val redirectReq = location?.let {
+                try {
+                    URL(it) // Verify if location is a valid URL
+                    request.newBuilder().url(it).build()
+                } catch (e: MalformedURLException) {
+                    request
+                }
+            } ?: request
 
             response = chain.proceed(redirectReq)
             redirects++

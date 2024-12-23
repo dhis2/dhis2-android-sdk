@@ -37,7 +37,6 @@ internal data class AccessDTO(
     val write: Boolean = true,
     val data: DataAccessDTO? = null,
 ) {
-
     fun toDomain(): Access {
         return Access.builder()
             .read(this.read)

@@ -30,12 +30,11 @@ package org.hisp.dhis.android.core.option.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class OptionGroupCall internal constructor(
-    private val service: OptionGroupService,
+    private val networkHandler: OptionGroupNetworkHandler,
     private val handler: OptionGroupHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<OptionGroup> {
@@ -44,11 +43,8 @@ class OptionGroupCall internal constructor(
             optionSetUids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            val optionSetUidsFilterStr =
-                "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
-            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
-        }
+            networkHandler::getOptionGroups,
+        )
     }
 
     companion object {

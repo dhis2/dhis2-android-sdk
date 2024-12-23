@@ -29,9 +29,17 @@
 package org.hisp.dhis.android.network.common.dto
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectStyle
 
 @Serializable
 internal data class ObjectWithStyleDTO(
     val color: String? = null,
     val icon: String? = null,
-)
+) {
+    fun toDomain(): ObjectStyle {
+        return ObjectStyle.builder()
+            .color(color)
+            .icon(icon)
+            .build()
+    }
+}

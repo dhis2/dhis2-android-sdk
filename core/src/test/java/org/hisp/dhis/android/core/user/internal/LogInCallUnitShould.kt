@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,7 +64,6 @@ class LogInCallUnitShould : BaseCallShould() {
     private val apiErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
 
     private val credentialsCaptor: KArgumentCaptor<String> = argumentCaptor()
-    private val filterCaptor: KArgumentCaptor<Fields<User>> = argumentCaptor()
 
     private val apiUser: User = mock()
     private val dbUser: User = mock()
@@ -119,7 +117,7 @@ class LogInCallUnitShould : BaseCallShould() {
 
     private fun whenAPICall(answer: Answer<User>) {
         userNetworkHandler.stub {
-            onBlocking { authenticate(any(), any()) }.doAnswer(answer)
+            onBlocking { authenticate(any()) }.doAnswer(answer)
         }
     }
 
@@ -160,7 +158,6 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(
             userNetworkHandler.authenticate(
                 credentialsCaptor.capture(),
-                filterCaptor.capture(),
             ),
         ).thenReturn(apiUser)
         login()

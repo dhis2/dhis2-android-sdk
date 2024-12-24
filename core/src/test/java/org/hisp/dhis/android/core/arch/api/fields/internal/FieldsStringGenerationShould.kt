@@ -110,7 +110,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields
 import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
-import org.hisp.dhis.android.core.user.internal.UserFields
 import org.hisp.dhis.android.core.user.internal.UserGroupFields
 import org.hisp.dhis.android.core.user.internal.UserRoleFields
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleExpressionFields
@@ -129,6 +128,7 @@ import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
+import org.hisp.dhis.android.network.user.UserFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith

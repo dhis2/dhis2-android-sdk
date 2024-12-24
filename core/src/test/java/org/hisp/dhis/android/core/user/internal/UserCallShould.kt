@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
@@ -62,7 +61,7 @@ class UserCallShould : BaseCallShould() {
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val user: User = mock()
 
-    private lateinit var userSyncCall: suspend() -> User
+    private lateinit var userSyncCall: suspend () -> User
 
     @Before
     override fun setUp() {
@@ -75,7 +74,6 @@ class UserCallShould : BaseCallShould() {
                 coroutineAPICallExecutor,
                 userNetworkHandler,
                 userHandler,
-                dhisVersionManager,
             ).call()
         }
 
@@ -84,7 +82,7 @@ class UserCallShould : BaseCallShould() {
 
     private fun whenAPICall(answer: Answer<User>) {
         userNetworkHandler.stub {
-            onBlocking { getUser(any()) }.doAnswer(answer)
+            onBlocking { getUser() }.doAnswer(answer)
         }
     }
 

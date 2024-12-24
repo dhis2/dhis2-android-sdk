@@ -52,12 +52,12 @@ internal data class OptionDTO(
     val style: ObjectWithStyleDTO? = null,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Option {
-        return Option.builder()
-            .applyBaseIdentifiableFields(this)
-            .sortOrder(sortOrder)
-            .optionSet(optionSet?.toDomain())
-            .style(style?.toDomain())
-            .build()
+        return Option.builder().apply {
+            applyBaseIdentifiableFields(this@OptionDTO)
+            sortOrder(sortOrder)
+            optionSet?.let { optionSet(optionSet.toDomain()) }
+            style?.let { style(style.toDomain()) }
+        }.build()
     }
 }
 

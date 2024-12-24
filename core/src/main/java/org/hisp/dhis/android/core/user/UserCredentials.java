@@ -30,31 +30,23 @@ package org.hisp.dhis.android.core.user;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
 public abstract class UserCredentials {
 
     @Nullable
-    @JsonProperty()
     public abstract String username();
 
     @Nullable
-    @JsonProperty()
     public abstract String name();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayName();
 
     @Nullable
-    @JsonProperty()
     public abstract List<UserRole> userRoles();
 
     public abstract Builder toBuilder();
@@ -64,7 +56,6 @@ public abstract class UserCredentials {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder username(String username);
 

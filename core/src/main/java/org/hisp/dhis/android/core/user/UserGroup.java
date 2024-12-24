@@ -30,15 +30,12 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_UserGroup.Builder.class)
 public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
 
     public static Builder builder() {
@@ -52,7 +49,6 @@ public abstract class UserGroup extends BaseIdentifiableObject implements CoreOb
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

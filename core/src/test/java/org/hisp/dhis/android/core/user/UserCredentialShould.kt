@@ -25,33 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserCredentialsDTO
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
+class UserCredentialShould : BaseObjectKotlinxShould("user/user_credentials.json"), ObjectShould {
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class UserCredentialShould extends BaseObjectShould implements ObjectShould {
-
-    public UserCredentialShould() {
-        super("user/user_credentials.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserCredentials userCredentials = objectMapper.readValue(jsonStream, UserCredentials.class);
+    override fun map_from_json_string() {
+        val userCredentialsDTO = deserialize(UserCredentialsDTO.serializer())
+        val userCredentials = userCredentialsDTO.toDomain()
 
-        assertThat(userCredentials.username()).isEqualTo("admin");
+        assertThat(userCredentials.username()).isEqualTo("admin")
 
-        assertThat(userCredentials.userRoles().get(0).uid()).isEqualTo("Ufph3mGRmMo");
-        assertThat(userCredentials.userRoles().get(1).uid()).isEqualTo("UYXOT4A7JMI");
-        assertThat(userCredentials.userRoles().get(2).uid()).isEqualTo("aNk5AyC7ydy");
+        val userRoles = userCredentials.userRoles()
+
+        assertThat(userRoles?.getOrNull(0)?.uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(userRoles?.getOrNull(1)?.uid()).isEqualTo("UYXOT4A7JMI")
+        assertThat(userRoles?.getOrNull(2)?.uid()).isEqualTo("aNk5AyC7ydy")
     }
 }

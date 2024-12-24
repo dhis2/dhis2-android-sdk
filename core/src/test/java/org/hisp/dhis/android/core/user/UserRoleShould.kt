@@ -25,36 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserRoleDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class UserRoleShould : BaseObjectKotlinxShould("user/user_role.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class UserRoleShould extends BaseObjectShould implements ObjectShould {
-
-    public UserRoleShould() {
-        super("user/user_role.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserRole userRole = objectMapper.readValue(jsonStream, UserRole.class);
+    override fun map_from_json_string() {
+        val userRoleDTO = deserialize(UserRoleDTO.serializer())
+        val userRole = userRoleDTO.toDomain()
 
         assertThat(userRole.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734")
+        )
         assertThat(userRole.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-13T18:10:26.881"));
-        assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo");
-        assertThat(userRole.displayName()).isEqualTo("Superuser");
-        assertThat(userRole.name()).isEqualTo("Superuser");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-13T18:10:26.881")
+        )
+        assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(userRole.displayName()).isEqualTo("Superuser")
+        assertThat(userRole.name()).isEqualTo("Superuser")
     }
 }

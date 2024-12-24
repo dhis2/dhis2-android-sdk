@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.user
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.user.UserDTO
-import org.hisp.dhis.android.network.user.userDTOtoDomainMapper
 import org.junit.Test
 
 class User37Should : BaseObjectKotlinxShould("user/user37.json"), ObjectShould {
@@ -40,19 +39,19 @@ class User37Should : BaseObjectKotlinxShould("user/user37.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
         val userDTO = deserialize(UserDTO.serializer())
-        val user = userDTOtoDomainMapper(userDTO)
+        val user = userDTO.toDomain()
 
-        Truth.assertThat(user.name()).isEqualTo("John Barnes")
-        Truth.assertThat(user.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2016-04-06T00:05:57.495"))
-        Truth.assertThat(user.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-03-31T13:31:09.324"))
-        Truth.assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
-        Truth.assertThat(user.surname()).isEqualTo("Barnes")
-        Truth.assertThat(user.firstName()).isEqualTo("John")
-        Truth.assertThat(user.email()).isEqualTo("john@hmail.com")
-        Truth.assertThat(user.displayName()).isEqualTo("John Barnes")
-        Truth.assertThat(UserInternalAccessor.accessUserCredentials(user).username()).isEqualTo("android")
-        Truth.assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles()!![0].uid())
+        assertThat(user.name()).isEqualTo("John Barnes")
+        assertThat(user.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2016-04-06T00:05:57.495"))
+        assertThat(user.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-03-31T13:31:09.324"))
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge")
+        assertThat(user.surname()).isEqualTo("Barnes")
+        assertThat(user.firstName()).isEqualTo("John")
+        assertThat(user.email()).isEqualTo("john@hmail.com")
+        assertThat(user.displayName()).isEqualTo("John Barnes")
+        assertThat(UserInternalAccessor.accessUserCredentials(user).username()).isEqualTo("android")
+        assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles()!![0].uid())
             .isEqualTo("Ufph3mGRmMo")
-        Truth.assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
+        assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
     }
 }

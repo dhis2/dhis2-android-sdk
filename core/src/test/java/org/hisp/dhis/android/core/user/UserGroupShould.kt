@@ -25,36 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserGroupDTO
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
+class UserGroupShould : BaseObjectKotlinxShould("user/user_group.json"), ObjectShould {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class UserGroupShould extends BaseObjectShould implements ObjectShould {
-
-    public UserGroupShould() {
-        super("user/user_group.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserGroup userGroup = objectMapper.readValue(jsonStream, UserGroup.class);
+    override fun map_from_json_string() {
+        val userGroupDTO = deserialize(UserGroupDTO.serializer())
+        val userGroup = userGroupDTO.toDomain()
 
         assertThat(userGroup.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251")
+        )
         assertThat(userGroup.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114"));
-        assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp");
-        assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program");
-        assertThat(userGroup.name()).isEqualTo("_PROGRAM_TB program");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114")
+        )
+        assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp")
+        assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program")
+        assertThat(userGroup.name()).isEqualTo("_PROGRAM_TB program")
     }
 }

@@ -30,7 +30,9 @@ package org.hisp.dhis.android.network.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class UserGroupDTO(
@@ -41,4 +43,10 @@ internal data class UserGroupDTO(
     override val created: String? = null,
     override val lastUpdated: String? = null,
     override val deleted: Boolean? = null,
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): UserGroup {
+        return UserGroup.builder()
+            .applyBaseIdentifiableFields(this@UserGroupDTO)
+            .build()
+    }
+}

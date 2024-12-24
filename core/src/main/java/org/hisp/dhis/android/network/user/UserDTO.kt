@@ -30,8 +30,10 @@ package org.hisp.dhis.android.network.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.OrganisationUnitDTO
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class UserDTO(
@@ -61,4 +63,29 @@ internal data class UserDTO(
     val teiSearchOrganisationUnits: List<OrganisationUnitDTO>? = emptyList(),
     val userRoles: List<UserRoleDTO>? = emptyList(),
     val userGroups: List<UserGroupDTO>? = emptyList(),
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): User {
+        return User.builder()
+            .applyBaseIdentifiableFields(this@UserDTO)
+            .username(username)
+            .birthday(birthday)
+            .education(education)
+            .gender(gender)
+            .jobTitle(jobTitle)
+            .surname(surname)
+            .firstName(firstName)
+            .introduction(introduction)
+            .employer(employer)
+            .interests(interests)
+            .languages(languages)
+            .email(email)
+            .phoneNumber(phoneNumber)
+            .nationality(nationality)
+            .userCredentials(userCredentials?.toDomain())
+            .organisationUnits(organisationUnits?.map { it.toDomain() })
+            .teiSearchOrganisationUnits(teiSearchOrganisationUnits?.map { it.toDomain() })
+            .userRoles(userRoles?.map { it.toDomain() })
+            .userGroups(userGroups?.map { it.toDomain() })
+            .build()
+    }
+}

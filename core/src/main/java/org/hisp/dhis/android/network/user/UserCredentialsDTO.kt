@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.user
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.user.UserCredentials
 
 @Serializable
 internal data class UserCredentialsDTO(
@@ -36,4 +37,13 @@ internal data class UserCredentialsDTO(
     val name: String? = null,
     val displayName: String? = null,
     val userRoles: List<UserRoleDTO>? = emptyList(),
-)
+) {
+    fun toDomain(): UserCredentials {
+        return UserCredentials.builder()
+            .username(username)
+            .name(name)
+            .displayName(displayName)
+            .userRoles(userRoles?.map { it.toDomain() })
+            .build()
+    }
+}

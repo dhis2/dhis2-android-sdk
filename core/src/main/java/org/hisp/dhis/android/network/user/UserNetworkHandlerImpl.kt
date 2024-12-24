@@ -43,14 +43,14 @@ internal class UserNetworkHandlerImpl(
         credentials: String,
         fields: Fields<User>,
     ): User {
-        val apiUser = service.authenticate(credentials, fields)
-        return userDTOtoDomainMapper(apiUser)
+        val userDTO = service.authenticate(credentials, fields)
+        return userDTO.toDomain()
     }
 
     override suspend fun getUser(
         fields: Fields<User>,
     ): User {
-        val apiUser = service.getUser(fields)
-        return userDTOtoDomainMapper(apiUser)
+        val userDTO = service.getUser(fields)
+        return userDTO.toDomain()
     }
 }

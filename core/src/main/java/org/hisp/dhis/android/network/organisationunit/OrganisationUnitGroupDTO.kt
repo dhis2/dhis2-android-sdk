@@ -26,11 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.organisationunit
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class OrganisationUnitGroupDTO(
@@ -43,4 +45,12 @@ internal data class OrganisationUnitGroupDTO(
     override val deleted: Boolean? = null,
     val shortname: String? = null,
     val displayShortname: String? = null,
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): OrganisationUnitGroup {
+        return OrganisationUnitGroup.builder()
+            .applyBaseIdentifiableFields(this@OrganisationUnitGroupDTO)
+            .shortName(shortname)
+            .displayShortName(displayShortname)
+            .build()
+    }
+}

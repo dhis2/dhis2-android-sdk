@@ -30,9 +30,17 @@ package org.hisp.dhis.android.network.common
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
 
 @Serializable
 internal data class GeometryDTO(
     val type: FeatureType? = null,
     val coordinates: String? = null,
-)
+) {
+    fun toDomain(): Geometry {
+        return Geometry.builder()
+            .type(type)
+            .coordinates(coordinates)
+            .build()
+    }
+}

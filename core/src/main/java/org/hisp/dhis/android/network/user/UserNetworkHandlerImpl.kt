@@ -28,29 +28,27 @@
 
 package org.hisp.dhis.android.network.user
 
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserNetworkHandlerImpl(
     private val httpClient: HttpServiceClientKotlinx,
     private val service: UserService = UserService(httpClient),
+    private val dhisVersionManager: DHISVersionManager,
 ) : UserNetworkHandler {
     override suspend fun authenticate(
         credentials: String,
-        fields: Fields<User>,
     ): User {
-        val userDTO = service.authenticate(credentials, fields)
+        val userDTO = service.authenticate(credentials, UserFields.allFieldsWithoutOrgUnit)
         return userDTO.toDomain()
     }
 
-    override suspend fun getUser(
-        fields: Fields<User>,
-    ): User {
-        val userDTO = service.getUser(fields)
+    override suspend fun getUser(): User {
+        val userDTO = service.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()))
         return userDTO.toDomain()
     }
 }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.user.internal.UserFields;
+import org.hisp.dhis.android.network.user.UserFields;
 
 public final class UserTableInfo {
 

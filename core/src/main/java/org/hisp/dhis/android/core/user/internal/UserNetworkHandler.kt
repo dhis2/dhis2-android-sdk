@@ -29,15 +29,11 @@
 package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal interface UserNetworkHandler {
     suspend fun authenticate(
         credentials: String,
-        fields: Fields<User>,
     ): User
 
-    suspend fun getUser(
-        fields: Fields<User>,
-    ): User
+    suspend fun getUser(): User
 }

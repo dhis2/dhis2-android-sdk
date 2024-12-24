@@ -83,7 +83,6 @@ internal class LogInCall(
                 val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                     networkHandler.authenticate(
                         okhttp3.Credentials.basic(username, password!!),
-                        UserFields.allFieldsWithoutOrgUnit,
                     )
                 }.getOrThrow()
                 loginOnline(user, credentials)
@@ -187,7 +186,6 @@ internal class LogInCall(
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                 networkHandler.authenticate(
                     "Bearer ${openIDConnectState.idToken}",
-                    UserFields.allFieldsWithoutOrgUnit,
                 )
             }.getOrThrow()
             credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)

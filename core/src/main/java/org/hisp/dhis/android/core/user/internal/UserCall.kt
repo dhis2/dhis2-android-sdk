@@ -32,7 +32,6 @@ import android.util.Log
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
 import org.koin.core.annotation.Singleton
 
@@ -42,16 +41,13 @@ internal class UserCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: UserNetworkHandler,
     private val userHandler: UserHandler,
-    private val dhisVersionManager: DHISVersionManager,
 ) {
 
     @Throws(D2Error::class)
     suspend fun call(): User {
         val user =
             coroutineAPICallExecutor.wrap {
-                networkHandler.getUser(
-                    UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()),
-                )
+                networkHandler.getUser()
             }.getOrThrow()
 
         val transaction = genericCallData.databaseAdapter.beginNewTransaction()

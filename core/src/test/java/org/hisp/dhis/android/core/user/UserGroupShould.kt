@@ -42,10 +42,10 @@ class UserGroupShould : BaseObjectKotlinxShould("user/user_group.json"), ObjectS
         val userGroup = userGroupDTO.toDomain()
 
         assertThat(userGroup.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251"),
         )
         assertThat(userGroup.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114"),
         )
         assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp")
         assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program")

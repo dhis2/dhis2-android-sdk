@@ -31,9 +31,9 @@ package org.hisp.dhis.android.network.user
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 
 @Serializable
 internal data class UserDTO(

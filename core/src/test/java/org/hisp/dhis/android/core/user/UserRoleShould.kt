@@ -42,10 +42,10 @@ class UserRoleShould : BaseObjectKotlinxShould("user/user_role.json"), ObjectSho
         val userRole = userRoleDTO.toDomain()
 
         assertThat(userRole.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734"),
         )
         assertThat(userRole.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-13T18:10:26.881")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-13T18:10:26.881"),
         )
         assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo")
         assertThat(userRole.displayName()).isEqualTo("Superuser")

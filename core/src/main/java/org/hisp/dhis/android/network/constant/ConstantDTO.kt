@@ -30,9 +30,11 @@ package org.hisp.dhis.android.network.constant
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class ConstantDTO(
@@ -44,7 +46,14 @@ internal data class ConstantDTO(
     override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
     val value: Double? = null,
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): Constant {
+        return Constant.builder()
+            .applyBaseIdentifiableFields(this)
+            .value(value)
+            .build()
+    }
+}
 
 @Serializable
 internal class ConstantPayload(

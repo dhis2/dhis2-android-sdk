@@ -25,28 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.optiongroup
 
-package org.hisp.dhis.android.network.legendset
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
-
-internal fun legendSetDtoToDomainMapper(item: LegendSetDTO): LegendSet {
-    return LegendSet.builder()
-        .applyBaseIdentifiableFields(item)
-        .symbolizer(item.symbolizer)
-        .legends(item.legends.map { legendDtoToDomainMapper(it, item.uid) })
-        .build()
-}
-
-internal fun legendDtoToDomainMapper(item: LegendDTO, legendSetUid: String): Legend {
-    return Legend.builder()
-        .applyBaseIdentifiableFields(item)
-        .legendSet(ObjectWithUid.create(legendSetUid))
-        .startValue(item.startValue)
-        .endValue(item.endValue)
-        .color(item.color)
-        .build()
+@Singleton
+internal class OptionGroupService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getOptionGroups(
+        fields: Fields<OptionGroup>,
+        dataSetUidsFilter: String,
+        paging: Boolean,
+    ): OptionGroupPayload {
+        return client.get {
+            url("optionGroups")
+            parameters {
+                fields(fields)
+                attribute("filter", dataSetUidsFilter)
+                paging(paging)
+            }
+        }
+    }
 }

@@ -26,14 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.constant
+package org.hisp.dhis.android.network.optiongroup
 
-import org.hisp.dhis.android.core.constant.Constant
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-internal fun constantDtoToDomainMapper(item: ConstantDTO): Constant {
-    return Constant.builder()
-        .applyBaseIdentifiableFields(item)
-        .value(item.value)
-        .build()
+@Serializable
+internal data class OptionGroupDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val optionSet: ObjectWithUidDTO? = null,
+    val options: List<ObjectWithUidDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): OptionGroup {
+        return OptionGroup.builder()
+            .applyBaseIdentifiableFields(this)
+            .optionSet(optionSet?.toDomain())
+            .options(options.map { it.toDomain() })
+            .build()
+    }
 }
+
+@Serializable
+internal class OptionGroupPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("optionGroups") override val items: List<OptionGroupDTO> = emptyList(),
+) : PayloadJson<OptionGroupDTO>(pager, items)

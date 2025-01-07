@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.option
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.option.OptionDTO
-import org.hisp.dhis.android.network.option.optionDtoToDomainMapper
 import org.junit.Test
 
 class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould {
@@ -40,19 +39,19 @@ class OptionShould : BaseObjectKotlinxShould("option/option.json"), ObjectShould
     @Test
     override fun map_from_json_string() {
         val optionDTO = deserialize(OptionDTO.serializer())
-        val option = optionDtoToDomainMapper(optionDTO)
+        val option = optionDTO.toDomain()
 
-        Truth.assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY")
-        Truth.assertThat(option.code()).isEqualTo("0-14 years")
-        Truth.assertThat(option.created())
+        assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY")
+        assertThat(option.code()).isEqualTo("0-14 years")
+        assertThat(option.created())
             .isEqualTo(BaseIdentifiableObject.parseDate("2014-08-18T12:39:16.000"))
-        Truth.assertThat(option.lastUpdated())
+        assertThat(option.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2014-08-18T12:39:16.000"))
-        Truth.assertThat(option.name()).isEqualTo("0-14 years")
-        Truth.assertThat(option.displayName()).isEqualTo("0-14 years")
-        Truth.assertThat(option.sortOrder()).isEqualTo(1)
-        Truth.assertThat(option.optionSet()?.uid()).isEqualTo("VQ2lai3OfVG")
-        Truth.assertThat(option.style().color()).isEqualTo("#000")
-        Truth.assertThat(option.style().icon()).isEqualTo("my-icon-name")
+        assertThat(option.name()).isEqualTo("0-14 years")
+        assertThat(option.displayName()).isEqualTo("0-14 years")
+        assertThat(option.sortOrder()).isEqualTo(1)
+        assertThat(option.optionSet()?.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(option.style().color()).isEqualTo("#000")
+        assertThat(option.style().icon()).isEqualTo("my-icon-name")
     }
 }

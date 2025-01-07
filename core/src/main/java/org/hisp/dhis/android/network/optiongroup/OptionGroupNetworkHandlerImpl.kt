@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.network.optiongroup
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.core.option.internal.OptionGroupNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OptionGroupService(private val client: HttpServiceClient) {
-    suspend fun optionGroups(
-        fields: Fields<OptionGroup>,
-        dataSetUidsFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<OptionGroup> {
-        return client.get {
-            url("optionGroups")
-            parameters {
-                fields(fields)
-                attribute("filter", dataSetUidsFilter)
-                paging(paging)
-            }
-        }
+internal class OptionGroupNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : OptionGroupNetworkHandler {
+    private val service: OptionGroupService = OptionGroupService(httpClient)
+
+    override suspend fun getOptionGroups(optionGroupUids: Set<String>): PayloadJson<OptionGroup> {
+        val optionSetUidsFilterStr = "optionSet." + OptionSetFields.uid.`in`(optionGroupUids).generateString()
+        val apiPayload = service.getOptionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
+        return apiPayload.mapItems(OptionGroupDTO::toDomain)
     }
 }

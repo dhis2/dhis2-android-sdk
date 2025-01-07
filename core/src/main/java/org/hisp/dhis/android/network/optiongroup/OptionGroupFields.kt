@@ -25,26 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.optiongroup
 
-package org.hisp.dhis.android.network.option
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+internal object OptionGroupFields : BaseFields<OptionGroup>() {
+    const val OPTIONS = "options"
 
-internal fun optionDtoToDomainMapper(item: OptionDTO): Option {
-    return Option.builder()
-        .applyBaseIdentifiableFields(item)
-        .sortOrder(item.sortOrder)
-        .optionSet(
-            ObjectWithUid.create(item.optionSet?.uid),
-        )
-        .style(
-            ObjectStyle.builder()
-                .icon(item.style?.icon)
-                .color(item.style?.color)
-                .build(),
-        )
-        .build()
+    val uid: Field<OptionGroup> = fh.uid()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.nestedFieldWithUid(Columns.OPTION_SET),
+        fh.nestedFieldWithUid(OPTIONS),
+    )
 }

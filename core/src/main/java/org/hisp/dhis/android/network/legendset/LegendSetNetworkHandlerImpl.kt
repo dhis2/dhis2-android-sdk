@@ -45,6 +45,6 @@ internal class LegendSetNetworkHandlerImpl(
             LegendSetFields.uid.`in`(legendSetUids),
             false,
         )
-        return apiPayload.mapItems(::legendSetDtoToDomainMapper)
+        return apiPayload.mapItems(LegendSetDTO::toDomain)
     }
 }

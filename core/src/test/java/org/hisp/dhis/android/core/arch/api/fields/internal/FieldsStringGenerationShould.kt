@@ -59,7 +59,6 @@ import org.hisp.dhis.android.core.legendset.internal.LegendFields
 import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerFields
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
 import org.hisp.dhis.android.core.note.internal.NoteFields
-import org.hisp.dhis.android.core.option.internal.OptionGroupFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelFields
@@ -128,6 +127,7 @@ import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
+import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.junit.Ignore
 import org.junit.Test

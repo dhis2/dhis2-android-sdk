@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option.internal
 
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object OptionGroupFields : BaseFields<OptionGroup>() {
-    const val OPTIONS = "options"
-
-    val uid: Field<OptionGroup> = fh.uid()
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.nestedFieldWithUid(Columns.OPTION_SET),
-        fh.nestedFieldWithUid(OPTIONS),
-    )
+internal fun interface OptionGroupNetworkHandler {
+    suspend fun getOptionGroups(
+        optionGroupUids: Set<String>,
+    ): Payload<OptionGroup>
 }

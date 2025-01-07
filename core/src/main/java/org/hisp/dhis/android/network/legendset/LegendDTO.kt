@@ -30,7 +30,10 @@ package org.hisp.dhis.android.network.legendset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class LegendDTO(
@@ -44,4 +47,14 @@ internal data class LegendDTO(
     val startValue: Double? = null,
     val endValue: Double? = null,
     val color: String? = null,
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(legendSetUid: String): Legend {
+        return Legend.builder()
+            .applyBaseIdentifiableFields(this)
+            .legendSet(ObjectWithUid.create(legendSetUid))
+            .startValue(startValue)
+            .endValue(endValue)
+            .color(color)
+            .build()
+    }
+}

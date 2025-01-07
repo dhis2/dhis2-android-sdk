@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.category
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,12 +39,12 @@ internal class CategoryNetworkHandlerImpl(
 ) : CategoryNetworkHandler {
     private val service: CategoryService = CategoryService(httpClient)
 
-    override suspend fun getCategories(categoryUids: Set<String>): Payload<Category> {
+    override suspend fun getCategories(categoryUids: Set<String>): PayloadJson<Category> {
         val apiPayload = service.getCategories(
             CategoryFields.allFields,
             CategoryFields.uid.`in`(categoryUids),
             paging = false,
         )
-        return apiPayload.mapItems(::categoryDtoToDomainMapper)
+        return apiPayload.mapItems(CategoryDTO::toDomain)
     }
 }

@@ -25,44 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.categoryoption.CategoryOptionOrganisationUnitsDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class CategoryOptionOrganisationUnitsShould :
+    BaseObjectKotlinxShould("category/category_option_orgunits.json"),
+    ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class CategoryOptionShould extends BaseObjectShould implements ObjectShould {
-
-    public CategoryOptionShould() {
-        super("category/category_option.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        CategoryOption option = objectMapper.readValue(jsonStream, CategoryOption.class);
+    override fun map_from_json_string() {
+        val categoryOptionOrganisationUnitsDTO = deserialize(CategoryOptionOrganisationUnitsDTO.serializer())
+        val linksMap = categoryOptionOrganisationUnitsDTO.toDomain()
 
-        assertThat(option.uid()).isEqualTo("cQYFfHX9oIT");
-        assertThat(option.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
-        assertThat(option.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
-
-        assertThat(option.name()).isEqualTo("Green");
-        assertThat(option.shortName()).isEqualTo("Green");
-        assertThat(option.displayName()).isEqualTo("Green");
-        assertThat(option.displayShortName()).isEqualTo("Green");
-
-        assertThat(option.startDate()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-01T00:00:00.000"));
-        assertThat(option.endDate()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-05-01T00:00:00.000"));
+        assertThat(linksMap.size).isEqualTo(3)
+        assertThat(linksMap.keys).containsExactly("as6ygGvUGNg", "TNYQzTHdoxL", "TXGfLxZlInA")
+        assertThat(linksMap["as6ygGvUGNg"]).containsExactly("DiszpKrYNg8")
+        assertThat(linksMap["TNYQzTHdoxL"]).containsExactly("DiszpKrYNg8")
+        assertThat(linksMap["TXGfLxZlInA"]).containsExactly(null)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.common.dto
 
-@Singleton
-internal class OptionSetService(private val client: HttpServiceClient) {
-    suspend fun optionSets(
-        fields: Fields<OptionSet>,
-        filter: Filter<OptionSet>,
-        paging: Boolean,
-    ): PayloadJackson<OptionSet> {
-        return client.get {
-            url("optionSets")
-            parameters {
-                fields(fields)
-                filter(filter)
-                paging(paging)
-            }
-        }
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.DataAccess
+
+@Serializable
+internal data class DataAccessDTO(
+    val read: Boolean = true,
+    val write: Boolean = true,
+) {
+    fun toDomain(): DataAccess {
+        return DataAccess.builder()
+            .read(this.read)
+            .write(this.write)
+            .build()
     }
 }

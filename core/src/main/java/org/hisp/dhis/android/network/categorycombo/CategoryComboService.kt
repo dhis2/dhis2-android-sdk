@@ -25,15 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.categorycombo
 
-package org.hisp.dhis.android.network.constant
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
-
-internal fun constantDtoToDomainMapper(item: ConstantDTO): Constant {
-    return Constant.builder()
-        .applyBaseIdentifiableFields(item)
-        .value(item.value)
-        .build()
+@Singleton
+internal class CategoryComboService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getCategoryCombos(
+        fields: Fields<CategoryCombo>,
+        uids: Filter<CategoryCombo>,
+        paging: Boolean,
+    ): CategoryComboPayload {
+        return client.get {
+            url("categoryCombos")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

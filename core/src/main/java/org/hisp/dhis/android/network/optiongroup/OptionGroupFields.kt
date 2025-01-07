@@ -25,32 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.optiongroup
 
-package org.hisp.dhis.android.network.category
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.option.OptionGroupTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.PagerDTO
+internal object OptionGroupFields : BaseFields<OptionGroup>() {
+    const val OPTIONS = "options"
 
-@Serializable
-internal data class CategoryComboDTO(
-    @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val isDefault: Boolean? = null,
-    val categories: List<ObjectWithUidDTO> = emptyList(),
-    val categoryOptionCombos: List<CategoryOptionComboDTO> = emptyList(),
-) : BaseIdentifiableObjectDTO
+    val uid: Field<OptionGroup> = fh.uid()
 
-@Serializable
-internal class CategoryComboPayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("categoryCombos") override val items: List<CategoryComboDTO> = emptyList(),
-) : PayloadJson<CategoryComboDTO>(pager, items)
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.nestedFieldWithUid(Columns.OPTION_SET),
+        fh.nestedFieldWithUid(OPTIONS),
+    )
+}

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.category.CategoryOptionComboDTO
-import org.hisp.dhis.android.network.category.categoryOptionComboDtoToDomainMapper
 import org.junit.Test
 
 class CategoryOptionComboShould : BaseObjectKotlinxShould("category/category_option_combo.json"), ObjectShould {
@@ -40,7 +39,7 @@ class CategoryOptionComboShould : BaseObjectKotlinxShould("category/category_opt
     @Test
     override fun map_from_json_string() {
         val categoryOptionComboDTO = deserialize(CategoryOptionComboDTO.serializer())
-        val categoryOptionCombo = categoryOptionComboDtoToDomainMapper(categoryOptionComboDTO, "categoryComboUid")
+        val categoryOptionCombo = categoryOptionComboDTO.toDomain("categoryComboUid")
 
         assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca")
         assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963")

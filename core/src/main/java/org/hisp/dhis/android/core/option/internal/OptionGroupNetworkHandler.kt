@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class OptionGroupService(private val client: HttpServiceClient) {
-    suspend fun optionGroups(
-        fields: Fields<OptionGroup>,
-        dataSetUidsFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<OptionGroup> {
-        return client.get {
-            url("optionGroups")
-            parameters {
-                fields(fields)
-                attribute("filter", dataSetUidsFilter)
-                paging(paging)
-            }
-        }
-    }
+internal fun interface OptionGroupNetworkHandler {
+    suspend fun getOptionGroups(
+        optionGroupUids: Set<String>,
+    ): Payload<OptionGroup>
 }

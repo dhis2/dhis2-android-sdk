@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.optionset
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
-import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-internal object CategoryComboFields : BaseFields<CategoryCombo>() {
-    const val CATEGORIES = "categories"
-    private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
-
-    val uid = fh.uid()
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.IS_DEFAULT),
-        fh.nestedFieldWithUid(CATEGORIES),
-        fh.nestedField<CategoryOptionCombo>(CATEGORY_OPTION_COMBOS).with(CategoryOptionComboFields.allFields),
-    )
+@Singleton
+internal class OptionSetService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getOptionSets(
+        fields: Fields<OptionSet>,
+        filter: Filter<OptionSet>,
+        paging: Boolean,
+    ): OptionSetPayload {
+        return client.get {
+            url("optionSets")
+            parameters {
+                fields(fields)
+                filter(filter)
+                paging(paging)
+            }
+        }
+    }
 }

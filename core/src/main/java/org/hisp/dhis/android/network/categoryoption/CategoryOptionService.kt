@@ -25,27 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.categoryoption
 
-import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryComboService(private val client: HttpServiceClientKotlinx) {
-    suspend fun getCategoryCombos(
-        fields: Fields<CategoryCombo>,
-        uids: Filter<CategoryCombo>,
+internal class CategoryOptionService(private val client: HttpServiceClientKotlinx) {
+
+    suspend fun getCategoryOptions(
+        fields: Fields<CategoryOption>,
+        categoryUidsFilterString: String,
+        accessDataReadFilter: String,
         paging: Boolean,
-    ): CategoryComboPayload {
+    ): CategoryOptionPayload {
         return client.get {
-            url("categoryCombos")
+            url("categoryOptions")
             parameters {
                 fields(fields)
-                filter(uids)
+                attribute("filter", categoryUidsFilterString)
+                attribute("filter", accessDataReadFilter)
                 paging(paging)
+            }
+        }
+    }
+
+    suspend fun getCategoryOptionOrgUnits(
+        categoryOptions: String,
+    ): CategoryOptionOrganisationUnitsDTO {
+        return client.get {
+            url("categoryOptions/orgUnits")
+            parameters {
+                attribute("categoryOptions", categoryOptions)
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.network.categorycombo
 
-import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.koin.core.annotation.Singleton
 
-internal object OptionSetFields : BaseFields<OptionSet>() {
-    val uid: Field<OptionSet> = fh.uid()
+@Singleton
+internal class CategoryComboNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : CategoryComboNetworkHandler {
+    private val service: CategoryComboService = CategoryComboService(httpClient)
 
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.VERSION),
-        fh.field(Columns.VALUE_TYPE),
-    )
+    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): PayloadJson<CategoryCombo> {
+        val apiPayload = service.getCategoryCombos(
+            CategoryComboFields.allFields,
+            CategoryComboFields.uid.`in`(categoryComboUids),
+            paging = false,
+        )
+        return apiPayload.mapItems(CategoryComboDTO::toDomain)
+    }
 }

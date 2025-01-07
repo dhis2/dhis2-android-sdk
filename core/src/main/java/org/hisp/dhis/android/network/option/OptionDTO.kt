@@ -30,11 +30,13 @@ package org.hisp.dhis.android.network.option
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.option.Option
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class OptionDTO(
@@ -48,7 +50,16 @@ internal data class OptionDTO(
     val sortOrder: Int? = null,
     val optionSet: ObjectWithUidDTO? = null,
     val style: ObjectWithStyleDTO? = null,
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): Option {
+        return Option.builder().apply {
+            applyBaseIdentifiableFields(this@OptionDTO)
+            sortOrder(sortOrder)
+            optionSet?.let { optionSet(optionSet.toDomain()) }
+            style?.let { style(style.toDomain()) }
+        }.build()
+    }
+}
 
 @Serializable
 internal class OptionPayload(

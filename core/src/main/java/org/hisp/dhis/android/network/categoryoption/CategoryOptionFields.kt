@@ -25,28 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.categoryoption
 
-package org.hisp.dhis.android.network.legendset
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+internal object CategoryOptionFields : BaseFields<CategoryOption>() {
+    private const val ACCESS = "access"
+    internal const val ORGANISATION_UNITS = "organisationUnits"
+    val uid = fh.uid()
 
-internal fun legendSetDtoToDomainMapper(item: LegendSetDTO): LegendSet {
-    return LegendSet.builder()
-        .applyBaseIdentifiableFields(item)
-        .symbolizer(item.symbolizer)
-        .legends(item.legends.map { legendDtoToDomainMapper(it, item.uid) })
-        .build()
-}
-
-internal fun legendDtoToDomainMapper(item: LegendDTO, legendSetUid: String): Legend {
-    return Legend.builder()
-        .applyBaseIdentifiableFields(item)
-        .legendSet(ObjectWithUid.create(legendSetUid))
-        .startValue(item.startValue)
-        .endValue(item.endValue)
-        .color(item.color)
-        .build()
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(CategoryOptionTableInfo.Columns.START_DATE),
+        fh.field(CategoryOptionTableInfo.Columns.END_DATE),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+    )
 }

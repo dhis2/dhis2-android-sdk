@@ -25,26 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+package org.hisp.dhis.android.network.optionset
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-@Singleton
-internal class LegendSetNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
-) : LegendSetNetworkHandler {
-    private val service: LegendSetService = LegendSetService(httpClient)
-
-    override suspend fun getLegendSets(legendSetUids: Set<String>): PayloadJson<LegendSet> {
-        val apiPayload = service.getLegendSets(
-            LegendSetFields.allFields,
-            LegendSetFields.uid.`in`(legendSetUids),
-            false,
-        )
-        return apiPayload.mapItems(LegendSetDTO::toDomain)
+@Serializable
+internal data class OptionSetDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = BaseIdentifiableObjectDTO.CODE,
+    override val name: String? = BaseIdentifiableObjectDTO.NAME,
+    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
+    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
+    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
+    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
+    val version: Int? = null,
+    val valueType: String? = null,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): OptionSet {
+        return OptionSet.builder().apply {
+            applyBaseIdentifiableFields(this@OptionSetDTO)
+            version(version)
+            valueType?.let { valueType(ValueType.valueOf(it)) }
+        }.build()
     }
 }
+
+@Serializable
+internal class OptionSetPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("optionSets") override val items: List<OptionSetDTO> = emptyList(),
+) : PayloadJson<OptionSetDTO>(pager, items)

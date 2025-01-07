@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.attribute
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.attribute.AttributeDTO
-import org.hisp.dhis.android.network.attribute.attributeDtoToDomainMapper
 import org.junit.Test
 
 class AttributeShould : BaseObjectKotlinxShould("attribute/attribute.json"), ObjectShould {
@@ -41,47 +40,47 @@ class AttributeShould : BaseObjectKotlinxShould("attribute/attribute.json"), Obj
     @Test
     override fun map_from_json_string() {
         val attributeDTO = deserialize(AttributeDTO.serializer())
-        val attribute = attributeDtoToDomainMapper(attributeDTO)
+        val attribute = attributeDTO.toDomain()
 
-        Truth.assertThat(attribute.uid()).isEqualTo("r6KOit2qCGw")
-        Truth.assertThat(attribute.name()).isEqualTo("Name Pattern")
-        Truth.assertThat(attribute.displayName()).isEqualTo("Name Pattern")
-        Truth.assertThat(attribute.lastUpdated())
+        assertThat(attribute.uid()).isEqualTo("r6KOit2qCGw")
+        assertThat(attribute.name()).isEqualTo("Name Pattern")
+        assertThat(attribute.displayName()).isEqualTo("Name Pattern")
+        assertThat(attribute.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2020-07-06T06:27:19.164"))
-        Truth.assertThat(attribute.created())
+        assertThat(attribute.created())
             .isEqualTo(BaseIdentifiableObject.parseDate("2020-07-06T06:27:19.164"))
-        Truth.assertThat(attribute.valueType()).isEqualTo(ValueType.TEXT)
-        Truth.assertThat(attribute.unique()).isEqualTo(false)
-        Truth.assertThat(attribute.mandatory()).isEqualTo(false)
-        Truth.assertThat(attribute.programStageAttribute()).isEqualTo(true)
-        Truth.assertThat(attribute.indicatorAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.indicatorGroupAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.userGroupAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.dataElementAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.constantAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.categoryOptionAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.optionSetAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.sqlViewAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.legendSetAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.trackedEntityAttributeAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.organisationUnitAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.dataSetAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.documentAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.validationRuleGroupAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.dataElementGroupAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.sectionAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.trackedEntityTypeAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.userAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.categoryOptionGroupAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.programAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.categoryAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.categoryOptionComboAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.categoryOptionGroupSetAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.validationRuleAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.programIndicatorAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.organisationUnitGroupAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.dataElementGroupSetAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.organisationUnitGroupSetAttribute()).isEqualTo(false)
-        Truth.assertThat(attribute.optionAttribute()).isEqualTo(false)
+        assertThat(attribute.valueType()).isEqualTo(ValueType.TEXT)
+        assertThat(attribute.unique()).isEqualTo(false)
+        assertThat(attribute.mandatory()).isEqualTo(false)
+        assertThat(attribute.programStageAttribute()).isEqualTo(true)
+        assertThat(attribute.indicatorAttribute()).isEqualTo(false)
+        assertThat(attribute.indicatorGroupAttribute()).isEqualTo(false)
+        assertThat(attribute.userGroupAttribute()).isEqualTo(false)
+        assertThat(attribute.dataElementAttribute()).isEqualTo(false)
+        assertThat(attribute.constantAttribute()).isEqualTo(false)
+        assertThat(attribute.categoryOptionAttribute()).isEqualTo(false)
+        assertThat(attribute.optionSetAttribute()).isEqualTo(false)
+        assertThat(attribute.sqlViewAttribute()).isEqualTo(false)
+        assertThat(attribute.legendSetAttribute()).isEqualTo(false)
+        assertThat(attribute.trackedEntityAttributeAttribute()).isEqualTo(false)
+        assertThat(attribute.organisationUnitAttribute()).isEqualTo(false)
+        assertThat(attribute.dataSetAttribute()).isEqualTo(false)
+        assertThat(attribute.documentAttribute()).isEqualTo(false)
+        assertThat(attribute.validationRuleGroupAttribute()).isEqualTo(false)
+        assertThat(attribute.dataElementGroupAttribute()).isEqualTo(false)
+        assertThat(attribute.sectionAttribute()).isEqualTo(false)
+        assertThat(attribute.trackedEntityTypeAttribute()).isEqualTo(false)
+        assertThat(attribute.userAttribute()).isEqualTo(false)
+        assertThat(attribute.categoryOptionGroupAttribute()).isEqualTo(false)
+        assertThat(attribute.programAttribute()).isEqualTo(false)
+        assertThat(attribute.categoryAttribute()).isEqualTo(false)
+        assertThat(attribute.categoryOptionComboAttribute()).isEqualTo(false)
+        assertThat(attribute.categoryOptionGroupSetAttribute()).isEqualTo(false)
+        assertThat(attribute.validationRuleAttribute()).isEqualTo(false)
+        assertThat(attribute.programIndicatorAttribute()).isEqualTo(false)
+        assertThat(attribute.organisationUnitGroupAttribute()).isEqualTo(false)
+        assertThat(attribute.dataElementGroupSetAttribute()).isEqualTo(false)
+        assertThat(attribute.organisationUnitGroupSetAttribute()).isEqualTo(false)
+        assertThat(attribute.optionAttribute()).isEqualTo(false)
     }
 }

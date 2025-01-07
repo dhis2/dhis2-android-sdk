@@ -25,26 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.optiongroup
 
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
+import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class LegendSetNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
-) : LegendSetNetworkHandler {
-    private val service: LegendSetService = LegendSetService(httpClient)
-
-    override suspend fun getLegendSets(legendSetUids: Set<String>): PayloadJson<LegendSet> {
-        val apiPayload = service.getLegendSets(
-            LegendSetFields.allFields,
-            LegendSetFields.uid.`in`(legendSetUids),
-            false,
-        )
-        return apiPayload.mapItems(LegendSetDTO::toDomain)
+internal class OptionGroupService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getOptionGroups(
+        fields: Fields<OptionGroup>,
+        dataSetUidsFilter: String,
+        paging: Boolean,
+    ): OptionGroupPayload {
+        return client.get {
+            url("optionGroups")
+            parameters {
+                fields(fields)
+                attribute("filter", dataSetUidsFilter)
+                paging(paging)
+            }
+        }
     }
 }

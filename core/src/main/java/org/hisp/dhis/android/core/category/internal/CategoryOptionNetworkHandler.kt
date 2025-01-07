@@ -26,25 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.option
+package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryOption
 
-internal fun optionDtoToDomainMapper(item: OptionDTO): Option {
-    return Option.builder()
-        .applyBaseIdentifiableFields(item)
-        .sortOrder(item.sortOrder)
-        .optionSet(
-            ObjectWithUid.create(item.optionSet?.uid),
-        )
-        .style(
-            ObjectStyle.builder()
-                .icon(item.style?.icon)
-                .color(item.style?.color)
-                .build(),
-        )
-        .build()
+internal interface CategoryOptionNetworkHandler {
+    suspend fun getCategoryOptions(
+        categoryOptionUids: Set<String>,
+    ): Payload<CategoryOption>
+
+    suspend fun getCategoryOptionOrgUnits(
+        categoryOptionUids: Set<String>,
+    ): Map<String, List<String?>>
 }

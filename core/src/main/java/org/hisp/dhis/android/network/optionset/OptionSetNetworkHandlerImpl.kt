@@ -25,26 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.category
+package org.hisp.dhis.android.network.optionset
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionSetNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryComboNetworkHandlerImpl(
+internal class OptionSetNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
-) : CategoryComboNetworkHandler {
-    private val service: CategoryComboService = CategoryComboService(httpClient)
+) : OptionSetNetworkHandler {
+    private val service: OptionSetService = OptionSetService(httpClient)
 
-    override suspend fun getCategoryCombos(categoryComboUids: Set<String>): Payload<CategoryCombo> {
-        val apiPayload = service.getCategoryCombos(
-            CategoryComboFields.allFields,
-            CategoryComboFields.uid.`in`(categoryComboUids),
-            paging = false,
+    override suspend fun getOptionSets(optionSetUids: Set<String>): PayloadJson<OptionSet> {
+        val apiPayload = service.getOptionSets(
+            OptionSetFields.allFields,
+            OptionSetFields.uid.`in`(optionSetUids),
+            false,
         )
-        return apiPayload.mapItems(::categoryComboDtoToDomainMapper)
+        return apiPayload.mapItems(OptionSetDTO::toDomain)
     }
 }

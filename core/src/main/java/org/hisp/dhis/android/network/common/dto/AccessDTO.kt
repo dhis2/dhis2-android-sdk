@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.network.common.dto
 
-import java.util.HashMap;
-import java.util.List;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.Access
 
-public class CategoryOptionOrganisationUnits extends HashMap<String, List<String>> {
+@Serializable
+internal data class AccessDTO(
+    val read: Boolean = true,
+    val write: Boolean = true,
+    val data: DataAccessDTO? = null,
+) {
+    fun toDomain(): Access {
+        return Access.builder()
+            .read(this.read)
+            .write(this.write)
+            .data(this.data?.toDomain())
+            .build()
+    }
 }

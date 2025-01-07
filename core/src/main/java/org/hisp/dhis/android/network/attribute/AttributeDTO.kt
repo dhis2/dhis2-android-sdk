@@ -30,10 +30,13 @@ package org.hisp.dhis.android.network.attribute
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
 internal data class AttributeDTO(
@@ -81,7 +84,46 @@ internal data class AttributeDTO(
     val dataElementGroupSetAttribute: Boolean? = null,
     val organisationUnitGroupSetAttribute: Boolean? = null,
     val optionAttribute: Boolean? = null,
-) : BaseNameableObjectDTO
+) : BaseNameableObjectDTO {
+    fun toDomain(): Attribute {
+        return Attribute.builder()
+            .applyBaseNameableFields(this)
+            .valueType(valueType?.let { ValueType.valueOf(valueType) })
+            .unique(unique)
+            .mandatory(mandatory)
+            .indicatorAttribute(indicatorAttribute)
+            .indicatorGroupAttribute(indicatorGroupAttribute)
+            .userGroupAttribute(userGroupAttribute)
+            .dataElementAttribute(dataElementAttribute)
+            .constantAttribute(constantAttribute)
+            .categoryOptionAttribute(categoryOptionAttribute)
+            .optionSetAttribute(optionSetAttribute)
+            .sqlViewAttribute(sqlViewAttribute)
+            .legendSetAttribute(legendSetAttribute)
+            .trackedEntityAttributeAttribute(trackedEntityAttributeAttribute)
+            .organisationUnitAttribute(organisationUnitAttribute)
+            .dataSetAttribute(dataSetAttribute)
+            .documentAttribute(documentAttribute)
+            .validationRuleGroupAttribute(validationRuleGroupAttribute)
+            .dataElementGroupAttribute(dataElementGroupAttribute)
+            .sectionAttribute(sectionAttribute)
+            .trackedEntityTypeAttribute(trackedEntityTypeAttribute)
+            .userAttribute(userAttribute)
+            .categoryOptionGroupAttribute(categoryOptionGroupAttribute)
+            .programStageAttribute(programStageAttribute)
+            .programAttribute(programAttribute)
+            .categoryAttribute(categoryAttribute)
+            .categoryOptionComboAttribute(categoryOptionComboAttribute)
+            .categoryOptionGroupSetAttribute(categoryOptionGroupSetAttribute)
+            .validationRuleAttribute(validationRuleAttribute)
+            .programIndicatorAttribute(programIndicatorAttribute)
+            .organisationUnitGroupAttribute(organisationUnitGroupAttribute)
+            .dataElementGroupSetAttribute(dataElementGroupSetAttribute)
+            .organisationUnitGroupSetAttribute(organisationUnitGroupSetAttribute)
+            .optionAttribute(optionAttribute)
+            .build()
+    }
+}
 
 @Serializable
 internal class AttributePayload(

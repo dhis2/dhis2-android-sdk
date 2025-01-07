@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -51,20 +48,16 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
 public abstract class CategoryOption extends BaseNameableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date startDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
-    @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
@@ -72,7 +65,6 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
      * This method only return results in versions greater or equal to 2.37.
      */
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> organisationUnits();
 
@@ -87,7 +79,6 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

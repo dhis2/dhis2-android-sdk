@@ -30,8 +30,12 @@ package org.hisp.dhis.android.network.category
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class CategoryOptionComboDTO(
@@ -43,4 +47,12 @@ internal data class CategoryOptionComboDTO(
     override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
     override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
     val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
-) : BaseIdentifiableObjectDTO
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(categoryComboUid: String): CategoryOptionCombo {
+        return CategoryOptionCombo.builder()
+            .applyBaseIdentifiableFields(this)
+            .categoryCombo(ObjectWithUid.create(categoryComboUid))
+            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
+            .build()
+    }
+}

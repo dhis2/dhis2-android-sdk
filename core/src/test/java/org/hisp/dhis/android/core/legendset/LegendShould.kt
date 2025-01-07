@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.legendset
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.legendset.LegendDTO
-import org.hisp.dhis.android.network.legendset.legendDtoToDomainMapper
 import org.junit.Test
 
 class LegendShould : BaseObjectKotlinxShould("legendset/legend.json"), ObjectShould {
@@ -40,17 +39,17 @@ class LegendShould : BaseObjectKotlinxShould("legendset/legend.json"), ObjectSho
     @Test
     override fun map_from_json_string() {
         val legendDTO = deserialize(LegendDTO.serializer())
-        val legend = legendDtoToDomainMapper(legendDTO, "legendSetUid")
+        val legend = legendDTO.toDomain("legendSetUid")
 
-        Truth.assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X")
-        Truth.assertThat(legend.name()).isEqualTo("30 - 40")
-        Truth.assertThat(legend.displayName()).isEqualTo("30 - 40")
-        Truth.assertThat(legend.lastUpdated())
+        assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X")
+        assertThat(legend.name()).isEqualTo("30 - 40")
+        assertThat(legend.displayName()).isEqualTo("30 - 40")
+        assertThat(legend.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"))
-        Truth.assertThat(legend.created())
+        assertThat(legend.created())
             .isEqualTo(BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"))
-        Truth.assertThat(legend.startValue()).isEqualTo(30.5)
-        Truth.assertThat(legend.endValue()).isEqualTo(40)
-        Truth.assertThat(legend.color()).isEqualTo("#d9f0a3")
+        assertThat(legend.startValue()).isEqualTo(30.5)
+        assertThat(legend.endValue()).isEqualTo(40)
+        assertThat(legend.color()).isEqualTo("#d9f0a3")
     }
 }

@@ -25,26 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
+package org.hisp.dhis.android.network.categoryoption
+
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionNetworkHandler
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class LegendSetNetworkHandlerImpl(
+internal class CategoryOptionNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
-) : LegendSetNetworkHandler {
-    private val service: LegendSetService = LegendSetService(httpClient)
+) : CategoryOptionNetworkHandler {
+    private val service: CategoryOptionService = CategoryOptionService(httpClient)
 
-    override suspend fun getLegendSets(legendSetUids: Set<String>): PayloadJson<LegendSet> {
-        val apiPayload = service.getLegendSets(
-            LegendSetFields.allFields,
-            LegendSetFields.uid.`in`(legendSetUids),
-            false,
+    override suspend fun getCategoryOptions(categoryOptionUids: Set<String>): PayloadJson<CategoryOption> {
+        val apiPayload = service.getCategoryOptions(
+            CategoryOptionFields.allFields,
+            "categories." + ObjectWithUid.uid.`in`(categoryOptionUids).generateString(),
+            "access.data." + DataAccessFields.read.eq(true).generateString(),
+            paging = false,
         )
-        return apiPayload.mapItems(LegendSetDTO::toDomain)
+        return apiPayload.mapItems(CategoryOptionDTO::toDomain)
+    }
+
+    override suspend fun getCategoryOptionOrgUnits(categoryOptionUids: Set<String>): Map<String, List<String?>> {
+        return service.getCategoryOptionOrgUnits(categoryOptionUids.joinToString(",")).toDomain()
     }
 }

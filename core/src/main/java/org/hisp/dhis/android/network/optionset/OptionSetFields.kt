@@ -25,25 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.network.optionset
 
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object CategoryOptionFields : BaseFields<CategoryOption>() {
-    private const val ACCESS = "access"
-    internal const val ORGANISATION_UNITS = "organisationUnits"
-    val uid = fh.uid()
+internal object OptionSetFields : BaseFields<OptionSet>() {
+    val uid: Field<OptionSet> = fh.uid()
 
     val allFields = Fields.from(
-        fh.getNameableFields(),
-        fh.field(CategoryOptionTableInfo.Columns.START_DATE),
-        fh.field(CategoryOptionTableInfo.Columns.END_DATE),
-        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+        fh.getIdentifiableFields(),
+        fh.field(Columns.VERSION),
+        fh.field(Columns.VALUE_TYPE),
     )
 }

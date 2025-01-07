@@ -25,26 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
 
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.PayloadJson
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.categoryoption
 
-@Singleton
-internal class LegendSetNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
-) : LegendSetNetworkHandler {
-    private val service: LegendSetService = LegendSetService(httpClient)
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.nullable
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-    override suspend fun getLegendSets(legendSetUids: Set<String>): PayloadJson<LegendSet> {
-        val apiPayload = service.getLegendSets(
-            LegendSetFields.allFields,
-            LegendSetFields.uid.`in`(legendSetUids),
-            false,
-        )
-        return apiPayload.mapItems(LegendSetDTO::toDomain)
+@Serializable(with = CategoryOptionOrganisationUnitsSerializer::class)
+internal data class CategoryOptionOrganisationUnitsDTO(
+    val map: Map<String, List<String?>>,
+) {
+    fun toDomain(): Map<String, List<String?>> {
+        return map
+    }
+}
+
+internal object CategoryOptionOrganisationUnitsSerializer : KSerializer<CategoryOptionOrganisationUnitsDTO> {
+    private val delegate = MapSerializer(
+        keySerializer = String.serializer(),
+        valueSerializer = ListSerializer(String.serializer().nullable),
+    )
+
+    override val descriptor: SerialDescriptor = delegate.descriptor
+
+    override fun serialize(encoder: Encoder, value: CategoryOptionOrganisationUnitsDTO) {
+        encoder.encodeSerializableValue(delegate, value.map)
+    }
+
+    override fun deserialize(decoder: Decoder): CategoryOptionOrganisationUnitsDTO {
+        val map = decoder.decodeSerializableValue(delegate)
+        return CategoryOptionOrganisationUnitsDTO(map)
     }
 }

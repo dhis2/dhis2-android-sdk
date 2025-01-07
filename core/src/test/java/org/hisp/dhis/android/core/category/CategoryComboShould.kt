@@ -31,8 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.category.CategoryComboDTO
-import org.hisp.dhis.android.network.category.categoryComboDtoToDomainMapper
+import org.hisp.dhis.android.network.categorycombo.CategoryComboDTO
 import org.junit.Test
 
 class CategoryComboShould : BaseObjectKotlinxShould("category/category_combo.json"), ObjectShould {
@@ -40,7 +39,7 @@ class CategoryComboShould : BaseObjectKotlinxShould("category/category_combo.jso
     @Test
     override fun map_from_json_string() {
         val comboDTO = deserialize(CategoryComboDTO.serializer())
-        val combo = categoryComboDtoToDomainMapper(comboDTO)
+        val combo = comboDTO.toDomain()
 
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm")
         assertThat(combo.code()).isEqualTo("BIRTHS")

@@ -66,7 +66,7 @@ internal data class OrganisationUnitDTO(
 ) : BaseNameableObjectDTO {
     fun toDomain(): OrganisationUnit {
         return OrganisationUnit.builder()
-            .applyBaseNameableFields(this@OrganisationUnitDTO)
+            .applyBaseNameableFields(this)
             .parent(parent?.uid?.let { ObjectWithUid.create(it) })
             .path(path)
             .apply {

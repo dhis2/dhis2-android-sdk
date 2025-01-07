@@ -46,7 +46,7 @@ internal data class UserGroupDTO(
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): UserGroup {
         return UserGroup.builder()
-            .applyBaseIdentifiableFields(this@UserGroupDTO)
+            .applyBaseIdentifiableFields(this)
             .build()
     }
 }

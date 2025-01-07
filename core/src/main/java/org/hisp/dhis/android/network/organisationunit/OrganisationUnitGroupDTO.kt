@@ -48,7 +48,7 @@ internal data class OrganisationUnitGroupDTO(
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): OrganisationUnitGroup {
         return OrganisationUnitGroup.builder()
-            .applyBaseIdentifiableFields(this@OrganisationUnitGroupDTO)
+            .applyBaseIdentifiableFields(this)
             .shortName(shortname)
             .displayShortName(displayShortname)
             .build()

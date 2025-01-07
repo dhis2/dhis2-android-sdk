@@ -46,7 +46,7 @@ internal data class UserRoleDTO(
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): UserRole {
         return UserRole.builder()
-            .applyBaseIdentifiableFields(this@UserRoleDTO)
+            .applyBaseIdentifiableFields(this)
             .build()
     }
 }

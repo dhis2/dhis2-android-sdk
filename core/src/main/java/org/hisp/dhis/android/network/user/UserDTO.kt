@@ -66,7 +66,7 @@ internal data class UserDTO(
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): User {
         return User.builder()
-            .applyBaseIdentifiableFields(this@UserDTO)
+            .applyBaseIdentifiableFields(this)
             .username(username)
             .birthday(birthday)
             .education(education)

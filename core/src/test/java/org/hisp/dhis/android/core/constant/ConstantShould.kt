@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.constant
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
@@ -41,13 +41,13 @@ class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), Object
         val constantDTO = deserialize(ConstantDTO.serializer())
         val constant = constantDTO.toDomain()
 
-        Truth.assertThat(constant.created())
+        assertThat(constant.created())
             .isEqualTo(BaseIdentifiableObject.parseDate("2013-03-11T16:39:33.083"))
-        Truth.assertThat(constant.lastUpdated())
+        assertThat(constant.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2013-03-11T16:39:33.083"))
-        Truth.assertThat(constant.name()).isEqualTo("Pi")
-        Truth.assertThat(constant.displayName()).isEqualTo("Pi")
-        Truth.assertThat(constant.value()).isEqualTo(3.14)
-        Truth.assertThat(constant.uid()).isEqualTo("bCqvfPR02Im")
+        assertThat(constant.name()).isEqualTo("Pi")
+        assertThat(constant.displayName()).isEqualTo("Pi")
+        assertThat(constant.value()).isEqualTo(3.14)
+        assertThat(constant.uid()).isEqualTo("bCqvfPR02Im")
     }
 }

@@ -87,7 +87,7 @@ internal data class AttributeDTO(
 ) : BaseNameableObjectDTO {
     fun toDomain(): Attribute {
         return Attribute.builder()
-            .applyBaseNameableFields(this@AttributeDTO)
+            .applyBaseNameableFields(this)
             .valueType(valueType?.let { ValueType.valueOf(valueType) })
             .unique(unique)
             .mandatory(mandatory)

@@ -50,7 +50,7 @@ internal data class LegendDTO(
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(legendSetUid: String): Legend {
         return Legend.builder()
-            .applyBaseIdentifiableFields(this@LegendDTO)
+            .applyBaseIdentifiableFields(this)
             .legendSet(ObjectWithUid.create(legendSetUid))
             .startValue(startValue)
             .endValue(endValue)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option.internal
 
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionSetTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object OptionSetFields : BaseFields<OptionSet>() {
-    val uid: Field<OptionSet> = fh.uid()
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.VERSION),
-        fh.field(Columns.VALUE_TYPE),
-    )
+internal fun interface OptionSetNetworkHandler {
+    suspend fun getOptionSets(
+        optionSetUids: Set<String>,
+    ): Payload<OptionSet>
 }

@@ -34,7 +34,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionSetCall(
-    private val service: OptionSetService,
+    private val networkHandler: OptionSetNetworkHandler,
     private val handler: OptionSetHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<OptionSet> {
@@ -44,8 +44,6 @@ internal class OptionSetCall(
     }
 
     override suspend fun download(uids: Set<String>): List<OptionSet> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String> ->
-            service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.`in`(partitionUids), false)
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getOptionSets)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.network.optionset
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.network.optionset.OptionSetFields
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionSetNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class OptionGroupCall internal constructor(
-    private val service: OptionGroupService,
-    private val handler: OptionGroupHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<OptionGroup> {
-    override suspend fun download(optionSetUids: Set<String>): List<OptionGroup> {
-        return apiDownloader.downloadPartitioned(
-            optionSetUids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            val optionSetUidsFilterStr =
-                "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
-            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
-        }
-    }
+internal class OptionSetNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : OptionSetNetworkHandler {
+    private val service: OptionSetService = OptionSetService(httpClient)
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 130
+    override suspend fun getOptionSets(optionSetUids: Set<String>): PayloadJson<OptionSet> {
+        val apiPayload = service.getOptionSets(
+            OptionSetFields.allFields,
+            OptionSetFields.uid.`in`(optionSetUids),
+            false,
+        )
+        return apiPayload.mapItems(OptionSetDTO::toDomain)
     }
 }

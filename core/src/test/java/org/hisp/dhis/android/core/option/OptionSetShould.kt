@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.core.option
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.network.optionset.OptionSetFields
-import org.koin.core.annotation.Singleton
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.network.optionset.OptionSetDTO
+import org.junit.Test
 
-@Singleton
-class OptionGroupCall internal constructor(
-    private val service: OptionGroupService,
-    private val handler: OptionGroupHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<OptionGroup> {
-    override suspend fun download(optionSetUids: Set<String>): List<OptionGroup> {
-        return apiDownloader.downloadPartitioned(
-            optionSetUids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            val optionSetUidsFilterStr =
-                "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
-            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
-        }
-    }
+class OptionSetShould : BaseObjectKotlinxShould("option/option_set.json"), ObjectShould {
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 130
+    @Test
+    override fun map_from_json_string() {
+        val optionSetDTO = deserialize(OptionSetDTO.serializer())
+        val optionSet = optionSetDTO.toDomain()
+
+        assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(optionSet.name()).isEqualTo("Age category")
+        assertThat(optionSet.displayName()).isEqualTo("Age category")
+        assertThat(optionSet.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2014-06-22T10:59:26.564"),
+        )
+        assertThat(optionSet.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"),
+        )
+        assertThat(optionSet.version()).isEqualTo(1)
+        assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT)
     }
 }

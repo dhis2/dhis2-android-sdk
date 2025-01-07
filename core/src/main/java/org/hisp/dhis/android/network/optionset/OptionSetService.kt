@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,39 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.optionset
 
-package org.hisp.dhis.android.core.option;
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class OptionSetShould extends BaseObjectShould implements ObjectShould {
-
-    public OptionSetShould() {
-        super("option/option_set.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        OptionSet optionSet = objectMapper.readValue(jsonStream, OptionSet.class);
-
-        assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG");
-        assertThat(optionSet.name()).isEqualTo("Age category");
-        assertThat(optionSet.displayName()).isEqualTo("Age category");
-        assertThat(optionSet.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-06-22T10:59:26.564"));
-        assertThat(optionSet.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"));
-        assertThat(optionSet.version()).isEqualTo(1);
-        assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
+@Singleton
+internal class OptionSetService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getOptionSets(
+        fields: Fields<OptionSet>,
+        filter: Filter<OptionSet>,
+        paging: Boolean,
+    ): OptionSetPayload {
+        return client.get {
+            url("optionSets")
+            parameters {
+                fields(fields)
+                filter(filter)
+                paging(paging)
+            }
+        }
     }
 }

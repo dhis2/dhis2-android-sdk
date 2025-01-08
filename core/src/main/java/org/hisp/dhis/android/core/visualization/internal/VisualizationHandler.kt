@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
-import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
@@ -47,9 +46,9 @@ internal class VisualizationHandler(
 
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {
         val items =
-            toItems(o.columns(), LayoutPosition.COLUMN) +
-                toItems(o.rows(), LayoutPosition.ROW) +
-                toItems(o.filters(), LayoutPosition.FILTER)
+            toItems(o.columns()) +
+                toItems(o.rows()) +
+                toItems(o.filters())
 
         itemHandler.handleMany(o.uid(), items) {
             it.toBuilder().visualization(o.uid()).build()
@@ -64,27 +63,7 @@ internal class VisualizationHandler(
         )
     }
 
-    private fun toItems(
-        dimensions: List<VisualizationDimension>?,
-        position: LayoutPosition,
-    ): List<VisualizationDimensionItem> {
-        return dimensions?.map { dimension ->
-            val nonNullItems = dimension.items()?.filterNotNull()
-            if (nonNullItems.isNullOrEmpty()) {
-                listOf(
-                    VisualizationDimensionItem.builder()
-                        .position(position)
-                        .dimension(dimension.id())
-                        .build(),
-                )
-            } else {
-                nonNullItems.map { item ->
-                    item.toBuilder()
-                        .position(position)
-                        .dimension(dimension.id())
-                        .build()
-                }
-            }
-        }?.flatten() ?: emptyList()
+    private fun toItems(dimensions: List<VisualizationDimension>): List<VisualizationDimensionItem> {
+        return dimensions.map { it.items() ?: emptyList() }.flatten()
     }
 }

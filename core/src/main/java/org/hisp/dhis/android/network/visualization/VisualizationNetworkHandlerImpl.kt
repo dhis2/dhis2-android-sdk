@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,56 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.visualization
 
-package org.hisp.dhis.android.core.visualization;
+import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.internal.VisualizationNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-import android.database.Cursor;
+@Singleton
+internal class VisualizationNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : VisualizationNetworkHandler {
+    private val service: VisualizationService = VisualizationService(httpClient)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-
-@AutoValue
-public abstract class VisualizationLegend {
-
-    @Nullable
-    public abstract ObjectWithUid set();
-
-    @Nullable
-    public abstract Boolean showKey();
-
-    @Nullable
-    public abstract LegendStrategy strategy();
-
-    @Nullable
-    public abstract LegendStyle style();
-
-    @NonNull
-    public static VisualizationLegend create(Cursor cursor) {
-        return AutoValue_VisualizationLegend.createFromCursor(cursor);
+    override suspend fun getVisualization(uid: String): Visualization {
+        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
+        return service.getSingleVisualization(
+            uid = uid,
+            fields = VisualizationFields.allFields,
+            accessFilter = accessFilter,
+            paging = false,
+        ).toDomain()
     }
 
-    public abstract VisualizationLegend.Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_VisualizationLegend.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder  {
-
-        public abstract Builder showKey(Boolean showKey);
-
-        public abstract Builder style(LegendStyle showKey);
-
-        public abstract Builder strategy(LegendStrategy showKey);
-
-        public abstract Builder set(ObjectWithUid set);
-
-        public abstract VisualizationLegend build();
+    override suspend fun getVisualization36(uid: String): Visualization {
+        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
+        return service.getSingleVisualizations36(
+            uid = uid,
+            fields = VisualizationFields.allFieldsAPI36,
+            accessFilter = accessFilter,
+            paging = false,
+        ).toDomain()
     }
 }

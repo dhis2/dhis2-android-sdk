@@ -28,33 +28,30 @@
 package org.hisp.dhis.android.core.visualization
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.visualization.VisualizationAPI36
+import org.hisp.dhis.android.network.visualization.VisualizationDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
-class VisualizationAPI36Should : BaseObjectShould("visualization/visualization_api_36.json"), ObjectShould {
+class VisualizationAPI36Should : BaseObjectKotlinxShould("visualization/visualization_api_36.json"), ObjectShould {
 
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
-        val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
+        val visualization36 = deserialize(VisualizationAPI36.serializer())
 
-        assertThat(visualizationAPI36.id).isEqualTo("PYBH8ZaAQnC")
-        assertThat(visualizationAPI36.type).isEqualTo(VisualizationType.PIVOT_TABLE)
+        assertThat(visualization36.uid).isEqualTo("PYBH8ZaAQnC")
+        assertThat(visualization36.type).isEqualTo(VisualizationType.PIVOT_TABLE.name)
 
-        assertThat(visualizationAPI36.legendDisplayStrategy).isEquivalentAccordingToCompareTo(LegendStrategy.FIXED)
-        assertThat(visualizationAPI36.legendDisplayStyle).isEquivalentAccordingToCompareTo(LegendStyle.FILL)
+        assertThat(visualization36.legendDisplayStrategy).isEqualTo(LegendStrategy.FIXED.name)
+        assertThat(visualization36.legendDisplayStyle).isEqualTo(LegendStyle.FILL.name)
     }
 
     @Test
     fun convert_to_visualization() {
-        val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
+        val visualization36 = deserialize(VisualizationAPI36.serializer())
+        val visualization = deserializePath("visualization/visualization.json", VisualizationDTO.serializer())
 
-        val visualizationStream = this.javaClass.classLoader!!.getResourceAsStream("visualization/visualization.json")
-        val visualization = objectMapper.readValue(visualizationStream, Visualization::class.java)
-
-        assertThat(visualizationAPI36.toVisualization()).isEqualTo(visualization)
+        assertThat(visualization36.toDomain()).isEqualTo(visualization.toDomain())
     }
 }

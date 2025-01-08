@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+package org.hisp.dhis.android.network.visualization
+
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object VisualizationDimensionFields : BaseFields<VisualizationDimension>() {
-    private const val ITEMS = "items"
+@Serializable
+internal data class VisualizationDimensionDTO(
+    val id: String?,
+    val items: List<VisualizationDimensionItemDTO?>? = emptyList(),
+) {
+    fun toDomain(visualization: String, position: LayoutPosition): VisualizationDimension {
+        return VisualizationDimension.builder()
+            .id(id)
+            .items(toItems(visualization, position))
+            .build()
+    }
 
-    val allFields = Fields.from(
-        fh.field(BaseIdentifiableObject.UID),
-        fh.nestedField<VisualizationDimensionItem>(ITEMS).with(VisualizationDimensionItemFields.allFields),
-    )
+    private fun toItems(visualization: String, position: LayoutPosition): List<VisualizationDimensionItem> {
+        val nonNullItems = items?.filterNotNull()
+
+        return if (nonNullItems.isNullOrEmpty()) {
+            listOf(
+                VisualizationDimensionItem.builder()
+                    .visualization(visualization)
+                    .position(position)
+                    .dimension(id)
+                    .build(),
+            )
+        } else {
+            nonNullItems.map { item ->
+                VisualizationDimensionItem.builder()
+                    .visualization(visualization)
+                    .position(position)
+                    .dimension(id)
+                    .dimensionItem(item.dimensionItem)
+                    .dimensionItemType(item.dimensionItemType)
+                    .build()
+            }
+        }
+    }
 }

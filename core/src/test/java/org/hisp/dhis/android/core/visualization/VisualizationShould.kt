@@ -29,37 +29,39 @@ package org.hisp.dhis.android.core.visualization
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.visualization.VisualizationDTO
 import org.junit.Test
 
-class VisualizationShould : BaseObjectShould("visualization/visualization.json"), ObjectShould {
+class VisualizationShould : BaseObjectKotlinxShould("visualization/visualization.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val visualization = objectMapper.readValue(jsonStream, Visualization::class.java)
+        val visualizationDTO = deserialize(VisualizationDTO.serializer())
+        val visualization = visualizationDTO.toDomain()
 
         assertThat(visualization.uid()).isEqualTo("PYBH8ZaAQnC")
         assertThat(visualization.type()).isEqualTo(VisualizationType.PIVOT_TABLE)
         assertThat(visualization.digitGroupSeparator()).isEqualTo(DigitGroupSeparator.COMMA)
         assertThat(visualization.aggregationType()).isEqualTo(AggregationType.SUM)
 
-        assertThat(visualization.columns()?.size).isEqualTo(3)
-        assertThat(visualization.columns()!![0].id()).isEqualTo("dx")
-        assertThat(visualization.columns()!![0].items()?.size).isEqualTo(7)
-        assertThat(visualization.columns()!![1].id()).isEqualTo("fMZEcRHuamy")
-        assertThat(visualization.columns()!![1].items()?.size).isEqualTo(2)
-        assertThat(visualization.columns()!![2].id()).isEqualTo("fkAkrdC7eJF")
-        assertThat(visualization.columns()!![2].items()?.size).isEqualTo(0)
+        assertThat(visualization.columns().size).isEqualTo(3)
+        assertThat(visualization.columns()[0].id()).isEqualTo("dx")
+        assertThat(visualization.columns()[0].items()?.size).isEqualTo(7)
+        assertThat(visualization.columns()[1].id()).isEqualTo("fMZEcRHuamy")
+        assertThat(visualization.columns()[1].items()?.size).isEqualTo(2)
+        assertThat(visualization.columns()[2].id()).isEqualTo("fkAkrdC7eJF")
+        assertThat(visualization.columns()[2].items()?.size).isEqualTo(0)
 
-        assertThat(visualization.rows()?.size).isEqualTo(1)
-        assertThat(visualization.rows()!![0].id()).isEqualTo("pe")
-        assertThat(visualization.rows()!![0].items()?.size).isEqualTo(4)
-        assertThat(visualization.rows()!![0].items()!![0]?.dimensionItem()).isEqualTo("202102")
-        assertThat(visualization.rows()!![0].items()!![0]?.dimensionItemType()).isEqualTo("PERIOD")
+        assertThat(visualization.rows().size).isEqualTo(1)
+        assertThat(visualization.rows()[0].id()).isEqualTo("pe")
+        assertThat(visualization.rows()[0].items()?.size).isEqualTo(4)
+        assertThat(visualization.rows()[0].items()!![0]?.dimensionItem()).isEqualTo("202102")
+        assertThat(visualization.rows()[0].items()!![0]?.dimensionItemType()).isEqualTo("PERIOD")
 
-        assertThat(visualization.filters()?.size).isEqualTo(1)
-        assertThat(visualization.filters()!![0].id()).isEqualTo("ou")
-        assertThat(visualization.filters()!![0].items()?.size).isEqualTo(4)
+        assertThat(visualization.filters().size).isEqualTo(1)
+        assertThat(visualization.filters()[0].id()).isEqualTo("ou")
+        assertThat(visualization.filters()[0].items()?.size).isEqualTo(4)
     }
 }

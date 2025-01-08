@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.visualization.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -39,7 +38,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class VisualizationCall(
     private val handler: VisualizationHandler,
-    private val service: VisualizationService,
+    private val networkHandler: VisualizationNetworkHandler,
     private val dhis2VersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<Visualization> {
@@ -50,44 +49,22 @@ internal class VisualizationCall(
     }
 
     override suspend fun download(uids: Set<String>): List<Visualization> {
-        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
-
         return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
-            if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
-                apiDownloader.downloadPartitioned(
-                    uids,
-                    MAX_UID_LIST_SIZE,
-                    handler,
-                ) { partitionUids: Set<String> ->
-                    try {
-                        val visualization = service.getSingleVisualization(
-                            partitionUids.first(),
-                            VisualizationFields.allFields,
-                            accessFilter = accessFilter,
-                            paging = false,
-                        )
-                        PayloadJackson(listOf(visualization))
-                    } catch (ignored: Exception) {
-                        PayloadJackson()
-                    }
-                }
-            } else {
-                apiDownloader.downloadPartitioned(
-                    uids,
-                    MAX_UID_LIST_SIZE,
-                    handler,
-                ) { partitionUids: Set<String> ->
-                    try {
-                        val visualization36 = service.getSingleVisualizations36(
-                            partitionUids.first(),
-                            VisualizationFields.allFieldsAPI36,
-                            accessFilter = accessFilter,
-                            paging = false,
-                        )
-                        PayloadJackson(listOf(visualization36.toVisualization()))
-                    } catch (ignored: Exception) {
-                        PayloadJackson()
-                    }
+            apiDownloader.downloadPartitioned(
+                uids,
+                MAX_UID_LIST_SIZE,
+                handler,
+            ) { partitionUids: Set<String> ->
+                try {
+                    val visualization =
+                        if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+                            networkHandler.getVisualization(partitionUids.first())
+                        } else {
+                            networkHandler.getVisualization36(partitionUids.first())
+                        }
+                    PayloadJackson(listOf(visualization))
+                } catch (ignored: Exception) {
+                    PayloadJackson()
                 }
             }
         } else {

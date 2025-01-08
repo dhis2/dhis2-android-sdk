@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,55 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.network.visualization
 
-import android.database.Cursor;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.visualization.LegendStrategy
+import org.hisp.dhis.android.core.visualization.LegendStyle
+import org.hisp.dhis.android.core.visualization.VisualizationLegend
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-
-@AutoValue
-public abstract class VisualizationLegend {
-
-    @Nullable
-    public abstract ObjectWithUid set();
-
-    @Nullable
-    public abstract Boolean showKey();
-
-    @Nullable
-    public abstract LegendStrategy strategy();
-
-    @Nullable
-    public abstract LegendStyle style();
-
-    @NonNull
-    public static VisualizationLegend create(Cursor cursor) {
-        return AutoValue_VisualizationLegend.createFromCursor(cursor);
-    }
-
-    public abstract VisualizationLegend.Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_VisualizationLegend.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder  {
-
-        public abstract Builder showKey(Boolean showKey);
-
-        public abstract Builder style(LegendStyle showKey);
-
-        public abstract Builder strategy(LegendStrategy showKey);
-
-        public abstract Builder set(ObjectWithUid set);
-
-        public abstract VisualizationLegend build();
+@Serializable
+internal data class VisualizationLegendDTO(
+    val set: ObjectWithUidDTO?,
+    val showKey: Boolean?,
+    val strategy: String?,
+    val style: String?,
+) {
+    fun toDomain(): VisualizationLegend {
+        return VisualizationLegend.builder().apply {
+            set(set?.toDomain())
+            showKey(showKey)
+            strategy(strategy?.let { LegendStrategy.valueOf(it) })
+            style(style?.let { LegendStyle.valueOf(it) })
+        }.build()
     }
 }

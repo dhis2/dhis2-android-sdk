@@ -4243,9 +4243,9 @@ public final class org/hisp/dhis/android/core/common/FeatureType : java/lang/Enu
 	public static final field POINT Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static final field POLYGON Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static final field SYMBOL Lorg/hisp/dhis/android/core/common/FeatureType;
-	public final field featureType Ljava/lang/String;
-	public final field geometryType Ljava/lang/String;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getFeatureType ()Ljava/lang/String;
+	public final fun getGeometryType ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static final fun valueOfFeatureType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/FeatureType;

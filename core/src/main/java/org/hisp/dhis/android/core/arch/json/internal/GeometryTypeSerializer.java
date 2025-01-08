@@ -41,6 +41,6 @@ public class GeometryTypeSerializer extends JsonSerializer<FeatureType> {
     @Override
     public void serialize(FeatureType value, JsonGenerator gen, SerializerProvider serializers)
             throws IOException {
-        gen.writeString(value.geometryType);
+        gen.writeString(value.getGeometryType());
     }
 }

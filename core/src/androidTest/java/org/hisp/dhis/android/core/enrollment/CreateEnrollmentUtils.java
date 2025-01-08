@@ -59,7 +59,7 @@ public class CreateEnrollmentUtils {
         enrollment.put(Columns.PROGRAM, programUid);
         enrollment.put(Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
         enrollment.put(Columns.FOLLOW_UP, FOLLOW_UP);
-        enrollment.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.featureType);
+        enrollment.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
         enrollment.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
         enrollment.put(Columns.SYNC_STATE, STATE.name());
         enrollment.put(Columns.CREATED, DATE);

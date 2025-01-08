@@ -63,7 +63,7 @@ public class CreateEventUtils {
         event.put(Columns.CREATED, DATE);
         event.put(Columns.LAST_UPDATED, DATE);
         event.put(Columns.STATUS, STATUS.name());
-        event.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.featureType);
+        event.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
         event.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
         event.put(Columns.PROGRAM, program);
         event.put(Columns.PROGRAM_STAGE, programStage);

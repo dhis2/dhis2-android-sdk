@@ -52,7 +52,6 @@ import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
 import org.hisp.dhis.android.core.event.internal.NewEventFields
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemFields
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceFields
-import org.hisp.dhis.android.core.icon.internal.CustomIconFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeFields
 import org.hisp.dhis.android.core.legendset.internal.LegendFields
@@ -124,6 +123,7 @@ import org.hisp.dhis.android.network.categoryoption.CategoryOptionFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
+import org.hisp.dhis.android.network.customIcon.CustomIconFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields

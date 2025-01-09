@@ -38,15 +38,15 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 @Serializable
 internal data class LegendDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val startValue: Double? = null,
-    val endValue: Double? = null,
-    val color: String? = null,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val startValue: Double?,
+    val endValue: Double?,
+    val color: String?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(legendSetUid: String): Legend {
         return Legend.builder()

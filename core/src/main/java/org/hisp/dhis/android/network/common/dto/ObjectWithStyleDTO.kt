@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.common.ObjectStyle
 
 @Serializable
 internal data class ObjectWithStyleDTO(
-    val color: String? = null,
-    val icon: String? = null,
+    val color: String?,
+    val icon: String?,
 ) {
     fun toDomain(): ObjectStyle {
         return ObjectStyle.builder()

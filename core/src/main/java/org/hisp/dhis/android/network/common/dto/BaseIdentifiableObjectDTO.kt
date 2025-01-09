@@ -38,15 +38,6 @@ internal interface BaseIdentifiableObjectDTO {
     val created: String?
     val lastUpdated: String?
     val deleted: Boolean?
-
-    companion object {
-        val CODE = null
-        val NAME = null
-        val DISPLAY_NAME = null
-        val CREATED = null
-        val LAST_UPDATED = null
-        val DELETED = null
-    }
 }
 
 internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where

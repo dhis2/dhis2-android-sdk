@@ -41,15 +41,15 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 @Serializable
 internal data class OptionDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val sortOrder: Int? = null,
-    val optionSet: ObjectWithUidDTO? = null,
-    val style: ObjectWithStyleDTO? = null,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val sortOrder: Int?,
+    val optionSet: ObjectWithUidDTO?,
+    val style: ObjectWithStyleDTO?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Option {
         return Option.builder().apply {
@@ -63,6 +63,6 @@ internal data class OptionDTO(
 
 @Serializable
 internal class OptionPayload(
-    override val pager: PagerDTO? = null,
+    override val pager: PagerDTO?,
     @SerialName("options") override val items: List<OptionDTO> = emptyList(),
 ) : PayloadJson<OptionDTO>(pager, items)

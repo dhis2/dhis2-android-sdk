@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.Access
 internal data class AccessDTO(
     val read: Boolean = true,
     val write: Boolean = true,
-    val data: DataAccessDTO? = null,
+    val data: DataAccessDTO?,
 ) {
     fun toDomain(): Access {
         return Access.builder()

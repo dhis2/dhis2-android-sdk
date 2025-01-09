@@ -63,6 +63,6 @@ internal data class EventFilterDTO(
 
 @Serializable
 internal class EventFilterPayload(
-    override val pager: PagerDTO? = null,
+    override val pager: PagerDTO?,
     @SerialName("eventFilters") override val items: List<EventFilterDTO> = emptyList(),
 ) : PayloadJson<EventFilterDTO>(pager, items)

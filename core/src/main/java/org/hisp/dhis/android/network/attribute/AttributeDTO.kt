@@ -33,7 +33,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
@@ -41,28 +40,28 @@ import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 @Serializable
 internal data class AttributeDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    override val shortName: String? = BaseNameableObjectDTO.SHORT_NAME,
-    override val displayShortName: String? = BaseNameableObjectDTO.DISPLAY_SHORT_NAME,
-    override val description: String? = BaseNameableObjectDTO.DESCRIPTION,
-    override val displayDescription: String? = BaseNameableObjectDTO.DISPLAY_DESCRIPTION,
-    val valueType: String? = null,
-    val unique: Boolean? = null,
-    val mandatory: Boolean? = null,
-    val indicatorAttribute: Boolean? = null,
-    val indicatorGroupAttribute: Boolean? = null,
-    val userGroupAttribute: Boolean? = null,
-    val dataElementAttribute: Boolean? = null,
-    val constantAttribute: Boolean? = null,
-    val categoryOptionAttribute: Boolean? = null,
-    val optionSetAttribute: Boolean? = null,
-    val sqlViewAttribute: Boolean? = null,
-    val legendSetAttribute: Boolean? = null,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val valueType: String?,
+    val unique: Boolean?,
+    val mandatory: Boolean?,
+    val indicatorAttribute: Boolean?,
+    val indicatorGroupAttribute: Boolean?,
+    val userGroupAttribute: Boolean?,
+    val dataElementAttribute: Boolean?,
+    val constantAttribute: Boolean?,
+    val categoryOptionAttribute: Boolean?,
+    val optionSetAttribute: Boolean?,
+    val sqlViewAttribute: Boolean?,
+    val legendSetAttribute: Boolean?,
     val trackedEntityAttributeAttribute: Boolean? = null,
     val organisationUnitAttribute: Boolean? = null,
     val dataSetAttribute: Boolean? = null,

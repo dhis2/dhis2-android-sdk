@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.common.Geometry
 
 @Serializable
 internal data class GeometryDTO(
-    val type: FeatureType? = null,
-    val coordinates: String? = null,
+    val type: FeatureType?,
+    val coordinates: String?,
 ) {
     fun toDomain(): Geometry {
         return Geometry.builder()

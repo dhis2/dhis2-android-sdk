@@ -35,13 +35,6 @@ internal interface BaseNameableObjectDTO : BaseIdentifiableObjectDTO {
     val displayShortName: String?
     val description: String?
     val displayDescription: String?
-
-    companion object {
-        val SHORT_NAME = null
-        val DISPLAY_SHORT_NAME = null
-        val DESCRIPTION = null
-        val DISPLAY_DESCRIPTION = null
-    }
 }
 
 internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDTO): T where

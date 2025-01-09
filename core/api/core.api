@@ -4243,11 +4243,23 @@ public final class org/hisp/dhis/android/core/common/FeatureType : java/lang/Enu
 	public static final field POINT Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static final field POLYGON Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static final field SYMBOL Lorg/hisp/dhis/android/core/common/FeatureType;
-	public fun getFeatureType ()Ljava/lang/String;
-	public fun getGeometryType ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getFeatureType ()Ljava/lang/String;
+	public final fun getGeometryType ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FeatureType;
-	public static fun valueOfFeatureType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FeatureType;
+	public static final fun valueOfFeatureType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FeatureType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/FeatureType;
+}
+
+public synthetic class org/hisp/dhis/android/core/common/FeatureType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/common/FeatureType$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/hisp/dhis/android/core/common/FeatureType;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/common/FeatureType;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public abstract class org/hisp/dhis/android/core/common/FilterOperators {

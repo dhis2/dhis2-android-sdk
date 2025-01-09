@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.network.user
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -35,6 +35,9 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
+import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
+import org.hisp.dhis.android.core.user.internal.UserGroupFields
+import org.hisp.dhis.android.core.user.internal.UserRoleFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property

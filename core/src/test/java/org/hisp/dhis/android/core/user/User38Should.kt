@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserDTO
 import org.junit.Test
 
-class User38Should : BaseObjectShould("user/user38.json"), ObjectShould {
+class User38Should : BaseObjectKotlinxShould("user/user38.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val user = objectMapper.readValue(jsonStream, User::class.java)
+        val userDTO = deserialize(UserDTO.serializer())
+        val user = userDTO.toDomain()
 
         assertThat(user.name()).isEqualTo("John Barnes")
         assertThat(user.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2016-04-06T00:05:57.495"))

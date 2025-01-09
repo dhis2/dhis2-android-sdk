@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.network.common
 
-import static com.google.common.truth.Truth.assertThat;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class UserCredentialShould extends BaseObjectShould implements ObjectShould {
-
-    public UserCredentialShould() {
-        super("user/user_credentials.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserCredentials userCredentials = objectMapper.readValue(jsonStream, UserCredentials.class);
-
-        assertThat(userCredentials.username()).isEqualTo("admin");
-
-        assertThat(userCredentials.userRoles().get(0).uid()).isEqualTo("Ufph3mGRmMo");
-        assertThat(userCredentials.userRoles().get(1).uid()).isEqualTo("UYXOT4A7JMI");
-        assertThat(userCredentials.userRoles().get(2).uid()).isEqualTo("aNk5AyC7ydy");
+@Serializable
+internal data class GeometryDTO(
+    val type: FeatureType? = null,
+    val coordinates: String? = null,
+) {
+    fun toDomain(): Geometry {
+        return Geometry.builder()
+            .type(type)
+            .coordinates(coordinates)
+            .build()
     }
 }

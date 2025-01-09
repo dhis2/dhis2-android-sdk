@@ -26,32 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.network.user
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
-
-    public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
+internal class UserService(private val client: HttpServiceClientKotlinx) {
+    suspend fun authenticate(
+        credentials: String,
+        fields: Fields<User>,
+    ): UserDTO {
+        return client.get {
+            url("me")
+            authorizationHeader(credentials)
+            parameters {
+                fields(fields)
+            }
+        }
     }
 
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract UserGroup build();
+    suspend fun getUser(fields: Fields<User>): UserDTO {
+        return client.get {
+            url("me")
+            parameters {
+                fields(fields)
+            }
+        }
     }
 }

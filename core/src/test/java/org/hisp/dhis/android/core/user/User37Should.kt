@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserDTO
 import org.junit.Test
 
-class User37Should : BaseObjectShould("user/user37.json"), ObjectShould {
+class User37Should : BaseObjectKotlinxShould("user/user37.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val user = objectMapper.readValue(jsonStream, User::class.java)
+        val userDTO = deserialize(UserDTO.serializer())
+        val user = userDTO.toDomain()
 
         assertThat(user.name()).isEqualTo("John Barnes")
         assertThat(user.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2016-04-06T00:05:57.495"))
@@ -48,7 +50,8 @@ class User37Should : BaseObjectShould("user/user37.json"), ObjectShould {
         assertThat(user.email()).isEqualTo("john@hmail.com")
         assertThat(user.displayName()).isEqualTo("John Barnes")
         assertThat(UserInternalAccessor.accessUserCredentials(user).username()).isEqualTo("android")
-        assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles()!![0].uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles()!![0].uid())
+            .isEqualTo("Ufph3mGRmMo")
         assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
     }
 }

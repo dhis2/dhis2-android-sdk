@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.user.internal
 
-public enum FeatureType {
+import org.hisp.dhis.android.core.user.User
 
-    POINT("POINT", "Point"),
-    POLYGON("POLYGON", "Polygon"),
-    MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
-    NONE("NONE", "None"),
-    SYMBOL("SYMBOL", "Symbol");
+internal interface UserNetworkHandler {
+    suspend fun authenticate(
+        credentials: String,
+    ): User
 
-    private final String featureType;
-    private final String geometryType;
-
-    FeatureType(String featureType, String geometryType) {
-        this.featureType = featureType;
-        this.geometryType = geometryType;
-    }
-
-    public String getFeatureType() {
-        return featureType;
-    }
-
-    public String getGeometryType() {
-        return geometryType;
-    }
-
-    public static FeatureType valueOfFeatureType(String featureType) {
-        for (FeatureType value : values()) {
-            if (value.featureType.equals(featureType) || value.geometryType.equals(featureType)) {
-                return value;
-            }
-        }
-        return null;
-    }
+    suspend fun getUser(): User
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user.internal
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserGroupDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
+class UserGroupShould : BaseObjectKotlinxShould("user/user_group.json"), ObjectShould {
 
-@Singleton
-internal class UserService(private val client: HttpServiceClient) {
-    suspend fun authenticate(
-        credentials: String,
-        fields: Fields<User>,
-    ): User {
-        return client.get {
-            url("me")
-            authorizationHeader(credentials)
-            parameters {
-                fields(fields)
-            }
-        }
-    }
+    @Test
+    override fun map_from_json_string() {
+        val userGroupDTO = deserialize(UserGroupDTO.serializer())
+        val userGroup = userGroupDTO.toDomain()
 
-    suspend fun getUser(fields: Fields<User>): User {
-        return client.get {
-            url("me")
-            parameters {
-                fields(fields)
-            }
-        }
+        assertThat(userGroup.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251"),
+        )
+        assertThat(userGroup.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114"),
+        )
+        assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp")
+        assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program")
+        assertThat(userGroup.name()).isEqualTo("_PROGRAM_TB program")
     }
 }

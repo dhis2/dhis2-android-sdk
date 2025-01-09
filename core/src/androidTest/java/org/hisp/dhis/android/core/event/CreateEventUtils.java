@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class CreateEventUtils {
 

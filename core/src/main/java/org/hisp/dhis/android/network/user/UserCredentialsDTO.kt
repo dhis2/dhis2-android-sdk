@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.user.UserCredentials
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class UserRoleShould extends BaseObjectShould implements ObjectShould {
-
-    public UserRoleShould() {
-        super("user/user_role.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserRole userRole = objectMapper.readValue(jsonStream, UserRole.class);
-
-        assertThat(userRole.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734"));
-        assertThat(userRole.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-13T18:10:26.881"));
-        assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo");
-        assertThat(userRole.displayName()).isEqualTo("Superuser");
-        assertThat(userRole.name()).isEqualTo("Superuser");
+@Serializable
+internal data class UserCredentialsDTO(
+    val username: String? = null,
+    val name: String? = null,
+    val displayName: String? = null,
+    val userRoles: List<UserRoleDTO>? = emptyList(),
+) {
+    fun toDomain(): UserCredentials {
+        return UserCredentials.builder()
+            .username(username)
+            .name(name)
+            .displayName(displayName)
+            .userRoles(userRoles?.map { it.toDomain() })
+            .build()
     }
 }

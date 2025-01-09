@@ -25,33 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.user;
+import kotlinx.serialization.Serializable
 
-import android.database.Cursor;
+@Serializable
+enum class FeatureType(val featureType: String, val geometryType: String) {
+    POINT("POINT", "Point"),
+    POLYGON("POLYGON", "Polygon"),
+    MULTI_POLYGON("MULTI_POLYGON", "MultiPolygon"),
+    NONE("NONE", "None"),
+    SYMBOL("SYMBOL", "Symbol"),
+    ;
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
-
-    public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
-    }
-
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract UserGroup build();
+    internal companion object {
+        @JvmStatic
+        fun valueOfFeatureType(featureType: String): FeatureType? {
+            return entries.find { it.featureType == featureType || it.geometryType == featureType }
+        }
     }
 }

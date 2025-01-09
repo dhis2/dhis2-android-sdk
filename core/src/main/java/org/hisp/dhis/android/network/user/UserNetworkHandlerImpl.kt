@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.network.user
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
-
-    public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
+@Singleton
+internal class UserNetworkHandlerImpl(
+    private val httpClient: HttpServiceClientKotlinx,
+    private val service: UserService = UserService(httpClient),
+    private val dhisVersionManager: DHISVersionManager,
+) : UserNetworkHandler {
+    override suspend fun authenticate(
+        credentials: String,
+    ): User {
+        val userDTO = service.authenticate(credentials, UserFields.allFieldsWithoutOrgUnit)
+        return userDTO.toDomain()
     }
 
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract UserGroup build();
+    override suspend fun getUser(): User {
+        val userDTO = service.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()))
+        return userDTO.toDomain()
     }
 }

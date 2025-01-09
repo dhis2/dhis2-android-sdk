@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserCredentialsDTO
+import org.junit.Test
 
-import android.database.Cursor;
+class UserCredentialShould : BaseObjectKotlinxShould("user/user_credentials.json"), ObjectShould {
 
-import com.google.auto.value.AutoValue;
+    @Test
+    override fun map_from_json_string() {
+        val userCredentialsDTO = deserialize(UserCredentialsDTO.serializer())
+        val userCredentials = userCredentialsDTO.toDomain()
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
+        assertThat(userCredentials.username()).isEqualTo("admin")
 
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
+        val userRoles = userCredentials.userRoles()
 
-    public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
-    }
-
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract UserGroup build();
+        assertThat(userRoles?.getOrNull(0)?.uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(userRoles?.getOrNull(1)?.uid()).isEqualTo("UYXOT4A7JMI")
+        assertThat(userRoles?.getOrNull(2)?.uid()).isEqualTo("aNk5AyC7ydy")
     }
 }

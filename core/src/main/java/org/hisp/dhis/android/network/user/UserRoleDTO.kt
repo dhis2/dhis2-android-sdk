@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.network.user
 
-import android.database.Cursor;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.user.UserRole
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
-
-    public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
-    }
-
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract UserGroup build();
+@Serializable
+internal data class UserRoleDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String? = null,
+    override val lastUpdated: String? = null,
+    override val deleted: Boolean? = null,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): UserRole {
+        return UserRole.builder()
+            .applyBaseIdentifiableFields(this)
+            .build()
     }
 }

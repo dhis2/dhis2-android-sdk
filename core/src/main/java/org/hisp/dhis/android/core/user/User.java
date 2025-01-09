@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,11 +46,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_User.Builder.class)
 public abstract class User extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -108,12 +104,10 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreUserRoleListColumnAdapter.class)
     public abstract List<UserRole> userRoles();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreUserGroupListColumnAdapter.class)
     public abstract List<UserGroup> userGroups();
 
@@ -129,7 +123,6 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

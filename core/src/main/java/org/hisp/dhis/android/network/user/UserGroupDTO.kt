@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.network.user
 
-import static com.google.common.truth.Truth.assertThat;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.user.UserGroup
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class UserGroupShould extends BaseObjectShould implements ObjectShould {
-
-    public UserGroupShould() {
-        super("user/user_group.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserGroup userGroup = objectMapper.readValue(jsonStream, UserGroup.class);
-
-        assertThat(userGroup.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2024-02-07T14:00:59.251"));
-        assertThat(userGroup.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2018-03-09T23:04:50.114"));
-        assertThat(userGroup.uid()).isEqualTo("Kk12LkEWtXp");
-        assertThat(userGroup.displayName()).isEqualTo("_PROGRAM_TB program");
-        assertThat(userGroup.name()).isEqualTo("_PROGRAM_TB program");
+@Serializable
+internal data class UserGroupDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String? = null,
+    override val name: String? = null,
+    override val displayName: String? = null,
+    override val created: String? = null,
+    override val lastUpdated: String? = null,
+    override val deleted: Boolean? = null,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): UserGroup {
+        return UserGroup.builder()
+            .applyBaseIdentifiableFields(this)
+            .build()
     }
 }

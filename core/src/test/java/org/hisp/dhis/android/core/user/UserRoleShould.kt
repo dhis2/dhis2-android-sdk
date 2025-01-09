@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.user.UserRoleDTO
+import org.junit.Test
 
-import android.database.Cursor;
+class UserRoleShould : BaseObjectKotlinxShould("user/user_role.json"), ObjectShould {
 
-import com.google.auto.value.AutoValue;
+    @Test
+    override fun map_from_json_string() {
+        val userRoleDTO = deserialize(UserRoleDTO.serializer())
+        val userRole = userRoleDTO.toDomain()
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
-
-    public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
-    }
-
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract UserGroup build();
+        assertThat(userRole.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734"),
+        )
+        assertThat(userRole.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2012-11-13T18:10:26.881"),
+        )
+        assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo")
+        assertThat(userRole.displayName()).isEqualTo("Superuser")
+        assertThat(userRole.name()).isEqualTo("Superuser")
     }
 }

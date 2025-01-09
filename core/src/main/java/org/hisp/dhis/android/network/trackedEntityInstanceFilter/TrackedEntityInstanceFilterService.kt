@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterAPI37
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClient) {
-    suspend fun getTrackedEntityInstanceFiltersAPI37(
+internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getTrackedEntityInstanceFilters(
         uids: Filter<TrackedEntityInstanceFilter>,
         accessDataReadFilter: String,
         fields: Fields<TrackedEntityInstanceFilter>,
         paging: Boolean,
-    ): PayloadJackson<TrackedEntityInstanceFilterAPI37> {
+    ): TrackedEntityInstanceFilterPayload {
         return client.get {
             url("trackedEntityInstanceFilters")
             parameters {
@@ -54,12 +52,12 @@ internal class TrackedEntityInstanceFilterService(private val client: HttpServic
         }
     }
 
-    suspend fun getTrackedEntityInstanceFilters(
+    suspend fun getTrackedEntityInstanceFiltersAPI37(
         uids: Filter<TrackedEntityInstanceFilter>,
         accessDataReadFilter: String,
         fields: Fields<TrackedEntityInstanceFilter>,
         paging: Boolean,
-    ): PayloadJackson<TrackedEntityInstanceFilter> {
+    ): TrackedEntityInstanceFilterAPI37Payload {
         return client.get {
             url("trackedEntityInstanceFilters")
             parameters {

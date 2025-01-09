@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.EventFilter
 
-internal interface EventFilterNetworkHandler {
+internal fun interface EventFilterNetworkHandler {
     suspend fun getEventFilters(
         partitionUids: Set<String>,
     ): Payload<EventFilter>

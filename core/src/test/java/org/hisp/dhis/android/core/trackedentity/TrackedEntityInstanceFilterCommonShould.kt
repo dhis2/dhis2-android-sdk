@@ -25,46 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 
-import static com.google.common.truth.Truth.assertThat;
+abstract class TrackedEntityInstanceFilterCommonShould(jsonPath: String) :
+    BaseObjectKotlinxShould(jsonPath), ObjectShould {
+    protected fun teiFilterCommonAsserts(trackedEntityInstanceFilter: TrackedEntityInstanceFilter) {
+        Truth.assertThat(trackedEntityInstanceFilter.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2019-09-27T00:19:06.590"))
+        Truth.assertThat(trackedEntityInstanceFilter.created())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2019-09-27T00:19:06.590"))
+        Truth.assertThat(trackedEntityInstanceFilter.uid()).isEqualTo("klhzVgls081")
+        Truth.assertThat(trackedEntityInstanceFilter.code()).isEqualTo("assigned_none")
+        Truth.assertThat(trackedEntityInstanceFilter.name()).isEqualTo("Ongoing foci responses")
+        Truth.assertThat(trackedEntityInstanceFilter.displayName())
+            .isEqualTo("Ongoing foci responses")
+        Truth.assertThat(trackedEntityInstanceFilter.description())
+            .isEqualTo("Foci response assigned to someone, and the enrollment is still active")
+        Truth.assertThat(trackedEntityInstanceFilter.followUp()).isFalse()
+        Truth.assertThat(trackedEntityInstanceFilter.enrollmentStatus())
+            .isEqualTo(EnrollmentStatus.ACTIVE)
+        Truth.assertThat(trackedEntityInstanceFilter.sortOrder()).isEqualTo(2)
+        Truth.assertThat(trackedEntityInstanceFilter.program()!!.uid()).isEqualTo("M3xtLkYBlKI")
+        Truth.assertThat(
+            trackedEntityInstanceFilter.enrollmentCreatedPeriod()!!.periodFrom(),
+        ).isEqualTo(-5)
+        Truth.assertThat(
+            trackedEntityInstanceFilter.enrollmentCreatedPeriod()!!.periodTo(),
+        ).isEqualTo(5)
 
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.event.EventStatus;
+        val eventFilter = trackedEntityInstanceFilter.eventFilters()!![0]
+        Truth.assertThat(eventFilter.programStage()).isEqualTo("uvMKOn1oWvd")
+        Truth.assertThat(eventFilter.assignedUserMode()).isEqualTo(AssignedUserMode.ANY)
+        Truth.assertThat(eventFilter.eventStatus()).isEqualTo(EventStatus.OVERDUE)
 
-public abstract class TrackedEntityInstanceFilterCommonShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityInstanceFilterCommonShould(String jsonPath) {
-        super(jsonPath);
-    }
-
-    protected void teiFilterCommonAsserts(TrackedEntityInstanceFilter trackedEntityInstanceFilter) {
-
-        assertThat(trackedEntityInstanceFilter.lastUpdated()).isEqualTo(getDate("2019-09-27T00:19:06.590"));
-        assertThat(trackedEntityInstanceFilter.created()).isEqualTo(getDate("2019-09-27T00:19:06.590"));
-        assertThat(trackedEntityInstanceFilter.uid()).isEqualTo("klhzVgls081");
-        assertThat(trackedEntityInstanceFilter.code()).isEqualTo("assigned_none");
-        assertThat(trackedEntityInstanceFilter.name()).isEqualTo("Ongoing foci responses");
-        assertThat(trackedEntityInstanceFilter.displayName()).isEqualTo("Ongoing foci responses");
-        assertThat(trackedEntityInstanceFilter.description())
-                .isEqualTo("Foci response assigned to someone, and the enrollment is still active");
-        assertThat(trackedEntityInstanceFilter.followUp()).isFalse();
-        assertThat(trackedEntityInstanceFilter.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
-        assertThat(trackedEntityInstanceFilter.sortOrder()).isEqualTo(2);
-        assertThat(trackedEntityInstanceFilter.program().uid()).isEqualTo("M3xtLkYBlKI");
-        assertThat(trackedEntityInstanceFilter.enrollmentCreatedPeriod().periodFrom()).isEqualTo(-5);
-        assertThat(trackedEntityInstanceFilter.enrollmentCreatedPeriod().periodTo()).isEqualTo(5);
-
-        TrackedEntityInstanceEventFilter eventFilter = trackedEntityInstanceFilter.eventFilters().get(0);
-        assertThat(eventFilter.programStage()).isEqualTo("uvMKOn1oWvd");
-        assertThat(eventFilter.assignedUserMode()).isEqualTo(AssignedUserMode.ANY);
-        assertThat(eventFilter.eventStatus()).isEqualTo(EventStatus.OVERDUE);
-
-        assertThat(eventFilter.eventCreatedPeriod().periodFrom()).isEqualTo(-11);
-        assertThat(eventFilter.eventCreatedPeriod().periodTo()).isEqualTo(11);
+        Truth.assertThat(eventFilter.eventCreatedPeriod()!!.periodFrom()).isEqualTo(-11)
+        Truth.assertThat(eventFilter.eventCreatedPeriod()!!.periodTo()).isEqualTo(11)
     }
 }

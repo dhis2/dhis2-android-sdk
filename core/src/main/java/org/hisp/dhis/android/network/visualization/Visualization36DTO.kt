@@ -45,7 +45,7 @@ import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class VisualizationAPI36(
+internal data class Visualization36DTO(
     @SerialName("id") override val uid: String,
     override val code: String? = BaseIdentifiableObjectDTO.CODE,
     override val name: String? = BaseIdentifiableObjectDTO.NAME,

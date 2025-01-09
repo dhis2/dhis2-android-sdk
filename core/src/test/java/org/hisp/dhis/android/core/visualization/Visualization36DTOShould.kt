@@ -30,15 +30,15 @@ package org.hisp.dhis.android.core.visualization
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.visualization.VisualizationAPI36
+import org.hisp.dhis.android.network.visualization.Visualization36DTO
 import org.hisp.dhis.android.network.visualization.VisualizationDTO
 import org.junit.Test
 
-class VisualizationAPI36Should : BaseObjectKotlinxShould("visualization/visualization_api_36.json"), ObjectShould {
+class Visualization36DTOShould : BaseObjectKotlinxShould("visualization/visualization_api_36.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val visualization36 = deserialize(VisualizationAPI36.serializer())
+        val visualization36 = deserialize(Visualization36DTO.serializer())
 
         assertThat(visualization36.uid).isEqualTo("PYBH8ZaAQnC")
         assertThat(visualization36.type).isEqualTo(VisualizationType.PIVOT_TABLE.name)
@@ -49,7 +49,7 @@ class VisualizationAPI36Should : BaseObjectKotlinxShould("visualization/visualiz
 
     @Test
     fun convert_to_visualization() {
-        val visualization36 = deserialize(VisualizationAPI36.serializer())
+        val visualization36 = deserialize(Visualization36DTO.serializer())
         val visualization = deserializePath("visualization/visualization.json", VisualizationDTO.serializer())
 
         assertThat(visualization36.toDomain()).isEqualTo(visualization.toDomain())

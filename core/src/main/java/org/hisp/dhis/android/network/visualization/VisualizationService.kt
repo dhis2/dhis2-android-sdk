@@ -56,7 +56,7 @@ internal class VisualizationService(private val client: HttpServiceClientKotlinx
         fields: Fields<Visualization>,
         accessFilter: String,
         paging: Boolean,
-    ): VisualizationAPI36 {
+    ): Visualization36DTO {
         return client.get {
             url("$VISUALIZATIONS/$uid")
             parameters {

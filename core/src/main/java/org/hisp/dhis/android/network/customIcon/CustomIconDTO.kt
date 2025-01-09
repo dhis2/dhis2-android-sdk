@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,54 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.icon;
+package org.hisp.dhis.android.network.customIcon
 
-import android.database.Cursor;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
-import androidx.annotation.NonNull;
-
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-@AutoValue
-public abstract class CustomIcon implements CoreObject {
-
-    @NonNull
-    public abstract String key();
-
-    @NonNull
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
-    public abstract ObjectWithUid fileResource();
-
-    @NonNull
-    public abstract String href();
-
-    @NonNull
-    public static CustomIcon create(Cursor cursor) {
-        return $AutoValue_CustomIcon.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIcon.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder key(String key);
-
-        public abstract Builder fileResource(ObjectWithUid fileResource);
-
-        public abstract Builder href(String href);
-
-        public abstract CustomIcon build();
+@Serializable
+internal data class CustomIconDTO(
+    val key: String,
+    val href: String,
+    val fileResource: ObjectWithUidDTO,
+) {
+    fun toDomain(): CustomIcon {
+        return CustomIcon.builder()
+            .key(key)
+            .href(href)
+            .fileResource(fileResource.toDomain())
+            .build()
     }
 }
+
+@Serializable
+internal class CustomIconPayload(
+    override val pager: PagerDTO? = null,
+    @SerialName("icons") override val items: List<CustomIconDTO> = emptyList(),
+) : PayloadJson<CustomIconDTO>(pager, items)

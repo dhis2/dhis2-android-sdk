@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
@@ -37,41 +36,25 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class TrackedEntityInstanceFilterCall internal constructor(
-    private val service: TrackedEntityInstanceFilterService,
+    private val networkHandler: TrackedEntityInstanceFilterNetworkHandler,
     private val handler: TrackedEntityInstanceFilterHandler,
     private val apiDownloader: APIDownloader,
     private val versionManager: DHISVersionManager,
 ) : UidsCallCoroutines<TrackedEntityInstanceFilter> {
     override suspend fun download(uids: Set<String>): List<TrackedEntityInstanceFilter> {
-        val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
-
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,
-            ) { partitionUids: Set<String> ->
-                service.getTrackedEntityInstanceFilters(
-                    TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
-                    accessDataReadFilter,
-                    TrackedEntityInstanceFilterFields.allFields,
-                    false,
-                )
-            }
+                networkHandler::getTrackedEntityInstanceFilters,
+            )
         } else {
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,
-                { partitionUids: Set<String> ->
-                    service.getTrackedEntityInstanceFiltersAPI37(
-                        TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
-                        accessDataReadFilter,
-                        TrackedEntityInstanceFilterFields.allFieldsAPI37,
-                        false,
-                    )
-                },
-                { it.toTrackedEntityInstanceFilter() },
+                networkHandler::getTrackedEntityInstanceFiltersAPI37,
             )
         }
     }

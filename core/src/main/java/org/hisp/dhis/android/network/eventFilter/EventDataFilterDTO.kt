@@ -31,6 +31,8 @@ package org.hisp.dhis.android.network.eventFilter
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
+import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
+import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
 
 @Serializable
 internal data class EventDataFilterDTO(

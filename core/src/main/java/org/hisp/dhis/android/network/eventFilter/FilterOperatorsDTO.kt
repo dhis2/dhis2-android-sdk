@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.eventFilter
 import org.hisp.dhis.android.core.common.FilterOperators
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 
+@Suppress("VariableNaming")
 internal interface FilterOperatorsDTO {
     val le: String?
     val ge: String?
@@ -43,7 +44,7 @@ internal interface FilterOperatorsDTO {
 }
 
 internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
-    T : FilterOperators.Builder<T> {
+      T : FilterOperators.Builder<T> {
     le(item.le)
     ge(item.ge)
     gt(item.gt)
@@ -54,4 +55,3 @@ internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
     dateFilter(item.dateFilter?.toDomain())
     return this
 }
-

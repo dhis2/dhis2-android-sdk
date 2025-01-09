@@ -33,6 +33,6 @@ import org.hisp.dhis.android.core.event.EventFilter
 
 internal interface EventFilterNetworkHandler {
     suspend fun getEventFilters(
-        partitionUids: Set<String>
+        partitionUids: Set<String>,
     ): Payload<EventFilter>
 }

@@ -42,7 +42,7 @@ internal class EventFilterNetworkHandlerImpl(
     private val service: EventFilterService = EventFilterService(httpClient)
 
     override suspend fun getEventFilters(
-        partitionUids: Set<String>
+        partitionUids: Set<String>,
     ): PayloadJson<EventFilter> {
         val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
         val apiPayload = service.getEventFilters(

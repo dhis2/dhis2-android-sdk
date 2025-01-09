@@ -41,7 +41,7 @@ internal data class DateFilterPeriodDTO(
     val startDate: String?,
     val endDate: String?,
     val period: String?,
-    val type: String?
+    val type: String?,
 ) {
     fun toDomain(): DateFilterPeriod {
         return DateFilterPeriod.builder()

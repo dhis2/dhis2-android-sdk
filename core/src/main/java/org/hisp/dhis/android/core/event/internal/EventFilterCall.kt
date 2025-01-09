@@ -44,7 +44,6 @@ internal class EventFilterCall internal constructor(
 
     override suspend fun download(programUids: Set<String>): List<EventFilter> {
         return if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-
             apiDownloader.downloadPartitioned(
                 programUids,
                 MAX_UID_LIST_SIZE,

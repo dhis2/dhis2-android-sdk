@@ -47,7 +47,7 @@ internal interface FilterQueryCriteriaDTO {
 }
 
 internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO): T where
-    T : FilterQueryCriteria.Builder<T> {
+      T : FilterQueryCriteria.Builder<T> {
     followUp(item.followUp)
     organisationUnit(item.organisationUnit)
     item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }

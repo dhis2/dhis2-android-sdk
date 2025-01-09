@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -37,7 +36,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventFilterCall internal constructor(
-    private val service: EventFilterService,
+    private val networkHandler: EventFilterNetworkHandler,
     val handler: EventFilterHandler,
     val apiDownloader: APIDownloader,
     val versionManager: DHISVersionManager,
@@ -45,19 +44,13 @@ internal class EventFilterCall internal constructor(
 
     override suspend fun download(programUids: Set<String>): List<EventFilter> {
         return if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-            val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
+
             apiDownloader.downloadPartitioned(
                 programUids,
                 MAX_UID_LIST_SIZE,
                 handler,
-            ) { partitionUids: Set<String> ->
-                service.getEventFilters(
-                    EventFilterFields.programUid.`in`(partitionUids),
-                    accessDataReadFilter,
-                    EventFilterFields.allFields,
-                    false,
-                )
-            }
+                networkHandler::getEventFilters,
+            )
         } else {
             arrayListOf()
         }

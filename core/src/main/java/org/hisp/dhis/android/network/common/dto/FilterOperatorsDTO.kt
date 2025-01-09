@@ -26,37 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.common.dto
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventQueryCriteria
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterQueryCriteriaDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterQueryCriteriaFields
+import org.hisp.dhis.android.core.common.FilterOperators
 
-@Serializable
-internal data class EventQueryCriteriaDTO(
-    override val followUp: Boolean?,
-    override val organisationUnit: String?,
-    override val ouMode: String?,
-    override val assignedUserMode: String?,
-    override val order: String?,
-    override val displayColumnOrder: List<String>?,
-    override val eventStatus: String?,
-    override val eventDate: DateFilterPeriodDTO?,
-    override val lastUpdatedDate: DateFilterPeriodDTO?,
-    val dataFilters: List<EventDataFilterDTO>?,
-    val events: List<String>?,
-    val dueDate: DateFilterPeriodDTO?,
-    val completedDate: DateFilterPeriodDTO?,
-) : FilterQueryCriteriaDTO {
-    fun toDomain(): EventQueryCriteria {
-        return EventQueryCriteria.builder()
-            .applyFilterQueryCriteriaFields(this)
-            .dataFilters(dataFilters?.map { it.toDomain() })
-            .events(events)
-            .dueDate(dueDate?.toDomain())
-            .completedDate(completedDate?.toDomain())
-            .build()
-    }
+@Suppress("VariableNaming")
+internal interface FilterOperatorsDTO {
+    val le: String?
+    val ge: String?
+    val gt: String?
+    val lt: String?
+    val eq: String?
+    val `in`: Set<String>?
+    val like: String?
+    val dateFilter: DateFilterPeriodDTO?
+}
+
+internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
+      T : FilterOperators.Builder<T> {
+    le(item.le)
+    ge(item.ge)
+    gt(item.gt)
+    lt(item.lt)
+    eq(item.eq)
+    `in`(item.`in`)
+    like(item.like)
+    dateFilter(item.dateFilter?.toDomain())
+    return this
 }

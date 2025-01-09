@@ -26,32 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
-import org.hisp.dhis.android.core.common.FilterOperators
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
-@Suppress("VariableNaming")
-internal interface FilterOperatorsDTO {
-    val le: String?
-    val ge: String?
-    val gt: String?
-    val lt: String?
-    val eq: String?
-    val `in`: Set<String>?
-    val like: String?
-    val dateFilter: DateFilterPeriodDTO?
-}
-
-internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
-      T : FilterOperators.Builder<T> {
-    le(item.le)
-    ge(item.ge)
-    gt(item.gt)
-    lt(item.lt)
-    eq(item.eq)
-    `in`(item.`in`)
-    like(item.like)
-    dateFilter(item.dateFilter?.toDomain())
-    return this
+@Serializable
+internal data class TrackedEntityInstanceEventFilterDTO(
+    val trackedEntityInstanceFilter: String?,
+    val programStage: String?,
+    val eventStatus: String?,
+    val eventCreatedPeriod: FilterPeriodDTO?,
+    val assignedUserMode: String?,
+) {
+    fun toDomain(): TrackedEntityInstanceEventFilter {
+        return TrackedEntityInstanceEventFilter.builder()
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .programStage(programStage)
+            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
+            .eventCreatedPeriod(eventCreatedPeriod?.toDomain())
+            .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
+            .build()
+    }
 }

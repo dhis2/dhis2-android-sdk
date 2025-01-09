@@ -26,16 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 import org.hisp.dhis.android.network.common.dto.FilterQueryCriteriaDTO
 import org.hisp.dhis.android.network.common.dto.applyFilterQueryCriteriaFields
 
 @Serializable
-internal data class EventQueryCriteriaDTO(
+internal data class EntityQueryCriteriaDTO(
     override val followUp: Boolean?,
     override val organisationUnit: String?,
     override val ouMode: String?,
@@ -45,18 +46,24 @@ internal data class EventQueryCriteriaDTO(
     override val eventStatus: String?,
     override val eventDate: DateFilterPeriodDTO?,
     override val lastUpdatedDate: DateFilterPeriodDTO?,
-    val dataFilters: List<EventDataFilterDTO>?,
-    val events: List<String>?,
-    val dueDate: DateFilterPeriodDTO?,
-    val completedDate: DateFilterPeriodDTO?,
+    val programStage: String?,
+    val trackedEntityInstances: List<String>?,
+    val trackedEntityType: String?,
+    val enrollmentStatus: String?, // enum
+    val enrollmentIncidentDate: DateFilterPeriodDTO?,
+    val enrollmentCreatedDate: DateFilterPeriodDTO?,
+    val attributeValueFilters: List<AttributeValueFilterDTO>?,
 ) : FilterQueryCriteriaDTO {
-    fun toDomain(): EventQueryCriteria {
-        return EventQueryCriteria.builder()
+    internal fun toDomain(): EntityQueryCriteria {
+        return EntityQueryCriteria.builder()
             .applyFilterQueryCriteriaFields(this)
-            .dataFilters(dataFilters?.map { it.toDomain() })
-            .events(events)
-            .dueDate(dueDate?.toDomain())
-            .completedDate(completedDate?.toDomain())
+            .programStage(programStage)
+            .trackedEntityInstances(trackedEntityInstances)
+            .trackedEntityType(trackedEntityType)
+            .enrollmentStatus(enrollmentStatus?.let { EnrollmentStatus.valueOf(it) })
+            .enrollmentIncidentDate(enrollmentIncidentDate?.toDomain())
+            .enrollmentCreatedDate(enrollmentCreatedDate?.toDomain())
+            .attributeValueFilters(attributeValueFilters?.map { it.toDomain() })
             .build()
     }
 }

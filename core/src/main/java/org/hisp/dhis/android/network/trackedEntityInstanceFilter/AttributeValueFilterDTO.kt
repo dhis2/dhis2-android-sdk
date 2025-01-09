@@ -26,36 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.FilterQueryCriteria
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
+import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
+import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
 
-internal interface FilterQueryCriteriaDTO {
-    val followUp: Boolean?
-    val organisationUnit: String?
-    val ouMode: String?
-    val assignedUserMode: String?
-    val order: String?
-    val displayColumnOrder: List<String>?
-    val eventStatus: String?
-    val eventDate: DateFilterPeriodDTO?
-    val lastUpdatedDate: DateFilterPeriodDTO?
-}
-
-internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO): T where
-      T : FilterQueryCriteria.Builder<T> {
-    followUp(item.followUp)
-    organisationUnit(item.organisationUnit)
-    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
-    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
-    order(item.order)
-    displayColumnOrder(item.displayColumnOrder)
-    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
-    eventDate(item.eventDate?.toDomain())
-    lastUpdatedDate(item.lastUpdatedDate?.toDomain())
-    return this
+@Serializable
+internal data class AttributeValueFilterDTO(
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val `in`: Set<String>?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriodDTO?,
+    val trackedEntityInstanceFilter: String?,
+    val attribute: String?,
+    val ew: String?,
+    val sw: String?,
+) : FilterOperatorsDTO {
+    fun toDomain(): AttributeValueFilter {
+        return AttributeValueFilter.builder()
+            .applyFilterOperatorsFields(this)
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .attribute(attribute)
+            .ew(ew)
+            .sw(sw)
+            .build()
+    }
 }

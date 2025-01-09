@@ -26,37 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.common.dto
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventQueryCriteria
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterQueryCriteriaDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterQueryCriteriaFields
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.FilterQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-@Serializable
-internal data class EventQueryCriteriaDTO(
-    override val followUp: Boolean?,
-    override val organisationUnit: String?,
-    override val ouMode: String?,
-    override val assignedUserMode: String?,
-    override val order: String?,
-    override val displayColumnOrder: List<String>?,
-    override val eventStatus: String?,
-    override val eventDate: DateFilterPeriodDTO?,
-    override val lastUpdatedDate: DateFilterPeriodDTO?,
-    val dataFilters: List<EventDataFilterDTO>?,
-    val events: List<String>?,
-    val dueDate: DateFilterPeriodDTO?,
-    val completedDate: DateFilterPeriodDTO?,
-) : FilterQueryCriteriaDTO {
-    fun toDomain(): EventQueryCriteria {
-        return EventQueryCriteria.builder()
-            .applyFilterQueryCriteriaFields(this)
-            .dataFilters(dataFilters?.map { it.toDomain() })
-            .events(events)
-            .dueDate(dueDate?.toDomain())
-            .completedDate(completedDate?.toDomain())
-            .build()
-    }
+internal interface FilterQueryCriteriaDTO {
+    val followUp: Boolean?
+    val organisationUnit: String?
+    val ouMode: String?
+    val assignedUserMode: String?
+    val order: String?
+    val displayColumnOrder: List<String>?
+    val eventStatus: String?
+    val eventDate: DateFilterPeriodDTO?
+    val lastUpdatedDate: DateFilterPeriodDTO?
+}
+
+internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO): T where
+      T : FilterQueryCriteria.Builder<T> {
+    followUp(item.followUp)
+    organisationUnit(item.organisationUnit)
+    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
+    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
+    order(item.order)
+    displayColumnOrder(item.displayColumnOrder)
+    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
+    eventDate(item.eventDate?.toDomain())
+    lastUpdatedDate(item.lastUpdatedDate?.toDomain())
+    return this
 }

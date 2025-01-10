@@ -28,14 +28,9 @@
 
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.visualization.Visualization
 
 internal interface VisualizationNetworkHandler {
-    suspend fun getVisualization(
-        uid: String,
-    ): Visualization
-
-    suspend fun getVisualization36(
-        uid: String,
-    ): Visualization
+    suspend fun getVisualizations(partitionUids: Set<String>): Payload<Visualization>
 }

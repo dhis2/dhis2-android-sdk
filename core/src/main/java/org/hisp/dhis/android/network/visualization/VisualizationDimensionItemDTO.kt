@@ -29,9 +29,21 @@
 package org.hisp.dhis.android.network.visualization
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 @Serializable
 internal data class VisualizationDimensionItemDTO(
     val dimensionItem: String?,
     val dimensionItemType: String?,
-)
+) {
+    fun toDomain(visualization: String, position: LayoutPosition, dimension: String?): VisualizationDimensionItem {
+        return VisualizationDimensionItem.builder()
+            .visualization(visualization)
+            .position(position)
+            .dimension(dimension)
+            .dimensionItem(dimensionItem)
+            .dimensionItemType(dimensionItemType)
+            .build()
+    }
+}

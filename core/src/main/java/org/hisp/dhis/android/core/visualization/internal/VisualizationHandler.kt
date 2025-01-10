@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
@@ -46,13 +47,11 @@ internal class VisualizationHandler(
 
     override fun afterObjectHandled(o: Visualization, action: HandleAction) {
         val items =
-            toItems(o.columns()) +
-                toItems(o.rows()) +
-                toItems(o.filters())
+            toItems(o.columns(), LayoutPosition.COLUMN) +
+                toItems(o.rows(), LayoutPosition.ROW) +
+                toItems(o.filters(), LayoutPosition.FILTER)
 
-        itemHandler.handleMany(o.uid(), items) {
-            it.toBuilder().visualization(o.uid()).build()
-        }
+        itemHandler.handleMany(o.uid(), items)
     }
 
     override fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
@@ -63,7 +62,23 @@ internal class VisualizationHandler(
         )
     }
 
-    private fun toItems(dimensions: List<VisualizationDimension>): List<VisualizationDimensionItem> {
-        return dimensions.map { it.items() ?: emptyList() }.flatten()
+    private fun toItems(
+        dimensions: List<VisualizationDimension>,
+        position: LayoutPosition,
+    ): List<VisualizationDimensionItem> {
+        return dimensions.map { dimension ->
+            val nonNullItems = dimension.items()?.filterNotNull()
+            if (nonNullItems.isNullOrEmpty()) {
+                // Add auxiliary empty item to persist in the database
+                listOf(
+                    VisualizationDimensionItem.builder()
+                        .position(position)
+                        .dimension(dimension.id())
+                        .build(),
+                )
+            } else {
+                nonNullItems
+            }
+        }.flatten()
     }
 }

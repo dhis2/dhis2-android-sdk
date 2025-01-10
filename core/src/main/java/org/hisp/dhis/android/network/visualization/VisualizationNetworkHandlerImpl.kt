@@ -27,20 +27,46 @@
  */
 package org.hisp.dhis.android.network.visualization
 
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class VisualizationNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
+    private val dhis2VersionManager: DHISVersionManager,
 ) : VisualizationNetworkHandler {
     private val service: VisualizationService = VisualizationService(httpClient)
 
-    override suspend fun getVisualization(uid: String): Visualization {
+    override suspend fun getVisualizations(partitionUids: Set<String>): Payload<Visualization> {
         val accessFilter = "access." + AccessFields.read.eq(true).generateString()
+        val visualizations =
+            if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
+                // Workaround for DHIS2-15322. Request visualizations using the entity endpoint.
+                partitionUids.mapNotNull { visualizationUid ->
+                    try {
+                        if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+                            getVisualization(visualizationUid, accessFilter)
+                        } else {
+                            getVisualization36(visualizationUid, accessFilter)
+                        }
+                    } catch (ignored: Exception) {
+                        null
+                    }
+                }
+            } else {
+                emptyList()
+            }
+        return PayloadJson(visualizations)
+    }
+
+    private suspend fun getVisualization(uid: String, accessFilter: String): Visualization {
         return service.getSingleVisualization(
             uid = uid,
             fields = VisualizationFields.allFields,
@@ -49,8 +75,7 @@ internal class VisualizationNetworkHandlerImpl(
         ).toDomain()
     }
 
-    override suspend fun getVisualization36(uid: String): Visualization {
-        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
+    private suspend fun getVisualization36(uid: String, accessFilter: String): Visualization {
         return service.getSingleVisualizations36(
             uid = uid,
             fields = VisualizationFields.allFieldsAPI36,

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.visualization
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
 @Serializable
 internal data class VisualizationDimensionDTO(
@@ -41,31 +40,7 @@ internal data class VisualizationDimensionDTO(
     fun toDomain(visualization: String, position: LayoutPosition): VisualizationDimension {
         return VisualizationDimension.builder()
             .id(id)
-            .items(toItems(visualization, position))
+            .items(items?.mapNotNull { it?.toDomain(visualization, position, id) } ?: emptyList())
             .build()
-    }
-
-    private fun toItems(visualization: String, position: LayoutPosition): List<VisualizationDimensionItem> {
-        val nonNullItems = items?.filterNotNull()
-
-        return if (nonNullItems.isNullOrEmpty()) {
-            listOf(
-                VisualizationDimensionItem.builder()
-                    .visualization(visualization)
-                    .position(position)
-                    .dimension(id)
-                    .build(),
-            )
-        } else {
-            nonNullItems.map { item ->
-                VisualizationDimensionItem.builder()
-                    .visualization(visualization)
-                    .position(position)
-                    .dimension(id)
-                    .dimensionItem(item.dimensionItem)
-                    .dimensionItemType(item.dimensionItemType)
-                    .build()
-            }
-        }
     }
 }

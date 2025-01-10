@@ -25,32 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-@Singleton
-internal class VisualizationCall(
-    private val handler: VisualizationHandler,
-    private val networkHandler: VisualizationNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Visualization> {
+internal open class ChildElementHandlerImpl<O : CoreObject>(private val store: LinkStore<O>) : ChildElementHandler<O> {
 
-    companion object {
-        // Workaround for DHIS2-15322. Force visualizations to be queried and saved one by one.
-        private const val MAX_UID_LIST_SIZE = 1
+    override fun handleMany(masterUid: String, slaves: Collection<O>?) {
+        store.deleteLinksForMasterUid(masterUid)
+        slaves?.forEach { slave ->
+            handleInternal(slave)
+        }
     }
 
-    override suspend fun download(uids: Set<String>): List<Visualization> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            networkHandler.getVisualizations(partitionUids)
-        }
+    private fun handleInternal(s: O) {
+        val s2 = beforeObjectHandled(s)
+        store.insertIfNotExists(s2)
+        afterObjectHandled(s2)
+    }
+
+    protected open fun beforeObjectHandled(o: O): O {
+        return o
+    }
+
+    protected open fun afterObjectHandled(o: O) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    override fun resetAllLinks() {
+        store.deleteAllLinks()
     }
 }

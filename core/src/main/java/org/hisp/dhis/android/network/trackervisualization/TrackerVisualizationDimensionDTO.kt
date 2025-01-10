@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.trackervisualization
 
-@Singleton
-internal class TrackerVisualizationService(private val client: HttpServiceClient) {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
-    suspend fun getSingleTrackerVisualization(
-        uid: String,
-        fields: Fields<TrackerVisualization>,
-        accessFilter: String,
-        paging: Boolean,
-    ): TrackerVisualization {
-        return client.get {
-            url("$TRACKER_VISUALIZATIONS/$uid")
-            parameters {
-                fields(fields)
-                attribute("filter", accessFilter)
-                paging(paging)
-            }
-        }
-    }
-
-    companion object {
-        const val TRACKER_VISUALIZATIONS = "eventVisualizations"
+@Serializable
+internal data class TrackerVisualizationDimensionDTO(
+    val dimension: String?,
+    val dimensionType: String?,
+    val program: ObjectWithUidDTO?,
+    val programStage: ObjectWithUidDTO?,
+    val items: List<ObjectWithUidDTO>?,
+    val filter: String?,
+    val repetition: TrackerVisualizationDimensionRepetitionDTO?,
+) {
+    fun toDomain(visualization: String?, position: LayoutPosition): TrackerVisualizationDimension {
+        return TrackerVisualizationDimension.builder()
+            .trackerVisualization(visualization)
+            .position(position)
+            .dimension(dimension)
+            .dimensionType(dimensionType)
+            .program(program?.toDomain())
+            .programStage(programStage?.toDomain())
+            .items(items?.map { item -> item.toDomain() })
+            .filter(filter)
+            .repetition(repetition?.toDomain())
+            .build()
     }
 }

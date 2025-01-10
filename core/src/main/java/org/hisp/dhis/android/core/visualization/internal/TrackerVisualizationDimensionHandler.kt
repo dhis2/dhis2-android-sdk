@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerVisualizationDimensionHandler(
     store: TrackerVisualizationDimensionStore,
-) : LinkHandlerImpl<TrackerVisualizationDimension, TrackerVisualizationDimension>(store)
+) : ChildElementHandlerImpl<TrackerVisualizationDimension>(store)

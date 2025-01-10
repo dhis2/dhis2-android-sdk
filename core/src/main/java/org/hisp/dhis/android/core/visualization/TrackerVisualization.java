@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -49,49 +46,39 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackerVisualization.Builder.class)
 public abstract class TrackerVisualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayDescription();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(TrackerVisualizationTypeColumnAdapter.class)
     public abstract TrackerVisualizationType type();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(TrackerVisualizationOutputTypeColumnAdapter.class)
     public abstract TrackerVisualizationOutputType outputType();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreTrackerVisualizationDimensionListColumnAdapter.class)
     public abstract List<TrackerVisualizationDimension> columns();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreTrackerVisualizationDimensionListColumnAdapter.class)
     public abstract List<TrackerVisualizationDimension> filters();
 
@@ -106,7 +93,6 @@ public abstract class TrackerVisualization extends BaseIdentifiableObject implem
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

@@ -63,10 +63,10 @@ internal class VisualizationHandler(
     }
 
     private fun toItems(
-        dimensions: List<VisualizationDimension>,
+        dimensions: List<VisualizationDimension>?,
         position: LayoutPosition,
     ): List<VisualizationDimensionItem> {
-        return dimensions.map { dimension ->
+        return dimensions?.map { dimension ->
             val nonNullItems = dimension.items()?.filterNotNull()
             if (nonNullItems.isNullOrEmpty()) {
                 // Add auxiliary empty item to persist in the database
@@ -79,6 +79,6 @@ internal class VisualizationHandler(
             } else {
                 nonNullItems
             }
-        }.flatten()
+        }?.flatten() ?: emptyList()
     }
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.visualization;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -140,15 +139,15 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> columns();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> rows();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> filters();
 

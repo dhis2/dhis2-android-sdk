@@ -50,7 +50,7 @@ internal object TrackedEntityInstanceFilterFields : BaseFields<TrackedEntityInst
         fh.nestedField<EntityQueryCriteria>(ENTITY_QUERY_CRITERIA).with(EntityQueryCriteriaFields.allFields),
     )
 
-    val allFieldsAPI37 = Fields.from(
+    val allFields37 = Fields.from(
         commonFields(),
         fh.field(Columns.ENROLLMENT_STATUS),
         fh.field(FOLLOW_UP),

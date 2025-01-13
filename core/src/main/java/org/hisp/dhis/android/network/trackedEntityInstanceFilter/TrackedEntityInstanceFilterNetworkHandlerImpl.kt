@@ -54,15 +54,15 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
         return apiPayload.mapItems(TrackedEntityInstanceFilterDTO::toDomain)
     }
 
-    override suspend fun getTrackedEntityInstanceFiltersAPI37(
+    override suspend fun getTrackedEntityInstanceFilters37(
         partitionUids: Set<String>,
     ): PayloadJson<TrackedEntityInstanceFilter> {
-        val apiPayload = service.getTrackedEntityInstanceFiltersAPI37(
+        val apiPayload = service.getTrackedEntityInstanceFilters37(
             TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
             accessDataReadFilter,
-            TrackedEntityInstanceFilterFields.allFieldsAPI37,
+            TrackedEntityInstanceFilterFields.allFields37,
             false,
         )
-        return apiPayload.mapItems(TrackedEntityInstanceFilterAPI37DTO::toDomain)
+        return apiPayload.mapItems(TrackedEntityInstanceFilter37DTO::toDomain)
     }
 }

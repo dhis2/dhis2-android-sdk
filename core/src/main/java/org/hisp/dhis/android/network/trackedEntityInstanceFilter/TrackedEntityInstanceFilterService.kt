@@ -52,12 +52,12 @@ internal class TrackedEntityInstanceFilterService(private val client: HttpServic
         }
     }
 
-    suspend fun getTrackedEntityInstanceFiltersAPI37(
+    suspend fun getTrackedEntityInstanceFilters37(
         uids: Filter<TrackedEntityInstanceFilter>,
         accessDataReadFilter: String,
         fields: Fields<TrackedEntityInstanceFilter>,
         paging: Boolean,
-    ): TrackedEntityInstanceFilterAPI37Payload {
+    ): TrackedEntityInstanceFilter37Payload {
         return client.get {
             url("trackedEntityInstanceFilters")
             parameters {

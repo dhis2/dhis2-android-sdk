@@ -42,7 +42,7 @@ import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class TrackedEntityInstanceFilterAPI37DTO(
+internal data class TrackedEntityInstanceFilter37DTO(
     @SerialName("id") override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -60,7 +60,7 @@ internal data class TrackedEntityInstanceFilterAPI37DTO(
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): TrackedEntityInstanceFilter {
         return TrackedEntityInstanceFilter.builder().apply {
-            applyBaseIdentifiableFields(this@TrackedEntityInstanceFilterAPI37DTO)
+            applyBaseIdentifiableFields(this@TrackedEntityInstanceFilter37DTO)
             program(program?.toDomain())
             description(description)
             sortOrder(sortOrder)
@@ -85,8 +85,8 @@ internal data class TrackedEntityInstanceFilterAPI37DTO(
 }
 
 @Serializable
-internal class TrackedEntityInstanceFilterAPI37Payload(
+internal class TrackedEntityInstanceFilter37Payload(
     override val pager: PagerDTO?,
-    @SerialName("trackedEntityInstanceFilters") override val items: List<TrackedEntityInstanceFilterAPI37DTO> =
+    @SerialName("trackedEntityInstanceFilters") override val items: List<TrackedEntityInstanceFilter37DTO> =
         emptyList(),
-) : PayloadJson<TrackedEntityInstanceFilterAPI37DTO>(pager, items)
+) : PayloadJson<TrackedEntityInstanceFilter37DTO>(pager, items)

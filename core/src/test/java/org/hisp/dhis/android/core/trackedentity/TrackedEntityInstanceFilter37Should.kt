@@ -28,21 +28,21 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilterAPI37DTO
+import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilter37DTO
 import org.junit.Test
 import java.io.IOException
 import java.text.ParseException
 
-class TrackedEntityInstanceFilterAPI37Should :
+class TrackedEntityInstanceFilter37Should :
     TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),
     ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
-        val trackedEntityInstanceFilterAPI37DTO = deserialize(TrackedEntityInstanceFilterAPI37DTO.serializer())
-        val trackedEntityInstanceFilterAPI37 = trackedEntityInstanceFilterAPI37DTO.toDomain()
+        val trackedEntityInstanceFilter37DTO = deserialize(TrackedEntityInstanceFilter37DTO.serializer())
+        val trackedEntityInstanceFilter37 = trackedEntityInstanceFilter37DTO.toDomain()
 
-        teiFilterCommonAsserts(trackedEntityInstanceFilterAPI37)
+        teiFilterCommonAsserts(trackedEntityInstanceFilter37)
     }
 }

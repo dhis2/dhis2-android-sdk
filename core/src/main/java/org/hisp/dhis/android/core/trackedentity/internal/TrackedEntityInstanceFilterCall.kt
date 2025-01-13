@@ -54,7 +54,7 @@ class TrackedEntityInstanceFilterCall internal constructor(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,
-                networkHandler::getTrackedEntityInstanceFiltersAPI37,
+                networkHandler::getTrackedEntityInstanceFilters37,
             )
         }
     }

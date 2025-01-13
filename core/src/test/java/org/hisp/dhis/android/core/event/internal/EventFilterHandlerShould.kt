@@ -25,82 +25,69 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventQueryCriteria;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class EventFilterHandlerShould {
-
-    @Mock
-    private EventFilterStore eventFilterStore;
-
-    @Mock
-    private EventDataFilterHandler eventDataFilterHandler;
-
-    @Mock
-    private EventQueryCriteria eventQueryCriteria;
-
-    @Mock
-    private EventDataFilter eventDataFilter;
+@RunWith(JUnit4::class)
+class EventFilterHandlerShould {
+    private val eventFilterStore: EventFilterStore = mock()
+    private val eventDataFilterHandler: EventDataFilterHandler = mock()
+    private val eventQueryCriteria: EventQueryCriteria = mock()
+    private val eventDataFilter: EventDataFilter = mock()
 
     // object to test
-    private List<EventFilter> eventFilters;
-    private List<EventDataFilter> eventDataFilters;
-    private EventFilterHandler eventFilterHandler;
+    private lateinit var eventFilters: MutableList<EventFilter>
+    private lateinit var eventDataFilters: List<EventDataFilter?>
+    private lateinit var eventFilterHandler: EventFilterHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        eventFilterHandler = new EventFilterHandler(
-                eventFilterStore,
-                eventDataFilterHandler);
+    fun setUp() {
+        eventFilterHandler = EventFilterHandler(
+            eventFilterStore,
+            eventDataFilterHandler
+        )
 
-        eventDataFilters = Lists.newArrayList(eventDataFilter);
-        when(eventQueryCriteria.dataFilters()).thenReturn(eventDataFilters);
+        eventDataFilters = listOf(eventDataFilter)
+        whenever(eventQueryCriteria.dataFilters()).thenReturn(eventDataFilters)
 
-        EventFilter eventFilter = EventFilter.builder()
-                .uid("test_tracked_entity_attribute_uid")
-                .program("program_uid")
-                .name("name")
-                .displayName("display_name")
-                .eventQueryCriteria(eventQueryCriteria)
-                .build();
+        val eventFilter = EventFilter.builder()
+            .uid("test_tracked_entity_attribute_uid")
+            .program("program_uid")
+            .name("name")
+            .displayName("display_name")
+            .eventQueryCriteria(eventQueryCriteria)
+            .build()
 
-        when(eventFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+        whenever(eventFilterStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
 
-        eventFilters = new ArrayList<>();
-        eventFilters.add(eventFilter);
+        eventFilters = mutableListOf(eventFilter)
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        EventFilterHandler genericHandler = new EventFilterHandler(eventFilterStore, eventDataFilterHandler);
+    fun extend_identifiable_handler_impl() {
+        val genericHandler = EventFilterHandler(
+            eventFilterStore,
+            eventDataFilterHandler
+        )
     }
 
     @Test
-    public void handle_event_filters() {
-        eventFilterHandler.handleMany(eventFilters);
-        verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any());
+    fun handle_event_filters() {
+        eventFilterHandler.handleMany(eventFilters)
+        verify(eventDataFilterHandler).handleMany(eventDataFilters.filterNotNull())
     }
 }

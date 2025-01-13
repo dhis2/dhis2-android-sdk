@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common
+package org.hisp.dhis.android.core.visualization
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
-import org.hisp.dhis.android.core.util.SqlAggregator
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.visualization.Visualization36DTO
+import org.hisp.dhis.android.network.visualization.VisualizationDTO
+import org.junit.Test
 
-enum class AggregationType(val sql: String?) {
-    SUM(SqlAggregator.SUM),
-    AVERAGE(SqlAggregator.AVG),
-    AVERAGE_SUM_ORG_UNIT(SqlAggregator.AVG),
-    LAST(null),
-    LAST_AVERAGE_ORG_UNIT(null),
-    LAST_LAST_ORG_UNIT(null),
-    LAST_IN_PERIOD(null),
-    LAST_IN_PERIOD_AVERAGE_ORG_UNIT(null),
-    FIRST(null),
-    FIRST_AVERAGE_ORG_UNIT(null),
-    FIRST_FIRST_ORG_UNIT(null),
-    COUNT(SqlAggregator.COUNT),
-    STDDEV(null),
-    VARIANCE(null),
-    MIN(SqlAggregator.MIN),
-    MAX(SqlAggregator.MAX),
-    MIN_SUM_ORG_UNIT(null),
-    MAX_SUM_ORG_UNIT(null),
-    NONE(null),
-    CUSTOM(null),
+class Visualization36DTOShould : BaseObjectKotlinxShould("visualization/visualization_api_36.json"), ObjectShould {
 
-    @JsonEnumDefaultValue
-    DEFAULT(null),
+    @Test
+    override fun map_from_json_string() {
+        val visualization36 = deserialize(Visualization36DTO.serializer())
+
+        assertThat(visualization36.uid).isEqualTo("PYBH8ZaAQnC")
+        assertThat(visualization36.type).isEqualTo(VisualizationType.PIVOT_TABLE.name)
+
+        assertThat(visualization36.legendDisplayStrategy).isEqualTo(LegendStrategy.FIXED.name)
+        assertThat(visualization36.legendDisplayStyle).isEqualTo(LegendStyle.FILL.name)
+    }
+
+    @Test
+    fun convert_to_visualization() {
+        val visualization36 = deserialize(Visualization36DTO.serializer())
+        val visualization = deserializePath("visualization/visualization.json", VisualizationDTO.serializer())
+
+        assertThat(visualization36.toDomain()).isEqualTo(visualization.toDomain())
+    }
 }

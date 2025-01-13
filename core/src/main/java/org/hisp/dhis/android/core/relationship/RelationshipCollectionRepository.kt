@@ -29,12 +29,14 @@ package org.hisp.dhis.android.core.relationship
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -195,6 +197,30 @@ class RelationshipCollectionRepository internal constructor(
         return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible)
     }
 
+    /**
+     * Filter the relationship linked to the searchItem. The difference with [getByItem] is that this method allows
+     * chaining other filters.
+     * @param searchItem Relationship item
+     * @return Relationship collection repository
+     */
+    fun byItem(searchItem: RelationshipItem): RelationshipCollectionRepository {
+        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+            RelationshipItemTableInfo.TABLE_INFO.name(),
+            RelationshipItemTableInfo.Columns.RELATIONSHIP,
+            WhereClauseBuilder().apply {
+                searchItem.relationship()?.uid()?.let { relationshipUid ->
+                    appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, relationshipUid)
+                }
+                searchItem.relationshipItemType()?.let { itemType ->
+                    appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, itemType.name)
+                }
+                searchItem.elementUid()?.let { elementId ->
+                    appendKeyStringValue(searchItem.elementType(), elementId)
+                }
+            }.build(),
+        )
+    }
+
     fun byUid(): StringFilterConnector<RelationshipCollectionRepository> {
         return cf.string(IdentifiableColumns.UID)
     }
@@ -217,6 +243,10 @@ class RelationshipCollectionRepository internal constructor(
 
     fun bySyncState(): EnumFilterConnector<RelationshipCollectionRepository, State> {
         return cf.enumC(RelationshipTableInfo.Columns.SYNC_STATE)
+    }
+
+    fun byDeleted(): BooleanFilterConnector<RelationshipCollectionRepository> {
+        return cf.bool(RelationshipTableInfo.Columns.DELETED)
     }
 
     fun withItems(): RelationshipCollectionRepository {

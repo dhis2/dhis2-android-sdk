@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,50 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationAPI36
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.relationship
 
-@Singleton
-internal class VisualizationService(private val client: HttpServiceClient) {
-
-    suspend fun getSingleVisualization(
-        uid: String,
-        fields: Fields<Visualization>,
-        accessFilter: String,
-        paging: Boolean,
-    ): Visualization {
-        return client.get {
-            url("$VISUALIZATIONS/$uid")
-            parameters {
-                fields(fields)
-                attribute("filter", accessFilter)
-                paging(paging)
-            }
-        }
-    }
-
-    suspend fun getSingleVisualizations36(
-        uid: String,
-        fields: Fields<Visualization>,
-        accessFilter: String,
-        paging: Boolean,
-    ): VisualizationAPI36 {
-        return client.get {
-            url("$VISUALIZATIONS/$uid")
-            parameters {
-                fields(fields)
-                attribute("filter", accessFilter)
-                paging(paging)
-            }
-        }
-    }
-
-    companion object {
-        const val VISUALIZATIONS = "visualizations"
-    }
-}
+data class RelationshipTypeWithEntitySide(
+    val relationshipType: RelationshipType,
+    val entitySide: RelationshipConstraintType,
+)

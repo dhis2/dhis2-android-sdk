@@ -45,3 +45,11 @@ internal object SqlUtils {
         }
     }
 }
+
+internal object SqlAggregator {
+    const val SUM = "SUM"
+    const val COUNT = "COUNT"
+    const val MAX = "MAX"
+    const val MIN = "MIN"
+    const val AVG = "AVG"
+}

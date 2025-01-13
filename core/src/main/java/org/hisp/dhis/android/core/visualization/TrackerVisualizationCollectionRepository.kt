@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationColumnsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationFields
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationStore
-import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
+import org.hisp.dhis.android.network.visualization.VisualizationFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

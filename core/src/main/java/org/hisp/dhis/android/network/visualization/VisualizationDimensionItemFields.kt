@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.network.visualization
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-class VisualizationAPI36Should : BaseObjectShould("visualization/visualization_api_36.json"), ObjectShould {
+internal object VisualizationDimensionItemFields : BaseFields<VisualizationDimensionItem>() {
+    private const val DIMENSION_ITEM = "dimensionItem"
+    private const val DIMENSION_ITEM_TYPE = "dimensionItemType"
 
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
-
-        assertThat(visualizationAPI36.id).isEqualTo("PYBH8ZaAQnC")
-        assertThat(visualizationAPI36.type).isEqualTo(VisualizationType.PIVOT_TABLE)
-
-        assertThat(visualizationAPI36.legendDisplayStrategy).isEquivalentAccordingToCompareTo(LegendStrategy.FIXED)
-        assertThat(visualizationAPI36.legendDisplayStyle).isEquivalentAccordingToCompareTo(LegendStyle.FILL)
-    }
-
-    @Test
-    fun convert_to_visualization() {
-        val visualizationAPI36 = objectMapper.readValue(jsonStream, VisualizationAPI36::class.java)
-
-        val visualizationStream = this.javaClass.classLoader!!.getResourceAsStream("visualization/visualization.json")
-        val visualization = objectMapper.readValue(visualizationStream, Visualization::class.java)
-
-        assertThat(visualizationAPI36.toVisualization()).isEqualTo(visualization)
-    }
+    val allFields = Fields.from(
+        fh.field(DIMENSION_ITEM),
+        fh.field(DIMENSION_ITEM_TYPE),
+    )
 }

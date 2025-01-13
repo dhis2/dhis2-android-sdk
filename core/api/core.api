@@ -10837,6 +10837,8 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipCollectio
 	public synthetic fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
 	public fun blockingAdd (Lorg/hisp/dhis/android/core/relationship/Relationship;)Ljava/lang/String;
 	public final fun byCreated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DateFilterConnector;
+	public final fun byDeleted ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
 	public final fun byLastUpdated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DateFilterConnector;
 	public final fun byName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byRelationshipType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -11014,7 +11016,14 @@ public abstract interface class org/hisp/dhis/android/core/relationship/Relation
 }
 
 public abstract interface class org/hisp/dhis/android/core/relationship/RelationshipService {
+	public abstract fun getRelationshipTypesForEnrollments (Ljava/lang/String;)Ljava/util/List;
+	public abstract fun getRelationshipTypesForEvents (Ljava/lang/String;)Ljava/util/List;
+	public abstract fun getRelationshipTypesForTrackedEntities (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public abstract fun hasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipService$DefaultImpls {
+	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipTableInfo {
@@ -11078,6 +11087,19 @@ public class org/hisp/dhis/android/core/relationship/RelationshipTypeTableInfo$C
 	public static final field TO_FROM_NAME Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipTypeWithEntitySide {
+	public fun <init> (Lorg/hisp/dhis/android/core/relationship/RelationshipType;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)V
+	public final fun component1 ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun copy (Lorg/hisp/dhis/android/core/relationship/RelationshipType;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipTypeWithEntitySide;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipTypeWithEntitySide;Lorg/hisp/dhis/android/core/relationship/RelationshipType;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipTypeWithEntitySide;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEntitySide ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun getRelationshipType ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView : org/hisp/dhis/android/core/common/BaseObject {

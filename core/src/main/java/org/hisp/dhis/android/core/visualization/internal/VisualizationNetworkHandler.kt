@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
-import org.hisp.dhis.android.core.util.SqlAggregator
+package org.hisp.dhis.android.core.visualization.internal
 
-enum class AggregationType(val sql: String?) {
-    SUM(SqlAggregator.SUM),
-    AVERAGE(SqlAggregator.AVG),
-    AVERAGE_SUM_ORG_UNIT(SqlAggregator.AVG),
-    LAST(null),
-    LAST_AVERAGE_ORG_UNIT(null),
-    LAST_LAST_ORG_UNIT(null),
-    LAST_IN_PERIOD(null),
-    LAST_IN_PERIOD_AVERAGE_ORG_UNIT(null),
-    FIRST(null),
-    FIRST_AVERAGE_ORG_UNIT(null),
-    FIRST_FIRST_ORG_UNIT(null),
-    COUNT(SqlAggregator.COUNT),
-    STDDEV(null),
-    VARIANCE(null),
-    MIN(SqlAggregator.MIN),
-    MAX(SqlAggregator.MAX),
-    MIN_SUM_ORG_UNIT(null),
-    MAX_SUM_ORG_UNIT(null),
-    NONE(null),
-    CUSTOM(null),
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.visualization.Visualization
 
-    @JsonEnumDefaultValue
-    DEFAULT(null),
+internal interface VisualizationNetworkHandler {
+    suspend fun getVisualizations(partitionUids: Set<String>): Payload<Visualization>
 }

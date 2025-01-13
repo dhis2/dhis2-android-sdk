@@ -33,32 +33,24 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_VisualizationLegend.Builder.class)
 public abstract class VisualizationLegend {
 
     @Nullable
-    @JsonProperty()
     public abstract ObjectWithUid set();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean showKey();
 
     @Nullable
-    @JsonProperty()
     public abstract LegendStrategy strategy();
 
     @Nullable
-    @JsonProperty()
     public abstract LegendStyle style();
 
     @NonNull
@@ -73,7 +65,6 @@ public abstract class VisualizationLegend {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder  {
 
         public abstract Builder showKey(Boolean showKey);

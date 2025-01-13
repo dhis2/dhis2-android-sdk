@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.eventFilter
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 
 @Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
+internal data class EventDataFilterDTO(
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val `in`: Set<String>?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriodDTO?,
+    val dataItem: String?,
+) : FilterOperatorsDTO {
+    fun toDomain(eventFilter: String): EventDataFilter {
+        return EventDataFilter.builder()
+            .applyFilterOperatorsFields(this)
+            .eventFilter(eventFilter)
+            .dataItem(dataItem)
             .build()
     }
 }

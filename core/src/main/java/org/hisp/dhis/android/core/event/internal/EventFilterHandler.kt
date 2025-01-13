@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 import org.koin.core.annotation.Singleton
 
@@ -46,9 +45,7 @@ internal class EventFilterHandler constructor(
 
     override fun afterObjectHandled(o: EventFilter, action: HandleAction) {
         if (action !== HandleAction.Delete && o.eventQueryCriteria() != null) {
-            eventDataFilterHandler.handleMany(
-                o.eventQueryCriteria()!!.dataFilters(),
-            ) { edf: EventDataFilter -> edf.toBuilder().eventFilter(o.uid()).build() }
+            eventDataFilterHandler.handleMany(o.eventQueryCriteria()!!.dataFilters())
         }
     }
 }

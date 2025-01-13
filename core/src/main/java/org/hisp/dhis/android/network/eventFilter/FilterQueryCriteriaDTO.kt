@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.eventFilter
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.FilterQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 
-@Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
-            .build()
-    }
+internal interface FilterQueryCriteriaDTO {
+    val followUp: Boolean?
+    val organisationUnit: String?
+    val ouMode: String?
+    val assignedUserMode: String?
+    val order: String?
+    val displayColumnOrder: List<String>?
+    val eventStatus: String?
+    val eventDate: DateFilterPeriodDTO?
+    val lastUpdatedDate: DateFilterPeriodDTO?
+}
+
+internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO): T where
+      T : FilterQueryCriteria.Builder<T> {
+    followUp(item.followUp)
+    organisationUnit(item.organisationUnit)
+    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
+    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
+    order(item.order)
+    displayColumnOrder(item.displayColumnOrder)
+    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
+    eventDate(item.eventDate?.toDomain())
+    lastUpdatedDate(item.lastUpdatedDate?.toDomain())
+    return this
 }

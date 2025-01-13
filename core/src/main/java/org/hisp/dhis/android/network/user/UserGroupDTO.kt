@@ -37,12 +37,12 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 @Serializable
 internal data class UserGroupDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = null,
-    override val name: String? = null,
-    override val displayName: String? = null,
-    override val created: String? = null,
-    override val lastUpdated: String? = null,
-    override val deleted: Boolean? = null,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): UserGroup {
         return UserGroup.builder()

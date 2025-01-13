@@ -41,13 +41,13 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 @Serializable
 internal data class CategoryDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val dataDimensionType: String? = null,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val dataDimensionType: String?,
     val categoryOptions: List<ObjectWithUidDTO> = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Category {
@@ -61,6 +61,6 @@ internal data class CategoryDTO(
 
 @Serializable
 internal class CategoryPayload(
-    override val pager: PagerDTO? = null,
+    override val pager: PagerDTO?,
     @SerialName("categories") override val items: List<CategoryDTO> = emptyList(),
 ) : PayloadJson<CategoryDTO>(pager, items)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.common.dto
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
 
 @Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
+internal data class DateFilterPeriodDTO(
+    val startBuffer: Int?,
+    val endBuffer: Int?,
+    val startDate: String?,
+    val endDate: String?,
+    val period: String?,
+    val type: String?,
 ) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
+    fun toDomain(): DateFilterPeriod {
+        return DateFilterPeriod.builder()
+            .startBuffer(startBuffer)
+            .endBuffer(endBuffer)
+            .startDate(startDate?.let { DateUtils.SIMPLE_DATE_FORMAT.parse(it) })
+            .endDate(endDate?.let { DateUtils.SIMPLE_DATE_FORMAT.parse(it) })
+            .period(period?.let { RelativePeriod.valueOf(it) })
+            .type(type?.let { DatePeriodType.valueOf(it) })
             .build()
     }
 }

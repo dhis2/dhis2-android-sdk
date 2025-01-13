@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.user.UserCredentials
 
 @Serializable
 internal data class UserCredentialsDTO(
-    val username: String? = null,
-    val name: String? = null,
-    val displayName: String? = null,
+    val username: String?,
+    val name: String?,
+    val displayName: String?,
     val userRoles: List<UserRoleDTO>? = emptyList(),
 ) {
     fun toDomain(): UserCredentials {

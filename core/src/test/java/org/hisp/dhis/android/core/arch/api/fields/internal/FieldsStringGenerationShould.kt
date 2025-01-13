@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentFields
 import org.hisp.dhis.android.core.event.internal.DateFilterPeriodFields
 import org.hisp.dhis.android.core.event.internal.EventDataFilterFields
 import org.hisp.dhis.android.core.event.internal.EventFields
-import org.hisp.dhis.android.core.event.internal.EventFilterFields
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
 import org.hisp.dhis.android.core.event.internal.NewEventFields
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemFields
@@ -118,6 +117,7 @@ import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.customIcon.CustomIconFields
+import org.hisp.dhis.android.network.eventFilter.EventFilterFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields

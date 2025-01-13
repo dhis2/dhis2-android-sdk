@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.eventFilter
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.FilterOperators
+import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 
-@Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
-            .build()
-    }
+@Suppress("VariableNaming")
+internal interface FilterOperatorsDTO {
+    val le: String?
+    val ge: String?
+    val gt: String?
+    val lt: String?
+    val eq: String?
+    val `in`: Set<String>?
+    val like: String?
+    val dateFilter: DateFilterPeriodDTO?
+}
+
+internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
+      T : FilterOperators.Builder<T> {
+    le(item.le)
+    ge(item.ge)
+    gt(item.gt)
+    lt(item.lt)
+    eq(item.eq)
+    `in`(item.`in`)
+    like(item.like)
+    dateFilter(item.dateFilter?.toDomain())
+    return this
 }

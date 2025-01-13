@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.eventFilter
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.internal.EventFilterNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.koin.core.annotation.Singleton
 
-@Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
-            .build()
+@Singleton
+internal class EventFilterNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : EventFilterNetworkHandler {
+    private val service: EventFilterService = EventFilterService(httpClient)
+
+    override suspend fun getEventFilters(
+        partitionUids: Set<String>,
+    ): PayloadJson<EventFilter> {
+        val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
+        val apiPayload = service.getEventFilters(
+            EventFilterFields.programUid.`in`(partitionUids),
+            accessDataReadFilter,
+            EventFilterFields.allFields,
+            false,
+        )
+        return apiPayload.mapItems(EventFilterDTO::toDomain)
     }
 }

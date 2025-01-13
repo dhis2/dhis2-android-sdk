@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.eventFilter
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
-
-@Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
-            .build()
+internal class EventFilterService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getEventFilters(
+        uids: Filter<EventFilter>,
+        accessDataReadFilter: String,
+        fields: Fields<EventFilter>,
+        paging: Boolean,
+    ): EventFilterPayload {
+        return client.get {
+            url("eventFilters")
+            parameters {
+                filter(uids)
+                attribute("filter", accessDataReadFilter)
+                fields(fields)
+                paging(paging)
+            }
+        }
     }
 }

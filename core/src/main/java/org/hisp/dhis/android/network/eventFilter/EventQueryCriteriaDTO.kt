@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
+package org.hisp.dhis.android.network.eventFilter
+
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.EventQueryCriteria
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 
-internal object EventFilterFields : BaseFields<EventFilter>() {
-    private const val EVENT_QUERY_CRITERIA = "eventQueryCriteria"
-
-    val programUid = fh.field(Columns.PROGRAM)
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        programUid,
-        fh.field(Columns.PROGRAM_STAGE),
-        fh.field(Columns.DESCRIPTION),
-        fh.nestedField<EventQueryCriteria>(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields),
-    )
+@Serializable
+internal data class EventQueryCriteriaDTO(
+    override val followUp: Boolean?,
+    override val organisationUnit: String?,
+    override val ouMode: String?,
+    override val assignedUserMode: String?,
+    override val order: String?,
+    override val displayColumnOrder: List<String>?,
+    override val eventStatus: String?,
+    override val eventDate: DateFilterPeriodDTO?,
+    override val lastUpdatedDate: DateFilterPeriodDTO?,
+    val dataFilters: List<EventDataFilterDTO>?,
+    val events: List<String>?,
+    val dueDate: DateFilterPeriodDTO?,
+    val completedDate: DateFilterPeriodDTO?,
+) : FilterQueryCriteriaDTO {
+    fun toDomain(eventFilter: String): EventQueryCriteria {
+        return EventQueryCriteria.builder()
+            .applyFilterQueryCriteriaFields(this)
+            .dataFilters(dataFilters?.map { it.toDomain(eventFilter) })
+            .events(events)
+            .dueDate(dueDate?.toDomain())
+            .completedDate(completedDate?.toDomain())
+            .build()
+    }
 }

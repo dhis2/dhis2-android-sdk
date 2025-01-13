@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.eventFilter
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
+internal data class EventFilterDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val program: String?,
+    val programStage: String?,
+    val description: String?,
+    val eventQueryCriteria: EventQueryCriteriaDTO?,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): EventFilter {
+        return EventFilter.builder()
+            .applyBaseIdentifiableFields(this)
+            .program(program)
+            .programStage(programStage)
+            .description(description)
+            .eventQueryCriteria(eventQueryCriteria?.toDomain(uid))
             .build()
     }
 }
+
+@Serializable
+internal class EventFilterPayload(
+    override val pager: PagerDTO?,
+    @SerialName("eventFilters") override val items: List<EventFilterDTO> = emptyList(),
+) : PayloadJson<EventFilterDTO>(pager, items)

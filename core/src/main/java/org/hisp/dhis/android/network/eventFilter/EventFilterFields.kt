@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.eventFilter
 
-package org.hisp.dhis.android.network.common
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
+import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+internal object EventFilterFields : BaseFields<EventFilter>() {
+    private const val EVENT_QUERY_CRITERIA = "eventQueryCriteria"
 
-@Serializable
-internal data class GeometryDTO(
-    val type: FeatureType?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type)
-            .coordinates(coordinates)
-            .build()
-    }
+    val programUid = fh.field(Columns.PROGRAM)
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        programUid,
+        fh.field(Columns.PROGRAM_STAGE),
+        fh.field(Columns.DESCRIPTION),
+        fh.nestedField<EventQueryCriteria>(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields),
+    )
 }

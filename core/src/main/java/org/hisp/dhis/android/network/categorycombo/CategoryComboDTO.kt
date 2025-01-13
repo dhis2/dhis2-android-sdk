@@ -42,13 +42,13 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 @Serializable
 internal data class CategoryComboDTO(
     @SerialName("id") override val uid: String,
-    override val code: String? = BaseIdentifiableObjectDTO.CODE,
-    override val name: String? = BaseIdentifiableObjectDTO.NAME,
-    override val displayName: String? = BaseIdentifiableObjectDTO.DISPLAY_NAME,
-    override val created: String? = BaseIdentifiableObjectDTO.CREATED,
-    override val lastUpdated: String? = BaseIdentifiableObjectDTO.LAST_UPDATED,
-    override val deleted: Boolean? = BaseIdentifiableObjectDTO.DELETED,
-    val isDefault: Boolean? = null,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val isDefault: Boolean?,
     val categories: List<ObjectWithUidDTO> = emptyList(),
     val categoryOptionCombos: List<CategoryOptionComboDTO> = emptyList(),
 ) : BaseIdentifiableObjectDTO {
@@ -64,6 +64,6 @@ internal data class CategoryComboDTO(
 
 @Serializable
 internal class CategoryComboPayload(
-    override val pager: PagerDTO? = null,
+    override val pager: PagerDTO?,
     @SerialName("categoryCombos") override val items: List<CategoryComboDTO> = emptyList(),
 ) : PayloadJson<CategoryComboDTO>(pager, items)

@@ -41,7 +41,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-
 @RunWith(JUnit4::class)
 class EventFilterHandlerShould {
     private val eventFilterStore: EventFilterStore = mock()
@@ -58,7 +57,7 @@ class EventFilterHandlerShould {
     fun setUp() {
         eventFilterHandler = EventFilterHandler(
             eventFilterStore,
-            eventDataFilterHandler
+            eventDataFilterHandler,
         )
 
         eventDataFilters = listOf(eventDataFilter)
@@ -82,7 +81,7 @@ class EventFilterHandlerShould {
     fun extend_identifiable_handler_impl() {
         val genericHandler = EventFilterHandler(
             eventFilterStore,
-            eventDataFilterHandler
+            eventDataFilterHandler,
         )
     }
 

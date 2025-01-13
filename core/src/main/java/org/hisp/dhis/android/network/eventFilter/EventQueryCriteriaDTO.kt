@@ -48,10 +48,10 @@ internal data class EventQueryCriteriaDTO(
     val dueDate: DateFilterPeriodDTO?,
     val completedDate: DateFilterPeriodDTO?,
 ) : FilterQueryCriteriaDTO {
-    fun toDomain(): EventQueryCriteria {
+    fun toDomain(eventFilter: String): EventQueryCriteria {
         return EventQueryCriteria.builder()
             .applyFilterQueryCriteriaFields(this)
-            .dataFilters(dataFilters?.map { it.toDomain() })
+            .dataFilters(dataFilters?.map { it.toDomain(eventFilter) })
             .events(events)
             .dueDate(dueDate?.toDomain())
             .completedDate(completedDate?.toDomain())

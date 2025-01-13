@@ -56,7 +56,7 @@ internal data class EventFilterDTO(
             .program(program)
             .programStage(programStage)
             .description(description)
-            .eventQueryCriteria(eventQueryCriteria?.toDomain())
+            .eventQueryCriteria(eventQueryCriteria?.toDomain(uid))
             .build()
     }
 }

@@ -31,6 +31,6 @@ package org.hisp.dhis.android.core.visualization.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.visualization.Visualization
 
-internal interface VisualizationNetworkHandler {
+internal fun interface VisualizationNetworkHandler {
     suspend fun getVisualizations(partitionUids: Set<String>): Payload<Visualization>
 }

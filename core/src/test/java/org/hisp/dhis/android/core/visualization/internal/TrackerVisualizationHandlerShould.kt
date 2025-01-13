@@ -68,7 +68,7 @@ class TrackerVisualizationHandlerShould {
     @Test
     fun call_items_handler() {
         trackerVisualizationHandler.handleMany(listOf(trackerVisualization))
-        verify(dimensionHandler).handleMany(any(), any(), any())
+        verify(dimensionHandler).handleMany(any(), any())
     }
 
     @Test

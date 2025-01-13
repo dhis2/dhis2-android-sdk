@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class VisualizationCall(
-    private val handler: VisualizationHandler,
-    private val networkHandler: VisualizationNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Visualization> {
-
-    companion object {
-        // Workaround for DHIS2-15322. Force visualizations to be queried and saved one by one.
-        private const val MAX_UID_LIST_SIZE = 1
-    }
-
-    override suspend fun download(uids: Set<String>): List<Visualization> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            networkHandler.getVisualizations(partitionUids)
-        }
-    }
+internal interface VisualizationNetworkHandler {
+    suspend fun getVisualizations(partitionUids: Set<String>): Payload<Visualization>
 }

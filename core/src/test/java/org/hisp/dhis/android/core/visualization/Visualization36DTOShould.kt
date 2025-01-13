@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.koin.core.annotation.Singleton
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.visualization.Visualization36DTO
+import org.hisp.dhis.android.network.visualization.VisualizationDTO
+import org.junit.Test
 
-@Singleton
-internal class VisualizationCall(
-    private val handler: VisualizationHandler,
-    private val networkHandler: VisualizationNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Visualization> {
+class Visualization36DTOShould : BaseObjectKotlinxShould("visualization/visualization_api_36.json"), ObjectShould {
 
-    companion object {
-        // Workaround for DHIS2-15322. Force visualizations to be queried and saved one by one.
-        private const val MAX_UID_LIST_SIZE = 1
+    @Test
+    override fun map_from_json_string() {
+        val visualization36 = deserialize(Visualization36DTO.serializer())
+
+        assertThat(visualization36.uid).isEqualTo("PYBH8ZaAQnC")
+        assertThat(visualization36.type).isEqualTo(VisualizationType.PIVOT_TABLE.name)
+
+        assertThat(visualization36.legendDisplayStrategy).isEqualTo(LegendStrategy.FIXED.name)
+        assertThat(visualization36.legendDisplayStyle).isEqualTo(LegendStyle.FILL.name)
     }
 
-    override suspend fun download(uids: Set<String>): List<Visualization> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            networkHandler.getVisualizations(partitionUids)
-        }
+    @Test
+    fun convert_to_visualization() {
+        val visualization36 = deserialize(Visualization36DTO.serializer())
+        val visualization = deserializePath("visualization/visualization.json", VisualizationDTO.serializer())
+
+        assertThat(visualization36.toDomain()).isEqualTo(visualization.toDomain())
     }
 }

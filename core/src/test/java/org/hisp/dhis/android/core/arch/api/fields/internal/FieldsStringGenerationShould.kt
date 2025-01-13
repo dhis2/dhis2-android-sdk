@@ -113,9 +113,6 @@ import org.hisp.dhis.android.core.validation.internal.ValidationRuleFields
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionFields
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionRepetitionFields
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationFields
-import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionFields
-import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemFields
-import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
 import org.hisp.dhis.android.network.attribute.AttributeFields
 import org.hisp.dhis.android.network.category.CategoryFields
 import org.hisp.dhis.android.network.categorycombo.CategoryComboFields
@@ -129,6 +126,9 @@ import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.hisp.dhis.android.network.user.UserFields
+import org.hisp.dhis.android.network.visualization.VisualizationDimensionFields
+import org.hisp.dhis.android.network.visualization.VisualizationDimensionItemFields
+import org.hisp.dhis.android.network.visualization.VisualizationFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -25,50 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationAPI36
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-@Singleton
-internal class VisualizationService(private val client: HttpServiceClient) {
+internal open class ChildElementHandlerImpl<O : CoreObject>(private val store: LinkStore<O>) : ChildElementHandler<O> {
 
-    suspend fun getSingleVisualization(
-        uid: String,
-        fields: Fields<Visualization>,
-        accessFilter: String,
-        paging: Boolean,
-    ): Visualization {
-        return client.get {
-            url("$VISUALIZATIONS/$uid")
-            parameters {
-                fields(fields)
-                attribute("filter", accessFilter)
-                paging(paging)
-            }
+    override fun handleMany(masterUid: String, slaves: Collection<O>?) {
+        store.deleteLinksForMasterUid(masterUid)
+        slaves?.forEach { slave ->
+            handleInternal(slave)
         }
     }
 
-    suspend fun getSingleVisualizations36(
-        uid: String,
-        fields: Fields<Visualization>,
-        accessFilter: String,
-        paging: Boolean,
-    ): VisualizationAPI36 {
-        return client.get {
-            url("$VISUALIZATIONS/$uid")
-            parameters {
-                fields(fields)
-                attribute("filter", accessFilter)
-                paging(paging)
-            }
-        }
+    private fun handleInternal(s: O) {
+        val s2 = beforeObjectHandled(s)
+        store.insertIfNotExists(s2)
+        afterObjectHandled(s2)
     }
 
-    companion object {
-        const val VISUALIZATIONS = "visualizations"
+    protected open fun beforeObjectHandled(o: O): O {
+        return o
+    }
+
+    protected open fun afterObjectHandled(o: O) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    override fun resetAllLinks() {
+        store.deleteAllLinks()
     }
 }

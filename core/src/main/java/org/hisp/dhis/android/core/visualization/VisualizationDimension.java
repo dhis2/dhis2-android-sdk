@@ -30,23 +30,17 @@ package org.hisp.dhis.android.core.visualization;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_VisualizationDimension.Builder.class)
 public abstract class VisualizationDimension {
 
     @Nullable
-    @JsonProperty()
     public abstract String id();
 
     @Nullable
-    @JsonProperty()
     public abstract List<VisualizationDimensionItem> items();
 
     public static Builder builder() {
@@ -56,7 +50,6 @@ public abstract class VisualizationDimension {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(String id);

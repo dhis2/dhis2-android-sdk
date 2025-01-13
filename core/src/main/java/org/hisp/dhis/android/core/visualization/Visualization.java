@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -52,136 +49,105 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayDescription();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayFormName();
 
     @Nullable
-    @JsonProperty()
     public abstract String title();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayTitle();
 
     @Nullable
-    @JsonProperty()
     public abstract String subtitle();
 
     @Nullable
-    @JsonProperty()
     public abstract String displaySubtitle();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(VisualizationTypeColumnAdapter.class)
     public abstract VisualizationType type();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean hideTitle();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean hideSubtitle();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean hideEmptyColumns();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean hideEmptyRows();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(HideEmptyItemStrategyColumnAdapter.class)
     public abstract HideEmptyItemStrategy hideEmptyRowItems();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean hideLegend();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean showHierarchy();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean rowTotals();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean rowSubTotals();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean colTotals();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean colSubTotals();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean showDimensionLabels();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean percentStackedValues();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean noSpaceBetweenColumns();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean skipRounding();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbVisualizationLegendColumnAdapter.class)
     public abstract VisualizationLegend legend();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DisplayDensityColumnAdapter.class)
     public abstract DisplayDensity displayDensity();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DigitGroupSeparatorColumnAdapter.class)
     public abstract DigitGroupSeparator digitGroupSeparator();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> columns();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> rows();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> filters();
 
@@ -196,7 +162,6 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

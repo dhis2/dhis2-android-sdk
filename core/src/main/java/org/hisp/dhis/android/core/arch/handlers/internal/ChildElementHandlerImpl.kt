@@ -25,19 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.visualization.VisualizationDimension
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-internal object VisualizationDimensionFields : BaseFields<VisualizationDimension>() {
-    private const val ITEMS = "items"
+internal open class ChildElementHandlerImpl<O : CoreObject>(private val store: LinkStore<O>) : ChildElementHandler<O> {
 
-    val allFields = Fields.from(
-        fh.field(BaseIdentifiableObject.UID),
-        fh.nestedField<VisualizationDimensionItem>(ITEMS).with(VisualizationDimensionItemFields.allFields),
-    )
+    override fun handleMany(masterUid: String, slaves: Collection<O>?) {
+        store.deleteLinksForMasterUid(masterUid)
+        slaves?.forEach { slave ->
+            handleInternal(slave)
+        }
+    }
+
+    private fun handleInternal(s: O) {
+        val s2 = beforeObjectHandled(s)
+        store.insertIfNotExists(s2)
+        afterObjectHandled(s2)
+    }
+
+    protected open fun beforeObjectHandled(o: O): O {
+        return o
+    }
+
+    protected open fun afterObjectHandled(o: O) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    override fun resetAllLinks() {
+        store.deleteAllLinks()
+    }
 }

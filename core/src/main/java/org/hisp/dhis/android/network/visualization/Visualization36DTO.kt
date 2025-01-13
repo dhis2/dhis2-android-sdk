@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.network.visualization
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import java.util.*
+import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
+import org.hisp.dhis.android.core.visualization.DisplayDensity
+import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.LegendStrategy
+import org.hisp.dhis.android.core.visualization.LegendStyle
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationLegend
+import org.hisp.dhis.android.core.visualization.VisualizationType
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-internal data class VisualizationAPI36(
-    val id: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: Date?,
-    val lastUpdated: Date?,
-    val deleted: Boolean?,
+@Serializable
+internal data class Visualization36DTO(
+    @SerialName("id") override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val description: String?,
     val displayDescription: String?,
     val displayFormName: String?,
@@ -47,12 +60,12 @@ internal data class VisualizationAPI36(
     val displayTitle: String?,
     val subtitle: String?,
     val displaySubtitle: String?,
-    val type: VisualizationType?,
+    val type: String?,
     val hideTitle: Boolean?,
     val hideSubtitle: Boolean?,
     val hideEmptyColumns: Boolean?,
     val hideEmptyRows: Boolean?,
-    val hideEmptyRowItems: HideEmptyItemStrategy?,
+    val hideEmptyRowItems: String?,
     val hideLegend: Boolean?,
     val showHierarchy: Boolean?,
     val rowTotals: Boolean?,
@@ -63,25 +76,19 @@ internal data class VisualizationAPI36(
     val percentStackedValues: Boolean?,
     val noSpaceBetweenColumns: Boolean?,
     val skipRounding: Boolean?,
-    val displayDensity: DisplayDensity?,
-    val digitGroupSeparator: DigitGroupSeparator?,
-    val legendSet: ObjectWithUid?,
-    val legendDisplayStyle: LegendStyle?,
-    val legendDisplayStrategy: LegendStrategy?,
-    val aggregationType: AggregationType?,
-    val columns: List<VisualizationDimension>,
-    val rows: List<VisualizationDimension>,
-    val filters: List<VisualizationDimension>,
-) {
-    fun toVisualization(): Visualization =
+    val displayDensity: String?,
+    val digitGroupSeparator: String?,
+    val legendSet: ObjectWithUidDTO?,
+    val legendDisplayStyle: String?,
+    val legendDisplayStrategy: String?,
+    val aggregationType: String?,
+    val columns: List<VisualizationDimensionDTO>,
+    val rows: List<VisualizationDimensionDTO>,
+    val filters: List<VisualizationDimensionDTO>,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): Visualization =
         Visualization.builder()
-            .uid(id)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created)
-            .lastUpdated(lastUpdated)
-            .deleted(deleted)
+            .applyBaseIdentifiableFields(this)
             .description(description)
             .displayDescription(displayDescription)
             .displayFormName(displayFormName)
@@ -89,12 +96,12 @@ internal data class VisualizationAPI36(
             .displayTitle(displayTitle)
             .subtitle(subtitle)
             .displaySubtitle(displaySubtitle)
-            .type(type)
+            .type(type?.let { VisualizationType.valueOf(it) })
             .hideTitle(hideTitle)
             .hideSubtitle(hideSubtitle)
             .hideEmptyColumns(hideEmptyColumns)
             .hideEmptyRows(hideEmptyRows)
-            .hideEmptyRowItems(hideEmptyRowItems)
+            .hideEmptyRowItems(hideEmptyRowItems?.let { HideEmptyItemStrategy.valueOf(it) })
             .hideLegend(hideLegend)
             .showHierarchy(showHierarchy)
             .rowTotals(rowTotals)
@@ -105,19 +112,19 @@ internal data class VisualizationAPI36(
             .percentStackedValues(percentStackedValues)
             .noSpaceBetweenColumns(noSpaceBetweenColumns)
             .skipRounding(skipRounding)
-            .displayDensity(displayDensity)
-            .digitGroupSeparator(digitGroupSeparator)
-            .aggregationType(aggregationType)
+            .displayDensity(displayDensity?.let { DisplayDensity.valueOf(it) })
+            .digitGroupSeparator(digitGroupSeparator?.let { DigitGroupSeparator.valueOf(it) })
+            .aggregationType(aggregationType?.let { AggregationType.valueOf(it) })
             .legend(
                 VisualizationLegend.builder()
-                    .set(legendSet)
-                    .style(legendDisplayStyle)
-                    .strategy(legendDisplayStrategy)
+                    .set(legendSet?.toDomain())
+                    .style(legendDisplayStyle?.let { LegendStyle.valueOf(it) })
+                    .strategy(legendDisplayStrategy?.let { LegendStrategy.valueOf(it) })
                     .showKey(false)
                     .build(),
             )
-            .columns(columns)
-            .rows(rows)
-            .filters(filters)
+            .columns(columns.map { it.toDomain(uid, LayoutPosition.COLUMN) })
+            .rows(rows.map { it.toDomain(uid, LayoutPosition.ROW) })
+            .filters(filters.map { it.toDomain(uid, LayoutPosition.FILTER) })
             .build()
 }

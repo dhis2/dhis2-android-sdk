@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.network.visualization
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object VisualizationDimensionItemFields : BaseFields<VisualizationDimensionItem>() {
-    private const val DIMENSION_ITEM = "dimensionItem"
-    private const val DIMENSION_ITEM_TYPE = "dimensionItemType"
+internal object VisualizationDimensionFields : BaseFields<VisualizationDimension>() {
+    private const val ITEMS = "items"
 
     val allFields = Fields.from(
-        fh.field(DIMENSION_ITEM),
-        fh.field(DIMENSION_ITEM_TYPE),
+        fh.field(BaseIdentifiableObject.UID),
+        fh.nestedField<VisualizationDimensionItem>(ITEMS).with(VisualizationDimensionItemFields.allFields),
     )
 }

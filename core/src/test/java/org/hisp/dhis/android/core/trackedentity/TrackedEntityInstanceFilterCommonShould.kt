@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
@@ -38,35 +38,35 @@ import org.hisp.dhis.android.core.event.EventStatus
 abstract class TrackedEntityInstanceFilterCommonShould(jsonPath: String) :
     BaseObjectKotlinxShould(jsonPath), ObjectShould {
     protected fun teiFilterCommonAsserts(trackedEntityInstanceFilter: TrackedEntityInstanceFilter) {
-        Truth.assertThat(trackedEntityInstanceFilter.lastUpdated())
+        assertThat(trackedEntityInstanceFilter.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2019-09-27T00:19:06.590"))
-        Truth.assertThat(trackedEntityInstanceFilter.created())
+        assertThat(trackedEntityInstanceFilter.created())
             .isEqualTo(BaseIdentifiableObject.parseDate("2019-09-27T00:19:06.590"))
-        Truth.assertThat(trackedEntityInstanceFilter.uid()).isEqualTo("klhzVgls081")
-        Truth.assertThat(trackedEntityInstanceFilter.code()).isEqualTo("assigned_none")
-        Truth.assertThat(trackedEntityInstanceFilter.name()).isEqualTo("Ongoing foci responses")
-        Truth.assertThat(trackedEntityInstanceFilter.displayName())
+        assertThat(trackedEntityInstanceFilter.uid()).isEqualTo("klhzVgls081")
+        assertThat(trackedEntityInstanceFilter.code()).isEqualTo("assigned_none")
+        assertThat(trackedEntityInstanceFilter.name()).isEqualTo("Ongoing foci responses")
+        assertThat(trackedEntityInstanceFilter.displayName())
             .isEqualTo("Ongoing foci responses")
-        Truth.assertThat(trackedEntityInstanceFilter.description())
+        assertThat(trackedEntityInstanceFilter.description())
             .isEqualTo("Foci response assigned to someone, and the enrollment is still active")
-        Truth.assertThat(trackedEntityInstanceFilter.followUp()).isFalse()
-        Truth.assertThat(trackedEntityInstanceFilter.enrollmentStatus())
+        assertThat(trackedEntityInstanceFilter.followUp()).isFalse()
+        assertThat(trackedEntityInstanceFilter.enrollmentStatus())
             .isEqualTo(EnrollmentStatus.ACTIVE)
-        Truth.assertThat(trackedEntityInstanceFilter.sortOrder()).isEqualTo(2)
-        Truth.assertThat(trackedEntityInstanceFilter.program()!!.uid()).isEqualTo("M3xtLkYBlKI")
-        Truth.assertThat(
+        assertThat(trackedEntityInstanceFilter.sortOrder()).isEqualTo(2)
+        assertThat(trackedEntityInstanceFilter.program()!!.uid()).isEqualTo("M3xtLkYBlKI")
+        assertThat(
             trackedEntityInstanceFilter.enrollmentCreatedPeriod()!!.periodFrom(),
         ).isEqualTo(-5)
-        Truth.assertThat(
+        assertThat(
             trackedEntityInstanceFilter.enrollmentCreatedPeriod()!!.periodTo(),
         ).isEqualTo(5)
 
         val eventFilter = trackedEntityInstanceFilter.eventFilters()!![0]
-        Truth.assertThat(eventFilter.programStage()).isEqualTo("uvMKOn1oWvd")
-        Truth.assertThat(eventFilter.assignedUserMode()).isEqualTo(AssignedUserMode.ANY)
-        Truth.assertThat(eventFilter.eventStatus()).isEqualTo(EventStatus.OVERDUE)
+        assertThat(eventFilter.programStage()).isEqualTo("uvMKOn1oWvd")
+        assertThat(eventFilter.assignedUserMode()).isEqualTo(AssignedUserMode.ANY)
+        assertThat(eventFilter.eventStatus()).isEqualTo(EventStatus.OVERDUE)
 
-        Truth.assertThat(eventFilter.eventCreatedPeriod()!!.periodFrom()).isEqualTo(-11)
-        Truth.assertThat(eventFilter.eventCreatedPeriod()!!.periodTo()).isEqualTo(11)
+        assertThat(eventFilter.eventCreatedPeriod()!!.periodFrom()).isEqualTo(-11)
+        assertThat(eventFilter.eventCreatedPeriod()!!.periodTo()).isEqualTo(11)
     }
 }

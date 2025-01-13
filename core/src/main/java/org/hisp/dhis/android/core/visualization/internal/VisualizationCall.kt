@@ -49,8 +49,7 @@ internal class VisualizationCall(
             uids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            networkHandler.getVisualizations(partitionUids)
-        }
+            networkHandler::getVisualizations,
+        )
     }
 }

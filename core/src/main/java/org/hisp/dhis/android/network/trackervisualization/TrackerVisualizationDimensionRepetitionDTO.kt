@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.trackervisualization
 
-@Singleton
-internal class TrackerVisualizationCall(
-    private val handler: TrackerVisualizationHandler,
-    private val networkHandler: TrackerVisualizationNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<TrackerVisualization> {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
-    companion object {
-        // Workaround for DHIS2-16746. Force visualizations to be queried and saved one by one.
-        private const val MAX_UID_LIST_SIZE = 1
-    }
-
-    override suspend fun download(uids: Set<String>): List<TrackerVisualization> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getTrackerVisualizations,
-        )
+@Serializable
+internal data class TrackerVisualizationDimensionRepetitionDTO(
+    val indexes: List<Int>?,
+) {
+    fun toDomain(): TrackerVisualizationDimensionRepetition {
+        return TrackerVisualizationDimensionRepetition.builder()
+            .indexes(indexes)
+            .build()
     }
 }

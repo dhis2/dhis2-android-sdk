@@ -110,9 +110,6 @@ import org.hisp.dhis.android.core.user.internal.UserGroupFields
 import org.hisp.dhis.android.core.user.internal.UserRoleFields
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleExpressionFields
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleFields
-import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionFields
-import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionRepetitionFields
-import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationFields
 import org.hisp.dhis.android.network.attribute.AttributeFields
 import org.hisp.dhis.android.network.category.CategoryFields
 import org.hisp.dhis.android.network.categorycombo.CategoryComboFields
@@ -125,6 +122,9 @@ import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
+import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionFields
+import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields
+import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationFields
 import org.hisp.dhis.android.network.user.UserFields
 import org.hisp.dhis.android.network.visualization.VisualizationDimensionFields
 import org.hisp.dhis.android.network.visualization.VisualizationDimensionItemFields

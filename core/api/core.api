@@ -11981,6 +11981,7 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSe
 	public abstract fun itemHeader ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
 	public abstract fun minimumLocationAccuracy ()Ljava/lang/Integer;
 	public abstract fun optionalSearch ()Ljava/lang/Boolean;
+	public abstract fun quickActions ()Ljava/util/List;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun uid ()Ljava/lang/String;
 }
@@ -11996,6 +11997,7 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSe
 	public abstract fun itemHeader (Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun optionalSearch (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public abstract fun quickActions (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 }
 
@@ -12011,6 +12013,7 @@ public class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingTabl
 	public static final field ITEM_HEADER_PROGRAM_INDICATOR Ljava/lang/String;
 	public static final field MINIMUM_LOCATION_ACCURACY Ljava/lang/String;
 	public static final field OPTIONAL_SEARCH Ljava/lang/String;
+	public static final field QUICK_ACTIONS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
@@ -12164,6 +12167,20 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramSettings$Builde
 public final class org/hisp/dhis/android/core/settings/ProgramSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
 	public synthetic fun blockingGet ()Ljava/lang/Object;
 	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/ProgramSettings;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/QuickAction : org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/QuickAction;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/QuickAction$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/QuickAction;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/settings/SettingModule {

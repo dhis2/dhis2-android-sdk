@@ -167,6 +167,21 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         assertThat(program2Setting?.disableManualLocation()).isEqualTo(false)
     }
 
+    @Test
+    fun should_return_quickAction_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
+        assertThat(setting?.quickActions()?.size).isEqualTo(0)
+
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        assertThat(program1Setting?.quickActions()?.size).isEqualTo(2)
+        assertThat(program1Setting?.quickActions()?.get(1)?.uid()).isEqualTo("MORE_ENROLLMENTS")
+
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        assertThat(program2Setting?.quickActions()?.size).isEqualTo(3)
+    }
+
     companion object {
         const val program1 = "IpHINAT79UW"
         const val program2 = "IpHINAT79UQ"

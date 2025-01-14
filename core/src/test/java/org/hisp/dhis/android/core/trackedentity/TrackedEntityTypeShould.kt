@@ -30,14 +30,18 @@ package org.hisp.dhis.android.core.trackedentity
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
 import org.junit.Test
 
-class TrackedEntityTypeShould : BaseObjectShould("trackedentity/tracked_entity_type.json"), ObjectShould {
+class TrackedEntityTypeShould : BaseObjectKotlinxShould("trackedentity/tracked_entity_type.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val entityType = objectMapper.readValue(jsonStream, TrackedEntityType::class.java)
+        val EntityTypeDTO = deserialize(TrackedEntityTypeDTO.serializer())
+        val entityType = EntityTypeDTO.toDomain()
 
         assertThat(entityType.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-08-20T12:28:56.409"))
         assertThat(entityType.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-14T13:36:53.063"))

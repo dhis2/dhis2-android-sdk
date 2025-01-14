@@ -39,9 +39,9 @@ internal data class AccessDTO(
 ) {
     fun toDomain(): Access {
         return Access.builder()
-            .read(this.read)
-            .write(this.write)
-            .data(this.data?.toDomain())
+            .read(read)
+            .write(write)
+            .data(data?.toDomain())
             .build()
     }
 }

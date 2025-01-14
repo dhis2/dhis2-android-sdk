@@ -29,31 +29,22 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityTypeCall(
-    private val service: TrackedEntityTypeService,
+    private val networkHandler: TrackedEntityTypeNetworkHandler,
     private val handler: TrackedEntityTypeHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<TrackedEntityType> {
     override suspend fun download(optionSetUids: Set<String>): List<TrackedEntityType> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
         return apiDownloader.downloadPartitioned(
             optionSetUids,
             MAX_UID_LIST_SIZE,
             handler,
-            { _: Set<String> ->
-                service.getTrackedEntityTypes(
-                    TrackedEntityTypeFields.allFields,
-                    TrackedEntityTypeFields.uid.`in`(optionSetUids),
-                    accessDataReadFilter,
-                    false,
-                )
-            },
+            networkHandler::getTrackedEntityTypes,
         ) { type: TrackedEntityType -> transform(type) }
     }
 

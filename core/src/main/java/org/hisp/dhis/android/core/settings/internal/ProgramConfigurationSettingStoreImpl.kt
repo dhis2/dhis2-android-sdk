@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.QuickActionListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.QuickActionListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder

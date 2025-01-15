@@ -38,7 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramItemHeaderColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.QuickActionListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.QuickActionListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 

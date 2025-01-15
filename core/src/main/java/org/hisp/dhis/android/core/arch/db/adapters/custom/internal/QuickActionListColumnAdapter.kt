@@ -25,43 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal
-
-import android.content.ContentValues
-import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.JsonMappingException
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.settings.QuickAction
 
-internal class QuickActionListColumnAdapter : ColumnTypeAdapter<List<QuickAction>> {
-
-    override fun fromCursor(cursor: Cursor, columnName: String): List<QuickAction> {
-        val columnIndex = cursor.getColumnIndex(columnName)
-        val str = cursor.getString(columnIndex)
-        return try {
-            ObjectMapperFactory.objectMapper().readValue(str, object : TypeReference<List<QuickAction>>() {})
-        } catch (e: JsonProcessingException) {
-            listOf()
-        } catch (e: JsonMappingException) {
-            listOf()
-        } catch (e: IllegalArgumentException) {
-            listOf()
-        } catch (e: IllegalStateException) {
-            listOf()
-        }
+internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickAction>() {
+    override fun getTypeReference(): TypeReference<List<QuickAction>> {
+        return object : TypeReference<List<QuickAction>>() {}
     }
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: List<QuickAction>?) {
-        try {
-            values.put(columnName, serialize(value))
-        } catch (e: JsonProcessingException) {
-            e.printStackTrace() // values?.put(columnName, null as String?)
-        }
-    }
+    override fun serialize(o: List<QuickAction>?): String? =
+        QuickActionListColumnAdapter.serialize(o)
 
     companion object {
         fun serialize(o: List<QuickAction>?): String? {

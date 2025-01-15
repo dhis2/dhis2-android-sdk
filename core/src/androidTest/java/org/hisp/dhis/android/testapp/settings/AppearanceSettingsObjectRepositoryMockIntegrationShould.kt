@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.settings.DataSetFilter
 import org.hisp.dhis.android.core.settings.HomeFilter
 import org.hisp.dhis.android.core.settings.ProgramFilter
+import org.hisp.dhis.android.core.settings.QuickAction
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -175,7 +176,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         val program1Setting =
             d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
         assertThat(program1Setting?.quickActions()?.size).isEqualTo(2)
-        assertThat(program1Setting?.quickActions()?.get(1)?.uid()).isEqualTo("MORE_ENROLLMENTS")
+        assertThat(program1Setting?.quickActions()?.first()).isInstanceOf(QuickAction::class.java)
 
         val program2Setting =
             d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)

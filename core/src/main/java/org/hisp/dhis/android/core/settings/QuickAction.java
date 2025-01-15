@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.settings;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -50,15 +48,11 @@ public abstract class QuickAction implements ObjectWithUidInterface {
     @JsonProperty(UID)
     public abstract String uid();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_QuickAction.Builder();
     }
-
-    public static QuickAction create(Cursor cursor) {
-        return AutoValue_QuickAction.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")

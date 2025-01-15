@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.map.layer
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.map.layer.ImageFormat
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemaps
@@ -121,6 +122,9 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .blockingGet()
 
         assertThat(mapLayers.first().imageryProviders()).isNotEmpty()
+        assertThat(mapLayers.first().imageryProviders()?.first()?.coverageAreas()?.first()).isInstanceOf(
+            MapLayerImageryProviderArea::class.java,
+        )
     }
 
     @Test

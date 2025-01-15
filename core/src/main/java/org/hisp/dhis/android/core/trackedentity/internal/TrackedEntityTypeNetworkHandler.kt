@@ -33,6 +33,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
 internal fun interface TrackedEntityTypeNetworkHandler {
     suspend fun getTrackedEntityTypes(
-        optionSetUids: Set<String>,
+        uids: Set<String>,
     ): Payload<TrackedEntityType>
 }

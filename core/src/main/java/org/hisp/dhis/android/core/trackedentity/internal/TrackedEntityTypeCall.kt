@@ -39,9 +39,9 @@ internal class TrackedEntityTypeCall(
     private val handler: TrackedEntityTypeHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<TrackedEntityType> {
-    override suspend fun download(optionSetUids: Set<String>): List<TrackedEntityType> {
+    override suspend fun download(uids: Set<String>): List<TrackedEntityType> {
         return apiDownloader.downloadPartitioned(
-            optionSetUids,
+            uids,
             MAX_UID_LIST_SIZE,
             handler,
             networkHandler::getTrackedEntityTypes,

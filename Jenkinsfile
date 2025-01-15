@@ -50,8 +50,8 @@ pipeline {
                 script {
                     echo 'Browserstack deployment and running tests'
                     sh 'chmod +x ./scripts/browserstackJenkins.sh'
-                    retry(20) { // Retry up to 3 times
-                        timeout(time: 5, unit: 'MINUTES') {
+                    retry(3) { // Retry up to 3 times
+                        timeout(time: 20, unit: 'MINUTES') {
                             sh './scripts/browserstackJenkins.sh'
                         }
                     }

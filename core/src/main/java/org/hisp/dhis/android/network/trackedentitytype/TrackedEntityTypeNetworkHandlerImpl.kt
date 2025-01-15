@@ -42,13 +42,13 @@ internal class TrackedEntityTypeNetworkHandlerImpl(
     private val service = TrackedEntityTypeService(httpServiceClient)
 
     override suspend fun getTrackedEntityTypes(
-        optionSetUids: Set<String>,
+        uids: Set<String>,
     ): Payload<TrackedEntityType> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
 
         val apiPayload = service.getTrackedEntityTypes(
             TrackedEntityTypeFields.allFields,
-            TrackedEntityTypeFields.uid.`in`(optionSetUids),
+            TrackedEntityTypeFields.uid.`in`(uids),
             accessDataReadFilter,
             false,
         )

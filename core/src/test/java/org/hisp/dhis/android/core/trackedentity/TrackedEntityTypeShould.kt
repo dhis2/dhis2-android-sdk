@@ -40,8 +40,8 @@ class TrackedEntityTypeShould : BaseObjectKotlinxShould("trackedentity/tracked_e
 
     @Test
     override fun map_from_json_string() {
-        val EntityTypeDTO = deserialize(TrackedEntityTypeDTO.serializer())
-        val entityType = EntityTypeDTO.toDomain()
+        val entityTypeDTO = deserialize(TrackedEntityTypeDTO.serializer())
+        val entityType = entityTypeDTO.toDomain()
 
         assertThat(entityType.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-08-20T12:28:56.409"))
         assertThat(entityType.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-14T13:36:53.063"))

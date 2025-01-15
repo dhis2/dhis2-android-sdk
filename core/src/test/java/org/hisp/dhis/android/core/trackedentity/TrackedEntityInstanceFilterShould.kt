@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import com.google.common.collect.Lists
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
@@ -75,7 +74,7 @@ class TrackedEntityInstanceFilterShould :
                 .sortOrder(2)
                 .program(ObjectWithUid.create("M3xtLkYBlKI"))
                 .eventFilters(
-                    Lists.newArrayList<TrackedEntityInstanceEventFilter>(
+                    listOf<TrackedEntityInstanceEventFilter>(
                         TrackedEntityInstanceEventFilter.builder()
                             .trackedEntityInstanceFilter("klhzVgls081")
                             .programStage("uvMKOn1oWvd")
@@ -120,12 +119,12 @@ class TrackedEntityInstanceFilterShould :
                         .trackedEntityType("trackedEntityTypeUid")
                         .assignedUserMode(AssignedUserMode.PROVIDED)
                         .trackedEntityInstances(
-                            Lists.newArrayList<String>(
+                            listOf<String>(
                                 "a3kGcGDCuk7",
                                 "a3kGcGDCuk8",
                             ),
                         )
-                        .displayColumnOrder(Lists.newArrayList<String>("eventDate", "status"))
+                        .displayColumnOrder(listOf<String>("eventDate", "status"))
                         .order("dueDate:asc,createdDate:desc")
                         .organisationUnit("orgUnitUid")
                         .eventDate(
@@ -143,7 +142,7 @@ class TrackedEntityInstanceFilterShould :
                                 .build(),
                         )
                         .attributeValueFilters(
-                            Lists.newArrayList<AttributeValueFilter>(
+                            listOf<AttributeValueFilter>(
                                 AttributeValueFilter.builder()
                                     .ew("aa")
                                     .sw("ac")
@@ -153,6 +152,7 @@ class TrackedEntityInstanceFilterShould :
                                     .attribute("w75KJ2mc4zz")
                                     .gt("10")
                                     .ge("10")
+                                    .trackedEntityInstanceFilter("klhzVgls081")
                                     .dateFilter(
                                         DateFilterPeriod.builder()
                                             .period(RelativePeriod.LAST_WEEK)

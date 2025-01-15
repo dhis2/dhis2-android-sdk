@@ -35,8 +35,4 @@ internal interface TrackedEntityInstanceFilterNetworkHandler {
     suspend fun getTrackedEntityInstanceFilters(
         partitionUids: Set<String>,
     ): Payload<TrackedEntityInstanceFilter>
-
-    suspend fun getTrackedEntityInstanceFilters37(
-        partitionUids: Set<String>,
-    ): Payload<TrackedEntityInstanceFilter>
 }

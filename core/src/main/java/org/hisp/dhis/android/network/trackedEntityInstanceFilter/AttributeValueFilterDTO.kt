@@ -44,12 +44,11 @@ internal data class AttributeValueFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
-    val trackedEntityInstanceFilter: String?,
     val attribute: String?,
     val ew: String?,
     val sw: String?,
 ) : FilterOperatorsDTO {
-    fun toDomain(): AttributeValueFilter {
+    fun toDomain(trackedEntityInstanceFilter: String): AttributeValueFilter {
         return AttributeValueFilter.builder()
             .applyFilterOperatorsFields(this)
             .trackedEntityInstanceFilter(trackedEntityInstanceFilter)

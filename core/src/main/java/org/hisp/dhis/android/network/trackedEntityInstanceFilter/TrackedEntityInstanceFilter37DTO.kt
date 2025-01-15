@@ -79,7 +79,7 @@ internal data class TrackedEntityInstanceFilter37DTO(
                     )
                     .build(),
             )
-            eventFilters(eventFilters?.map { it.toDomain() } ?: emptyList())
+            eventFilters(eventFilters?.map { it.toDomain(uid) } ?: emptyList())
         }.build()
     }
 }

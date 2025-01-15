@@ -111,6 +111,6 @@ public class TrackedEntityInstanceFilterHandlerShould {
     @Test
     public void handle_event_filters() {
         trackedEntityInstanceFilterHandler.handleMany(trackedEntityInstanceFilters);
-        verify(trackedEntityInstanceEventFilterHandler).handleMany(eq(eventFilters), any());
+        verify(trackedEntityInstanceEventFilterHandler).handleMany(eq(eventFilters));
     }
 }

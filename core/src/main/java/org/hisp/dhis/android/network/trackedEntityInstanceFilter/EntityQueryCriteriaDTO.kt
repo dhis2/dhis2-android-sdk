@@ -54,7 +54,7 @@ internal data class EntityQueryCriteriaDTO(
     val enrollmentCreatedDate: DateFilterPeriodDTO?,
     val attributeValueFilters: List<AttributeValueFilterDTO>?,
 ) : FilterQueryCriteriaDTO {
-    internal fun toDomain(): EntityQueryCriteria {
+    internal fun toDomain(trackedEntityInstanceFilter: String): EntityQueryCriteria {
         return EntityQueryCriteria.builder()
             .applyFilterQueryCriteriaFields(this)
             .programStage(programStage)
@@ -63,7 +63,7 @@ internal data class EntityQueryCriteriaDTO(
             .enrollmentStatus(enrollmentStatus?.let { EnrollmentStatus.valueOf(it) })
             .enrollmentIncidentDate(enrollmentIncidentDate?.toDomain())
             .enrollmentCreatedDate(enrollmentCreatedDate?.toDomain())
-            .attributeValueFilters(attributeValueFilters?.map { it.toDomain() })
+            .attributeValueFilters(attributeValueFilters?.map { it.toDomain(trackedEntityInstanceFilter) })
             .build()
     }
 }

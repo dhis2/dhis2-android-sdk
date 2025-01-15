@@ -35,13 +35,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
 @Serializable
 internal data class TrackedEntityInstanceEventFilterDTO(
-    val trackedEntityInstanceFilter: String?,
     val programStage: String?,
     val eventStatus: String?,
     val eventCreatedPeriod: FilterPeriodDTO?,
     val assignedUserMode: String?,
 ) {
-    fun toDomain(): TrackedEntityInstanceEventFilter {
+    fun toDomain(trackedEntityInstanceFilter: String): TrackedEntityInstanceEventFilter {
         return TrackedEntityInstanceEventFilter.builder()
             .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
             .programStage(programStage)

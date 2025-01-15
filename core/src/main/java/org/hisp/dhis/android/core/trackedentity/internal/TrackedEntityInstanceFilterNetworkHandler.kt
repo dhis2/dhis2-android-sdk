@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
-internal interface TrackedEntityInstanceFilterNetworkHandler {
+internal fun interface TrackedEntityInstanceFilterNetworkHandler {
     suspend fun getTrackedEntityInstanceFilters(
         partitionUids: Set<String>,
     ): Payload<TrackedEntityInstanceFilter>

@@ -48,14 +48,14 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
     override suspend fun getTrackedEntityInstanceFilters(
         partitionUids: Set<String>,
     ): PayloadJson<TrackedEntityInstanceFilter> {
-        if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+        return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             val apiPayload = service.getTrackedEntityInstanceFilters(
                 TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                 accessDataReadFilter,
                 TrackedEntityInstanceFilterFields.allFields,
                 false,
             )
-            return apiPayload.mapItems(TrackedEntityInstanceFilterDTO::toDomain)
+            apiPayload.mapItems(TrackedEntityInstanceFilterDTO::toDomain)
         } else {
             val apiPayload = service.getTrackedEntityInstanceFilters37(
                 TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
@@ -63,7 +63,7 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
                 TrackedEntityInstanceFilterFields.allFields37,
                 false,
             )
-            return apiPayload.mapItems(TrackedEntityInstanceFilter37DTO::toDomain)
+            apiPayload.mapItems(TrackedEntityInstanceFilter37DTO::toDomain)
         }
     }
 }

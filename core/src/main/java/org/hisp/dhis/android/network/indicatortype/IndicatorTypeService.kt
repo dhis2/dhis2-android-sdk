@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.call.fetchers.internal
+package org.hisp.dhis.android.network.indicatortype
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
-    private val uids: Set<String>,
-    private val limit: Int,
-    private val apiCallExecutor: CoroutineAPICallExecutor,
-) : CoroutineCallFetcher<P> {
-    protected abstract suspend fun getCall(query: UidsQuery): Payload<P>
-
-    @Throws(D2Error::class)
-    override suspend fun fetch(): List<P> {
-        if (uids.isEmpty()) {
-            return emptyList()
-        }
-        val objects: MutableList<P> = ArrayList()
-        if (uids.isNotEmpty()) {
-            val partitions = CollectionsHelper.setPartition(
-                uids,
-                limit,
-            )
-            for (partitionUids in partitions) {
-                val uidQuery = UidsQuery(partitionUids)
-                val callObjects: List<P> = apiCallExecutor.wrap { getCall(uidQuery) }.getOrThrow().items
-                objects.addAll(transform(callObjects))
+@Singleton
+internal class IndicatorTypeService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getIndicatorTypes(
+        fields: Fields<IndicatorType>,
+        lastUpdated: Filter<IndicatorType>?,
+        uids: Filter<IndicatorType>,
+        paging: Boolean,
+    ): IndicatorTypePayload {
+        return client.get {
+            url("indicatorTypes")
+            parameters {
+                fields(fields)
+                filter(lastUpdated)
+                filter(uids)
+                paging(paging)
             }
         }
-        return objects
-    }
-
-    protected fun transform(list: List<P>): List<P> {
-        return list
     }
 }

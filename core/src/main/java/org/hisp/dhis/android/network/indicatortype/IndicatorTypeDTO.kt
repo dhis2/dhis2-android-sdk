@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.internal
 
+package org.hisp.dhis.android.network.indicatortype
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-internal object IndicatorTypeFields : BaseFields<IndicatorType>() {
-    val uid: Field<IndicatorType> = fh.uid()
-    val lastUpdated: Field<IndicatorType> = fh.lastUpdated()
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(IndicatorTypeTableInfo.Columns.NUMBER),
-        fh.field(IndicatorTypeTableInfo.Columns.FACTOR),
-    )
+@Serializable
+internal data class IndicatorTypeDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val number: Boolean?,
+    val factor: Int?,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): IndicatorType {
+        return IndicatorType.builder().apply {
+            applyBaseIdentifiableFields(this@IndicatorTypeDTO)
+            number(number)
+            factor(factor)
+        }.build()
+    }
 }
+
+@Serializable
+internal class IndicatorTypePayload(
+    override val pager: PagerDTO?,
+    @SerialName("indicatorTypes") override val items: List<IndicatorTypeDTO> = emptyList(),
+) : PayloadJson<IndicatorTypeDTO>(pager, items)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.call.fetchers.internal
+package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.maintenance.D2Error
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.indicatortype.IndicatorTypeDTO
+import org.junit.Test
 
-internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
-    private val uids: Set<String>,
-    private val limit: Int,
-    private val apiCallExecutor: CoroutineAPICallExecutor,
-) : CoroutineCallFetcher<P> {
-    protected abstract suspend fun getCall(query: UidsQuery): Payload<P>
+class IndicatorTypeShould : BaseObjectKotlinxShould("indicators/indicator_type.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val typeDTO = deserialize(IndicatorTypeDTO.serializer())
+        val type = typeDTO.toDomain()
 
-    @Throws(D2Error::class)
-    override suspend fun fetch(): List<P> {
-        if (uids.isEmpty()) {
-            return emptyList()
-        }
-        val objects: MutableList<P> = ArrayList()
-        if (uids.isNotEmpty()) {
-            val partitions = CollectionsHelper.setPartition(
-                uids,
-                limit,
-            )
-            for (partitionUids in partitions) {
-                val uidQuery = UidsQuery(partitionUids)
-                val callObjects: List<P> = apiCallExecutor.wrap { getCall(uidQuery) }.getOrThrow().items
-                objects.addAll(transform(callObjects))
-            }
-        }
-        return objects
-    }
+        assertThat(type.code()).isNull()
+        assertThat(type.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2013-03-15T16:08:57.670"))
+        assertThat(type.uid()).isEqualTo("bWuNrMHEoZ0")
+        assertThat(type.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2011-12-24T12:24:22.592"))
+        assertThat(type.name()).isEqualTo("Per cent")
 
-    protected fun transform(list: List<P>): List<P> {
-        return list
+        assertThat(type.number()).isFalse()
+        assertThat(type.factor()).isEqualTo(100)
     }
 }

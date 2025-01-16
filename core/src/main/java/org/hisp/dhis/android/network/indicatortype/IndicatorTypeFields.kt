@@ -25,31 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.internal
+package org.hisp.dhis.android.network.indicatortype
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class IndicatorTypeService(private val client: HttpServiceClient) {
-    suspend fun getIndicatorTypes(
-        fields: Fields<IndicatorType>,
-        lastUpdated: Filter<IndicatorType>?,
-        uids: Filter<IndicatorType>,
-        paging: Boolean,
-    ): PayloadJackson<IndicatorType> {
-        return client.get {
-            url("indicatorTypes")
-            parameters {
-                fields(fields)
-                filter(lastUpdated)
-                filter(uids)
-                paging(paging)
-            }
-        }
-    }
+internal object IndicatorTypeFields : BaseFields<IndicatorType>() {
+    val uid: Field<IndicatorType> = fh.uid()
+    val lastUpdated: Field<IndicatorType> = fh.lastUpdated()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(IndicatorTypeTableInfo.Columns.NUMBER),
+        fh.field(IndicatorTypeTableInfo.Columns.FACTOR),
+    )
 }

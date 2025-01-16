@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.network.indicatortype
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.indicator.IndicatorType
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-import java.io.IOException;
-import java.text.ParseException;
+@Singleton
+internal class IndicatorTypeNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : IndicatorTypeNetworkHandler {
+    private val service = IndicatorTypeService(httpClient)
 
-import static com.google.common.truth.Truth.assertThat;
-
-public class IndicatorTypeShould extends BaseObjectShould implements ObjectShould {
-
-    public IndicatorTypeShould() {
-        super("indicators/indicator_type.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        IndicatorType type = objectMapper.readValue(jsonStream, IndicatorType.class);
-
-        assertThat(type.code()).isNull();
-        assertThat(type.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-15T16:08:57.670"));
-        assertThat(type.uid()).isEqualTo("bWuNrMHEoZ0");
-        assertThat(type.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:22.592"));
-        assertThat(type.name()).isEqualTo("Per cent");
-
-        assertThat(type.number()).isFalse();
-        assertThat(type.factor()).isEqualTo(100);
+    override suspend fun getIndicatorTypes(uids: Set<String>): Payload<IndicatorType> {
+        val apiPayload = service.getIndicatorTypes(
+            IndicatorTypeFields.allFields,
+            null,
+            IndicatorTypeFields.uid.`in`(uids),
+            false,
+        )
+        return apiPayload.mapItems(IndicatorTypeDTO::toDomain)
     }
 }

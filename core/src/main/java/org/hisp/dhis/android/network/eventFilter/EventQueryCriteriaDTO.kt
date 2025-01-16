@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.eventfilter
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.EventQueryCriteria

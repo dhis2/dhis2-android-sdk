@@ -26,23 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.DatePeriodType
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class TrackedEntityInstanceFilter37DTO(
+internal data class TrackedEntityInstanceFilterDTO(
     @SerialName("id") override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -50,43 +47,28 @@ internal data class TrackedEntityInstanceFilter37DTO(
     override val created: String?,
     override val lastUpdated: String?,
     override val deleted: Boolean?,
+    val style: ObjectWithStyleDTO?,
     val program: ObjectWithUidDTO?,
     val description: String?,
     val sortOrder: Int?,
-    val enrollmentStatus: EnrollmentStatus?,
-    val followup: Boolean?,
-    val enrollmentCreatedPeriod: FilterPeriodDTO?,
-    val eventFilters: List<TrackedEntityInstanceEventFilterDTO>?,
+    val entityQueryCriteria: EntityQueryCriteriaDTO?,
+    val eventFilters: List<TrackedEntityInstanceEventFilterDTO>? = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): TrackedEntityInstanceFilter {
         return TrackedEntityInstanceFilter.builder().apply {
-            applyBaseIdentifiableFields(this@TrackedEntityInstanceFilter37DTO)
-            program(program?.toDomain())
+            applyBaseIdentifiableFields(this@TrackedEntityInstanceFilterDTO)
+            style?.let { style(style.toDomain()) }
+            program?.let { program(program.toDomain()) }
             description(description)
             sortOrder(sortOrder)
-            entityQueryCriteria(
-                EntityQueryCriteria.builder()
-                    .followUp(followup)
-                    .enrollmentStatus(enrollmentStatus)
-                    .enrollmentCreatedDate(
-                        enrollmentCreatedPeriod?.let {
-                            DateFilterPeriod.builder()
-                                .startBuffer(it.periodFrom)
-                                .endBuffer(it.periodTo)
-                                .type(DatePeriodType.RELATIVE)
-                                .build()
-                        },
-                    )
-                    .build(),
-            )
+            entityQueryCriteria(entityQueryCriteria?.toDomain(uid))
             eventFilters(eventFilters?.map { it.toDomain(uid) } ?: emptyList())
         }.build()
     }
 }
 
 @Serializable
-internal class TrackedEntityInstanceFilter37Payload(
+internal class TrackedEntityInstanceFilterPayload(
     override val pager: PagerDTO?,
-    @SerialName("trackedEntityInstanceFilters") override val items: List<TrackedEntityInstanceFilter37DTO> =
-        emptyList(),
-) : PayloadJson<TrackedEntityInstanceFilter37DTO>(pager, items)
+    @SerialName("trackedEntityInstanceFilters") override val items: List<TrackedEntityInstanceFilterDTO> = emptyList(),
+) : PayloadJson<TrackedEntityInstanceFilterDTO>(pager, items)

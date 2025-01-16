@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.icon
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.customIcon.CustomIconDTO
+import org.hisp.dhis.android.network.customicon.CustomIconDTO
 import org.junit.Test
 
 class CustomIconShould :

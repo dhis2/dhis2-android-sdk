@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilterDTO
+import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterDTO
 import org.junit.Test
 import org.mockito.internal.util.collections.Sets
 import java.io.IOException

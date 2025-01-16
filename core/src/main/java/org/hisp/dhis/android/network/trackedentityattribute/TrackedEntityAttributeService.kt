@@ -25,28 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.trackedentityattribute
 
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
-
-@Serializable
-internal data class TrackedEntityInstanceEventFilterDTO(
-    val programStage: String?,
-    val eventStatus: String?,
-    val eventCreatedPeriod: FilterPeriodDTO?,
-    val assignedUserMode: String?,
-) {
-    fun toDomain(trackedEntityInstanceFilter: String): TrackedEntityInstanceEventFilter {
-        return TrackedEntityInstanceEventFilter.builder()
-            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
-            .programStage(programStage)
-            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
-            .eventCreatedPeriod(eventCreatedPeriod?.toDomain())
-            .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
-            .build()
+internal class TrackedEntityAttributeService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getTrackedEntityAttributes(
+        fields: Fields<TrackedEntityAttribute>,
+        idFilter: Filter<TrackedEntityAttribute>,
+        paging: Boolean,
+    ): TrackedEntityAttributePayload {
+        return client.get {
+            url("trackedEntityAttributes")
+            parameters {
+                fields(fields)
+                filter(idFilter)
+                paging(paging)
+            }
+        }
     }
 }

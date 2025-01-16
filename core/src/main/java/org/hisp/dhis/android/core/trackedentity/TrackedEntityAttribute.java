@@ -53,7 +53,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
+import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields;
 
 import java.util.List;
 

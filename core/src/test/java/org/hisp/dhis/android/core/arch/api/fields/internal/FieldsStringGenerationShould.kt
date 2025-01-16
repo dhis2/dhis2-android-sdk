@@ -96,7 +96,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFiel
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityAttributeValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityDataValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityInstanceFields
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterFields
@@ -114,13 +113,14 @@ import org.hisp.dhis.android.network.categoryoption.CategoryOptionFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
-import org.hisp.dhis.android.network.customIcon.CustomIconFields
-import org.hisp.dhis.android.network.eventFilter.EventFilterFields
+import org.hisp.dhis.android.network.customicon.CustomIconFields
+import org.hisp.dhis.android.network.eventfilter.EventFilterFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
-import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilterFields
+import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
+import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields

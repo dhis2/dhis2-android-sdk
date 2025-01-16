@@ -38,10 +38,10 @@ internal data class AccessDTO(
     val data: DataAccessDTO?,
 ) {
     fun toDomain(): Access {
-        return Access.builder()
-            .read(read)
-            .write(write)
-            .data(data?.toDomain())
-            .build()
+        return Access.builder().apply {
+            read(read)
+            write(write)
+            data?.let { data(it.toDomain()) }
+        }.build()
     }
 }

@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.dependencyInjection
+package org.hisp.dhis.android.network.dependencyinjection
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module

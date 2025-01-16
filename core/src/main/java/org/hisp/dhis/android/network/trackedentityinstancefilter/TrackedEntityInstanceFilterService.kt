@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackedEntityAttributeCall(
-    private val networkHandler: TrackedEntityAttributeNetworkHandler,
-    private val handler: TrackedEntityAttributeHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<TrackedEntityAttribute> {
-    override suspend fun download(uids: Set<String>): List<TrackedEntityAttribute> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getTrackedEntityAttributes,
-        )
+internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getTrackedEntityInstanceFilters(
+        uids: Filter<TrackedEntityInstanceFilter>,
+        accessDataReadFilter: String,
+        fields: Fields<TrackedEntityInstanceFilter>,
+        paging: Boolean,
+    ): TrackedEntityInstanceFilterPayload {
+        return client.get {
+            url("trackedEntityInstanceFilters")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter", accessDataReadFilter)
+                paging(paging)
+            }
+        }
     }
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 140
+    suspend fun getTrackedEntityInstanceFilters37(
+        uids: Filter<TrackedEntityInstanceFilter>,
+        accessDataReadFilter: String,
+        fields: Fields<TrackedEntityInstanceFilter>,
+        paging: Boolean,
+    ): TrackedEntityInstanceFilter37Payload {
+        return client.get {
+            url("trackedEntityInstanceFilters")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter", accessDataReadFilter)
+                paging(paging)
+            }
+        }
     }
 }

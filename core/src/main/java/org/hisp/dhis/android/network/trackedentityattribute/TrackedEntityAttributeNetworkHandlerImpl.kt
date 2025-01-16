@@ -25,47 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.network.trackedentityattribute
+
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClientKotlinx) {
-    suspend fun getTrackedEntityInstanceFilters(
-        uids: Filter<TrackedEntityInstanceFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
-        paging: Boolean,
-    ): TrackedEntityInstanceFilterPayload {
-        return client.get {
-            url("trackedEntityInstanceFilters")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
+internal class TrackedEntityAttributeNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : TrackedEntityAttributeNetworkHandler {
+    private val service: TrackedEntityAttributeService = TrackedEntityAttributeService(httpClient)
 
-    suspend fun getTrackedEntityInstanceFilters37(
-        uids: Filter<TrackedEntityInstanceFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
-        paging: Boolean,
-    ): TrackedEntityInstanceFilter37Payload {
-        return client.get {
-            url("trackedEntityInstanceFilters")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
+    override suspend fun getTrackedEntityAttributes(partitionUids: Set<String>): PayloadJson<TrackedEntityAttribute> {
+        val apiPayload = service.getTrackedEntityAttributes(
+            TrackedEntityAttributeFields.allFields,
+            TrackedEntityAttributeFields.uid.`in`(partitionUids),
+            false,
+        )
+        return apiPayload.mapItems(TrackedEntityAttributeDTO::toDomain)
     }
 }

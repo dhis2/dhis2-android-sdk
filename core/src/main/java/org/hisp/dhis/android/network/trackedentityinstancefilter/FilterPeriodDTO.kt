@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-@Singleton
-internal class TrackedEntityAttributeCall(
-    private val networkHandler: TrackedEntityAttributeNetworkHandler,
-    private val handler: TrackedEntityAttributeHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<TrackedEntityAttribute> {
-    override suspend fun download(uids: Set<String>): List<TrackedEntityAttribute> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getTrackedEntityAttributes,
-        )
-    }
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.FilterPeriod
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 140
+@Serializable
+internal data class FilterPeriodDTO(
+    val periodFrom: Int?,
+    val periodTo: Int?,
+) {
+    fun toDomain(): FilterPeriod {
+        return FilterPeriod.builder()
+            .periodFrom(periodFrom)
+            .periodTo(periodTo)
+            .build()
     }
 }

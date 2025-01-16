@@ -96,7 +96,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFiel
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityAttributeValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityDataValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityInstanceFields
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterFields
@@ -121,6 +120,7 @@ import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilterFields
+import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields

@@ -26,31 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.common.dto
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.common.FilterOperators
 
-@Serializable
-internal data class EventDataFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val dataItem: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(eventFilter: String): EventDataFilter {
-        return EventDataFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .eventFilter(eventFilter)
-            .dataItem(dataItem)
-            .build()
-    }
+@Suppress("VariableNaming")
+internal interface FilterOperatorsDTO {
+    val le: String?
+    val ge: String?
+    val gt: String?
+    val lt: String?
+    val eq: String?
+    val `in`: Set<String>?
+    val like: String?
+    val dateFilter: DateFilterPeriodDTO?
+}
+
+internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
+      T : FilterOperators.Builder<T> {
+    le(item.le)
+    ge(item.ge)
+    gt(item.gt)
+    lt(item.lt)
+    eq(item.eq)
+    `in`(item.`in`)
+    like(item.like)
+    dateFilter(item.dateFilter?.toDomain())
+    return this
 }

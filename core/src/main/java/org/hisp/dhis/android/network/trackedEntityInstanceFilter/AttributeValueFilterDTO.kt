@@ -26,16 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
 import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
 
 @Serializable
-internal data class EventDataFilterDTO(
+internal data class AttributeValueFilterDTO(
     override val le: String?,
     override val ge: String?,
     override val gt: String?,
@@ -44,13 +44,17 @@ internal data class EventDataFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
-    val dataItem: String?,
+    val attribute: String?,
+    val ew: String?,
+    val sw: String?,
 ) : FilterOperatorsDTO {
-    fun toDomain(eventFilter: String): EventDataFilter {
-        return EventDataFilter.builder()
+    fun toDomain(trackedEntityInstanceFilter: String): AttributeValueFilter {
+        return AttributeValueFilter.builder()
             .applyFilterOperatorsFields(this)
-            .eventFilter(eventFilter)
-            .dataItem(dataItem)
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .attribute(attribute)
+            .ew(ew)
+            .sw(sw)
             .build()
     }
 }

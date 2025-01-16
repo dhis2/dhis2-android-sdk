@@ -26,31 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.common.FilterPeriod
 
 @Serializable
-internal data class EventDataFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val dataItem: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(eventFilter: String): EventDataFilter {
-        return EventDataFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .eventFilter(eventFilter)
-            .dataItem(dataItem)
+internal data class FilterPeriodDTO(
+    val periodFrom: Int?,
+    val periodTo: Int?,
+) {
+    fun toDomain(): FilterPeriod {
+        return FilterPeriod.builder()
+            .periodFrom(periodFrom)
+            .periodTo(periodTo)
             .build()
     }
 }

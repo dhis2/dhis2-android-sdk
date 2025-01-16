@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -111,6 +110,6 @@ public class TrackedEntityInstanceFilterHandlerShould {
     @Test
     public void handle_event_filters() {
         trackedEntityInstanceFilterHandler.handleMany(trackedEntityInstanceFilters);
-        verify(trackedEntityInstanceEventFilterHandler).handleMany(eq(eventFilters), any());
+        verify(trackedEntityInstanceEventFilterHandler).handleMany(eventFilters);
     }
 }

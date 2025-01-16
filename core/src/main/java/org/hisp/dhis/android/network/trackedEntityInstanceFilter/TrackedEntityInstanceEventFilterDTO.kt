@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
+package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
-class TrackedEntityInstanceFilterAPI37Should :
-    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),
-    ObjectShould {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val trackedEntityInstanceFilterAPI37 = objectMapper.readValue(
-            jsonStream,
-            TrackedEntityInstanceFilterAPI37::class.java,
-        )
-
-        teiFilterCommonAsserts(trackedEntityInstanceFilterAPI37.toTrackedEntityInstanceFilter())
+@Serializable
+internal data class TrackedEntityInstanceEventFilterDTO(
+    val programStage: String?,
+    val eventStatus: String?,
+    val eventCreatedPeriod: FilterPeriodDTO?,
+    val assignedUserMode: String?,
+) {
+    fun toDomain(trackedEntityInstanceFilter: String): TrackedEntityInstanceEventFilter {
+        return TrackedEntityInstanceEventFilter.builder()
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .programStage(programStage)
+            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
+            .eventCreatedPeriod(eventCreatedPeriod?.toDomain())
+            .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
+            .build()
     }
 }

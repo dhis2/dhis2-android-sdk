@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.network.eventFilter
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilter37DTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.FilterQueryCriteria
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
+class TrackedEntityInstanceFilter37Should :
+    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),
+    ObjectShould {
 
-internal interface FilterQueryCriteriaDTO {
-    val followUp: Boolean?
-    val organisationUnit: String?
-    val ouMode: String?
-    val assignedUserMode: String?
-    val order: String?
-    val displayColumnOrder: List<String>?
-    val eventStatus: String?
-    val eventDate: DateFilterPeriodDTO?
-    val lastUpdatedDate: DateFilterPeriodDTO?
-}
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val trackedEntityInstanceFilter37DTO = deserialize(TrackedEntityInstanceFilter37DTO.serializer())
+        val trackedEntityInstanceFilter37 = trackedEntityInstanceFilter37DTO.toDomain()
 
-internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO): T where
-      T : FilterQueryCriteria.Builder<T> {
-    followUp(item.followUp)
-    organisationUnit(item.organisationUnit)
-    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
-    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
-    order(item.order)
-    displayColumnOrder(item.displayColumnOrder)
-    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
-    eventDate(item.eventDate?.toDomain())
-    lastUpdatedDate(item.lastUpdatedDate?.toDomain())
-    return this
+        teiFilterCommonAsserts(trackedEntityInstanceFilter37)
+    }
 }

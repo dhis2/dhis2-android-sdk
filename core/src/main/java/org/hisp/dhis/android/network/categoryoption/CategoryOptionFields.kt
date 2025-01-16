@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

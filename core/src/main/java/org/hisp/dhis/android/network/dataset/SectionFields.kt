@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal
+package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.dataset.DataSetElement
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo.Columns
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object DataSetElementFields : BaseFields<DataSetElement>() {
+internal object SectionFields : BaseFields<Section>() {
+    const val DATA_ELEMENTS = "dataElements"
+    const val GREYED_FIELDS = "greyedFields"
+    const val INDICATORS = "indicators"
+
     val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DESCRIPTION),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.SHOW_ROW_TOTALS),
+        fh.field(Columns.SHOW_COLUMN_TOTALS),
         fh.nestedFieldWithUid(Columns.DATA_SET),
-        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
-        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+        fh.nestedFieldWithUid(DATA_ELEMENTS),
+        fh.nestedFieldWithUid(INDICATORS),
+        fh.nestedField<DataElementOperand>(GREYED_FIELDS).with(DataElementOperandFields.allFields),
     )
 }

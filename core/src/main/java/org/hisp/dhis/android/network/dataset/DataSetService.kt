@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset
+package org.hisp.dhis.android.network.dataset
 
-object DataSetInternalAccessor {
-    fun accessSections(dataSet: DataSet): List<Section>? {
-        return dataSet.sections()
-    }
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.koin.core.annotation.Singleton
 
-    fun insertSections(
-        builder: DataSet.Builder,
-        sections: List<Section>
-    ): DataSet.Builder {
-        return builder.sections(sections)
+@Singleton
+internal class DataSetService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getDataSets(
+        fields: Fields<DataSet>,
+        uids: Filter<DataSet>,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): DataSetPayload {
+        return client.get {
+            url("dataSets")
+            parameters {
+                fields(fields)
+                filter(uids)
+                attribute("filter", accessDataReadFilter)
+                paging(paging)
+            }
+        }
     }
 }

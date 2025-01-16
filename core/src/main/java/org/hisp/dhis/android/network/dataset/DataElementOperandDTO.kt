@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset
 
-object DataSetInternalAccessor {
-    fun accessSections(dataSet: DataSet): List<Section>? {
-        return dataSet.sections()
-    }
+package org.hisp.dhis.android.network.dataset
 
-    fun insertSections(
-        builder: DataSet.Builder,
-        sections: List<Section>
-    ): DataSet.Builder {
-        return builder.sections(sections)
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+
+@Serializable
+internal data class DataElementOperandDTO(
+    @SerialName("id") val uid: String,
+    val deleted: Boolean?,
+    val dataElement: ObjectWithUidDTO?,
+    val categoryOptionCombo: ObjectWithUidDTO?,
+) {
+    fun toDomain(): DataElementOperand {
+        return DataElementOperand.builder()
+            .uid(uid)
+            .deleted(deleted)
+            .dataElement(dataElement?.toDomain())
+            .categoryOptionCombo(categoryOptionCombo?.toDomain())
+            .build()
     }
 }

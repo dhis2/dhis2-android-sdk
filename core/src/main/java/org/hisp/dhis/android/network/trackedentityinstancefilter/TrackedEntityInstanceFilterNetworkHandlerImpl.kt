@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter

@@ -26,21 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class GeometryDTO(
-    val type: String?,
-    val coordinates: String?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type?.let { FeatureType.valueOf(it) })
-            .coordinates(coordinates)
+internal data class SectionDTO(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val description: String?,
+    val sortOrder: Int?,
+    val showRowTotals: Boolean?,
+    val showColumnTotals: Boolean?,
+    val dataSet: ObjectWithUidDTO?,
+    val dataElements: List<ObjectWithUidDTO> = emptyList(),
+    val greyedFields: List<DataElementOperandDTO> = emptyList(),
+    val indicators: List<ObjectWithUidDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): Section {
+        return Section.builder()
+            .applyBaseIdentifiableFields(this)
+            .description(description)
+            .sortOrder(sortOrder)
+            .showRowTotals(showRowTotals)
+            .showColumnTotals(showColumnTotals)
+            .dataSet(dataSet?.toDomain())
+            .dataElements(dataElements.map { DataElement.builder().uid(it.uid).build() })
+            .greyedFields(greyedFields.map { it.toDomain() })
+            .indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
             .build()
     }
 }

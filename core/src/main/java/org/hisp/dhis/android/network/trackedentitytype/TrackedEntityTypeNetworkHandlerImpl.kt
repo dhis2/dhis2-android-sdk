@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.network.trackedentitytype
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx

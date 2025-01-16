@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageSection

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
+import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns
 import org.hisp.dhis.android.core.program.SectionRendering

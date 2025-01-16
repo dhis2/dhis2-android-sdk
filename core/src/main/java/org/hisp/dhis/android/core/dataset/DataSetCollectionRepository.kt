@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompulsoryDataElementOperandChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementChildrenAppender
-import org.hisp.dhis.android.core.dataset.internal.DataSetFields
+import org.hisp.dhis.android.network.dataset.DataSetFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit

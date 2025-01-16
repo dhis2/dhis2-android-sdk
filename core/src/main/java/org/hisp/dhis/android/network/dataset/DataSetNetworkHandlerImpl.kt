@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal
+package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.internal.DataSetNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.koin.core.annotation.Singleton
 
-internal object DataInputPeriodFields : BaseFields<DataInputPeriod>() {
-    val allFields = Fields.from(
-        fh.field(DataInputPeriodTableInfo.Columns.PERIOD),
-        fh.field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
-        fh.field(DataInputPeriodTableInfo.Columns.CLOSING_DATE),
-    )
+@Singleton
+internal class DataSetNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : DataSetNetworkHandler {
+    private val service: DataSetService = DataSetService(httpClient)
+
+    override suspend fun getDataSets(dataSetUids: Set<String>): PayloadJson<DataSet> {
+        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+        val apiPayload = service.getDataSets(
+            DataSetFields.allFields,
+            DataSetFields.uid.`in`(dataSetUids),
+            accessDataReadFilter,
+            false,
+        )
+        return apiPayload.mapItems(DataSetDTO::toDomain)
+    }
 }

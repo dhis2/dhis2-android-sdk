@@ -25,17 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset
+package org.hisp.dhis.android.network.dataset
 
-object DataSetInternalAccessor {
-    fun accessSections(dataSet: DataSet): List<Section>? {
-        return dataSet.sections()
-    }
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-    fun insertSections(
-        builder: DataSet.Builder,
-        sections: List<Section>
-    ): DataSet.Builder {
-        return builder.sections(sections)
-    }
+internal object DataSetElementFields : BaseFields<DataSetElement>() {
+    val allFields = Fields.from(
+        fh.nestedFieldWithUid(Columns.DATA_SET),
+        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+    )
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.network.common.fields
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.core.common.DataAccess
 
-internal object DataElementOperandFields : BaseFields<DataElementOperand>() {
+internal object DataAccessFields : BaseFields<DataAccess>() {
+    private const val READ = "read"
+    private const val WRITE = "write"
+
+    val read = fh.field(READ)
+    val write = fh.field(WRITE)
+
     val allFields = Fields.from(
-        fh.uid(),
-        fh.deleted(),
-        fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.DATA_ELEMENT),
-        fh.nestedFieldWithUid(DataElementOperandTableInfo.Columns.CATEGORY_OPTION_COMBO),
+        read,
+        write,
     )
 }

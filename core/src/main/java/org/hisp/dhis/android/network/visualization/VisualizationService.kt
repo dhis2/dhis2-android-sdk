@@ -30,9 +30,7 @@ package org.hisp.dhis.android.network.visualization
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class VisualizationService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun getSingleVisualization(

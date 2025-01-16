@@ -25,57 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityAttributeShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityAttributeShould() {
-        super("trackedentity/tracked_entity_attribute.json");
-    }
-
-    @Override
+class TrackedEntityAttributeShould :
+    BaseObjectKotlinxShould("trackedentity/tracked_entity_attribute.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityAttribute trackedEntityAttribute = objectMapper.readValue(jsonStream, TrackedEntityAttribute.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val trackedEntityAttributeDTO = deserialize(TrackedEntityAttributeDTO.serializer())
+        val trackedEntityAttribute = trackedEntityAttributeDTO.toDomain()
 
         assertThat(trackedEntityAttribute.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-04T11:48:56.928"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-04T11:48:56.928"),
+        )
         assertThat(trackedEntityAttribute.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-01-09T19:12:46.551"));
-        assertThat(trackedEntityAttribute.uid()).isEqualTo("ruQQnf6rswq");
-        assertThat(trackedEntityAttribute.name()).isEqualTo("TB number");
-        assertThat(trackedEntityAttribute.displayName()).isEqualTo("TB number");
-        assertThat(trackedEntityAttribute.shortName()).isEqualTo("TB number");
-        assertThat(trackedEntityAttribute.displayShortName()).isEqualTo("TB number");
-        assertThat(trackedEntityAttribute.description()).isEqualTo("TB number");
-        assertThat(trackedEntityAttribute.displayDescription()).isEqualTo("TB number");
-        assertThat(trackedEntityAttribute.formName()).isEqualTo("number");
-        assertThat(trackedEntityAttribute.displayFormName()).isEqualTo("num");
-        assertThat(trackedEntityAttribute.displayInListNoProgram()).isFalse();
-        assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse();
-        assertThat(trackedEntityAttribute.confidential()).isFalse();
-        assertThat(trackedEntityAttribute.generated()).isFalse();
-        assertThat(trackedEntityAttribute.aggregationType()).isEqualTo(AggregationType.DEFAULT);
-        assertThat(trackedEntityAttribute.inherit()).isFalse();
-        assertThat(trackedEntityAttribute.fieldMask()).isEqualTo("XXXXX");
-        assertThat(trackedEntityAttribute.optionSet().uid()).isEqualTo("xjA5E9MimMU");
-        assertThat(trackedEntityAttribute.orgUnitScope()).isFalse();
-        assertThat(trackedEntityAttribute.programScope()).isFalse();
-        assertThat(trackedEntityAttribute.unique()).isFalse();
-        assertThat(trackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
-        assertThat(trackedEntityAttribute.access().read()).isTrue();
+            BaseIdentifiableObject.DATE_FORMAT.parse("2014-01-09T19:12:46.551"),
+        )
+        assertThat(trackedEntityAttribute.uid()).isEqualTo("ruQQnf6rswq")
+        assertThat(trackedEntityAttribute.name()).isEqualTo("TB number")
+        assertThat(trackedEntityAttribute.displayName()).isEqualTo("TB number")
+        assertThat(trackedEntityAttribute.shortName()).isEqualTo("TB number")
+        assertThat(trackedEntityAttribute.displayShortName()).isEqualTo("TB number")
+        assertThat(trackedEntityAttribute.description()).isEqualTo("TB number")
+        assertThat(trackedEntityAttribute.displayDescription()).isEqualTo("TB number")
+        assertThat(trackedEntityAttribute.formName()).isEqualTo("number")
+        assertThat(trackedEntityAttribute.displayFormName()).isEqualTo("num")
+        assertThat(trackedEntityAttribute.displayInListNoProgram()).isFalse()
+        assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse()
+        assertThat(trackedEntityAttribute.confidential()).isFalse()
+        assertThat(trackedEntityAttribute.generated()).isFalse()
+        assertThat(trackedEntityAttribute.aggregationType()).isEqualTo(AggregationType.DEFAULT)
+        assertThat(trackedEntityAttribute.inherit()).isFalse()
+        assertThat(trackedEntityAttribute.fieldMask()).isEqualTo("XXXXX")
+        assertThat(trackedEntityAttribute.optionSet()!!.uid()).isEqualTo("xjA5E9MimMU")
+        assertThat(trackedEntityAttribute.orgUnitScope()).isFalse()
+        assertThat(trackedEntityAttribute.programScope()).isFalse()
+        assertThat(trackedEntityAttribute.unique()).isFalse()
+        assertThat(trackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT)
+        assertThat(trackedEntityAttribute.access().read()).isTrue()
     }
 }

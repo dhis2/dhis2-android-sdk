@@ -332,40 +332,40 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         createDataValue("5", orgunitUid = orgunitChild1.uid(), periodId = period201912.periodId()!!)
         createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
-//        assertThat(
-//            evaluateAggregation(
-//                periodId = period2019Q4.periodId()!!,
-//                aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT,
-//            ),
-//        ).isEqualTo("11")
-//
-//        assertThat(
-//            evaluateAggregation(
-//                periodId = period2019Q4.periodId()!!,
-//                aggregator = AggregationType.FIRST,
-//            ),
-//        ).isEqualTo("9")
-//
-//        assertThat(
-//            evaluateAggregation(
-//                periodId = period202012.periodId()!!,
-//                aggregator = AggregationType.FIRST,
-//            ),
-//        ).isEqualTo("9")
-//
-//        assertThat(
-//            evaluateAggregation(
-//                periodId = period2019Q4.periodId()!!,
-//                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT,
-//            ),
-//        ).isEqualTo("4.5")
-//
-//        assertThat(
-//            evaluateAggregation(
-//                periodId = period202012.periodId()!!,
-//                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT,
-//            ),
-//        ).isEqualTo("4.5")
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT,
+            ),
+        ).isEqualTo("11")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST,
+            ),
+        ).isEqualTo("9")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST,
+            ),
+        ).isEqualTo("9")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period2019Q4.periodId()!!,
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            ),
+        ).isEqualTo("4.5")
+
+        assertThat(
+            evaluateAggregation(
+                periodId = period202012.periodId()!!,
+                aggregator = AggregationType.FIRST_AVERAGE_ORG_UNIT,
+            ),
+        ).isEqualTo("4.5")
 
         assertThat(
             evaluateAggregation(

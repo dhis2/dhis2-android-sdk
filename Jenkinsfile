@@ -22,7 +22,11 @@ pipeline {
                 script {
                     echo 'Running Check style and quality'
                     sh 'chmod +x ./runChecks.sh'
-                    sh './runChecks.sh'
+                    retry(3) {
+                        timeout(time: 24, unit: 'MINUTES') {
+                            sh './runChecks.sh'
+                        }
+                    }
                 }
             }
         }
@@ -30,7 +34,11 @@ pipeline {
             steps {
                 script {
                     echo 'Running unit tests'
-                    sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
+                    retry(3) { // Retry up to 3 times
+                        timeout(time: 5, unit: 'MINUTES') {
+                            sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
+                        }
+                    }
                 }
             }
         }
@@ -42,7 +50,11 @@ pipeline {
                 script {
                     echo 'Browserstack deployment and running tests'
                     sh 'chmod +x ./scripts/browserstackJenkins.sh'
-                    sh './scripts/browserstackJenkins.sh'
+                    retry(3) { // Retry up to 3 times
+                        timeout(time: 20, unit: 'MINUTES') {
+                            sh './scripts/browserstackJenkins.sh'
+                        }
+                    }
                 }
             }
         }

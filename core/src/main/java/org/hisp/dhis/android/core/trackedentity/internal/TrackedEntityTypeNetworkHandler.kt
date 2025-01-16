@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class TrackedEntityTypeService(private val client: HttpServiceClient) {
+internal fun interface TrackedEntityTypeNetworkHandler {
     suspend fun getTrackedEntityTypes(
-        fields: Fields<TrackedEntityType>,
-        idFilter: Filter<TrackedEntityType>,
-        accessDataReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<TrackedEntityType> {
-        return client.get {
-            url("trackedEntityTypes")
-            parameters {
-                fields(fields)
-                filter(idFilter)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
+        uids: Set<String>,
+    ): Payload<TrackedEntityType>
 }

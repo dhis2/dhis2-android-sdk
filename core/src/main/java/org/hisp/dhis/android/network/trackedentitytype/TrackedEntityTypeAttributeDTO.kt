@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common.dto
+package org.hisp.dhis.android.network.trackedentitytype
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
-internal data class AccessDTO(
-    val read: Boolean = true,
-    val write: Boolean = true,
-    val data: DataAccessDTO?,
+internal data class TrackedEntityTypeAttributeDTO(
+    val trackedEntityAttribute: ObjectWithUidDTO?,
+    val trackedEntityType: ObjectWithUidDTO?,
+    val displayInList: Boolean,
+    val mandatory: Boolean?,
+    val searchable: Boolean,
+
 ) {
-    fun toDomain(): Access {
-        return Access.builder()
-            .read(read)
-            .write(write)
-            .data(data?.toDomain())
+    fun toDomain(): TrackedEntityTypeAttribute {
+        return TrackedEntityTypeAttribute.builder()
+            .trackedEntityType(trackedEntityType?.toDomain())
+            .trackedEntityAttribute(trackedEntityAttribute?.toDomain())
+            .displayInList(displayInList)
+            .mandatory(mandatory)
+            .searchable(searchable)
             .build()
     }
 }

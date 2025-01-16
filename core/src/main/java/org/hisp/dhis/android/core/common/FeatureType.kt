@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.common
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 enum class FeatureType(val featureType: String, val geometryType: String) {
     POINT("POINT", "Point"),
     POLYGON("POLYGON", "Polygon"),
@@ -38,10 +35,10 @@ enum class FeatureType(val featureType: String, val geometryType: String) {
     SYMBOL("SYMBOL", "Symbol"),
     ;
 
-    internal companion object {
+    companion object {
         @JvmStatic
         fun valueOfFeatureType(featureType: String): FeatureType? {
-            return entries.find { it.featureType == featureType || it.geometryType == featureType }
+            return values().find { it.featureType == featureType || it.geometryType == featureType }
         }
     }
 }

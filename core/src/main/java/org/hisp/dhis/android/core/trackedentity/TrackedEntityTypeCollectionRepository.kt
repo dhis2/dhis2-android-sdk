@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

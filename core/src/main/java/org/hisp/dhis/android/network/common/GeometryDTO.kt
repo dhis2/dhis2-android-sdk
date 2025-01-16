@@ -34,12 +34,12 @@ import org.hisp.dhis.android.core.common.Geometry
 
 @Serializable
 internal data class GeometryDTO(
-    val type: FeatureType?,
+    val type: String?,
     val coordinates: String?,
 ) {
     fun toDomain(): Geometry {
         return Geometry.builder()
-            .type(type)
+            .type(type?.let { FeatureType.valueOf(it) })
             .coordinates(coordinates)
             .build()
     }

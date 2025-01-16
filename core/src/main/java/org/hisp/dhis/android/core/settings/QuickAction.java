@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,16 +35,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_QuickAction.Builder.class)
-public abstract class QuickAction implements ObjectWithUidInterface {
+public abstract class QuickAction {
 
-    @Override
     @NonNull
-    @JsonProperty(UID)
-    public abstract String uid();
+    @JsonProperty()
+    public abstract String actionId();
 
     public abstract Builder toBuilder();
 
@@ -57,8 +52,7 @@ public abstract class QuickAction implements ObjectWithUidInterface {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        @JsonProperty("id")
-        public abstract Builder uid(String uid);
+        public abstract Builder actionId(String uid);
 
         public abstract QuickAction build();
     }

@@ -148,10 +148,10 @@
         "disableManualLocation": "true",
         "quickActions": [
           {
-            "id": "TRANSFER"
+            "actionId": "TRANSFER"
           },
           {
-            "id": "MORE_ENROLLMENTS"
+            "actionId": "MORE_ENROLLMENTS"
           }
         ]
       },
@@ -163,13 +163,13 @@
         "disableManualLocation": "false",
         "quickActions": [
           {
-            "id": "MARK_FOLLOW_UP"
+            "actionId": "MARK_FOLLOW_UP"
           },
           {
-            "id": "COMPLETE_ENROLLMENT"
+            "actionId": "COMPLETE_ENROLLMENT"
           },
           {
-            "id": "MORE_ENROLLMENTS"
+            "actionId": "MORE_ENROLLMENTS"
           }
         ]
       }

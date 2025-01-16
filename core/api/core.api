@@ -12169,17 +12169,17 @@ public final class org/hisp/dhis/android/core/settings/ProgramSettingsObjectRepo
 	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/ProgramSettings;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/QuickAction : org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/settings/QuickAction {
 	public fun <init> ()V
+	public abstract fun actionId ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
-	public abstract fun uid ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/QuickAction$Builder {
 	public fun <init> ()V
+	public abstract fun actionId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/QuickAction;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/settings/SettingModule {

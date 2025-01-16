@@ -86,7 +86,7 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(specificProgramConfiguration.minimumLocationAccuracy()).isEqualTo(5)
         assertThat(specificProgramConfiguration.disableManualLocation()).isEqualTo(true)
         assertThat(specificProgramConfiguration.quickActions()?.size).isEqualTo(2)
-        assertThat(specificProgramConfiguration.quickActions()?.get(1)?.uid()).isEqualTo("MORE_ENROLLMENTS")
+        assertThat(specificProgramConfiguration.quickActions()?.get(1)?.actionId()).isEqualTo("MORE_ENROLLMENTS")
 
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()

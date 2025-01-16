@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus

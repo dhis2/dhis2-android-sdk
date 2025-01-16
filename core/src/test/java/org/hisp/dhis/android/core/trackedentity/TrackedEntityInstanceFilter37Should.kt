@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilter37DTO
+import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilter37DTO
 import org.junit.Test
 import java.io.IOException
 import java.text.ParseException

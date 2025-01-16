@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.customIcon
+package org.hisp.dhis.android.network.customicon
 
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.network.common.fields.BaseFields

@@ -25,47 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-@Singleton
-internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClientKotlinx) {
-    suspend fun getTrackedEntityInstanceFilters(
-        uids: Filter<TrackedEntityInstanceFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
-        paging: Boolean,
-    ): TrackedEntityInstanceFilterPayload {
-        return client.get {
-            url("trackedEntityInstanceFilters")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
-    suspend fun getTrackedEntityInstanceFilters37(
-        uids: Filter<TrackedEntityInstanceFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
-        paging: Boolean,
-    ): TrackedEntityInstanceFilter37Payload {
-        return client.get {
-            url("trackedEntityInstanceFilters")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
+@Serializable
+internal data class TrackedEntityInstanceEventFilterDTO(
+    val programStage: String?,
+    val eventStatus: String?,
+    val eventCreatedPeriod: FilterPeriodDTO?,
+    val assignedUserMode: String?,
+) {
+    fun toDomain(trackedEntityInstanceFilter: String): TrackedEntityInstanceEventFilter {
+        return TrackedEntityInstanceEventFilter.builder()
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .programStage(programStage)
+            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
+            .eventCreatedPeriod(eventCreatedPeriod?.toDomain())
+            .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
+            .build()
     }
 }

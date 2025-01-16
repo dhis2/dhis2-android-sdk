@@ -74,7 +74,7 @@ import org.hisp.dhis.android.core.user.UserDIModule
 import org.hisp.dhis.android.core.validation.ValidationDIModule
 import org.hisp.dhis.android.core.visualization.VisualizationDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
-import org.hisp.dhis.android.network.dependencyInjection.NetworkDIModule
+import org.hisp.dhis.android.network.dependencyinjection.NetworkDIModule
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module
 

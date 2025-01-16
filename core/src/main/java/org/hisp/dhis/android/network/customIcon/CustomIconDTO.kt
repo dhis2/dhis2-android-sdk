@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.customIcon
+package org.hisp.dhis.android.network.customicon
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

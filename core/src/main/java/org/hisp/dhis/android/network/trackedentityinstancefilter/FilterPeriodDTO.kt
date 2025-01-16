@@ -26,35 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.common.FilterPeriod
 
 @Serializable
-internal data class AttributeValueFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val attribute: String?,
-    val ew: String?,
-    val sw: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(trackedEntityInstanceFilter: String): AttributeValueFilter {
-        return AttributeValueFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
-            .attribute(attribute)
-            .ew(ew)
-            .sw(sw)
+internal data class FilterPeriodDTO(
+    val periodFrom: Int?,
+    val periodTo: Int?,
+) {
+    fun toDomain(): FilterPeriod {
+        return FilterPeriod.builder()
+            .periodFrom(periodFrom)
+            .periodTo(periodTo)
             .build()
     }
 }

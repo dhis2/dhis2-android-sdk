@@ -26,27 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackedEntityInstanceFilter
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
+import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
+import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
 
 @Serializable
-internal data class TrackedEntityInstanceEventFilterDTO(
-    val programStage: String?,
-    val eventStatus: String?,
-    val eventCreatedPeriod: FilterPeriodDTO?,
-    val assignedUserMode: String?,
-) {
-    fun toDomain(trackedEntityInstanceFilter: String): TrackedEntityInstanceEventFilter {
-        return TrackedEntityInstanceEventFilter.builder()
+internal data class AttributeValueFilterDTO(
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val `in`: Set<String>?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriodDTO?,
+    val attribute: String?,
+    val ew: String?,
+    val sw: String?,
+) : FilterOperatorsDTO {
+    fun toDomain(trackedEntityInstanceFilter: String): AttributeValueFilter {
+        return AttributeValueFilter.builder()
+            .applyFilterOperatorsFields(this)
             .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
-            .programStage(programStage)
-            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
-            .eventCreatedPeriod(eventCreatedPeriod?.toDomain())
-            .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
+            .attribute(attribute)
+            .ew(ew)
+            .sw(sw)
             .build()
     }
 }

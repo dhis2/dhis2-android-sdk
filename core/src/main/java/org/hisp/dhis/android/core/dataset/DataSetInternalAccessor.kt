@@ -34,7 +34,7 @@ object DataSetInternalAccessor {
 
     fun insertSections(
         builder: DataSet.Builder,
-        sections: List<Section>
+        sections: List<Section>,
     ): DataSet.Builder {
         return builder.sections(sections)
     }

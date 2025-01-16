@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

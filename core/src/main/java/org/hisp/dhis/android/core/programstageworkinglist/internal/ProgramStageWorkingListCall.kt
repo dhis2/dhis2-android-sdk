@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

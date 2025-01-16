@@ -145,14 +145,33 @@
           "programIndicator": "kALwOyvVvdT"
         },
         "minimumLocationAccuracy": "5",
-        "disableManualLocation": "true"
+        "disableManualLocation": "true",
+        "quickActions": [
+          {
+            "actionId": "TRANSFER"
+          },
+          {
+            "actionId": "MORE_ENROLLMENTS"
+          }
+        ]
       },
       "IpHINAT79UQ": {
         "completionSpinner": "true",
         "optionalSearch": "true",
         "disableReferrals": "false",
         "disableCollapsibleSections": "true",
-        "disableManualLocation": "false"
+        "disableManualLocation": "false",
+        "quickActions": [
+          {
+            "actionId": "MARK_FOLLOW_UP"
+          },
+          {
+            "actionId": "COMPLETE_ENROLLMENT"
+          },
+          {
+            "actionId": "MORE_ENROLLMENTS"
+          }
+        ]
       }
     }
   }

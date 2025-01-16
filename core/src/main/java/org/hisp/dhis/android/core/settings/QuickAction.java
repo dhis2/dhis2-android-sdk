@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.settings
 
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
-import org.hisp.dhis.android.core.settings.ProgramItemHeader
+package org.hisp.dhis.android.core.settings;
 
-object ProgramConfigurationSettingSamples {
-    fun get(): ProgramConfigurationSetting {
-        return ProgramConfigurationSetting.builder()
-            .id(1L)
-            .uid("aBcDeFg")
-            .completionSpinner(true)
-            .optionalSearch(true)
-            .disableReferrals(true)
-            .disableCollapsibleSections(true)
-            .itemHeader(
-                ProgramItemHeader.builder()
-                    .programIndicator("programIndicator")
-                    .build(),
-            )
-            .minimumLocationAccuracy(null)
-            .disableManualLocation(false)
-            .quickActions(listOf())
-            .build()
+import androidx.annotation.NonNull;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_QuickAction.Builder.class)
+public abstract class QuickAction {
+
+    @NonNull
+    @JsonProperty()
+    public abstract String actionId();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_QuickAction.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder actionId(String uid);
+
+        public abstract QuickAction build();
     }
 }

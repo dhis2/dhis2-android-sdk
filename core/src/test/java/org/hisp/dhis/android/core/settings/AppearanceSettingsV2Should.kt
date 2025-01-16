@@ -75,8 +75,8 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(programConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(7)
         assertThat(programConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
 
-        val speficicProgramConfiguration = programConfiguration.specificSettings()
-        val specificProgramConfiguration = speficicProgramConfiguration!!["IpHINAT79UW"]!!
+        val specificProgramConfigurations = programConfiguration.specificSettings()
+        val specificProgramConfiguration = specificProgramConfigurations!!["IpHINAT79UW"]!!
         assertThat(specificProgramConfiguration.uid()).isNull()
         assertThat(specificProgramConfiguration.completionSpinner()).isEqualTo(true)
         assertThat(specificProgramConfiguration.optionalSearch()).isEqualTo(true)
@@ -85,6 +85,8 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(specificProgramConfiguration.itemHeader()!!.programIndicator()).isEqualTo("kALwOyvVvdT")
         assertThat(specificProgramConfiguration.minimumLocationAccuracy()).isEqualTo(5)
         assertThat(specificProgramConfiguration.disableManualLocation()).isEqualTo(true)
+        assertThat(specificProgramConfiguration.quickActions()?.size).isEqualTo(2)
+        assertThat(specificProgramConfiguration.quickActions()?.get(1)?.actionId()).isEqualTo("MORE_ENROLLMENTS")
 
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()

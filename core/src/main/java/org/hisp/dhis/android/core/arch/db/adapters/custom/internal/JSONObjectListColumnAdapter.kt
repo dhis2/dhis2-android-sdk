@@ -30,18 +30,19 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<O>> {
-    protected abstract fun getObjectClass(): Class<List<O>>
+    protected abstract fun getTypeReference(): TypeReference<List<O>>
 
     override fun fromCursor(cursor: Cursor, columnName: String): List<O> {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
-            ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
+            ObjectMapperFactory.objectMapper().readValue(str, getTypeReference())
         } catch (e: JsonProcessingException) {
             listOf()
         } catch (e: JsonMappingException) {

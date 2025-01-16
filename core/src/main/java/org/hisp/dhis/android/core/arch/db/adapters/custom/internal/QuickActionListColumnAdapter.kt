@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.settings
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
-import org.hisp.dhis.android.core.settings.ProgramItemHeader
+import com.fasterxml.jackson.core.type.TypeReference
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.settings.QuickAction
 
-object ProgramConfigurationSettingSamples {
-    fun get(): ProgramConfigurationSetting {
-        return ProgramConfigurationSetting.builder()
-            .id(1L)
-            .uid("aBcDeFg")
-            .completionSpinner(true)
-            .optionalSearch(true)
-            .disableReferrals(true)
-            .disableCollapsibleSections(true)
-            .itemHeader(
-                ProgramItemHeader.builder()
-                    .programIndicator("programIndicator")
-                    .build(),
-            )
-            .minimumLocationAccuracy(null)
-            .disableManualLocation(false)
-            .quickActions(listOf())
-            .build()
+internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickAction>() {
+    override fun getTypeReference(): TypeReference<List<QuickAction>> {
+        return object : TypeReference<List<QuickAction>>() {}
+    }
+
+    override fun serialize(o: List<QuickAction>?): String? =
+        QuickActionListColumnAdapter.serialize(o)
+
+    companion object {
+        fun serialize(o: List<QuickAction>?): String? {
+            return o?.let {
+                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            }
+        }
     }
 }

@@ -27,13 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import com.fasterxml.jackson.core.type.TypeReference
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 
 internal class MapLayerImagerProviderAreaListColumnAdapter :
     JSONObjectListColumnAdapter<MapLayerImageryProviderArea>() {
-    override fun getObjectClass(): Class<List<MapLayerImageryProviderArea>> {
-        return ArrayList<MapLayerImageryProviderArea>().javaClass
+    override fun getTypeReference(): TypeReference<List<MapLayerImageryProviderArea>> {
+        return object : TypeReference<List<MapLayerImageryProviderArea>>() {}
     }
 
     override fun serialize(o: List<MapLayerImageryProviderArea>?): String? =

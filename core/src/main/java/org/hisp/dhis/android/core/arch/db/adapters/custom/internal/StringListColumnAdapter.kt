@@ -27,11 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import com.fasterxml.jackson.core.type.TypeReference
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal class StringListColumnAdapter : JSONObjectListColumnAdapter<String>() {
-    override fun getObjectClass(): Class<List<String>> {
-        return ArrayList<String>().javaClass
+    override fun getTypeReference(): TypeReference<List<String>> {
+        return object : TypeReference<List<String>>() {}
     }
 
     override fun serialize(o: List<String>?): String? = StringListColumnAdapter.serialize(o)

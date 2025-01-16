@@ -38,8 +38,11 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramItemHeaderColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.QuickActionListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramConfigurationSetting.Builder.class)
@@ -69,6 +72,10 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
 
     @Nullable
     public abstract Boolean disableManualLocation();
+
+    @Nullable
+    @ColumnAdapter(QuickActionListColumnAdapter.class)
+    public abstract List<QuickAction> quickActions();
 
     public static ProgramConfigurationSetting create(Cursor cursor) {
         return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
@@ -101,6 +108,8 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
         public abstract Builder minimumLocationAccuracy(Integer minimumLocationAccuracy);
 
         public abstract Builder disableManualLocation(Boolean disableManualLocation);
+
+        public abstract Builder quickActions(List<QuickAction> quickActions);
 
         public abstract ProgramConfigurationSetting build();
     }

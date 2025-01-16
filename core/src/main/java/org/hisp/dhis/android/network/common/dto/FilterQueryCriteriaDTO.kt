@@ -26,31 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.network.common.dto
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.FilterQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-@Serializable
-internal data class EventDataFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val dataItem: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(eventFilter: String): EventDataFilter {
-        return EventDataFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .eventFilter(eventFilter)
-            .dataItem(dataItem)
-            .build()
-    }
+internal interface FilterQueryCriteriaDTO {
+    val followUp: Boolean?
+    val organisationUnit: String?
+    val ouMode: String?
+    val assignedUserMode: String?
+    val order: String?
+    val displayColumnOrder: List<String>?
+    val eventStatus: String?
+    val eventDate: DateFilterPeriodDTO?
+    val lastUpdatedDate: DateFilterPeriodDTO?
+}
+
+internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO): T where
+      T : FilterQueryCriteria.Builder<T> {
+    followUp(item.followUp)
+    organisationUnit(item.organisationUnit)
+    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
+    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
+    order(item.order)
+    displayColumnOrder(item.displayColumnOrder)
+    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
+    eventDate(item.eventDate?.toDomain())
+    lastUpdatedDate(item.lastUpdatedDate?.toDomain())
+    return this
 }

@@ -43,8 +43,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEvenFilterChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore
+import org.hisp.dhis.android.network.trackedEntityInstanceFilter.TrackedEntityInstanceFilterFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

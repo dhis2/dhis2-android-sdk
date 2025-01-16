@@ -26,32 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.eventFilter
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.FilterOperators
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
-@Suppress("VariableNaming")
-internal interface FilterOperatorsDTO {
-    val le: String?
-    val ge: String?
-    val gt: String?
-    val lt: String?
-    val eq: String?
-    val `in`: Set<String>?
-    val like: String?
-    val dateFilter: DateFilterPeriodDTO?
-}
-
-internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
-      T : FilterOperators.Builder<T> {
-    le(item.le)
-    ge(item.ge)
-    gt(item.gt)
-    lt(item.lt)
-    eq(item.eq)
-    `in`(item.`in`)
-    like(item.like)
-    dateFilter(item.dateFilter?.toDomain())
-    return this
+internal fun interface TrackedEntityInstanceFilterNetworkHandler {
+    suspend fun getTrackedEntityInstanceFilters(
+        partitionUids: Set<String>,
+    ): Payload<TrackedEntityInstanceFilter>
 }

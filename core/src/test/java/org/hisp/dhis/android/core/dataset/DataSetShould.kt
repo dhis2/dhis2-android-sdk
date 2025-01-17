@@ -39,12 +39,9 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.dataset.DataSetDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class DataSetShould : BaseObjectKotlinxShould("dataset/data_set.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val dataSetDTO = deserialize(DataSetDTO.serializer())
         val dataSet = dataSetDTO.toDomain()
@@ -74,7 +71,7 @@ class DataSetShould : BaseObjectKotlinxShould("dataset/data_set.json"), ObjectSh
         assertThat(dataSet.periodType()).isEqualTo(PeriodType.Monthly)
         assertThat(dataSet.openFuturePeriods()).isEqualTo(0)
         assertThat(dataSet.expiryDays()).isEqualTo(0)
-        assertThat(dataSet.workflow()).isEqualTo("R22tClyLU2w")
+        assertThat(dataSet.workflow()?.uid()).isEqualTo("R22tClyLU2w")
         assertThat(dataSet.categoryCombo()!!.uid()).isEqualTo("O4VaNks6tta")
         assertThat(dataSet.dataSetElements()!!.size).isEqualTo(3)
         assertThat(dataSet.dataInputPeriods()!!.size).isEqualTo(1)

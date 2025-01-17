@@ -25,32 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement
 
-package org.hisp.dhis.android.core.dataelement;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.dataset.DataElementOperandDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataElementOperandShould extends BaseObjectShould implements ObjectShould {
-
-    public DataElementOperandShould() {
-        super("dataelement/data_element_operand.json");
-    }
-
-    @Override
+class DataElementOperandShould : BaseObjectKotlinxShould("dataelement/data_element_operand.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    override fun map_from_json_string() {
+        val dataElementOperandDTO = deserialize(DataElementOperandDTO.serializer())
+        val dataElementOperand = dataElementOperandDTO.toDomain()
 
-        DataElementOperand dataElementOperand = objectMapper.readValue(jsonStream, DataElementOperand.class);
-
-        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
-        assertThat(dataElementOperand.dataElement().uid()).isEqualTo("ca8lfO062zg");
-        assertThat(dataElementOperand.categoryOptionCombo().uid()).isEqualTo("Prlt0C1RF0s");
+        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(dataElementOperand.deleted()).isFalse()
+        assertThat(dataElementOperand.dataElement()!!.uid()).isEqualTo("ca8lfO062zg")
+        assertThat(dataElementOperand.categoryOptionCombo()!!.uid()).isEqualTo("Prlt0C1RF0s")
     }
 }

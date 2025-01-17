@@ -40,7 +40,7 @@ import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
 internal data class DataSetDTO(
@@ -81,7 +81,7 @@ internal data class DataSetDTO(
 ) : BaseNameableObjectDTO {
     fun toDomain(): DataSet {
         return DataSet.builder()
-            .applyBaseIdentifiableFields(this)
+            .applyBaseNameableFields(this)
             .apply {
                 periodType?.let { periodType(PeriodType.valueOf(periodType)) }
             }

@@ -25,47 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.dataset.SectionDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SectionShould extends BaseObjectShould implements ObjectShould {
-
-    public SectionShould() {
-        super("dataset/section.json");
-    }
-
-    @Override
+class SectionShould : BaseObjectKotlinxShould("dataset/section.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Section section = objectMapper.readValue(jsonStream, Section.class);
+    override fun map_from_json_string() {
+        val sectionDTO = deserialize(SectionDTO.serializer())
+        val section = sectionDTO.toDomain()
 
-        assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx");
-        assertThat(section.code()).isEqualTo("Code123");
+        assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx")
+        assertThat(section.code()).isEqualTo("Code123")
         assertThat(section.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2016-10-12T13:22:42.731"));
+            BaseIdentifiableObject.parseDate("2016-10-12T13:22:42.731"),
+        )
         assertThat(section.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2012-04-26T19:26:02.933"));
-        assertThat(section.name()).isEqualTo("Immunization");
-        assertThat(section.displayName()).isEqualTo("Immunization");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2012-04-26T19:26:02.933"),
+        )
+        assertThat(section.name()).isEqualTo("Immunization")
+        assertThat(section.displayName()).isEqualTo("Immunization")
 
-        assertThat(section.description()).isEqualTo("Immunization dose administration");
-        assertThat(section.dataSet().uid()).isEqualTo("BfMAe6Itzgt");
-        assertThat(section.sortOrder()).isEqualTo(2);
-        assertThat(section.showRowTotals()).isFalse();
-        assertThat(section.showColumnTotals()).isFalse();
-        assertThat(section.dataElements().size()).isEqualTo(15);
-        assertThat(section.dataElements().get(0).uid()).isEqualTo("s46m5MS0hxu");
-        assertThat(section.greyedFields().size()).isEqualTo(1);
-        assertThat(section.greyedFields().get(0).uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
+        assertThat(section.description()).isEqualTo("Immunization dose administration")
+        assertThat(section.dataSet()!!.uid()).isEqualTo("BfMAe6Itzgt")
+        assertThat(section.sortOrder()).isEqualTo(2)
+        assertThat(section.showRowTotals()).isFalse()
+        assertThat(section.showColumnTotals()).isFalse()
+        assertThat(section.dataElements()!!.size).isEqualTo(15)
+        assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
+        assertThat(section.greyedFields()!!.size).isEqualTo(1)
+        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
     }
 }

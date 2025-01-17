@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-object DataSetInternalAccessor {
+internal object DataSetInternalAccessor {
     @JvmStatic
     fun accessSections(dataSet: DataSet): List<Section>? {
         return dataSet.sections()

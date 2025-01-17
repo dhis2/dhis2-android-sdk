@@ -74,7 +74,7 @@ internal data class IndicatorDTO(
             url(url)
             decimals(decimals)
             legendSets(legendSets.map(ObjectWithUidDTO::toDomain))
-            style(style?.toDomain())
+            style?.let { style(it.toDomain()) }
         }.build()
     }
 }

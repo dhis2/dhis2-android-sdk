@@ -107,8 +107,10 @@ internal data class DataSetDTO(
             }
             .compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             .dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
-            .access(access?.toDomain())
-            .style(style?.toDomain())
+            .apply {
+                access?.let { access(access.toDomain()) }
+                style?.let { style(style.toDomain()) }
+            }
             .build()
     }
 }

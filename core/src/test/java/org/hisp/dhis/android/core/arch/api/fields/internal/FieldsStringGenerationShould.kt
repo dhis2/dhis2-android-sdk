@@ -52,7 +52,6 @@ import org.hisp.dhis.android.core.event.internal.NewEventFields
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemFields
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
-import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeFields
 import org.hisp.dhis.android.core.legendset.internal.LegendFields
 import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerFields
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
@@ -115,6 +114,7 @@ import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.customicon.CustomIconFields
 import org.hisp.dhis.android.network.eventfilter.EventFilterFields
+import org.hisp.dhis.android.network.indicatortype.IndicatorTypeFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields

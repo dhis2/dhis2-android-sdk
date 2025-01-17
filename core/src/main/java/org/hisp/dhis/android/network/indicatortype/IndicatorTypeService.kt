@@ -25,43 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.trackedentityinstancefilter
+package org.hisp.dhis.android.network.indicatortype
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClientKotlinx) {
-    suspend fun getTrackedEntityInstanceFilters(
-        uids: Filter<TrackedEntityInstanceFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
+internal class IndicatorTypeService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getIndicatorTypes(
+        fields: Fields<IndicatorType>,
+        lastUpdated: Filter<IndicatorType>?,
+        uids: Filter<IndicatorType>,
         paging: Boolean,
-    ): TrackedEntityInstanceFilterPayload {
+    ): IndicatorTypePayload {
         return client.get {
-            url("trackedEntityInstanceFilters")
+            url("indicatorTypes")
             parameters {
                 fields(fields)
+                filter(lastUpdated)
                 filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
-
-    suspend fun getTrackedEntityInstanceFilters37(
-        uids: Filter<TrackedEntityInstanceFilter>,
-        accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
-        paging: Boolean,
-    ): TrackedEntityInstanceFilter37Payload {
-        return client.get {
-            url("trackedEntityInstanceFilters")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
                 paging(paging)
             }
         }

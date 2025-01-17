@@ -32,9 +32,7 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class AttributeService(private val client: HttpServiceClientKotlinx) {
     suspend fun getAttributes(
         fields: Fields<Attribute>,

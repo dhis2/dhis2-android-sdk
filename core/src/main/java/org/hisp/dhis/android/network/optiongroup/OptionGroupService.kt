@@ -30,9 +30,7 @@ package org.hisp.dhis.android.network.optiongroup
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class OptionGroupService(private val client: HttpServiceClientKotlinx) {
     suspend fun getOptionGroups(
         fields: Fields<OptionGroup>,

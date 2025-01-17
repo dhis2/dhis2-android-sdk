@@ -30,9 +30,7 @@ package org.hisp.dhis.android.network.trackervisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class TrackerVisualizationService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun getSingleTrackerVisualization(

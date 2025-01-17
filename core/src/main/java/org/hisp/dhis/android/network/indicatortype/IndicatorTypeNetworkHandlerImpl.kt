@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+package org.hisp.dhis.android.network.indicatortype
+
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class IndicatorTypeService(private val client: HttpServiceClient) {
-    suspend fun getIndicatorTypes(
-        fields: Fields<IndicatorType>,
-        lastUpdated: Filter<IndicatorType>?,
-        uids: Filter<IndicatorType>,
-        paging: Boolean,
-    ): PayloadJackson<IndicatorType> {
-        return client.get {
-            url("indicatorTypes")
-            parameters {
-                fields(fields)
-                filter(lastUpdated)
-                filter(uids)
-                paging(paging)
-            }
-        }
+internal class IndicatorTypeNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : IndicatorTypeNetworkHandler {
+    private val service = IndicatorTypeService(httpClient)
+
+    override suspend fun getIndicatorTypes(uids: Set<String>): Payload<IndicatorType> {
+        val apiPayload = service.getIndicatorTypes(
+            IndicatorTypeFields.allFields,
+            null,
+            IndicatorTypeFields.uid.`in`(uids),
+            false,
+        )
+        return apiPayload.mapItems(IndicatorTypeDTO::toDomain)
     }
 }

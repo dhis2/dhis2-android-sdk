@@ -25,39 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator
 
-package org.hisp.dhis.android.core.indicator;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.indicatortype.IndicatorTypeDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class IndicatorTypeShould extends BaseObjectShould implements ObjectShould {
-
-    public IndicatorTypeShould() {
-        super("indicators/indicator_type.json");
-    }
-
-    @Override
+class IndicatorTypeShould : BaseObjectKotlinxShould("indicators/indicator_type.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        IndicatorType type = objectMapper.readValue(jsonStream, IndicatorType.class);
+    override fun map_from_json_string() {
+        val typeDTO = deserialize(IndicatorTypeDTO.serializer())
+        val type = typeDTO.toDomain()
 
-        assertThat(type.code()).isNull();
-        assertThat(type.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-15T16:08:57.670"));
-        assertThat(type.uid()).isEqualTo("bWuNrMHEoZ0");
-        assertThat(type.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:22.592"));
-        assertThat(type.name()).isEqualTo("Per cent");
+        assertThat(type.code()).isNull()
+        assertThat(type.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2013-03-15T16:08:57.670"))
+        assertThat(type.uid()).isEqualTo("bWuNrMHEoZ0")
+        assertThat(type.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2011-12-24T12:24:22.592"))
+        assertThat(type.name()).isEqualTo("Per cent")
 
-        assertThat(type.number()).isFalse();
-        assertThat(type.factor()).isEqualTo(100);
+        assertThat(type.number()).isFalse()
+        assertThat(type.factor()).isEqualTo(100)
     }
 }

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.koin.core.annotation.Singleton
@@ -45,23 +44,14 @@ import org.koin.core.annotation.Singleton
 internal class DataSetEndpointCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dataSetService: DataSetService,
+    private val networkHandler: DataSetNetworkHandler,
     private val dataSetHandler: DataSetHandler,
 ) : UidsCallFactoryImpl<DataSet>(data, coroutineAPICallExecutor) {
     private val resourceType = Resource.Type.DATA_SET
     override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<DataSet> {
-        return object :
-            UidsNoResourceCallFetcher<DataSet>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
-            var accessDataReadFilter =
-                "access.data." + DataAccessFields.read.eq(true).generateString()
-
-            override suspend fun getCall(query: UidsQuery): PayloadJackson<DataSet> {
-                return dataSetService.getDataSets(
-                    DataSetFields.allFields,
-                    DataSetFields.uid.`in`(query.uids),
-                    accessDataReadFilter,
-                    false,
-                )
+        return object : UidsNoResourceCallFetcher<DataSet>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
+            override suspend fun getCall(query: UidsQuery): Payload<DataSet> {
+                return networkHandler.getDataSets(query.uids)
             }
         }
     }

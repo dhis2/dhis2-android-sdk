@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns
 import org.hisp.dhis.android.core.program.SectionRendering
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 
 internal object ProgramSectionFields : BaseFields<ProgramSection>() {
     @Deprecated("In version 2.33 and later, use {@link #TRACKED_ENTITY_ATTRIBUTES} instead.")

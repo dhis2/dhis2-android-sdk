@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.eventfilter
 
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.internal.EventFilterNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

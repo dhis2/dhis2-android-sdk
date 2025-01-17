@@ -26,21 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
-internal data class GeometryDTO(
-    val type: String?,
-    val coordinates: String?,
+internal data class DataInputPeriodDTO(
+    val period: ObjectWithUidDTO?,
+    val openingDate: String?,
+    val closingDate: String?,
 ) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type?.let { FeatureType.valueOf(it) })
-            .coordinates(coordinates)
+    fun toDomain(dataSet: ObjectWithUidDTO?): DataInputPeriod {
+        return DataInputPeriod.builder()
+            .dataSet(dataSet?.toDomain())
+            .period(period?.toDomain())
+            .apply {
+                openingDate?.let { openingDate(DateUtils.DATE_FORMAT.parse(openingDate)) }
+                closingDate?.let { closingDate(DateUtils.DATE_FORMAT.parse(closingDate)) }
+            }
             .build()
     }
 }

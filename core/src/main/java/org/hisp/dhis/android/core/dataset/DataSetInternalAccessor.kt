@@ -25,31 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal
+package org.hisp.dhis.android.core.dataset
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
+internal object DataSetInternalAccessor {
+    @JvmStatic
+    fun accessSections(dataSet: DataSet): List<Section>? {
+        return dataSet.sections()
+    }
 
-@Singleton
-internal class DataSetService(private val client: HttpServiceClient) {
-    suspend fun getDataSets(
-        fields: Fields<DataSet>,
-        uids: Filter<DataSet>,
-        accessDataReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<DataSet> {
-        return client.get {
-            url("dataSets")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
+    fun insertSections(
+        builder: DataSet.Builder,
+        sections: List<Section>,
+    ): DataSet.Builder {
+        return builder.sections(sections)
     }
 }

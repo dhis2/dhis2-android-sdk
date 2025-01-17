@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -60,104 +57,81 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataSet.Builder.class)
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class DataSet extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<DataSet, DataSet.Builder> {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean mobile();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer version();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer expiryDays();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer timelyDays();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean notifyCompletingUser();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer openFuturePeriods();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean fieldCombinationRequired();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean validCompleteOnly();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean noValueRequiresComment();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean skipOffline();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean dataElementDecoration();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean renderAsTabs();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean renderHorizontally();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid workflow();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreDataSetElementListAdapter.class)
     public abstract List<DataSetElement> dataSetElements();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreIndicatorListAdapter.class)
     public abstract List<Indicator> indicators();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreSectionListAdapter.class)
     abstract List<Section> sections();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreDataElementOperandListColumnAdapter.class)
     public abstract List<DataElementOperand> compulsoryDataElementOperands();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreDataInputPeriodListColumnAdapter.class)
     public abstract List<DataInputPeriod> dataInputPeriods();
 
-    @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
@@ -172,7 +146,6 @@ public abstract class DataSet extends BaseNameableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
         public abstract Builder id(Long id);
@@ -225,6 +198,7 @@ public abstract class DataSet extends BaseNameableObject
 
         // Auxiliary fields
         abstract Access access();
+
         abstract ObjectStyle style();
 
         public DataSet build() {
@@ -233,7 +207,7 @@ public abstract class DataSet extends BaseNameableObject
             } catch (IllegalStateException e) {
                 access(AccessHelper.defaultAccess());
             }
-            
+
             try {
                 style();
             } catch (IllegalStateException e) {

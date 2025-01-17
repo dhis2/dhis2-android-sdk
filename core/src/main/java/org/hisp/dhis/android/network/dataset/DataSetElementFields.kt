@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.internal
+package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns
-import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
-import org.hisp.dhis.android.network.legendset.LegendSetFields
 
-internal object IndicatorFields : BaseFields<Indicator>() {
-    const val LEGEND_SETS = "legendSets"
-    private const val OBJECT_STYLE = "style"
-
-    val uid: Field<Indicator> = fh.uid()
-    val lastUpdated: Field<Indicator> = fh.lastUpdated()
-
+internal object DataSetElementFields : BaseFields<DataSetElement>() {
     val allFields = Fields.from(
-        fh.getNameableFields(),
-        fh.field(Columns.ANNUALIZED),
-        fh.nestedFieldWithUid(Columns.INDICATOR_TYPE),
-        fh.field(Columns.NUMERATOR),
-        fh.field(Columns.NUMERATOR_DESCRIPTION),
-        fh.field(Columns.DENOMINATOR),
-        fh.field(Columns.DENOMINATOR_DESCRIPTION),
-        fh.field(Columns.URL),
-        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
-        fh.field(Columns.DECIMALS),
-        fh.nestedField<ObjectStyle>(OBJECT_STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedFieldWithUid(Columns.DATA_SET),
+        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
     )
 }

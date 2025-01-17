@@ -25,43 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue
 
-package org.hisp.dhis.android.core.datavalue;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.datavalue.DataValueDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataValueShould extends BaseObjectShould implements ObjectShould {
-
-    public DataValueShould() {
-        super("datavalue/data_value.json");
-    }
-
-    @Override
+class DataValueShould : BaseObjectKotlinxShould("datavalue/data_value.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        DataValue dataValue = objectMapper.readValue(jsonStream, DataValue.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val dataValueDTO = deserialize(DataValueDTO.serializer())
+        val dataValue = dataValueDTO.toDomain()
 
-        assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu");
-        assertThat(dataValue.period()).isEqualTo("201712");
-        assertThat(dataValue.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Prlt0C1RF0s");
-        assertThat(dataValue.attributeOptionCombo()).isEqualTo("bRowv6yZOF2");
-        assertThat(dataValue.value()).isEqualTo("12");
-        assertThat(dataValue.storedBy()).isEqualTo("bodata1");
+        assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu")
+        assertThat(dataValue.period()).isEqualTo("201712")
+        assertThat(dataValue.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Prlt0C1RF0s")
+        assertThat(dataValue.attributeOptionCombo()).isEqualTo("bRowv6yZOF2")
+        assertThat(dataValue.value()).isEqualTo("12")
+        assertThat(dataValue.storedBy()).isEqualTo("bodata1")
         assertThat(dataValue.created()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"));
+            BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"),
+        )
         assertThat(dataValue.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"));
-        assertThat(dataValue.comment()).isEqualTo("");
-        assertThat(dataValue.followUp()).isFalse();
-        assertThat(dataValue.deleted()).isFalse();
+            BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"),
+        )
+        assertThat(dataValue.comment()).isEqualTo("")
+        assertThat(dataValue.followUp()).isFalse()
+        assertThat(dataValue.deleted()).isFalse()
     }
 }

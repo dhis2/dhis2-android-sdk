@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFi
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetFields
 import org.hisp.dhis.android.core.dataset.internal.SectionFields
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentFields
 import org.hisp.dhis.android.core.event.internal.DateFilterPeriodFields
@@ -113,6 +112,7 @@ import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.customicon.CustomIconFields
+import org.hisp.dhis.android.network.datavalue.DataValueFields
 import org.hisp.dhis.android.network.eventfilter.EventFilterFields
 import org.hisp.dhis.android.network.indicatortype.IndicatorTypeFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,53 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
+package org.hisp.dhis.android.network.datavalue
 
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.koin.core.annotation.Singleton
 
-internal object DataValueFields : BaseFields<DataValue>() {
-    const val ORGANISATION_UNIT = "orgUnit"
-    const val FOLLOW_UP = "followup"
-    const val DELETED = "deleted"
+@Suppress("LongParameterList")
+@Singleton
+internal class DataValueService(private val client: HttpServiceClientKotlinx) {
 
-    val allFields = Fields.from(
-        fh.field(Columns.DATA_ELEMENT),
-        fh.field(Columns.PERIOD),
-        fh.field(ORGANISATION_UNIT),
-        fh.field(Columns.CATEGORY_OPTION_COMBO),
-        fh.field(Columns.ATTRIBUTE_OPTION_COMBO),
-        fh.field(Columns.VALUE),
-        fh.field(Columns.STORED_BY),
-        fh.field(Columns.CREATED),
-        fh.field(Columns.LAST_UPDATED),
-        fh.field(Columns.COMMENT),
-        fh.field(FOLLOW_UP),
-        fh.field(DELETED),
-    )
+    suspend fun getDataValues(
+        fields: Fields<DataValue>,
+        lastUpdated: String?,
+        dataSetUids: String,
+        periodIds: String,
+        orgUnitUids: String,
+        children: Boolean,
+        paging: Boolean,
+        includeDeleted: Boolean?,
+    ): DataValueSetDTO {
+        return client.get {
+            url("dataValueSets")
+            parameters {
+                fields(fields)
+                attribute("lastUpdated", lastUpdated)
+                attribute("dataSet", dataSetUids)
+                attribute("period", periodIds)
+                attribute("orgUnit", orgUnitUids)
+                attribute("children", children)
+                attribute("includeDeleted", includeDeleted)
+                paging(paging)
+            }
+        }
+    }
+
+    suspend fun postDataValues(dataValueSet: DataValueSetDTO): DataValueImportSummaryDTO {
+        return client.post {
+            url("dataValueSets")
+            body(dataValueSet)
+        }
+    }
+
+    suspend fun postDataValuesWebResponse(dataValueSet: DataValueSetDTO): DataValueImportSummaryWebResponseDTO {
+        return client.post {
+            url("dataValueSets")
+            body(dataValueSet)
+        }
+    }
 }

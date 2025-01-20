@@ -31,6 +31,6 @@ package org.hisp.dhis.android.core.indicator.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.Indicator
 
-internal interface IndicatorNetworkHandler {
+internal fun interface IndicatorNetworkHandler {
     suspend fun getIndicators(uids: Set<String>): Payload<Indicator>
 }

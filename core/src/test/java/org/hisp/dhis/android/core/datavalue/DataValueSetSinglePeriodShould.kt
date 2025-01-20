@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
-class DataValueSetSinglePeriodShould : BaseObjectKotlinxShould("datavalue/data_values_single_period.json"),
+class DataValueSetSinglePeriodShould :
+    BaseObjectKotlinxShould("datavalue/data_values_single_period.json"),
     ObjectShould {
     @Test
     override fun map_from_json_string() {

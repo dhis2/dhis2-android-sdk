@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.trackedentityattributereservedvalue
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityAttributeReservedValueShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityAttributeReservedValueShould() {
-        super("trackedentity/tracked_entity_attribute_reserved_value.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityAttributeReservedValue reservedValue =
-                objectMapper.readValue(jsonStream, TrackedEntityAttributeReservedValue.class);
-
-        assertThat(reservedValue.ownerObject()).isEqualTo("TRACKEDENTITYATTRIBUTE");
-        assertThat(reservedValue.ownerUid()).isEqualTo("xeG4wH2I676");
-        assertThat(reservedValue.key()).isEqualTo("RANDOM(###)");
-        assertThat(reservedValue.value()).isEqualTo("046");
-        assertThat(reservedValue.created()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2018-04-26T14:54:53.344"));
-        assertThat(reservedValue.expiryDate()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2018-06-25T14:54:53.344"));
+internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClientKotlinx) {
+    suspend fun generateAndReserveWithOrgUnitCode(
+        trackedEntityAttributeUid: String,
+        numberToReserve: Int,
+        orgUnitCode: String?,
+    ): List<TrackedEntityAttributeReservedValueDTO> {
+        return client.get {
+            url("trackedEntityAttributes/$trackedEntityAttributeUid/generateAndReserve")
+            parameters {
+                attribute("numberToReserve", numberToReserve)
+                attribute("ORG_UNIT_CODE", orgUnitCode)
+            }
+        }
     }
 }

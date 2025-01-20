@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,46 +42,36 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityAttributeReservedValue.Builder.class)
 public abstract class TrackedEntityAttributeReservedValue implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String ownerObject();
 
     @Nullable
-    @JsonProperty()
     public abstract String ownerUid();
 
     @Nullable
-    @JsonProperty()
     public abstract String key();
 
     @Nullable
-    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date expiryDate();
 
     @Nullable
-    @JsonIgnore()
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date temporalValidityDate();
 
     @Nullable
-    @JsonIgnore()
     public abstract String pattern();
 
     public static Builder builder() {
@@ -99,7 +85,6 @@ public abstract class TrackedEntityAttributeReservedValue implements CoreObject 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

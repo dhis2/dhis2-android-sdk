@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.network.trackedentityattributereservedvalue
+
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClient) {
-    suspend fun generateAndReserveWithOrgUnitCode(
+internal class TrackedEntityAttributeReservedValueNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : TrackedEntityAttributeReservedValueNetworkHandler {
+    private val service = TrackedEntityAttributeReservedValueService(httpClient)
+
+    override suspend fun getReservedValues(
         trackedEntityAttributeUid: String,
         numberToReserve: Int,
         orgUnitCode: String?,
     ): List<TrackedEntityAttributeReservedValue> {
-        return client.get {
-            url("trackedEntityAttributes/$trackedEntityAttributeUid/generateAndReserve")
-            parameters {
-                attribute("numberToReserve", numberToReserve)
-                attribute("ORG_UNIT_CODE", orgUnitCode)
-            }
-        }
+        val apiPayload = service.generateAndReserveWithOrgUnitCode(
+            trackedEntityAttributeUid,
+            numberToReserve,
+            orgUnitCode,
+        )
+        return apiPayload.map(TrackedEntityAttributeReservedValueDTO::toDomain)
     }
 }

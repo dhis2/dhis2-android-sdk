@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.attribute
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
@@ -39,7 +39,7 @@ class AttributeValueShould : BaseObjectKotlinxShould("attribute/attributeValue.j
         val attributeValueDTO = deserialize(AttributeValueDTO.serializer())
         val attributeValue = attributeValueDTO.toDomain()
 
-        Truth.assertThat(attributeValue.value()).isEqualTo("value_test")
-        Truth.assertThat(attributeValue.attribute().uid()).isEqualTo("r6KOit2qCGw")
+        assertThat(attributeValue.value()).isEqualTo("value_test")
+        assertThat(attributeValue.attribute().uid()).isEqualTo("r6KOit2qCGw")
     }
 }

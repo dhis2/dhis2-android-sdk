@@ -283,6 +283,6 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun login() {
-        d2.userModule().logIn(username, password, serverUrl).blockingGet()
+        d2.userModule().logIn(username, password, serverUrl, null).blockingGet()
     }
 }

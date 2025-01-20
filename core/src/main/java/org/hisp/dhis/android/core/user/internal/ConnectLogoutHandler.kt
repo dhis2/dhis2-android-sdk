@@ -25,42 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
 
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.BaseRealIntegrationTest
-import org.hisp.dhis.android.core.program.Program
-import org.junit.Before
+package org.hisp.dhis.android.core.user.internal
 
-class ProgramEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to the
-     * metadataSyncCall. It works against the demo server.
-     */
-    private var programCall: List<Program>? = null
+@Singleton
+@Single
+internal class ConnectLogoutHandler(
+    private val credentialsSecureStore: CredentialsSecureStore,
+) {
 
-    @Before
-    override fun setUp() {
-        super.setUp()
-        programCall = createCall()
+    private val logOutSubject = PublishSubject.create<Unit>()
+
+    fun logOutObservable(): Observable<Unit> {
+        return logOutSubject
     }
 
-    private fun createCall(): List<Program> = runBlocking {
-        return@runBlocking getD2DIComponent(d2).programCall.download(setOf("lxAQ7Zs9VYR", "AwNmMxxakEo"))
-    }
-
-    // @Test
-    fun download_programs() {
-        if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn(username, password, url, null).blockingGet()
-        }
-
-        /*  This test won't pass independently of DataElementEndpointCallFactory and
-            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
-            To run the test, you will need to disable foreign key support in database in
-            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
-            uncomment the @Test tag */
-        programCall!!
+    fun logOut() {
+        credentialsSecureStore.remove()
+        logOutSubject.onNext(Unit)
     }
 }

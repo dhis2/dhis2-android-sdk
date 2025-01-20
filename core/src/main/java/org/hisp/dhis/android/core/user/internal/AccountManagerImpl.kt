@@ -58,6 +58,7 @@ internal class AccountManagerImpl(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
     private val context: Context,
+    private val connectLogoutHandler: ConnectLogoutHandler
 ) : AccountManager {
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
@@ -175,5 +176,7 @@ internal class AccountManagerImpl(
         databasesConfigurationStore.set(newDatabasesConfiguration)
     }
 
-
+    override fun logOutObservable(): Observable<Unit> {
+        return connectLogoutHandler.logOutObservable()
+    }
 }

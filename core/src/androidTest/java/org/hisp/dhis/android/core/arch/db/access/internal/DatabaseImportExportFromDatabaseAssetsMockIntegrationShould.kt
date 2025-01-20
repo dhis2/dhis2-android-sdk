@@ -77,7 +77,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
     @Test
     fun import_fail_when_logged_in() {
-        d2.userModule().blockingLogIn("other_user", "other_password", serverUrl)
+        d2.userModule().blockingLogIn("other_user", "other_password", serverUrl, null)
 
         try {
             d2.maintenanceModule().databaseImportExport().importDatabase(importer.validDatabaseFile(d2.context()))
@@ -91,7 +91,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
     @Test
     fun import_fail_when_account_exists() {
-        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogIn(username, password, serverUrl, null)
         d2.userModule().blockingLogOut()
 
         try {
@@ -100,14 +100,14 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_ALREADY_EXISTS)
         } finally {
-            d2.userModule().blockingLogIn(username, password, serverUrl)
+            d2.userModule().blockingLogIn(username, password, serverUrl, null)
             d2.userModule().accountManager().deleteCurrentAccount()
         }
     }
 
     @Test
     fun import_fail_when_invalid_database_file() {
-        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogIn(username, password, serverUrl, null)
         d2.userModule().blockingLogOut()
 
         try {
@@ -116,14 +116,14 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
         } finally {
-            d2.userModule().blockingLogIn(username, password, serverUrl)
+            d2.userModule().blockingLogIn(username, password, serverUrl, null)
             d2.userModule().accountManager().deleteCurrentAccount()
         }
     }
 
     @Test
     fun import_fail_when_no_zip_file() {
-        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogIn(username, password, serverUrl, null)
         d2.userModule().blockingLogOut()
 
         try {
@@ -132,7 +132,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_FAILED)
         } finally {
-            d2.userModule().blockingLogIn(username, password, serverUrl)
+            d2.userModule().blockingLogIn(username, password, serverUrl, null)
             d2.userModule().accountManager().deleteCurrentAccount()
         }
     }
@@ -164,7 +164,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     private fun test_export_and_reimport(beforeExport: () -> Unit) {
-        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogIn(username, password, serverUrl, null)
         d2.metadataModule().blockingDownload()
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
@@ -181,13 +181,13 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         assertThat(fileMetadata.serverUrl).isEqualTo(serverUrl)
 
         try {
-            d2.userModule().blockingLogIn(username, "other-password", serverUrl)
+            d2.userModule().blockingLogIn(username, "other-password", serverUrl, null)
             fail("It should throw an error")
         } catch (e: RuntimeException) {
             assertThat((e.cause as D2Error).errorCode()).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
         }
 
-        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.userModule().blockingLogIn(username, password, serverUrl, null)
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
 

@@ -55,7 +55,7 @@ class LogInOfflineCallMockIntegrationShould : BaseMockIntegrationTestMethodScope
     }
 
     private fun login(): User {
-        return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.baseEndpoint)
+        return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.baseEndpoint, null)
     }
 
     private fun logout() {

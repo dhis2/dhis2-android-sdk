@@ -53,7 +53,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().blockingDownload();
 
@@ -79,7 +79,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().blockingDownload();
 
@@ -99,7 +99,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void update_and_delete_different_data_set_complete_registrations() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().blockingDownload();
 
@@ -132,7 +132,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void delete_data_set_complete_registrations_with_to_delete_state() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().blockingDownload();
 

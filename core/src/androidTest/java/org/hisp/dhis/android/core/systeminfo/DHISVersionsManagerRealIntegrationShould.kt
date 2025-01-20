@@ -36,7 +36,7 @@ class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
     fun return_2_30_version_when_connecting_to_2_30_server() {
         d2.wipeModule().wipeEverything()
         val versionManager = d2.systemInfoModule().versionManager()
-        d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet()
+        d2.userModule().logIn(username, password, RealServerMother.url2_30, null).blockingGet()
 
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30)
         assertThat(versionManager.getVersion()).isNotEqualTo(DHISVersion.V2_31)
@@ -47,7 +47,7 @@ class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
     fun return_2_31_version_when_connecting_to_2_31_server() {
         d2.wipeModule().wipeEverything()
         val versionManager = d2.systemInfoModule().versionManager()
-        d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet()
+        d2.userModule().logIn(username, password, RealServerMother.url2_31, null).blockingGet()
 
         assertThat(versionManager.getVersion()).isNotEqualTo(DHISVersion.V2_30)
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_31)

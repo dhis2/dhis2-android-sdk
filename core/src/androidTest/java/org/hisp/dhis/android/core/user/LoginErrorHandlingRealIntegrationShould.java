@@ -182,13 +182,13 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
     }
 
     private void assertSuccess(String serverUrl) {
-        TestObserver<User> testObserver = d2.userModule().logIn(username, password, serverUrl).test();
+        TestObserver<User> testObserver = d2.userModule().logIn(username, password, serverUrl, null).test();
         testObserver.awaitTerminalEvent();
         testObserver.assertComplete();
     }
 
     private ComparableSubject<D2ErrorCode> assertThatErrorCode(String username, String password, String serverUrl) {
-        TestObserver<User> testObserver = d2.userModule().logIn(username, password, serverUrl).test();
+        TestObserver<User> testObserver = d2.userModule().logIn(username, password, serverUrl, null).test();
         testObserver.awaitTerminalEvent();
         testObserver.assertError(D2Error.class);
         D2Error d2Error = (D2Error) testObserver.errors().get(0);

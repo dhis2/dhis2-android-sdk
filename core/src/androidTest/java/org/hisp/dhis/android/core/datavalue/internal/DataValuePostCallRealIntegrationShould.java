@@ -48,7 +48,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void dataValuesWithToPostState_shouldBeUploaded() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
 
         d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().blockingDownload();

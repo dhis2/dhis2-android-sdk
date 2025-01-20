@@ -121,6 +121,7 @@ public class Dhis2MockServer {
     private static final String RESERVE_VALUES_JSON = "trackedentity/tracked_entity_attribute_reserved_values.json";
     private static final String SMS_METADATA = "sms/metadata_ids.json";
     private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
+    private static final String AUTH_LOGIN_SUCCESS = "user/auth_login_success.json";
 
     private MockWebServer server;
     private IFileReader fileReader;
@@ -190,7 +191,10 @@ public class Dhis2MockServer {
             public MockResponse dispatch(RecordedRequest request) {
 
                 String path = request.getPath();
-                if (path.startsWith("/api/me?")) {
+                if (path.startsWith("/api/auth/login")) {
+                    return createMockResponse(AUTH_LOGIN_SUCCESS);
+                }
+                else if (path.startsWith("/api/me?")) {
                     return createMockResponse(USER_JSON);
                 } else if ("/api/me/authorization".equals(path)) {
                     return createMockResponse(AUTHORITIES_JSON);
@@ -329,6 +333,7 @@ public class Dhis2MockServer {
     }
 
     public void enqueueLoginResponses() {
+        enqueueMockResponse(AUTH_LOGIN_SUCCESS);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
@@ -370,6 +375,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(PROGRAM_STAGE_WORKING_LISTS);
         enqueueMockResponse(DATA_SETS_JSON);
         enqueueMockResponse(DATA_ELEMENTS_JSON);
+        enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULES_JSON);

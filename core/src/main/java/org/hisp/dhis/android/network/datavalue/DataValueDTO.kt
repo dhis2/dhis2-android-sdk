@@ -43,27 +43,27 @@ internal data class DataValueDTO(
     val attributeOptionCombo: String,
     val value: String?,
     val storedBy: String?,
-    val created: String,
-    val lastUpdated: String,
+    val created: String?,
+    val lastUpdated: String?,
     val comment: String?,
     val followup: Boolean?,
 ) : BaseDeletableDataObjectDTO {
 
     fun toDomain(): DataValue {
-        return DataValue.builder()
-            .deleted(deleted)
-            .dataElement(dataElement)
-            .period(period)
-            .organisationUnit(orgUnit)
-            .categoryOptionCombo(categoryOptionCombo)
-            .attributeOptionCombo(attributeOptionCombo)
-            .value(value)
-            .storedBy(storedBy)
-            .created(DateUtils.DATE_FORMAT.parse(created))
-            .lastUpdated(DateUtils.DATE_FORMAT.parse(lastUpdated))
-            .comment(comment)
-            .followUp(followup)
-            .build()
+        return DataValue.builder().apply {
+            deleted?.let { deleted(it) }
+            dataElement.let { dataElement(it) }
+            period.let { period(it) }
+            orgUnit.let { organisationUnit(it) }
+            categoryOptionCombo.let { categoryOptionCombo(it) }
+            attributeOptionCombo.let { attributeOptionCombo(it) }
+            value?.let { value(it) }
+            storedBy?.let { storedBy(it) }
+            created?.let { created(DateUtils.DATE_FORMAT.parse(it)) }
+            lastUpdated?.let { lastUpdated(DateUtils.DATE_FORMAT.parse(it)) }
+            comment?.let { comment(it) }
+            followup?.let { followUp(it) }
+        }.build()
     }
 
     companion object {
@@ -77,8 +77,8 @@ internal data class DataValueDTO(
                 attributeOptionCombo = dataValue.attributeOptionCombo()!!,
                 value = dataValue.value(),
                 storedBy = dataValue.storedBy(),
-                created = dataValue.created().toString(),
-                lastUpdated = dataValue.lastUpdated().toString(),
+                created = dataValue.created()?.toString(),
+                lastUpdated = dataValue.lastUpdated()?.toString(),
                 comment = dataValue.comment(),
                 followup = dataValue.followUp(),
             )

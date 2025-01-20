@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,45 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+package org.hisp.dhis.android.network.indicator
+
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.internal.IndicatorNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class IndicatorEndpointCallFactory(
-    data: GenericCallData,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val networkHandler: IndicatorNetworkHandler,
-    private val handler: IndicatorHandler,
-) : UidsCallFactoryImpl<Indicator>(data, coroutineAPICallExecutor) {
-    override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<Indicator> {
-        return object :
-            UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
+internal class IndicatorNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : IndicatorNetworkHandler {
+    private val service = IndicatorService(httpClient)
 
-            override suspend fun getCall(query: UidsQuery): Payload<Indicator> {
-                return networkHandler.getIndicators(query.uids)
-            }
-        }
-    }
-
-    override fun processor(): CallProcessor<Indicator> {
-        return TransactionalNoResourceSyncCallProcessor(
-            data.databaseAdapter,
-            handler,
+    override suspend fun getIndicators(uids: Set<String>): Payload<Indicator> {
+        val apiPayload = service.getIndicators(
+            IndicatorFields.allFields,
+            null,
+            IndicatorFields.uid.`in`(uids),
+            false,
         )
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 100
+        return apiPayload.mapItems(IndicatorDTO::toDomain)
     }
 }

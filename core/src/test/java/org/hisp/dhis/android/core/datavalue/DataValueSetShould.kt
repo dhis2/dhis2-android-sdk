@@ -31,12 +31,9 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class DataValueSetShould : BaseObjectKotlinxShould("datavalue/data_values.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         deserialize(DataValueSetDTO.serializer()).toDomain()
     }

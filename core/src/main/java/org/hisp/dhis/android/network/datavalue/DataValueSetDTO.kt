@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
 
 @Serializable
 internal data class DataValueSetDTO(
-    val dataValues: List<DataValueDTO>,
+    val dataValues: List<DataValueDTO> = emptyList(),
 ) {
     fun toDomain(): DataValueSet {
         return DataValueSet(dataValues.map { it.toDomain() })

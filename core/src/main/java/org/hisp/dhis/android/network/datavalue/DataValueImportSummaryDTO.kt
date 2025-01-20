@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.datavalue
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
@@ -38,18 +37,18 @@ import org.hisp.dhis.android.network.common.dto.ImportCountDTO
 @Serializable
 internal data class DataValueImportSummaryDTO(
     val importCount: ImportCountDTO,
-    @SerialName("status") val importStatus: String,
+    val status: String,
     val responseType: String,
-    @SerialName("reference") val reference: String? = null,
-    @SerialName("conflicts") val importConflicts: List<ImportConflictDTO>? = null,
+    val reference: String? = null,
+    val conflicts: List<ImportConflictDTO>? = null,
 ) {
     fun toDomain(): DataValueImportSummary {
         return DataValueImportSummary.create(
             importCount.toDomain(),
-            ImportStatus.valueOf(importStatus),
+            ImportStatus.valueOf(status),
             responseType,
             reference,
-            importConflicts?.map { it.toDomain() },
+            conflicts?.map { it.toDomain() },
         )
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.datavalue
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -39,7 +38,7 @@ internal data class DataValueDTO(
     override val deleted: Boolean?,
     val dataElement: String,
     val period: String,
-    @SerialName(DataValueFields.ORGANISATION_UNIT) val organisationUnit: String,
+    val orgUnit: String,
     val categoryOptionCombo: String,
     val attributeOptionCombo: String,
     val value: String?,
@@ -47,7 +46,7 @@ internal data class DataValueDTO(
     val created: String,
     val lastUpdated: String,
     val comment: String?,
-    @SerialName(DataValueFields.FOLLOW_UP) val followUp: Boolean?,
+    val followup: Boolean?,
 ) : BaseDeletableDataObjectDTO {
 
     fun toDomain(): DataValue {
@@ -55,7 +54,7 @@ internal data class DataValueDTO(
             .deleted(deleted)
             .dataElement(dataElement)
             .period(period)
-            .organisationUnit(organisationUnit)
+            .organisationUnit(orgUnit)
             .categoryOptionCombo(categoryOptionCombo)
             .attributeOptionCombo(attributeOptionCombo)
             .value(value)
@@ -63,7 +62,7 @@ internal data class DataValueDTO(
             .created(DateUtils.DATE_FORMAT.parse(created))
             .lastUpdated(DateUtils.DATE_FORMAT.parse(lastUpdated))
             .comment(comment)
-            .followUp(followUp)
+            .followUp(followup)
             .build()
     }
 
@@ -73,7 +72,7 @@ internal data class DataValueDTO(
                 deleted = dataValue.deleted(),
                 dataElement = dataValue.dataElement()!!,
                 period = dataValue.period()!!,
-                organisationUnit = dataValue.organisationUnit()!!,
+                orgUnit = dataValue.organisationUnit()!!,
                 categoryOptionCombo = dataValue.categoryOptionCombo()!!,
                 attributeOptionCombo = dataValue.attributeOptionCombo()!!,
                 value = dataValue.value(),
@@ -81,7 +80,7 @@ internal data class DataValueDTO(
                 created = dataValue.created().toString(),
                 lastUpdated = dataValue.lastUpdated().toString(),
                 comment = dataValue.comment(),
-                followUp = dataValue.followUp(),
+                followup = dataValue.followUp(),
             )
         }
     }

@@ -28,11 +28,9 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
 import org.hisp.dhis.android.core.datavalue.internal.DataValueFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
@@ -99,6 +97,7 @@ import org.hisp.dhis.android.core.user.internal.UserRoleFields
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleExpressionFields
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleFields
 import org.hisp.dhis.android.network.attribute.AttributeFields
+import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.category.CategoryFields
 import org.hisp.dhis.android.network.categorycombo.CategoryComboFields
 import org.hisp.dhis.android.network.categoryoption.CategoryOptionFields
@@ -108,6 +107,7 @@ import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.customicon.CustomIconFields
+import org.hisp.dhis.android.network.dataelement.DataElementFields
 import org.hisp.dhis.android.network.dataset.DataElementOperandFields
 import org.hisp.dhis.android.network.dataset.DataInputPeriodFields
 import org.hisp.dhis.android.network.dataset.DataSetElementFields
@@ -172,7 +172,7 @@ class FieldsStringGenerationShould {
         AnalyticsPeriodBoundaryFields,
         AttributeFields,
         AttributeValueFilterFields,
-        AttributeValuesFields,
+        AttributeValueFields,
         CategoryComboFields,
         CategoryFields,
         CategoryOptionComboFields,

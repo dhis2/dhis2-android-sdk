@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
@@ -86,7 +86,7 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.FEATURE_TYPE),
         fh.field(Columns.ACCESS_LEVEL),
         fh.nestedField<ProgramSection>(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
-        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValueFields.allFields),
         fh.field(Columns.DISPLAY_ENROLLMENT_LABEL),
         fh.field(Columns.DISPLAY_FOLLOW_UP_LABEL),
         fh.field(Columns.DISPLAY_ORG_UNIT_LABEL),

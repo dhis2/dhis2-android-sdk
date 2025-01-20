@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.network.dataelement
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
+import org.hisp.dhis.android.core.dataelement.internal.DataElementNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.customicon.DataElementDTO
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataElementService(private val client: HttpServiceClient) {
-    suspend fun getDataElements(
-        fields: Fields<DataElement>,
-        uids: Filter<DataElement>,
-        lastUpdated: Filter<DataElement>?,
-        accessReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<DataElement> {
-        return client.get {
-            url("dataElements")
-            parameters {
-                fields(fields)
-                filter(uids)
-                filter(lastUpdated)
-                attribute("filter", accessReadFilter)
-                paging(paging)
-            }
-        }
+internal class DataElementNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : DataElementNetworkHandler {
+    private val service = DataElementService(httpClient)
+
+    override suspend fun getDataElements(uids: Set<String>): Payload<DataElement> {
+        val accessReadFilter = "access." + AccessFields.read.eq(true).generateString()
+        val apiPayload = service.getDataElements(
+            DataElementFields.allFields,
+            DataElementFields.uid.`in`(uids),
+            null,
+            accessReadFilter,
+            false,
+        )
+        return apiPayload.mapItems(DataElementDTO::toDomain)
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 
-internal interface TrackedEntityAttributeReservedValueNetworkHandler {
+internal fun interface TrackedEntityAttributeReservedValueNetworkHandler {
     suspend fun getReservedValues(
         trackedEntityAttributeUid: String,
         numberToReserve: Int,

@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal data class ImportConflictDTO(
     @SerialName("object") val objectName: String,
     val value: String,
-    val errorCode: String? = null,
-    val property: String? = null,
-    val indexes: List<Int>? = null,
+    val errorCode: String?,
+    val property: String?,
+    val indexes: List<Int>?,
 ) {
     fun toDomain(): ImportConflict {
         return ImportConflict.create(objectName, value, errorCode, property, indexes)

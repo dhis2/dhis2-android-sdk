@@ -32,7 +32,8 @@ import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.storage.internal.*
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager
@@ -51,6 +52,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPaylo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeHandler
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -68,6 +70,9 @@ internal class D2DIComponent(
 
     @get:VisibleForTesting
     val httpServiceClient: HttpServiceClient,
+
+    @get:VisibleForTesting
+    val httpServiceClientKotlinx: HttpServiceClientKotlinx,
 
     @get:VisibleForTesting
     val coroutineApiCallExecutor: CoroutineAPICallExecutor,

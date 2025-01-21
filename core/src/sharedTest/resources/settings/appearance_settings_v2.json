@@ -174,5 +174,17 @@
         ]
       }
     }
+  },
+  "dataSetConfiguration": {
+    "globalSettings": {
+      "minimumLocationAccuracy": "7",
+      "disableManualLocation": "false"
+    },
+    "specificSettings": {
+      "lyLU2wR22tC": {
+        "minimumLocationAccuracy": "8",
+        "disableManualLocation": "true"
+      }
+    }
   }
 }

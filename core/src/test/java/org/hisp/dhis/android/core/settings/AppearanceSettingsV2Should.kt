@@ -88,6 +88,16 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(specificProgramConfiguration.quickActions()?.size).isEqualTo(2)
         assertThat(specificProgramConfiguration.quickActions()?.get(1)?.actionId()).isEqualTo("MORE_ENROLLMENTS")
 
+        val dataSetConfiguration = appearanceSettings.dataSetConfiguration()!!
+        assertThat(dataSetConfiguration.globalSettings()!!.uid()).isNull()
+        assertThat(dataSetConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(7)
+        assertThat(dataSetConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
+        val specificDataSetConfigurations = dataSetConfiguration.specificSettings()
+        val specificDataSetConfiguration = specificDataSetConfigurations!!["lyLU2wR22tC"]!!
+        assertThat(specificDataSetConfiguration.uid()).isNull()
+        assertThat(specificDataSetConfiguration.minimumLocationAccuracy()).isEqualTo(8)
+        assertThat(specificDataSetConfiguration.disableManualLocation()).isEqualTo(true)
+
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()
         assertThat(completionSpinnerSetting!!.globalSettings()!!.uid()).isNull()

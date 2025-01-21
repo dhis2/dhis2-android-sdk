@@ -37,9 +37,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.network.indicator.IndicatorFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

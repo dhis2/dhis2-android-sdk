@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.objectstyle.internal
+package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object ObjectStyleFields : BaseFields<ObjectStyle>() {
-    private const val COLOR = "color"
-    private const val ICON = "icon"
-
+internal object DataInputPeriodFields : BaseFields<DataInputPeriod>() {
     val allFields = Fields.from(
-        fh.field(COLOR),
-        fh.field(ICON),
+        fh.field(DataInputPeriodTableInfo.Columns.PERIOD),
+        fh.field(DataInputPeriodTableInfo.Columns.OPENING_DATE),
+        fh.field(DataInputPeriodTableInfo.Columns.CLOSING_DATE),
     )
 }

@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -49,45 +46,35 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Indicator.Builder.class)
 public abstract class Indicator extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<Indicator, Indicator.Builder> {
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean annualized();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid indicatorType();
 
     @Nullable
-    @JsonProperty()
     public abstract String numerator();
 
     @Nullable
-    @JsonProperty()
     public abstract String numeratorDescription();
 
     @Nullable
-    @JsonProperty()
     public abstract String denominator();
 
     @Nullable
-    @JsonProperty()
     public abstract String denominatorDescription();
 
     @Nullable
-    @JsonProperty()
     public abstract String url();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer decimals();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
@@ -102,7 +89,6 @@ public abstract class Indicator extends BaseNameableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Indicator, Indicator.Builder> {
         public abstract Builder id(Long id);

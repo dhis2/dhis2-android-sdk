@@ -26,19 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.organisationunit
+package org.hisp.dhis.android.network.indicator
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
-import org.hisp.dhis.android.network.common.dto.GeometryDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
-internal data class OrganisationUnitDTO(
+internal data class IndicatorDTO(
     @SerialName("id") override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -50,36 +51,36 @@ internal data class OrganisationUnitDTO(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    val parent: ObjectWithUidDTO?,
-    val path: String?,
-    val openingDate: String?,
-    val closedDate: String?,
-    val level: Int?,
-    val coordinates: String?,
-    val featureType: String?,
-    val geometry: GeometryDTO?,
-    val programs: List<ObjectWithUidDTO>? = emptyList(),
-    val dataSets: List<ObjectWithUidDTO>? = emptyList(),
-    val ancestors: List<OrganisationUnitDTO>? = emptyList(),
-    val organisationUnitGroups: List<OrganisationUnitGroupDTO>? = emptyList(),
-    val displayNamePath: List<String>? = emptyList(),
+    val annualized: Boolean?,
+    val indicatorType: ObjectWithUidDTO?,
+    val numerator: String?,
+    val numeratorDescription: String?,
+    val denominator: String?,
+    val denominatorDescription: String?,
+    val url: String?,
+    val decimals: Int?,
+    val legendSets: List<ObjectWithUidDTO> = emptyList(),
+    val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
-    fun toDomain(): OrganisationUnit {
-        return OrganisationUnit.builder()
-            .applyBaseNameableFields(this)
-            .parent(parent?.uid?.let { ObjectWithUid.create(it) })
-            .path(path)
-            .apply {
-                openingDate?.let { openingDate(it) }
-                closedDate?.let { closedDate(it) }
-            }
-            .level(level)
-            .geometry(geometry?.toDomain())
-            .programs(programs?.map { ObjectWithUid.create(it.uid) })
-            .programs(programs?.map { ObjectWithUid.create(it.uid) })
-            .dataSets(dataSets?.map { ObjectWithUid.create(it.uid) })
-            .organisationUnitGroups(organisationUnitGroups?.map { it.toDomain() })
-            .displayNamePath(displayNamePath)
-            .build()
+    fun toDomain(): Indicator {
+        return Indicator.builder().apply {
+            applyBaseNameableFields(this@IndicatorDTO)
+            annualized(annualized)
+            indicatorType(indicatorType?.toDomain())
+            numerator(numerator)
+            numeratorDescription(numeratorDescription)
+            denominator(denominator)
+            denominatorDescription(denominatorDescription)
+            url(url)
+            decimals(decimals)
+            legendSets(legendSets.map(ObjectWithUidDTO::toDomain))
+            style?.let { style(it.toDomain()) }
+        }.build()
     }
 }
+
+@Serializable
+internal class IndicatorPayload(
+    override val pager: PagerDTO?,
+    @SerialName("indicators") override val items: List<IndicatorDTO> = emptyList(),
+) : PayloadJson<IndicatorDTO>(pager, items)

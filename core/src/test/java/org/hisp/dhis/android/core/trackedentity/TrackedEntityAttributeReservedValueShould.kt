@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.categoryoption
+package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedentityattributereservedvalue.TrackedEntityAttributeReservedValueDTO
+import org.junit.Test
 
-internal object CategoryOptionFields : BaseFields<CategoryOption>() {
-    private const val ACCESS = "access"
-    internal const val ORGANISATION_UNITS = "organisationUnits"
-    val uid = fh.uid()
+class TrackedEntityAttributeReservedValueShould :
+    BaseObjectKotlinxShould("trackedentity/tracked_entity_attribute_reserved_value.json"),
+    ObjectShould {
 
-    val allFields = Fields.from(
-        fh.getNameableFields(),
-        fh.field(CategoryOptionTableInfo.Columns.START_DATE),
-        fh.field(CategoryOptionTableInfo.Columns.END_DATE),
-        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
-    )
+    @Test
+    override fun map_from_json_string() {
+        val reservedValueDTO = deserialize(TrackedEntityAttributeReservedValueDTO.serializer())
+        val reservedValue = reservedValueDTO.toDomain()
+
+        assertThat(reservedValue.ownerObject()).isEqualTo("TRACKEDENTITYATTRIBUTE")
+        assertThat(reservedValue.ownerUid()).isEqualTo("xeG4wH2I676")
+        assertThat(reservedValue.key()).isEqualTo("RANDOM(###)")
+        assertThat(reservedValue.value()).isEqualTo("046")
+        assertThat(reservedValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-04-26T14:54:53.344"))
+        assertThat(reservedValue.expiryDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-06-25T14:54:53.344"))
+    }
 }

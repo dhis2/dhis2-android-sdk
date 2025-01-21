@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal
+package org.hisp.dhis.android.network.dataset
 
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 
 internal object DataSetFields : BaseFields<DataSet>() {
     const val DATA_SET_ELEMENTS = "dataSetElements"

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.network.indicator
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-@Singleton
-internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClient) {
-    suspend fun generateAndReserveWithOrgUnitCode(
-        trackedEntityAttributeUid: String,
-        numberToReserve: Int,
-        orgUnitCode: String?,
-    ): List<TrackedEntityAttributeReservedValue> {
+internal class IndicatorService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getIndicators(
+        fields: Fields<Indicator>,
+        lastUpdated: Filter<Indicator>?,
+        uids: Filter<Indicator>,
+        paging: Boolean,
+    ): IndicatorPayload {
         return client.get {
-            url("trackedEntityAttributes/$trackedEntityAttributeUid/generateAndReserve")
+            url("indicators")
             parameters {
-                attribute("numberToReserve", numberToReserve)
-                attribute("ORG_UNIT_CODE", orgUnitCode)
+                fields(fields)
+                filter(lastUpdated)
+                filter(uids)
+                paging(paging)
             }
         }
     }

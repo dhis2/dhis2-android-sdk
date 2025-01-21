@@ -25,32 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataelement;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.dataset.DataInputPeriodDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataElementOperandShould extends BaseObjectShould implements ObjectShould {
-
-    public DataElementOperandShould() {
-        super("dataelement/data_element_operand.json");
-    }
-
-    @Override
+class DataInputPeriodShould : BaseObjectKotlinxShould("dataset/data_input_period.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    override fun map_from_json_string() {
+        val dataInputPeriodDTO = deserialize(DataInputPeriodDTO.serializer())
+        val dataInputPeriod = dataInputPeriodDTO.toDomain(null)
 
-        DataElementOperand dataElementOperand = objectMapper.readValue(jsonStream, DataElementOperand.class);
-
-        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
-        assertThat(dataElementOperand.dataElement().uid()).isEqualTo("ca8lfO062zg");
-        assertThat(dataElementOperand.categoryOptionCombo().uid()).isEqualTo("Prlt0C1RF0s");
+        assertThat(getUidOrNull(dataInputPeriod.period())).isEqualTo("201801")
+        assertThat(dataInputPeriod.openingDate())
+            .isEqualTo(DateUtils.DATE_FORMAT.parse("2017-12-31T23:00:00.000"))
+        assertThat(dataInputPeriod.closingDate())
+            .isEqualTo(DateUtils.DATE_FORMAT.parse("2018-01-09T23:00:00.000"))
     }
 }

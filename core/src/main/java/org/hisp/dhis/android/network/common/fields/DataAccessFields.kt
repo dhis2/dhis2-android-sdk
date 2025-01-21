@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.common.fields
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.core.common.DataAccess
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+internal object DataAccessFields : BaseFields<DataAccess>() {
+    private const val READ = "read"
+    private const val WRITE = "write"
 
-import java.io.IOException;
-import java.text.ParseException;
+    val read = fh.field(READ)
+    val write = fh.field(WRITE)
 
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
-
-    public static final SafeDateFormat dateFormat = DateUtils.DATE_FORMAT;
-
-    public DataInputPeriodShould() {
-        super("dataset/data_input_period.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-
-        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
-
-        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
-        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
-        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
-    }
+    val allFields = Fields.from(
+        read,
+        write,
+    )
 }

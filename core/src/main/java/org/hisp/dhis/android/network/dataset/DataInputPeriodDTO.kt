@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.categoryoption
 
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.dataset
 
-internal object CategoryOptionFields : BaseFields<CategoryOption>() {
-    private const val ACCESS = "access"
-    internal const val ORGANISATION_UNITS = "organisationUnits"
-    val uid = fh.uid()
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
-    val allFields = Fields.from(
-        fh.getNameableFields(),
-        fh.field(CategoryOptionTableInfo.Columns.START_DATE),
-        fh.field(CategoryOptionTableInfo.Columns.END_DATE),
-        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
-    )
+@Serializable
+internal data class DataInputPeriodDTO(
+    val period: ObjectWithUidDTO?,
+    val openingDate: String?,
+    val closingDate: String?,
+) {
+    fun toDomain(dataSet: ObjectWithUidDTO?): DataInputPeriod {
+        return DataInputPeriod.builder()
+            .dataSet(dataSet?.toDomain())
+            .period(period?.toDomain())
+            .apply {
+                openingDate?.let { openingDate(DateUtils.DATE_FORMAT.parse(openingDate)) }
+                closingDate?.let { closingDate(DateUtils.DATE_FORMAT.parse(closingDate)) }
+            }
+            .build()
+    }
 }

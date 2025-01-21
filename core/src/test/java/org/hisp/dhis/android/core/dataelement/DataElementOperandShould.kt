@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement
 
-package org.hisp.dhis.android.core.dataset;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.dataset.DataElementOperandDTO
+import org.junit.Test
 
-import java.util.List;
+class DataElementOperandShould : BaseObjectKotlinxShould("dataelement/data_element_operand.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val dataElementOperandDTO = deserialize(DataElementOperandDTO.serializer())
+        val dataElementOperand = dataElementOperandDTO.toDomain()
 
-public final class DataSetInternalAccessor {
-
-    private DataSetInternalAccessor() {
-    }
-
-    public static List<Section> accessSections(DataSet dataSet) {
-        return dataSet.sections();
+        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(dataElementOperand.deleted()).isFalse()
+        assertThat(dataElementOperand.dataElement()!!.uid()).isEqualTo("ca8lfO062zg")
+        assertThat(dataElementOperand.categoryOptionCombo()!!.uid()).isEqualTo("Prlt0C1RF0s")
     }
 }

@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal object RelationshipTypeFields : BaseFields<RelationshipType>() {

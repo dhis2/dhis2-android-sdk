@@ -26,19 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.organisationunit
+package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
-import org.hisp.dhis.android.network.common.dto.GeometryDTO
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
-internal data class OrganisationUnitDTO(
+internal data class SectionDTO(
     @SerialName("id") override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -46,40 +46,26 @@ internal data class OrganisationUnitDTO(
     override val created: String?,
     override val lastUpdated: String?,
     override val deleted: Boolean?,
-    override val shortName: String?,
-    override val displayShortName: String?,
-    override val description: String?,
-    override val displayDescription: String?,
-    val parent: ObjectWithUidDTO?,
-    val path: String?,
-    val openingDate: String?,
-    val closedDate: String?,
-    val level: Int?,
-    val coordinates: String?,
-    val featureType: String?,
-    val geometry: GeometryDTO?,
-    val programs: List<ObjectWithUidDTO>? = emptyList(),
-    val dataSets: List<ObjectWithUidDTO>? = emptyList(),
-    val ancestors: List<OrganisationUnitDTO>? = emptyList(),
-    val organisationUnitGroups: List<OrganisationUnitGroupDTO>? = emptyList(),
-    val displayNamePath: List<String>? = emptyList(),
-) : BaseNameableObjectDTO {
-    fun toDomain(): OrganisationUnit {
-        return OrganisationUnit.builder()
-            .applyBaseNameableFields(this)
-            .parent(parent?.uid?.let { ObjectWithUid.create(it) })
-            .path(path)
-            .apply {
-                openingDate?.let { openingDate(it) }
-                closedDate?.let { closedDate(it) }
-            }
-            .level(level)
-            .geometry(geometry?.toDomain())
-            .programs(programs?.map { ObjectWithUid.create(it.uid) })
-            .programs(programs?.map { ObjectWithUid.create(it.uid) })
-            .dataSets(dataSets?.map { ObjectWithUid.create(it.uid) })
-            .organisationUnitGroups(organisationUnitGroups?.map { it.toDomain() })
-            .displayNamePath(displayNamePath)
+    val description: String?,
+    val sortOrder: Int?,
+    val showRowTotals: Boolean?,
+    val showColumnTotals: Boolean?,
+    val dataSet: ObjectWithUidDTO?,
+    val dataElements: List<ObjectWithUidDTO> = emptyList(),
+    val greyedFields: List<DataElementOperandDTO> = emptyList(),
+    val indicators: List<ObjectWithUidDTO> = emptyList(),
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): Section {
+        return Section.builder()
+            .applyBaseIdentifiableFields(this)
+            .description(description)
+            .sortOrder(sortOrder)
+            .showRowTotals(showRowTotals)
+            .showColumnTotals(showColumnTotals)
+            .dataSet(dataSet?.toDomain())
+            .dataElements(dataElements.map { DataElement.builder().uid(it.uid).build() })
+            .greyedFields(greyedFields.map { it.toDomain() })
+            .indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
             .build()
     }
 }

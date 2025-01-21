@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.internal
 
-import org.hisp.dhis.android.core.common.DataAccess
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.dataset
 
-internal object DataAccessFields : BaseFields<DataAccess>() {
-    private const val READ = "read"
-    private const val WRITE = "write"
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
-    val read = fh.field(READ)
-    val write = fh.field(WRITE)
-
-    val allFields = Fields.from(
-        read,
-        write,
-    )
+@Serializable
+internal data class DataSetElementDTO(
+    val dataSet: ObjectWithUidDTO?,
+    val dataElement: ObjectWithUidDTO?,
+    val categoryCombo: ObjectWithUidDTO?,
+) {
+    fun toDomain(): DataSetElement {
+        return DataSetElement.builder()
+            .dataSet(dataSet?.toDomain())
+            .dataElement(dataElement?.toDomain())
+            .categoryCombo(categoryCombo?.toDomain())
+            .build()
+    }
 }

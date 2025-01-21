@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common
+package org.hisp.dhis.android.network.trackedentityattributereservedvalue
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 
 @Serializable
-internal data class GeometryDTO(
-    val type: String?,
-    val coordinates: String?,
+internal data class TrackedEntityAttributeReservedValueDTO(
+    val ownerObject: String?,
+    val ownerUid: String?,
+    val key: String?,
+    val value: String?,
+    val created: String?,
+    val expiryDate: String?,
 ) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type?.let { FeatureType.valueOf(it) })
-            .coordinates(coordinates)
+    fun toDomain(): TrackedEntityAttributeReservedValue {
+        return TrackedEntityAttributeReservedValue.builder()
+            .ownerObject(ownerObject)
+            .ownerUid(ownerUid)
+            .key(key)
+            .value(value)
+            .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
+            .expiryDate(expiryDate?.let { DateUtils.DATE_FORMAT.parse(it) })
             .build()
     }
 }

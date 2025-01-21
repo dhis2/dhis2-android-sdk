@@ -35,7 +35,7 @@ class TeisCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun download_tracked_entity_instances() {
-        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_36)
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_36, null)
         d2.metadataModule().blockingDownload()
 
         val testObserver = d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).download()

@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.user.User
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 internal interface UserService {
@@ -41,6 +43,11 @@ internal interface UserService {
         @Header("Authorization") credentials: String,
         @Query("fields") @Which fields: Fields<User>,
     ): User
+
+    @POST("auth/login")
+    suspend fun login(
+        @Body payload: LoginPayload,
+    ): LoginResponse
 
     @GET("me")
     suspend fun getUser(@Query("fields") @Which fields: Fields<User>): User

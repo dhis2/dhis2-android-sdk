@@ -48,4 +48,6 @@ interface AccountManager {
 
     @Throws(D2Error::class)
     fun changeServerUrl(newServerURL:String)
+
+    fun logOutObservable(): Observable<Unit>
 }

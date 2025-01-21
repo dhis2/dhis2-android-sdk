@@ -53,7 +53,7 @@ class DataSetEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Throws(Exception::class)
     suspend fun download_data_sets() {
         if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn(username, password, url).blockingGet()
+            d2.userModule().logIn(username, password, url, null).blockingGet()
         }
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and

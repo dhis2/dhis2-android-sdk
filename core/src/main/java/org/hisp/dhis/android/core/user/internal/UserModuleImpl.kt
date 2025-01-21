@@ -84,12 +84,12 @@ internal class UserModuleImpl(
         return user
     }
 
-    override fun logIn(username: String, password: String, serverUrl: String): Single<User> {
-        return rxSingle { logInCall.logIn(username, password, serverUrl) }
+    override fun logIn(username: String, password: String, serverUrl: String, twoFactorCode: String? ): Single<User> {
+        return rxSingle { logInCall.logIn(username, password, serverUrl, twoFactorCode) }
     }
 
-    override fun blockingLogIn(username: String, password: String, serverUrl: String): User {
-        return logIn(username, password, serverUrl).blockingGet()
+    override fun blockingLogIn(username: String, password: String, serverUrl: String, twoFactorCode: String?): User {
+        return logIn(username, password, serverUrl, twoFactorCode).blockingGet()
     }
 
     override fun logOut(): Completable {

@@ -74,7 +74,7 @@ abstract class BaseMockIntegrationTest {
             } catch (e: RuntimeException) {
                 // Do nothing
             } finally {
-                d2.userModule().blockingLogIn(username, password, url)
+                d2.userModule().blockingLogIn(username, password, url, null)
             }
         }
 

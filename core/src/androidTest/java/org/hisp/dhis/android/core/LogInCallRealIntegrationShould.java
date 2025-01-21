@@ -34,31 +34,31 @@ public class LogInCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void not_wipe_after_second_login_with_same_user() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
 
         d2.metadataModule().blockingDownload();
 
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
     }
 
     //@Test
     public void wipe_after_second_login_with_different_user() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
 
         d2.metadataModule().blockingDownload();
 
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn("admin", "district", url).blockingGet();
+        d2.userModule().logIn("admin", "district", url, null).blockingGet();
     }
 
     //@Test
     public void wipe_after_second_login_with_equivalent_user_in_different_server() throws Exception {
-        d2.userModule().logIn(username, password, RealServerMother.url2_29).blockingGet();
+        d2.userModule().logIn(username, password, RealServerMother.url2_29, null).blockingGet();
 
         d2.metadataModule().blockingDownload();
 
         d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn(username, password, RealServerMother.android_current).blockingGet();
+        d2.userModule().logIn(username, password, RealServerMother.android_current, null).blockingGet();
     }
 }

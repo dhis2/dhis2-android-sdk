@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import java.io.File
-import java.util.*
+import java.util.Date
 
 class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
@@ -212,7 +212,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun loginAndSyncMetadata() {
-        d2.userModule().logIn(username, password, RealServerMother.url2_36).blockingGet()
+        d2.userModule().logIn(username, password, RealServerMother.url2_36, null).blockingGet()
         d2.metadataModule().blockingDownload()
     }
 }

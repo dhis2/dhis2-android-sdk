@@ -34,35 +34,35 @@ public class MultiUserRealIntegrationShould extends BaseRealIntegrationTest {
 
     //@Test
     public void connect_to_server_with_2_different_users() {
-        d2.userModule().blockingLogIn(username, password, url);
+        d2.userModule().blockingLogIn(username, password, url, null);
         d2.metadataModule().blockingDownload();
         int programsA0 = d2.programModule().programs().blockingCount();
         d2.userModule().blockingLogOut();
 
 
-        d2.userModule().blockingLogIn("admin", "district", url);
+        d2.userModule().blockingLogIn("admin", "district", url, null);
         d2.metadataModule().blockingDownload();
         int programsA1 = d2.programModule().programs().blockingCount();
         d2.userModule().blockingLogOut();
 
-        d2.userModule().blockingLogIn(username, password, url);
+        d2.userModule().blockingLogIn(username, password, url, null);
         int programsA2 = d2.programModule().programs().blockingCount();
     }
 
     //@Test
     public void connect_to_2_different_servers() {
-        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current);
+        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current, null);
         d2.metadataModule().blockingDownload();
         int programsA0 = d2.programModule().programs().blockingCount();
         d2.userModule().blockingLogOut();
 
 
-        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_29);
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_29, null);
         d2.metadataModule().blockingDownload();
         int programsA1 = d2.programModule().programs().blockingCount();
         d2.userModule().blockingLogOut();
 
-        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current);
+        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current, null);
         int programsA2 = d2.programModule().programs().blockingCount();
     }
 }

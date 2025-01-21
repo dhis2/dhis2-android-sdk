@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
@@ -43,6 +44,7 @@ internal data class FileResourceDownloadParams(
     val programUids: List<String> = emptyList(),
     val dataSetUids: List<String> = emptyList(),
     val maxContentLength: Int? = null,
+    val dimension: FileResizerHelper.Dimension = FileResizerHelper.Dimension.MEDIUM
 ) : BaseScope {
 
     fun hasAnyTrackerData(): Boolean {

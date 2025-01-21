@@ -69,7 +69,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getImageFromTrackedEntityAttribute(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
-        dimension: String,
+        dimension: String?,
     ): ByteArray {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
@@ -91,7 +91,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getFileFromEventValue(
         eventUid: String,
         dataElementUid: String,
-        dimension: String,
+        dimension: String?,
     ): ByteArray {
         return client.get {
             url("$EVENTS/files")
@@ -116,7 +116,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         period: String,
         organisationUnit: String,
         categoryOptionCombo: String,
-        dimension: String,
+        dimension: String?,
     ): ByteArray {
         return client.get {
             url("$DATA_VALUES/files")

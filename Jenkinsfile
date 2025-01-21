@@ -8,12 +8,8 @@ def retryOnTimeout(retries, timeoutMinutes, script) {
             success = true
             break
         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-            if (e.getResult() == hudson.model.Result.ABORTED) {
-                echo "Timeout occurred, retrying... (${i + 1}/${retries})"
-            } else {
-                echo "Exception: ${e}"
-                throw e
-            }
+            echo "FlowInterruptedException: ${e}"
+            echo "Timeout occurred, retrying... (${i + 1}/${retries})"
         } catch (Exception e) {
             echo "Exception: ${e}"
             throw e

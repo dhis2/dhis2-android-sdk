@@ -85,5 +85,5 @@ internal data class DataElementDTO(
 @Serializable
 internal class DataElementPayload(
     override val pager: PagerDTO? = null,
-    @SerialName("icons") override val items: List<DataElementDTO> = emptyList(),
+    @SerialName("dataElements") override val items: List<DataElementDTO> = emptyList(),
 ) : PayloadJson<DataElementDTO>(pager, items)

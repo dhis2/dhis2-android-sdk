@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.customicon
+package org.hisp.dhis.android.network.dataelement
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
@@ -63,6 +64,7 @@ internal data class DataElementDTO(
     val legendSets: List<ObjectWithUidDTO>?,
     val fieldMask: String?,
     val attributeValues: List<AttributeValueDTO>?,
+    val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): DataElement {
         return DataElement.builder().apply {
@@ -78,6 +80,7 @@ internal data class DataElementDTO(
             legendSets(legendSets?.map { it.toDomain() })
             fieldMask(fieldMask)
             attributeValues(attributeValues?.map { it.toDomain() })
+            style?.let { style(style.toDomain()) }
         }.build()
     }
 }

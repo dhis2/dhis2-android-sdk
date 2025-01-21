@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
-import org.hisp.dhis.android.network.customicon.DataElementPayload
 
 internal class DataElementService(private val client: HttpServiceClientKotlinx) {
     suspend fun getDataElements(

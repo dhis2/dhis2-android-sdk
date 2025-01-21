@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ValueType
-import org.hisp.dhis.android.network.customicon.DataElementDTO
+import org.hisp.dhis.android.network.dataelement.DataElementDTO
 import org.junit.Test
 
 class DataElementShould : BaseObjectKotlinxShould("dataelement/data_element.json"), ObjectShould {

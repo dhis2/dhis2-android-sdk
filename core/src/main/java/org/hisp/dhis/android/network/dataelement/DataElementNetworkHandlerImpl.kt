@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.customicon.DataElementDTO
 import org.koin.core.annotation.Singleton
 
 @Singleton

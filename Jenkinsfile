@@ -8,11 +8,15 @@ def retryOnTimeout(retries, timeoutMinutes, script) {
             success = true
             break
         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-            if (e.getCauses().any { it instanceof org.jenkinsci.plugins.workflow.steps.TimeoutStepExecution.ExceededTimeout }) {
+            if (e.getResult() == hudson.model.Result.ABORTED) {
                 echo "Timeout occurred, retrying... (${i + 1}/${retries})"
             } else {
+                echo "Exception: ${e}"
                 throw e
             }
+        } catch (Exception e) {
+            echo "Exception: ${e}"
+            throw e
         }
     }
     if (!success) {
@@ -44,7 +48,7 @@ pipeline {
                 script {
                     echo 'Running Check style and quality'
                     sh 'chmod +x ./runChecks.sh'
-                    retryOnTimeout(3, 24) {
+                    retryOnTimeout(3, 5) {
                         sh './runChecks.sh'
                     }
                 }
@@ -54,7 +58,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running unit tests'
-                    retryOnTimeout(3, 5) {
+                    retryOnTimeout(3, 15) {
                         sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
                     }
                 }

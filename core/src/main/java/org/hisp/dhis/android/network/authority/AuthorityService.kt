@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.network.authority
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-@Singleton
-internal class AuthorityService(private val client: HttpServiceClient) {
-    suspend fun authorities(): List<String> {
+internal class AuthorityService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getAuthorities(): List<AuthorityDTO> {
         return client.get {
             url("me/authorization")
         }

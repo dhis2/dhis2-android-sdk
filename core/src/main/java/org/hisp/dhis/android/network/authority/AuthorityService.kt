@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.authority
 
-package org.hisp.dhis.android.core.user;
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class Authority implements CoreObject {
-
-    @Nullable
-    public abstract String name();
-
-    public static Authority create(Cursor cursor) {
-        return $AutoValue_Authority.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Authority.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder name(String name);
-
-        public abstract Authority build();
+internal class AuthorityService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getAuthorities(): List<AuthorityDTO> {
+        return client.get {
+            url("me/authorization")
+        }
     }
 }

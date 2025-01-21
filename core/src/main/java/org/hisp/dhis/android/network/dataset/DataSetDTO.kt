@@ -80,38 +80,32 @@ internal data class DataSetDTO(
     val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): DataSet {
-        return DataSet.builder()
-            .applyBaseNameableFields(this)
-            .apply {
-                periodType?.let { periodType(PeriodType.valueOf(periodType)) }
-            }
-            .categoryCombo(categoryCombo?.toDomain())
-            .mobile(mobile)
-            .version(version)
-            .expiryDays(expiryDays)
-            .timelyDays(timelyDays)
-            .notifyCompletingUser(notifyCompletingUser)
-            .openFuturePeriods(openFuturePeriods)
-            .fieldCombinationRequired(fieldCombinationRequired)
-            .validCompleteOnly(validCompleteOnly)
-            .noValueRequiresComment(noValueRequiresComment)
-            .skipOffline(skipOffline)
-            .dataElementDecoration(dataElementDecoration)
-            .renderAsTabs(renderAsTabs)
-            .renderHorizontally(renderHorizontally)
-            .workflow(workflow?.toDomain())
-            .dataSetElements(dataSetElements.map { it.toDomain() })
-            .indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
-            .apply {
-                DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
-            }
-            .compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
-            .dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
-            .apply {
-                access?.let { access(access.toDomain()) }
-                style?.let { style(style.toDomain()) }
-            }
-            .build()
+        return DataSet.builder().apply {
+            applyBaseNameableFields(this@DataSetDTO)
+            periodType?.let { periodType(PeriodType.valueOf(periodType)) }
+            categoryCombo(categoryCombo?.toDomain())
+            mobile(mobile)
+            version(version)
+            expiryDays(expiryDays)
+            timelyDays(timelyDays)
+            notifyCompletingUser(notifyCompletingUser)
+            openFuturePeriods(openFuturePeriods)
+            fieldCombinationRequired(fieldCombinationRequired)
+            validCompleteOnly(validCompleteOnly)
+            noValueRequiresComment(noValueRequiresComment)
+            skipOffline(skipOffline)
+            dataElementDecoration(dataElementDecoration)
+            renderAsTabs(renderAsTabs)
+            renderHorizontally(renderHorizontally)
+            workflow(workflow?.toDomain())
+            dataSetElements(dataSetElements.map { it.toDomain() })
+            indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
+            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
+            compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
+            dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
+            access?.let { access(access.toDomain()) }
+            style?.let { style(style.toDomain()) }
+        }.build()
     }
 }
 

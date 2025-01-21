@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.authority
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.authority.AuthorityDTO
+import org.junit.Test
 
-import android.database.Cursor;
+class AuthorityShould : BaseObjectKotlinxShould("authority/authorities.json"), ObjectShould {
 
-import androidx.annotation.Nullable;
+    @Test
+    override fun map_from_json_string() {
+        val authorityDTOList: List<AuthorityDTO> = deserialize(ListSerializer(AuthorityDTO.serializer()))
+        val authorities = authorityDTOList.map { it.toDomain() }
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class Authority implements CoreObject {
-
-    @Nullable
-    public abstract String name();
-
-    public static Authority create(Cursor cursor) {
-        return $AutoValue_Authority.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Authority.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
-        public abstract Builder name(String name);
-
-        public abstract Authority build();
+        assertThat(authorities.size).isEqualTo(2)
+        assertThat(authorities[0].name()).isEqualTo("F_ENROLLMENT_CASCADE_DELETE")
+        assertThat(authorities[1].name()).isEqualTo("F_TEI_CASCADE_DELETE")
     }
 }

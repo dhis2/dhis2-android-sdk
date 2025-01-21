@@ -36,18 +36,12 @@ internal abstract class AuthorityCallFetcher(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : CoroutineCallFetcher<Authority> {
 
-    protected abstract suspend fun getCall(): List<String>
+    protected abstract suspend fun getCall(): List<Authority>
 
     @Throws(D2Error::class)
     override suspend fun fetch(): List<Authority> {
-        val authoritiesAsStringList: List<String> = coroutineAPICallExecutor.wrap {
+        return coroutineAPICallExecutor.wrap {
             getCall()
         }.getOrThrow()
-
-        val authorities: MutableList<Authority> = ArrayList()
-        for (authority in authoritiesAsStringList) {
-            authorities.add(Authority.builder().name(authority).build())
-        }
-        return authorities
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,16 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.user;
+package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.Authority;
+import org.hisp.dhis.android.core.user.Authority
 
-public class AuthoritySamples {
-
-    public static Authority getAuthority() {
-        return Authority.builder()
-                .id(1L)
-                .name("F_ENROLLMENT_CASCADE_DELETE")
-                .build();
-    }
+internal fun interface AuthorityNetworkHandler {
+    suspend fun getAuthorities(): List<Authority>
 }

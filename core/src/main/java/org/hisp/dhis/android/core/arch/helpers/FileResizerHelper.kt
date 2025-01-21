@@ -139,5 +139,6 @@ object FileResizerHelper {
         SMALL(256),
         MEDIUM(512),
         LARGE(1024),
+        ORIGINAL(0)
     }
 }

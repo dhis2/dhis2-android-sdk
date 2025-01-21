@@ -57,7 +57,7 @@ internal interface FileResourceService {
     suspend fun getImageFromTrackedEntityAttribute(
         @Path(TRACKED_ENTITY_INSTANCE) trackedEntityInstanceUid: String,
         @Path(TRACKED_ENTITY_ATTRIBUTE) trackedEntityAttributeUid: String,
-        @Query("dimension") dimension: String,
+        @Query("dimension") dimension: String?,
     ): ResponseBody
 
     @GET("$TRACKED_ENTITY_INSTANCES/{$TRACKED_ENTITY_INSTANCE}/{$TRACKED_ENTITY_ATTRIBUTE}/file")
@@ -70,7 +70,7 @@ internal interface FileResourceService {
     suspend fun getFileFromEventValue(
         @Query("eventUid") eventUid: String,
         @Query("dataElementUid") dataElementUid: String,
-        @Query("dimension") dimension: String,
+        @Query("dimension") dimension: String?,
     ): ResponseBody
 
     @GET
@@ -84,7 +84,7 @@ internal interface FileResourceService {
         @Query("pe") period: String,
         @Query("ou") organisationUnit: String,
         @Query("co") categoryOptionCombo: String,
-        @Query("dimension") dimension: String,
+        @Query("dimension") dimension: String?,
     ): ResponseBody
 
     companion object {

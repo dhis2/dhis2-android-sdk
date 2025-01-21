@@ -107,7 +107,7 @@ internal class FileResourceDownloadCall(
                         v.period()!!,
                         v.organisationUnit()!!,
                         v.attributeOptionCombo()!!,
-                        FileResizerHelper.Dimension.MEDIUM.name,
+                        getDimension(params.dimension),
                     )
                 },
                 getUid = { v -> v.value() },
@@ -131,7 +131,7 @@ internal class FileResourceDownloadCall(
                                 fileResourceService.getImageFromTrackedEntityAttribute(
                                     v.value.trackedEntityInstance()!!,
                                     v.value.trackedEntityAttribute()!!,
-                                    FileResizerHelper.Dimension.MEDIUM.name,
+                                    getDimension(params.dimension),
                                 )
 
                             ValueType.FILE_RESOURCE ->
@@ -157,7 +157,7 @@ internal class FileResourceDownloadCall(
                         fileResourceService.getFileFromEventValue(
                             v.event()!!,
                             v.dataElement()!!,
-                            FileResizerHelper.Dimension.MEDIUM.name,
+                            getDimension(params.dimension),
                         )
                     },
                     getUid = { v -> v.value() },
@@ -263,6 +263,7 @@ internal class FileResourceDownloadCall(
                     is Result.Success -> {
                         Pair(frResult.value, value)
                     }
+
                     is Result.Failure -> {
                         Log.v(FileResourceDownloadCall::class.java.canonicalName, frResult.failure.errorDescription())
                         null
@@ -280,8 +281,8 @@ internal class FileResourceDownloadCall(
         fileResource: FileResource,
     ): FileResource? {
         val acceptedContentLength = (maxContentLength == null) ||
-            (fileResource.contentLength() == null) ||
-            (fileResource.contentLength()!! <= maxContentLength)
+                (fileResource.contentLength() == null) ||
+                (fileResource.contentLength()!! <= maxContentLength)
 
         return try {
             if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {

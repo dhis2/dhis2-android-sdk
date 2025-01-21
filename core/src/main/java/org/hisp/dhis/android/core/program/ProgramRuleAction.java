@@ -105,6 +105,10 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionGroup();
 
+    @Nullable
+    @JsonProperty()
+    public abstract String displayContent();
+
     public static ProgramRuleAction create(Cursor cursor) {
         return $AutoValue_ProgramRuleAction.createFromCursor(cursor);
     }
@@ -143,6 +147,8 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
         public abstract Builder option(ObjectWithUid option);
 
         public abstract Builder optionGroup(ObjectWithUid optionGroup);
+
+        public abstract Builder displayContent(String content);
 
         public abstract ProgramRuleAction build();
     }

@@ -52,7 +52,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     /**
      * @deprecated since v41, replaced by {@link #displayExecutionDateLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String executionDateLabel() {
         return displayExecutionDateLabel();
@@ -65,7 +65,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     /**
      * @deprecated since v41, replaced by {@link #displayDueDateLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String dueDateLabel() {
         return displayDueDateLabel();
@@ -96,9 +96,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract Boolean repeatable();
 
     /**
-     * @deprecated replaced by {@link #featureType()}
+     * @deprecated since 2.29, replaced by {@link #featureType()}
      */
-    @Deprecated(since = "2.29")
+    @Deprecated
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
@@ -186,7 +186,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     /**
      * @deprecated since v41, replaced by {@link #displayProgramStageLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String programStageLabel() {
         return displayProgramStageLabel();
@@ -199,7 +199,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     /**
      * @deprecated since v41, replaced by {@link #displayEventLabel()}
      */
-    @Deprecated(since = "41")
+    @Deprecated
     @Nullable
     public String eventLabel() {
         return displayEventLabel();

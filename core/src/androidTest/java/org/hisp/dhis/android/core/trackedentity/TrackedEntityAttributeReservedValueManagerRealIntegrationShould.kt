@@ -350,10 +350,10 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
             trackedEntityAttributeReservedValueQueryCaptor!!.capture(),
         )
         val query = trackedEntityAttributeReservedValueQueryCaptor.value
-        Truth.assertThat(query.organisationUnit()!!.uid()).isEqualTo(organisationUnit.uid())
-        Truth.assertThat(query.numberToReserve())
+        Truth.assertThat(query.organisationUnit!!.uid()).isEqualTo(organisationUnit.uid())
+        Truth.assertThat(query.numberToReserve)
             .isEqualTo(numberOfValuesExpected) // values expected - 3 that it had before.
-        Truth.assertThat(query.trackedEntityAttributePattern()).isEqualTo(pattern)
-        Truth.assertThat(query.trackedEntityAttributeUid()).isEqualTo(ownerUid)
+        Truth.assertThat(query.trackedEntityAttributePattern).isEqualTo(pattern)
+        Truth.assertThat(query.trackedEntityAttributeUid).isEqualTo(ownerUid)
     }
 }

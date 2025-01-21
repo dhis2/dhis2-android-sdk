@@ -39,12 +39,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
 @Suppress("TooManyFunctions")
 internal object ProgramIndicatorSQLUtils {
-    const val event = "eventAlias"
-    const val enrollment = "enrollmentAlias"
+    const val EventAlias = "eventAlias"
+    const val EnrollmentAlias = "enrollmentAlias"
 
     fun getEventColumnForEnrollmentWhereClause(column: String, programStageId: String? = null): String {
         return "(SELECT $column FROM ${EventTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $enrollment.${EnrollmentTableInfo.Columns.UID} " +
+            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
             "AND $column IS NOT NULL " +
             (
                 programStageId?.let {
@@ -56,7 +56,7 @@ internal object ProgramIndicatorSQLUtils {
 
     fun getExistsEventForEnrollmentWhere(programStageUid: String, whereClause: String): String {
         return "EXISTS(SELECT 1 FROM ${EventTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $enrollment.${EnrollmentTableInfo.Columns.UID} " +
+            "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
             "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageUid' " +
             "AND (${EventTableInfo.Columns.DELETED} IS NULL OR ${EventTableInfo.Columns.DELETED} = 0)" +
             "AND $whereClause)"
@@ -65,7 +65,7 @@ internal object ProgramIndicatorSQLUtils {
     fun getEnrollmentColumnForEventWhereClause(column: String): String {
         return "(SELECT $column " +
             "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT}" +
+            "WHERE ${EnrollmentTableInfo.Columns.UID} = $EventAlias.${EventTableInfo.Columns.ENROLLMENT}" +
             ")"
     }
 
@@ -103,10 +103,10 @@ internal object ProgramIndicatorSQLUtils {
         return when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "${EventTableInfo.TABLE_INFO.name()}.${EventTableInfo.Columns.UID} = " +
-                    "$event.${EventTableInfo.Columns.UID}"
+                    "$EventAlias.${EventTableInfo.Columns.UID}"
             AnalyticsType.ENROLLMENT, null ->
                 "${EventTableInfo.TABLE_INFO.name()}.${EventTableInfo.Columns.ENROLLMENT} = " +
-                    "$enrollment.${EventTableInfo.Columns.UID}"
+                    "$EnrollmentAlias.${EventTableInfo.Columns.UID}"
         }
     }
 
@@ -122,8 +122,8 @@ internal object ProgramIndicatorSQLUtils {
 
     fun getEnrollmentWhereClause(programIndicator: ProgramIndicator): String {
         return when (programIndicator.analyticsType()) {
-            AnalyticsType.EVENT -> "$event.${EventTableInfo.Columns.ENROLLMENT}"
-            AnalyticsType.ENROLLMENT, null -> "$enrollment.${EnrollmentTableInfo.Columns.UID}"
+            AnalyticsType.EVENT -> "$EventAlias.${EventTableInfo.Columns.ENROLLMENT}"
+            AnalyticsType.ENROLLMENT, null -> "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}"
         }
     }
 

@@ -43,6 +43,12 @@ internal open class TrackerLineListEvaluator {
     open fun getWhereSQLForEnrollment(): String {
         return getCommonWhereSQL()
     }
+    open fun getSelectSQLForTrackedEntityInstance(): String {
+        return getCommonSelectSQL()
+    }
+    open fun getWhereSQLForTrackedEntityInstance(): String {
+        return getCommonWhereSQL()
+    }
 
     protected open fun getCommonSelectSQL(): String {
         throw AnalyticsException.SQLException("SELECT clause is not implemented for this evaluator")

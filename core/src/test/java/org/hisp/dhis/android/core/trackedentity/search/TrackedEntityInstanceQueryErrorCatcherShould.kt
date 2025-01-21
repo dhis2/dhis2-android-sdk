@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import okhttp3.ResponseBody.Companion.toResponseBody
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import retrofit2.Response
 import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
@@ -42,10 +41,14 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
 
     @Test
     fun return_too_many_orgunits() {
-        val response =
-            Response.error<Any>(HttpsURLConnection.HTTP_REQ_TOO_LONG, "".toResponseBody(null))
+        val response = D2HttpResponse(
+            statusCode = HttpsURLConnection.HTTP_REQ_TOO_LONG,
+            message = "",
+            errorBody = "",
+            requestUrl = null,
+        )
 
-        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+        assertThat(catcher.catchError(response))
             .isEqualTo(D2ErrorCode.TOO_MANY_ORG_UNITS)
     }
 
@@ -59,8 +62,13 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "message": "maxteicountreached"
             }"""
 
-        val response = Response.error<Any>(409, responseError.toResponseBody(null))
-        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+        val response = D2HttpResponse(
+            statusCode = 409,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response))
             .isEqualTo(D2ErrorCode.MAX_TEI_COUNT_REACHED)
     }
 
@@ -74,8 +82,13 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "message": "Organisation unit is not part of the search scope: O6uvpzGd5pu"
             }"""
 
-        val response = Response.error<Any>(409, responseError.toResponseBody(null))
-        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+        val response = D2HttpResponse(
+            statusCode = 409,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response))
             .isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE)
     }
 
@@ -90,8 +103,13 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
                 "errorCode": "E1006"
             }"""
 
-        val response = Response.error<Any>(403, responseError.toResponseBody(null))
-        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+        val response = D2HttpResponse(
+            statusCode = 403,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response))
             .isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE)
     }
 
@@ -105,8 +123,13 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "message": "At least 1 attributes should be mentioned in the search criteria."
             }"""
 
-        val response = Response.error<Any>(409, responseError.toResponseBody(null))
-        assertThat(catcher.catchError(response, response.errorBody()!!.string()))
+        val response = D2HttpResponse(
+            statusCode = 409,
+            message = "",
+            errorBody = responseError,
+            requestUrl = null,
+        )
+        assertThat(catcher.catchError(response))
             .isEqualTo(D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED)
     }
 }

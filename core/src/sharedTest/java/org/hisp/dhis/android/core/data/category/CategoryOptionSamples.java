@@ -48,4 +48,10 @@ public class CategoryOptionSamples {
                 .access(AccessHelper.createForDataWrite(false))
                 .build();
     }
+    public static CategoryOption getCategoryOptionDatabase() {
+        CategoryOption.Builder builder = CategoryOption.builder();
+
+        fillNameableProperties(builder);
+        return builder.build();
+    }
 }

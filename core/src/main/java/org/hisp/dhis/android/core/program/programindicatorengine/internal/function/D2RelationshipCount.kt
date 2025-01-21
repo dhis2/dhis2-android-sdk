@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
@@ -70,18 +70,18 @@ internal class D2RelationshipCount : ExpressionItem {
                 RelationshipCountQueries(
                     teiQuery = "IN (SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
                         "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT})",
-                    enrollmentQuery = "= $event.${EventTableInfo.Columns.ENROLLMENT}",
-                    eventQuery = "= $event.${EventTableInfo.Columns.UID}",
+                        "WHERE ${EnrollmentTableInfo.Columns.UID} = $EventAlias.${EventTableInfo.Columns.ENROLLMENT})",
+                    enrollmentQuery = "= $EventAlias.${EventTableInfo.Columns.ENROLLMENT}",
+                    eventQuery = "= $EventAlias.${EventTableInfo.Columns.UID}",
                 )
             AnalyticsType.ENROLLMENT, null ->
                 RelationshipCountQueries(
-                    teiQuery = "= $enrollment.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE}",
-                    enrollmentQuery = "= $enrollment.${EnrollmentTableInfo.Columns.UID}",
+                    teiQuery = "= $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE}",
+                    enrollmentQuery = "= $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}",
                     eventQuery = "IN (SELECT ${EventTableInfo.Columns.UID} " +
                         "FROM ${EventTableInfo.TABLE_INFO.name()} " +
                         "WHERE ${EventTableInfo.Columns.ENROLLMENT} = " +
-                        "$enrollment.${EnrollmentTableInfo.Columns.UID})",
+                        "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID})",
                 )
         }
     }

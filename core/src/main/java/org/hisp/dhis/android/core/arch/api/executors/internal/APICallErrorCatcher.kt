@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import retrofit2.Response
 import java.io.IOException
 
 internal interface APICallErrorCatcher {
     fun mustBeStored(): Boolean?
 
     @Throws(IOException::class)
-    fun catchError(response: Response<*>, errorBody: String): D2ErrorCode?
+    fun catchError(response: D2HttpResponse): D2ErrorCode?
 }

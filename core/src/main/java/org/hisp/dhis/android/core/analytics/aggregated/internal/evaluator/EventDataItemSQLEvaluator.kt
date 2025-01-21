@@ -84,7 +84,7 @@ internal class EventDataItemSQLEvaluator(
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
                 }
             }
-            appendKeyNumberValue("$eventAlias.${EventTableInfo.Columns.DELETED}", 0)
+            appendKeyNumberValue("$EventAlias.${EventTableInfo.Columns.DELETED}", 0)
         }.build()
 
         return when (aggregator) {
@@ -104,7 +104,7 @@ internal class EventDataItemSQLEvaluator(
                     "SELECT AVG($valueColumn) as $valueColumn " +
                     "FROM $fromClause " +
                     "WHERE $whereClause " +
-                    "GROUP BY $eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
+                    "GROUP BY $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
                     ")"
             }
             AggregationType.FIRST -> {
@@ -154,19 +154,19 @@ internal class EventDataItemSQLEvaluator(
     }
 
     private val dataValueFromClauseWithJoins =
-        "${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $dataValueAlias " +
-            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
-            "ON $dataValueAlias.${dvColumns.EVENT} = " +
-            "$eventAlias.${EventTableInfo.Columns.UID} "
+        "${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $DataValueAlias " +
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
+            "ON $DataValueAlias.${dvColumns.EVENT} = " +
+            "$EventAlias.${EventTableInfo.Columns.UID} "
 
     private val attributeValueFromClauseWithJoins =
-        "${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $attAlias " +
-            "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $enrollmentAlias " +
-            "ON $attAlias.${tavColumns.TRACKED_ENTITY_INSTANCE} = " +
-            "$enrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $eventAlias " +
-            "ON $enrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
-            "$eventAlias.${EventTableInfo.Columns.ENROLLMENT} "
+        "${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} $AttAlias " +
+            "INNER JOIN ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
+            "ON $AttAlias.${tavColumns.TRACKED_ENTITY_INSTANCE} = " +
+            "$EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
+            "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
+            "$EventAlias.${EventTableInfo.Columns.ENROLLMENT} "
 
     private fun firstOrLastValueClauseByOrunit(
         valueColumn: String,
@@ -176,13 +176,13 @@ internal class EventDataItemSQLEvaluator(
     ): String {
         val firstOrLastValueClause = "SELECT " +
             "$valueColumn, " +
-            "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
-            "$minOrMax($eventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "$EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
+            "$minOrMax($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
             "FROM $fromClause " +
             "WHERE $whereClause " +
-            "AND $eventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
-            "GROUP BY $eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
-            "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}"
+            "AND $EventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
+            "GROUP BY $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
+            "$EventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}"
 
         return "SELECT SUM($valueColumn) AS $valueColumn " +
             "FROM ($firstOrLastValueClause) " +
@@ -199,11 +199,11 @@ internal class EventDataItemSQLEvaluator(
                     is DimensionItem.DataItem.EventDataItem.DataElement -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
-                                "$dataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
+                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
                                 item.dataElement,
                             )
                             .appendKeyStringValue(
-                                "$eventAlias.${EventTableInfo.Columns.PROGRAM}",
+                                "$EventAlias.${EventTableInfo.Columns.PROGRAM}",
                                 item.program,
                             )
                             .build()
@@ -212,11 +212,11 @@ internal class EventDataItemSQLEvaluator(
                     is DimensionItem.DataItem.EventDataItem.Attribute -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
-                                "$attAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
+                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
                                 item.attribute,
                             )
                             .appendKeyStringValue(
-                                "$eventAlias.${EventTableInfo.Columns.PROGRAM}",
+                                "$EventAlias.${EventTableInfo.Columns.PROGRAM}",
                                 item.program,
                             )
                             .build()
@@ -245,7 +245,7 @@ internal class EventDataItemSQLEvaluator(
         return if (reportingPeriods.isEmpty()) {
             builder
         } else {
-            val eventDateColumn = "$eventAlias.${EventTableInfo.Columns.EVENT_DATE}"
+            val eventDateColumn = "$EventAlias.${EventTableInfo.Columns.EVENT_DATE}"
             val periods = AnalyticsEvaluatorHelper.getReportingPeriodsForAggregationType(reportingPeriods, aggregation)
 
             val innerClause = periods.joinToString(" OR ") {
@@ -268,7 +268,7 @@ internal class EventDataItemSQLEvaluator(
         metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
-            columnName = "$eventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}",
+            columnName = "$EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}",
             items = items,
             builder = builder,
             metadata = metadata,
@@ -281,7 +281,7 @@ internal class EventDataItemSQLEvaluator(
         metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
-            attributeColumnName = "$eventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}",
+            attributeColumnName = "$EventAlias.${EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO}",
             disaggregationColumnName = null,
             items = items,
             builder = builder,
@@ -320,9 +320,9 @@ internal class EventDataItemSQLEvaluator(
     }
 
     companion object {
-        private const val eventAlias = "ev"
-        private const val dataValueAlias = "tdv"
-        private const val attAlias = "av"
-        private const val enrollmentAlias = "en"
+        private const val EventAlias = "ev"
+        private const val DataValueAlias = "tdv"
+        private const val AttAlias = "av"
+        private const val EnrollmentAlias = "en"
     }
 }

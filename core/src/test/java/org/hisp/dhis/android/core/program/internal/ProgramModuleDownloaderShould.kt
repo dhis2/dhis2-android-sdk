@@ -34,8 +34,6 @@ import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.event.internal.EventFilterCall
@@ -56,8 +54,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
-import retrofit2.Response
-import javax.net.ssl.HttpsURLConnection
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
@@ -86,10 +82,6 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
     @Throws(Exception::class)
     override fun setUp() {
         super.setUp()
-        errorResponse = Response.error<Any>(
-            HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
-            ResponseBody.create("application/json".toMediaTypeOrNull(), "{}"),
-        )
 
         // Calls
         returnSingletonList(programCall, program)

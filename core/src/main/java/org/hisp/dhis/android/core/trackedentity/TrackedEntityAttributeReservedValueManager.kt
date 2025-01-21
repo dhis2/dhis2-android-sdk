@@ -348,7 +348,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         storeError: Boolean,
     ) {
         reservedValueQueryCallFactory.create(
-            TrackedEntityAttributeReservedValueQuery.create(
+            TrackedEntityAttributeReservedValueQuery(
                 trackedEntityAttributeUid,
                 numberToReserve,
                 organisationUnit,

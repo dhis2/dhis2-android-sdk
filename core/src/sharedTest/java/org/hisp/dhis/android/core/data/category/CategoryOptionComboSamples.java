@@ -47,4 +47,12 @@ public class CategoryOptionComboSamples {
                 .name(name)
                 .build();
     }
+
+    public static CategoryOptionCombo getCategoryOptionComboDatabase() {
+        CategoryOptionCombo.Builder builder = CategoryOptionCombo.builder();
+
+        fillIdentifiableProperties(builder);
+        return builder.build();
+
+    }
 }

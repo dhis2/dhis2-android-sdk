@@ -28,20 +28,27 @@
 
 package org.hisp.dhis.android.core.attribute.internal
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.attribute.Attribute
-import retrofit2.http.GET
-import retrofit2.http.Query
+import org.koin.core.annotation.Singleton
 
-internal fun interface AttributeService {
-    @GET("attributes")
+@Singleton
+internal class AttributeService(private val client: HttpServiceClient) {
     suspend fun getAttributes(
-        @Query("fields") @Which fields: Fields<Attribute>,
-        @Query("filter") @Where uids: Filter<Attribute>,
-        @Query("paging") paging: Boolean,
-    ): Payload<Attribute>
+        fields: Fields<Attribute>,
+        uids: Filter<Attribute>,
+        paging: Boolean,
+    ): Payload<Attribute> {
+        return client.get {
+            url("attributes")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

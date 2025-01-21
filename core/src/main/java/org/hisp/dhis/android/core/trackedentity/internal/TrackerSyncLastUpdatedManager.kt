@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
@@ -95,7 +97,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
         return if (period == null || period == DownloadPeriod.ANY) {
             null
         } else {
-            DateUtils.addMonths(Date(), -period.months)
+            DateUtils.addMonths(Date().toKtxInstant(), -period.months).toJavaDate()
         }
     }
 

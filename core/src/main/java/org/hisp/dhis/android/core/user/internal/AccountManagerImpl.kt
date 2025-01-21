@@ -125,16 +125,18 @@ internal class AccountManagerImpl(
         accountDeletionSubject.onNext(deletionReason)
         logOutCall.logOut().blockingAwait()
         val configuration = databasesConfigurationStore.get()
-        val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
-            configuration,
-            credentials.username,
-            credentials.serverUrl,
-        )
-        val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
-        databasesConfigurationStore.set(updatedConfiguration)
+        if (configuration != null) {
+            val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
+                configuration,
+                credentials.username,
+                credentials.serverUrl,
+            )
+            val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
+            databasesConfigurationStore.set(updatedConfiguration)
 
-        FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
-        databaseAdapterFactory.deleteDatabase(loggedAccount)
+            FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
+            databaseAdapterFactory.deleteDatabase(loggedAccount)
+        }
     }
 
     private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
@@ -163,17 +165,19 @@ internal class AccountManagerImpl(
 
         val configuration = databasesConfigurationStore.get()
 
-        val newDatabasesConfiguration = configuration.toBuilder().accounts(
-            configuration.accounts().map {
-                if (it.serverUrl() == credentials.serverUrl && it.username() == credentials.username) {
-                    it.toBuilder().serverUrl(newServerUrl).build()
-                } else {
-                    it
+        if (credentials != null && configuration != null){
+            val newDatabasesConfiguration = configuration.toBuilder().accounts(
+                configuration.accounts().map {
+                    if (it.serverUrl() == credentials.serverUrl && it.username() == credentials.username) {
+                        it.toBuilder().serverUrl(newServerUrl).build()
+                    } else {
+                        it
+                    }
                 }
-            }
-        ).build()
+            ).build()
 
-        databasesConfigurationStore.set(newDatabasesConfiguration)
+            databasesConfigurationStore.set(newDatabasesConfiguration)
+        }
     }
 
     override fun logOutObservable(): Observable<Unit> {

@@ -31,11 +31,14 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
+import org.hisp.dhis.android.core.period.clock.internal.FixedClockProvider
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.junit.Assert.fail
 import org.junit.Before
@@ -53,6 +56,8 @@ class OwnershipManagerShould {
     private val programTempOwnerStore: ProgramTempOwnerStore = mock()
     private val programOwnerStore: ProgramOwnerStore = mock()
     private val parameterManager: TrackerExporterParameterManager = mock()
+    private val fixedDate = LocalDateTime(2020, 2, 5, 0, 0)
+    private val clockProvider: ClockProvider = FixedClockProvider(fixedDate)
 
     private val httpResponse: HttpMessageResponse = mock()
 
@@ -71,6 +76,7 @@ class OwnershipManagerShould {
             programTempOwnerStore,
             programOwnerStore,
             parameterManager,
+            clockProvider,
         )
     }
 

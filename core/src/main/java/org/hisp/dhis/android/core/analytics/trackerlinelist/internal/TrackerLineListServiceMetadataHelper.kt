@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -47,6 +48,7 @@ internal class TrackerLineListServiceMetadataHelper(
     private val programIndicatorStore: ProgramIndicatorStore,
     private val programStore: ProgramStore,
     private val programStageStore: ProgramStageStore,
+    private val categoryStore: CategoryStore,
 ) {
 
     fun getMetadata(params: TrackerLineListParams): Map<String, MetadataItem> {
@@ -67,6 +69,7 @@ internal class TrackerLineListServiceMetadataHelper(
                 is TrackerLineListItem.ProgramAttribute -> getProgramAttributeItems(item)
                 is TrackerLineListItem.ProgramDataElement -> getProgramDataElement(item)
                 is TrackerLineListItem.ProgramIndicator -> getProgramIndicator(item)
+                is TrackerLineListItem.Category -> getCategory(item)
                 else -> emptyList()
             }
             val metadataItemsMap = metadataItems.associateBy { it.id }
@@ -118,5 +121,10 @@ internal class TrackerLineListServiceMetadataHelper(
     private fun getProgramStage(programStageId: String): ProgramStage {
         return programStageStore.selectByUid(programStageId)
             ?: throw AnalyticsException.InvalidProgramStage(programStageId)
+    }
+
+    private fun getCategory(item: TrackerLineListItem.Category): List<MetadataItem> {
+        val category = categoryStore.selectByUid(item.uid) ?: throw AnalyticsException.InvalidCategory(item.uid)
+        return listOf(MetadataItem.CategoryItem(category))
     }
 }

@@ -28,29 +28,32 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
 import android.util.Log
+import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
-import retrofit2.Retrofit
 
 @Module
 internal class APIClientDIModule {
     @Singleton
-    fun okHttpClient(d2Configuration: D2Configuration, authenticator: ParentAuthenticator): OkHttpClient {
-        return OkHttpClientFactory.okHttpClient(d2Configuration, authenticator)
+    fun okHttpClient(d2Configuration: D2Configuration, parentAuthenticator: ParentAuthenticator): OkHttpClient {
+        return OkHttpClientFactory.okHttpClient(d2Configuration, parentAuthenticator)
     }
 
     @Singleton
     @Suppress("TooGenericExceptionThrown")
-    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun ktor(
+        okHttpClient: OkHttpClient,
+        d2Configuration: D2Configuration,
+    ): HttpClient {
         return try {
-            RetrofitFactory.retrofit(okHttpClient)
+            HttpServiceClientFactory.ktor(okHttpClient, d2Configuration)
         } catch (d2Error: D2Error) {
             Log.e("APIClientDIModule", d2Error.message!!)
-            throw RuntimeException("Can't instantiate retrofit")
+            throw RuntimeException("Can't instantiate ktor")
         }
     }
 }

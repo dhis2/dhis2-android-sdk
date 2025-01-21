@@ -32,7 +32,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import org.hisp.dhis.android.core.arch.storage.internal.*
-import org.hisp.dhis.android.core.debug.flipper.debug.FlipperManager.setUp
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal object D2Factory {
@@ -78,7 +77,6 @@ internal object D2Factory {
             .readTimeoutInSeconds(30)
             .connectTimeoutInSeconds(30)
             .writeTimeoutInSeconds(30)
-            .networkInterceptors(listOf(setUp(context)))
             .interceptors(listOf<Interceptor>(loggingInterceptor))
             .context(context)
             .build()

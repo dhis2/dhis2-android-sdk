@@ -52,7 +52,7 @@ public final class TrackedEntityDataValueTableInfo {
     };
 
     public static class Columns extends CoreColumns {
-        public static final String EVENT = "event";
+        public final static String EVENT = "event";
         public final static String DATA_ELEMENT = "dataElement";
         public final static String STORED_BY = "storedBy";
         public final static String VALUE = "value";

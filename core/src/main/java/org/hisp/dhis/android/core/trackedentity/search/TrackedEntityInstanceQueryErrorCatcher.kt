@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
+import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import retrofit2.Response
 import java.io.IOException
 import javax.net.ssl.HttpsURLConnection
 
@@ -43,16 +43,16 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
     }
 
     @SuppressWarnings("MagicNumber")
-    override fun catchError(response: Response<*>, errorBody: String): D2ErrorCode {
+    override fun catchError(response: D2HttpResponse): D2ErrorCode {
         return when {
-            response.code() == HttpsURLConnection.HTTP_REQ_TOO_LONG ->
+            response.statusCode == HttpsURLConnection.HTTP_REQ_TOO_LONG ->
                 D2ErrorCode.TOO_MANY_ORG_UNITS
 
-            response.code() == HttpsURLConnection.HTTP_GATEWAY_TIMEOUT || response.code() == 429 ->
+            response.statusCode == HttpsURLConnection.HTTP_GATEWAY_TIMEOUT || response.statusCode == 429 ->
                 D2ErrorCode.TOO_MANY_REQUESTS
 
             else ->
-                parseErrorMessage(errorBody)
+                parseErrorMessage(response.errorBody)
         }
     }
 

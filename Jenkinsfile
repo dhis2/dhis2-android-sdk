@@ -57,7 +57,11 @@ pipeline {
                 script {
                     echo 'Sonarqube'
                     sh 'chmod +x ./scripts/sonarqube.sh'
-                    sh './scripts/sonarqube.sh'
+                    retry(3) { // Retry up to 3 times
+                        timeout(time: 10, unit: 'MINUTES') {
+                            sh './scripts/sonarqube.sh'
+                        }
+                    }
                 }
             }
         }
@@ -68,7 +72,7 @@ pipeline {
                     expression { env.CHANGE_ID == null }
                     anyOf {
                         expression { env.GIT_BRANCH == "develop" }
-                        expression { env.GIT_BRANCH ==~ /[0-9]+\.[0-9]+\.[0-9]+-rc/ }
+                        expression { env.GIT_BRANCH ==~ /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?-rc/ }
                     }
                 }
             }

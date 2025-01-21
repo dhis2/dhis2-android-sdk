@@ -59,9 +59,9 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal c
             CoroutineCallFetcher<TrackedEntityAttributeReservedValue> {
             override suspend fun call(): List<TrackedEntityAttributeReservedValue> {
                 return service.generateAndReserveWithOrgUnitCode(
-                    query.trackedEntityAttributeUid(),
-                    query.numberToReserve(),
-                    query.organisationUnit()?.code(),
+                    query.trackedEntityAttributeUid,
+                    query.numberToReserve,
+                    query.organisationUnit?.code(),
                 )
             }
         }
@@ -70,10 +70,10 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal c
     override fun processor(query: TrackedEntityAttributeReservedValueQuery):
         CallProcessor<TrackedEntityAttributeReservedValue> {
         return TrackedEntityAttributeReservedValueCallProcessor(
-            data.databaseAdapter(),
+            data.databaseAdapter,
             handler,
-            query.organisationUnit(),
-            query.trackedEntityAttributePattern(),
+            query.organisationUnit,
+            query.trackedEntityAttributePattern,
         )
     }
 }

@@ -42,7 +42,6 @@ internal class FileResourceProjectionTransformer : Transformer<File, FileResourc
         val creationDate = Date()
         return FileResource.builder()
             .syncState(State.TO_POST)
-            .name(o.name)
             .created(creationDate)
             .lastUpdated(creationDate)
             .contentLength(o.length())

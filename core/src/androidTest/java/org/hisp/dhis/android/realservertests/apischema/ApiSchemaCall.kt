@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.realservertests.apischema
 
-import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
-import retrofit2.Retrofit
 
 internal class ApiSchemaCall internal constructor(
-    private val retrofit: Retrofit,
+    private val httpClient: HttpServiceClient,
 ) : ListCall<ApiSchema> {
-    override fun download(): Single<List<ApiSchema>> {
-        return retrofit.create(ApiSchemaService::class.java).getSchema(ApiSchemaFields.allFields).map { it.items() }
+    override suspend fun download(): List<ApiSchema> {
+        val payload = ApiSchemaService(httpClient).getSchema(ApiSchemaFields.allFields)
+        return payload.items()
     }
 }

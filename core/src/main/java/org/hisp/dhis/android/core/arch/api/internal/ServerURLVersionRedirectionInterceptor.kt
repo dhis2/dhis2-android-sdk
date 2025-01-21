@@ -28,9 +28,13 @@
 package org.hisp.dhis.android.core.arch.api.internal
 
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
 import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
 import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
 
 internal class ServerURLVersionRedirectionInterceptor : Interceptor {
 
@@ -42,13 +46,28 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
         var redirects = 0
         while (response.isRedirect && redirects <= MaxRedirects) {
             val location = response.header(LOCATION_KEY)
-            location?.let { ServerURLWrapper.setServerUrl(it) }
+            if (isInternal(request)) {
+                location?.let { ServerURLWrapper.setServerUrl(it) }
+            }
             response.close()
-            val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
+
+            val redirectReq = location?.let {
+                try {
+                    URL(it) // Verify if location is a valid URL
+                    request.newBuilder().url(it).build()
+                } catch (e: MalformedURLException) {
+                    request
+                }
+            } ?: request
+
             response = chain.proceed(redirectReq)
             redirects++
         }
         return response
+    }
+
+    private fun isInternal(request: Request): Boolean {
+        return request.header(IsExternalRequestHeader) == null
     }
 
     companion object {

@@ -52,7 +52,7 @@ internal abstract class UidsNoResourceCallFetcher<P> protected constructor(
                 limit,
             )
             for (partitionUids in partitions) {
-                val uidQuery = UidsQuery.create(partitionUids)
+                val uidQuery = UidsQuery(partitionUids)
                 val callObjects: List<P> = apiCallExecutor.wrap { getCall(uidQuery) }.getOrThrow().items()
                 objects.addAll(transform(callObjects))
             }

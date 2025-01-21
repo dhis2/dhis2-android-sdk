@@ -49,7 +49,7 @@ internal class DataSetConfigurationSettingStoreImpl(
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
-        { cursor: Cursor -> DataSetConfigurationSetting.create(cursor) }
+        { cursor: Cursor -> DataSetConfigurationSetting.create(cursor) },
     ) {
 
     companion object {

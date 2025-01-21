@@ -36,6 +36,7 @@ import java.text.ParseException
 
 class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_settings_v2.json"), ObjectShould {
     @Test
+    @Suppress("LongMethod")
     @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val appearanceSettings = objectMapper.readValue(jsonStream, AppearanceSettings::class.java)

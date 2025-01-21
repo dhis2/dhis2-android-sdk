@@ -11572,6 +11572,7 @@ public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 	public abstract fun completionSpinner ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
+	public abstract fun dataSetConfiguration ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
 	public abstract fun filterSorting ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
 	public abstract fun programConfiguration ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
@@ -11581,6 +11582,7 @@ public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings$Bui
 	public fun <init> ()V
 	public fun build ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
 	public abstract fun completionSpinner (Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+	public abstract fun dataSetConfiguration (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 	public abstract fun filterSorting (Lorg/hisp/dhis/android/core/settings/FilterSorting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 	public abstract fun programConfiguration (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 }
@@ -11589,8 +11591,10 @@ public final class org/hisp/dhis/android/core/settings/AppearanceSettingsObjectR
 	public synthetic fun blockingGet ()Ljava/lang/Object;
 	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
 	public final fun getCompletionSpinnerByUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public final fun getDataSetConfigurationByUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
 	public final fun getDataSetFiltersByUid (Ljava/lang/String;)Ljava/util/Map;
 	public final fun getGlobalCompletionSpinner ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public final fun getGlobalDataSetConfigurationSetting ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
 	public final fun getGlobalProgramConfigurationSetting ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
 	public final fun getHomeFilters ()Ljava/util/Map;
 	public final fun getProgramConfigurationByUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
@@ -11639,6 +11643,52 @@ public abstract class org/hisp/dhis/android/core/settings/CompletionSpinnerSetti
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
 	public abstract fun globalSettings (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
 	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public abstract fun disableManualLocation ()Ljava/lang/Boolean;
+	public abstract fun minimumLocationAccuracy ()Ljava/lang/Integer;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public abstract fun disableManualLocation (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public abstract fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field DISABLE_MANUAL_LOCATION Ljava/lang/String;
+	public static final field MINIMUM_LOCATION_ACCURACY Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+	public abstract fun globalSettings ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public abstract fun specificSettings ()Ljava/util/Map;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	public abstract fun globalSettings (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/DataSetFilter : java/lang/Enum {

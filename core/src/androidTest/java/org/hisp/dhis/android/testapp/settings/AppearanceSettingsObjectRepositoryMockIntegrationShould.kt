@@ -176,7 +176,6 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         val dataSet1Setting =
             d2.settingModule().appearanceSettings().getDataSetConfigurationByUid(dataSet1)
         assertThat(dataSet1Setting?.minimumLocationAccuracy()).isEqualTo(8)
-
     }
 
     @Test
@@ -187,7 +186,6 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         val dataSet1Setting =
             d2.settingModule().appearanceSettings().getDataSetConfigurationByUid(dataSet1)
         assertThat(dataSet1Setting?.disableManualLocation()).isEqualTo(true)
-
     }
 
     @Test

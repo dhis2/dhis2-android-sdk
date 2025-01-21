@@ -53,9 +53,9 @@ class AppearanceSettingsObjectRepository internal constructor(
         val programConfigurationSettingList = programConfigurationSettingStore.selectAll()
         val dataSetConfigurationSettingList = dataSetConfigurationSettingStore.selectAll()
 
-        return if (filters.isEmpty()
-            && programConfigurationSettingList.isEmpty()
-            && dataSetConfigurationSettingList.isEmpty()
+        return if (filters.isEmpty() &&
+            programConfigurationSettingList.isEmpty() &&
+            dataSetConfigurationSettingList.isEmpty()
         ) {
             null
         } else {

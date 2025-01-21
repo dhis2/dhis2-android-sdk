@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.settings.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
 
-internal interface DataSetConfigurationSettingStore : ObjectWithoutUidStore<DataSetConfigurationSetting> {
-}
+@Suppress("EmptyClassBlock")
+internal interface DataSetConfigurationSettingStore : ObjectWithoutUidStore<DataSetConfigurationSetting>

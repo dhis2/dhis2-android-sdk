@@ -68,5 +68,4 @@ class DataSetConfigurationSettingHandlerShould {
         verify(dataSetConfigurationSettingStore).delete()
         verify(dataSetConfigurationSettingStore, never()).updateOrInsertWhere(dataSetConfigurationSetting)
     }
-
 }

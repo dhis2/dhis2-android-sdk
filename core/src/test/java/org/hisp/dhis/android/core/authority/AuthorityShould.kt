@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.authority
 
-package org.hisp.dhis.android.core.data.user;
+import com.google.common.truth.Truth.assertThat
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.authority.AuthorityDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.user.Authority;
+class AuthorityShould : BaseObjectKotlinxShould("authority/authorities.json"), ObjectShould {
 
-public class AuthoritySamples {
+    @Test
+    override fun map_from_json_string() {
+        val authorityDTOList: List<AuthorityDTO> = deserialize(ListSerializer(AuthorityDTO.serializer()))
+        val authorities = authorityDTOList.map { it.toDomain() }
 
-    public static Authority getAuthority() {
-        return Authority.builder()
-                .id(1L)
-                .name("F_ENROLLMENT_CASCADE_DELETE")
-                .build();
+        assertThat(authorities.size).isEqualTo(2)
+        assertThat(authorities[0].name()).isEqualTo("F_ENROLLMENT_CASCADE_DELETE")
+        assertThat(authorities[1].name()).isEqualTo("F_TEI_CASCADE_DELETE")
     }
 }

@@ -25,27 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.user.AuthoritySamples
+import org.hisp.dhis.android.core.user.Authority
+import org.hisp.dhis.android.core.user.AuthorityTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.user.AuthoritySamples;
-import org.hisp.dhis.android.core.user.Authority;
-import org.hisp.dhis.android.core.user.AuthorityTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class AuthorityStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Authority> {
-
-    public AuthorityStoreIntegrationShould() {
-        super(new AuthorityStoreImpl(TestDatabaseAdapterFactory.get()), AuthorityTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected Authority buildObject() {
-        return AuthoritySamples.getAuthority();
+@RunWith(D2JunitRunner::class)
+internal class AuthorityStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<Authority>(
+    AuthorityStoreImpl(TestDatabaseAdapterFactory.get()),
+    AuthorityTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): Authority {
+        return AuthoritySamples.authority
     }
 }

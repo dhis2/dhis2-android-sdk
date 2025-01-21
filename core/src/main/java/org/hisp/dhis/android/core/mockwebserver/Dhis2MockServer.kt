@@ -368,7 +368,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     }
 
     companion object {
-        private const val AUTHORITIES_JSON = "user/authorities.json"
+        private const val AUTHORITIES_JSON = "authority/authorities.json"
         private const val SYSTEM_INFO_JSON = "systeminfo/system_info.json"
         private const val SYSTEM_SETTINGS_JSON = "settings/system_settings.json"
         private const val STOCK_USE_CASES_JSON = "usecase.stock/stock_use_cases.json"

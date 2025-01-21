@@ -8,10 +8,8 @@ def retryOnTimeout(retries, timeoutMinutes, script) {
             success = true
             break
         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-            echo "FlowInterruptedException: ${e}"
             echo "Timeout occurred, retrying... (${i + 1}/${retries})"
         } catch (Exception e) {
-            echo "Exception: ${e}"
             throw e
         }
     }
@@ -44,7 +42,7 @@ pipeline {
                 script {
                     echo 'Running Check style and quality'
                     sh 'chmod +x ./runChecks.sh'
-                    retryOnTimeout(3, 5) {
+                    retryOnTimeout(3, 20) {
                         sh './runChecks.sh'
                     }
                 }

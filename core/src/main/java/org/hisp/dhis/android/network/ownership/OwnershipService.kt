@@ -29,9 +29,7 @@ package org.hisp.dhis.android.network.ownership
 
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class OwnershipService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun breakGlass(

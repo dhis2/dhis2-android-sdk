@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.common.dto
 
-internal object DataValueFields : BaseFields<DataValue>() {
-    const val ORGANISATION_UNIT = "orgUnit"
-    const val FOLLOW_UP = "followup"
-    const val DELETED = "deleted"
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-    val allFields = Fields.from(
-        fh.field(Columns.DATA_ELEMENT),
-        fh.field(Columns.PERIOD),
-        fh.field(ORGANISATION_UNIT),
-        fh.field(Columns.CATEGORY_OPTION_COMBO),
-        fh.field(Columns.ATTRIBUTE_OPTION_COMBO),
-        fh.field(Columns.VALUE),
-        fh.field(Columns.STORED_BY),
-        fh.field(Columns.CREATED),
-        fh.field(Columns.LAST_UPDATED),
-        fh.field(Columns.COMMENT),
-        fh.field(FOLLOW_UP),
-        fh.field(DELETED),
-    )
+@Serializable
+internal data class ImportConflictDTO(
+    @SerialName("object") val objectName: String,
+    val value: String,
+    val errorCode: String?,
+    val property: String?,
+    val indexes: List<Int>?,
+) {
+    fun toDomain(): ImportConflict {
+        return ImportConflict.create(objectName, value, errorCode, property, indexes)
+    }
 }

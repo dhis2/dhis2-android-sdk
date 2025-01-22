@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields
 import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentFields
 import org.hisp.dhis.android.core.event.internal.DateFilterPeriodFields
@@ -112,6 +111,7 @@ import org.hisp.dhis.android.network.dataset.DataInputPeriodFields
 import org.hisp.dhis.android.network.dataset.DataSetElementFields
 import org.hisp.dhis.android.network.dataset.DataSetFields
 import org.hisp.dhis.android.network.dataset.SectionFields
+import org.hisp.dhis.android.network.datavalue.DataValueFields
 import org.hisp.dhis.android.network.eventfilter.EventFilterFields
 import org.hisp.dhis.android.network.indicator.IndicatorFields
 import org.hisp.dhis.android.network.indicatortype.IndicatorTypeFields

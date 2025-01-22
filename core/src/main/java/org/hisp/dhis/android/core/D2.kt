@@ -69,6 +69,7 @@ import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.validation.ValidationModule
 import org.hisp.dhis.android.core.visualization.VisualizationModule
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 @Suppress("TooManyFunctions")
 class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
@@ -76,6 +77,10 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun httpServiceClient(): HttpServiceClient {
         return d2DIComponent.httpServiceClient
+    }
+
+    internal fun httpServiceClientKotlinx(): HttpServiceClientKotlinx {
+        return d2DIComponent.httpServiceClientKotlinx
     }
 
     @VisibleForTesting

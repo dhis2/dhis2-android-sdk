@@ -47,7 +47,7 @@ import java.net.HttpURLConnection
 
 @Singleton
 internal class DataValuePostCall(
-    private val dataValueService: DataValueService,
+    private val networkHandler: DataValueNetworkHandler,
     private val dataValueImportHandler: DataValueImportHandler,
     private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val dataValueStore: DataValueStore,
@@ -89,11 +89,11 @@ internal class DataValuePostCall(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
                 errorClass = DataValueImportSummaryWebResponse::class.java,
             ) {
-                dataValueService.postDataValuesWebResponse(dataValueSet)
+                networkHandler.postDataValuesWebResponse(dataValueSet)
             }.map { it.response }
         } else {
             coroutineAPICallExecutor.wrap {
-                dataValueService.postDataValues(dataValueSet)
+                networkHandler.postDataValues(dataValueSet)
             }
         }
     }

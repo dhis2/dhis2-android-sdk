@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueSet;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class DataValueSetSinglePeriodShould extends BaseObjectShould implements ObjectShould {
-
-    public DataValueSetSinglePeriodShould() {
-        super("datavalue/data_values_single_period.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        objectMapper.readValue(jsonStream, DataValueSet.class);
-    }
+internal interface WebResponseDTO {
+    val httpStatus: String
+    val httpStatusCode: Int
+    val status: String
+    val message: String
 }

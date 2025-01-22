@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundleKey
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.network.datavalue.DataValueNetworkHandlerImpl
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
@@ -81,9 +82,9 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         val resourceHandler = getGenericCallData(d2).resourceHandler
         val apiDownloader: APIDownloader = APIDownloaderImpl(resourceHandler)
-        val dataValueService = DataValueService(d2.httpServiceClient())
+        val dataValueNetworkHandler = DataValueNetworkHandlerImpl(d2.httpServiceClientKotlinx())
 
-        return DataValueCall(dataValueService, dataValueHandler, apiDownloader)
+        return DataValueCall(dataValueNetworkHandler, dataValueHandler, apiDownloader)
             .download(DataValueQuery(bundle))
     }
 }

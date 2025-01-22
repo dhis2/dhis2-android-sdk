@@ -25,26 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue
 
-package org.hisp.dhis.android.core.datavalue;
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueSet;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class DataValueSetEmptyShould extends BaseObjectShould implements ObjectShould {
-
-    public DataValueSetEmptyShould() {
-        super("common/empty_object.json");
-    }
-
-    @Override
+class DataValueSetEmptyShould : BaseObjectKotlinxShould("common/empty_object.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        objectMapper.readValue(jsonStream, DataValueSet.class);
+    override fun map_from_json_string() {
+        deserialize(DataValueSetDTO.serializer()).toDomain()
     }
 }

@@ -25,26 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports.internal
+package org.hisp.dhis.android.core.datavalue
 
-import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
+import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
-@RunWith(JUnit4::class)
-class DataValueImportSummaryWebResponseShould :
-    BaseObjectKotlinxShould("imports/data_value_import_summary_web_response.json"), ObjectShould {
-
+class DataValueSetShould : BaseObjectKotlinxShould("datavalue/data_values.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val webResponseDTO = deserialize(DataValueImportSummaryWebResponseDTO.serializer())
-        val webResponse = webResponseDTO.toDomain()
-
-        assertThat(webResponse.response.importStatus()).isEqualTo(ImportStatus.SUCCESS)
+        deserialize(DataValueSetDTO.serializer()).toDomain()
     }
 }

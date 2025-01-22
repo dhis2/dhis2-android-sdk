@@ -28,7 +28,15 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDateTime
@@ -51,7 +59,7 @@ import org.junit.runners.JUnit4
 class OwnershipManagerShould {
 
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
-    private val ownershipService: OwnershipService = mock()
+    private val ownershipNetworkHandler: OwnershipNetworkHandler = mock()
     private val dataStatePropagator: DataStatePropagator = mock()
     private val programTempOwnerStore: ProgramTempOwnerStore = mock()
     private val programOwnerStore: ProgramOwnerStore = mock()
@@ -65,13 +73,13 @@ class OwnershipManagerShould {
 
     @Before
     fun setUp() {
-        ownershipService.stub {
+        ownershipNetworkHandler.stub {
             onBlocking { breakGlass(any(), any(), any()) }.doAnswer { httpResponse }
         }
 
         ownershipManager = OwnershipManagerImpl(
             coroutineAPICallExecutor,
-            ownershipService,
+            ownershipNetworkHandler,
             dataStatePropagator,
             programTempOwnerStore,
             programOwnerStore,

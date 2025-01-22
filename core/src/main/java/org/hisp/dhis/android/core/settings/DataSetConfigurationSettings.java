@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -35,60 +35,34 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Map;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AppearanceSettings.Builder.class)
-public abstract class AppearanceSettings {
+@JsonDeserialize(builder = AutoValue_DataSetConfigurationSettings.Builder.class)
+public abstract class DataSetConfigurationSettings {
 
     @Nullable
     @JsonProperty
-    public abstract FilterSorting filterSorting();
+    public abstract DataSetConfigurationSetting globalSettings();
 
     @Nullable
     @JsonProperty
-    public abstract ProgramConfigurationSettings programConfiguration();
+    public abstract Map<String, DataSetConfigurationSetting> specificSettings();
 
-    @Nullable
-    @JsonProperty
-    public abstract DataSetConfigurationSettings dataSetConfiguration();
+    public abstract Builder toBuilder();
 
-    @Deprecated
-    @Nullable
-    @JsonProperty
-    public abstract CompletionSpinnerSetting completionSpinner();
-
-    public abstract AppearanceSettings.Builder toBuilder();
-
-    public static AppearanceSettings.Builder builder() {
-        return new AutoValue_AppearanceSettings.Builder();
+    public static Builder builder() {
+        return new AutoValue_DataSetConfigurationSettings.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
+        public abstract Builder globalSettings(DataSetConfigurationSetting globalSettings);
 
-        public abstract Builder filterSorting(FilterSorting filterSorting);
+        public abstract Builder specificSettings(Map<String, DataSetConfigurationSetting> specificSettings);
 
-        public abstract Builder programConfiguration(ProgramConfigurationSettings programConfiguration);
-
-        public abstract Builder dataSetConfiguration(DataSetConfigurationSettings dataSetConfiguration);
-
-        @Deprecated
-        public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
-
-        // Auxiliary fields
-        abstract ProgramConfigurationSettings programConfiguration();
-        abstract CompletionSpinnerSetting completionSpinner();
-
-        abstract AppearanceSettings autoBuild();
-
-        @SuppressWarnings("PMD.ConfusingTernary")
-        public AppearanceSettings build() {
-            if (programConfiguration() != null) {
-                completionSpinner(AppearanceSettingsHelper.programToCompletionSpinner(programConfiguration()));
-            } else if (completionSpinner() != null) {
-                programConfiguration(AppearanceSettingsHelper.completionSpinnerToProgram(completionSpinner()));
-            }
-            return autoBuild();
-        }
+        public abstract DataSetConfigurationSettings build();
     }
+
 }

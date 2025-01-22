@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,67 +28,55 @@
 
 package org.hisp.dhis.android.core.settings;
 
+
+import android.database.Cursor;
+
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AppearanceSettings.Builder.class)
-public abstract class AppearanceSettings {
+@JsonDeserialize(builder = AutoValue_DataSetConfigurationSetting.Builder.class)
+public abstract class DataSetConfigurationSetting implements CoreObject, ObjectWithUidInterface {
 
     @Nullable
-    @JsonProperty
-    public abstract FilterSorting filterSorting();
+    public abstract String uid();
 
     @Nullable
-    @JsonProperty
-    public abstract ProgramConfigurationSettings programConfiguration();
+    public abstract Integer minimumLocationAccuracy();
 
     @Nullable
-    @JsonProperty
-    public abstract DataSetConfigurationSettings dataSetConfiguration();
+    public abstract Boolean disableManualLocation();
 
-    @Deprecated
-    @Nullable
-    @JsonProperty
-    public abstract CompletionSpinnerSetting completionSpinner();
+    public static DataSetConfigurationSetting create(Cursor cursor) {
+        return AutoValue_DataSetConfigurationSetting.createFromCursor(cursor);
+    }
 
-    public abstract AppearanceSettings.Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    public static AppearanceSettings.Builder builder() {
-        return new AutoValue_AppearanceSettings.Builder();
+    public static Builder builder() {
+        return new AutoValue_DataSetConfigurationSetting.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder filterSorting(FilterSorting filterSorting);
+        public abstract Builder id(Long id);
 
-        public abstract Builder programConfiguration(ProgramConfigurationSettings programConfiguration);
+        public abstract Builder uid(String uid);
 
-        public abstract Builder dataSetConfiguration(DataSetConfigurationSettings dataSetConfiguration);
+        public abstract Builder minimumLocationAccuracy(Integer minimumLocationAccuracy);
 
-        @Deprecated
-        public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
+        public abstract Builder disableManualLocation(Boolean disableManualLocation);
 
-        // Auxiliary fields
-        abstract ProgramConfigurationSettings programConfiguration();
-        abstract CompletionSpinnerSetting completionSpinner();
+        public abstract DataSetConfigurationSetting build();
 
-        abstract AppearanceSettings autoBuild();
 
-        @SuppressWarnings("PMD.ConfusingTernary")
-        public AppearanceSettings build() {
-            if (programConfiguration() != null) {
-                completionSpinner(AppearanceSettingsHelper.programToCompletionSpinner(programConfiguration()));
-            } else if (completionSpinner() != null) {
-                programConfiguration(AppearanceSettingsHelper.completionSpinnerToProgram(completionSpinner()));
-            }
-            return autoBuild();
-        }
     }
 }

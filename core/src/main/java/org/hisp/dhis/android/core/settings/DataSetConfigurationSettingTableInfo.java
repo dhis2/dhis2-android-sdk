@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.settings;
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
+public class DataSetConfigurationSettingTableInfo {
 
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
+    private DataSetConfigurationSettingTableInfo() {
     }
 
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+        @Override
+        public String name() {
+            return "DataSetConfigurationSetting";
+        }
 
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
+    public static class Columns extends CoreColumns {
+        public static final String UID = IdentifiableColumns.UID;
+        public static final String MINIMUM_LOCATION_ACCURACY = "minimumLocationAccuracy";
+        public static final String DISABLE_MANUAL_LOCATION = "disableManualLocation";
 
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 168
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    MINIMUM_LOCATION_ACCURACY,
+                    DISABLE_MANUAL_LOCATION
+            );
+        }
     }
 }

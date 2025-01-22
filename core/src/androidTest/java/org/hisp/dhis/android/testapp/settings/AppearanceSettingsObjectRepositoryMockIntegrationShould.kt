@@ -141,7 +141,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
     }
 
     @Test
-    fun should_return_minimumLocationAccuracy_settings() {
+    fun should_return_minimumLocationAccuracy_program_settings() {
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.minimumLocationAccuracy()).isEqualTo(7)
 
@@ -155,7 +155,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
     }
 
     @Test
-    fun should_return_disableManualLocation_settings() {
+    fun should_return_disableManualLocation_program_settings() {
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.disableManualLocation()).isEqualTo(false)
 
@@ -166,6 +166,26 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         val program2Setting =
             d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
         assertThat(program2Setting?.disableManualLocation()).isEqualTo(false)
+    }
+
+    @Test
+    fun should_return_minimumLocationAccuracy_dataSet_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalDataSetConfigurationSetting()
+        assertThat(setting?.minimumLocationAccuracy()).isEqualTo(7)
+
+        val dataSet1Setting =
+            d2.settingModule().appearanceSettings().getDataSetConfigurationByUid(dataSet1)
+        assertThat(dataSet1Setting?.minimumLocationAccuracy()).isEqualTo(8)
+    }
+
+    @Test
+    fun should_return_disableManualLocation_dataSet_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalDataSetConfigurationSetting()
+        assertThat(setting?.disableManualLocation()).isEqualTo(false)
+
+        val dataSet1Setting =
+            d2.settingModule().appearanceSettings().getDataSetConfigurationByUid(dataSet1)
+        assertThat(dataSet1Setting?.disableManualLocation()).isEqualTo(true)
     }
 
     @Test
@@ -187,5 +207,6 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         const val program1 = "IpHINAT79UW"
         const val program2 = "IpHINAT79UQ"
         const val program3 = "lyLU2wR22tC"
+        const val dataSet1 = "lyLU2wR22tC"
     }
 }

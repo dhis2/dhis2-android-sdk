@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.data.settings
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
+import org.hisp.dhis.android.core.settings.DataSetConfigurationSettingTableInfo
+import org.hisp.dhis.android.core.settings.internal.DataSetConfigurationSettingStoreImpl
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
-
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 168
+@RunWith(D2JunitRunner::class)
+class DataSetConfigurationSettingStoreIntegrationShould :
+    ObjectStoreAbstractIntegrationShould<DataSetConfigurationSetting>(
+        DataSetConfigurationSettingStoreImpl(TestDatabaseAdapterFactory.get()),
+        DataSetConfigurationSettingTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): DataSetConfigurationSetting {
+        return DataSetConfigurationSettingSamples.get()
     }
 }

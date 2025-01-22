@@ -36,6 +36,10 @@ import com.google.auto.value.AutoValue;
 @JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
 public abstract class HttpMessageResponse extends WebResponse {
 
+    public static Builder builder() {
+        return new AutoValue_HttpMessageResponse.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {

@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramOwnerPostCall(
-    private val ownershipService: OwnershipService,
+    private val ownershipNetworkHandler: OwnershipNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val programOwnerStore: ProgramOwnerStore,
     private val dataStatePropagator: DataStatePropagator,
@@ -44,7 +44,7 @@ internal class ProgramOwnerPostCall(
 
     suspend fun uploadProgramOwner(programOwner: ProgramOwner) {
         val response = coroutineAPICallExecutor.wrap(storeError = true) {
-            ownershipService.transfer(
+            ownershipNetworkHandler.transfer(
                 parameterManager.getTrackedEntityForOwnershipParameter(programOwner.trackedEntityInstance()),
                 programOwner.program(),
                 programOwner.ownerOrgUnit(),

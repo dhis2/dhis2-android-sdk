@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.tracker.exporter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService
+import org.hisp.dhis.android.network.ownership.OwnershipService
 import org.koin.core.annotation.Singleton
 
 @Singleton

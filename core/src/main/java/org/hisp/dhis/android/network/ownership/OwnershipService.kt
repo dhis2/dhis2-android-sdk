@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
+package org.hisp.dhis.android.network.ownership
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OwnershipService(private val client: HttpServiceClient) {
+internal class OwnershipService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun breakGlass(
         trackedEntity: Map<String, String>,
         program: String,
         reason: String,
-    ): HttpMessageResponse {
+    ): HttpMessageResponseDTO {
         return client.post {
             url("$OWNERSHIP_URL/override")
             parameters {
@@ -53,7 +53,7 @@ internal class OwnershipService(private val client: HttpServiceClient) {
         trackedEntity: Map<String, String>,
         program: String,
         ou: String,
-    ): HttpMessageResponse {
+    ): HttpMessageResponseDTO {
         return client.put {
             url("$OWNERSHIP_URL/transfer")
             parameters {

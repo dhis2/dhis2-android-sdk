@@ -7670,6 +7670,7 @@ public abstract class org/hisp/dhis/android/core/imports/internal/EventWebRespon
 
 public abstract class org/hisp/dhis/android/core/imports/internal/HttpMessageResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/HttpMessageResponse$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/imports/internal/HttpMessageResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {

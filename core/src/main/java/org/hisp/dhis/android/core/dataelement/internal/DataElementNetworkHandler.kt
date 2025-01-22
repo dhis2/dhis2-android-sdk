@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
+package org.hisp.dhis.android.core.dataelement.internal
+
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.program.ProgramStageDataElement
-import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.dataelement.DataElementFields
 
-internal object ProgramStageDataElementFields : BaseFields<ProgramStageDataElement>() {
-    const val RENDER_TYPE = "renderType"
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.DISPLAY_IN_REPORTS),
-        fh.field(Columns.COMPULSORY),
-        fh.field(Columns.ALLOW_PROVIDED_ELSEWHERE),
-        fh.field(Columns.SORT_ORDER),
-        fh.field(Columns.ALLOW_FUTURE_DATE),
-        fh.field(RENDER_TYPE),
-        fh.nestedField<DataElement>(Columns.DATA_ELEMENT).with(DataElementFields.allFields),
-        fh.nestedField<ObjectWithUid>(Columns.PROGRAM_STAGE).with(ObjectWithUid.uid),
-    )
+internal fun interface DataElementNetworkHandler {
+    suspend fun getDataElements(uids: Set<String>): Payload<DataElement>
 }

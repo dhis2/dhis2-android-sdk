@@ -37,9 +37,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.internal.DataElementAttributeChildrenAppender
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.dataelement.internal.DataElementLegendSetChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.network.dataelement.DataElementFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

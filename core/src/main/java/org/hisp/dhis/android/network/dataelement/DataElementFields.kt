@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement.internal
+package org.hisp.dhis.android.network.dataelement
 
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo.Columns
 import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
@@ -64,6 +64,6 @@ internal object DataElementFields : BaseFields<DataElement>() {
         fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
         fh.nestedField<Access>(ACCESS).with(AccessFields.read),
         fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
-        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValueFields.allFields),
     )
 }

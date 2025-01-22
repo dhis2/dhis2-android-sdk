@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.internal.AccessFields
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns
+import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
@@ -84,7 +84,7 @@ internal object ProgramStageFields : BaseFields<ProgramStage>() {
         fh.nestedField<ProgramStageDataElement>(PROGRAM_STAGE_DATA_ELEMENTS)
             .with(ProgramStageDataElementFields.allFields),
         fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
-        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields),
+        fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValueFields.allFields),
         fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
     )
 }

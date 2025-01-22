@@ -25,32 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute
 
-package org.hisp.dhis.android.core.attribute;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.attribute.AttributeValueDTO
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-public class AttributeValueShould extends BaseObjectShould implements ObjectShould {
-
-    public AttributeValueShould() {
-        super("attribute/attributeValue.json");
-    }
-
-    @Override
+class AttributeValueShould : BaseObjectKotlinxShould("attribute/attributeValue.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        AttributeValue attributeValue = objectMapper.readValue(jsonStream, AttributeValue.class);
+    override fun map_from_json_string() {
+        val attributeValueDTO = deserialize(AttributeValueDTO.serializer())
+        val attributeValue = attributeValueDTO.toDomain()
 
-        assertThat(attributeValue.value()).isEqualTo("value_test");
-        assertThat(attributeValue.attribute().uid()).isEqualTo("r6KOit2qCGw");
+        assertThat(attributeValue.value()).isEqualTo("value_test")
+        assertThat(attributeValue.attribute().uid()).isEqualTo("r6KOit2qCGw")
     }
 }

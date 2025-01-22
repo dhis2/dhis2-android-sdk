@@ -75,70 +75,86 @@ import org.hisp.dhis.android.core.validation.ValidationDIModule
 import org.hisp.dhis.android.core.visualization.VisualizationDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
 import org.hisp.dhis.android.network.dependencyinjection.NetworkDIModule
-import org.koin.core.context.startKoin
+import org.koin.core.Koin
+import org.koin.core.component.KoinComponent
+import org.koin.dsl.koinApplication
 import org.koin.ksp.generated.module
 
-internal object D2DIComponentFactory {
+internal object DhisAndroidSdkKoinContext {
+
+    fun create(
+        d2Config: D2Configuration,
+        secureStore: SecureStore,
+        insecureStore: InsecureStore,
+    ) = koinApplication {
+        modules(
+            listOf(
+                appContextDIModule(d2Config),
+                keyValueStorageDIModule(secureStore, insecureStore),
+                javaDIClasses,
+
+                AnalyticsDIModule().module,
+                ArchDIModule().module,
+                AttributeDIModule().module,
+                CategoryDIModule().module,
+                CommonDIModule().module,
+                ConfigurationDIModule().module,
+                ConstantDIModule().module,
+                DataApprovalDIModule().module,
+                DataElementDIModule().module,
+                DataSetDIModule().module,
+                DataStoreDIModule().module,
+                DataValueDIModule().module,
+                DomainDIModule().module,
+                EnrollmentDIModule().module,
+                EventDIModule().module,
+                ExpressionDimensionItemDIModule().module,
+                FileResourceDIModule().module,
+                IconDIModule().module,
+                ImportsDIModule().module,
+                IndicatorDIModule().module,
+                LegendSetDIModule().module,
+                MaintenanceDIModule().module,
+                MapDIModule().module,
+                NoteDIModule().module,
+                NetworkDIModule().module,
+                OptionDIModule().module,
+                OrganisationUnitDIModule().module,
+                ParserDIModule().module,
+                PeriodDIModule().module,
+                ProgramDIModule().module,
+                ProgramStageWorkingListDIModule().module,
+                RelationshipDIModule().module,
+                ResourceDIModule().module,
+                SettingsDIModule().module,
+                SmsDIModule().module,
+                SystemInfoDIModule().module,
+                TrackedEntityDIModule().module,
+                TrackerDIModule().module,
+                UseCaseDIModule().module,
+                UserDIModule().module,
+                ValidationDIModule().module,
+                VisualizationDIModule().module,
+                WipeDIModule().module,
+            ),
+        )
+    }
+
+    lateinit var koin: Koin
+}
+
+internal interface IsolatedKoinComponent : KoinComponent {
+    override fun getKoin(): Koin = DhisAndroidSdkKoinContext.koin
+}
+
+internal object D2DIComponentFactory : IsolatedKoinComponent {
 
     fun create(
         d2Config: D2Configuration,
         secureStore: SecureStore,
         insecureStore: InsecureStore,
     ): D2DIComponent {
-        val koinApp = startKoin {
-            modules(
-                listOf(
-                    appContextDIModule(d2Config),
-                    keyValueStorageDIModule(secureStore, insecureStore),
-                    javaDIClasses,
-
-                    AnalyticsDIModule().module,
-                    ArchDIModule().module,
-                    AttributeDIModule().module,
-                    CategoryDIModule().module,
-                    CommonDIModule().module,
-                    ConfigurationDIModule().module,
-                    ConstantDIModule().module,
-                    DataApprovalDIModule().module,
-                    DataElementDIModule().module,
-                    DataSetDIModule().module,
-                    DataStoreDIModule().module,
-                    DataValueDIModule().module,
-                    DomainDIModule().module,
-                    EnrollmentDIModule().module,
-                    EventDIModule().module,
-                    ExpressionDimensionItemDIModule().module,
-                    FileResourceDIModule().module,
-                    IconDIModule().module,
-                    ImportsDIModule().module,
-                    IndicatorDIModule().module,
-                    LegendSetDIModule().module,
-                    MaintenanceDIModule().module,
-                    MapDIModule().module,
-                    NoteDIModule().module,
-                    NetworkDIModule().module,
-                    OptionDIModule().module,
-                    OrganisationUnitDIModule().module,
-                    ParserDIModule().module,
-                    PeriodDIModule().module,
-                    ProgramDIModule().module,
-                    ProgramStageWorkingListDIModule().module,
-                    RelationshipDIModule().module,
-                    ResourceDIModule().module,
-                    SettingsDIModule().module,
-                    SmsDIModule().module,
-                    SystemInfoDIModule().module,
-                    TrackedEntityDIModule().module,
-                    TrackerDIModule().module,
-                    UseCaseDIModule().module,
-                    UserDIModule().module,
-                    ValidationDIModule().module,
-                    VisualizationDIModule().module,
-                    WipeDIModule().module,
-                ),
-            )
-        }
-
-        return koinApp.koin.get<D2DIComponent>()
+        DhisAndroidSdkKoinContext.koin = DhisAndroidSdkKoinContext.create(d2Config, secureStore, insecureStore).koin
+        return getKoin().get()
     }
 }

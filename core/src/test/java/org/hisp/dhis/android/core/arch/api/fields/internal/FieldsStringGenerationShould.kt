@@ -61,7 +61,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterFields
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterFields
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListFields
 import org.hisp.dhis.android.core.relationship.RelationshipFields
 import org.hisp.dhis.android.core.relationship.internal.NewRelationshipFields
 import org.hisp.dhis.android.core.relationship.internal.NewRelationshipItemEnrollmentFields
@@ -119,6 +118,7 @@ import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
+import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields

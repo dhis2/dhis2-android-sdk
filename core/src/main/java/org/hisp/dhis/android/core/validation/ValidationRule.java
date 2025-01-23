@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -52,57 +49,42 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ValidationRule.Builder.class)
 public abstract class ValidationRule extends BaseNameableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String instruction();
 
-    @JsonProperty()
     @ColumnAdapter(ValidationRuleImportanceColumnAdapter.class)
     public abstract ValidationRuleImportance importance();
 
-    @JsonProperty()
     @ColumnAdapter(ValidationRuleOperatorColumnAdapter.class)
     public abstract ValidationRuleOperator operator();
 
-    @JsonProperty()
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
-    @JsonProperty()
     public abstract Boolean skipFormValidation();
 
-    @JsonProperty()
     @ColumnAdapter(LeftValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression leftSide();
 
-    @JsonProperty()
     abstract String leftSideExpression();
 
-    @JsonProperty()
     abstract String leftSideDescription();
 
-    @JsonProperty()
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
     abstract MissingValueStrategy leftSideMissingValueStrategy();
 
-    @JsonProperty()
     @ColumnAdapter(RightValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
 
-    @JsonProperty()
     abstract String rightSideExpression();
 
-    @JsonProperty()
     abstract String rightSideDescription();
 
-    @JsonProperty()
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
     abstract MissingValueStrategy rightSideMissingValueStrategy();
 
-    @JsonProperty()
     @ColumnAdapter(IntegerArrayColumnAdapter.class)
     public abstract List<Integer> organisationUnitLevels();
 
@@ -117,7 +99,6 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

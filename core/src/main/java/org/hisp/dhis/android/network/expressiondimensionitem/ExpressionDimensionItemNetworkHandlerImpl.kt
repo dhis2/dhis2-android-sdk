@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.expressiondimensionitem
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
-import org.junit.Test
+package org.hisp.dhis.android.network.expressiondimensionitem
 
-class ExpressionDimensionItemShould :
-    BaseObjectKotlinxShould("expressiondimensionitem/expression_dimension_item.json"),
-    ObjectShould {
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-    @Test
-    override fun map_from_json_string() {
-        val itemDTO = deserialize(ExpressionDimensionItemDTO.serializer())
-        val item = itemDTO.toDomain()
-
-        assertThat(item.uid()).isEqualTo("MUcDTQTYanb")
-        assertThat(item.code()).isEqualTo("ANC_code")
-        assertThat(item.name()).isEqualTo("ANC 1 + 2")
-        assertThat(item.displayName()).isEqualTo("ANC 1 + 2 display")
-        assertThat(item.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-05-16T00:42:44.670"))
-        assertThat(item.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-05-16T00:42:44.670"))
-        assertThat(item.expression()).isEqualTo("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
-        assertThat(item.deleted()).isNull()
+@Singleton
+internal class ExpressionDimensionItemNetworkHandlerImpl(
+    private val httpServiceClient: HttpServiceClientKotlinx,
+) : ExpressionDimensionItemNetworkHandler {
+    private val service = ExpressionDimensionItemService(httpServiceClient)
+    override suspend fun getExpressionDimensionItems(itemUids: Set<String>): Payload<ExpressionDimensionItem> {
+        val apiPayload = service.getExpressionDimensionItems(
+            ExpressionDimensionItemFields.uid.`in`(itemUids),
+            ExpressionDimensionItemFields.allFields,
+            false,
+        )
+        return apiPayload.mapItems(ExpressionDimensionItemDTO::toDomain)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.expressiondimensionitem
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
-import org.junit.Test
+package org.hisp.dhis.android.network.expressiondimensionitem
 
-class ExpressionDimensionItemShould :
-    BaseObjectKotlinxShould("expressiondimensionitem/expression_dimension_item.json"),
-    ObjectShould {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-    @Test
-    override fun map_from_json_string() {
-        val itemDTO = deserialize(ExpressionDimensionItemDTO.serializer())
-        val item = itemDTO.toDomain()
-
-        assertThat(item.uid()).isEqualTo("MUcDTQTYanb")
-        assertThat(item.code()).isEqualTo("ANC_code")
-        assertThat(item.name()).isEqualTo("ANC 1 + 2")
-        assertThat(item.displayName()).isEqualTo("ANC 1 + 2 display")
-        assertThat(item.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-05-16T00:42:44.670"))
-        assertThat(item.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-05-16T00:42:44.670"))
-        assertThat(item.expression()).isEqualTo("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
-        assertThat(item.deleted()).isNull()
+@Serializable
+internal data class ExpressionDimensionItemDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val expression: String?,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): ExpressionDimensionItem {
+        return ExpressionDimensionItem.builder()
+            .applyBaseIdentifiableFields(this)
+            .expression(this.expression)
+            .build()
     }
 }
+
+@Serializable
+internal class ExpressionDimensionItemPayload(
+    override val pager: PagerDTO?,
+    @SerialName("expressionDimensionItems") override val items: List<ExpressionDimensionItemDTO> = emptyList(),
+) : PayloadJson<ExpressionDimensionItemDTO>(pager, items)

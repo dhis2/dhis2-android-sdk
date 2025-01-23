@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.expressiondimensionitem
+package org.hisp.dhis.android.network.expressiondimensionitem
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
-import org.junit.Test
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-class ExpressionDimensionItemShould :
-    BaseObjectKotlinxShould("expressiondimensionitem/expression_dimension_item.json"),
-    ObjectShould {
+internal class ExpressionDimensionItemService(private val client: HttpServiceClientKotlinx) {
 
-    @Test
-    override fun map_from_json_string() {
-        val itemDTO = deserialize(ExpressionDimensionItemDTO.serializer())
-        val item = itemDTO.toDomain()
-
-        assertThat(item.uid()).isEqualTo("MUcDTQTYanb")
-        assertThat(item.code()).isEqualTo("ANC_code")
-        assertThat(item.name()).isEqualTo("ANC 1 + 2")
-        assertThat(item.displayName()).isEqualTo("ANC 1 + 2 display")
-        assertThat(item.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-05-16T00:42:44.670"))
-        assertThat(item.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-05-16T00:42:44.670"))
-        assertThat(item.expression()).isEqualTo("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
-        assertThat(item.deleted()).isNull()
+    suspend fun getExpressionDimensionItems(
+        uids: Filter<ExpressionDimensionItem>,
+        fields: Fields<ExpressionDimensionItem>,
+        paging: Boolean,
+    ): ExpressionDimensionItemPayload {
+        return client.get {
+            url("expressionDimensionItems")
+            parameters {
+                fields(fields)
+                filter(uids)
+                paging(paging)
+            }
+        }
     }
 }

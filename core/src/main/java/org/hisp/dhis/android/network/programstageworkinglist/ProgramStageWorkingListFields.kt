@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.programstageworkinglist.internal
+package org.hisp.dhis.android.network.programstageworkinglist
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ProgramStageWorkingListService(private val client: HttpServiceClient) {
+internal object ProgramStageWorkingListFields : BaseFields<ProgramStageWorkingList>() {
+    private const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"
 
-    suspend fun getProgramStageWorkingLists(
-        uids: Filter<ProgramStageWorkingList>,
-        accessDataReadFilter: String,
-        fields: Fields<ProgramStageWorkingList>,
-        paging: Boolean,
-    ): PayloadJackson<ProgramStageWorkingList> {
-        return client.get {
-            url("programStageWorkingLists")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
+    val programUid = fh.field(Columns.PROGRAM + "." + BaseIdentifiableObject.UID)
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DESCRIPTION),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedField<ProgramStageQueryCriteria>(PROGRAM_STAGE_QUERY_CRITERIA)
+            .with(ProgramStageQueryCriteriaFields.allFields),
+    )
 }

@@ -25,56 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation
 
-package org.hisp.dhis.android.core.validation;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.junit.Test;
+class ValidationRuleShould : BaseObjectKotlinxShould("validation/validation_rule.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ValidationRuleShould extends BaseObjectShould implements ObjectShould {
-
-    public ValidationRuleShould() {
-        super("validation/validation_rule.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ValidationRule validationRule = objectMapper.readValue(jsonStream, ValidationRule.class);
+    override fun map_from_json_string() {
+        val validationRuleDTO = deserialize(ValidationRuleDTO.serializer())
+        val validationRule = validationRuleDTO.toDomain()
 
-        assertThat(validationRule.code()).isEqualTo("Malaria outbreak");
+        assertThat(validationRule.code()).isEqualTo("Malaria outbreak")
         assertThat(validationRule.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2017-05-29T16:43:31.137"));
-        assertThat(validationRule.uid()).isEqualTo("kgh54Xb9LSE");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2017-05-29T16:43:31.137"),
+        )
+        assertThat(validationRule.uid()).isEqualTo("kgh54Xb9LSE")
         assertThat(validationRule.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2017-01-26T19:16:58.712"));
-        assertThat(validationRule.name()).isEqualTo("Malaria outbreak");
-        assertThat(validationRule.description()).isEqualTo("Malaria outbreak");
-        assertThat(validationRule.deleted()).isNull();
+            BaseIdentifiableObject.DATE_FORMAT.parse("2017-01-26T19:16:58.712"),
+        )
+        assertThat(validationRule.name()).isEqualTo("Malaria outbreak")
+        assertThat(validationRule.description()).isEqualTo("Malaria outbreak")
+        assertThat(validationRule.deleted()).isNull()
 
-        assertThat(validationRule.instruction()).isEqualTo("Instruction");
-        assertThat(validationRule.importance()).isEqualTo(ValidationRuleImportance.MEDIUM);
-        assertThat(validationRule.operator()).isEqualTo(ValidationRuleOperator.greater_than);
-        assertThat(validationRule.periodType()).isEqualTo(PeriodType.Monthly);
-        assertThat(validationRule.skipFormValidation()).isFalse();
-        assertThat(validationRule.leftSide().expression()).isEqualTo("10");
-        assertThat(validationRule.leftSideExpression()).isEqualTo("10");
-        assertThat(validationRule.leftSide().description()).isEqualTo("Malaria threshold");
-        assertThat(validationRule.leftSide().missingValueStrategy()).isEqualTo(MissingValueStrategy.NEVER_SKIP);
-        assertThat(validationRule.rightSide().expression()).isEqualTo("I{nFICjJluo74}");
-        assertThat(validationRule.rightSide().description()).isEqualTo("Malaria case count");
-        assertThat(validationRule.rightSide().missingValueStrategy()).isEqualTo(MissingValueStrategy.NEVER_SKIP);
-        assertThat(validationRule.organisationUnitLevels() == null).isFalse();
-        assertThat(validationRule.organisationUnitLevels().get(0)).isEqualTo(2);
-        assertThat(validationRule.organisationUnitLevels().get(1)).isEqualTo(3);
-        assertThat(validationRule.organisationUnitLevels().get(2)).isEqualTo(4);
+        assertThat(validationRule.instruction()).isEqualTo("Instruction")
+        assertThat(validationRule.importance()).isEqualTo(ValidationRuleImportance.MEDIUM)
+        assertThat(validationRule.operator()).isEqualTo(ValidationRuleOperator.greater_than)
+        assertThat(validationRule.periodType()).isEqualTo(PeriodType.Monthly)
+        assertThat(validationRule.skipFormValidation()).isFalse()
+        assertThat(validationRule.leftSide().expression()).isEqualTo("10")
+        assertThat(validationRule.leftSideExpression()).isEqualTo("10")
+        assertThat(validationRule.leftSide().description()).isEqualTo("Malaria threshold")
+        assertThat(validationRule.leftSide().missingValueStrategy())
+            .isEqualTo(MissingValueStrategy.NEVER_SKIP)
+        assertThat(validationRule.rightSide().expression()).isEqualTo("I{nFICjJluo74}")
+        assertThat(validationRule.rightSide().description()).isEqualTo("Malaria case count")
+        assertThat(validationRule.rightSide().missingValueStrategy())
+            .isEqualTo(MissingValueStrategy.NEVER_SKIP)
+        assertThat(validationRule.organisationUnitLevels() == null).isFalse()
+        assertThat(validationRule.organisationUnitLevels()[0]).isEqualTo(2)
+        assertThat(validationRule.organisationUnitLevels()[1]).isEqualTo(3)
+        assertThat(validationRule.organisationUnitLevels()[2]).isEqualTo(4)
     }
 }

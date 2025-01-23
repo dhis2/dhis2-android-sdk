@@ -137,6 +137,22 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
+    public void filter_by_item() {
+        RelationshipItem item = RelationshipItem.builder()
+                .trackedEntityInstance(
+                        RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()
+                )
+                .relationshipItemType(RelationshipConstraintType.FROM)
+                .build();
+
+        List<Relationship> relationships = d2.relationshipModule().relationships()
+                .byItem(item)
+                .blockingGet();
+
+        assertThat(relationships.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_object_repository() {
         Relationship relationship =
                 d2.relationshipModule().relationships()

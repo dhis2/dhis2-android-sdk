@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.expressiondimensionitem.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 
-internal interface ExpressionDimensionItemNetworkHandler {
+internal fun interface ExpressionDimensionItemNetworkHandler {
     suspend fun getExpressionDimensionItems(
         itemUids: Set<String>,
     ): Payload<ExpressionDimensionItem>

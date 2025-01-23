@@ -76,7 +76,6 @@ import org.hisp.dhis.android.core.visualization.VisualizationDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
 import org.hisp.dhis.android.network.dependencyinjection.NetworkDIModule
 import org.koin.core.Koin
-import org.koin.core.component.KoinComponent
 import org.koin.dsl.koinApplication
 import org.koin.ksp.generated.module
 
@@ -143,11 +142,7 @@ internal object DhisAndroidSdkKoinContext {
     lateinit var koin: Koin
 }
 
-internal interface IsolatedKoinComponent : KoinComponent {
-    override fun getKoin(): Koin = DhisAndroidSdkKoinContext.koin
-}
-
-internal object D2DIComponentFactory : IsolatedKoinComponent {
+internal object D2DIComponentFactory {
 
     fun create(
         d2Config: D2Configuration,
@@ -155,6 +150,6 @@ internal object D2DIComponentFactory : IsolatedKoinComponent {
         insecureStore: InsecureStore,
     ): D2DIComponent {
         DhisAndroidSdkKoinContext.koin = DhisAndroidSdkKoinContext.create(d2Config, secureStore, insecureStore).koin
-        return getKoin().get()
+        return DhisAndroidSdkKoinContext.koin.get()
     }
 }

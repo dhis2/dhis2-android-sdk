@@ -48,12 +48,12 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.koin.core.annotation.Singleton
-import java.util.*
+import java.util.Date
 
 @Singleton
 internal class OwnershipManagerImpl(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val ownershipService: OwnershipService,
+    private val ownershipNetworkHandler: OwnershipNetworkHandler,
     private val dataStatePropagator: DataStatePropagator,
     private val programTempOwnerStore: ProgramTempOwnerStore,
     private val programOwnerStore: ProgramOwnerStore,
@@ -141,7 +141,7 @@ internal class OwnershipManagerImpl(
         reason: String,
     ): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
-            ownershipService.breakGlass(
+            ownershipNetworkHandler.breakGlass(
                 parameterManager.getTrackedEntityForOwnershipParameter(trackedEntityInstance),
                 program,
                 reason,

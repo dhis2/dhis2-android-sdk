@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
-public abstract class HttpMessageResponse extends WebResponse {
+internal interface OwnershipNetworkHandler {
+    suspend fun breakGlass(
+        trackedEntity: Map<String, String>,
+        program: String,
+        reason: String,
+    ): HttpMessageResponse
 
-    public static Builder builder() {
-        return new AutoValue_HttpMessageResponse.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-
-        public abstract HttpMessageResponse build();
-
-    }
+    suspend fun transfer(
+        trackedEntity: Map<String, String>,
+        program: String,
+        ou: String,
+    ): HttpMessageResponse
 }

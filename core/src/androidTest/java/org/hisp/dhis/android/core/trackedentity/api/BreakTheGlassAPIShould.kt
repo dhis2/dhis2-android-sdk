@@ -47,7 +47,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
-import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipService
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
+import org.hisp.dhis.android.network.ownership.OwnershipNetworkHandlerImpl
+import org.hisp.dhis.android.network.ownership.OwnershipService
 import org.junit.Before
 import java.util.Arrays
 
@@ -79,7 +81,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     private val strategy = "SYNC"
     private lateinit var executor: CoroutineAPICallExecutor
     private lateinit var trackedEntityInstanceService: TrackedEntityInstanceService
-    private lateinit var ownershipService: OwnershipService
+    private lateinit var ownershipNetworkHandler: OwnershipNetworkHandler
     private val uidGenerator: UidGenerator = UidGeneratorImpl()
 
     @Before
@@ -87,7 +89,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
         trackedEntityInstanceService = TrackedEntityInstanceService(d2.httpServiceClient())
-        ownershipService = OwnershipService(d2.httpServiceClient())
+        ownershipNetworkHandler = OwnershipNetworkHandlerImpl(d2.httpServiceClientKotlinx())
         login()
     }
 
@@ -175,7 +177,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val glassResponse: HttpMessageResponse =
             executor.wrap {
-                ownershipService.breakGlass(
+                ownershipNetworkHandler.breakGlass(
                     mapOf(OwnershipService.TRACKED_ENTITY to tei.uid()),
                     program,
                     "Sync",

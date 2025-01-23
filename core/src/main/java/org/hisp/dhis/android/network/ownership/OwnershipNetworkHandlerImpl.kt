@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.network.ownership
+
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OwnershipService(private val client: HttpServiceClient) {
-
-    suspend fun breakGlass(
+internal class OwnershipNetworkHandlerImpl(
+    val httpServiceClient: HttpServiceClientKotlinx,
+) : OwnershipNetworkHandler {
+    private val service = OwnershipService(httpServiceClient)
+    override suspend fun breakGlass(
         trackedEntity: Map<String, String>,
         program: String,
         reason: String,
     ): HttpMessageResponse {
-        return client.post {
-            url("$OWNERSHIP_URL/override")
-            parameters {
-                attribute(PROGRAM, program)
-                attribute(REASON, reason)
-            }
-            body(trackedEntity)
-        }
+        val apiPayload = service.breakGlass(trackedEntity, program, reason)
+        return apiPayload.toDomain()
     }
 
-    suspend fun transfer(
+    override suspend fun transfer(
         trackedEntity: Map<String, String>,
         program: String,
         ou: String,
     ): HttpMessageResponse {
-        return client.put {
-            url("$OWNERSHIP_URL/transfer")
-            parameters {
-                attribute(PROGRAM, program)
-                attribute(ORG_UNIT, ou)
-            }
-            body(trackedEntity)
-        }
-    }
-
-    companion object {
-        private const val OWNERSHIP_URL = "tracker/ownership"
-        private const val PROGRAM = "program"
-        private const val REASON = "reason"
-        private const val ORG_UNIT = "ou"
-
-        const val TRACKED_ENTITY_INSTACE = "trackedEntityInstance"
-        const val TRACKED_ENTITY = "trackedEntity"
+        val apiPayload = service.transfer(trackedEntity, program, ou)
+        return apiPayload.toDomain()
     }
 }

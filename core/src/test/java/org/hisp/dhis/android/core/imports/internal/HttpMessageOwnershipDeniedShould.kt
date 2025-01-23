@@ -28,17 +28,19 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.junit.Test
 
 class HttpMessageOwnershipDeniedShould :
-    BaseObjectShould("trackedentity/glass/glass_protected_tei_failure.json"),
+    BaseObjectKotlinxShould("trackedentity/glass/glass_protected_tei_failure.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val response = objectMapper.readValue(jsonStream, HttpMessageResponse::class.java)
+        val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
+        val response = responseDTO.toDomain()
 
         assertThat(response.httpStatus()).isEqualTo("Unauthorized")
         assertThat(response.httpStatusCode()).isEqualTo(401)

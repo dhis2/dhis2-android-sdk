@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.common.dto
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
-public abstract class HttpMessageResponse extends WebResponse {
-
-    public static Builder builder() {
-        return new AutoValue_HttpMessageResponse.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-
-        public abstract HttpMessageResponse build();
-
+@Serializable
+internal data class HttpMessageResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+) : WebResponseDTO {
+    fun toDomain(): HttpMessageResponse {
+        return HttpMessageResponse.builder()
+            .httpStatus(httpStatus)
+            .httpStatusCode(httpStatusCode)
+            .status(status)
+            .message(message)
+            .build()
     }
 }

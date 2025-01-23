@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.expressiondimensionitem.internal
+package org.hisp.dhis.android.network.expressiondimensionitem
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ExpressionDimensionItemService(private val client: HttpServiceClient) {
+internal class ExpressionDimensionItemService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun getExpressionDimensionItems(
         uids: Filter<ExpressionDimensionItem>,
         fields: Fields<ExpressionDimensionItem>,
         paging: Boolean,
-    ): PayloadJackson<ExpressionDimensionItem> {
+    ): ExpressionDimensionItemPayload {
         return client.get {
             url("expressionDimensionItems")
             parameters {

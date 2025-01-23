@@ -29,17 +29,19 @@ package org.hisp.dhis.android.core.expressiondimensionitem
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
 import org.junit.Test
 
 class ExpressionDimensionItemShould :
-    BaseObjectShould("expressiondimensionitem/expression_dimension_item.json"),
+    BaseObjectKotlinxShould("expressiondimensionitem/expression_dimension_item.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val item = objectMapper.readValue(jsonStream, ExpressionDimensionItem::class.java)
+        val itemDTO = deserialize(ExpressionDimensionItemDTO.serializer())
+        val item = itemDTO.toDomain()
 
         assertThat(item.uid()).isEqualTo("MUcDTQTYanb")
         assertThat(item.code()).isEqualTo("ANC_code")

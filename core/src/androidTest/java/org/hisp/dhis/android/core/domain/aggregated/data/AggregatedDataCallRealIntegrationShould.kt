@@ -56,14 +56,14 @@ class AggregatedDataCallRealIntegrationShould : BaseRealIntegrationTest() {
     // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     // @Test
     fun response_successful_on_sync_data_once() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.metadataModule().blockingDownload()
         d2.aggregatedModule().data().blockingDownload()
     }
 
     // @Test
     fun response_successful_on_sync_data_value_two_times() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.metadataModule().blockingDownload()
 
         val start = System.currentTimeMillis()

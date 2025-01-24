@@ -39,8 +39,8 @@ interface UserModule {
     fun authorities(): AuthorityCollectionRepository
     fun user(): UserObjectRepository
     fun accountManager(): AccountManager
-    fun logIn(username: String, password: String, serverUrl: String): Single<User>
-    fun blockingLogIn(username: String, password: String, serverUrl: String): User
+    fun logIn(username: String, password: String, serverUrl: String, twoFactorCode: String?): Single<User>
+    fun blockingLogIn(username: String, password: String, serverUrl: String, twoFactorCode: String?): User
     fun logOut(): Completable
     fun blockingLogOut()
     fun isLogged(): Single<Boolean>

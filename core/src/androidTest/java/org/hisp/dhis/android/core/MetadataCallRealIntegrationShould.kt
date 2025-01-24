@@ -58,7 +58,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun response_successful_on_sync_meta_data_once() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
 
         d2.metadataModule().blockingDownload()
 
@@ -71,7 +71,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun download_metadata_in_io_scheduler() {
-        d2.userModule().logIn(username, password, url)
+        d2.userModule().logIn(username, password, url, null)
             .flatMapObservable { user: User? -> d2.metadataModule().download() }
             .subscribeOn(Schedulers.io())
             .subscribe { progress: D2Progress -> Log.i("META", progress.lastCall()!!) }
@@ -81,7 +81,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun response_successful_on_sync_meta_data_two_times() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
 
         // first sync:
         d2.metadataModule().blockingDownload()
@@ -92,15 +92,15 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun response_successful_on_login_wipe_db_and_login() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.wipeModule().wipeEverything()
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
     }
 
     // @Test
     fun response_successful_on_login_logout_and_login() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.userModule().logOut().blockingAwait()
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
     }
 }

@@ -307,6 +307,6 @@ abstract class EventAPIRealShould internal constructor(
     }
 
     private fun login() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
     }
 }

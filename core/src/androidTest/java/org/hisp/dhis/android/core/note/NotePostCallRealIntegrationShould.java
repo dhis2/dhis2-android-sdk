@@ -53,7 +53,7 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
             d2.userModule().blockingLogOut();
         }
 
-        d2.userModule().blockingLogIn(username, password, serverUrl);
+        d2.userModule().blockingLogIn(username, password, serverUrl, null);
 
         d2.metadataModule().blockingDownload();
 

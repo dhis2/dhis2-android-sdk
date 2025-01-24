@@ -115,6 +115,8 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     .setResponseCode(NOT_FOUND)
                     .setBody("Path not found")
                 return when {
+                    path.startsWith("/api/auth/login") ->
+                        createMockResponse(AUTH_LOGIN_SUCCESS)
                     path == "/api/me/authorization" ->
                         createMockResponse(AUTHORITIES_JSON)
                     path.startsWith("/api/me?") ->
@@ -255,6 +257,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     }
 
     fun enqueueLoginResponses() {
+        enqueueMockResponse(AUTH_LOGIN_SUCCESS)
         enqueueMockResponse(USER_JSON)
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON)
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON)
@@ -444,5 +447,6 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val MOCKWEBSERVER = "Dhis2MockWebServer"
         private const val CONTENT_TYPE = "Content-Type"
         private const val CONTENT_TYPE_JSON = "application/json"
+        private const val AUTH_LOGIN_SUCCESS = "user/auth_login_success.json"
     }
 }

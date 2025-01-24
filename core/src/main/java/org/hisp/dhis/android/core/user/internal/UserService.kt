@@ -56,4 +56,13 @@ internal class UserService(private val client: HttpServiceClient) {
             }
         }
     }
+
+    suspend fun login(payload: LoginPayload): LoginResponse {
+        return client.post {
+            url("auth/login")
+            parameters {
+                body(payload)
+            }
+        }
+    }
 }

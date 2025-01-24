@@ -35,7 +35,7 @@ class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealInteg
 
     // @Test
     fun query_and_download_tracked_entity_instances() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.metadataModule().blockingDownload()
 
         val orgUnit = d2.organisationUnitModule().organisationUnits()

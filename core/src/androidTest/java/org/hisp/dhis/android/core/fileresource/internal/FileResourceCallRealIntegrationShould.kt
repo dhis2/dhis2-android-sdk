@@ -212,7 +212,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun loginAndSyncMetadata() {
-        d2.userModule().logIn(username, password, RealServerMother.url2_36).blockingGet()
+        d2.userModule().logIn(username, password, RealServerMother.url2_36, null).blockingGet()
         d2.metadataModule().blockingDownload()
     }
 }

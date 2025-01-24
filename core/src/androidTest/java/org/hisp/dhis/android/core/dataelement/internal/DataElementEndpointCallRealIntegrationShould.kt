@@ -55,7 +55,7 @@ class DataElementEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     suspend fun download_data_elements() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and
             CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.

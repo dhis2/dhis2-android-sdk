@@ -59,12 +59,17 @@ internal class LogInCall(
     private val accountManager: AccountManagerImpl,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
 ) {
-    suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
-        return blockingLogIn(username, password, serverUrl)
+    suspend fun logIn(username: String?, password: String?, serverUrl: String?, twoFactorCode: String?): User {
+        return blockingLogIn(username, password, serverUrl, twoFactorCode)
     }
 
     @Throws(D2Error::class)
-    private suspend fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
+    private suspend fun blockingLogIn(
+        username: String?,
+        password: String?,
+        serverUrl: String?,
+        twoFactorCode: String?
+    ): User {
         exceptions.throwExceptionIfUsernameNull(username)
         exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
@@ -80,12 +85,8 @@ internal class LogInCall(
             if (databaseManager.isPendingToImportDB(trimmedServerUrl, username)) {
                 importDB(trimmedServerUrl, credentials)
             } else {
-                val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                    userService.authenticate(
-                        okhttp3.Credentials.basic(username, password!!),
-                        UserFields.allFieldsWithoutOrgUnit,
-                    )
-                }.getOrThrow()
+                val user = loginInDhis2AndGetUser(credentials, twoFactorCode)
+
                 loginOnline(user, credentials)
             }
         } catch (d2Error: D2Error) {
@@ -119,7 +120,6 @@ internal class LogInCall(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun loginOnline(user: User, credentials: Credentials): User {
-        credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
 
         databaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username)
@@ -200,5 +200,62 @@ internal class LogInCall(
     private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
         val username = UserInternalAccessor.accessUserCredentials(user).username()!!
         return Credentials(username, serverUrl, null, openIDConnectState)
+    }
+
+    private suspend fun loginInDhis2AndGetUser(
+        credentials: Credentials,
+        twoFactorCode: String?
+    ): User {
+        try {
+
+            val response = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
+                userService.login(
+                    LoginPayload(credentials.username, credentials.password!!, twoFactorCode),
+                )
+            }.getOrThrow()
+
+            if (response.loginStatus == D2ErrorCode.INCORRECT_TWO_FACTOR_CODE.toString()) {
+                throw D2Error.builder()
+                    .errorCode(D2ErrorCode.INCORRECT_TWO_FACTOR_CODE)
+                    .errorDescription("Incorrect two factor code")
+                    .build()
+            }
+
+            credentialsSecureStore.set(credentials)
+
+            val user = coroutineAPICallExecutor.wrap {
+                userService.getUser(
+                    UserFields.allFieldsWithoutOrgUnit,
+                )
+            }.getOrThrow()
+
+            return user
+
+        } catch (d2Error: D2Error) {
+            if (d2Error.errorCode() == D2ErrorCode.NO_DHIS2_SERVER ||
+                d2Error.errorCode() == D2ErrorCode.UNEXPECTED) {
+                credentialsSecureStore.set(credentials)
+
+                val user =  oldLogin(credentials)
+
+                return user
+            } else{
+                throw d2Error
+            }
+        }
+    }
+
+    private suspend fun oldLogin(credentials: Credentials): User {
+        val parsedServerUrl = ServerUrlParser.parse(credentials.serverUrl)
+        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+
+        val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
+            userService.authenticate(
+                okhttp3.Credentials.basic(credentials.username, credentials.password!!),
+                UserFields.allFieldsWithoutOrgUnit,
+            )
+        }.getOrThrow()
+
+        return user
     }
 }

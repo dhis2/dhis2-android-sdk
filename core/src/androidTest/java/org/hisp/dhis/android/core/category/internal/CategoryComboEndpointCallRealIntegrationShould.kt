@@ -40,7 +40,7 @@ class CategoryComboEndpointCallRealIntegrationShould : BaseRealIntegrationTest()
 
     // @Test
     fun download_categories_combos_and_relatives() = runTest {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
         assertNotCombosInDB()
         assertThat(categoryCategoryComboLinks.isEmpty()).isTrue()

@@ -26,25 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user
+package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Observable
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.core.maintenance.D2Error
+import io.reactivex.subjects.PublishSubject
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
-interface AccountManager {
-    fun getAccounts(): List<DatabaseAccount>
+@Singleton
+@Single
+internal class ConnectLogoutHandler(
+    private val credentialsSecureStore: CredentialsSecureStore,
+) {
 
-    fun getCurrentAccount(): DatabaseAccount?
+    private val logOutSubject = PublishSubject.create<Unit>()
 
-    fun setMaxAccounts(maxAccounts: Int?)
+    fun logOutObservable(): Observable<Unit> {
+        return logOutSubject
+    }
 
-    fun getMaxAccounts(): Int?
-
-    @Throws(D2Error::class)
-    fun deleteCurrentAccount()
-
-    fun accountDeletionObservable(): Observable<AccountDeletionReason>
-
-    fun logOutObservable(): Observable<Unit>
+    fun logOut() {
+        credentialsSecureStore.remove()
+        logOutSubject.onNext(Unit)
+    }
 }

@@ -55,6 +55,9 @@ internal class UserIdAuthenticatorHelper(
 
     fun builderWithUserId(chain: Interceptor.Chain): Request.Builder {
         val req = chain.request()
-        return req.newBuilder().addHeader(USER_ID_KEY, userIdStore.get()!!)
+
+        return userIdStore.get()?.let {
+            req.newBuilder().addHeader(USER_ID_KEY, it)
+        } ?: req.newBuilder()
     }
 }

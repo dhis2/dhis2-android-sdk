@@ -49,7 +49,7 @@ internal class ParentAuthenticator(
         val req = chain.request()
 
         // Header has already been explicitly added in UserService.authenticate
-        val isLoginCall = req.header(AUTHORIZATION_KEY) != null
+        val isLoginCall = req.header(AUTHORIZATION_KEY) != null || req.url.encodedPath.contains("auth/login")
 
         return if (isLoginCall) {
             handleLoginCall(chain)

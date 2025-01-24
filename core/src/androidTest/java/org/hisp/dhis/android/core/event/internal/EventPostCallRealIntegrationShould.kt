@@ -188,7 +188,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private fun downloadMetadata() {
-        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.userModule().logIn(username, password, url, null).blockingGet()
         d2.metadataModule().blockingDownload()
         orgUnitUid = d2.organisationUnitModule().organisationUnits()
             .one().blockingGet()!!

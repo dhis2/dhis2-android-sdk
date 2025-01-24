@@ -42,7 +42,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealInte
 
     //@Test
     public void download_tei_enrollments_and_events() {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn(username, password, url, null).blockingGet();
 
         d2.metadataModule().blockingDownload();
 

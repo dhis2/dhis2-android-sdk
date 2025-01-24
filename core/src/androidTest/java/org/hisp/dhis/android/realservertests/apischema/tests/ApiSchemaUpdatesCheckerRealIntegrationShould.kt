@@ -63,7 +63,7 @@ class ApiSchemaUpdatesCheckerRealIntegrationShould : BaseRealIntegrationTest() {
 
 //    @Test
     fun check_no_enum_have_been_updated_on_server() = runTest {
-        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_39)
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_39, null)
         val apiSchemas: List<ApiSchema> = ApiSchemaCall(d2.httpServiceClient()).download()
         val constantsMap: Map<String, List<String>?> = apiSchemas.flatMap { apiSchema ->
             apiSchema.properties.filter { it.propertyType == "CONSTANT" }

@@ -414,7 +414,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     }
 
     private fun login() {
-        d2.userModule().logIn(username, password, serverUrl).blockingGet()
+        d2.userModule().logIn(username, password, serverUrl, null).blockingGet()
     }
 
     private fun syncMetadata() {

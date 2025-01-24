@@ -60,7 +60,6 @@ class ValidationRuleShould : BaseObjectKotlinxShould("validation/validation_rule
         assertThat(validationRule.periodType()).isEqualTo(PeriodType.Monthly)
         assertThat(validationRule.skipFormValidation()).isFalse()
         assertThat(validationRule.leftSide().expression()).isEqualTo("10")
-        assertThat(validationRule.leftSideExpression()).isEqualTo("10")
         assertThat(validationRule.leftSide().description()).isEqualTo("Malaria threshold")
         assertThat(validationRule.leftSide().missingValueStrategy())
             .isEqualTo(MissingValueStrategy.NEVER_SKIP)

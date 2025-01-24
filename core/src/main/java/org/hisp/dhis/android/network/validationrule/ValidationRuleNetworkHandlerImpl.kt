@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleNetworkHandler
-import org.hisp.dhis.android.core.validation.internal.ValidationRuleService
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.koin.core.annotation.Singleton

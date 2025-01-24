@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.LeftValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RightValidationRuleExpressionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MissingValueStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleImportanceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleOperatorColumnAdapter;
@@ -68,22 +67,22 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @ColumnAdapter(LeftValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression leftSide();
 
-    abstract String leftSideExpression();
-
-    abstract String leftSideDescription();
-
-    @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-    abstract MissingValueStrategy leftSideMissingValueStrategy();
+//    abstract String leftSideExpression();
+//
+//    abstract String leftSideDescription();
+//
+//    @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
+//    abstract MissingValueStrategy leftSideMissingValueStrategy();
 
     @ColumnAdapter(RightValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
 
-    abstract String rightSideExpression();
-
-    abstract String rightSideDescription();
-
-    @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-    abstract MissingValueStrategy rightSideMissingValueStrategy();
+//    abstract String rightSideExpression();
+//
+//    abstract String rightSideDescription();
+//
+//    @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
+//    abstract MissingValueStrategy rightSideMissingValueStrategy();
 
     @ColumnAdapter(IntegerArrayColumnAdapter.class)
     public abstract List<Integer> organisationUnitLevels();
@@ -115,67 +114,10 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
         public abstract Builder leftSide(ValidationRuleExpression leftSide);
 
-        abstract Builder leftSideExpression(String leftSideExpression);
-
-        abstract Builder leftSideDescription(String leftSideDescription);
-
-        abstract Builder leftSideMissingValueStrategy(MissingValueStrategy leftSideMissingValueStrategy);
-
         public abstract Builder rightSide(ValidationRuleExpression rightSide);
-
-        abstract Builder rightSideExpression(String rightSideExpression);
-
-        abstract Builder rightSideDescription(String rightSideDescription);
-
-        abstract Builder rightSideMissingValueStrategy(MissingValueStrategy rightSideMissingValueStrategy);
 
         public abstract Builder organisationUnitLevels(List<Integer> organisationUnitLevels);
 
-        abstract ValidationRule autoBuild();
-
-        // Auxiliary fields
-        abstract ValidationRuleExpression leftSide();
-
-        abstract String leftSideDescription();
-
-        abstract String leftSideExpression();
-
-        abstract MissingValueStrategy leftSideMissingValueStrategy();
-
-        abstract ValidationRuleExpression rightSide();
-
-        abstract String rightSideDescription();
-
-        abstract String rightSideExpression();
-
-        abstract MissingValueStrategy rightSideMissingValueStrategy();
-
-        public ValidationRule build() {
-            if (leftSide() == null) {
-                leftSide(ValidationRuleExpression.builder()
-                        .description(leftSideDescription())
-                        .expression(leftSideExpression())
-                        .missingValueStrategy(leftSideMissingValueStrategy())
-                        .build());
-            } else {
-                leftSideExpression(leftSide().expression());
-                leftSideDescription(leftSide().description());
-                leftSideMissingValueStrategy(leftSide().missingValueStrategy());
-            }
-
-            if (rightSide() == null) {
-                rightSide(ValidationRuleExpression.builder()
-                        .description(rightSideDescription())
-                        .expression(rightSideExpression())
-                        .missingValueStrategy(rightSideMissingValueStrategy())
-                        .build());
-            } else {
-                rightSideExpression(rightSide().expression());
-                rightSideDescription(rightSide().description());
-                rightSideMissingValueStrategy(rightSide().missingValueStrategy());
-            }
-
-            return autoBuild();
-        }
+        public abstract ValidationRule build();
     }
 }

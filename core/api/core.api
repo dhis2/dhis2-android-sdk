@@ -14996,7 +14996,7 @@ public abstract class org/hisp/dhis/android/core/validation/ValidationRule : org
 
 public abstract class org/hisp/dhis/android/core/validation/ValidationRule$Builder : org/hisp/dhis/android/core/common/BaseNameableObject$Builder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public abstract fun importance (Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public abstract fun instruction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;

@@ -1,4 +1,4 @@
-# API documentation { #api_documentation}
+# API documentation {#api_documentation}
 
 DHIS2 Android SDK API documentation is hosted
 in [Github repository](https://dhis2.github.io/dhis2-android-sdk/api/index.html).

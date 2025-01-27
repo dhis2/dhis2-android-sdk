@@ -50,7 +50,7 @@ internal class ProgramStageCall internal constructor(
 
     private fun transform(stage: ProgramStage): ProgramStage {
         return ProgramStageInternalAccessor.accessProgramStageDataElements(stage)?.let { dataElements ->
-            val psdes = dataElements.filter { it.dataElement() != null }.toMutableList()
+            val psdes = dataElements.filter { it.dataElement() != null }
             ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build()
         } ?: stage
     }

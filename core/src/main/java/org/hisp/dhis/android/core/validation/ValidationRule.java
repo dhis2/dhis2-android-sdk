@@ -67,22 +67,8 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @ColumnAdapter(LeftValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression leftSide();
 
-//    abstract String leftSideExpression();
-//
-//    abstract String leftSideDescription();
-//
-//    @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-//    abstract MissingValueStrategy leftSideMissingValueStrategy();
-
     @ColumnAdapter(RightValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
-
-//    abstract String rightSideExpression();
-//
-//    abstract String rightSideDescription();
-//
-//    @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-//    abstract MissingValueStrategy rightSideMissingValueStrategy();
 
     @ColumnAdapter(IntegerArrayColumnAdapter.class)
     public abstract List<Integer> organisationUnitLevels();

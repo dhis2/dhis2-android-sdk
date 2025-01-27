@@ -2004,11 +2004,6 @@ public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/Metadata
 	protected fun getEnumClass ()Ljava/lang/Class;
 }
 
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/MissingValueStrategyColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
 public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/NoteTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
 	public fun <init> ()V
 	protected fun getEnumClass ()Ljava/lang/Class;

@@ -29,16 +29,13 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageCall internal constructor(
-    private val service: ProgramStageService,
+    private val networkHandler: ProgramStageNetworkHandler,
     private val handler: ProgramStageHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<ProgramStage> {
@@ -47,34 +44,15 @@ internal class ProgramStageCall internal constructor(
             uids,
             MAX_UID_LIST_SIZE,
             handler,
-            { partitionUids: Set<String> ->
-                val accessDataReadFilter =
-                    "access.data." + DataAccessFields.read.eq(true).generateString()
-                val programUidsFilterStr =
-                    "program." + ObjectWithUid.uid.`in`(partitionUids).generateString()
-                service.getProgramStages(
-                    ProgramStageFields.allFields,
-                    programUidsFilterStr,
-                    accessDataReadFilter,
-                    false,
-                )
-            },
+            networkHandler::getProgramStages,
         ) { stage: ProgramStage -> transform(stage) }
     }
 
     private fun transform(stage: ProgramStage): ProgramStage {
-        return if (ProgramStageInternalAccessor.accessProgramStageDataElements(stage) == null) {
-            stage
-        } else {
-            val psdes: MutableList<ProgramStageDataElement> = ArrayList()
-            for (psde in ProgramStageInternalAccessor.accessProgramStageDataElements(stage)) {
-                if (psde.dataElement() != null) {
-                    psdes.add(psde)
-                }
-            }
-            ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes)
-                .build()
-        }
+        return ProgramStageInternalAccessor.accessProgramStageDataElements(stage)?.let { dataElements ->
+            val psdes = dataElements.filter { it.dataElement() != null }.toMutableList()
+            ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build()
+        } ?: stage
     }
 
     companion object {

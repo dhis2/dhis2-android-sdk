@@ -10184,13 +10184,6 @@ public class org/hisp/dhis/android/core/program/ProgramStageDataElementTableInfo
 	public fun all ()[Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramStageInternalAccessor {
-	public static fun accessProgramStageDataElements (Lorg/hisp/dhis/android/core/program/ProgramStage;)Ljava/util/List;
-	public static fun accessProgramStageSections (Lorg/hisp/dhis/android/core/program/ProgramStage;)Ljava/util/List;
-	public static fun insertProgramStageDataElements (Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public static fun insertProgramStageSections (Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-}
-
 public abstract class org/hisp/dhis/android/core/program/ProgramStageSection : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSection$Builder;

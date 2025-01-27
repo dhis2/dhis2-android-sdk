@@ -25,33 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
-
-import java.util.List;
-
-public final class ProgramStageInternalAccessor {
-
-    private ProgramStageInternalAccessor() {
+internal object ProgramStageInternalAccessor {
+    @JvmStatic
+    fun accessProgramStageSections(programStage: ProgramStage): List<ProgramStageSection>? {
+        return programStage.programStageSections()
     }
 
-    public static List<ProgramStageSection> accessProgramStageSections(ProgramStage programStage) {
-        return programStage.programStageSections();
+    @JvmStatic
+    fun accessProgramStageDataElements(programStage: ProgramStage): List<ProgramStageDataElement>? {
+        return programStage.programStageDataElements()
     }
 
-    public static List<ProgramStageDataElement> accessProgramStageDataElements(ProgramStage programStage) {
-        return programStage.programStageDataElements();
+    fun insertProgramStageSections(
+        builder: ProgramStage.Builder,
+        programStageSections: List<ProgramStageSection?>?,
+    ): ProgramStage.Builder {
+        return builder.programStageSections(programStageSections)
     }
 
-    public static ProgramStage.Builder insertProgramStageSections(
-            ProgramStage.Builder builder,
-            List<ProgramStageSection> programStageSections) {
-        return builder.programStageSections(programStageSections);
-    }
-
-    public static ProgramStage.Builder insertProgramStageDataElements(
-            ProgramStage.Builder builder,
-            List<ProgramStageDataElement> programStageDataElements) {
-        return builder.programStageDataElements(programStageDataElements);
+    fun insertProgramStageDataElements(
+        builder: ProgramStage.Builder,
+        programStageDataElements: List<ProgramStageDataElement?>?,
+    ): ProgramStage.Builder {
+        return builder.programStageDataElements(programStageDataElements)
     }
 }

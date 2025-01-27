@@ -55,7 +55,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramRuleFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableFields
 import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields
-import org.hisp.dhis.android.core.program.internal.ProgramStageFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
@@ -118,6 +117,7 @@ import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
+import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields

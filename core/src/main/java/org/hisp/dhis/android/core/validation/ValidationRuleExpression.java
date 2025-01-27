@@ -28,24 +28,16 @@
 
 package org.hisp.dhis.android.core.validation;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ValidationRuleExpression.Builder.class)
 public abstract class ValidationRuleExpression {
 
-    @JsonProperty()
     public abstract String expression();
 
-    @JsonProperty()
     public abstract String description();
 
-    @JsonProperty()
     public abstract MissingValueStrategy missingValueStrategy();
-
 
     public static Builder builder() {
         return new AutoValue_ValidationRuleExpression.Builder();
@@ -54,7 +46,6 @@ public abstract class ValidationRuleExpression {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder expression(String expression);

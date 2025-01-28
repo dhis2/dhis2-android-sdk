@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -51,39 +47,31 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramStageSection.Builder.class)
 public abstract class ProgramStageSection extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramIndicatorListAdapter.class)
     public abstract List<ProgramIndicator> programIndicators();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreDataElementListColumnAdapter.class)
     public abstract List<DataElement> dataElements();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(SectionRenderingColumnAdapter.class)
     public abstract SectionRendering renderType();
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayDescription();
 
     public static Builder builder() {
@@ -97,7 +85,6 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder  extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

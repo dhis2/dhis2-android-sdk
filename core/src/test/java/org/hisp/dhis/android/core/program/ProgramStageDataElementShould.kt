@@ -25,50 +25,55 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
+import org.hisp.dhis.android.network.programstage.ProgramStageDataElementDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
-import org.junit.Test;
+class ProgramStageDataElementShould : BaseObjectKotlinxShould("program/program_stage_data_element.json"),
+    ObjectShould {
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val programStageDataElementDTO = deserialize(ProgramStageDataElementDTO.serializer())
+        val programStageDataElement = programStageDataElementDTO.toDomain()
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ProgramStageDataElementShould extends BaseObjectShould implements ObjectShould {
-
-    private static ValueTypeDeviceRendering desktopRendering = ValueTypeDeviceRendering.builder()
-            .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build();
-
-    private static ValueTypeDeviceRendering mobileRendering = ValueTypeDeviceRendering.builder()
-            .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1).build();
-
-    public ProgramStageDataElementShould() {
-        super("program/program_stage_data_element.json");
+        Truth.assertThat(programStageDataElement.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T20:16:48.444")
+        )
+        Truth.assertThat(programStageDataElement.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-27T16:27:19.000")
+        )
+        Truth.assertThat(programStageDataElement.uid()).isEqualTo("LfgZNmadu4W")
+        Truth.assertThat(programStageDataElement.dataElement()!!.uid()).isEqualTo("aei1xRjSU2l")
+        Truth.assertThat(programStageDataElement.allowFutureDate()).isFalse()
+        Truth.assertThat(programStageDataElement.compulsory()).isFalse()
+        Truth.assertThat(programStageDataElement.sortOrder()).isEqualTo(11)
+        Truth.assertThat(programStageDataElement.allowProvidedElsewhere()).isFalse()
+        Truth.assertThat(programStageDataElement.displayInReports()).isFalse()
+        Truth.assertThat(programStageDataElement.renderType()!!.desktop()).isEqualTo(
+            desktopRendering
+        )
+        Truth.assertThat(programStageDataElement.renderType()!!.mobile()).isEqualTo(
+            mobileRendering
+        )
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ProgramStageDataElement programStageDataElement = objectMapper.readValue(jsonStream, ProgramStageDataElement.class);
+    companion object {
+        private val desktopRendering: ValueTypeDeviceRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1)
+            .decimalPoints(0).build()
 
-        assertThat(programStageDataElement.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T20:16:48.444"));
-        assertThat(programStageDataElement.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-27T16:27:19.000"));
-        assertThat(programStageDataElement.uid()).isEqualTo("LfgZNmadu4W");
-        assertThat(programStageDataElement.dataElement().uid()).isEqualTo("aei1xRjSU2l");
-        assertThat(programStageDataElement.allowFutureDate()).isFalse();
-        assertThat(programStageDataElement.compulsory()).isFalse();
-        assertThat(programStageDataElement.sortOrder()).isEqualTo(11);
-        assertThat(programStageDataElement.allowProvidedElsewhere()).isFalse();
-        assertThat(programStageDataElement.displayInReports()).isFalse();
-        assertThat(programStageDataElement.renderType().desktop()).isEqualTo(desktopRendering);
-        assertThat(programStageDataElement.renderType().mobile()).isEqualTo(mobileRendering);
+        private val mobileRendering: ValueTypeDeviceRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2)
+            .decimalPoints(1).build()
     }
 }

@@ -40,7 +40,7 @@ class ValidationRuleShould : BaseObjectKotlinxShould("validation/validation_rule
     @Test
     override fun map_from_json_string() {
         val validationRuleDTO = deserialize(ValidationRuleDTO.serializer())
-        val validationRule = validationRuleDTO.toDomain()
+        val validationRule = validationRuleDTO.toDomain()!!
 
         assertThat(validationRule.code()).isEqualTo("Malaria outbreak")
         assertThat(validationRule.lastUpdated()).isEqualTo(

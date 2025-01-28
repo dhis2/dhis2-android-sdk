@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 
 @Serializable
 internal data class ValidationRuleExpressionDTO(
-    val expression: String,
-    val description: String,
+    val expression: String? = null,
+    val description: String = "",
     val missingValueStrategy: String,
 ) {
     fun toDomain(): ValidationRuleExpression {

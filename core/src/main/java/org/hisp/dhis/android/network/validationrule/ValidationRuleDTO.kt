@@ -62,18 +62,22 @@ internal data class ValidationRuleDTO(
     val rightSide: ValidationRuleExpressionDTO,
     val organisationUnitLevels: List<Int>,
 ) : BaseNameableObjectDTO {
-    fun toDomain(): ValidationRule {
-        return ValidationRule.builder()
-            .applyBaseNameableFields(this)
-            .instruction(instruction)
-            .importance(ValidationRuleImportance.valueOf(importance))
-            .operator(ValidationRuleOperator.valueOf(operator))
-            .periodType(PeriodType.valueOf(periodType))
-            .skipFormValidation(skipFormValidation)
-            .leftSide(leftSide.toDomain())
-            .rightSide(rightSide.toDomain())
-            .organisationUnitLevels(organisationUnitLevels)
-            .build()
+    fun toDomain(): ValidationRule? {
+        return if (leftSide.expression != null && rightSide.expression != null) {
+            ValidationRule.builder()
+                .applyBaseNameableFields(this)
+                .instruction(instruction)
+                .importance(ValidationRuleImportance.valueOf(importance))
+                .operator(ValidationRuleOperator.valueOf(operator))
+                .periodType(PeriodType.valueOf(periodType))
+                .skipFormValidation(skipFormValidation)
+                .leftSide(leftSide.toDomain())
+                .rightSide(rightSide.toDomain())
+                .organisationUnitLevels(organisationUnitLevels)
+                .build()
+        } else {
+            null
+        }
     }
 }
 
@@ -81,7 +85,13 @@ internal data class ValidationRuleDTO(
 internal class ValidationRulePayload(
     override val pager: PagerDTO?,
     @SerialName("validationRules") override val items: List<ValidationRuleDTO> = emptyList(),
-) : PayloadJson<ValidationRuleDTO>(pager, items)
+) : PayloadJson<ValidationRuleDTO>(pager, items) {
+    fun mapNotNullItems(
+        transform: (ValidationRuleDTO) -> ValidationRule?,
+    ): PayloadJson<ValidationRule> {
+        return PayloadJson(pager, items.mapNotNull(transform))
+    }
+}
 
 @Serializable
 internal class ValidationRuleDatasetPayload(

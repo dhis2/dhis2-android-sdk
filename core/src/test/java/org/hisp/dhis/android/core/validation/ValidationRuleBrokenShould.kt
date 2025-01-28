@@ -26,34 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.validationrule
+package org.hisp.dhis.android.core.validation
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.validation.ValidationRule
-import org.hisp.dhis.android.core.validation.internal.ValidationRuleNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.koin.core.annotation.Singleton
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
+import org.junit.Test
 
-@Singleton
-internal class ValidationRuleNetworkHandlerImpl(
-    private val httpServiceClient: HttpServiceClientKotlinx,
-) : ValidationRuleNetworkHandler {
-    private val service: ValidationRuleService = ValidationRuleService(httpServiceClient)
-    override suspend fun getValidationRules(uids: Set<String>): Payload<ValidationRule> {
-        val uidsFilterStr = ObjectWithUid.uid.`in`(uids).generateString()
-        val apiPayload = service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, false)
-        return apiPayload.mapNotNullItems(ValidationRuleDTO::toDomain)
-    }
+class ValidationRuleBrokenShould : BaseObjectKotlinxShould("validation/validation_rule_broken.json"), ObjectShould {
 
-    override suspend fun getDataSetValidationRuleUids(uid: String): Payload<ObjectWithUid> {
-        val apiPayload = service.getDataSetValidationRuleUids(
-            uid,
-            BaseIdentifiableObject.UID,
-            false,
-        )
-        return apiPayload.mapItems(ObjectWithUidDTO::toDomain)
+    @Test
+    override fun map_from_json_string() {
+        val validationRule = deserialize(ValidationRuleDTO.serializer()).toDomain()
+
+        assertThat(validationRule).isNull()
     }
 }

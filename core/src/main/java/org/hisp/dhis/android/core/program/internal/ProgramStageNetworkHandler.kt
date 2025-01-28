@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program.internal
 
-import java.util.List;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.program.ProgramStage
 
-public final class ProgramStageInternalAccessor {
-
-    private ProgramStageInternalAccessor() {
-    }
-
-    public static List<ProgramStageSection> accessProgramStageSections(ProgramStage programStage) {
-        return programStage.programStageSections();
-    }
-
-    public static List<ProgramStageDataElement> accessProgramStageDataElements(ProgramStage programStage) {
-        return programStage.programStageDataElements();
-    }
-
-    public static ProgramStage.Builder insertProgramStageSections(
-            ProgramStage.Builder builder,
-            List<ProgramStageSection> programStageSections) {
-        return builder.programStageSections(programStageSections);
-    }
-
-    public static ProgramStage.Builder insertProgramStageDataElements(
-            ProgramStage.Builder builder,
-            List<ProgramStageDataElement> programStageDataElements) {
-        return builder.programStageDataElements(programStageDataElements);
-    }
+internal fun interface ProgramStageNetworkHandler {
+    suspend fun getProgramStages(uids: Set<String>): Payload<ProgramStage>
 }

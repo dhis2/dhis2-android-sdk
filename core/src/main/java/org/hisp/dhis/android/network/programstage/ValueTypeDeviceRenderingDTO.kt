@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.programstage
 
-@Singleton
-internal class ProgramStageCall internal constructor(
-    private val networkHandler: ProgramStageNetworkHandler,
-    private val handler: ProgramStageHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<ProgramStage> {
-    override suspend fun download(uids: Set<String>): List<ProgramStage> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getProgramStages,
-        ) { stage: ProgramStage -> transform(stage) }
-    }
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 
-    private fun transform(stage: ProgramStage): ProgramStage {
-        return ProgramStageInternalAccessor.accessProgramStageDataElements(stage)?.let { dataElements ->
-            val psdes = dataElements.filter { it.dataElement() != null }
-            ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build()
-        } ?: stage
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
+@Serializable
+internal data class ValueTypeDeviceRenderingDTO(
+    val uid: String?,
+    val objectTable: String?,
+    val deviceType: String?,
+    val type: String?,
+    val min: Int?,
+    val max: Int?,
+    val step: Int?,
+    val decimalPoints: Int?,
+) {
+    fun toDomain(): ValueTypeDeviceRendering {
+        return ValueTypeDeviceRendering.builder()
+            .uid(uid)
+            .objectTable(objectTable)
+            .deviceType(deviceType)
+            .type(type?.let { ValueTypeRenderingType.valueOf(it) })
+            .min(min)
+            .max(max)
+            .step(step)
+            .decimalPoints(decimalPoints)
+            .build()
     }
 }

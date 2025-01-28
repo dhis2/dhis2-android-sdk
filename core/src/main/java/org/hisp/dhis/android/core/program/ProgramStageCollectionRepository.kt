@@ -42,8 +42,8 @@ import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStageAttributeChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramStageFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

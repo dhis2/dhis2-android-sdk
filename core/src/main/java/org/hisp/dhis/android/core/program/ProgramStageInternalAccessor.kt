@@ -25,37 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
-import org.koin.core.annotation.Singleton
-
-@Singleton
-internal class ProgramStageCall internal constructor(
-    private val networkHandler: ProgramStageNetworkHandler,
-    private val handler: ProgramStageHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<ProgramStage> {
-    override suspend fun download(uids: Set<String>): List<ProgramStage> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getProgramStages,
-        ) { stage: ProgramStage -> transform(stage) }
+internal object ProgramStageInternalAccessor {
+    @JvmStatic
+    fun accessProgramStageSections(programStage: ProgramStage): List<ProgramStageSection>? {
+        return programStage.programStageSections()
     }
 
-    private fun transform(stage: ProgramStage): ProgramStage {
-        return ProgramStageInternalAccessor.accessProgramStageDataElements(stage)?.let { dataElements ->
-            val psdes = dataElements.filter { it.dataElement() != null }
-            ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build()
-        } ?: stage
+    @JvmStatic
+    fun accessProgramStageDataElements(programStage: ProgramStage): List<ProgramStageDataElement>? {
+        return programStage.programStageDataElements()
     }
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
+    fun insertProgramStageSections(
+        builder: ProgramStage.Builder,
+        programStageSections: List<ProgramStageSection?>?,
+    ): ProgramStage.Builder {
+        return builder.programStageSections(programStageSections)
+    }
+
+    fun insertProgramStageDataElements(
+        builder: ProgramStage.Builder,
+        programStageDataElements: List<ProgramStageDataElement?>?,
+    ): ProgramStage.Builder {
+        return builder.programStageDataElements(programStageDataElements)
     }
 }

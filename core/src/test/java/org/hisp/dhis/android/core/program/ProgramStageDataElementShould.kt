@@ -38,7 +38,8 @@ import org.junit.Test
 import java.io.IOException
 import java.text.ParseException
 
-class ProgramStageDataElementShould : BaseObjectKotlinxShould("program/program_stage_data_element.json"),
+class ProgramStageDataElementShould :
+    BaseObjectKotlinxShould("program/program_stage_data_element.json"),
     ObjectShould {
     @Test
     @Throws(IOException::class, ParseException::class)
@@ -47,10 +48,10 @@ class ProgramStageDataElementShould : BaseObjectKotlinxShould("program/program_s
         val programStageDataElement = programStageDataElementDTO.toDomain()
 
         Truth.assertThat(programStageDataElement.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T20:16:48.444")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T20:16:48.444"),
         )
         Truth.assertThat(programStageDataElement.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-27T16:27:19.000")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-27T16:27:19.000"),
         )
         Truth.assertThat(programStageDataElement.uid()).isEqualTo("LfgZNmadu4W")
         Truth.assertThat(programStageDataElement.dataElement()!!.uid()).isEqualTo("aei1xRjSU2l")
@@ -60,10 +61,10 @@ class ProgramStageDataElementShould : BaseObjectKotlinxShould("program/program_s
         Truth.assertThat(programStageDataElement.allowProvidedElsewhere()).isFalse()
         Truth.assertThat(programStageDataElement.displayInReports()).isFalse()
         Truth.assertThat(programStageDataElement.renderType()!!.desktop()).isEqualTo(
-            desktopRendering
+            desktopRendering,
         )
         Truth.assertThat(programStageDataElement.renderType()!!.mobile()).isEqualTo(
-            mobileRendering
+            mobileRendering,
         )
     }
 

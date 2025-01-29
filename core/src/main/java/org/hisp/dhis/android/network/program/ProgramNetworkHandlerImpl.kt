@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.program
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.internal.ProgramFields
 import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager

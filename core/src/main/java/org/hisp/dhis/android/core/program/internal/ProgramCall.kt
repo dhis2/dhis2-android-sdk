@@ -30,42 +30,22 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramCall internal constructor(
-    private val service: ProgramService,
+    private val networkHandler: ProgramNetworkHandler,
     val handler: ProgramHandler,
     val apiDownloader: APIDownloader,
-    private val dhisVersionManager: DHISVersionManager,
 ) : UidsCallCoroutines<Program> {
 
     override suspend fun download(uids: Set<String>): List<Program> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
         return apiDownloader.downloadPartitioned(
             uids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            service.getPrograms(
-                getFields(),
-                ProgramFields.uid.`in`(partitionUids),
-                accessDataReadFilter,
-                false,
-            )
-        }
-    }
-
-    private fun getFields(): Fields<Program> {
-        return if (dhisVersionManager.isGreaterThan(DHISVersion.V2_34)) {
-            ProgramFields.allFields
-        } else {
-            ProgramFields.allFieldsBefore35
-        }
+            networkHandler::getPrograms,
+        )
     }
 
     companion object {

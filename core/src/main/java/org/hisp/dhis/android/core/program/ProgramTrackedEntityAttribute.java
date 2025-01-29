@@ -32,8 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -45,7 +43,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramTrackedEntityAttribute.Builder.class)
 public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject implements CoreObject {
 
     @Nullable
@@ -72,7 +69,6 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Boolean searchable();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
     public abstract ValueTypeRendering renderType();
 

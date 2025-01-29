@@ -28,14 +28,13 @@
 package org.hisp.dhis.android.core.validation.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ValidationRuleUidsCallImpl(
-    private val service: ValidationRuleService,
+    private val networkHandler: ValidationRuleNetworkHandler,
     private val linkHandler: DataSetValidationRuleLinkHandler,
     private val apiDownloader: APIDownloader,
 ) : ValidationRuleUidsCallCoroutines {
@@ -45,13 +44,7 @@ internal class ValidationRuleUidsCallImpl(
             apiDownloader.downloadLink(
                 it,
                 linkHandler,
-                {
-                    service.getDataSetValidationRuleUids(
-                        it,
-                        BaseIdentifiableObject.UID,
-                        false,
-                    )
-                },
+                networkHandler::getDataSetValidationRuleUids,
             ) { validationRule: ObjectWithUid ->
                 DataSetValidationRuleLink.builder()
                     .dataSet(it)

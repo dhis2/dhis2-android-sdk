@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.validationrule
 
-package org.hisp.dhis.android.core.validation;
+import org.hisp.dhis.android.core.validation.ValidationRule
+import org.hisp.dhis.android.core.validation.ValidationRuleExpression
+import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleExpressionFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import com.google.auto.value.AutoValue;
+internal object ValidationRuleFields : BaseFields<ValidationRule>() {
+    private const val LEFT_SIDE = "leftSide"
+    private const val RIGHT_SIDE = "rightSide"
+    private const val ORGANISATION_UNIT_LEVELS = "organisationUnitLevels"
 
-@AutoValue
-public abstract class ValidationRuleExpression {
+    val uid: Field<ValidationRule> = fh.uid()
 
-    public abstract String expression();
-
-    public abstract String description();
-
-    public abstract MissingValueStrategy missingValueStrategy();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationRuleExpression.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder expression(String expression);
-
-        public abstract Builder description(String description);
-
-        public abstract Builder missingValueStrategy(MissingValueStrategy missingValueStrategy);
-
-        public abstract ValidationRuleExpression build();
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.INSTRUCTION),
+        fh.field(Columns.IMPORTANCE),
+        fh.field(Columns.OPERATOR),
+        fh.field(Columns.PERIOD_TYPE),
+        fh.field(Columns.SKIP_FORM_VALIDATION),
+        fh.nestedField<ValidationRuleExpression>(LEFT_SIDE).with(ValidationRuleExpressionFields.allFields),
+        fh.nestedField<ValidationRuleExpression>(RIGHT_SIDE).with(ValidationRuleExpressionFields.allFields),
+        fh.nestedField<Int>(ORGANISATION_UNIT_LEVELS),
+    )
 }

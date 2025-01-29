@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.validationrule
 
-package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
+import org.hisp.dhis.android.core.validation.ValidationRule
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import org.hisp.dhis.android.core.validation.MissingValueStrategy;
+internal class ValidationRuleService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getValidationRules(
+        fields: Fields<ValidationRule>,
+        uidsFilterString: String,
+        paging: Boolean,
+    ): ValidationRulePayload {
+        return client.get {
+            url("validationRules")
+            parameters {
+                fields(fields)
+                attribute("filter", uidsFilterString)
+                paging(paging)
+            }
+        }
+    }
 
-public class MissingValueStrategyColumnAdapter extends EnumColumnAdapter<MissingValueStrategy> {
-    @Override
-    protected Class<MissingValueStrategy> getEnumClass() {
-        return MissingValueStrategy.class;
+    suspend fun getDataSetValidationRuleUids(
+        dataSetUid: String,
+        id: String,
+        paging: Boolean,
+    ): ValidationRuleDatasetPayload {
+        return client.get {
+            url("validationRules")
+            parameters {
+                attribute("dataSet", dataSetUid)
+                attribute("fields", id)
+                paging(paging)
+            }
+        }
     }
 }

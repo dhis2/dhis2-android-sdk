@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation
 
-import com.google.auto.value.AutoValue;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
+import org.junit.Test
 
-@AutoValue
-public abstract class ValidationRuleExpression {
+class ValidationRuleBrokenShould : BaseObjectKotlinxShould("validation/validation_rule_broken.json"), ObjectShould {
 
-    public abstract String expression();
+    @Test
+    override fun map_from_json_string() {
+        val validationRule = deserialize(ValidationRuleDTO.serializer()).toDomain()
 
-    public abstract String description();
-
-    public abstract MissingValueStrategy missingValueStrategy();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationRuleExpression.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder expression(String expression);
-
-        public abstract Builder description(String description);
-
-        public abstract Builder missingValueStrategy(MissingValueStrategy missingValueStrategy);
-
-        public abstract ValidationRuleExpression build();
+        assertThat(validationRule).isNull()
     }
 }

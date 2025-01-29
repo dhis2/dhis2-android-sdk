@@ -25,52 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.payload
 
-package org.hisp.dhis.android.core.payload;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.network.program.ProgramDTO
+import org.hisp.dhis.android.network.program.ProgramPayload
+import org.junit.Test
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.program.Program;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ProgramPayloadShould extends BaseObjectShould implements ObjectShould {
-
-    public ProgramPayloadShould() {
-        super("program/program_payload.json");
-    }
-
-    @Override
+class ProgramPayloadShould : BaseObjectKotlinxShould("program/program_payload.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        PayloadJackson<Program> payload = objectMapper.readValue(jsonStream, new TypeReference<PayloadJackson<Program>>() {
-        });
+    override fun map_from_json_string() {
+        val payloadDTO: ProgramPayload = deserialize(ProgramPayload.serializer())
+        val payload = payloadDTO.mapItems(ProgramDTO::toDomain)
 
-        List<Program> programs = payload.items();
+        val programs: List<Program?> = payload.items()
 
-        assertThat(programs).isNotNull();
-        assertThat(programs).isNotEmpty();
-        assertThat(programs.size()).isEqualTo(2);
+        assertThat(programs).isNotNull()
+        assertThat(programs).isNotEmpty()
+        assertThat(programs.size).isEqualTo(2)
 
-        Program program = programs.get(0);
-        assertThat(program.uid()).isEqualTo("IpHINAT79UW");
-        assertThat(program.version()).isEqualTo(3);
-        assertThat(program.access()).isEqualTo(Access.create(true, false,
-                DataAccess.create(false, false)));
+        val program = programs[0]
+        assertThat(program!!.uid()).isEqualTo("IpHINAT79UW")
+        assertThat(program.version()).isEqualTo(3)
+        assertThat(program.access()).isEqualTo(
+            Access.create(
+                true,
+                false,
+                DataAccess.create(false, false),
+            ),
+        )
 
-        Program program1 = programs.get(1);
-        assertThat(program1.uid()).isEqualTo("q04UBOqq3rp");
-        assertThat(program1.version()).isEqualTo(1);
-        assertThat(program1.access()).isEqualTo(Access.builder().build());
+        val program1 = programs[1]
+        assertThat(program1!!.uid()).isEqualTo("q04UBOqq3rp")
+        assertThat(program1.version()).isEqualTo(1)
+        assertThat(program1.access()).isEqualTo(Access.builder().build())
     }
 }

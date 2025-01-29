@@ -25,46 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.network.program.ProgramSectionDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ProgramSectionShould extends BaseObjectShould implements ObjectShould {
-
-    public ProgramSectionShould() {
-        super("program/program_section.json");
-    }
-
-    @Override
+class ProgramSectionShould : BaseObjectKotlinxShould("program/program_section.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ProgramSection programSection = objectMapper.readValue(jsonStream, ProgramSection.class);
+    override fun map_from_json_string() {
+        val programSectionDTO = deserialize(ProgramSectionDTO.serializer())
+        val programSection = programSectionDTO.toDomain()
 
-        assertThat(programSection.uid()).isEqualTo("Nc8OxbNuVH3");
-        assertThat(programSection.code()).isEqualTo("Code");
+        assertThat(programSection.uid()).isEqualTo("Nc8OxbNuVH3")
+        assertThat(programSection.code()).isEqualTo("Code")
         assertThat(programSection.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2018-05-15T08:14:06.767"));
+            BaseIdentifiableObject.parseDate("2018-05-15T08:14:06.767"),
+        )
         assertThat(programSection.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2018-05-15T08:14:06.767"));
-        assertThat(programSection.name()).isEqualTo("My Program Section");
-        assertThat(programSection.displayName()).isEqualTo("My Program Section");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2018-05-15T08:14:06.767"),
+        )
+        assertThat(programSection.name()).isEqualTo("My Program Section")
+        assertThat(programSection.displayName()).isEqualTo("My Program Section")
 
-        assertThat(programSection.description()).isEqualTo("Description");
-        assertThat(UidsHelper.getUidOrNull(programSection.program())).isEqualTo("IpHINAT79UW");
-        assertThat(programSection.attributes().get(0).uid()).isEqualTo("zDhUuAYrxNC");
-        assertThat(programSection.sortOrder()).isEqualTo(1);
-        assertThat(programSection.formName()).isEqualTo("formName");
-        assertThat(programSection.style()).isEqualTo(ObjectStyle.builder().color("#fff").icon("my-icon").build());
+        assertThat(programSection.description()).isEqualTo("Description")
+        assertThat(getUidOrNull(programSection.program())).isEqualTo("IpHINAT79UW")
+        assertThat(programSection.attributes()!![0].uid()).isEqualTo("zDhUuAYrxNC")
+        assertThat(programSection.sortOrder()).isEqualTo(1)
+        assertThat(programSection.formName()).isEqualTo("formName")
+        assertThat(programSection.style())
+            .isEqualTo(ObjectStyle.builder().color("#fff").icon("my-icon").build())
     }
 }

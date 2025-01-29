@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,39 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ProgramIndicatorCall(
-    private val networkHandler: ProgramIndicatorNetworkHandler,
-    private val handler: ProgramIndicatorHandler,
-    private val apiDownloader: APIDownloader,
-    private val programStore: ProgramStore,
-) : UidsCallCoroutines<ProgramIndicator> {
-
-    companion object {
-        const val MAX_UID_LIST_SIZE = 50
-    }
-
-    override suspend fun download(uids: Set<String>): List<ProgramIndicator> {
-        val programUids = programStore.selectUids()
-        val firstPayload = apiDownloader.downloadPartitioned(
-            uids = programUids.toSet(),
-            pageSize = MAX_UID_LIST_SIZE,
-            pageDownloader = networkHandler::getDisplayInFormProgramIndicators,
-        )
-
-        val secondPayload = apiDownloader.downloadPartitioned(
-            uids = uids,
-            pageSize = MAX_UID_LIST_SIZE,
-            pageDownloader = networkHandler::getProgramIndicatorsByUid,
-        )
-
-        val mergedData = (firstPayload + secondPayload).distinctBy { it.uid() }
-        handler.handleMany(mergedData)
-        return mergedData
-    }
+internal interface ProgramIndicatorNetworkHandler {
+    suspend fun getDisplayInFormProgramIndicators(programUids: Set<String>): Payload<ProgramIndicator>
+    suspend fun getProgramIndicatorsByUid(uids: Set<String>): Payload<ProgramIndicator>
 }

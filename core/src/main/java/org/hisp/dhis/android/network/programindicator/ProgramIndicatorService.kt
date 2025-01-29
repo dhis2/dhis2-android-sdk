@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+package org.hisp.dhis.android.network.programindicator
+
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.legendset.LegendSetFields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
-    const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
-    const val LEGEND_SETS = "legendSets"
-
-    val uid = fh.uid()
-    val displayInForm = fh.field("displayInForm")
-
-    val allFields = Fields.from(
-        fh.getNameableFields(),
-        fh.field(Columns.DISPLAY_IN_FORM),
-        fh.field(Columns.EXPRESSION),
-        fh.field(Columns.DIMENSION_ITEM),
-        fh.field(Columns.FILTER),
-        fh.field(Columns.DECIMALS),
-        fh.field(Columns.AGGREGATION_TYPE),
-        fh.field(Columns.ANALYTICS_TYPE),
-        fh.nestedField<ObjectWithUid>(Columns.PROGRAM).with(ObjectWithUid.uid),
-        fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
-            .with(AnalyticsPeriodBoundaryFields.allFields),
-        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
-    )
+internal class ProgramIndicatorService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getProgramIndicator(
+        fields: Fields<ProgramIndicator>,
+        displayInForm: Filter<ProgramIndicator>?,
+        program: String?,
+        uids: Filter<ProgramIndicator>?,
+        paging: Boolean,
+    ): ProgramIndicatorPayload {
+        return client.get {
+            url("programIndicators")
+            parameters {
+                fields(fields)
+                filter(displayInForm)
+                attribute("filter", program)
+                filter(uids)
+                paging(paging)
+            }
+        }
+    }
 }

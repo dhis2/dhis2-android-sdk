@@ -35,6 +35,7 @@ import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 import org.hisp.dhis.android.network.dataelement.DataElementDTO
+import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 
 @Serializable
 internal data class ProgramStageSectionDTO(

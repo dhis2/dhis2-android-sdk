@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,33 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.network.programindicator
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ProgramIndicatorService(private val client: HttpServiceClient) {
-    suspend fun getProgramIndicator(
-        fields: Fields<ProgramIndicator>,
-        displayInForm: Filter<ProgramIndicator>?,
-        program: String?,
-        uids: Filter<ProgramIndicator>?,
-        paging: Boolean,
-    ): PayloadJackson<ProgramIndicator> {
-        return client.get {
-            url("programIndicators")
-            parameters {
-                fields(fields)
-                filter(displayInForm)
-                attribute("filter", program)
-                filter(uids)
-                paging(paging)
-            }
-        }
+internal class ProgramIndicatorNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : ProgramIndicatorNetworkHandler {
+    private val service = ProgramIndicatorService(httpServiceClient)
+
+    override suspend fun getDisplayInFormProgramIndicators(programUids: Set<String>): Payload<ProgramIndicator> {
+        val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true)
+        val programUidsFilter = "program.${ObjectWithUid.uid.`in`(programUids).generateString()}"
+        val apiPayload = service.getProgramIndicator(
+            fields = ProgramIndicatorFields.allFields,
+            displayInForm = displayInFormFilter,
+            program = programUidsFilter,
+            uids = null,
+            false,
+        )
+        return apiPayload.mapItems(ProgramIndicatorDTO::toDomain)
+    }
+
+    override suspend fun getProgramIndicatorsByUid(uids: Set<String>): Payload<ProgramIndicator> {
+        val apiPayload = service.getProgramIndicator(
+            fields = ProgramIndicatorFields.allFields,
+            displayInForm = null,
+            program = null,
+            uids = ProgramIndicatorFields.uid.`in`(uids),
+            false,
+        )
+        return apiPayload.mapItems(ProgramIndicatorDTO::toDomain)
     }
 }

@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstage
+package org.hisp.dhis.android.network.programindicator
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.period.PeriodType

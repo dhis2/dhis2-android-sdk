@@ -26,15 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstage
+package org.hisp.dhis.android.network.programindicator
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
@@ -77,3 +79,9 @@ internal data class ProgramIndicatorDTO(
             .build()
     }
 }
+
+@Serializable
+internal class ProgramIndicatorPayload(
+    override val pager: PagerDTO?,
+    @SerialName("programIndicators") override val items: List<ProgramIndicatorDTO> = emptyList(),
+) : PayloadJson<ProgramIndicatorDTO>(pager, items)

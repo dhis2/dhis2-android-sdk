@@ -47,9 +47,7 @@ import org.hisp.dhis.android.core.note.internal.NoteFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelFields
-import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryFields
 import org.hisp.dhis.android.core.program.internal.ProgramFields
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableFields
@@ -116,6 +114,8 @@ import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
+import org.hisp.dhis.android.network.programindicator.AnalyticsPeriodBoundaryFields
+import org.hisp.dhis.android.network.programindicator.ProgramIndicatorFields
 import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields

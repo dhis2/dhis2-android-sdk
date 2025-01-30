@@ -27,47 +27,46 @@
  */
 package org.hisp.dhis.android.core.program
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 import org.junit.Test
 
-class ProgramIndicatorShould : BaseObjectShould("program/program_indicator.json"), ObjectShould {
+class ProgramIndicatorShould : BaseObjectKotlinxShould("program/program_indicator.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val programIndicator = objectMapper.readValue(jsonStream, ProgramIndicator::class.java)
-        Truth.assertThat(programIndicator.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945"),
-        )
-        Truth.assertThat(programIndicator.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820"),
-        )
-        Truth.assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf")
-        Truth.assertThat(programIndicator.name()).isEqualTo("Age at visit")
-        Truth.assertThat(programIndicator.displayName()).isEqualTo("Age at visit")
-        Truth.assertThat(programIndicator.displayInForm()).isTrue()
-        Truth.assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
-        Truth.assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf")
-        Truth.assertThat(programIndicator.filter()).isNull()
-        Truth.assertThat(programIndicator.decimals()).isNull()
-        Truth.assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE)
-        Truth.assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT)
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(5)
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTarget())
-            .isEqualTo("Custom boundary")
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTarget()).isEqualTo("INCIDENT_DATE")
+        val programIndicatorDTO = deserialize(ProgramIndicatorDTO.serializer())
+        val programIndicator = programIndicatorDTO.toDomain()
 
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTargetType())
+        assertThat(programIndicator.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-21T23:35:50.945"))
+        assertThat(programIndicator.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-21T23:47:57.820"))
+        assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf")
+        assertThat(programIndicator.name()).isEqualTo("Age at visit")
+        assertThat(programIndicator.displayName()).isEqualTo("Age at visit")
+        assertThat(programIndicator.displayInForm()).isTrue()
+        assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
+        assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf")
+        assertThat(programIndicator.filter()).isNull()
+        assertThat(programIndicator.decimals()).isNull()
+        assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE)
+        assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT)
+        assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(5)
+        assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTarget())
+            .isEqualTo("Custom boundary")
+        assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTarget()).isEqualTo("INCIDENT_DATE")
+
+        assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTargetType())
             .isEqualTo(BoundaryTargetType.Custom("Custom boundary"))
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTargetType())
+        assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTargetType())
             .isEqualTo(BoundaryTargetType.IncidentDate)
 
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![0].analyticsPeriodBoundaryType())
+        assertThat(programIndicator.analyticsPeriodBoundaries()!![0].analyticsPeriodBoundaryType())
             .isEqualTo(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
-        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![1].offsetPeriods()).isEqualTo(-3)
+        assertThat(programIndicator.analyticsPeriodBoundaries()!![1].offsetPeriods()).isEqualTo(-3)
     }
 }

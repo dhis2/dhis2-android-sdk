@@ -38,9 +38,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.network.programindicator.ProgramIndicatorFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

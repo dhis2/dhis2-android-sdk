@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.programindicator
 
-package org.hisp.dhis.android.core.program.internal
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.legendset.LegendSetFields
 
-@Singleton
-internal class ProgramIndicatorCall(
-    private val networkHandler: ProgramIndicatorNetworkHandler,
-    private val handler: ProgramIndicatorHandler,
-    private val apiDownloader: APIDownloader,
-    private val programStore: ProgramStore,
-) : UidsCallCoroutines<ProgramIndicator> {
+internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
+    const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
+    const val LEGEND_SETS = "legendSets"
 
-    companion object {
-        const val MAX_UID_LIST_SIZE = 50
-    }
+    val uid = fh.uid()
+    val displayInForm = fh.field("displayInForm")
 
-    override suspend fun download(uids: Set<String>): List<ProgramIndicator> {
-        val programUids = programStore.selectUids()
-        val firstPayload = apiDownloader.downloadPartitioned(
-            uids = programUids.toSet(),
-            pageSize = MAX_UID_LIST_SIZE,
-            pageDownloader = networkHandler::getDisplayInFormProgramIndicators,
-        )
-
-        val secondPayload = apiDownloader.downloadPartitioned(
-            uids = uids,
-            pageSize = MAX_UID_LIST_SIZE,
-            pageDownloader = networkHandler::getProgramIndicatorsByUid,
-        )
-
-        val mergedData = (firstPayload + secondPayload).distinctBy { it.uid() }
-        handler.handleMany(mergedData)
-        return mergedData
-    }
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        fh.field(Columns.DISPLAY_IN_FORM),
+        fh.field(Columns.EXPRESSION),
+        fh.field(Columns.DIMENSION_ITEM),
+        fh.field(Columns.FILTER),
+        fh.field(Columns.DECIMALS),
+        fh.field(Columns.AGGREGATION_TYPE),
+        fh.field(Columns.ANALYTICS_TYPE),
+        fh.nestedField<ObjectWithUid>(Columns.PROGRAM).with(ObjectWithUid.uid),
+        fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
+            .with(AnalyticsPeriodBoundaryFields.allFields),
+        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
+    )
 }

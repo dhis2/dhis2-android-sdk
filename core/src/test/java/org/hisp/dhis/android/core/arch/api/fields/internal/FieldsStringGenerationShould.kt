@@ -111,11 +111,11 @@ import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.option.OptionFields
 import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
-import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
-import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.program.ProgramFields
 import org.hisp.dhis.android.network.programindicator.AnalyticsPeriodBoundaryFields
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorFields
+import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
+import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields

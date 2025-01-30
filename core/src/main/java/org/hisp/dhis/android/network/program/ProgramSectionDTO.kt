@@ -30,7 +30,9 @@ package org.hisp.dhis.android.network.program
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
@@ -50,8 +52,8 @@ internal data class ProgramSectionDTO(
     val style: ObjectWithStyleDTO?,
     val description: String?,
     val program: ObjectWithUidDTO?,
+    @JsonNames(ProgramSectionFields.ATTRIBUTES)
     val trackedEntityAttributes: List<TrackedEntityAttributeDTO>?,
-    val programTrackedEntityAttribute: List<TrackedEntityAttributeDTO>?,
     val sortOrder: Int?,
     val formName: String?,
     val renderType: SectionRenderingDTO?,
@@ -62,10 +64,7 @@ internal data class ProgramSectionDTO(
             style?.let { style(it.toDomain()) }
             description(description)
             program(program?.toDomain())
-            attributes(
-                trackedEntityAttributes?.map { it.toDomain() }
-                    ?: programTrackedEntityAttribute?.map { it.toDomain() },
-            )
+            attributes(trackedEntityAttributes?.map { it.toDomain() })
             sortOrder(sortOrder)
             formName(formName)
             renderType(renderType?.toDomain())

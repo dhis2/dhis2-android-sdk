@@ -42,10 +42,10 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramAttributeChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramFields
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.network.program.ProgramFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

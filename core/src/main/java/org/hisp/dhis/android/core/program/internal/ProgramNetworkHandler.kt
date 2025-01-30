@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.Program
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ProgramCall internal constructor(
-    private val networkHandler: ProgramNetworkHandler,
-    val handler: ProgramHandler,
-    val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Program> {
-
-    override suspend fun download(uids: Set<String>): List<Program> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getPrograms,
-        )
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 50
-    }
+internal fun interface ProgramNetworkHandler {
+    suspend fun getPrograms(uids: Set<String>): Payload<Program>
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.program.ProgramRuleAction
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.programrule
 
-internal object ProgramRuleActionFields : BaseFields<ProgramRuleAction>() {
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.DATA),
-        fh.field(Columns.CONTENT),
-        fh.field(Columns.LOCATION),
-        fh.field(Columns.PROGRAM_RULE_ACTION_TYPE),
-        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
-        fh.nestedFieldWithUid(Columns.PROGRAM_INDICATOR),
-        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE_SECTION),
-        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
-        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
-        fh.nestedFieldWithUid(Columns.OPTION),
-        fh.nestedFieldWithUid(Columns.OPTION_GROUP),
-        fh.field(Columns.DISPLAYCONTENT),
-    )
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.hisp.dhis.android.core.program.internal.ProgramRuleNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
+
+@Singleton
+internal class ProgramRuleNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : ProgramRuleNetworkHandler {
+    private val service = ProgramRuleService(httpServiceClient)
+    override suspend fun getProgramRules(programUids: Set<String>): Payload<ProgramRule> {
+        val programUidsFilterStr =
+            "program." + ObjectWithUid.uid.`in`(programUids).generateString()
+        val apiPayload = service.getProgramRules(
+            ProgramRuleFields.allFields,
+            programUidsFilterStr,
+            false,
+        )
+        return apiPayload.mapItems(ProgramRuleDTO::toDomain)
+    }
 }

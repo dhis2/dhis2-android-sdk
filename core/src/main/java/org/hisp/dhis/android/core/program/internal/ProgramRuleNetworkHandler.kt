@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ProgramRuleService(private val client: HttpServiceClient) {
-    suspend fun getProgramRules(
-        fields: Fields<ProgramRule>,
-        programUidsFilterString: String,
-        paging: Boolean,
-    ): PayloadJackson<ProgramRule> {
-        return client.get {
-            url("programRules")
-            parameters {
-                fields(fields)
-                attribute("filter", programUidsFilterString)
-                paging(paging)
-            }
-        }
-    }
+internal fun interface ProgramRuleNetworkHandler {
+    suspend fun getProgramRules(programUids: Set<String>): Payload<ProgramRule>
 }

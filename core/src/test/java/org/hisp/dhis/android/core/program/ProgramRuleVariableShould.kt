@@ -25,44 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.program.ProgramRuleVariableDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ProgramRuleVariableShould extends BaseObjectShould implements ObjectShould {
-
-    public ProgramRuleVariableShould() {
-        super("program/program_rule_variable.json");
-    }
-
-    @Override
+class ProgramRuleVariableShould :
+    BaseObjectKotlinxShould("program/program_rule_variable.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ProgramRuleVariable programRuleVariable = objectMapper.readValue(jsonStream, ProgramRuleVariable.class);
+    override fun map_from_json_string() {
+        val programRuleVariableDTO = deserialize(ProgramRuleVariableDTO.serializer())
+        val programRuleVariable = programRuleVariableDTO.toDomain()
 
         assertThat(programRuleVariable.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.931"));
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.931"),
+        )
         assertThat(programRuleVariable.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.932"));
-        assertThat(programRuleVariable.uid()).isEqualTo("RycV5uDi66i");
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.932"),
+        )
+        assertThat(programRuleVariable.uid()).isEqualTo("RycV5uDi66i")
 
-        assertThat(programRuleVariable.name()).isEqualTo("age");
-        assertThat(programRuleVariable.displayName()).isEqualTo("age");
+        assertThat(programRuleVariable.name()).isEqualTo("age")
+        assertThat(programRuleVariable.displayName()).isEqualTo("age")
 
-        assertThat(programRuleVariable.programStage()).isNull();
-        assertThat(programRuleVariable.programRuleVariableSourceType()).isEqualTo(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM);
-        assertThat(programRuleVariable.useCodeForOptionSet()).isNull();
-        assertThat(programRuleVariable.program().uid()).isEqualTo("eBAyeGv0exc");
-        assertThat(programRuleVariable.dataElement().uid()).isEqualTo("qrur9Dvnyt5");
-        assertThat(programRuleVariable.trackedEntityAttribute()).isNull();
+        assertThat(programRuleVariable.programStage()).isNull()
+        assertThat(programRuleVariable.programRuleVariableSourceType())
+            .isEqualTo(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
+        assertThat(programRuleVariable.useCodeForOptionSet()).isNull()
+        assertThat(programRuleVariable.program()!!.uid()).isEqualTo("eBAyeGv0exc")
+        assertThat(programRuleVariable.dataElement()!!.uid()).isEqualTo("qrur9Dvnyt5")
+        assertThat(programRuleVariable.trackedEntityAttribute()).isNull()
     }
 }

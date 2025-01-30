@@ -25,31 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
+internal object ProgramInternalAccessor {
+    @JvmStatic
+    fun accessProgramTrackedEntityAttributes(program: Program?): List<ProgramTrackedEntityAttribute>? {
+        return program?.programTrackedEntityAttributes()
+    }
 
-@Singleton
-internal class ProgramService(private val client: HttpServiceClient) {
-    suspend fun getPrograms(
-        fields: Fields<Program>,
-        uids: Filter<Program>,
-        accessDataReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<Program> {
-        return client.get {
-            url("programs")
-            parameters {
-                fields(fields)
-                filter(uids)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
+    @JvmStatic
+    fun accessProgramRuleVariables(program: Program?): List<ProgramRuleVariable>? {
+        return program?.programRuleVariables()
+    }
+
+    @JvmStatic
+    fun accessProgramSections(program: Program?): List<ProgramSection>? {
+        return program?.programSections()
+    }
+
+    fun insertProgramTrackedEntityAttributes(
+        builder: Program.Builder,
+        programTrackedEntityAttributes: List<ProgramTrackedEntityAttribute>?,
+    ): Program.Builder {
+        return builder.programTrackedEntityAttributes(programTrackedEntityAttributes)
+    }
+
+    fun insertProgramRuleVariables(
+        builder: Program.Builder,
+        programRuleVariables: List<ProgramRuleVariable>?,
+    ): Program.Builder {
+        return builder.programRuleVariables(programRuleVariables)
+    }
+
+    fun insertProgramSections(
+        builder: Program.Builder,
+        programSections: List<ProgramSection>?,
+    ): Program.Builder {
+        return builder.programSections(programSections)
     }
 }

@@ -9693,12 +9693,6 @@ public final class org/hisp/dhis/android/core/program/ProgramIndicatorTableInfo$
 public final class org/hisp/dhis/android/core/program/ProgramIndicatorTableInfo$Columns$Companion {
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramInternalAccessor {
-	public static fun accessProgramRuleVariables (Lorg/hisp/dhis/android/core/program/Program;)Ljava/util/List;
-	public static fun accessProgramSections (Lorg/hisp/dhis/android/core/program/Program;)Ljava/util/List;
-	public static fun accessProgramTrackedEntityAttributes (Lorg/hisp/dhis/android/core/program/Program;)Ljava/util/List;
-}
-
 public abstract interface class org/hisp/dhis/android/core/program/ProgramModule {
 	public abstract fun programIndicatorEngine ()Lorg/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine;
 	public abstract fun programIndicators ()Lorg/hisp/dhis/android/core/program/ProgramIndicatorCollectionRepository;

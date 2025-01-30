@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.core.payload
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.program.Program
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.program.ProgramDTO
+import org.hisp.dhis.android.network.program.ProgramPayload
+import org.junit.Test
 
-@Singleton
-internal class ProgramCall internal constructor(
-    private val networkHandler: ProgramNetworkHandler,
-    val handler: ProgramHandler,
-    val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<Program> {
+class ProgramPayloadShould : BaseObjectKotlinxShould("program/program_payload.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val payloadDTO: ProgramPayload = deserialize(ProgramPayload.serializer())
+        val payload = payloadDTO.mapItems(ProgramDTO::toDomain)
 
-    override suspend fun download(uids: Set<String>): List<Program> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getPrograms,
+        val programs: List<Program?> = payload.items()
+
+        assertThat(programs).isNotNull()
+        assertThat(programs).isNotEmpty()
+        assertThat(programs.size).isEqualTo(2)
+
+        val program = programs[0]
+        assertThat(program!!.uid()).isEqualTo("IpHINAT79UW")
+        assertThat(program.version()).isEqualTo(3)
+        assertThat(program.access()).isEqualTo(
+            Access.create(
+                true,
+                false,
+                DataAccess.create(false, false),
+            ),
         )
-    }
 
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 50
+        val program1 = programs[1]
+        assertThat(program1!!.uid()).isEqualTo("q04UBOqq3rp")
+        assertThat(program1.version()).isEqualTo(1)
+        assertThat(program1.access()).isEqualTo(Access.builder().build())
     }
 }

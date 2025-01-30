@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -45,27 +42,22 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_AnalyticsPeriodBoundary.Builder.class)
 public abstract class AnalyticsPeriodBoundary implements CoreObject {
 
     @Nullable
     public abstract String programIndicator();
 
     @Nullable
-    @JsonProperty()
     public abstract String boundaryTarget();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AnalyticsPeriodBoundaryTypeColumnAdapter.class)
     public abstract AnalyticsPeriodBoundaryType analyticsPeriodBoundaryType();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer offsetPeriods();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType offsetPeriodType();
 
@@ -85,7 +77,6 @@ public abstract class AnalyticsPeriodBoundary implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

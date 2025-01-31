@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramRuleFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
+import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

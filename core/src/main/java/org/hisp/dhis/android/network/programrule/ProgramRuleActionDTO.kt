@@ -26,22 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.program
+package org.hisp.dhis.android.network.programrule
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonNames
-import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionType
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
-import org.hisp.dhis.android.network.programstage.SectionRenderingDTO
-import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
 
 @Serializable
-internal data class ProgramSectionDTO(
+internal data class ProgramRuleActionDTO(
     @SerialName("id") override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -49,25 +46,35 @@ internal data class ProgramSectionDTO(
     override val created: String?,
     override val lastUpdated: String?,
     override val deleted: Boolean?,
-    val style: ObjectWithStyleDTO?,
-    val description: String?,
-    val program: ObjectWithUidDTO?,
-    @JsonNames(ProgramSectionFields.ATTRIBUTES)
-    val trackedEntityAttributes: List<TrackedEntityAttributeDTO>?,
-    val sortOrder: Int?,
-    val formName: String?,
-    val renderType: SectionRenderingDTO?,
+    val data: String?,
+    val content: String?,
+    val location: String?,
+    val trackedEntityAttribute: ObjectWithUidDTO?,
+    val programIndicator: ObjectWithUidDTO?,
+    val programStageSection: ObjectWithUidDTO?,
+    val programRuleActionType: String?,
+    val programStage: ObjectWithUidDTO?,
+    val dataElement: ObjectWithUidDTO?,
+    val option: ObjectWithUidDTO?,
+    val optionGroup: ObjectWithUidDTO?,
+    val displayContent: String?,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): ProgramSection {
-        return ProgramSection.builder().apply {
-            applyBaseIdentifiableFields(this@ProgramSectionDTO)
-            style?.let { style(it.toDomain()) }
-            description(description)
-            program(program?.toDomain())
-            attributes(trackedEntityAttributes?.map { it.toDomain() })
-            sortOrder(sortOrder)
-            formName(formName)
-            renderType(renderType?.toDomain())
-        }.build()
+    fun toDomain(programRuleId: String?): ProgramRuleAction {
+        return ProgramRuleAction.builder()
+            .applyBaseIdentifiableFields(this)
+            .programRule(ObjectWithUid.create(programRuleId))
+            .data(data)
+            .content(content)
+            .location(location)
+            .trackedEntityAttribute(trackedEntityAttribute?.toDomain())
+            .programIndicator(programIndicator?.toDomain())
+            .programStageSection(programStageSection?.toDomain())
+            .programRuleActionType(programRuleActionType?.let { ProgramRuleActionType.valueOf(it) })
+            .programStage(programStage?.toDomain())
+            .dataElement(dataElement?.toDomain())
+            .option(option?.toDomain())
+            .optionGroup(optionGroup?.toDomain())
+            .displayContent(displayContent)
+            .build()
     }
 }

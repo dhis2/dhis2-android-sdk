@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal
+package org.hisp.dhis.android.network.programrule
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.program.ProgramRule
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-@Singleton
-internal class ProgramRuleCall(
-    private val networkHandler: ProgramRuleNetworkHandler,
-    private val handler: ProgramRuleHandler,
-    private val apiDownloader: APIDownloader,
-) : UidsCallCoroutines<ProgramRule> {
-    override suspend fun download(programUids: Set<String>): List<ProgramRule> {
-        return apiDownloader.downloadPartitioned(
-            programUids,
-            MAX_UID_LIST_SIZE,
-            handler,
-            networkHandler::getProgramRules,
-        )
-    }
-
-    companion object {
-        private const val MAX_UID_LIST_SIZE = 64
-    }
+internal object ProgramRuleActionFields : BaseFields<ProgramRuleAction>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.DATA),
+        fh.field(Columns.CONTENT),
+        fh.field(Columns.LOCATION),
+        fh.field(Columns.PROGRAM_RULE_ACTION_TYPE),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
+        fh.nestedFieldWithUid(Columns.PROGRAM_INDICATOR),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE_SECTION),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
+        fh.nestedFieldWithUid(Columns.OPTION),
+        fh.nestedFieldWithUid(Columns.OPTION_GROUP),
+        fh.field(Columns.DISPLAYCONTENT),
+    )
 }

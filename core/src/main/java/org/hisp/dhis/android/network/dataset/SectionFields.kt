@@ -37,6 +37,8 @@ internal object SectionFields : BaseFields<Section>() {
     const val DATA_ELEMENTS = "dataElements"
     const val GREYED_FIELDS = "greyedFields"
     const val INDICATORS = "indicators"
+    const val DISPLAY_OPTIONS = "displayOptions";
+
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),
@@ -45,7 +47,7 @@ internal object SectionFields : BaseFields<Section>() {
         fh.field(Columns.SHOW_ROW_TOTALS),
         fh.field(Columns.SHOW_COLUMN_TOTALS),
         fh.field(Columns.DISABLE_DATA_ELEMENT_AUTO_GROUPING),
-        fh.field(Columns.DISPLAY_OPTIONS),
+        fh.field(DISPLAY_OPTIONS),
         fh.nestedFieldWithUid(Columns.DATA_SET),
         fh.nestedFieldWithUid(DATA_ELEMENTS),
         fh.nestedFieldWithUid(INDICATORS),

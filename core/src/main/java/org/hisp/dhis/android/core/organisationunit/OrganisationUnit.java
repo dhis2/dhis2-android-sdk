@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayCo
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -92,10 +91,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
     public abstract List<ObjectWithUid> dataSets();
 
     @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
-    abstract List<OrganisationUnit> ancestors();
-
-    @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitGroupListAdapter.class)
     public abstract List<OrganisationUnitGroup> organisationUnitGroups();
 
@@ -141,8 +136,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
         public abstract Builder programs(List<ObjectWithUid> programs);
 
         public abstract Builder dataSets(List<ObjectWithUid> dataSets);
-
-        abstract Builder ancestors(List<OrganisationUnit> ancestors);
 
         public abstract Builder organisationUnitGroups(List<OrganisationUnitGroup> organisationUnitGroups);
 

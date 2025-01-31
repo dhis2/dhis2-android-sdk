@@ -43,14 +43,14 @@ internal data class OrganisationUnitGroupDTO(
     override val created: String?,
     override val lastUpdated: String?,
     override val deleted: Boolean?,
-    val shortname: String?,
-    val displayShortname: String?,
+    val shortName: String?,
+    val displayShortName: String?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): OrganisationUnitGroup {
         return OrganisationUnitGroup.builder()
             .applyBaseIdentifiableFields(this)
-            .shortName(shortname)
-            .displayShortName(displayShortname)
+            .shortName(shortName)
+            .displayShortName(displayShortName)
             .build()
     }
 }

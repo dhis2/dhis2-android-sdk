@@ -25,45 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal
+package org.hisp.dhis.android.network.organisationunit
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object OrganisationUnitFields : BaseFields<OrganisationUnit>() {
-    const val PROGRAMS = "programs"
-    const val DATA_SETS = "dataSets"
-    private const val ANCESTORS = "ancestors"
-    const val ORGANISATION_UNIT_GROUPS = "organisationUnitGroups"
-    const val FEATURE_TYPE = "featureType"
-
-    val uid = fh.uid()
-    val path = fh.field(Columns.PATH)
-    private val displayName = fh.displayName()
-    private val openingDate = fh.field(Columns.OPENING_DATE)
-    private val closedDate = fh.field(Columns.CLOSED_DATE)
-    val ASC_ORDER = uid.name + ":" + RepositoryScope.OrderByDirection.ASC.api
-
-    val fieldsInUserCall = Fields.from(
-        uid,
-        path,
-    )
-
+internal object OrganisationUnitGroupFields : BaseFields<OrganisationUnitGroup>() {
     val allFields = Fields.from(
-        fh.getNameableFields(),
-        path,
-        openingDate,
-        closedDate,
-        fh.field(Columns.LEVEL),
-        fh.field(FEATURE_TYPE),
-        fh.nestedFieldWithUid(Columns.PARENT),
-        fh.nestedFieldWithUid(PROGRAMS),
-        fh.nestedFieldWithUid(DATA_SETS),
-        fh.nestedField<OrganisationUnit>(ANCESTORS).with(uid, displayName),
-        fh.nestedField<OrganisationUnitGroup>(ORGANISATION_UNIT_GROUPS).with(OrganisationUnitGroupFields.allFields),
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SHORT_NAME),
+        fh.field(Columns.DISPLAY_SHORT_NAME),
     )
 }

@@ -38,7 +38,7 @@ enum class FeatureType(val featureType: String, val geometryType: String) {
     companion object {
         @JvmStatic
         fun valueOfFeatureType(featureType: String): FeatureType? {
-            return values().find { it.featureType == featureType || it.geometryType == featureType }
+            return entries.find { it.featureType == featureType || it.geometryType == featureType }
         }
     }
 }

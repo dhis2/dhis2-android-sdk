@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal
+package org.hisp.dhis.android.network.organisationunit
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-@Singleton
-internal class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
+internal class OrganisationUnitService(private val client: HttpServiceClientKotlinx) {
 
-    override operator fun invoke(organisationUnit: OrganisationUnit): OrganisationUnit {
-        val path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit)
-        val builder = organisationUnit.toBuilder()
-        builder.displayNamePath(path)
-        return builder.build()
+    @Suppress("LongParameterList")
+    suspend fun getOrganisationUnits(
+        fields: Fields<OrganisationUnit>,
+        filter: Filter<OrganisationUnit>,
+        order: String,
+        paging: Boolean,
+        pageSize: Int,
+        page: Int,
+    ): OrganisationUnitPayload {
+        return client.get {
+            url(ORGANISATION_UNITS)
+            parameters {
+                fields(fields)
+                filter(filter)
+                attribute(ORDER, order)
+                paging(paging)
+                pageSize(pageSize)
+                page(page)
+            }
+        }
+    }
+
+    companion object {
+        const val ORGANISATION_UNITS = "organisationUnits"
+        const val ORDER = "order"
     }
 }

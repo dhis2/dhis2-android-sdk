@@ -33,10 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -44,15 +40,12 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -61,7 +54,6 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_OrganisationUnit.Builder.class)
 public abstract class OrganisationUnit extends BaseNameableObject implements CoreObject {
 
     public enum Scope {
@@ -70,65 +62,44 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
     }
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid parent();
 
     @Nullable
-    @JsonProperty()
     public abstract String path();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closedDate();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer level();
 
     @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreStringColumnAdapter.class)
-    abstract String coordinates();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreFeatureTypeColumnAdapter.class)
-    abstract FeatureType featureType();
-
-    @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> programs();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> dataSets();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     abstract List<OrganisationUnit> ancestors();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreOrganisationUnitGroupListAdapter.class)
     public abstract List<OrganisationUnitGroup> organisationUnitGroups();
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(StringArrayColumnAdapter.class)
     public abstract List<String> displayNamePath();
 
@@ -144,7 +115,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
@@ -166,10 +136,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
 
         public abstract Builder level(Integer level);
 
-        abstract Builder coordinates(String coordinates);
-
-        abstract Builder featureType(FeatureType featureType);
-
         public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder programs(List<ObjectWithUid> programs);
@@ -182,21 +148,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
 
         public abstract Builder displayNamePath(List<String> displayNamePath);
 
-        abstract OrganisationUnit autoBuild();
-
-        // Auxiliary fields to access values
-        abstract FeatureType featureType();
-        abstract String coordinates();
-        abstract Geometry geometry();
-
-        public OrganisationUnit build() {
-            if (geometry() == null && coordinates() != null && featureType() != null) {
-                geometry(Geometry.builder()
-                        .type(featureType())
-                        .coordinates(coordinates())
-                        .build());
-            }
-            return autoBuild();
-        }
+        public abstract OrganisationUnit build();
     }
 }

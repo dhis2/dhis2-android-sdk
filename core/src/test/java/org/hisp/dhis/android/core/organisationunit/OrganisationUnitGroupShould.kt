@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalAccessor;
+class OrganisationUnitGroupShould :
+    BaseObjectKotlinxShould("organisationunit/organisation_unit_group.json"),
+    ObjectShould {
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+    @Test
+    override fun map_from_json_string() {
+        val organisationUnitGroupDTO = deserialize(OrganisationUnitGroupDTO.serializer())
+        val organisationUnitGroup = organisationUnitGroupDTO.toDomain()
 
-final class OrganisationUnitDisplayPathGenerator {
-
-    private OrganisationUnitDisplayPathGenerator() {
-    }
-
-    static List<String> generateDisplayPath(OrganisationUnit organisationUnit) {
-        List<OrganisationUnit> ancestors = OrganisationUnitInternalAccessor.accessAncestors(organisationUnit);
-        if (ancestors == null) {
-            return Collections.emptyList();
-        } else {
-            List<String> list = new ArrayList<>(ancestors.size());
-            for (OrganisationUnit ancestor: ancestors) {
-                list.add(ancestor.displayName());
-            }
-            list.add(organisationUnit.displayName());
-            return list;
-        }
+        assertThat(organisationUnitGroup.uid()).isEqualTo("CXw2yu5fodb")
+        assertThat(organisationUnitGroup.code()).isEqualTo("CHC")
+        assertThat(organisationUnitGroup.name()).isEqualTo("CHC")
+        assertThat(organisationUnitGroup.displayName()).isEqualTo("CHC")
+        assertThat(organisationUnitGroup.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2012-11-13T14:35:22.574"))
+        assertThat(
+            organisationUnitGroup.lastUpdated(),
+        ).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-09-29T20:28:01.093"))
+        assertThat(organisationUnitGroup.shortName()).isEqualTo("CHC")
+        assertThat(organisationUnitGroup.displayShortName()).isEqualTo("CHC")
     }
 }

@@ -5889,6 +5889,28 @@ public class org/hisp/dhis/android/core/dataset/DataSetTableInfo$Columns : org/h
 	public fun all ()[Ljava/lang/String;
 }
 
+public final class org/hisp/dhis/android/core/dataset/DbSectionPivotModeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
+	public fun <init> ()V
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/DisplayOptions {
+	public fun <init> ()V
+	public abstract fun afterSectionText ()Ljava/lang/String;
+	public abstract fun beforeSectionText ()Ljava/lang/String;
+	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
+	public abstract fun pivotMode ()Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+	public abstract fun pivotedCategory ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/DisplayOptions$Builder {
+	public fun <init> ()V
+	public abstract fun afterSectionText (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
+	public abstract fun beforeSectionText (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DisplayOptions;
+	public abstract fun pivotMode (Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
+	public abstract fun pivotedCategory (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
+}
+
 public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
@@ -5896,6 +5918,8 @@ public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis
 	public abstract fun dataElements ()Ljava/util/List;
 	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun description ()Ljava/lang/String;
+	public abstract fun disableDataElementAutoGrouping ()Ljava/lang/Boolean;
+	public abstract fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/DisplayOptions;
 	public abstract fun greyedFields ()Ljava/util/List;
 	public abstract fun indicators ()Ljava/util/List;
 	public abstract fun showColumnTotals ()Ljava/lang/Boolean;
@@ -5910,6 +5934,8 @@ public abstract class org/hisp/dhis/android/core/dataset/Section$Builder : org/h
 	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public abstract fun disableDataElementAutoGrouping (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public abstract fun displayOptions (Lorg/hisp/dhis/android/core/dataset/DisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun greyedFields (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
@@ -5919,8 +5945,12 @@ public abstract class org/hisp/dhis/android/core/dataset/Section$Builder : org/h
 }
 
 public final class org/hisp/dhis/android/core/dataset/SectionCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
+	public final fun byAfterSectionText ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byBeforeSectionText ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDataSetUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byPivotMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byPivotedCategory ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byShowColumnTotals ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byShowRowTotals ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun bySortOrder ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
@@ -6007,13 +6037,32 @@ public class org/hisp/dhis/android/core/dataset/SectionIndicatorLinkTableInfo$Co
 	public fun whereUpdate ()[Ljava/lang/String;
 }
 
+public final class org/hisp/dhis/android/core/dataset/SectionPivotMode : java/lang/Enum {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionPivotMode$Companion;
+	public static final field DEFAULT Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+	public static final field MOVE_CATEGORIES Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+	public static final field PIVOT Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+	public static fun values ()[Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+}
+
+public final class org/hisp/dhis/android/core/dataset/SectionPivotMode$Companion {
+}
+
 public final class org/hisp/dhis/android/core/dataset/SectionTableInfo {
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 }
 
 public class org/hisp/dhis/android/core/dataset/SectionTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
+	public static final field AFTER_SECTION_TEXT Ljava/lang/String;
+	public static final field BEFORE_SECTION_TEXT Ljava/lang/String;
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
+	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUPING Ljava/lang/String;
+	public static final field DISPLAY_OPTIONS Ljava/lang/String;
+	public static final field PIVOTED_CATEGORY Ljava/lang/String;
+	public static final field PIVOT_MODE Ljava/lang/String;
 	public static final field SHOW_COLUMN_TOTALS Ljava/lang/String;
 	public static final field SHOW_ROW_TOTALS Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
@@ -6078,6 +6127,14 @@ public final class org/hisp/dhis/android/core/dataset/internal/DataSetModuleImpl
 	public fun dataSetInstances ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceCollectionRepository;
 	public fun dataSets ()Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;
 	public fun sections ()Lorg/hisp/dhis/android/core/dataset/SectionCollectionRepository;
+}
+
+public final class org/hisp/dhis/android/core/dataset/internal/DisplayOptionsColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
+	public fun <init> ()V
+	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
+	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions;
+	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/dataset/DisplayOptions;)V
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {

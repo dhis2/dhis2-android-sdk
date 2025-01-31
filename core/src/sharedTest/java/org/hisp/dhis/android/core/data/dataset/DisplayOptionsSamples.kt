@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.dataset
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import org.hisp.dhis.android.core.dataset.DisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionPivotMode
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.Section;
-
-public class SectionSamples {
-
-    public static Section getSection() {
-        Section.Builder sectionBuilder = Section.builder();
-        fillIdentifiableProperties(sectionBuilder);
-        sectionBuilder
-                .id(1L)
-                .description("descr")
-                .sortOrder(2)
-                .showRowTotals(true)
-                .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"))
-                .displayOptions(DisplayOptionsSamples.getDisplayOptions());
-        return sectionBuilder.build();
+class DisplayOptionsSamples {
+    companion object {
+        @JvmStatic
+        fun getDisplayOptions(): DisplayOptions {
+            return DisplayOptions.builder()
+                .pivotMode(SectionPivotMode.DEFAULT)
+                .pivotedCategory("pivotedCategory")
+                .afterSectionText("afterSectionText")
+                .beforeSectionText("beforeSectionText")
+                .build()
+        }
     }
 }

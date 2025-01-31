@@ -37,8 +37,7 @@ internal object SectionFields : BaseFields<Section>() {
     const val DATA_ELEMENTS = "dataElements"
     const val GREYED_FIELDS = "greyedFields"
     const val INDICATORS = "indicators"
-    const val DISPLAY_OPTIONS = "displayOptions";
-
+    const val DISPLAY_OPTIONS = "displayOptions"
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),

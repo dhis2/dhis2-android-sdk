@@ -6056,7 +6056,6 @@ public class org/hisp/dhis/android/core/dataset/SectionTableInfo$Columns : org/h
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUPING Ljava/lang/String;
-	public static final field DISPLAY_OPTIONS Ljava/lang/String;
 	public static final field PIVOTED_CATEGORY Ljava/lang/String;
 	public static final field PIVOT_MODE Ljava/lang/String;
 	public static final field SHOW_COLUMN_TOTALS Ljava/lang/String;

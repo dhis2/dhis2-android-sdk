@@ -5889,10 +5889,6 @@ public class org/hisp/dhis/android/core/dataset/DataSetTableInfo$Columns : org/h
 	public fun all ()[Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/dataset/DbSectionPivotModeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
 public abstract class org/hisp/dhis/android/core/dataset/DisplayOptions {
 	public fun <init> ()V
 	public abstract fun afterSectionText ()Ljava/lang/String;

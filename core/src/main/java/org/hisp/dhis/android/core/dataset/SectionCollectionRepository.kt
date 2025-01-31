@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.network.dataset.SectionFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class SectionCollectionRepository internal constructor(
     store: SectionStore,
     databaseAdapter: DatabaseAdapter,
@@ -80,6 +82,22 @@ class SectionCollectionRepository internal constructor(
 
     fun byDataSetUid(): StringFilterConnector<SectionCollectionRepository> {
         return cf.string(SectionTableInfo.Columns.DATA_SET)
+    }
+
+    fun byPivotMode(): EnumFilterConnector<SectionCollectionRepository, SectionPivotMode> {
+        return cf.enumC(SectionTableInfo.Columns.PIVOT_MODE)
+    }
+
+    fun byPivotedCategory(): StringFilterConnector<SectionCollectionRepository> {
+        return cf.string(SectionTableInfo.Columns.PIVOTED_CATEGORY)
+    }
+
+    fun byAfterSectionText(): StringFilterConnector<SectionCollectionRepository> {
+        return cf.string(SectionTableInfo.Columns.AFTER_SECTION_TEXT)
+    }
+
+    fun byBeforeSectionText(): StringFilterConnector<SectionCollectionRepository> {
+        return cf.string(SectionTableInfo.Columns.BEFORE_SECTION_TEXT)
     }
 
     fun withDataElements(): SectionCollectionRepository {

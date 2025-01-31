@@ -25,30 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataset.DisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionPivotMode
 
-internal object SectionFields : BaseFields<Section>() {
-    const val DATA_ELEMENTS = "dataElements"
-    const val GREYED_FIELDS = "greyedFields"
-    const val INDICATORS = "indicators"
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.DESCRIPTION),
-        fh.field(Columns.SORT_ORDER),
-        fh.field(Columns.SHOW_ROW_TOTALS),
-        fh.field(Columns.SHOW_COLUMN_TOTALS),
-        fh.field(Columns.DISABLE_DATA_ELEMENT_AUTO_GROUPING),
-        fh.field(Columns.DISPLAY_OPTIONS),
-        fh.nestedFieldWithUid(Columns.DATA_SET),
-        fh.nestedFieldWithUid(DATA_ELEMENTS),
-        fh.nestedFieldWithUid(INDICATORS),
-        fh.nestedField<DataElementOperand>(GREYED_FIELDS).with(DataElementOperandFields.allFields),
-    )
+@Serializable
+internal data class DisplayOptionsDTO(
+    val pivotMode: String?,
+    val pivotedCategory: String?,
+    val afterSectionText: String?,
+    val beforeSectionText: String?,
+) {
+    fun toDomain(): DisplayOptions {
+        return DisplayOptions.builder()
+            .pivotMode(pivotMode.takeIf { !it.isNullOrEmpty() }?.let { SectionPivotMode.from(it) })
+            .pivotedCategory(pivotedCategory.takeIf { !it.isNullOrEmpty() })
+            .afterSectionText(afterSectionText.takeIf { !it.isNullOrEmpty() })
+            .beforeSectionText(beforeSectionText.takeIf { !it.isNullOrEmpty() })
+            .build()
+    }
 }

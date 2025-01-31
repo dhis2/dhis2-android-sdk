@@ -58,6 +58,12 @@ public final class SectionTableInfo {
         public final static String DATA_SET = "dataSet";
         public final static String SHOW_ROW_TOTALS = "showRowTotals";
         public final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
+        public final static String DISABLE_DATA_ELEMENT_AUTO_GROUPING = "disableDataElementAutoGrouping";
+        public final static String DISPLAY_OPTIONS = "displayOptions";
+        public final static String BEFORE_SECTION_TEXT = "beforeSectionText";
+        public final static String AFTER_SECTION_TEXT = "afterSectionText";
+        public final static String PIVOT_MODE = "pivotMode";
+        public final static String PIVOTED_CATEGORY = "pivotedCategory";
 
         @Override
         public String[] all() {
@@ -66,7 +72,12 @@ public final class SectionTableInfo {
                     SORT_ORDER,
                     DATA_SET,
                     SHOW_ROW_TOTALS,
-                    SHOW_COLUMN_TOTALS
+                    SHOW_COLUMN_TOTALS,
+                    DISABLE_DATA_ELEMENT_AUTO_GROUPING,
+                    BEFORE_SECTION_TEXT,
+                    AFTER_SECTION_TEXT,
+                    PIVOT_MODE,
+                    PIVOTED_CATEGORY
             );
         }
     }

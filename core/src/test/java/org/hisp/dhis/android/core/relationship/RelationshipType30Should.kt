@@ -55,8 +55,6 @@ class RelationshipType30Should :
         assertThat(relationshipType.lastUpdated()).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"),
         )
-        assertThat(relationshipType.aIsToB()).isNull()
-        assertThat(relationshipType.bIsToA()).isNull()
         assertThat(relationshipType.toFromName()).isNull()
         assertThat(relationshipType.fromToName()).isNull()
         assertThat(relationshipType.fromConstraint()).isNotNull()

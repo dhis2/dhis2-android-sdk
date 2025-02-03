@@ -54,8 +54,6 @@ class RelationshipType32Should :
         assertThat(relationshipType.lastUpdated()).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:41.066"),
         )
-        assertThat(relationshipType.aIsToB()).isNull()
-        assertThat(relationshipType.bIsToA()).isNull()
         assertThat(relationshipType.toFromName()).isEqualTo("Sibling_a-to-b_(Person-Person)")
         assertThat(relationshipType.fromToName()).isEqualTo("Sibling_b-to-a_(Person-Person)")
         assertThat(relationshipType.fromConstraint()).isNotNull()

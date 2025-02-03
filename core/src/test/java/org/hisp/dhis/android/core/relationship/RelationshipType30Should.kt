@@ -36,7 +36,8 @@ import org.junit.Test
 import java.io.IOException
 import java.text.ParseException
 
-class RelationshipType30Should : BaseObjectKotlinxShould("relationship/relationship_type_30.json"),
+class RelationshipType30Should :
+    BaseObjectKotlinxShould("relationship/relationship_type_30.json"),
     ObjectShould {
     @Test
     @Throws(IOException::class, ParseException::class)
@@ -49,10 +50,10 @@ class RelationshipType30Should : BaseObjectKotlinxShould("relationship/relations
         assertThat(relationshipType.displayName())
             .isEqualTo("Mother-Child_b-to-a_(Person-Person)")
         assertThat(relationshipType.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2013-09-19T15:17:41.000")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2013-09-19T15:17:41.000"),
         )
         assertThat(relationshipType.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166")
+            BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"),
         )
         assertThat(relationshipType.aIsToB()).isNull()
         assertThat(relationshipType.bIsToA()).isNull()
@@ -60,37 +61,37 @@ class RelationshipType30Should : BaseObjectKotlinxShould("relationship/relations
         assertThat(relationshipType.fromToName()).isNull()
         assertThat(relationshipType.fromConstraint()).isNotNull()
         assertThat(
-            relationshipType.fromConstraint()!!.relationshipEntity()
+            relationshipType.fromConstraint()!!.relationshipEntity(),
         ).isEqualTo(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
         assertThat(
-            relationshipType.fromConstraint()!!.trackedEntityType()!!.uid()
+            relationshipType.fromConstraint()!!.trackedEntityType()!!.uid(),
         ).isEqualTo("nEenWmSyUEp")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()!![0]
+            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()!![0],
         ).isEqualTo("b0vcadVrn08")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()!![1]
+            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()!![1],
         ).isEqualTo("qXS2NDUEAOS")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![0]
+            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![0],
         ).isEqualTo("ciWE5jde1ax")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![1]
+            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![1],
         ).isEqualTo("hB9F8vKFmlk")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![2]
+            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![2],
         ).isEqualTo("uFAQYm3UgBL")
         assertThat(relationshipType.toConstraint()).isNotNull()
         assertThat(
-            relationshipType.toConstraint()!!.relationshipEntity()
+            relationshipType.toConstraint()!!.relationshipEntity(),
         ).isEqualTo(RelationshipEntityType.PROGRAM_INSTANCE)
         assertThat(relationshipType.toConstraint()!!.program()!!.uid())
             .isEqualTo("WSGAb5XwJ3Y")
         assertThat(
-            relationshipType.toConstraint()!!.trackerDataView()!!.attributes()!![0]
+            relationshipType.toConstraint()!!.trackerDataView()!!.attributes()!![0],
         ).isEqualTo("b0vcadVrn08")
         assertThat(
-            relationshipType.toConstraint()!!.trackerDataView()!!.dataElements()!!.isEmpty()
+            relationshipType.toConstraint()!!.trackerDataView()!!.dataElements()!!.isEmpty(),
         ).isTrue()
         assertThat(relationshipType.bidirectional()).isFalse()
         assertThat(relationshipType.access().data().read()).isTrue()

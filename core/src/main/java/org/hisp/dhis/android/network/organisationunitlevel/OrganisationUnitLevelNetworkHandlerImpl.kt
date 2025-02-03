@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.organisationunitlevel
 
-package org.hisp.dhis.android.core.organisationunit;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-import android.database.Cursor;
+@Singleton
+internal class OrganisationUnitLevelNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : OrganisationUnitLevelNetworkHandler {
+    private val service = OrganisationUnitLevelService(httpClient)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class OrganisationUnitLevel extends BaseIdentifiableObject implements CoreObject {
-
-    @Nullable
-    public abstract Integer level();
-
-    @NonNull
-    public static OrganisationUnitLevel create(Cursor cursor) {
-        return AutoValue_OrganisationUnitLevel.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitLevel.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder level(Integer level);
-
-        public abstract OrganisationUnitLevel build();
+    override suspend fun getOrganisationUnitLevels(): Payload<OrganisationUnitLevel> {
+        val apiPayload = service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, false)
+        return apiPayload.mapItems(OrganisationUnitLevelDTO::toDomain)
     }
 }

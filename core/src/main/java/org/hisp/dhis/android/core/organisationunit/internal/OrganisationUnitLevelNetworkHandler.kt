@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,24 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class OrganisationUnitLevelService(private val client: HttpServiceClient) {
-    suspend fun getOrganisationUnitLevels(
-        fields: Fields<OrganisationUnitLevel>,
-        paging: Boolean,
-    ): PayloadJackson<OrganisationUnitLevel> {
-        return client.get {
-            url("organisationUnitLevels")
-            parameters {
-                fields(fields)
-                paging(paging)
-            }
-        }
-    }
+internal fun interface OrganisationUnitLevelNetworkHandler {
+    suspend fun getOrganisationUnitLevels(): Payload<OrganisationUnitLevel>
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.network.organisationunitlevel
 
-import android.database.Cursor;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class OrganisationUnitLevel extends BaseIdentifiableObject implements CoreObject {
-
-    @Nullable
-    public abstract Integer level();
-
-    @NonNull
-    public static OrganisationUnitLevel create(Cursor cursor) {
-        return AutoValue_OrganisationUnitLevel.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitLevel.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder level(Integer level);
-
-        public abstract OrganisationUnitLevel build();
+@Serializable
+internal data class OrganisationUnitLevelDTO(
+    @SerialName("id") override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val level: Int?,
+) : BaseIdentifiableObjectDTO {
+    fun toDomain(): OrganisationUnitLevel {
+        return OrganisationUnitLevel.builder()
+            .applyBaseIdentifiableFields(this)
+            .level(level)
+            .build()
     }
 }
+
+@Serializable
+internal class OrganisationUnitLevelPayload(
+    override val pager: PagerDTO?,
+    @SerialName("organisationUnitLevels") override val items: List<OrganisationUnitLevelDTO> = emptyList(),
+) : PayloadJson<OrganisationUnitLevelDTO>(pager, items)

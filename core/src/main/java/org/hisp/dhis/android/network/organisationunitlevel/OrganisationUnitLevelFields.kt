@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.organisationunitlevel
 
-package org.hisp.dhis.android.core.organisationunit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class OrganisationUnitLevelShould extends BaseObjectShould implements ObjectShould {
-
-    public OrganisationUnitLevelShould() {
-        super("organisationunit/organisation_unit_level.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        OrganisationUnitLevel organisationUnitLevel
-                = objectMapper.readValue(jsonStream, OrganisationUnitLevel.class);
-
-        assertThat(organisationUnitLevel.uid()).isEqualTo("H1KlN4QIauv");
-        assertThat(organisationUnitLevel.name()).isEqualTo("National");
-        assertThat(organisationUnitLevel.displayName()).isEqualTo("National");
-        assertThat(organisationUnitLevel.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:22.935"));
-        assertThat(organisationUnitLevel.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-09T12:58:05.003"));
-        assertThat(organisationUnitLevel.level()).isEqualTo(1);
-    }
+internal object OrganisationUnitLevelFields : BaseFields<OrganisationUnitLevel>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.LEVEL),
+    )
 }

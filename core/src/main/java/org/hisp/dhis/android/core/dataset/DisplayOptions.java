@@ -42,7 +42,6 @@ public abstract class DisplayOptions {
     public abstract String afterSectionText();
 
     @Nullable
-//    @ColumnAdapter(DbSectionPivotModeColumnAdapter.class)
     public abstract SectionPivotMode pivotMode();
 
     @Nullable

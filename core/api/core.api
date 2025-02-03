@@ -5945,6 +5945,7 @@ public final class org/hisp/dhis/android/core/dataset/SectionCollectionRepositor
 	public final fun byBeforeSectionText ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDataSetUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byDisableDataElementAutoGrouping ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byPivotMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byPivotedCategory ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byShowColumnTotals ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;

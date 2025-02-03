@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,23 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.externalmap
+package org.hisp.dhis.android.network.externalmaplayer
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-@Singleton
-internal class ExternalMapLayerCallFactory(
-    private val mapLayerHandler: MapLayerHandler,
-    val apiDownloader: APIDownloader,
-    val networkHandler: ExternalMapLayerNetworkHandler,
-) {
+internal class ExternalMapLayerService(private val client: HttpServiceClientKotlinx) {
 
-    suspend fun download(): List<MapLayer> {
-        val mapLayers = networkHandler.getExternalMapLayers().items
-        mapLayerHandler.handleMany(mapLayers)
-        return mapLayers
+    suspend fun getExternalMapLayers(
+        fields: Fields<ExternalMapLayerDTO>,
+        mapLayerPosition: Filter<ExternalMapLayerDTO>,
+        paging: Boolean,
+    ): ExternalMapLayerPayload {
+        return client.get {
+            url("externalMapLayers")
+            parameters {
+                fields(fields)
+                filter(mapLayerPosition)
+                paging(paging)
+            }
+        }
     }
 }

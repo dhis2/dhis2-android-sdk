@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map.layer.internal.externalmap
+package org.hisp.dhis.android.network.externalmaplayer
 
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object ExternalMapLayerFields : BaseFields<ExternalMapLayer>() {
+internal object ExternalMapLayerFields : BaseFields<ExternalMapLayerDTO>() {
     private const val URL = "url"
 
     val uid = fh.uid()

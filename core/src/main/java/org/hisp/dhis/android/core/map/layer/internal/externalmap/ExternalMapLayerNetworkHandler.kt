@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,27 +28,9 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.map.layer.MapLayer
 
-@Singleton
-internal class ExternalMapLayerService(private val client: HttpServiceClient) {
-
-    suspend fun getExternalMapLayers(
-        fields: Fields<ExternalMapLayer>,
-        mapLayerPosition: Filter<ExternalMapLayer>,
-        paging: Boolean,
-    ): PayloadJackson<ExternalMapLayer> {
-        return client.get {
-            url("externalMapLayers")
-            parameters {
-                fields(fields)
-                filter(mapLayerPosition)
-                paging(paging)
-            }
-        }
-    }
+internal fun interface ExternalMapLayerNetworkHandler {
+    suspend fun getExternalMapLayers(): Payload<MapLayer>
 }

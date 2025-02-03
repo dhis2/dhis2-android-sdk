@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.externalmap
+package org.hisp.dhis.android.network.externalmaplayer
 
-import org.hisp.dhis.android.core.map.layer.ImageFormat
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
-import org.hisp.dhis.android.core.map.layer.MapService
+import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-internal data class ExternalMapLayer(
-    val id: String,
-    val name: String,
-    val displayName: String,
-    val code: String? = null,
-    val url: String,
-    val attribution: String? = null,
-    val mapService: MapService,
-    val imageFormat: ImageFormat? = null,
-    val layers: String? = null,
-    val mapLayerPosition: MapLayerPosition,
-)
+@Singleton
+internal class ExternalMapLayerNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : ExternalMapLayerNetworkHandler {
+    private val service = ExternalMapLayerService(httpServiceClient)
+    override suspend fun getExternalMapLayers(): Payload<MapLayer> {
+        val apiPayload = service.getExternalMapLayers(
+            ExternalMapLayerFields.allFields,
+            ExternalMapLayerFields.mapLayerPosition.eq(MapLayerPosition.BASEMAP),
+            false,
+        )
+        return apiPayload.mapItems(ExternalMapLayerDTO::toDomain)
+    }
+}

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit
 
-package org.hisp.dhis.android.core.organisationunit;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelDTO
+import org.junit.Test
 
-import android.database.Cursor;
+class OrganisationUnitLevelShould :
+    BaseObjectKotlinxShould("organisationunit/organisation_unit_level.json"),
+    ObjectShould {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    @Test
+    override fun map_from_json_string() {
+        val organisationUnitLevelDTO = deserialize(OrganisationUnitLevelDTO.serializer())
+        val organisationUnitLevel = organisationUnitLevelDTO.toDomain()
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class OrganisationUnitLevel extends BaseIdentifiableObject implements CoreObject {
-
-    @Nullable
-    public abstract Integer level();
-
-    @NonNull
-    public static OrganisationUnitLevel create(Cursor cursor) {
-        return AutoValue_OrganisationUnitLevel.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitLevel.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
-        public abstract Builder level(Integer level);
-
-        public abstract OrganisationUnitLevel build();
+        assertThat(organisationUnitLevel.uid()).isEqualTo("H1KlN4QIauv")
+        assertThat(organisationUnitLevel.name()).isEqualTo("National")
+        assertThat(organisationUnitLevel.displayName()).isEqualTo("National")
+        assertThat(organisationUnitLevel.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2011-12-24T12:24:22.935"))
+        assertThat(
+            organisationUnitLevel.lastUpdated(),
+        ).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-08-09T12:58:05.003"))
+        assertThat(organisationUnitLevel.level()).isEqualTo(1)
     }
 }

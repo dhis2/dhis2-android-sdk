@@ -34,14 +34,14 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitLevelEndpointCall(
-    private val service: OrganisationUnitLevelService,
+    private val networkHandler: OrganisationUnitLevelNetworkHandler,
     private val handler: OrganisationUnitLevelHandler,
     private val apiDownloader: APIDownloader,
 ) : ListCallCoroutines<OrganisationUnitLevel> {
     override suspend fun download(): List<OrganisationUnitLevel> {
         return apiDownloader.downloadCoroutines(
             handler,
-
-        ) { service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, false) }
+            networkHandler::getOrganisationUnitLevels,
+        )
     }
 }

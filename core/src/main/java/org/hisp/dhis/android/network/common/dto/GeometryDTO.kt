@@ -29,18 +29,19 @@
 package org.hisp.dhis.android.network.common.dto
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 
 @Serializable
 internal data class GeometryDTO(
     val type: String?,
-    val coordinates: String?,
+    val coordinates: JsonElement?,
 ) {
     fun toDomain(): Geometry {
         return Geometry.builder()
-            .type(type?.let { FeatureType.valueOf(it) })
-            .coordinates(coordinates)
+            .type(type?.let { FeatureType.valueOfFeatureType(it) })
+            .coordinates(coordinates.toString())
             .build()
     }
 }

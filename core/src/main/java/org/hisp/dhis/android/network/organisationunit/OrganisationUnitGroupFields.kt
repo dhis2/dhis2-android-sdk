@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal
+package org.hisp.dhis.android.network.organisationunit
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-@Singleton
-internal class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
-
-    override operator fun invoke(organisationUnit: OrganisationUnit): OrganisationUnit {
-        val path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit)
-        val builder = organisationUnit.toBuilder()
-        builder.displayNamePath(path)
-        return builder.build()
-    }
+internal object OrganisationUnitGroupFields : BaseFields<OrganisationUnitGroup>() {
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(Columns.SHORT_NAME),
+        fh.field(Columns.DISPLAY_SHORT_NAME),
+    )
 }

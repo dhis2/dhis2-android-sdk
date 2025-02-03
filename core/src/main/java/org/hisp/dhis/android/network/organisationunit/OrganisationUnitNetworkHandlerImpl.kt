@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.network.organisationunit
 
-import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-public final class IgnoreFeatureTypeColumnAdapter extends IgnoreColumnAdapter<FeatureType> {
+@Singleton
+internal class OrganisationUnitNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : OrganisationUnitNetworkHandler {
+    private val service = OrganisationUnitService(httpServiceClient)
+
+    override suspend fun getOrganisationUnits(parentUid: String, pageSize: Int, page: Int): Payload<OrganisationUnit> {
+        val apiPayload = service.getOrganisationUnits(
+            OrganisationUnitFields.allFields,
+            OrganisationUnitFields.path.like(parentUid),
+            OrganisationUnitFields.ASC_ORDER,
+            true,
+            pageSize,
+            page,
+        )
+        return apiPayload.mapItems(OrganisationUnitDTO::toDomain)
+    }
 }

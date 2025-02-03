@@ -30,11 +30,15 @@ package org.hisp.dhis.android.network.organisationunit
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
@@ -62,7 +66,6 @@ internal data class OrganisationUnitDTO(
     val dataSets: List<ObjectWithUidDTO>? = emptyList(),
     val ancestors: List<OrganisationUnitDTO>? = emptyList(),
     val organisationUnitGroups: List<OrganisationUnitGroupDTO>? = emptyList(),
-    val displayNamePath: List<String>? = emptyList(),
 ) : BaseNameableObjectDTO {
     fun toDomain(): OrganisationUnit {
         return OrganisationUnit.builder()
@@ -74,12 +77,37 @@ internal data class OrganisationUnitDTO(
                 closedDate?.let { closedDate(it) }
             }
             .level(level)
-            .geometry(geometry?.toDomain())
+            .geometry(evaluateGeometry())
             .programs(programs?.map { ObjectWithUid.create(it.uid) })
             .programs(programs?.map { ObjectWithUid.create(it.uid) })
             .dataSets(dataSets?.map { ObjectWithUid.create(it.uid) })
             .organisationUnitGroups(organisationUnitGroups?.map { it.toDomain() })
-            .displayNamePath(displayNamePath)
+            .displayNamePath(evaluateDisplayNamePath())
             .build()
     }
+
+    private fun evaluateDisplayNamePath(): List<String?>? {
+        return ancestors?.let {
+            ancestors.map { it.displayName } + displayName
+        }
+    }
+
+    private fun evaluateGeometry(): Geometry? {
+        return when {
+            geometry != null ->
+                geometry.toDomain()
+            featureType != null && coordinates != null ->
+                Geometry.builder()
+                    .type(FeatureType.valueOfFeatureType(featureType))
+                    .coordinates(coordinates)
+                    .build()
+            else -> null
+        }
+    }
 }
+
+@Serializable
+internal class OrganisationUnitPayload(
+    override val pager: PagerDTO?,
+    @SerialName("organisationUnits") override val items: List<OrganisationUnitDTO> = emptyList(),
+) : PayloadJson<OrganisationUnitDTO>(pager, items)

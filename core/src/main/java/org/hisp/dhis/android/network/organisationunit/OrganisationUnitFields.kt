@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit.internal
+package org.hisp.dhis.android.network.organisationunit
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class OrganisationUnitService(private val client: HttpServiceClient) {
+internal object OrganisationUnitFields : BaseFields<OrganisationUnit>() {
+    const val PROGRAMS = "programs"
+    const val DATA_SETS = "dataSets"
+    private const val ANCESTORS = "ancestors"
+    const val ORGANISATION_UNIT_GROUPS = "organisationUnitGroups"
+    const val FEATURE_TYPE = "featureType"
 
-    @Suppress("LongParameterList")
-    suspend fun getOrganisationUnits(
-        fields: Fields<OrganisationUnit>,
-        filter: Filter<OrganisationUnit>,
-        order: String,
-        paging: Boolean,
-        pageSize: Int,
-        page: Int,
-    ): PayloadJackson<OrganisationUnit> {
-        return client.get {
-            url(ORGANISATION_UNITS)
-            parameters {
-                fields(fields)
-                filter(filter)
-                attribute(ORDER, order)
-                paging(paging)
-                pageSize(pageSize)
-                page(page)
-            }
-        }
-    }
+    val uid = fh.uid()
+    val path = fh.field(Columns.PATH)
+    private val displayName = fh.displayName()
+    private val openingDate = fh.field(Columns.OPENING_DATE)
+    private val closedDate = fh.field(Columns.CLOSED_DATE)
+    val ASC_ORDER = uid.name + ":" + RepositoryScope.OrderByDirection.ASC.api
 
-    companion object {
-        const val ORGANISATION_UNITS = "organisationUnits"
-        const val ORDER = "order"
-    }
+    val fieldsInUserCall = Fields.from(
+        uid,
+        path,
+    )
+
+    val allFields = Fields.from(
+        fh.getNameableFields(),
+        path,
+        openingDate,
+        closedDate,
+        fh.field(Columns.LEVEL),
+        fh.field(FEATURE_TYPE),
+        fh.nestedFieldWithUid(Columns.PARENT),
+        fh.nestedFieldWithUid(PROGRAMS),
+        fh.nestedFieldWithUid(DATA_SETS),
+        fh.nestedField<OrganisationUnit>(ANCESTORS).with(uid, displayName),
+        fh.nestedField<OrganisationUnitGroup>(ORGANISATION_UNIT_GROUPS).with(OrganisationUnitGroupFields.allFields),
+    )
 }

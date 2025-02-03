@@ -40,11 +40,11 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitDataSetChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

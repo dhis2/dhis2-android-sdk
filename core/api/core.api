@@ -2218,10 +2218,6 @@ public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/I
 	public fun <init> ()V
 }
 
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreFeatureTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
 public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreIndicatorListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
 	public fun <init> ()V
 }
@@ -8940,7 +8936,7 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder : org/hisp/dhis/android/core/common/BaseNameableObject$Builder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;
 	public fun closedDate (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public abstract fun closedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public abstract fun dataSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
@@ -9011,10 +9007,6 @@ public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupTa
 	public static final field SHORT_NAME Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitInternalAccessor {
-	public static fun accessAncestors (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Ljava/util/List;
 }
 
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {

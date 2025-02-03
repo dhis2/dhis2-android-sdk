@@ -28,17 +28,15 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.dataset.Section;
+import org.hisp.dhis.android.core.dataset.SectionPivotMode;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
 public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
@@ -84,6 +82,46 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_by_data_set_uid() {
         List<Section> sections = d2.dataSetModule().sections()
                 .byDataSetUid().eq("lyLU2wR22tC")
+                .blockingGet();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_disable_data_element_autoGrouping() {
+        List<Section> sections = d2.dataSetModule().sections()
+                .byDisableDataElementAutoGrouping().eq(true)
+                .blockingGet();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_pivot_mode() {
+        List<Section> sections = d2.dataSetModule().sections()
+                .byPivotMode().eq(SectionPivotMode.MOVE_CATEGORIES)
+                .blockingGet();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_pivoted_category() {
+        List<Section> sections = d2.dataSetModule().sections()
+                .byPivotedCategory().eq("pivoted category")
+                .blockingGet();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_after_section_text() {
+        List<Section> sections = d2.dataSetModule().sections()
+                .byAfterSectionText().eq("Text after section")
+                .blockingGet();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_before_section_text() {
+        List<Section> sections = d2.dataSetModule().sections()
+                .byBeforeSectionText().eq("Text before section")
                 .blockingGet();
         assertThat(sections.size()).isEqualTo(1);
     }

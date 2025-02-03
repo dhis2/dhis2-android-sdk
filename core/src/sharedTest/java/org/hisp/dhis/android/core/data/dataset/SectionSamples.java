@@ -28,23 +28,25 @@
 
 package org.hisp.dhis.android.core.data.dataset;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.Section;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
 public class SectionSamples {
 
     public static Section getSection() {
-        Section.Builder dataSetBuilder = Section.builder();
-        fillIdentifiableProperties(dataSetBuilder);
-        dataSetBuilder
+        Section.Builder sectionBuilder = Section.builder();
+        fillIdentifiableProperties(sectionBuilder);
+        sectionBuilder
                 .id(1L)
                 .description("descr")
                 .sortOrder(2)
                 .showRowTotals(true)
                 .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"));
-        return dataSetBuilder.build();
+                .dataSet(ObjectWithUid.create("dataSet"))
+                .disableDataElementAutoGrouping(true)
+                .displayOptions(DisplayOptionsSamples.getDisplayOptions());
+        return sectionBuilder.build();
     }
 }

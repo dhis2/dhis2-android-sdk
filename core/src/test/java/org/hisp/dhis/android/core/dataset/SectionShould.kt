@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.dataset.SectionDTO
@@ -43,10 +43,10 @@ class SectionShould : BaseObjectKotlinxShould("dataset/section.json"), ObjectSho
         assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx")
         assertThat(section.code()).isEqualTo("Code123")
         assertThat(section.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.parseDate("2016-10-12T13:22:42.731"),
+            DateUtils.DATE_FORMAT.parse("2016-10-12T13:22:42.731"),
         )
         assertThat(section.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2012-04-26T19:26:02.933"),
+            DateUtils.DATE_FORMAT.parse("2012-04-26T19:26:02.933"),
         )
         assertThat(section.name()).isEqualTo("Immunization")
         assertThat(section.displayName()).isEqualTo("Immunization")
@@ -56,9 +56,15 @@ class SectionShould : BaseObjectKotlinxShould("dataset/section.json"), ObjectSho
         assertThat(section.sortOrder()).isEqualTo(2)
         assertThat(section.showRowTotals()).isFalse()
         assertThat(section.showColumnTotals()).isFalse()
+        assertThat(section.disableDataElementAutoGrouping()).isTrue()
         assertThat(section.dataElements()!!.size).isEqualTo(15)
         assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
         assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+
+        assertThat(section.displayOptions()!!.afterSectionText()).isEqualTo(null)
+        assertThat(section.displayOptions()!!.beforeSectionText()).isEqualTo("Text before section")
+        assertThat(section.displayOptions()!!.pivotMode()).isEqualTo(SectionPivotMode.DEFAULT)
+        assertThat(section.displayOptions()!!.pivotedCategory()).isEqualTo(null)
     }
 }

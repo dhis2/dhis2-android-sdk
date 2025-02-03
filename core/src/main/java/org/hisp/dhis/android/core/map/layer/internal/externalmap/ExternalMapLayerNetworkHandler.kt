@@ -31,6 +31,6 @@ package org.hisp.dhis.android.core.map.layer.internal.externalmap
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.map.layer.MapLayer
 
-internal interface ExternalMapLayerNetworkHandler {
+internal fun interface ExternalMapLayerNetworkHandler {
     suspend fun getExternalMapLayers(): Payload<MapLayer>
 }

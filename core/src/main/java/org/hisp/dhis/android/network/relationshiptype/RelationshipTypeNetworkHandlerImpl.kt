@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+package org.hisp.dhis.android.network.relationshiptype
+
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns
-import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.koin.core.annotation.Singleton
 
-internal object RelationshipTypeFields : BaseFields<RelationshipType>() {
-    private const val B_IS_TO_A = "bIsToA"
-    private const val A_IS_TO_B = "aIsToB"
-    private const val FROM_CONSTRAINT = "fromConstraint"
-    private const val TO_CONSTRAINT = "toConstraint"
-    private const val ACCESS = "access"
-
-    // Used only for children appending, can't be used in query
-    const val CONSTRAINTS = "constraints"
-
-    val lastUpdated = fh.lastUpdated()
-
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(B_IS_TO_A),
-        fh.field(A_IS_TO_B),
-        fh.field(Columns.FROM_TO_NAME),
-        fh.field(Columns.TO_FROM_NAME),
-        fh.field(Columns.BIDIRECTIONAL),
-        fh.nestedField<RelationshipConstraint>(FROM_CONSTRAINT).with(RelationshipConstraintFields.allFields),
-        fh.nestedField<RelationshipConstraint>(TO_CONSTRAINT).with(RelationshipConstraintFields.allFields),
-        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
-    )
+@Singleton
+internal class RelationshipTypeNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : RelationshipTypeNetworkHandler {
+    private val service: RelationshipTypeService = RelationshipTypeService(httpServiceClient)
+    override suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType> {
+        val accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+        val apiPayload = service.getRelationshipTypes(
+            RelationshipTypeFields.allFields,
+            lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { RelationshipTypeFields.lastUpdated.gt(it) },
+            accessDataFilter,
+            false,
+        )
+        return apiPayload.mapItems(RelationshipTypeDTO::toDomain)
+    }
 }

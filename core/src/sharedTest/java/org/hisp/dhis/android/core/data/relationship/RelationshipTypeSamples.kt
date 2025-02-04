@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.data.relationship
 
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
@@ -108,6 +109,7 @@ object RelationshipTypeSamples {
         .uid(RELATIONSHIP_TYPE_UID_1)
         .fromConstraint(FROM_CONSTRAINT_1)
         .toConstraint(TO_CONSTRAINT_1)
+        .access(AccessHelper.createForDataWrite(true))
         .build()
     var RELATIONSHIP_TYPE_2 = RelationshipType
         .builder()
@@ -115,6 +117,7 @@ object RelationshipTypeSamples {
         .uid(RELATIONSHIP_TYPE_UID_2)
         .fromConstraint(FROM_CONSTRAINT_2)
         .toConstraint(TO_CONSTRAINT_2)
+        .access(AccessHelper.createForDataWrite(true))
         .build()
     var RELATIONSHIP_TYPE_3 = RelationshipType
         .builder()
@@ -122,6 +125,7 @@ object RelationshipTypeSamples {
         .uid(RELATIONSHIP_TYPE_UID_3)
         .fromConstraint(FROM_CONSTRAINT_3)
         .toConstraint(TO_CONSTRAINT_3)
+        .access(AccessHelper.createForDataWrite(true))
         .build()
 
     val typeMap: Map<String, RelationshipType> = mapOf(

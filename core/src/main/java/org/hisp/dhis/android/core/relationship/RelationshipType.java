@@ -37,7 +37,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipConstraintAdapter;
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -91,23 +90,6 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
 
         public abstract Builder access(Access access);
 
-        abstract RelationshipType autoBuild();
-
-        // Auxiliary fields to access values
-        abstract Boolean bidirectional();
-        abstract Access access();
-
-        public RelationshipType build() {
-            if (bidirectional() == null) {
-                bidirectional(false);                                   // Since 2.32
-            }
-
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.createForDataWrite(true));                // Since 2.30
-            }
-            return autoBuild();
-        }
+        public abstract RelationshipType build();
     }
 }

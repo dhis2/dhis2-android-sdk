@@ -53,7 +53,7 @@ internal data class RelationshipTypeDTO(
     val toFromName: String?,
     val fromConstraint: RelationshipConstraintDTO?,
     val toConstraint: RelationshipConstraintDTO?,
-    val bidirectional: Boolean?,
+    val bidirectional: Boolean? = false,
     val access: AccessDTO?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): RelationshipType {

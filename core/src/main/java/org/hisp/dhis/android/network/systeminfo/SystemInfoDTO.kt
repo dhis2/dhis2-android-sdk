@@ -38,7 +38,7 @@ internal data class SystemInfoDTO(
     val dateFormat: String?,
     val version: String?,
     val contextPath: String?,
-    val systemName: String?
+    val systemName: String?,
 ) {
     fun toDomain(): SystemInfo =
         SystemInfo.builder().apply {

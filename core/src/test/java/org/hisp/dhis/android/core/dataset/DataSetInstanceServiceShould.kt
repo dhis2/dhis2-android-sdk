@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import java.util.*
+import java.util.Date
 import kotlin.time.Duration.Companion.days
 
 class DataSetInstanceServiceShould {
@@ -173,7 +173,7 @@ class DataSetInstanceServiceShould {
     fun `Should return true if dataSet is expired`() {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(dataSet.openFuturePeriods()) doReturn 20
-        whenever(dataSet.expiryDays()) doReturn 5
+        whenever(dataSet.expiryDays()) doReturn 5.0
         whenever(periodHelper.getPeriodForPeriodId(any()).blockingGet()) doReturn firstPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
@@ -195,10 +195,10 @@ class DataSetInstanceServiceShould {
 
     @Test
     fun `Should return false if expiry days is 0 or negative`() {
-        whenever(dataSet.expiryDays()) doReturn 0
+        whenever(dataSet.expiryDays()) doReturn 0.0
         assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
 
-        whenever(dataSet.expiryDays()) doReturn -15
+        whenever(dataSet.expiryDays()) doReturn -15.0
         assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
     }
 }

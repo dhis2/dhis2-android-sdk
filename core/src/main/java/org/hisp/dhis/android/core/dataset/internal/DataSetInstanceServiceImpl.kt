@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.dataset.DataSetInstanceService
 import org.hisp.dhis.android.core.dataset.DataSetNonEditableReason
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.koin.core.annotation.Singleton
@@ -138,18 +137,15 @@ internal class DataSetInstanceServiceImpl(
         )
     }
 
+    @Suppress("MagicNumber")
     internal fun blockingIsExpired(dataSet: DataSet, period: Period): Boolean {
         val expiryDays = dataSet.expiryDays()
-        return if (expiryDays == null || expiryDays <= 0) {
+        return if (expiryDays == null || expiryDays <= 0.0) {
             false
         } else {
             val expiryDate = period.endDate()?.let { endDate ->
-                periodGenerator.generatePeriod(
-                    periodType = PeriodType.Daily,
-                    date = endDate,
-                    offset = expiryDays - 1,
-                )
-            }?.endDate()
+                Date(endDate.time + (expiryDays * 24 * 60 * 60 * 1000).toLong())
+            }
 
             expiryDate?.let { Date().after(it) } ?: false
         }

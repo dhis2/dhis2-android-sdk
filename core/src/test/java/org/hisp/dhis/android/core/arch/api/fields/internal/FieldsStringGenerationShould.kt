@@ -66,7 +66,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.relationship.internal.TrackerDataViewFields
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
 import org.hisp.dhis.android.core.settings.internal.UserSettingsFields
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoFields
+import org.hisp.dhis.android.network.systeminfo.SystemInfoFields
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterFields
 import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackedEntityAttributeValueFields

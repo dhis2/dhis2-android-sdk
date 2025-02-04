@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.systeminfo.SystemInfoFields
+import org.hisp.dhis.android.network.systeminfo.SystemInfoService
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test

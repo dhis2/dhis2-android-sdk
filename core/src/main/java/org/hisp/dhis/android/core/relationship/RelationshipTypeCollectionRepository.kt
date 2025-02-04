@@ -42,9 +42,9 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintCh
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

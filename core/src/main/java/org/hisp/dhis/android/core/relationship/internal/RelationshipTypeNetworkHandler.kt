@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.resource.internal.Resource
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class RelationshipTypeCall(
-    private val networkHandler: RelationshipTypeNetworkHandler,
-    private val handler: RelationshipTypeHandler,
-    private val apiDownloader: APIDownloader,
-) : ListCallCoroutines<RelationshipType> {
-    private val resourceType = Resource.Type.RELATIONSHIP_TYPE
-    override suspend fun download(): List<RelationshipType> {
-        return apiDownloader.downloadWithLastUpdated(
-            handler,
-            resourceType,
-            networkHandler::getRelationshipTypes,
-        )
-    }
+internal fun interface RelationshipTypeNetworkHandler {
+    suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType>
 }

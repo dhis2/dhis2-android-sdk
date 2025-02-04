@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
+package org.hisp.dhis.android.network.relationshiptype
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class RelationshipTypeService(private val client: HttpServiceClient) {
-    suspend fun getRelationshipTypes(
-        fields: Fields<RelationshipType>,
-        lastUpdated: Filter<RelationshipType>?,
-        accessDataReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<RelationshipType> {
-        return client.get {
-            url("relationshipTypes")
-            parameters {
-                fields(fields)
-                filter(lastUpdated)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
-    }
+internal object RelationshipTypeFields : BaseFields<RelationshipType>() {
+    private const val B_IS_TO_A = "bIsToA"
+    private const val A_IS_TO_B = "aIsToB"
+    private const val FROM_CONSTRAINT = "fromConstraint"
+    private const val TO_CONSTRAINT = "toConstraint"
+    private const val ACCESS = "access"
+
+    // Used only for children appending, can't be used in query
+    const val CONSTRAINTS = "constraints"
+
+    val lastUpdated = fh.lastUpdated()
+
+    val allFields = Fields.from(
+        fh.getIdentifiableFields(),
+        fh.field(B_IS_TO_A),
+        fh.field(A_IS_TO_B),
+        fh.field(Columns.FROM_TO_NAME),
+        fh.field(Columns.TO_FROM_NAME),
+        fh.field(Columns.BIDIRECTIONAL),
+        fh.nestedField<RelationshipConstraint>(FROM_CONSTRAINT).with(RelationshipConstraintFields.allFields),
+        fh.nestedField<RelationshipConstraint>(TO_CONSTRAINT).with(RelationshipConstraintFields.allFields),
+        fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+    )
 }

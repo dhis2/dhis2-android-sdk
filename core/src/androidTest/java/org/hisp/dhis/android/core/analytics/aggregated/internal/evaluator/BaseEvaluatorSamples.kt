@@ -27,9 +27,17 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryDataDimensionType
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -330,6 +338,7 @@ object BaseEvaluatorSamples {
         .uid(generator.generate())
         .name("Relationship type")
         .bidirectional(false)
+        .access(AccessHelper.createForDataWrite(true))
         .build()
 
     val relationshipTypeFrom = RelationshipConstraint.builder()

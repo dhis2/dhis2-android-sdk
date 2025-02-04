@@ -11075,7 +11075,7 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipType$B
 	public fun <init> ()V
 	public abstract fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 	public abstract fun bidirectional (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
 	public abstract fun fromConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 	public abstract fun fromToName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
-import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.resource.internal.Resource
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.relationshiptype
 
-@Singleton
-internal class RelationshipTypeCall(
-    private val networkHandler: RelationshipTypeNetworkHandler,
-    private val handler: RelationshipTypeHandler,
-    private val apiDownloader: APIDownloader,
-) : ListCallCoroutines<RelationshipType> {
-    private val resourceType = Resource.Type.RELATIONSHIP_TYPE
-    override suspend fun download(): List<RelationshipType> {
-        return apiDownloader.downloadWithLastUpdated(
-            handler,
-            resourceType,
-            networkHandler::getRelationshipTypes,
-        )
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+
+@Serializable
+internal data class RelationshipConstraintDTO(
+    val relationshipType: ObjectWithUidDTO?,
+    val constraintType: String?,
+    val relationshipEntity: String?,
+    val trackedEntityType: ObjectWithUidDTO?,
+    val program: ObjectWithUidDTO?,
+    val programStage: ObjectWithUidDTO?,
+    val trackerDataView: TrackerDataViewDTO?,
+) {
+    fun toDomain(): RelationshipConstraint {
+        return RelationshipConstraint.builder()
+            .relationshipType(relationshipType?.toDomain())
+            .constraintType(constraintType?.let { RelationshipConstraintType.valueOf(it) })
+            .relationshipEntity(relationshipEntity?.let { RelationshipEntityType.valueOf(it) })
+            .trackedEntityType(trackedEntityType?.toDomain())
+            .program(program?.toDomain())
+            .programStage(programStage?.toDomain())
+            .trackerDataView(trackerDataView?.toDomain())
+            .build()
     }
 }

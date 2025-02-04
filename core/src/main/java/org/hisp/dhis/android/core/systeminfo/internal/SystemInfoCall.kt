@@ -43,7 +43,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class SystemInfoCall internal constructor(
     private val systemInfoHandler: SystemInfoHandler,
-    private val systemInfoService: SystemInfoService,
+    private val systemInfoNetworkHandler: SystemInfoNetworkHandler,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
@@ -51,7 +51,7 @@ class SystemInfoCall internal constructor(
 
     override suspend fun download(storeError: Boolean) {
         coroutineAPICallExecutor.wrap(storeError) {
-            systemInfoService.getSystemInfo(SystemInfoFields.allFields)
+            systemInfoNetworkHandler.getSystemInfo()
         }.fold(
             onSuccess = { systemInfo ->
                 val version = systemInfo.version()

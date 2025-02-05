@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.relationship.internal
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.period.PeriodType;
-
-public class DataSetSamples {
-
-    public static DataSet getDataSet() {
-        DataSet.Builder dataSetBuilder = DataSet.builder();
-
-        fillNameableProperties(dataSetBuilder);
-        dataSetBuilder
-                .id(1L)
-                .periodType(PeriodType.BiMonthly)
-                .categoryCombo(ObjectWithUid.create("comboUid"))
-                .mobile(false)
-                .version(2)
-                .expiryDays(3.0)
-                .timelyDays(4.0)
-                .notifyCompletingUser(true)
-                .openFuturePeriods(6)
-                .fieldCombinationRequired(false)
-                .validCompleteOnly(false)
-                .noValueRequiresComment(true)
-                .skipOffline(false)
-                .dataElementDecoration(true)
-                .renderAsTabs(false)
-                .renderHorizontally(true)
-                .access(AccessHelper.createForDataWrite(true));
-        return dataSetBuilder.build();
-    }
+internal fun interface RelationshipTypeNetworkHandler {
+    suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType>
 }

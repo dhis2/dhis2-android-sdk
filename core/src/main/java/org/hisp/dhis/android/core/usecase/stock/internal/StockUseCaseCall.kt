@@ -37,12 +37,12 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class StockUseCaseCall(
     private val stockUseCaseHandler: StockUseCaseHandler,
-    private val stockUseCaseService: StockUseCaseService,
+    private val networkHandler: StockUseCaseNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<List<InternalStockUseCase>>(coroutineAPICallExecutor) {
 
     override suspend fun tryFetch(storeError: Boolean): Result<List<InternalStockUseCase>, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) { stockUseCaseService.stockUseCases() }
+        return coroutineAPICallExecutor.wrap(storeError = storeError) { networkHandler.getStockUseCases() }
     }
 
     override fun process(item: List<InternalStockUseCase>?) {

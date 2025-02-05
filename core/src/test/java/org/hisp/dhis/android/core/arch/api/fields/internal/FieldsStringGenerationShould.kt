@@ -62,7 +62,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemEnrollme
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemEventFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemTrackedEntityInstanceFields
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.relationship.internal.TrackerDataViewFields
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoFields
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterFields
@@ -116,6 +115,7 @@ import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
 import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
+import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeFields
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields

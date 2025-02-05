@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -157,6 +158,7 @@ class RelationshipServiceShould {
         bidirectional: Boolean,
     ) = RelationshipType.builder()
         .uid("relationshipType")
+        .access(AccessHelper.createForDataWrite(true))
         .fromToName("from")
         .toFromName("to")
         .fromConstraint(

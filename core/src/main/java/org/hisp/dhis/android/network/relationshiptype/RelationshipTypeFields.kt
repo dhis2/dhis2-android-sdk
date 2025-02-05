@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
+package org.hisp.dhis.android.network.relationshiptype
 
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields

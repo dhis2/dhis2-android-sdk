@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.filters.Filter
+package org.hisp.dhis.android.network.usecase.stock
+
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class RelationshipTypeService(private val client: HttpServiceClient) {
-    suspend fun getRelationshipTypes(
-        fields: Fields<RelationshipType>,
-        lastUpdated: Filter<RelationshipType>?,
-        accessDataReadFilter: String,
-        paging: Boolean,
-    ): PayloadJackson<RelationshipType> {
-        return client.get {
-            url("relationshipTypes")
-            parameters {
-                fields(fields)
-                filter(lastUpdated)
-                attribute("filter", accessDataReadFilter)
-                paging(paging)
-            }
-        }
+internal class StockUseCaseNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : StockUseCaseNetworkHandler {
+    private val service = StockUseCaseService(httpServiceClient)
+
+    override suspend fun getStockUseCases(): List<InternalStockUseCase> {
+        val apiPayload = service.stockUseCases()
+        return apiPayload.map { it.toDomain() }
     }
 }

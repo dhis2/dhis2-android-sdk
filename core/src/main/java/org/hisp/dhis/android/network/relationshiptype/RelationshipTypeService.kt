@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationshiptype
 
-package org.hisp.dhis.android.core.data.dataset;
+import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.filters.Filter
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.period.PeriodType;
-
-public class DataSetSamples {
-
-    public static DataSet getDataSet() {
-        DataSet.Builder dataSetBuilder = DataSet.builder();
-
-        fillNameableProperties(dataSetBuilder);
-        dataSetBuilder
-                .id(1L)
-                .periodType(PeriodType.BiMonthly)
-                .categoryCombo(ObjectWithUid.create("comboUid"))
-                .mobile(false)
-                .version(2)
-                .expiryDays(3.0)
-                .timelyDays(4.0)
-                .notifyCompletingUser(true)
-                .openFuturePeriods(6)
-                .fieldCombinationRequired(false)
-                .validCompleteOnly(false)
-                .noValueRequiresComment(true)
-                .skipOffline(false)
-                .dataElementDecoration(true)
-                .renderAsTabs(false)
-                .renderHorizontally(true)
-                .access(AccessHelper.createForDataWrite(true));
-        return dataSetBuilder.build();
+internal class RelationshipTypeService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getRelationshipTypes(
+        fields: Fields<RelationshipType>,
+        lastUpdated: Filter<RelationshipType>?,
+        accessDataReadFilter: String,
+        paging: Boolean,
+    ): RelationshipTypePayload {
+        return client.get {
+            url("relationshipTypes")
+            parameters {
+                fields(fields)
+                filter(lastUpdated)
+                attribute("filter", accessDataReadFilter)
+                paging(paging)
+            }
+        }
     }
 }

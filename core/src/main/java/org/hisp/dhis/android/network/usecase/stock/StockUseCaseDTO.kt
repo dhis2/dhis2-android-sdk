@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.network.usecase.stock
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.period.PeriodType;
-
-public class DataSetSamples {
-
-    public static DataSet getDataSet() {
-        DataSet.Builder dataSetBuilder = DataSet.builder();
-
-        fillNameableProperties(dataSetBuilder);
-        dataSetBuilder
-                .id(1L)
-                .periodType(PeriodType.BiMonthly)
-                .categoryCombo(ObjectWithUid.create("comboUid"))
-                .mobile(false)
-                .version(2)
-                .expiryDays(3.0)
-                .timelyDays(4.0)
-                .notifyCompletingUser(true)
-                .openFuturePeriods(6)
-                .fieldCombinationRequired(false)
-                .validCompleteOnly(false)
-                .noValueRequiresComment(true)
-                .skipOffline(false)
-                .dataElementDecoration(true)
-                .renderAsTabs(false)
-                .renderHorizontally(true)
-                .access(AccessHelper.createForDataWrite(true));
-        return dataSetBuilder.build();
+@Serializable
+internal data class StockUseCaseDTO(
+    val programUid: String,
+    val itemCode: String,
+    val itemDescription: String,
+    val programType: String,
+    val description: String,
+    val stockOnHand: String,
+    val transactions: List<StockUseCaseTransactionDTO> = emptyList(),
+) {
+    fun toDomain(): InternalStockUseCase {
+        return InternalStockUseCase.builder()
+            .uid(programUid)
+            .itemCode(itemCode)
+            .itemDescription(itemDescription)
+            .programType(programType)
+            .description(description)
+            .stockOnHand(stockOnHand)
+            .transactions(transactions.map { it.toDomain(programUid) })
+            .build()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
+import org.hisp.dhis.android.network.settings.SynchronizationSettingsDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
-import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SynchronizationSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public SynchronizationSettingsShould() {
-        super("settings/synchronization_settings.json");
-    }
-
-    @Override
+class SynchronizationSettingsShould :
+    BaseObjectKotlinxShould("settings/synchronization_settings.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SynchronizationSettings syncSettings = objectMapper.readValue(jsonStream, SynchronizationSettings.class);
+    override fun map_from_json_string() {
+        val syncSettingsDTO = deserialize(SynchronizationSettingsDTO.serializer())
+        val syncSettings = syncSettingsDTO.toDomain()
 
-        assertThat(syncSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(syncSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_12_HOURS);
-        assertThat(syncSettings.trackerImporterVersion()).isEqualTo(TrackerImporterVersion.V2);
-        assertThat(syncSettings.trackerExporterVersion()).isEqualTo(TrackerExporterVersion.V2);
-        assertThat(syncSettings.fileMaxLengthBytes()).isEqualTo(10240000);
+        assertThat(syncSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS)
+        assertThat(syncSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_12_HOURS)
+        assertThat(syncSettings.trackerImporterVersion()).isEqualTo(TrackerImporterVersion.V2)
+        assertThat(syncSettings.trackerExporterVersion()).isEqualTo(TrackerExporterVersion.V2)
+        assertThat(syncSettings.fileMaxLengthBytes()).isEqualTo(10240000)
 
-        assertThat(syncSettings.dataSetSettings()).isNotNull();
-        assertThat(syncSettings.dataSetSettings().globalSettings()).isNotNull();
-        assertThat(syncSettings.dataSetSettings().globalSettings().periodDSDownload()).isEqualTo(30);
-        assertThat(syncSettings.dataSetSettings().specificSettings()).isNotNull();
-        assertThat(syncSettings.dataSetSettings().specificSettings().get("EKWVBc5C0ms").periodDSDownload()).isEqualTo(10);
+        assertThat(syncSettings.dataSetSettings()).isNotNull()
+        assertThat(syncSettings.dataSetSettings()!!.globalSettings()).isNotNull()
+        assertThat(syncSettings.dataSetSettings()!!.globalSettings().periodDSDownload())
+            .isEqualTo(30)
+        assertThat(syncSettings.dataSetSettings()!!.specificSettings()).isNotNull()
+        assertThat(
+            syncSettings.dataSetSettings()!!.specificSettings()["EKWVBc5C0ms"]!!.periodDSDownload(),
+        ).isEqualTo(10)
 
-        assertThat(syncSettings.programSettings()).isNotNull();
-        assertThat(syncSettings.programSettings().globalSettings()).isNotNull();
-        assertThat(syncSettings.programSettings().globalSettings().teiDownload()).isEqualTo(500);
-        assertThat(syncSettings.programSettings().globalSettings().settingDownload()).isEqualTo(LimitScope.ALL_ORG_UNITS);
-        assertThat(syncSettings.programSettings().specificSettings()).isNotNull();
-        assertThat(syncSettings.programSettings().specificSettings().get("lxAQ7Zs9VYR").eventsDownload()).isEqualTo(10);
+        assertThat(syncSettings.programSettings()).isNotNull()
+        assertThat(syncSettings.programSettings()!!.globalSettings()).isNotNull()
+        assertThat(
+            syncSettings.programSettings()!!.globalSettings()!!.teiDownload(),
+        ).isEqualTo(500)
+        assertThat(
+            syncSettings.programSettings()!!.globalSettings()!!.settingDownload(),
+        ).isEqualTo(LimitScope.ALL_ORG_UNITS)
+        assertThat(syncSettings.programSettings()!!.specificSettings()).isNotNull()
+        assertThat(
+            syncSettings.programSettings()!!.specificSettings()["lxAQ7Zs9VYR"]!!.eventsDownload(),
+        ).isEqualTo(10)
     }
 }

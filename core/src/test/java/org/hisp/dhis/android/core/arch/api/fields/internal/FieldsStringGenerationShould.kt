@@ -64,8 +64,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemTrackedEntityInstanceFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.relationship.internal.TrackerDataViewFields
-import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
-import org.hisp.dhis.android.core.settings.internal.UserSettingsFields
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoFields
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterFields
 import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
@@ -118,6 +116,7 @@ import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
 import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
+import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
@@ -125,6 +124,7 @@ import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDi
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationFields
 import org.hisp.dhis.android.network.user.UserFields
+import org.hisp.dhis.android.network.usersettings.UserSettingsFields
 import org.hisp.dhis.android.network.validationrule.ValidationRuleFields
 import org.hisp.dhis.android.network.visualization.VisualizationDimensionFields
 import org.hisp.dhis.android.network.visualization.VisualizationDimensionItemFields

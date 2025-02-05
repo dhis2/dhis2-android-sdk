@@ -25,31 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
+import org.hisp.dhis.android.network.settings.SettingsAppInfoDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SettingsAppInfoShould extends BaseObjectShould implements ObjectShould {
-
-    public SettingsAppInfoShould() {
-        super("settings/app_info.json");
-    }
-
-    @Override
+class SettingsAppInfoShould : BaseObjectKotlinxShould("settings/app_info.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SettingsAppInfo appInfo = objectMapper.readValue(jsonStream, SettingsAppInfo.class);
+    override fun map_from_json_string() {
+        val appInfoDTO = deserialize(SettingsAppInfoDTO.serializer())
+        val appInfo = appInfoDTO.toDomain()
 
-        assertThat(appInfo.dataStoreVersion()).isEqualTo(SettingsAppDataStoreVersion.V2_0);
-        assertThat(appInfo.androidSettingsVersion()).isEqualTo("2.0.0");
+        assertThat(appInfo.dataStoreVersion()).isEqualTo(SettingsAppDataStoreVersion.V2_0)
+        assertThat(appInfo.androidSettingsVersion()).isEqualTo("2.0.0")
     }
 }

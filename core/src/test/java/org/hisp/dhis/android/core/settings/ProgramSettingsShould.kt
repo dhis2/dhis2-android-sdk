@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,67 +25,62 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.ProgramSettingsDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ProgramSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public ProgramSettingsShould() {
-        super("settings/program_settings.json");
-    }
-
-    @Override
+class ProgramSettingsShould : BaseObjectKotlinxShould("settings/program_settings.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ProgramSettings programSettings = objectMapper.readValue(jsonStream, ProgramSettings.class);
+    override fun map_from_json_string() {
+        val programSettingsDTO = deserialize(ProgramSettingsDTO.serializer())
+        val programSettings = programSettingsDTO.toDomain()
 
-        ProgramSetting global = programSettings.globalSettings();
-        assertThat(global.uid()).isNull();
-        assertThat(global.name()).isNull();
-        assertThat(global.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-02-01T20:02:46.145Z"));
-        assertThat(global.teiDownload()).isEqualTo(500);
-        assertThat(global.teiDBTrimming()).isEqualTo(500);
-        assertThat(global.eventsDownload()).isEqualTo(1000);
-        assertThat(global.eventsDBTrimming()).isEqualTo(1000);
-        assertThat(global.updateDownload()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(global.updateDBTrimming()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(global.settingDownload()).isEqualTo(LimitScope.PER_ORG_UNIT);
-        assertThat(global.settingDBTrimming()).isEqualTo(LimitScope.GLOBAL);
-        assertThat(global.enrollmentDownload()).isEqualTo(EnrollmentScope.ALL);
-        assertThat(global.enrollmentDBTrimming()).isEqualTo(EnrollmentScope.ALL);
-        assertThat(global.eventDateDownload()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(global.eventDateDBTrimming()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(global.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(global.enrollmentDateDBTrimming()).isEqualTo(DownloadPeriod.ANY);
+        val global = programSettings.globalSettings()
+        assertThat(global!!.uid()).isNull()
+        assertThat(global.name()).isNull()
+        assertThat(global.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2020-02-01T20:02:46.145Z"))
+        assertThat(global.teiDownload()).isEqualTo(500)
+        assertThat(global.teiDBTrimming()).isEqualTo(500)
+        assertThat(global.eventsDownload()).isEqualTo(1000)
+        assertThat(global.eventsDBTrimming()).isEqualTo(1000)
+        assertThat(global.updateDownload()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(global.updateDBTrimming()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(global.settingDownload()).isEqualTo(LimitScope.PER_ORG_UNIT)
+        assertThat(global.settingDBTrimming()).isEqualTo(LimitScope.GLOBAL)
+        assertThat(global.enrollmentDownload()).isEqualTo(EnrollmentScope.ALL)
+        assertThat(global.enrollmentDBTrimming()).isEqualTo(EnrollmentScope.ALL)
+        assertThat(global.eventDateDownload()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(global.eventDateDBTrimming()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(global.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(global.enrollmentDateDBTrimming()).isEqualTo(DownloadPeriod.ANY)
 
-        ProgramSetting childProgramme = programSettings.specificSettings().get("IpHINAT79UW");
-        assertThat(childProgramme).isNotNull();
-        assertThat(childProgramme.uid()).isEqualTo("IpHINAT79UW");
-        assertThat(childProgramme.name()).isEqualTo("Child Programme");
-        assertThat(childProgramme.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-02-01T19:55:32.002Z"));
-        assertThat(childProgramme.teiDownload()).isEqualTo(40);
-        assertThat(childProgramme.teiDBTrimming()).isEqualTo(20);
-        assertThat(childProgramme.eventsDownload()).isEqualTo(30);
-        assertThat(childProgramme.eventsDBTrimming()).isEqualTo(20);
-        assertThat(childProgramme.updateDownload()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(childProgramme.updateDBTrimming()).isEqualTo(DownloadPeriod.LAST_3_MONTHS);
-        assertThat(childProgramme.settingDownload()).isEqualTo(LimitScope.ALL_ORG_UNITS);
-        assertThat(childProgramme.settingDBTrimming()).isEqualTo(LimitScope.PER_ORG_UNIT);
-        assertThat(childProgramme.enrollmentDownload()).isEqualTo(EnrollmentScope.ALL);
-        assertThat(childProgramme.enrollmentDBTrimming()).isEqualTo(EnrollmentScope.ONLY_ACTIVE);
-        assertThat(childProgramme.eventDateDownload()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(childProgramme.eventDateDBTrimming()).isEqualTo(DownloadPeriod.LAST_MONTH);
-        assertThat(childProgramme.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY);
-        assertThat(childProgramme.enrollmentDateDBTrimming()).isEqualTo(DownloadPeriod.LAST_MONTH);
+        val childProgramme = programSettings.specificSettings()["IpHINAT79UW"]
+        assertThat(childProgramme).isNotNull()
+        assertThat(childProgramme!!.uid()).isEqualTo("IpHINAT79UW")
+        assertThat(childProgramme.name()).isEqualTo("Child Programme")
+        assertThat(childProgramme.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2020-02-01T19:55:32.002Z"))
+        assertThat(childProgramme.teiDownload()).isEqualTo(40)
+        assertThat(childProgramme.teiDBTrimming()).isEqualTo(20)
+        assertThat(childProgramme.eventsDownload()).isEqualTo(30)
+        assertThat(childProgramme.eventsDBTrimming()).isEqualTo(20)
+        assertThat(childProgramme.updateDownload()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(childProgramme.updateDBTrimming()).isEqualTo(DownloadPeriod.LAST_3_MONTHS)
+        assertThat(childProgramme.settingDownload()).isEqualTo(LimitScope.ALL_ORG_UNITS)
+        assertThat(childProgramme.settingDBTrimming()).isEqualTo(LimitScope.PER_ORG_UNIT)
+        assertThat(childProgramme.enrollmentDownload()).isEqualTo(EnrollmentScope.ALL)
+        assertThat(childProgramme.enrollmentDBTrimming())
+            .isEqualTo(EnrollmentScope.ONLY_ACTIVE)
+        assertThat(childProgramme.eventDateDownload()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(childProgramme.eventDateDBTrimming()).isEqualTo(DownloadPeriod.LAST_MONTH)
+        assertThat(childProgramme.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY)
+        assertThat(childProgramme.enrollmentDateDBTrimming())
+            .isEqualTo(DownloadPeriod.LAST_MONTH)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.network.settings
 
-import org.hisp.dhis.android.core.settings.SystemSettings
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-internal object SystemSettingsFields : BaseFields<SystemSettings>() {
-    private const val KEY_FLAG = "keyFlag"
-    private const val KEY_STYLE = "keyStyle"
-    private const val KEY_DEFAULT_BASE_MAP = "keyDefaultBaseMap"
-    private const val KEY_BING_MAPS_API_KEY = "keyBingMapsApiKey"
+@Suppress("TooManyFunctions")
+internal class SettingsService(private val client: HttpServiceClientKotlinx) {
 
-    val allFields = Fields.from(
-        fh.field(KEY_FLAG),
-        fh.field(KEY_STYLE),
-        fh.field(KEY_DEFAULT_BASE_MAP),
-    )
+    suspend fun settingsAppInfo(url: String): SettingsAppInfoDTO {
+        return client.get {
+            url(url)
+        }
+    }
 
-    val bingApiKey = Fields.from(
-        fh.field(KEY_BING_MAPS_API_KEY),
-    )
+    suspend fun generalSettings(url: String): GeneralSettingsDTO {
+        return client.get {
+            url(url)
+        }
+    }
+
+    suspend fun dataSetSettings(url: String): DataSetSettingsDTO {
+        return client.get {
+            url(url)
+        }
+    }
+
+    suspend fun programSettings(url: String): ProgramSettingsDTO {
+        return client.get {
+            url(url)
+        }
+    }
+
+    suspend fun synchronizationSettings(url: String): SynchronizationSettingsDTO {
+        return client.get {
+            url(url)
+        }
+    }
+
+    suspend fun appearanceSettings(url: String): AppearanceSettingsDTO {
+        return client.get {
+            url(url)
+        }
+    }
+
+    suspend fun analyticsSettings(url: String): AnalyticsSettingsDTO {
+        return client.get {
+            url(url)
+        }
+    }
 }

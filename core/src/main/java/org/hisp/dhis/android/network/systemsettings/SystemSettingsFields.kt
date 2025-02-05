@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.network.systemsettings
 
-import org.hisp.dhis.android.core.settings.UserSettings
-import org.hisp.dhis.android.core.settings.UserSettingsTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object UserSettingsFields : BaseFields<UserSettings>() {
+internal object SystemSettingsFields : BaseFields<SystemSettingsDTO>() {
+    private const val KEY_FLAG = "keyFlag"
+    private const val KEY_STYLE = "keyStyle"
+    private const val KEY_DEFAULT_BASE_MAP = "keyDefaultBaseMap"
+    private const val KEY_BING_MAPS_API_KEY = "keyBingMapsApiKey"
+
     val allFields = Fields.from(
-        fh.field(Columns.KEY_UI_LOCALE),
-        fh.field(Columns.KEY_DB_LOCALE),
+        fh.field(KEY_FLAG),
+        fh.field(KEY_STYLE),
+        fh.field(KEY_DEFAULT_BASE_MAP),
+    )
+
+    val bingApiKey = Fields.from(
+        fh.field(KEY_BING_MAPS_API_KEY),
     )
 }

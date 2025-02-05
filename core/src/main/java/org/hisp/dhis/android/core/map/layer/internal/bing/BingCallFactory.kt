@@ -38,8 +38,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
-import org.hisp.dhis.android.core.settings.internal.SettingService
-import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
+import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
@@ -50,7 +49,7 @@ internal class BingCallFactory(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,
-    private val settingsService: SettingService,
+    private val networkHandler: SystemSettingsNetworkHandler,
     private val bingService: BingService,
 ) {
 
@@ -58,12 +57,12 @@ internal class BingCallFactory(
     suspend fun download(): List<MapLayer> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
             try {
-                val settings = coroutineAPICallExecutor.wrap(storeError = true) {
-                    settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
+                val setting = coroutineAPICallExecutor.wrap(storeError = true) {
+                    networkHandler.getSystemSettings()
                 }
 
-                val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
-                    ?.let { key -> downloadBingBasemaps(key) }
+                val mapLayers = setting.getOrNull()?.value()
+                    ?.let { bingKey -> downloadBingBasemaps(bingKey) }
                     ?: emptyList()
 
                 mapLayers.also {

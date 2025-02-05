@@ -25,21 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.network.usersettings
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
 import org.hisp.dhis.android.core.settings.UserSettings
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.settings.UserSettingsTableInfo.Columns
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-@Singleton
-internal class UserSettingsCall internal constructor(
-    private val handler: UserSettingsHandler,
-    private val networkHandler: UserSettingsNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : ObjectCall<UserSettings> {
-
-    override suspend fun download(): UserSettings {
-        return apiDownloader.downloadObjectAsCoroutine(handler, networkHandler::getUserSettings)
-    }
+internal object UserSettingsFields : BaseFields<UserSettings>() {
+    val allFields = Fields.from(
+        fh.field(Columns.KEY_UI_LOCALE),
+        fh.field(Columns.KEY_DB_LOCALE),
+    )
 }

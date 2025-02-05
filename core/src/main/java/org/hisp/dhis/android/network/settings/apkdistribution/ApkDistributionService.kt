@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
-import org.hisp.dhis.android.core.settings.UserSettings
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.settings.apkdistribution
 
-@Singleton
-internal class UserSettingsCall internal constructor(
-    private val handler: UserSettingsHandler,
-    private val networkHandler: UserSettingsNetworkHandler,
-    private val apiDownloader: APIDownloader,
-) : ObjectCall<UserSettings> {
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-    override suspend fun download(): UserSettings {
-        return apiDownloader.downloadObjectAsCoroutine(handler, networkHandler::getUserSettings)
+internal class ApkDistributionService(private val client: HttpServiceClientKotlinx) {
+    suspend fun latestAppVersion(url: String): LatestAppVersionDTO {
+        return client.get {
+            url(url)
+        }
+    }
+
+    suspend fun versions(url: String): ApkDistributionVersionPayload {
+        return client.get {
+            url(url)
+        }
     }
 }

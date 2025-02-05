@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Map;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetFilters.Builder.class)
 public abstract class DataSetFilters {
 
     public abstract Map<DataSetFilter, FilterSetting> globalSettings();
@@ -49,7 +46,6 @@ public abstract class DataSetFilters {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder globalSettings(Map<DataSetFilter, FilterSetting> globalSettings);

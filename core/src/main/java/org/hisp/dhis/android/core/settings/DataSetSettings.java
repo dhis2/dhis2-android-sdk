@@ -28,22 +28,16 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Collections;
 import java.util.Map;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
 public abstract class DataSetSettings {
 
-    @JsonProperty()
     public abstract DataSetSetting globalSettings();
 
-    @JsonProperty()
     public abstract Map<String, DataSetSetting> specificSettings();
 
     public static Builder builder() {
@@ -53,26 +47,11 @@ public abstract class DataSetSettings {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder globalSettings(DataSetSetting globalSettings);
 
         public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
 
-        abstract DataSetSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
-
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+        abstract public DataSetSettings build();
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.json.internal
 
-import com.fasterxml.jackson.core.JsonParseException
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+package org.hisp.dhis.android.network.settings
+
+import kotlinx.serialization.SerializationException
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import java.io.IOException
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 
-class AnalyticsTEIDataElementDeserializer @JvmOverloads constructor(
-    vc: Class<*>? = null,
-) : StdDeserializer<AnalyticsTeiDataElement>(vc) {
+object AnalyticsTeiDeserializers {
 
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): AnalyticsTeiDataElement {
-        val node = jp.codec.readTree<JsonNode>(jp)
-        val programDataElement = node.textValue()
+    fun deserializeAnalyticsTeiAttribute(string: String): AnalyticsTeiAttribute {
+        return AnalyticsTeiAttribute.builder().attribute(string).build()
+    }
 
-        val tokens = programDataElement.split(".")
-
+    fun deserializeAnalyticsTeiDataElement(string: String): AnalyticsTeiDataElement {
+        val tokens = string.split(".")
         return when (tokens.size) {
             1 -> AnalyticsTeiDataElement.builder().dataElement(tokens.first()).build()
             2 -> AnalyticsTeiDataElement.builder().programStage(tokens.first()).dataElement(tokens.last()).build()
-            else -> throw JsonParseException(jp, "Unparseable dataElement: \"$programDataElement\"")
+            else -> throw SerializationException("Unparseable DataElement: $string")
+        }
+    }
+
+    fun deserializeAnalyticsTeiIndicator(string: String): AnalyticsTeiIndicator {
+        val tokens = string.split(".")
+
+        return when (tokens.size) {
+            1 -> AnalyticsTeiIndicator.builder().indicator(tokens.first()).build()
+            2 -> AnalyticsTeiIndicator.builder().programStage(tokens.first()).indicator(tokens.last()).build()
+            else -> throw SerializationException("Unparseable Indicator: $string")
         }
     }
 }

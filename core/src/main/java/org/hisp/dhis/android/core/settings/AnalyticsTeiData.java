@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsTeiData.Builder.class)
 public abstract class AnalyticsTeiData {
 
     public abstract List<AnalyticsTeiDataElement> dataElements();
@@ -56,43 +52,13 @@ public abstract class AnalyticsTeiData {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder dataElements(List<AnalyticsTeiDataElement> globalSettings);
 
-        @JsonAlias("programIndicators")
         public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
 
         public abstract Builder attributes(List<AnalyticsTeiAttribute> attributes);
 
-        abstract AnalyticsTeiData autoBuild();
-
-        //Auxiliary fields
-        abstract List<AnalyticsTeiDataElement> dataElements();
-        abstract List<AnalyticsTeiIndicator> indicators();
-        abstract List<AnalyticsTeiAttribute> attributes();
-
-        public AnalyticsTeiData build() {
-
-            try {
-                dataElements();
-            } catch (IllegalStateException e) {
-                dataElements(Collections.emptyList());
-            }
-
-            try {
-                indicators();
-            } catch (IllegalStateException e) {
-                indicators(Collections.emptyList());
-            }
-
-            try {
-                attributes();
-            } catch (IllegalStateException e) {
-                attributes(Collections.emptyList());
-            }
-
-            return autoBuild();
-        }
+        abstract public AnalyticsTeiData build();
     }
 }

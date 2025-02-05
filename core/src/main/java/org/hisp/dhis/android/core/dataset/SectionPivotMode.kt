@@ -36,12 +36,14 @@ enum class SectionPivotMode(internal val apiValue: String) {
 
     companion object {
         internal fun from(apiValue: String): SectionPivotMode {
-            return when (apiValue) {
-                "n/a" -> DEFAULT
-                "pivot" -> PIVOT
-                "move_categories" -> MOVE_CATEGORIES
-                else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $apiValue")
-            }
+            return entries.find { it.apiValue == apiValue }
+                ?: throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $apiValue")
+//            return when (apiValue) {
+//                "n/a" -> DEFAULT
+//                "pivot" -> PIVOT
+//                "move_categories" -> MOVE_CATEGORIES
+//                else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $apiValue")
+//            }
         }
     }
 }

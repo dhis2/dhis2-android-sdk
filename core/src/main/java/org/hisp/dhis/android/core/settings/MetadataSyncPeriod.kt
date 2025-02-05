@@ -25,26 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public enum MetadataSyncPeriod {
-    @JsonProperty("1h")
+enum class MetadataSyncPeriod {
     EVERY_HOUR,
-
-    @JsonProperty("12h")
     EVERY_12_HOURS,
-
-    @JsonEnumDefaultValue
-    @JsonProperty("24h")
     EVERY_24_HOURS,
-
-    @JsonProperty("7d")
     EVERY_7_DAYS,
+    MANUAL,
+    ;
 
-    @JsonProperty("manual")
-    MANUAL
+    @Suppress("EmptyClassBlock")
+    companion object {}
 }

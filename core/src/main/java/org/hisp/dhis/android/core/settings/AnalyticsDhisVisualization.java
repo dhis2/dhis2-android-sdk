@@ -33,9 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -44,10 +41,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisV
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualization.Builder.class)
 public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWithUidInterface {
 
     @Nullable
@@ -64,19 +58,15 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract AnalyticsDhisVisualizationScope scope();
 
     @NonNull
-    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty
     public abstract String name();
 
     @Nullable
-    @JsonProperty
     public abstract String timestamp();
 
     @NonNull
-    @JsonProperty
     @ColumnAdapter(AnalyticsDhisVisualizationTypeColumnAdapter.class)
     public abstract AnalyticsDhisVisualizationType type();
 
@@ -91,7 +81,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);
@@ -104,7 +93,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder scope(AnalyticsDhisVisualizationScope scope);
 
-        @JsonProperty(UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);
@@ -113,17 +101,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder type(AnalyticsDhisVisualizationType type);
 
-        abstract AnalyticsDhisVisualization autoBuild();
-
-        abstract AnalyticsDhisVisualizationType type();
-
-        public AnalyticsDhisVisualization build() {
-            try {
-                type();
-            } catch (IllegalStateException e) {
-                type(AnalyticsDhisVisualizationType.VISUALIZATION);
-            }
-            return autoBuild();
-        }
+        abstract public AnalyticsDhisVisualization build();
     }
 }

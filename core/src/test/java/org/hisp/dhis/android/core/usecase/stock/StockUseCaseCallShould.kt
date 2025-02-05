@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseHandler
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseService
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseNetworkHandler
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,7 +45,7 @@ import org.mockito.stubbing.Answer
 @RunWith(JUnit4::class)
 class StockUseCaseCallShould {
     private val handler: StockUseCaseHandler = mock()
-    private val service: StockUseCaseService = mock()
+    private val service: StockUseCaseNetworkHandler = mock()
     private val stockUseCase: List<InternalStockUseCase> = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
 
@@ -59,13 +59,13 @@ class StockUseCaseCallShould {
 
     private fun whenAPICall(answer: Answer<List<InternalStockUseCase>>) {
         service.stub {
-            onBlocking { stockUseCases() }.doAnswer(answer)
+            onBlocking { getStockUseCases() }.doAnswer(answer)
         }
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() = runTest {
-        whenever(service.stockUseCases()) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(service.getStockUseCases()) doAnswer { throw D2ErrorSamples.notFound() }
 
         stockUseCaseCall.download(false)
 

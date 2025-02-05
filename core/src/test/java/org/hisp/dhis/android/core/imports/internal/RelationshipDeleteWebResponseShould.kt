@@ -25,39 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.relationship;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.network.relationship.RelationshipDeleteWebResponseDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class Relationship30Should extends BaseObjectShould implements ObjectShould {
-
-    public Relationship30Should() {
-        super("relationship/relationship_30.json");
-    }
-
-    @Override
+@RunWith(JUnit4::class)
+class RelationshipDeleteWebResponseShould : BaseObjectKotlinxShould("imports/relationship_delete_web_response.json") {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Relationship relationship = deserialize(Relationship.class);
+    fun map_from_json_string() {
+        val webResponse = deserialize(RelationshipDeleteWebResponseDTO.serializer()).toDomain()
 
-        assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp");
-        assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");
-        assertThat(relationship.name()).isEqualTo("Mother-Child");
-
-        assertThat(relationship.from()).isNotNull();
-        assertThat(relationship.from().trackedEntityInstance()).isNotNull();
-        assertThat(relationship.from().trackedEntityInstance().trackedEntityInstance()).isEqualTo("o51cUNONthg");
-
-        assertThat(relationship.to()).isNotNull();
-        assertThat(relationship.to().enrollment()).isNotNull();
-        assertThat(relationship.to().enrollment().enrollment()).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(webResponse.message()).isEqualTo("Import was successful.")
+        assertThat(webResponse.response()).isNotNull()
     }
 }

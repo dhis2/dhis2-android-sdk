@@ -36,11 +36,9 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipWebResponse.Builder.class)
 public abstract class RelationshipWebResponse extends WebResponse {
 
     @Nullable
-    @JsonProperty()
     public abstract RelationshipImportSummaries response();
 
     public static Builder builder() {
@@ -57,7 +55,6 @@ public abstract class RelationshipWebResponse extends WebResponse {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(RelationshipImportSummaries response);
 

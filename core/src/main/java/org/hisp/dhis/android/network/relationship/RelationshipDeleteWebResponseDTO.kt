@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.relationship
 
-import static com.google.common.truth.Truth.assertThat;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-@RunWith(JUnit4.class)
-public class RelationshipWebResponseShould {
-
-    @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String responseStr = new ResourcesFileReader().getStringFromFile("imports/relationship_web_response.json");
-        RelationshipWebResponse webResponse = objectMapper.readValue(responseStr, RelationshipWebResponse.class);
-
-        assertThat(webResponse.message()).isEqualTo("Import was successful.");
-        assertThat(webResponse.response()).isNotNull();
-    }
-
-    @Test
-    public void map_from_json_string_with_errors() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String webResponseStr = new ResourcesFileReader().getStringFromFile(
-                "imports/relationship_web_response_with_errors.json");
-        objectMapper.readValue(webResponseStr, RelationshipWebResponse.class);
+@Serializable
+internal data class RelationshipDeleteWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: RelationshipDeleteSummaryDTO,
+) : WebResponseDTO {
+    fun toDomain(): RelationshipDeleteWebResponse {
+        return RelationshipDeleteWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response.toDomain())
+            .build()
     }
 }

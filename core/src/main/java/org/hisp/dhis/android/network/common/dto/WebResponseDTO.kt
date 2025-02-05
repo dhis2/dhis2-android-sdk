@@ -28,9 +28,20 @@
 
 package org.hisp.dhis.android.network.common.dto
 
+import org.hisp.dhis.android.core.imports.internal.WebResponse
+
 internal interface WebResponseDTO {
     val httpStatus: String
     val httpStatusCode: Int
     val status: String
     val message: String
+}
+
+internal fun <T> T.applyWebResponseFields(item: WebResponseDTO): T where
+      T : WebResponse.Builder<T> {
+    httpStatus(item.httpStatus)
+    httpStatusCode(item.httpStatusCode)
+    status(item.status)
+    message(item.message)
+    return this
 }

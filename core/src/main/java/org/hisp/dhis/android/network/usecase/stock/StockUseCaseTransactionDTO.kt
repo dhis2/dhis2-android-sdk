@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.usecase.stock.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.usecase.stock
 
-@Singleton
-internal class StockUseCaseService(private val client: HttpServiceClient) {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
-    suspend fun stockUseCases(): List<InternalStockUseCase> {
-        return client.get {
-            url("dataStore/USE_CASES/stockUseCases")
-        }
+@Serializable
+internal data class StockUseCaseTransactionDTO(
+    val sortOrder: Int,
+    val transactionType: String,
+    val distributedTo: String?,
+    val stockDistributed: String?,
+    val stockDiscarded: String?,
+    val stockCount: String?,
+) {
+    fun toDomain(programUid: String): InternalStockUseCaseTransaction {
+        return InternalStockUseCaseTransaction.builder()
+            .programUid(programUid)
+            .sortOrder(sortOrder)
+            .transactionType(transactionType)
+            .distributedTo(distributedTo)
+            .stockDistributed(stockDistributed)
+            .stockDiscarded(stockDiscarded)
+            .stockCount(stockCount)
+            .build()
     }
 }

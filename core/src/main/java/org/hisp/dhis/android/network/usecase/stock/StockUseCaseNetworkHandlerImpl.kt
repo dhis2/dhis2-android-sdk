@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.usecase.stock.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.internal.BaseSettingCall
+package org.hisp.dhis.android.network.usecase.stock
+
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class StockUseCaseCall(
-    private val stockUseCaseHandler: StockUseCaseHandler,
-    private val networkHandler: StockUseCaseNetworkHandler,
-    coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : BaseSettingCall<List<InternalStockUseCase>>(coroutineAPICallExecutor) {
+internal class StockUseCaseNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : StockUseCaseNetworkHandler {
+    private val service = StockUseCaseService(httpServiceClient)
 
-    override suspend fun tryFetch(storeError: Boolean): Result<List<InternalStockUseCase>, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) { networkHandler.getStockUseCases() }
-    }
-
-    override fun process(item: List<InternalStockUseCase>?) {
-        val stockUseCases = item ?: emptyList()
-        stockUseCaseHandler.handleMany(stockUseCases)
+    override suspend fun getStockUseCases(): List<InternalStockUseCase> {
+        val apiPayload = service.stockUseCases()
+        return apiPayload.map { it.toDomain() }
     }
 }

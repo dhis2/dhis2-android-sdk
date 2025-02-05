@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
+package org.hisp.dhis.android.network.systemsettings
+
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.SystemSetting
-import org.hisp.dhis.android.core.settings.SystemSettings
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class SystemSettingsSplitter {
-    fun splitSettings(settings: SystemSettings): List<SystemSetting> {
+@Serializable
+internal data class SystemSettingsDTO(
+    val keyFlag: String?,
+    val keyStyle: String?,
+    val keyDefaultBaseMap: String?,
+    val keyBingMapsApiKey: String?,
+) {
+    fun toDomain(): SystemSetting {
+        return SystemSetting.builder()
+            .key(keyFlag?.let { SystemSetting.SystemSettingKey.valueOf(it) })
+            .value(keyFlag)
+            .build()
+    }
+
+    fun toDomainSplitted(): List<SystemSetting> {
         val flag = SystemSetting.builder()
             .key(SystemSetting.SystemSettingKey.FLAG)
-            .value(settings.keyFlag)
+            .value(keyFlag)
             .build()
         val style = SystemSetting.builder()
             .key(SystemSetting.SystemSettingKey.STYLE)
-            .value(settings.keyStyle)
+            .value(keyStyle)
             .build()
         val keyDefaultBaseMap = SystemSetting.builder()
             .key(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP)
-            .value(settings.keyDefaultBaseMap)
+            .value(keyDefaultBaseMap)
             .build()
 
         return listOf(flag, style, keyDefaultBaseMap)
+    }
+
+    fun toDomainBingMapsApiKey(): SystemSetting {
+        return SystemSetting.builder()
+            .key(SystemSetting.SystemSettingKey.BING_BASE_MAP)
+            .value(keyBingMapsApiKey)
+            .build()
     }
 }

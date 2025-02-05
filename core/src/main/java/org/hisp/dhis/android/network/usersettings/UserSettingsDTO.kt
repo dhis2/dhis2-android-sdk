@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.json.internal
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import java.io.IOException
+package org.hisp.dhis.android.network.usersettings
 
-class AnalyticsTEIAttributeDeserializer @JvmOverloads constructor(
-    vc: Class<*>? = null,
-) : StdDeserializer<AnalyticsTeiAttribute>(vc) {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.UserSettings
 
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): AnalyticsTeiAttribute {
-        val node = jp.codec.readTree<JsonNode>(jp)
-        val attribute = node.textValue()
-
-        return AnalyticsTeiAttribute.builder().attribute(attribute).build()
+@Serializable
+internal data class UserSettingsDTO(
+    val keyUiLocale: String?,
+    val keyDbLocale: String?,
+) {
+    fun toDomain(): UserSettings {
+        return UserSettings.builder()
+            .keyUiLocale(keyUiLocale)
+            .keyDbLocale(keyDbLocale)
+            .build()
     }
 }

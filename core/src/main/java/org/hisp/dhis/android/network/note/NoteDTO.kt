@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,13 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.network.note
 
-import org.hisp.dhis.android.core.event.Event;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.note.Note
 
-import java.util.List;
-
-public class EventPayload {
-
-    public List<Event> events;
+@Serializable
+internal data class NoteDTO(
+    val note: String,
+    val value: String?,
+    val storedBy: String?,
+    val storedDate: String?,
+) {
+    fun toDomain(event: String? = null, enrollment: String? = null): Note {
+        val noteType = when {
+            event != null -> Note.NoteType.EVENT_NOTE
+            enrollment != null -> Note.NoteType.ENROLLMENT_NOTE
+            else -> null
+        }
+        return Note.builder()
+            .uid(note)
+            .noteType(noteType)
+            .event(event)
+            .enrollment(enrollment)
+            .value(value)
+            .storedBy(storedBy)
+            .storedDate(storedDate)
+            .build()
+    }
 }

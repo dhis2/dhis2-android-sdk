@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.network.event.EventService
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test

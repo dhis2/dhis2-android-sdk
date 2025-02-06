@@ -45,7 +45,7 @@ internal class RelationshipNetworkHandlerImpl(
     }
 
     override suspend fun postRelationship(relationships: List<Relationship>): RelationshipWebResponse {
-        val payload = RelationshipPayload(relationships = relationships.map { RelationshipDTO.fromDomain(it) })
+        val payload = RelationshipPayload(relationships = relationships.map { it.toDto() })
         return service.postRelationship(payload).toDomain()
     }
 }

@@ -44,4 +44,15 @@ internal data class TrackerAPIQuery(
     page,
     pageSize,
     paging,
-)
+) {
+    fun getUidStr(): String? {
+        return if (uids.isEmpty()) null else uids.joinToString(";")
+    }
+
+    fun getEventStartDate(): String? {
+        return when {
+            commonParams.program != null -> commonParams.startDate
+            else -> null
+        }
+    }
+}

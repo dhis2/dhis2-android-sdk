@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.network.event.EventService
 import org.junit.Assert
 import org.junit.Before
 import java.util.*

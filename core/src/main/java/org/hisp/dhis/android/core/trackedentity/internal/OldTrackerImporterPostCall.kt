@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
-import org.hisp.dhis.android.core.event.internal.EventPayload
-import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.network.event.EventService
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler

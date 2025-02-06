@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.network.event
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class EventService(private val client: HttpServiceClient) {
+internal class EventService(private val client: HttpServiceClientKotlinx) {
 
-    suspend fun postEvents(events: EventPayload, strategy: String): EventWebResponse {
+    suspend fun postEvents(events: EventPayload, strategy: String): EventWebResponseDTO {
         return client.post {
             url(EVENTS)
             parameters {
@@ -71,7 +67,7 @@ internal class EventService(private val client: HttpServiceClient) {
         lastUpdatedEndDate: String? = null,
         includeDeleted: Boolean,
         eventUid: String? = null,
-    ): PayloadJackson<Event> {
+    ): EventPayload {
         return client.get {
             url(EVENTS)
             parameters {
@@ -105,7 +101,7 @@ internal class EventService(private val client: HttpServiceClient) {
         eventUid: String,
         fields: Fields<Event>,
         orgUnitMode: String,
-    ): Event {
+    ): EventDTO {
         return client.get {
             url("$EVENTS/$eventUid")
             parameters {
@@ -119,7 +115,7 @@ internal class EventService(private val client: HttpServiceClient) {
         eventUid: String,
         fields: Fields<Event>,
         orgUnitMode: String,
-    ): PayloadJackson<Event> {
+    ): EventPayload {
         return client.get {
             url(EVENTS)
             parameters {

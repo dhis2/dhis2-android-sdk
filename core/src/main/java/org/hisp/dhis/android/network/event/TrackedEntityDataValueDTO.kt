@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,31 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note;
+package org.hisp.dhis.android.network.event
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note/note_30.json");
+@Serializable
+internal data class TrackedEntityDataValueDTO(
+    val created: String?,
+    val lastUpdated: String?,
+    val dataElement: String?,
+    val storedBy: String?,
+    val value: String?,
+    val providedElsewhere: Boolean?,
+) {
+    fun toDomain(event: String): TrackedEntityDataValue {
+        return TrackedEntityDataValue.builder()
+            .event(event)
+            .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
+            .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
+            .dataElement(dataElement)
+            .storedBy(storedBy)
+            .value(value)
+            .providedElsewhere(providedElsewhere)
+            .build()
     }
+}
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
-
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
-    }
+internal fun TrackedEntityDataValue.toDto(): TrackedEntityDataValueDTO {
+    return TrackedEntityDataValueDTO(
+        created = this.created(),
+        lastUpdated = this.lastUpdated(),
+        dataElement = this.dataElement(),
+        storedBy = this.storedBy(),
+        value = this.value(),
+        providedElsewhere = this.providedElsewhere(),
+    )
 }

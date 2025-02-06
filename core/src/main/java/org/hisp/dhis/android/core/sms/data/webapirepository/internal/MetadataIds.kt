@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,38 +28,23 @@
 
 package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.koin.core.annotation.Singleton
+import java.util.Date
 
-@Singleton
-@Suppress("LongParameterList")
-internal class ApiService(private val client: HttpServiceClient) {
+internal data class MetadataIds(
+    val system: MetadataSystemInfo? = null,
+    val categoryOptionCombos: List<MetadataId>? = null,
+    val organisationUnits: List<MetadataId>? = null,
+    val dataElements: List<MetadataId>? = null,
+    val users: List<MetadataId>? = null,
+    val trackedEntityTypes: List<MetadataId>? = null,
+    val trackedEntityAttributes: List<MetadataId>? = null,
+    val programs: List<MetadataId>? = null,
+) {
+    data class MetadataSystemInfo(
+        val date: Date? = null,
+    )
 
-    // That's an API call and looks like an API endpoint
-    suspend fun getMetadataIds(
-        dataElements: String?,
-        categoryOptionCombos: String?,
-        organisationUnits: String?,
-        users: String?,
-        trackedEntityTypes: String?,
-        trackedEntityAttributes: String?,
-        programs: String?,
-    ): MetadataResponse {
-        return client.get {
-            url("metadata")
-            parameters {
-                attribute("dataElements:fields", dataElements)
-                attribute("categoryOptionCombos:fields", categoryOptionCombos)
-                attribute("organisationUnits:fields", organisationUnits)
-                attribute("users:fields", users)
-                attribute("trackedEntityTypes:fields", trackedEntityTypes)
-                attribute("trackedEntityAttributes:fields", trackedEntityAttributes)
-                attribute("programs:fields", programs)
-            }
-        }
-    }
-
-    companion object {
-        const val GET_IDS = "id"
-    }
+    data class MetadataId(
+        val id: String,
+    )
 }

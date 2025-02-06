@@ -38,7 +38,8 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadat
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStoreImpl
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl
-import org.hisp.dhis.android.core.sms.data.webapirepository.internal.ApiService
+import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNetworkHandler
+import org.hisp.dhis.android.network.metadata.MetadataService
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
@@ -67,8 +68,8 @@ internal class SystemInfoDIModule {
     }
 
     @Singleton
-    fun webApiRepository(apiService: ApiService, dhisVersionManager: DHISVersionManager): WebApiRepository {
-        return WebApiRepositoryImpl(apiService, dhisVersionManager)
+    fun webApiRepository(metadataNetworkHandler: MetadataNetworkHandler): WebApiRepository {
+        return WebApiRepositoryImpl(metadataNetworkHandler)
     }
 
     @Singleton

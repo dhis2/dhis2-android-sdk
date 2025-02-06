@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventFields
-import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.network.event.EventService
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent

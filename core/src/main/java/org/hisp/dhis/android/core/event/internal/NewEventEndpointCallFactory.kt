@@ -51,7 +51,7 @@ internal class NewEventEndpointCallFactory(
             orgUnit = eventQuery.orgUnit,
             orgUnitMode = parameterManager.getOrgunitModeParameter(eventQuery.commonParams.ouMode),
             program = eventQuery.commonParams.program,
-            occurredAfter = getEventStartDate(eventQuery),
+            occurredAfter = eventQuery.getEventStartDate(),
             paging = true,
             page = eventQuery.page,
             pageSize = eventQuery.pageSize,

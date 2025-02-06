@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.note
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.network.event.EventService
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.note.NoteDTO
+import org.junit.Test
 
-internal object EventCallFactory {
-    @JvmStatic
-    suspend fun create(
-        httpClient: HttpServiceClient,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList(),
-    ): PayloadJackson<Event> {
-        val eventQuery = TrackerAPIQuery(
-            commonParams = TrackerQueryCommonParams(
-                program = null,
-                uids = uids.toList(),
-                programs = emptyList(),
-                hasLimitByOrgUnit = false,
-                orgUnitsBeforeDivision = emptyList(),
-                limit = 50,
-                ouMode = OrganisationUnitMode.ACCESSIBLE,
-                startDate = null,
-            ),
-            orgUnit = orgUnit,
-            pageSize = pageSize,
-            uids = uids,
-        )
+class NoteShould : BaseObjectKotlinxShould("note/note_30.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val noteDTO = deserialize(NoteDTO.serializer())
+        val note = noteDTO.toDomain()
 
-        return OldEventEndpointCallFactory(
-            EventService(httpClient),
-        ).getCollectionCall(eventQuery)
+        assertThat(note.uid()).isEqualTo("noteUid")
+        assertThat(note.value()).isEqualTo("Note")
+        assertThat(note.storedBy()).isEqualTo("android")
+        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058")
     }
 }

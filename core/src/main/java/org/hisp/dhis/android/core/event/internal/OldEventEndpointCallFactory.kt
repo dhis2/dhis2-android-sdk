@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
+import org.hisp.dhis.android.network.event.EventService
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,13 +47,13 @@ internal class OldEventEndpointCallFactory(
             orgUnit = getOrgunits(eventQuery)?.firstOrNull(),
             orgUnitMode = eventQuery.commonParams.ouMode.name,
             program = eventQuery.commonParams.program,
-            startDate = getEventStartDate(eventQuery),
+            startDate = eventQuery.getEventStartDate(eventQuery),
             paging = true,
             page = eventQuery.page,
             pageSize = eventQuery.pageSize,
             lastUpdatedStartDate = eventQuery.lastUpdatedStr,
             includeDeleted = true,
-            eventUid = getUidStr(eventQuery),
+            eventUid = eventQuery.getUidStr(),
         )
     }
 

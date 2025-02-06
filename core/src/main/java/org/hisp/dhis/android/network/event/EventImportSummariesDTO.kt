@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note;
+package org.hisp.dhis.android.network.event
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.EventImportSummaries
+import org.hisp.dhis.android.network.common.dto.BaseImportSummariesDTO
+import org.hisp.dhis.android.network.common.dto.applyImportSummariesFields
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class Note29Should extends BaseObjectShould implements ObjectShould {
-
-    public Note29Should() {
-        super("note/note_29.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
-
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
+@Serializable
+internal data class EventImportSummariesDTO(
+    override val status: String,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    val importSummaries: List<EventImportSummaryDTO>?,
+) : BaseImportSummariesDTO {
+    fun toDomain(): EventImportSummaries {
+        return EventImportSummaries.builder()
+            .applyImportSummariesFields(this)
+            .importSummaries(importSummaries?.map { it.toDomain() })
+            .build()
     }
 }

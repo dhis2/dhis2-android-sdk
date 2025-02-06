@@ -29,25 +29,23 @@ package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
-import org.hisp.dhis.android.core.settings.SystemSettings
+import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class SystemSettingSplitterShould {
-    private val settings: SystemSettings = SystemSettings(
+    private val settings: SystemSettingsDTO = SystemSettingsDTO(
         keyFlag = "aFlag",
         keyStyle = "aStyle",
         keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
     )
 
-    private val systemSettingsSplitter = SystemSettingsSplitter()
-
     @Test
     fun build_flag_setting() {
-        val settingList = systemSettingsSplitter.splitSettings(settings)
+        val settingList = settings.toDomainSplitted()
         settingList[0].let { flag ->
             assertThat(flag.key()).isEqualTo(SystemSettingKey.FLAG)
             assertThat(flag.value()).isEqualTo("aFlag")
@@ -56,7 +54,7 @@ class SystemSettingSplitterShould {
 
     @Test
     fun build_style_setting() {
-        val settingList = systemSettingsSplitter.splitSettings(settings)
+        val settingList = settings.toDomainSplitted()
         settingList[1].let { style ->
             assertThat(style.key()).isEqualTo(SystemSettingKey.STYLE)
             assertThat(style.value()).isEqualTo("aStyle")
@@ -65,7 +63,7 @@ class SystemSettingSplitterShould {
 
     @Test
     fun build_default_base_map_setting() {
-        val settingList = systemSettingsSplitter.splitSettings(settings)
+        val settingList = settings.toDomainSplitted()
         settingList[2].let { style ->
             assertThat(style.key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
             assertThat(style.value()).isEqualTo("aDefaultBaseMap")

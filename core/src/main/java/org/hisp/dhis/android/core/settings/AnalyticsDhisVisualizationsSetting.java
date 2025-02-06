@@ -28,15 +28,12 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 import java.util.Map;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualizationsSetting.Builder.class)
 public abstract class AnalyticsDhisVisualizationsSetting {
 
     public abstract List<AnalyticsDhisVisualizationsGroup> home();
@@ -52,7 +49,6 @@ public abstract class AnalyticsDhisVisualizationsSetting {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder home(List<AnalyticsDhisVisualizationsGroup> home);

@@ -29,15 +29,17 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
 import org.junit.Test
 
-class AnalyticsSettingV2Should : BaseObjectShould("settings/analytics_settings_v2.json"), ObjectShould {
+class AnalyticsSettingV2Should : BaseObjectKotlinxShould("settings/analytics_settings_v2.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val analyticsSettings = objectMapper.readValue(jsonStream, AnalyticsSettings::class.java)
+        val analyticsSettingsDTO = deserialize(AnalyticsSettingsDTO.serializer())
+        val analyticsSettings = analyticsSettingsDTO.toDomain()
 
         AnalyticsSettingAsserts.assertTeiAnalytics(analyticsSettings.tei())
 

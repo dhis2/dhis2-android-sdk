@@ -2734,30 +2734,6 @@ public final class org/hisp/dhis/android/core/arch/helpers/internal/DataStateHel
 	public static final fun forcedOrOwn (Lorg/hisp/dhis/android/core/common/DataObject;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/State;
 }
 
-public final class org/hisp/dhis/android/core/arch/json/internal/AnalyticsTEIAttributeDeserializer : com/fasterxml/jackson/databind/deser/std/StdDeserializer {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/Class;)V
-	public synthetic fun <init> (Ljava/lang/Class;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/lang/Object;
-	public fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
-}
-
-public final class org/hisp/dhis/android/core/arch/json/internal/AnalyticsTEIDataElementDeserializer : com/fasterxml/jackson/databind/deser/std/StdDeserializer {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/Class;)V
-	public synthetic fun <init> (Ljava/lang/Class;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/lang/Object;
-	public fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
-}
-
-public final class org/hisp/dhis/android/core/arch/json/internal/AnalyticsTEIIndicatorDeserializer : com/fasterxml/jackson/databind/deser/std/StdDeserializer {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/Class;)V
-	public synthetic fun <init> (Ljava/lang/Class;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/lang/Object;
-	public fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
-}
-
 public final class org/hisp/dhis/android/core/arch/json/internal/DateMultiFormatDeserializer : com/fasterxml/jackson/databind/deser/std/StdDeserializer {
 	public static final field Companion Lorg/hisp/dhis/android/core/arch/json/internal/DateMultiFormatDeserializer$Companion;
 	public fun <init> ()V
@@ -11222,7 +11198,7 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualiza
 
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
 	public abstract fun groupName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
 	public abstract fun groupUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
@@ -11385,7 +11361,7 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiData {
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder {
 	public fun <init> ()V
 	public abstract fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
 	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
 	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
 }
@@ -11591,7 +11567,7 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutriti
 
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
 	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
 	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
 }
@@ -11608,7 +11584,7 @@ public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings {
 
 public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings$Builder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
 	public abstract fun completionSpinner (Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 	public abstract fun dataSetConfiguration (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 	public abstract fun filterSorting (Lorg/hisp/dhis/android/core/settings/FilterSorting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
@@ -11722,12 +11698,17 @@ public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSe
 public final class org/hisp/dhis/android/core/settings/DataSetFilter : java/lang/Enum {
 	public static final field ASSIGNED_TO_ME Lorg/hisp/dhis/android/core/settings/DataSetFilter;
 	public static final field CAT_COMBO Lorg/hisp/dhis/android/core/settings/DataSetFilter;
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetFilter$Companion;
 	public static final field ORG_UNIT Lorg/hisp/dhis/android/core/settings/DataSetFilter;
 	public static final field PERIOD Lorg/hisp/dhis/android/core/settings/DataSetFilter;
 	public static final field SYNC_STATUS Lorg/hisp/dhis/android/core/settings/DataSetFilter;
 	public static final field UNKNOWN Lorg/hisp/dhis/android/core/settings/DataSetFilter;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetFilter;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/DataSetFilter;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetFilter$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/settings/DataSetFilters {
@@ -11791,7 +11772,7 @@ public abstract class org/hisp/dhis/android/core/settings/DataSetSettings {
 
 public abstract class org/hisp/dhis/android/core/settings/DataSetSettings$Builder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
 	public abstract fun globalSettings (Lorg/hisp/dhis/android/core/settings/DataSetSetting;)Lorg/hisp/dhis/android/core/settings/DataSetSettings$Builder;
 	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetSettings$Builder;
 }
@@ -11802,14 +11783,19 @@ public final class org/hisp/dhis/android/core/settings/DataSetSettingsObjectRepo
 }
 
 public final class org/hisp/dhis/android/core/settings/DataSyncPeriod : java/lang/Enum {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSyncPeriod$Companion;
 	public static final field EVERY_12_HOURS Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public static final field EVERY_24_HOURS Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public static final field EVERY_30_MIN Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public static final field EVERY_6_HOURS Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public static final field EVERY_HOUR Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public static final field MANUAL Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSyncPeriod$Companion {
 }
 
 public final class org/hisp/dhis/android/core/settings/DownloadPeriod : java/lang/Enum {
@@ -11970,12 +11956,17 @@ public abstract class org/hisp/dhis/android/core/settings/GeneralSettings$Builde
 
 public final class org/hisp/dhis/android/core/settings/HomeFilter : java/lang/Enum {
 	public static final field ASSIGNED_TO_ME Lorg/hisp/dhis/android/core/settings/HomeFilter;
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/HomeFilter$Companion;
 	public static final field DATE Lorg/hisp/dhis/android/core/settings/HomeFilter;
 	public static final field ORG_UNIT Lorg/hisp/dhis/android/core/settings/HomeFilter;
 	public static final field SYNC_STATUS Lorg/hisp/dhis/android/core/settings/HomeFilter;
 	public static final field UNKNOWN Lorg/hisp/dhis/android/core/settings/HomeFilter;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/HomeFilter;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/HomeFilter;
+}
+
+public final class org/hisp/dhis/android/core/settings/HomeFilter$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion : org/hisp/dhis/android/core/common/CoreObject {
@@ -12029,13 +12020,18 @@ public final class org/hisp/dhis/android/core/settings/LimitScope : java/lang/En
 }
 
 public final class org/hisp/dhis/android/core/settings/MetadataSyncPeriod : java/lang/Enum {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod$Companion;
 	public static final field EVERY_12_HOURS Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
 	public static final field EVERY_24_HOURS Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
 	public static final field EVERY_7_DAYS Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
 	public static final field EVERY_HOUR Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
 	public static final field MANUAL Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
+}
+
+public final class org/hisp/dhis/android/core/settings/MetadataSyncPeriod$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -12105,6 +12101,7 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSe
 public final class org/hisp/dhis/android/core/settings/ProgramFilter : java/lang/Enum {
 	public static final field ASSIGNED_TO_ME Lorg/hisp/dhis/android/core/settings/ProgramFilter;
 	public static final field CAT_COMBO Lorg/hisp/dhis/android/core/settings/ProgramFilter;
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramFilter$Companion;
 	public static final field ENROLLMENT_DATE Lorg/hisp/dhis/android/core/settings/ProgramFilter;
 	public static final field ENROLLMENT_STATUS Lorg/hisp/dhis/android/core/settings/ProgramFilter;
 	public static final field EVENT_DATE Lorg/hisp/dhis/android/core/settings/ProgramFilter;
@@ -12113,8 +12110,12 @@ public final class org/hisp/dhis/android/core/settings/ProgramFilter : java/lang
 	public static final field ORG_UNIT Lorg/hisp/dhis/android/core/settings/ProgramFilter;
 	public static final field SYNC_STATUS Lorg/hisp/dhis/android/core/settings/ProgramFilter;
 	public static final field UNKNOWN Lorg/hisp/dhis/android/core/settings/ProgramFilter;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramFilter;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/ProgramFilter;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramFilter$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/settings/ProgramFilters {
@@ -12342,6 +12343,7 @@ public abstract class org/hisp/dhis/android/core/settings/SystemSetting$Builder 
 }
 
 public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey : java/lang/Enum {
+	public static final field BING_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field DEFAULT_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field FLAG Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field STYLE Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
@@ -12367,23 +12369,6 @@ public class org/hisp/dhis/android/core/settings/SystemSettingTableInfo$Columns 
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/settings/SystemSettings {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/SystemSettings;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/SystemSettings;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/SystemSettings;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getKeyBingMapsApiKey ()Ljava/lang/String;
-	public final fun getKeyDefaultBaseMap ()Ljava/lang/String;
-	public final fun getKeyFlag ()Ljava/lang/String;
-	public final fun getKeyStyle ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/UserSettings : org/hisp/dhis/android/core/common/CoreObject {
@@ -15746,5 +15731,12 @@ public abstract interface class org/hisp/dhis/android/core/wipe/internal/WipeMod
 	public abstract fun wipeData ()V
 	public abstract fun wipeEverything ()V
 	public abstract fun wipeMetadata ()V
+}
+
+public final class org/hisp/dhis/android/network/settings/AnalyticsTeiDeserializers {
+	public static final field INSTANCE Lorg/hisp/dhis/android/network/settings/AnalyticsTeiDeserializers;
+	public final fun deserializeAnalyticsTeiAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
+	public final fun deserializeAnalyticsTeiDataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
+	public final fun deserializeAnalyticsTeiIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
 }
 

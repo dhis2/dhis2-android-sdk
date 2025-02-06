@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
 internal enum class SettingsAppDataStoreVersion {
-    @JsonProperty("1.1")
     V1_1,
-
-    @JsonProperty("2.0")
     V2_0,
+    ;
+
+    @Suppress("EmptyClassBlock")
+    companion object {}
 }

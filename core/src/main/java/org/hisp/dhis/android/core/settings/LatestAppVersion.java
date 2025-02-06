@@ -32,23 +32,17 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_LatestAppVersion.Builder.class)
 public abstract class LatestAppVersion implements CoreObject {
 
-    @JsonProperty()
     @Nullable
     public abstract String version();
 
-    @JsonProperty()
     @Nullable
     public abstract String downloadURL();
 
@@ -63,7 +57,6 @@ public abstract class LatestAppVersion implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

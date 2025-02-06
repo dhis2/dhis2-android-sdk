@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -43,31 +40,23 @@ import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataSetSetting.Builder.class)
 public abstract class DataSetSetting implements CoreObject {
 
     @Nullable
-    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     public abstract String name();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer periodDSDownload();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer periodDSDBTrimming();
 
     public static DataSetSetting create(Cursor cursor) {
@@ -81,11 +70,9 @@ public abstract class DataSetSetting implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
-        @JsonProperty(UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);

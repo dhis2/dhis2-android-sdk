@@ -27,38 +27,34 @@
  */
 package org.hisp.dhis.android.core.usecase.stock
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.Inject
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.network.usecase.stock.StockUseCaseDTO
 import org.junit.Test
-import java.io.InputStream
 
-class InternalStockUseCaseShould {
-    private var objectMapper: ObjectMapper = Inject.objectMapper()
-    private var jsonStream: InputStream = this.javaClass.classLoader!!
-        .getResourceAsStream("usecase.stock/stock_use_case.json")
+class InternalStockUseCaseShould : BaseObjectKotlinxShould("usecase.stock/stock_use_case.json") {
 
     @Test
     fun map_from_json_string() {
-        val internalStockUseCase: InternalStockUseCase = objectMapper
-            .readValue(jsonStream, InternalStockUseCase::class.java)
+        val stockUseCaseDTO = deserialize(StockUseCaseDTO.serializer())
+        val internalStockUseCase = stockUseCaseDTO.toDomain()
 
-        Truth.assertThat(internalStockUseCase).isNotNull()
-        Truth.assertThat(internalStockUseCase.uid()).isEqualTo("IpHINAT79UW")
-        Truth.assertThat(internalStockUseCase.itemCode()).isEqualTo("wBr4wccNBj1")
-        Truth.assertThat(internalStockUseCase.itemDescription()).isEqualTo("MBczRWvfM46")
-        Truth.assertThat(internalStockUseCase.programType()).isEqualTo("logistics")
-        Truth.assertThat(internalStockUseCase.description()).isEqualTo("this is a logistics program, stock management")
-        Truth.assertThat(internalStockUseCase.stockOnHand()).isEqualTo("ypCQAFr1a5l")
-        Truth.assertThat(internalStockUseCase.uid()).isEqualTo("IpHINAT79UW")
+        assertThat(internalStockUseCase).isNotNull()
+        assertThat(internalStockUseCase.uid()).isEqualTo("IpHINAT79UW")
+        assertThat(internalStockUseCase.itemCode()).isEqualTo("wBr4wccNBj1")
+        assertThat(internalStockUseCase.itemDescription()).isEqualTo("MBczRWvfM46")
+        assertThat(internalStockUseCase.programType()).isEqualTo("logistics")
+        assertThat(internalStockUseCase.description()).isEqualTo("this is a logistics program, stock management")
+        assertThat(internalStockUseCase.stockOnHand()).isEqualTo("ypCQAFr1a5l")
+        assertThat(internalStockUseCase.uid()).isEqualTo("IpHINAT79UW")
 
         val transactions = internalStockUseCase.transactions()
-        Truth.assertThat(transactions?.size).isEqualTo(3)
-        Truth.assertThat(transactions?.get(0)?.sortOrder()).isEqualTo(0)
-        Truth.assertThat(transactions?.get(0)?.transactionType()).isEqualTo("DISTRIBUTED")
-        Truth.assertThat(transactions?.get(0)?.distributedTo()).isEqualTo("yfsEseIcEXr")
-        Truth.assertThat(transactions?.get(0)?.stockDistributed()).isEqualTo("lpGYJoVUudr")
-        Truth.assertThat(transactions?.get(1)?.stockCount()).isEqualTo("ej1YwWaYGmm")
-        Truth.assertThat(transactions?.get(2)?.stockDiscarded()).isEqualTo("I7cmT3iXT0y")
+        assertThat(transactions?.size).isEqualTo(3)
+        assertThat(transactions?.get(0)?.sortOrder()).isEqualTo(0)
+        assertThat(transactions?.get(0)?.transactionType()).isEqualTo("DISTRIBUTED")
+        assertThat(transactions?.get(0)?.distributedTo()).isEqualTo("yfsEseIcEXr")
+        assertThat(transactions?.get(0)?.stockDistributed()).isEqualTo("lpGYJoVUudr")
+        assertThat(transactions?.get(1)?.stockCount()).isEqualTo("ej1YwWaYGmm")
+        assertThat(transactions?.get(2)?.stockDiscarded()).isEqualTo("I7cmT3iXT0y")
     }
 }

@@ -5476,7 +5476,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis
 	public abstract fun dataElementDecoration ()Ljava/lang/Boolean;
 	public abstract fun dataInputPeriods ()Ljava/util/List;
 	public abstract fun dataSetElements ()Ljava/util/List;
-	public abstract fun expiryDays ()Ljava/lang/Integer;
+	public abstract fun expiryDays ()Ljava/lang/Double;
 	public abstract fun fieldCombinationRequired ()Ljava/lang/Boolean;
 	public abstract fun indicators ()Ljava/util/List;
 	public abstract fun mobile ()Ljava/lang/Boolean;
@@ -5487,7 +5487,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis
 	public abstract fun renderAsTabs ()Ljava/lang/Boolean;
 	public abstract fun renderHorizontally ()Ljava/lang/Boolean;
 	public abstract fun skipOffline ()Ljava/lang/Boolean;
-	public abstract fun timelyDays ()Ljava/lang/Integer;
+	public abstract fun timelyDays ()Ljava/lang/Double;
 	public synthetic fun toBuilder ()Lorg/hisp/dhis/android/core/common/ObjectWithStyle$Builder;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun validCompleteOnly ()Ljava/lang/Boolean;
@@ -5505,7 +5505,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet$Builder : org/h
 	public abstract fun dataElementDecoration (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun dataInputPeriods (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun dataSetElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
-	public abstract fun expiryDays (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
+	public abstract fun expiryDays (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun fieldCombinationRequired (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
@@ -5517,7 +5517,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet$Builder : org/h
 	public abstract fun renderAsTabs (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun renderHorizontally (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun skipOffline (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
-	public abstract fun timelyDays (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
+	public abstract fun timelyDays (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun validCompleteOnly (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun version (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun workflow (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
@@ -11075,7 +11075,7 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipType$B
 	public fun <init> ()V
 	public abstract fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 	public abstract fun bidirectional (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
 	public abstract fun fromConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 	public abstract fun fromToName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;

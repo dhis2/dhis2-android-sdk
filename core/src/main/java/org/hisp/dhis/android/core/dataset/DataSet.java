@@ -76,10 +76,10 @@ public abstract class DataSet extends BaseNameableObject
     public abstract Integer version();
 
     @Nullable
-    public abstract Integer expiryDays();
+    public abstract Double expiryDays();
 
     @Nullable
-    public abstract Integer timelyDays();
+    public abstract Double timelyDays();
 
     @Nullable
     public abstract Boolean notifyCompletingUser();
@@ -158,9 +158,9 @@ public abstract class DataSet extends BaseNameableObject
 
         public abstract Builder version(Integer version);
 
-        public abstract Builder expiryDays(Integer expiryDays);
+        public abstract Builder expiryDays(Double expiryDays);
 
-        public abstract Builder timelyDays(Integer timelyDays);
+        public abstract Builder timelyDays(Double timelyDays);
 
         public abstract Builder notifyCompletingUser(Boolean notifyCompletingUser);
 

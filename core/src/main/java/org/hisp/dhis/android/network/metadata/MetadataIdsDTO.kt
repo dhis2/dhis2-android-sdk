@@ -40,7 +40,7 @@ internal data class MetadataIdsDTO(
     val users: List<MetadataIdDTO>?,
     val trackedEntityTypes: List<MetadataIdDTO>?,
     val trackedEntityAttributes: List<MetadataIdDTO>?,
-    val programs: List<MetadataIdDTO>?
+    val programs: List<MetadataIdDTO>?,
 ) {
     fun toDomain(): MetadataIds {
         return MetadataIds(
@@ -51,7 +51,7 @@ internal data class MetadataIdsDTO(
             users = users?.mapNotNull { it.toDomain() },
             trackedEntityTypes = trackedEntityTypes?.mapNotNull { it.toDomain() },
             trackedEntityAttributes = trackedEntityAttributes?.mapNotNull { it.toDomain() },
-            programs = programs?.mapNotNull { it.toDomain() }
+            programs = programs?.mapNotNull { it.toDomain() },
         )
     }
 }

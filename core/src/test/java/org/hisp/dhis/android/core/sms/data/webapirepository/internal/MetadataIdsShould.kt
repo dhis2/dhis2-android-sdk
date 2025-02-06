@@ -41,9 +41,11 @@ class MetadataIdsShould : BaseObjectKotlinxShould("sms/metadata_ids.json"), Obje
         val metadataIdsDTO = deserialize(MetadataIdsDTO.serializer())
         val metadataIds = metadataIdsDTO.toDomain()
 
-        assertThat(metadataIds.system).isEqualTo(MetadataIds.MetadataSystemInfo(
-            date = DateUtils.DATE_FORMAT.parse("2019-05-14T17:09:24.704"),
-        ))
+        assertThat(metadataIds.system).isEqualTo(
+            MetadataIds.MetadataSystemInfo(
+                date = DateUtils.DATE_FORMAT.parse("2019-05-14T17:09:24.704"),
+            ),
+        )
         assertThat(metadataIds.categoryOptionCombos).containsExactly(MetadataIds.MetadataId(id = "lxAQ7Zs9VYR"))
         assertThat(metadataIds.organisationUnits).containsExactly(MetadataIds.MetadataId(id = "lxAQ7Zs9VYR"))
         assertThat(metadataIds.dataElements).containsExactly(MetadataIds.MetadataId(id = "lxAQ7Zs9VYR"))

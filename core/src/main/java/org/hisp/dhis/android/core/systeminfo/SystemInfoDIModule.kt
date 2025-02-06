@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoing
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStoreImpl
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNetworkHandler
-import org.hisp.dhis.android.network.metadata.MetadataService
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository

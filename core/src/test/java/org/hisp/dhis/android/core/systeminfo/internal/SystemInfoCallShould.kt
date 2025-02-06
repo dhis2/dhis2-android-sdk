@@ -28,7 +28,16 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -40,26 +49,23 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.util.*
+import java.util.Date
 
 @RunWith(JUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 class SystemInfoCallShould {
-    private val systemInfoService: SystemInfoService = mock()
+    private val systemInfoNetworkHandler: SystemInfoNetworkHandler = mock()
     private val databaseAdapter: DatabaseAdapter = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val d2Error: D2Error = mock()
     private val systemInfoHandler: SystemInfoHandler = mock()
     private val resourceHandler: ResourceHandler = mock()
     private val transaction: Transaction = mock()
-
-    private val filterCaptor: KArgumentCaptor<Fields<SystemInfo>> = argumentCaptor()
 
     private val systemInfo: SystemInfo = mock()
     private val versionManager: DHISVersionManagerImpl = mock()
@@ -71,7 +77,7 @@ class SystemInfoCallShould {
     fun setUp() {
         systemInfoSyncCall = SystemInfoCall(
             systemInfoHandler,
-            systemInfoService,
+            systemInfoNetworkHandler,
             resourceHandler,
             versionManager,
             coroutineAPICallExecutor,
@@ -80,22 +86,15 @@ class SystemInfoCallShould {
         whenever(systemInfo.version()).thenReturn("2.30")
         whenever(systemInfo.serverDate()).thenReturn(serverDate)
         whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
-        systemInfoService.stub {
-            onBlocking { getSystemInfo(filterCaptor.capture()) }.doReturn(systemInfo)
+        systemInfoNetworkHandler.stub {
+            onBlocking { getSystemInfo() }.doReturn(systemInfo)
         }
     }
 
     @Test
-    fun pass_correct_fields_to_service() = runTest {
-        systemInfoSyncCall.download(true)
-
-        assertThat(filterCaptor.firstValue).isEqualTo(SystemInfoFields.allFields)
-    }
-
-    @Test
     fun emit_d2_error_when_api_call_executor_returns_error() = runTest {
-        systemInfoService.stub {
-            onBlocking { getSystemInfo(any()) }.doAnswer { throw d2Error }
+        systemInfoNetworkHandler.stub {
+            onBlocking { getSystemInfo() }.doAnswer { throw d2Error }
         }
 
         try {
@@ -108,8 +107,8 @@ class SystemInfoCallShould {
 
     @Test
     fun never_invoke_handlers_on_call_exception() = runTest {
-        systemInfoService.stub {
-            onBlocking { getSystemInfo(filterCaptor.capture()) }.doAnswer { throw d2Error }
+        systemInfoNetworkHandler.stub {
+            onBlocking { getSystemInfo() }.doAnswer { throw d2Error }
         }
 
         verifyThrowD2Error(

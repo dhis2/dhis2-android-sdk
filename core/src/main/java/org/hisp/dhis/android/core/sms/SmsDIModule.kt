@@ -38,13 +38,12 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadat
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStoreImpl
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl
-import org.hisp.dhis.android.core.sms.data.webapirepository.internal.ApiService
+import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNetworkHandler
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -68,8 +67,8 @@ internal class SmsDIModule {
     }
 
     @Singleton
-    fun webApiRepository(apiService: ApiService, dhisVersionManager: DHISVersionManager): WebApiRepository {
-        return WebApiRepositoryImpl(apiService, dhisVersionManager)
+    fun webApiRepository(networkHandler: MetadataNetworkHandler): WebApiRepository {
+        return WebApiRepositoryImpl(networkHandler)
     }
 
     @Singleton

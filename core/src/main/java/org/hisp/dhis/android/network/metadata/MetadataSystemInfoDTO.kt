@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.data.webapirepository.internal
+package org.hisp.dhis.android.network.metadata
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.koin.core.annotation.Singleton
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataIds.MetadataSystemInfo
 
-@Singleton
-@Suppress("LongParameterList")
-internal class ApiService(private val client: HttpServiceClient) {
-
-    // That's an API call and looks like an API endpoint
-    suspend fun getMetadataIds(
-        dataElements: String?,
-        categoryOptionCombos: String?,
-        organisationUnits: String?,
-        users: String?,
-        trackedEntityTypes: String?,
-        trackedEntityAttributes: String?,
-        programs: String?,
-    ): MetadataResponse {
-        return client.get {
-            url("metadata")
-            parameters {
-                attribute("dataElements:fields", dataElements)
-                attribute("categoryOptionCombos:fields", categoryOptionCombos)
-                attribute("organisationUnits:fields", organisationUnits)
-                attribute("users:fields", users)
-                attribute("trackedEntityTypes:fields", trackedEntityTypes)
-                attribute("trackedEntityAttributes:fields", trackedEntityAttributes)
-                attribute("programs:fields", programs)
-            }
-        }
-    }
-
-    companion object {
-        const val GET_IDS = "id"
+@Serializable
+internal data class MetadataSystemInfoDTO(
+    val date: String?,
+) {
+    fun toDomain(): MetadataSystemInfo {
+        return MetadataSystemInfo(date?.let { DateUtils.DATE_FORMAT.parse(date) })
     }
 }

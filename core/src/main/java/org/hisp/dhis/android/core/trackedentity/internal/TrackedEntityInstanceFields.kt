@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.relationship.RelationshipFields
+import org.hisp.dhis.android.network.relationship.RelationshipFields
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns

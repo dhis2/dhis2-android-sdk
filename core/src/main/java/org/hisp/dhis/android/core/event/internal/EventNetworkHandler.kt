@@ -42,5 +42,10 @@ internal interface EventNetworkHandler {
         query: TrackedEntityInstanceQueryOnline,
         orgunit: String?,
     ): Payload<Event>
+
     suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
+    suspend fun getEvent(
+        eventUid: String,
+        orgUnitMode: String,
+    ): Event
 }

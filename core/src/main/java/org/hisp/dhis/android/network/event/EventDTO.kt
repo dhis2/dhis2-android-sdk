@@ -29,16 +29,18 @@
 package org.hisp.dhis.android.network.event
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.note.NoteDTO
+import org.hisp.dhis.android.network.note.toDto
 import org.hisp.dhis.android.network.relationship.RelationshipDTO
 import org.hisp.dhis.android.network.relationship.toDto
 
@@ -73,19 +75,19 @@ internal data class EventDTO(
             uid(event)
             enrollment(enrollment)
             EventInternalAccessor.insertTrackedEntityInstance(this, trackedEntityInstance)
-            created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
-            lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
-            createdAtClient(createdAtClient?.let { DateUtils.DATE_FORMAT.parse(it) })
-            lastUpdatedAtClient(lastUpdatedAtClient?.let { DateUtils.DATE_FORMAT.parse(it) })
+            created(created.toJavaSimpleDate())
+            lastUpdated(lastUpdated.toJavaSimpleDate())
+            createdAtClient(createdAtClient.toJavaSimpleDate())
+            lastUpdatedAtClient(lastUpdatedAtClient.toJavaSimpleDate())
             program(program)
             programStage(programStage)
             organisationUnit(orgUnit)
-            eventDate(eventDate?.let { DateUtils.DATE_FORMAT.parse(it) })
+            eventDate(eventDate.toJavaSimpleDate())
             status(status?.let { EventStatus.valueOf(it) })
             geometry(geometry?.toDomain())
-            completedDate(completedDate?.let { DateUtils.DATE_FORMAT.parse(it) })
+            completedDate(completedDate.toJavaSimpleDate())
             completedBy(completedBy)
-            dueDate(dueDate?.let { DateUtils.DATE_FORMAT.parse(it) })
+            dueDate(dueDate.toJavaSimpleDate())
             attributeOptionCombo(attributeOptionCombo)
             assignedUser(assignedUser)
             notes(notes?.map { it.toDomain(event = event) })
@@ -100,23 +102,23 @@ internal fun Event.toDto(): EventDTO {
         deleted = this.deleted(),
         event = this.uid(),
         enrollment = this.enrollment(),
-        trackedEntityInstance = EventInternalAccessor.accessTrackedEntityInstance(e),
-        created = this.created(),
-        lastUpdated = this.lastUpdated(),
-        createdAtClient = this.createdAtClient(),
-        lastUpdatedAtClient = this.lastUpdatedAtClient(),
+        trackedEntityInstance = EventInternalAccessor.accessTrackedEntityInstance(this),
+        created = this.created().simpleDateFormat(),
+        lastUpdated = this.lastUpdated().simpleDateFormat(),
+        createdAtClient = this.createdAtClient().simpleDateFormat(),
+        lastUpdatedAtClient = this.lastUpdatedAtClient().simpleDateFormat(),
         program = this.program(),
         programStage = this.programStage(),
         orgUnit = this.organisationUnit(),
-        eventDate = this.eventDate(),
+        eventDate = this.eventDate().simpleDateFormat(),
         status = this.status()?.name,
         geometry = this.geometry()?.toDto(),
-        completedDate = this.completedDate(),
+        completedDate = this.completedDate().simpleDateFormat(),
         completedBy = this.completedBy(),
-        dueDate = this.dueDate(),
+        dueDate = this.dueDate().simpleDateFormat(),
         attributeOptionCombo = this.attributeOptionCombo(),
         assignedUser = this.assignedUser(),
-        notes = this.notes()?.map { NoteDTO },
+        notes = this.notes()?.map { it.toDto() },
         relationships = EventInternalAccessor.accessRelationships(this)?.map { it.toDto() },
         dataValues = this.trackedEntityDataValues()?.map { it.toDto() },
     )

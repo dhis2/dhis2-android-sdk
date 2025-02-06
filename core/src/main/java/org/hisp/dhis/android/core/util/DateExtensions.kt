@@ -34,3 +34,7 @@ import java.util.*
 internal fun Date?.simpleDateFormat(): String? {
     return this?.let { DateUtils.SIMPLE_DATE_FORMAT.format(it) }
 }
+
+internal fun String?.toJavaSimpleDate(): Date? {
+    return this?.let { DateUtils.DATE_FORMAT.parse(it) }
+}

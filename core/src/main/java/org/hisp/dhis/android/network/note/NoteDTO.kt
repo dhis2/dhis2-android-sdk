@@ -55,3 +55,12 @@ internal data class NoteDTO(
             .build()
     }
 }
+
+internal fun Note.toDto(): NoteDTO {
+    return NoteDTO(
+        note = uid(),
+        value = value(),
+        storedBy = storedBy(),
+        storedDate = storedBy(),
+    )
+}

@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.internal.EventFields
+import org.hisp.dhis.android.network.event.EventFields
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall
 import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
 import org.hisp.dhis.android.core.event.internal.EventStore

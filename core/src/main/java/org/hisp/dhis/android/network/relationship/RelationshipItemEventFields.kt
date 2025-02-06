@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
+package org.hisp.dhis.android.network.relationship
 
-import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 import org.hisp.dhis.android.network.common.fields.BaseFields
 
-internal object RelationshipItemTrackedEntityInstanceFields : BaseFields<RelationshipItemTrackedEntityInstance>() {
-    private const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+internal object RelationshipItemEventFields : BaseFields<RelationshipItemEvent>() {
+    private const val EVENT = "event"
 
-    val trackedEntityInstance = fh.field(TRACKED_ENTITY_INSTANCE)
+    val event = fh.field(EVENT)
 }

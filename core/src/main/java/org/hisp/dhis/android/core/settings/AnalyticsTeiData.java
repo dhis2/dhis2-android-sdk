@@ -59,6 +59,6 @@ public abstract class AnalyticsTeiData {
 
         public abstract Builder attributes(List<AnalyticsTeiAttribute> attributes);
 
-        abstract public AnalyticsTeiData build();
+        public abstract AnalyticsTeiData build();
     }
 }

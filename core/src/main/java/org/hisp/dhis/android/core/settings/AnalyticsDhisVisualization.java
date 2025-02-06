@@ -101,6 +101,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder type(AnalyticsDhisVisualizationType type);
 
-        abstract public AnalyticsDhisVisualization build();
+        public abstract AnalyticsDhisVisualization build();
     }
 }

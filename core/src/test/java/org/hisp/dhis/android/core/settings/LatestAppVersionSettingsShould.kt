@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.settings.apkdistribution.LatestAppVersionDTO
+import org.hisp.dhis.android.network.apkdistribution.LatestAppVersionDTO
 import org.junit.Test
 
 class LatestAppVersionSettingsShould : BaseObjectKotlinxShould("settings/latest_app_version.json"), ObjectShould {

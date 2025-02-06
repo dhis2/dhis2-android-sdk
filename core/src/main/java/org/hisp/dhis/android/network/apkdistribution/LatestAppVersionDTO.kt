@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings.apkdistribution
+package org.hisp.dhis.android.network.apkdistribution
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.LatestAppVersion

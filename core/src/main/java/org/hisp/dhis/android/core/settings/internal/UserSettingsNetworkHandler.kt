@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.UserSettings
 
-internal interface UserSettingsNetworkHandler {
+internal fun interface UserSettingsNetworkHandler {
     suspend fun getUserSettings(): UserSettings
 }

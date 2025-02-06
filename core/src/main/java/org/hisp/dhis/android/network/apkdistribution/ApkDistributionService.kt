@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings.apkdistribution
+package org.hisp.dhis.android.network.apkdistribution
 
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 

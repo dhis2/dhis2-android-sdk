@@ -52,6 +52,6 @@ public abstract class DataSetSettings {
 
         public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
 
-        abstract public DataSetSettings build();
+        public abstract DataSetSettings build();
     }
 }

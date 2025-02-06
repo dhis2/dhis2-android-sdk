@@ -52,6 +52,6 @@ public abstract class AnalyticsTeiWHONutritionItem {
 
         public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
 
-        abstract public AnalyticsTeiWHONutritionItem build();
+        public abstract AnalyticsTeiWHONutritionItem build();
     }
 }

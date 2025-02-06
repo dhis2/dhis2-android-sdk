@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
-import org.hisp.dhis.android.network.event.EventService
+import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
@@ -55,7 +55,7 @@ internal class OldTrackerImporterPostCall internal constructor(
     private val trackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
     private val trackerStateManager: TrackerPostStateManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val eventService: EventService,
+    private val eventNetworkHandler: EventNetworkHandler,
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val eventImportHandler: EventImportHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
@@ -163,11 +163,8 @@ internal class OldTrackerImporterPostCall internal constructor(
         } else {
             val validEvents = fileResourcePostCall.uploadEventsFileResources(events)
 
-            val payload = EventPayload()
-            payload.events = validEvents.items
-
             trackerStateManager.setPayloadStates(
-                events = payload.events,
+                events = validEvents.items,
                 forcedState = State.UPLOADING,
             )
 
@@ -178,12 +175,12 @@ internal class OldTrackerImporterPostCall internal constructor(
                     acceptedErrorCodes = listOf(HTTP_CONFLICT),
                     errorClass = EventWebResponse::class.java,
                 ) {
-                    eventService.postEvents(payload, strategy)
+                    eventNetworkHandler.postEvents(validEvents.items, strategy)
                 }.getOrThrow()
 
                 eventImportHandler.handleEventImportSummaries(
                     eventImportSummaries = webResponse.response()?.importSummaries(),
-                    events = payload.events,
+                    events = validEvents.items,
                 )
 
                 fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
@@ -191,7 +188,7 @@ internal class OldTrackerImporterPostCall internal constructor(
                 emit(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {
                 trackerStateManager.restorePayloadStates(
-                    events = payload.events,
+                    events = validEvents.items,
                     fileResources = validEvents.fileResources,
                 )
                 throw e

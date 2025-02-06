@@ -43,7 +43,7 @@ import org.koin.core.annotation.Singleton
 internal class NewEventEndpointCallFactory(
     private val service: TrackerExporterService,
     private val parameterManager: TrackerExporterParameterManager,
-) : EventEndpointCallFactory() {
+) : EventEndpointCallFactory {
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): PayloadJackson<Event> {
         return service.getEvents(

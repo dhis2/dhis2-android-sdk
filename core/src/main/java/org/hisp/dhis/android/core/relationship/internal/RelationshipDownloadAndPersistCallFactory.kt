@@ -69,8 +69,8 @@ internal class RelationshipDownloadAndPersistCallFactory(
                     trackerParentCallFactory.getEventCall().getRelationshipEntityCall(item)
                 }.fold(
                     onSuccess = { eventPayload ->
-                        events.addAll(eventPayload.items())
-                        eventPayload.items().mapNotNull { it.enrollment() }.forEach { enrollment ->
+                        events.addAll(eventPayload.items)
+                        eventPayload.items.mapNotNull { it.enrollment() }.forEach { enrollment ->
                             val relativeEnrollment = RelationshipItemRelative(
                                 itemUid = enrollment,
                                 itemType = RelationshipItemTableInfo.Columns.ENROLLMENT,

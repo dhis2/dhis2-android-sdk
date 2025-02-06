@@ -43,7 +43,9 @@ class TrackedEntityDataValueShould :
         val trackedEntityDataValue = trackedEntityDataValueDTO.toDomain("event")
 
         assertThat(trackedEntityDataValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-11-15T14:55:23.779"))
-        assertThat(trackedEntityDataValue.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-11-16T14:55:23.779"))
+        assertThat(
+            trackedEntityDataValue.lastUpdated(),
+        ).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-11-16T14:55:23.779"))
 
         assertThat(trackedEntityDataValue.storedBy()).isEqualTo("admin")
         assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa")

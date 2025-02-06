@@ -25,27 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationship
 
-package org.hisp.dhis.android.core.event.internal
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.network.common.fields.BaseFields
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+internal object RelationshipItemTrackedEntityInstanceFields : BaseFields<RelationshipItemTrackedEntityInstance>() {
+    private const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
 
-internal interface EventNetworkHandler {
-    suspend fun postEvents(events: List<Event>, strategy: String): EventWebResponse
-    suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
-    suspend fun getEventQueryForOrgunit(
-        query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?,
-    ): Payload<Event>
-
-    suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
-    suspend fun getEvent(
-        eventUid: String,
-        orgUnitMode: String,
-    ): Event
+    val trackedEntityInstance = fh.field(TRACKED_ENTITY_INSTANCE)
 }

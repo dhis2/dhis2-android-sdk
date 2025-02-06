@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.event
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.internal.EventFields
 import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -52,7 +51,7 @@ internal class EventNetworkHandlerImpl(
     private val service = EventService(httpClient)
 
     override suspend fun postEvents(events: List<Event>, strategy: String): EventWebResponse {
-        val payload = EventPayload(events = events.map { it.toDto() })
+        val payload = EventPayload(items = events.map { it.toDto() })
         val response = service.postEvents(payload, strategy)
         return response.toDomain()
     }
@@ -111,5 +110,16 @@ internal class EventNetworkHandlerImpl(
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         )
         return payload.mapItems { it.toDomain() }
+    }
+
+    override suspend fun getEvent(
+        eventUid: String,
+        orgUnitMode: String,
+    ): Event {
+        return service.getEvent(
+            eventUid = eventUid,
+            fields = EventFields.allFields,
+            orgUnitMode = orgUnitMode,
+        ).toDomain()
     }
 }

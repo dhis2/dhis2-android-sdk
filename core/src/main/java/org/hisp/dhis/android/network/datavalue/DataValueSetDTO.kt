@@ -41,7 +41,7 @@ internal data class DataValueSetDTO(
 
     companion object {
         fun fromDomain(dataValueSet: DataValueSet): DataValueSetDTO {
-            return DataValueSetDTO(dataValueSet.dataValues.map { DataValueDTO.fromDomain(it) })
+            return DataValueSetDTO(dataValueSet.dataValues.map { it.toDto() })
         }
     }
 }

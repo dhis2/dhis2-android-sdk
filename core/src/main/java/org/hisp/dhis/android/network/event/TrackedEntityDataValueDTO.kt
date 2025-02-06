@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.network.event
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
 
 @Serializable
 internal data class TrackedEntityDataValueDTO(
@@ -44,8 +45,8 @@ internal data class TrackedEntityDataValueDTO(
     fun toDomain(event: String): TrackedEntityDataValue {
         return TrackedEntityDataValue.builder()
             .event(event)
-            .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
-            .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
+            .created(created.toJavaDate())
+            .lastUpdated(lastUpdated.toJavaDate())
             .dataElement(dataElement)
             .storedBy(storedBy)
             .value(value)
@@ -56,8 +57,8 @@ internal data class TrackedEntityDataValueDTO(
 
 internal fun TrackedEntityDataValue.toDto(): TrackedEntityDataValueDTO {
     return TrackedEntityDataValueDTO(
-        created = this.created(),
-        lastUpdated = this.lastUpdated(),
+        created = this.created().dateFormat(),
+        lastUpdated = this.lastUpdated().dateFormat(),
         dataElement = this.dataElement(),
         storedBy = this.storedBy(),
         value = this.value(),

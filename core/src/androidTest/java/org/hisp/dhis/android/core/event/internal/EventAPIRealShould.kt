@@ -32,12 +32,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.network.event.EventService
 import org.junit.Assert
 import org.junit.Before
 import java.util.*
@@ -50,13 +51,13 @@ abstract class EventAPIRealShould internal constructor(
 ) : BaseRealIntegrationTest() {
     private val ouMode = OrganisationUnitMode.ACCESSIBLE.name
     private lateinit var apiCallExecutor: CoroutineAPICallExecutor
-    private lateinit var eventService: EventService
+    private lateinit var eventNetworkHandler: EventNetworkHandler
 
     @Before
     override fun setUp() {
         super.setUp()
         apiCallExecutor = d2.coroutineAPICallExecutor()
-        eventService = EventService(d2.httpServiceClient())
+        eventNetworkHandler = DhisAndroidSdkKoinContext.koin.get()
     }
 
     // @Test
@@ -65,10 +66,9 @@ abstract class EventAPIRealShould internal constructor(
         login()
         val validEvent1 = EventUtils.createValidEvent()
         val validEvent2 = EventUtils.createValidEvent()
-        val payload = EventPayload()
-        payload.events = listOf(validEvent1, validEvent2)
+        val events = listOf(validEvent1, validEvent2)
 
-        val response = postPayload(payload).getOrThrow()
+        val response = postPayload(events).getOrThrow()
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
 
@@ -82,11 +82,11 @@ abstract class EventAPIRealShould internal constructor(
 
         // Check server status
         val serverValidEvent1 = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent1.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent1.uid(), ouMode)
         }.getOrThrow()
 
         val serverValidEvent2 = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent2.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent2.uid(), ouMode)
         }.getOrThrow()
 
         assertThat(serverValidEvent1).isNotNull()
@@ -99,10 +99,9 @@ abstract class EventAPIRealShould internal constructor(
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidOrgunit()
-        val payload = EventPayload()
-        payload.events = listOf(validEvent, invalidEvent)
+        val events = listOf(validEvent, invalidEvent)
 
-        val response = postPayload(payload).getOrThrow()
+        val response = postPayload(events).getOrThrow()
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -116,18 +115,14 @@ abstract class EventAPIRealShould internal constructor(
 
         // Check server status
         val serverValidEvent = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent.uid(), ouMode)
         }.getOrThrow()
 
         assertThat(serverValidEvent).isNotNull()
 
         try {
             apiCallExecutor.wrap {
-                eventService.getEvent(
-                    invalidEvent.uid(),
-                    EventFields.allFields,
-                    ouMode,
-                )
+                eventNetworkHandler.getEvent(invalidEvent.uid(), ouMode)
             }.getOrThrow()
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
@@ -141,10 +136,9 @@ abstract class EventAPIRealShould internal constructor(
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidAttributeOptionCombo()
-        val payload = EventPayload()
-        payload.events = listOf(validEvent, invalidEvent)
+        val events = listOf(validEvent, invalidEvent)
 
-        val response = postPayload(payload).getOrThrow()
+        val response = postPayload(events).getOrThrow()
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -158,18 +152,14 @@ abstract class EventAPIRealShould internal constructor(
 
         // Check server status
         val serverValidEvent = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent.uid(), ouMode)
         }.getOrThrow()
 
         assertThat(serverValidEvent).isNotNull()
 
         try {
             apiCallExecutor.wrap {
-                eventService.getEvent(
-                    invalidEvent.uid(),
-                    EventFields.allFields,
-                    ouMode,
-                )
+                eventNetworkHandler.getEvent(invalidEvent.uid(), ouMode)
             }.getOrThrow()
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
@@ -183,10 +173,9 @@ abstract class EventAPIRealShould internal constructor(
         login()
         val validEvent1 = EventUtils.createValidEvent()
         val validEvent2 = EventUtils.createEventWithFutureDate()
-        val payload = EventPayload()
-        payload.events = listOf(validEvent1, validEvent2)
+        val events = listOf(validEvent1, validEvent2)
 
-        val response = postPayload(payload).getOrThrow()
+        val response = postPayload(events).getOrThrow()
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
 
@@ -200,11 +189,11 @@ abstract class EventAPIRealShould internal constructor(
 
         // Check server status
         val serverValidEvent1 = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent1.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent1.uid(), ouMode)
         }.getOrThrow()
 
         val serverValidEvent2 = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent2.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent2.uid(), ouMode)
         }.getOrThrow()
 
         assertThat(serverValidEvent1).isNotNull()
@@ -217,10 +206,9 @@ abstract class EventAPIRealShould internal constructor(
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidProgram()
-        val payload = EventPayload()
-        payload.events = listOf(validEvent, invalidEvent)
+        val events = listOf(validEvent, invalidEvent)
 
-        val response = postPayload(payload).getOrThrow()
+        val response = postPayload(events).getOrThrow()
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -234,18 +222,14 @@ abstract class EventAPIRealShould internal constructor(
 
         // Check server status
         val serverValidEvent = apiCallExecutor.wrap {
-            eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode)
+            eventNetworkHandler.getEvent(validEvent.uid(), ouMode)
         }.getOrThrow()
 
         assertThat(serverValidEvent).isNotNull()
 
         try {
             apiCallExecutor.wrap {
-                eventService.getEvent(
-                    invalidEvent.uid(),
-                    EventFields.allFields,
-                    ouMode,
-                )
+                eventNetworkHandler.getEvent(invalidEvent.uid(), ouMode)
             }.getOrThrow()
             Assert.fail("Should not reach that line")
         } catch (e: D2Error) {
@@ -259,10 +243,9 @@ abstract class EventAPIRealShould internal constructor(
         login()
         val validEvent = EventUtils.createValidEvent()
         val invalidEvent = EventUtils.createEventWithInvalidDataValues()
-        val payload = EventPayload()
-        payload.events = listOf(validEvent, invalidEvent)
+        val events = listOf(validEvent, invalidEvent)
 
-        val response = postPayload(payload).getOrThrow()
+        val response = postPayload(events).getOrThrow()
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.WARNING)
 
@@ -276,19 +259,11 @@ abstract class EventAPIRealShould internal constructor(
 
         // Check server status
         val serverValidEvent = apiCallExecutor.wrap {
-            eventService.getEvent(
-                validEvent.uid(),
-                EventFields.allFields,
-                ouMode,
-            )
+            eventNetworkHandler.getEvent(validEvent.uid(), ouMode)
         }.getOrThrow()
 
         val serverInvalidEvent = apiCallExecutor.wrap {
-            eventService.getEvent(
-                invalidEvent.uid(),
-                EventFields.allFields,
-                ouMode,
-            )
+            eventNetworkHandler.getEvent(invalidEvent.uid(), ouMode)
         }.getOrThrow()
 
         assertThat(serverValidEvent).isNotNull()
@@ -297,13 +272,13 @@ abstract class EventAPIRealShould internal constructor(
         assertThat(serverInvalidEvent.trackedEntityDataValues()).isNull()
     }
 
-    private suspend fun postPayload(payload: EventPayload): Result<EventWebResponse, D2Error> {
+    private suspend fun postPayload(events: List<Event>): Result<EventWebResponse, D2Error> {
         return apiCallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(409),
             errorClass = EventWebResponse::class.java,
         ) {
-            eventService.postEvents(payload, strategy)
+            eventNetworkHandler.postEvents(events, strategy)
         }
     }
 

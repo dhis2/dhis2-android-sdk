@@ -50,6 +50,6 @@ internal data class GeometryDTO(
 internal fun Geometry.toDto(): GeometryDTO {
     return GeometryDTO(
         type = this.type()?.geometryType,
-        coordinates = this.coordinates()?.let { parseToJsonElement(it) }
+        coordinates = this.coordinates()?.let { parseToJsonElement(it) },
     )
 }

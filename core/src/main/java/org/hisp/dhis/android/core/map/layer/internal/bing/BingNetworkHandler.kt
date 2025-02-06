@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,17 +28,8 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.map.layer.MapLayer
 
-@Singleton
-internal class BingService(private val client: HttpServiceClient) {
-
-    suspend fun getBaseMap(
-        url: String,
-    ): BingServerResponse {
-        return client.get {
-            absoluteUrl(url)
-        }
-    }
+internal fun interface BingNetworkHandler {
+    suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer>
 }

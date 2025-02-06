@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
-import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.relationship
 
-@Singleton
-internal class RelationshipService(private val client: HttpServiceClient) {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
 
-    suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse {
-        return client.delete {
-            url("$RELATIONSHIPS/$relationship")
-        }
-    }
-
-    suspend fun postRelationship(payload: RelationshipPayload): RelationshipWebResponse {
-        return client.post {
-            url(RELATIONSHIPS)
-            body(payload)
-        }
-    }
-
-    companion object {
-        private const val RELATIONSHIPS = "relationships"
+@Serializable
+internal data class RelationshipItemTrackedEntityInstanceDTO(
+    val trackedEntityInstance: String,
+) {
+    fun toDomain(): RelationshipItemTrackedEntityInstance {
+        return RelationshipItemTrackedEntityInstance.builder()
+            .trackedEntityInstance(trackedEntityInstance)
+            .build()
     }
 }

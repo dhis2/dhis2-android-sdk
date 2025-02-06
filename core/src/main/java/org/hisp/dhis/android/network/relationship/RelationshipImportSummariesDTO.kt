@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.relationship
 
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummaries
+import org.hisp.dhis.android.network.common.dto.BaseImportSummariesDTO
+import org.hisp.dhis.android.network.common.dto.applyImportSummariesFields
 
-@AutoValue
-public abstract class RelationshipDeleteSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
-
-        public abstract RelationshipDeleteSummary build();
-
+@Serializable
+internal data class RelationshipImportSummariesDTO(
+    override val status: String,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    val importSummaries: List<RelationshipImportSummaryDTO>?,
+) : BaseImportSummariesDTO {
+    fun toDomain(): RelationshipImportSummaries {
+        return RelationshipImportSummaries.builder()
+            .applyImportSummariesFields(this)
+            .importSummaries(importSummaries?.map { it.toDomain() })
+            .build()
     }
 }

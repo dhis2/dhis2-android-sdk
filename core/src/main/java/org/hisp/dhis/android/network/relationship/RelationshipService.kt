@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationship
 
-package org.hisp.dhis.android.core.imports.internal;
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-import com.google.auto.value.AutoValue;
+internal class RelationshipService(private val client: HttpServiceClientKotlinx) {
 
-@AutoValue
-public abstract class RelationshipDeleteSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteSummary.Builder();
+    suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponseDTO {
+        return client.delete {
+            url("$RELATIONSHIPS/$relationship")
+        }
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
+    suspend fun postRelationship(payload: RelationshipPayload): RelationshipWebResponseDTO {
+        return client.post {
+            url(RELATIONSHIPS)
+            body(payload)
+        }
+    }
 
-        public abstract RelationshipDeleteSummary build();
-
+    companion object {
+        private const val RELATIONSHIPS = "relationships"
     }
 }

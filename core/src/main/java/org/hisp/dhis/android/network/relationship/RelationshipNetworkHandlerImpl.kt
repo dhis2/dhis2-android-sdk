@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationship
 
-package org.hisp.dhis.android.core.imports.internal;
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
+import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.internal.RelationshipNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-import com.google.auto.value.AutoValue;
+@Singleton
+internal class RelationshipNetworkHandlerImpl(
+    client: HttpServiceClientKotlinx,
+) : RelationshipNetworkHandler {
+    private val service = RelationshipService(client)
 
-@AutoValue
-public abstract class RelationshipDeleteSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteSummary.Builder();
+    override suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse {
+        return service.deleteRelationship(relationship).toDomain()
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
-
-        public abstract RelationshipDeleteSummary build();
-
+    override suspend fun postRelationship(relationships: List<Relationship>): RelationshipWebResponse {
+        val payload = RelationshipPayload(relationships = relationships.map { RelationshipDTO.fromDomain(it) })
+        return service.postRelationship(payload).toDomain()
     }
 }

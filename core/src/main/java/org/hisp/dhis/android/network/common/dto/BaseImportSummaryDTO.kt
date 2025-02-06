@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.common.dto
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummary
 
-@AutoValue
-public abstract class RelationshipDeleteSummary extends BaseImportSummary {
+internal interface BaseImportSummaryDTO {
+    val importCount: ImportCountDTO
+    val status: String
+    val responseType: String
+    val reference: String?
+    val conflicts: List<ImportConflictDTO>?
+    val description: String?
+}
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
-
-        public abstract RelationshipDeleteSummary build();
-
-    }
+internal fun <T> T.applyImportSummaryFields(item: BaseImportSummaryDTO): T where
+      T : BaseImportSummary.Builder<T> {
+    importCount(item.importCount.toDomain())
+    status(ImportStatus.valueOf(item.status))
+    responseType(item.responseType)
+    reference(item.reference)
+    conflicts(item.conflicts?.map { it.toDomain() })
+    description(item.description)
+    return this
 }

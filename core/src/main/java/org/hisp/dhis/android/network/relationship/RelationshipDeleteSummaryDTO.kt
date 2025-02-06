@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.network.relationship
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteSummary
+import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
+import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
+import org.hisp.dhis.android.network.common.dto.ImportCountDTO
+import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
 
-import org.hisp.dhis.android.core.relationship.Relationship;
-
-import java.util.List;
-
-@AutoValue
-public abstract class RelationshipPayload {
-
-    @JsonProperty()
-    public abstract List<Relationship> relationships();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipPayload.Builder();
+@Serializable
+internal data class RelationshipDeleteSummaryDTO(
+    override val importCount: ImportCountDTO,
+    override val status: String,
+    override val responseType: String,
+    override val reference: String?,
+    override val conflicts: List<ImportConflictDTO>?,
+    override val description: String?,
+) : BaseImportSummaryDTO {
+    fun toDomain(): RelationshipDeleteSummary {
+        return RelationshipDeleteSummary.builder()
+            .applyImportSummaryFields(this)
+            .build()
     }
-
-    public static RelationshipPayload create(List<Relationship> relationships) {
-        return builder().relationships(relationships).build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder relationships(List<Relationship> relationships);
-
-        public abstract RelationshipPayload build();
-    }
-
 }

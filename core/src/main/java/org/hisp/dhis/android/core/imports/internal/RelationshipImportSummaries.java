@@ -30,26 +30,24 @@ package org.hisp.dhis.android.core.imports.internal;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipImportSummaries.Builder.class)
 public abstract class RelationshipImportSummaries
         extends BaseImportSummaries
         implements ImportSummaries<RelationshipImportSummary> {
 
     @Override
     @Nullable
-    @JsonProperty()
     public abstract List<RelationshipImportSummary> importSummaries();
 
+    public static Builder builder() {
+        return new AutoValue_RelationshipImportSummaries.Builder();
+    }
+
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummaries.Builder<RelationshipImportSummaries.Builder> {
 
         public abstract Builder importSummaries(List<RelationshipImportSummary> importSummaries);

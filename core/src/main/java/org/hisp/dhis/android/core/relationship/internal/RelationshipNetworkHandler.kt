@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
+import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
+import org.hisp.dhis.android.core.relationship.Relationship
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class RelationshipDeleteSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
-
-        public abstract RelationshipDeleteSummary build();
-
-    }
+internal interface RelationshipNetworkHandler {
+    suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse
+    suspend fun postRelationship(relationships: List<Relationship>): RelationshipWebResponse
 }

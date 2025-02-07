@@ -97,7 +97,6 @@ internal object SettingsAppHelper {
                 filter.value.toBuilder()
                     .scope(DataSetFilter::class.simpleName)
                     .filterType(filter.key.name)
-                    .uid(entry.key)
                     .build()
             }
         }
@@ -118,7 +117,6 @@ internal object SettingsAppHelper {
                 filter.value.toBuilder()
                     .scope(ProgramFilter::class.simpleName)
                     .filterType(filter.key.name)
-                    .uid(entry.key)
                     .build()
             }
         }
@@ -136,9 +134,7 @@ internal object SettingsAppHelper {
             }
             list.addAll(
                 settings.specificSettings()?.map { entry ->
-                    entry.value.toBuilder()
-                        .uid(entry.key)
-                        .build()
+                    entry.value
                 } ?: emptyList(),
             )
         }
@@ -155,9 +151,7 @@ internal object SettingsAppHelper {
             }
             list.addAll(
                 settings.specificSettings()?.map { entry ->
-                    entry.value.toBuilder()
-                        .uid(entry.key)
-                        .build()
+                    entry.value
                 } ?: emptyList(),
             )
         }

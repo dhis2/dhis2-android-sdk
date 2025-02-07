@@ -28,20 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset
 
-enum class SectionPivotMode(internal val apiValue: String) {
-    DEFAULT("n/a"),
-    PIVOT("pivot"),
-    MOVE_CATEGORIES("move_categories"),
+enum class SectionPivotMode {
+    DEFAULT,
+    PIVOT,
+    MOVE_CATEGORIES,
     ;
 
-    companion object {
-        internal fun from(apiValue: String): SectionPivotMode {
-            return when (apiValue) {
-                "n/a" -> DEFAULT
-                "pivot" -> PIVOT
-                "move_categories" -> MOVE_CATEGORIES
-                else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $apiValue")
-            }
-        }
-    }
+    @Suppress("EmptyClassBlock")
+    companion object {}
 }

@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,7 +44,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsTeiSetting.Builder.class)
 public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidInterface {
 
     public abstract String uid();
@@ -87,7 +83,6 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
@@ -107,7 +102,6 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
 
         public abstract Builder data(AnalyticsTeiData data);
 
-        @JsonProperty("WHONutrition")
         public abstract Builder whoNutritionData(AnalyticsTeiWHONutritionData whoNutritionData);
 
         public abstract AnalyticsTeiSetting build();

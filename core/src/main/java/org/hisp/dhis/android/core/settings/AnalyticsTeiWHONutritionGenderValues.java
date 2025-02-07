@@ -28,12 +28,9 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsTeiWHONutritionGenderValues.Builder.class)
 public abstract class AnalyticsTeiWHONutritionGenderValues {
 
     public abstract String female();
@@ -47,7 +44,6 @@ public abstract class AnalyticsTeiWHONutritionGenderValues {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder female(String female);
 

@@ -48,3 +48,12 @@ internal data class DisplayOptionsDTO(
             .build()
     }
 }
+
+internal fun SectionPivotMode.Companion.from(key: String): SectionPivotMode {
+    return when (key) {
+        "n/a" -> SectionPivotMode.DEFAULT
+        "pivot" -> SectionPivotMode.PIVOT
+        "move_categories" -> SectionPivotMode.MOVE_CATEGORIES
+        else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $key")
+    }
+}

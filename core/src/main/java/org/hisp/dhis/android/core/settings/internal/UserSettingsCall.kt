@@ -35,13 +35,11 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class UserSettingsCall internal constructor(
     private val handler: UserSettingsHandler,
-    private val service: SettingService,
+    private val networkHandler: UserSettingsNetworkHandler,
     private val apiDownloader: APIDownloader,
 ) : ObjectCall<UserSettings> {
 
     override suspend fun download(): UserSettings {
-        return apiDownloader.downloadObjectAsCoroutine(handler) {
-            service.getUserSettings(UserSettingsFields.allFields)
-        }
+        return apiDownloader.downloadObjectAsCoroutine(handler, networkHandler::getUserSettings)
     }
 }

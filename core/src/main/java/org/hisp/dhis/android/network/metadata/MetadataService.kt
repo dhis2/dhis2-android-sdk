@@ -32,6 +32,7 @@ import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 internal class MetadataService(private val client: HttpServiceClientKotlinx) {
 
+    @Suppress("LongParameterList")
     suspend fun getMetadataFields(
         dataElementField: String?,
         categoryOptionComboField: String?,

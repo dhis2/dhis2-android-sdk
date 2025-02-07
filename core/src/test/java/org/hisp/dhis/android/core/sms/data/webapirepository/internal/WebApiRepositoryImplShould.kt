@@ -92,7 +92,7 @@ class WebApiRepositoryImplShould {
     @Test
     fun `Exclude users if version greater or equal to 2_35`() = runTest {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn true
-        whenever(metadataService.getMetadataFields(any(), any(), any(), any(), any(), any(), any()))
+        whenever(metadataService.getMetadataFields(any(), any(), any(), anyOrNull(), any(), any(), any()))
             .thenReturn(metadataIdsDTO)
 
         testWebRepository.getMetadataIds(defaultMetadataConfig)

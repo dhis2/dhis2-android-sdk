@@ -39,7 +39,7 @@ internal data class RelationshipDeleteWebResponseDTO(
     override val httpStatusCode: Int,
     override val status: String,
     override val message: String,
-    val response: RelationshipDeleteSummaryDTO,
+    val response: RelationshipImportSummaryDTO,
 ) : WebResponseDTO {
     fun toDomain(): RelationshipDeleteWebResponse {
         return RelationshipDeleteWebResponse.builder()

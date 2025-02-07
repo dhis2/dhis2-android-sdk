@@ -43,7 +43,7 @@ public abstract class RelationshipDeleteWebResponse extends WebResponse {
 
     @Nullable
     @JsonProperty(RESPONSE)
-    public abstract RelationshipDeleteSummary response();
+    public abstract RelationshipImportSummary response();
 
     public static Builder builder() {
         return new AutoValue_RelationshipDeleteWebResponse.Builder();
@@ -61,7 +61,7 @@ public abstract class RelationshipDeleteWebResponse extends WebResponse {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(RelationshipDeleteSummary response);
+        public abstract Builder response(RelationshipImportSummary response);
 
         public abstract RelationshipDeleteWebResponse build();
     }

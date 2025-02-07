@@ -7760,27 +7760,17 @@ public abstract interface class org/hisp/dhis/android/core/imports/internal/Impo
 	public abstract fun trackerImportConflicts ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflictCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipDeleteSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteSummary$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipDeleteSummary$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteSummary;
-}
-
 public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder;
 	public static fun empty ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse;
-	public abstract fun response ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteSummary;
+	public abstract fun response ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummary;
 }
 
 public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse;
-	public abstract fun response (Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteSummary;)Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder;
+	public abstract fun response (Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummary;)Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {

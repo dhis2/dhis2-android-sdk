@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.network.systeminfo
+
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class SystemInfoService(private val client: HttpServiceClient) {
-    suspend fun getSystemInfo(fields: Fields<SystemInfo>): SystemInfo {
-        return client.get {
-            url("system/info")
-            parameters {
-                fields(fields)
-            }
-        }
-    }
+@Serializable
+internal data class SystemInfoDTO(
+    val serverDate: String?,
+    val dateFormat: String?,
+    val version: String?,
+    val contextPath: String?,
+    val systemName: String?,
+) {
+    fun toDomain(): SystemInfo =
+        SystemInfo.builder().apply {
+            serverDate?.let { serverDate(DateUtils.DATE_FORMAT.parse(serverDate)) }
+            dateFormat(dateFormat)
+            version(version)
+            contextPath(contextPath)
+            systemName(systemName)
+        }.build()
 }

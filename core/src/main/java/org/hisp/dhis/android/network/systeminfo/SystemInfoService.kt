@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo
+package org.hisp.dhis.android.network.systeminfo
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
-import org.junit.Test
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.fields.Fields
 
-class SystemInfoShould : BaseObjectKotlinxShould("systeminfo/system_info.json"), ObjectShould {
-
-    @Test
-    override fun map_from_json_string() {
-        val systemInfoDTO = deserialize(SystemInfoDTO.serializer())
-        val systemInfo = systemInfoDTO.toDomain()
-
-        assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
-        assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
-        assertThat(systemInfo.version()).isEqualTo("2.41.0")
-        assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
-        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
+internal class SystemInfoService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getSystemInfo(fields: Fields<SystemInfo>): SystemInfoDTO {
+        return client.get {
+            url("system/info")
+            parameters {
+                fields(fields)
+            }
+        }
     }
 }

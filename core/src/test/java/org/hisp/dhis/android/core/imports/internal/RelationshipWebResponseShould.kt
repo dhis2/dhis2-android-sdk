@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.network.relationship.RelationshipWebResponseDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+@RunWith(JUnit4::class)
+class RelationshipWebResponseShould : BaseObjectKotlinxShould("imports/relationship_web_response.json") {
+    @Test
+    fun map_from_json_string() {
+        val webResponse = deserialize(RelationshipWebResponseDTO.serializer()).toDomain()
 
-import org.hisp.dhis.android.core.relationship.Relationship;
-
-import java.util.List;
-
-@AutoValue
-public abstract class RelationshipPayload {
-
-    @JsonProperty()
-    public abstract List<Relationship> relationships();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipPayload.Builder();
+        assertThat(webResponse.message()).isEqualTo("Import was successful.")
+        assertThat(webResponse.response()).isNotNull()
     }
 
-    public static RelationshipPayload create(List<Relationship> relationships) {
-        return builder().relationships(relationships).build();
+    @Test
+    fun map_from_json_string_with_errors() {
+        val webResponse = deserializePath(
+            "imports/relationship_web_response_with_errors.json",
+            RelationshipWebResponseDTO.serializer(),
+        ).toDomain()
+
+        assertThat(webResponse.message()).isEqualTo("An error occurred, please check import summary.")
+        assertThat(webResponse.response()).isNotNull()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder relationships(List<Relationship> relationships);
-
-        public abstract RelationshipPayload build();
-    }
-
 }

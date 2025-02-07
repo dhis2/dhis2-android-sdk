@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationship
 
-package org.hisp.dhis.android.core.imports.internal;
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-import androidx.annotation.Nullable;
+internal class RelationshipService(private val client: HttpServiceClientKotlinx) {
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipDeleteWebResponse.Builder.class)
-public abstract class RelationshipDeleteWebResponse extends WebResponse {
-
-    private static final String RESPONSE = "response";
-
-    @Nullable
-    @JsonProperty(RESPONSE)
-    public abstract RelationshipImportSummary response();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteWebResponse.Builder();
+    suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponseDTO {
+        return client.delete {
+            url("$RELATIONSHIPS/$relationship")
+        }
     }
 
-    public static RelationshipDeleteWebResponse empty() {
-        return builder()
-                .httpStatus("SUCCESS")
-                .httpStatusCode(200)
-                .message("Emtpy response")
-                .status("OK")
-                .build();
+    suspend fun postRelationship(payload: RelationshipPayload): RelationshipWebResponseDTO {
+        return client.post {
+            url(RELATIONSHIPS)
+            body(payload)
+        }
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(RelationshipImportSummary response);
-
-        public abstract RelationshipDeleteWebResponse build();
+    companion object {
+        private const val RELATIONSHIPS = "relationships"
     }
 }

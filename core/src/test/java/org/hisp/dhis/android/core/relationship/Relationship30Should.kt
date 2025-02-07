@@ -25,31 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.relationship.RelationshipDTO
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-@RunWith(JUnit4.class)
-public class RelationshipDeleteWebResponseShould {
-
+class Relationship30Should : BaseObjectKotlinxShould("relationship/relationship_30.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    override fun map_from_json_string() {
+        val relationshipDTO = deserialize(RelationshipDTO.serializer())
+        val relationship = relationshipDTO.toDomain()
 
-        String responseStr = new ResourcesFileReader().getStringFromFile("imports/relationship_delete_web_response.json");
-        RelationshipDeleteWebResponse webResponse = objectMapper.readValue(responseStr,
-                RelationshipDeleteWebResponse.class);
+        assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp")
+        assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G")
+        assertThat(relationship.name()).isEqualTo("Mother-Child")
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.");
-        assertThat(webResponse.response()).isNotNull();
+        assertThat(relationship.from()).isNotNull()
+        assertThat(relationship.from()!!.trackedEntityInstance()).isNotNull()
+        assertThat(relationship.from()!!.trackedEntityInstance()!!.trackedEntityInstance()).isEqualTo("o51cUNONthg")
+
+        assertThat(relationship.to()).isNotNull()
+        assertThat(relationship.to()!!.enrollment()).isNotNull()
+        assertThat(relationship.to()!!.enrollment()!!.enrollment()).isEqualTo("lxAQ7Zs9VYR")
     }
 }

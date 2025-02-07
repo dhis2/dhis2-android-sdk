@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.common.dto
 
-import static com.google.common.truth.Truth.assertThat;
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummary
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+internal interface BaseImportSummaryDTO {
+    val importCount: ImportCountDTO
+    val status: String
+    val responseType: String
+    val reference: String?
+    val conflicts: List<ImportConflictDTO>?
+    val description: String?
+}
 
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-@RunWith(JUnit4.class)
-public class RelationshipWebResponseShould {
-
-    @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String responseStr = new ResourcesFileReader().getStringFromFile("imports/relationship_web_response.json");
-        RelationshipWebResponse webResponse = objectMapper.readValue(responseStr, RelationshipWebResponse.class);
-
-        assertThat(webResponse.message()).isEqualTo("Import was successful.");
-        assertThat(webResponse.response()).isNotNull();
-    }
-
-    @Test
-    public void map_from_json_string_with_errors() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String webResponseStr = new ResourcesFileReader().getStringFromFile(
-                "imports/relationship_web_response_with_errors.json");
-        objectMapper.readValue(webResponseStr, RelationshipWebResponse.class);
-    }
+internal fun <T> T.applyImportSummaryFields(item: BaseImportSummaryDTO): T where
+      T : BaseImportSummary.Builder<T> {
+    importCount(item.importCount.toDomain())
+    status(ImportStatus.valueOf(item.status))
+    responseType(item.responseType)
+    reference(item.reference)
+    conflicts(item.conflicts?.map { it.toDomain() })
+    description(item.description)
+    return this
 }

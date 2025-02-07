@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaries
 
-import java.io.IOException;
-import java.text.ParseException;
+internal interface BaseImportSummariesDTO {
+    val status: String
+    val responseType: String
+    val imported: Int
+    val updated: Int
+    val deleted: Int
+    val ignored: Int
+}
 
-import static com.google.common.truth.Truth.assertThat;
-
-public class Relationship30Should extends BaseObjectShould implements ObjectShould {
-
-    public Relationship30Should() {
-        super("relationship/relationship_30.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Relationship relationship = deserialize(Relationship.class);
-
-        assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp");
-        assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");
-        assertThat(relationship.name()).isEqualTo("Mother-Child");
-
-        assertThat(relationship.from()).isNotNull();
-        assertThat(relationship.from().trackedEntityInstance()).isNotNull();
-        assertThat(relationship.from().trackedEntityInstance().trackedEntityInstance()).isEqualTo("o51cUNONthg");
-
-        assertThat(relationship.to()).isNotNull();
-        assertThat(relationship.to().enrollment()).isNotNull();
-        assertThat(relationship.to().enrollment().enrollment()).isEqualTo("lxAQ7Zs9VYR");
-    }
+internal fun <T> T.applyImportSummariesFields(item: BaseImportSummariesDTO): T where
+      T : BaseImportSummaries.Builder<T> {
+    status(ImportStatus.valueOf(item.status))
+    responseType(item.responseType)
+    imported(item.imported)
+    updated(item.updated)
+    deleted(item.deleted)
+    ignored(item.ignored)
+    return this
 }

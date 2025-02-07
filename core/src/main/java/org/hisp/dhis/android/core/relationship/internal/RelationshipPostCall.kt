@@ -40,11 +40,13 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
 import org.koin.core.annotation.Singleton
-import java.net.HttpURLConnection.*
+import java.net.HttpURLConnection.HTTP_CONFLICT
+import java.net.HttpURLConnection.HTTP_NOT_FOUND
+import java.net.HttpURLConnection.HTTP_OK
 
 @Singleton
 internal class RelationshipPostCall internal constructor(
-    private val relationshipService: RelationshipService,
+    private val relationshipNetworkHandler: RelationshipNetworkHandler,
     private val relationshipStore: RelationshipStore,
     private val relationshipImportHandler: RelationshipImportHandler,
     private val dataStatePropagator: DataStatePropagator,
@@ -60,7 +62,7 @@ internal class RelationshipPostCall internal constructor(
                 acceptedErrorCodes = listOf(HTTP_NOT_FOUND),
                 errorClass = RelationshipDeleteWebResponse::class.java,
             ) {
-                relationshipService.deleteRelationship(relationship.uid()!!)
+                relationshipNetworkHandler.deleteRelationship(relationship.uid()!!)
             }
 
             response.fold(
@@ -93,7 +95,6 @@ internal class RelationshipPostCall internal constructor(
             emit(progressManager.increaseProgress(Relationship::class.java, false))
         } else {
             try {
-                val payload = RelationshipPayload.builder().relationships(relationships).build()
                 trackerStateManager.setPayloadStates(
                     relationships = relationships,
                     forcedState = State.UPLOADING,
@@ -103,7 +104,7 @@ internal class RelationshipPostCall internal constructor(
                     acceptedErrorCodes = listOf(HTTP_CONFLICT),
                     errorClass = RelationshipWebResponse::class.java,
                 ) {
-                    relationshipService.postRelationship(payload)
+                    relationshipNetworkHandler.postRelationship(relationships)
                 }.getOrThrow()
 
                 relationshipImportHandler.handleRelationshipImportSummaries(

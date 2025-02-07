@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.network.relationship.RelationshipDeleteWebResponseDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+@RunWith(JUnit4::class)
+class RelationshipDeleteWebResponseShould : BaseObjectKotlinxShould("imports/relationship_delete_web_response.json") {
+    @Test
+    fun map_from_json_string() {
+        val webResponse = deserialize(RelationshipDeleteWebResponseDTO.serializer()).toDomain()
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipDeleteSummary.Builder.class)
-public abstract class RelationshipDeleteSummary extends BaseImportSummary {
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseImportSummary.Builder<Builder> {
-
-        public abstract RelationshipDeleteSummary build();
-
+        assertThat(webResponse.message()).isEqualTo("Import was successful.")
+        assertThat(webResponse.response()).isNotNull()
     }
 }

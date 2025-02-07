@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.ktor.client.statement.HttpResponse
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class PingService(
-    private val client: HttpServiceClient,
-    private val dhisVersionManager: DHISVersionManager,
-) {
-    suspend fun getPing(): HttpResponse {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
-            client.get {
-                url("ping")
-                excludeCredentials()
-            }
-        } else {
-            client.get {
-                url("system/ping")
-            }
-        }
-    }
+internal fun interface PingNetworkHandler {
+    suspend fun getPing(): HttpResponse
 }

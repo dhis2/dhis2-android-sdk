@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+package org.hisp.dhis.android.network.ping
+
+import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class PingCall internal constructor(
-    private val pingNetworkHandler: PingNetworkHandler,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : DownloadProvider {
-
-    override suspend fun download(storeError: Boolean) {
-        coroutineAPICallExecutor.wrap(storeError = storeError) {
-            pingNetworkHandler.getPing()
-        }
+internal class PingNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+    dhisVersionManager: DHISVersionManager,
+) : PingNetworkHandler {
+    private val service = PingService(httpServiceClient, dhisVersionManager)
+    override suspend fun getPing(): HttpResponse {
+        return service.getPing()
     }
 }

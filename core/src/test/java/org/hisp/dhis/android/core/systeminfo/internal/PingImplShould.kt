@@ -37,11 +37,12 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.ping.PingNetworkHandlerImpl
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
@@ -63,10 +64,10 @@ class PingImplShould {
         val expectedResponse = ""
         val mockEngine = MockEngine { respond(content = "") }
         val client = HttpClient(mockEngine)
-        val httpServiceClient = HttpServiceClient(client)
-        val pingService = PingService(httpServiceClient, dhisVersionManager)
+        val httpServiceClient = HttpServiceClientKotlinx(mock(), mock(), client)
+        val pingNetworkHandler = PingNetworkHandlerImpl(httpServiceClient, dhisVersionManager)
 
-        val response = pingService.getPing()
+        val response = pingNetworkHandler.getPing()
         val result = response.bodyAsText()
         assertThat(expectedResponse).isEqualTo(result)
     }
@@ -80,9 +81,9 @@ class PingImplShould {
             )
         }
         val client = HttpClient(mockEngine)
-        val httpServiceClient = HttpServiceClient(client)
-        val pingService = PingService(httpServiceClient, dhisVersionManager)
-        val pingImpl = PingImpl(pingService)
+        val httpServiceClient = HttpServiceClientKotlinx(mock(), mock(), client)
+        val pingNetworkHandler = PingNetworkHandlerImpl(httpServiceClient, dhisVersionManager)
+        val pingImpl = PingImpl(pingNetworkHandler)
 
         try {
             pingImpl.blockingGet()

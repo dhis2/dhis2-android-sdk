@@ -77,8 +77,8 @@ internal data class DataValueDTO(
                 attributeOptionCombo = dataValue.attributeOptionCombo()!!,
                 value = dataValue.value(),
                 storedBy = dataValue.storedBy(),
-                created = dataValue.created()?.toString(),
-                lastUpdated = dataValue.lastUpdated()?.toString(),
+                created = dataValue.created()?.let { DateUtils.DATE_FORMAT.format(it) },
+                lastUpdated = dataValue.lastUpdated()?.let { DateUtils.DATE_FORMAT.format(it) },
                 comment = dataValue.comment(),
                 followup = dataValue.followUp(),
             )

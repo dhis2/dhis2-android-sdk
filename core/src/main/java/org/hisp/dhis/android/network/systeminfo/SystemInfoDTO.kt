@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.network.systeminfo
 
-internal data class BingServerResponse(
-    val resourceSets: List<ResourceSet>,
-)
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 
-internal data class ResourceSet(
-    val estimatedTotal: Int,
-    val resources: List<Resource>,
-)
-
-internal data class Resource(
-    val imageHeight: Int,
-    val imageWidth: Int,
-    val imageUrl: String,
-    val imageUrlSubdomains: List<String>,
-    val zoomMax: Int,
-    val zoomMin: Int,
-    val imageryProviders: List<ImageryProvider>,
-)
-
-internal data class ImageryProvider(
-    val attribution: String,
-    val coverageAreas: List<CoverageArea>,
-)
-
-internal data class CoverageArea(
-    val bbox: List<Double>,
-    val zoomMax: Int,
-    val zoomMin: Int,
-)
+@Serializable
+internal data class SystemInfoDTO(
+    val serverDate: String?,
+    val dateFormat: String?,
+    val version: String?,
+    val contextPath: String?,
+    val systemName: String?,
+) {
+    fun toDomain(): SystemInfo =
+        SystemInfo.builder().apply {
+            serverDate?.let { serverDate(DateUtils.DATE_FORMAT.parse(serverDate)) }
+            dateFormat(dateFormat)
+            version(version)
+            contextPath(contextPath)
+            systemName(systemName)
+        }.build()
+}

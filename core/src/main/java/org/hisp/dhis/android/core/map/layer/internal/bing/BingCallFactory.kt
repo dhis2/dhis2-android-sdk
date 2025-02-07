@@ -34,9 +34,6 @@ import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
-import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -50,7 +47,8 @@ internal class BingCallFactory(
     private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,
     private val networkHandler: SystemSettingsNetworkHandler,
-    private val bingService: BingService,
+    private val bingNetworkHandler: BingNetworkHandler,
+
 ) {
 
     @Suppress("TooGenericExceptionCaught")
@@ -103,43 +101,10 @@ internal class BingCallFactory(
         basemap: BingBasemap,
     ): List<MapLayer> {
         val bingResponseResult = coroutineAPICallExecutor.wrap(storeError = false) {
-            bingService.getBaseMap(getUrl(basemap.style, bingkey))
+            bingNetworkHandler.getBaseMap(getUrl(basemap.style, bingkey), basemap)
         }
 
-        return bingResponseResult.map { bingResponse ->
-            bingResponse.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
-                listOf(
-                    MapLayer.builder()
-                        .uid(basemap.id)
-                        .name(basemap.name)
-                        .displayName(basemap.name)
-                        .style(basemap.style)
-                        .mapLayerPosition(MapLayerPosition.BASEMAP)
-                        .external(false)
-                        .imageUrl(resource.imageUrl)
-                        .subdomains(resource.imageUrlSubdomains)
-                        .subdomainPlaceholder("{subdomain}")
-                        .imageryProviders(
-                            resource.imageryProviders.map { i ->
-                                MapLayerImageryProvider.builder()
-                                    .mapLayer(basemap.id)
-                                    .attribution(i.attribution)
-                                    .coverageAreas(
-                                        i.coverageAreas.map { ca ->
-                                            MapLayerImageryProviderArea.builder()
-                                                .bbox(ca.bbox)
-                                                .zoomMax(ca.zoomMax)
-                                                .zoomMin(ca.zoomMin)
-                                                .build()
-                                        },
-                                    )
-                                    .build()
-                            },
-                        )
-                        .build(),
-                )
-            }
-        }.getOrNull() ?: emptyList()
+        return bingResponseResult.getOrNull() ?: emptyList<MapLayer>()
     }
 
     private fun getUrl(style: String, bingKey: String): String {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
-import org.junit.Test
+package org.hisp.dhis.android.network.bing
 
-class SystemInfoShould : BaseObjectKotlinxShould("systeminfo/system_info.json"), ObjectShould {
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-    @Test
-    override fun map_from_json_string() {
-        val systemInfoDTO = deserialize(SystemInfoDTO.serializer())
-        val systemInfo = systemInfoDTO.toDomain()
+@Singleton
+internal class BingService(private val client: HttpServiceClientKotlinx) {
 
-        assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
-        assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")
-        assertThat(systemInfo.version()).isEqualTo("2.41.0")
-        assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
-        assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
+    suspend fun getBaseMap(
+        url: String,
+    ): BingServerResponseDTO {
+        return client.get {
+            absoluteUrl(url)
+        }
     }
 }

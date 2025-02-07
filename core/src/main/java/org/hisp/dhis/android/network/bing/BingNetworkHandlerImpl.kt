@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.network.bing
 
-internal data class BingServerResponse(
-    val resourceSets: List<ResourceSet>,
-)
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemap
+import org.hisp.dhis.android.core.map.layer.internal.bing.BingNetworkHandler
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-internal data class ResourceSet(
-    val estimatedTotal: Int,
-    val resources: List<Resource>,
-)
-
-internal data class Resource(
-    val imageHeight: Int,
-    val imageWidth: Int,
-    val imageUrl: String,
-    val imageUrlSubdomains: List<String>,
-    val zoomMax: Int,
-    val zoomMin: Int,
-    val imageryProviders: List<ImageryProvider>,
-)
-
-internal data class ImageryProvider(
-    val attribution: String,
-    val coverageAreas: List<CoverageArea>,
-)
-
-internal data class CoverageArea(
-    val bbox: List<Double>,
-    val zoomMax: Int,
-    val zoomMin: Int,
-)
+@Singleton
+internal class BingNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : BingNetworkHandler {
+    private val service = BingService(httpServiceClient)
+    override suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer> {
+        val apiPayload = service.getBaseMap(url)
+        return apiPayload.toDomain(basemap)
+    }
+}

@@ -39,12 +39,12 @@ internal class SystemSettingsNetworkHandlerImpl(
     httpServiceClientKotlinx: HttpServiceClientKotlinx,
 ) : SystemSettingsNetworkHandler {
     private val service = SystemSettingsService(httpServiceClientKotlinx)
-    override suspend fun getSystemSettingsSingle(): List<SystemSetting> {
+    override suspend fun getSystemSettings(): List<SystemSetting> {
         val apiPayload = service.getSystemSettings(allFields)
         return apiPayload.toDomainSplitted()
     }
 
-    override suspend fun getSystemSettings(): SystemSetting {
+    override suspend fun getBingApiKey(): SystemSetting {
         val apiPayload = service.getSystemSettings(SystemSettingsFields.bingApiKey)
         return apiPayload.toDomainBingMapsApiKey()
     }

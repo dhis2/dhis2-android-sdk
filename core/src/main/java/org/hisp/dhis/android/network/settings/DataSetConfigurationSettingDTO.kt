@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
 
 @Serializable
 internal data class DataSetConfigurationSettingDTO(
-    val uid: String?,
     val minimumLocationAccuracy: Int?,
     val disableManualLocation: Boolean?,
 ) {
-    fun toDomain(): DataSetConfigurationSetting {
+    fun toDomain(uid: String? = null): DataSetConfigurationSetting {
         return DataSetConfigurationSetting.builder()
             .uid(uid)
             .minimumLocationAccuracy(minimumLocationAccuracy)

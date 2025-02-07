@@ -14275,6 +14275,7 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackerQueryR
 }
 
 public final class org/hisp/dhis/android/core/tracker/TrackerExporterVersion : java/lang/Enum {
+	public static final field Companion Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion$Companion;
 	public static final field V1 Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;
 	public static final field V2 Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
@@ -14282,12 +14283,19 @@ public final class org/hisp/dhis/android/core/tracker/TrackerExporterVersion : j
 	public static fun values ()[Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;
 }
 
+public final class org/hisp/dhis/android/core/tracker/TrackerExporterVersion$Companion {
+}
+
 public final class org/hisp/dhis/android/core/tracker/TrackerImporterVersion : java/lang/Enum {
+	public static final field Companion Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion$Companion;
 	public static final field V1 Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;
 	public static final field V2 Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;
 	public static fun values ()[Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;
+}
+
+public final class org/hisp/dhis/android/core/tracker/TrackerImporterVersion$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle {
@@ -15731,12 +15739,5 @@ public abstract interface class org/hisp/dhis/android/core/wipe/internal/WipeMod
 	public abstract fun wipeData ()V
 	public abstract fun wipeEverything ()V
 	public abstract fun wipeMetadata ()V
-}
-
-public final class org/hisp/dhis/android/network/settings/AnalyticsTeiDeserializers {
-	public static final field INSTANCE Lorg/hisp/dhis/android/network/settings/AnalyticsTeiDeserializers;
-	public final fun deserializeAnalyticsTeiAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
-	public final fun deserializeAnalyticsTeiDataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
-	public final fun deserializeAnalyticsTeiIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
 }
 

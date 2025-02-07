@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.settings.HomeFilter
 import org.hisp.dhis.android.core.settings.MetadataSyncPeriod
 import org.hisp.dhis.android.core.settings.ProgramFilter
 import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
 internal fun DataSyncPeriod.Companion.from(key: String): DataSyncPeriod {
     return when (key) {
@@ -63,6 +65,22 @@ internal fun SettingsAppDataStoreVersion.Companion.from(key: String): SettingsAp
         "1.1" -> SettingsAppDataStoreVersion.V1_1
         "2.0" -> SettingsAppDataStoreVersion.V2_0
         else -> throw IllegalArgumentException("Invalid version: $key")
+    }
+}
+
+internal fun TrackerExporterVersion.Companion.from(key: String): TrackerExporterVersion {
+    return when (key) {
+        "V1" -> TrackerExporterVersion.V1
+        "V2" -> TrackerExporterVersion.V2
+        else -> TrackerExporterVersion.V1
+    }
+}
+
+internal fun TrackerImporterVersion.Companion.from(key: String): TrackerImporterVersion {
+    return when (key) {
+        "V1" -> TrackerImporterVersion.V1
+        "V2" -> TrackerImporterVersion.V2
+        else -> TrackerImporterVersion.V1
     }
 }
 

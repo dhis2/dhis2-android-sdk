@@ -41,11 +41,11 @@ internal data class ProgramFiltersDTO(
     fun toDomain(): ProgramFilters {
         return ProgramFilters.builder()
             .globalSettings(globalSettings.toDomainMap())
-            .specificSettings(specificSettings.mapValues { it.value.toDomainMap() })
+            .specificSettings(specificSettings.map { (uidKey, value) -> uidKey to value.toDomainMap(uidKey) }.toMap())
             .build()
     }
 
-    private fun Map<String, FilterSettingDTO>.toDomainMap(): Map<ProgramFilter, FilterSetting> {
-        return map { (key, value) -> ProgramFilter.Companion.from(key) to value.toDomain() }.toMap()
+    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String? = null): Map<ProgramFilter, FilterSetting> {
+        return map { (key, value) -> ProgramFilter.Companion.from(key) to value.toDomain(uidKey) }.toMap()
     }
 }

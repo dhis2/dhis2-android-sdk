@@ -35,11 +35,10 @@ import org.hisp.dhis.android.core.settings.FilterSetting
 internal data class FilterSettingDTO(
     val scope: String?,
     val filterType: String?,
-    val uid: String?,
     val sort: Boolean?,
     val filter: Boolean?,
 ) {
-    fun toDomain(): FilterSetting {
+    fun toDomain(uid: String? = null): FilterSetting {
         return FilterSetting.builder()
             .scope(scope)
             .filterType(filterType)

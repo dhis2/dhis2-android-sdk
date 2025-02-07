@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 
-object AnalyticsTeiDeserializers {
+internal object AnalyticsTeiDeserializers {
 
     fun deserializeAnalyticsTeiAttribute(string: String): AnalyticsTeiAttribute {
         return AnalyticsTeiAttribute.builder().attribute(string).build()

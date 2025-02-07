@@ -38,12 +38,6 @@ internal data class SystemSettingsDTO(
     val keyDefaultBaseMap: String?,
     val keyBingMapsApiKey: String?,
 ) {
-    fun toDomain(): SystemSetting {
-        return SystemSetting.builder()
-            .key(keyFlag?.let { SystemSetting.SystemSettingKey.valueOf(it) })
-            .value(keyFlag)
-            .build()
-    }
 
     fun toDomainSplitted(): List<SystemSetting> {
         val flag = SystemSetting.builder()

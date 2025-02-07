@@ -56,7 +56,7 @@ internal data class AnalyticsTeiSettingDTO(
             .period(period?.let { PeriodType.valueOf(it) })
             .type(ChartType.valueOf(type))
             .data(data?.toDomain())
-            .whoNutritionData(whoNutritionData?.toDomain())
+            .whoNutritionData(whoNutritionData?.toDomain(uid))
             .build()
     }
 }

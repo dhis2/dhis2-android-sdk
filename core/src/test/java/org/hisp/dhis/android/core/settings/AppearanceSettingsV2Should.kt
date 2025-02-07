@@ -80,7 +80,7 @@ class AppearanceSettingsV2Should : BaseObjectKotlinxShould("settings/appearance_
 
         val specificProgramConfigurations = programConfiguration.specificSettings()
         val specificProgramConfiguration = specificProgramConfigurations!!["IpHINAT79UW"]!!
-        assertThat(specificProgramConfiguration.uid()).isNull()
+        assertThat(specificProgramConfiguration.uid()).isEqualTo("IpHINAT79UW")
         assertThat(specificProgramConfiguration.completionSpinner()).isEqualTo(true)
         assertThat(specificProgramConfiguration.optionalSearch()).isEqualTo(true)
         assertThat(specificProgramConfiguration.disableReferrals()).isEqualTo(true)
@@ -97,7 +97,7 @@ class AppearanceSettingsV2Should : BaseObjectKotlinxShould("settings/appearance_
         assertThat(dataSetConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
         val specificDataSetConfigurations = dataSetConfiguration.specificSettings()
         val specificDataSetConfiguration = specificDataSetConfigurations!!["lyLU2wR22tC"]!!
-        assertThat(specificDataSetConfiguration.uid()).isNull()
+        assertThat(specificDataSetConfiguration.uid()).isEqualTo("lyLU2wR22tC")
         assertThat(specificDataSetConfiguration.minimumLocationAccuracy()).isEqualTo(8)
         assertThat(specificDataSetConfiguration.disableManualLocation()).isEqualTo(true)
 
@@ -107,7 +107,7 @@ class AppearanceSettingsV2Should : BaseObjectKotlinxShould("settings/appearance_
 
         val specificCompletionSpinnerList = completionSpinnerSetting.specificSettings()
         val specificCompletionSpinner = specificCompletionSpinnerList!!["IpHINAT79UW"]!!
-        assertThat(specificCompletionSpinner.uid()).isNull()
+        assertThat(specificCompletionSpinner.uid()).isEqualTo("IpHINAT79UW")
         assertThat(specificCompletionSpinner.visible()).isEqualTo(true)
     }
 }

@@ -58,7 +58,7 @@ internal class BingCallFactory(
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
             try {
                 val setting = coroutineAPICallExecutor.wrap(storeError = true) {
-                    networkHandler.getSystemSettings()
+                    networkHandler.getBingApiKey()
                 }
 
                 val mapLayers = setting.getOrNull()?.value()

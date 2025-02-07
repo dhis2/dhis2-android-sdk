@@ -41,11 +41,11 @@ internal data class DataSetFiltersDTO(
     fun toDomain(): DataSetFilters {
         return DataSetFilters.builder()
             .globalSettings(globalSettings.toDomainMap())
-            .specificSettings(specificSettings.mapValues { it.value.toDomainMap() })
+            .specificSettings(specificSettings.map { (uidKey, value) -> uidKey to value.toDomainMap(uidKey) }.toMap())
             .build()
     }
 
-    private fun Map<String, FilterSettingDTO>.toDomainMap(): Map<DataSetFilter, FilterSetting> {
-        return map { (key, value) -> DataSetFilter.Companion.from(key) to value.toDomain() }.toMap()
+    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String? = null): Map<DataSetFilter, FilterSetting> {
+        return map { (key, value) -> DataSetFilter.Companion.from(key) to value.toDomain(uidKey) }.toMap()
     }
 }

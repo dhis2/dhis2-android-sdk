@@ -34,13 +34,12 @@ import org.hisp.dhis.android.core.settings.WHONutritionChartType
 
 @Serializable
 internal data class AnalyticsTeiWHONutritionDataDTO(
-    val teiSetting: String?,
     val chartType: String,
     val gender: AnalyticsTeiWHONutritionGenderDTO,
     val x: AnalyticsTeiWHONutritionItemDTO,
     val y: AnalyticsTeiWHONutritionItemDTO,
 ) {
-    fun toDomain(): AnalyticsTeiWHONutritionData {
+    fun toDomain(teiSetting: String): AnalyticsTeiWHONutritionData {
         return AnalyticsTeiWHONutritionData.builder()
             .teiSetting(teiSetting)
             .chartType(WHONutritionChartType.valueOf(chartType))

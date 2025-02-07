@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 
 @Serializable
 internal data class ProgramConfigurationSettingDTO(
-    val uid: String?,
     val completionSpinner: Boolean?,
     val optionalSearch: Boolean?,
     val disableReferrals: Boolean?,
@@ -43,7 +42,7 @@ internal data class ProgramConfigurationSettingDTO(
     val disableManualLocation: Boolean?,
     val quickActions: List<QuickActionDTO>?,
 ) {
-    fun toDomain(): ProgramConfigurationSetting {
+    fun toDomain(uid: String? = null): ProgramConfigurationSetting {
         return ProgramConfigurationSetting.builder()
             .uid(uid)
             .completionSpinner(completionSpinner)

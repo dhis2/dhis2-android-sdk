@@ -31,4 +31,8 @@ package org.hisp.dhis.android.core.tracker
 enum class TrackerImporterVersion {
     V1,
     V2,
+    ;
+
+    @Suppress("EmptyClassBlock")
+    companion object {}
 }

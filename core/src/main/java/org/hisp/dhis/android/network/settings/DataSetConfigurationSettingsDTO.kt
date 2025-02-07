@@ -39,7 +39,7 @@ internal data class DataSetConfigurationSettingsDTO(
     fun toDomain(): DataSetConfigurationSettings {
         return DataSetConfigurationSettings.builder()
             .globalSettings(globalSettings?.toDomain())
-            .specificSettings(specificSettings?.map { (key, value) -> key to value.toDomain() }?.toMap())
+            .specificSettings(specificSettings?.map { (key, value) -> key to value.toDomain(key) }?.toMap())
             .build()
     }
 }

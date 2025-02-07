@@ -39,7 +39,7 @@ internal data class ProgramConfigurationSettingsDTO(
     fun toDomain(): ProgramConfigurationSettings {
         return ProgramConfigurationSettings.builder()
             .globalSettings(globalSettings?.toDomain())
-            .specificSettings(specificSettings?.map { (key, value) -> key to value.toDomain() }?.toMap())
+            .specificSettings(specificSettings?.map { (key, value) -> key to value.toDomain(key) }?.toMap())
             .build()
     }
 }

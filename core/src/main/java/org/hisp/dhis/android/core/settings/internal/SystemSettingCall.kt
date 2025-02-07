@@ -42,7 +42,7 @@ internal class SystemSettingCall(
     override suspend fun download(): List<SystemSetting> {
         return apiDownloader.downloadListAsCoroutine(
             handler,
-            networkHandler::getSystemSettingsSingle,
+            networkHandler::getSystemSettings,
         )
     }
 }

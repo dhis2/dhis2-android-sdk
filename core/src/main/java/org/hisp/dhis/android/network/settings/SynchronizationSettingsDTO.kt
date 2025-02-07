@@ -49,14 +49,8 @@ internal data class SynchronizationSettingsDTO(
         return SynchronizationSettings.builder()
             .dataSync(dataSync?.let { DataSyncPeriod.from(it) })
             .metadataSync(metadataSync?.let { MetadataSyncPeriod.from(it) })
-            .trackerImporterVersion(
-                trackerImporterVersion?.let { TrackerImporterVersion.valueOf(it) }
-                    ?: TrackerImporterVersion.V1,
-            )
-            .trackerExporterVersion(
-                trackerExporterVersion?.let { TrackerExporterVersion.valueOf(it) }
-                    ?: TrackerExporterVersion.V1,
-            )
+            .trackerImporterVersion(trackerImporterVersion?.let { TrackerImporterVersion.Companion.from(it) })
+            .trackerExporterVersion(trackerExporterVersion?.let { TrackerExporterVersion.Companion.from(it) })
             .dataSetSettings(dataSetSettings?.toDomain())
             .programSettings(programSettings?.toDomain())
             .fileMaxLengthBytes(fileMaxLengthBytes)

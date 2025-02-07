@@ -31,6 +31,6 @@ package org.hisp.dhis.android.core.settings.internal
 import org.hisp.dhis.android.core.settings.SystemSetting
 
 internal interface SystemSettingsNetworkHandler {
-    suspend fun getSystemSettingsSingle(): List<SystemSetting>
-    suspend fun getSystemSettings(): SystemSetting
+    suspend fun getSystemSettings(): List<SystemSetting>
+    suspend fun getBingApiKey(): SystemSetting
 }

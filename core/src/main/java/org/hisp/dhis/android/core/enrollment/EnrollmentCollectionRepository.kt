@@ -43,10 +43,10 @@ import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
+import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.koin.core.annotation.Singleton
 
 @Singleton

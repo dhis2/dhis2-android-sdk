@@ -13,9 +13,12 @@
   "completedDate": "2014-08-21T12:27:50.730",
   "status": "COMPLETED",
   "deleted": false,
-  "coordinate": {
-    "latitude": 10.03,
-    "longitude": 11.11
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      11.11,
+      10.03
+    ]
   },
   "attributes": [],
   "notes": [

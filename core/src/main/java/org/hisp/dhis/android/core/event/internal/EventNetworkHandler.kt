@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,31 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note;
+package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
-import java.io.IOException;
-import java.text.ParseException;
+internal interface EventNetworkHandler {
+    suspend fun postEvents(events: List<Event>, strategy: String): EventWebResponse
+    suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
+    suspend fun getEventQueryForOrgunit(
+        query: TrackedEntityInstanceQueryOnline,
+        orgunit: String?,
+    ): Payload<Event>
 
-import static com.google.common.truth.Truth.assertThat;
-
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note/note_30.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
-
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
-    }
+    suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
+    suspend fun getEvent(
+        eventUid: String,
+        orgUnitMode: String,
+    ): Event
 }

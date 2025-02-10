@@ -25,13 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
+package org.hisp.dhis.android.network.event
 
-import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object RelationshipItemTrackedEntityInstanceFields : BaseFields<RelationshipItemTrackedEntityInstance>() {
-    private const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
-
-    val trackedEntityInstance = fh.field(TRACKED_ENTITY_INSTANCE)
+internal object TrackedEntityDataValueFields : BaseFields<TrackedEntityDataValue>() {
+    val allFields = Fields.from(
+        fh.field(Columns.DATA_ELEMENT),
+        fh.field(Columns.STORED_BY),
+        fh.field(Columns.VALUE),
+        fh.field(Columns.CREATED),
+        fh.field(Columns.LAST_UPDATED),
+        fh.field(Columns.PROVIDED_ELSEWHERE),
+    )
 }

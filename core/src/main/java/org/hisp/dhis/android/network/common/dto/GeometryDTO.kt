@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.common.dto
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json.Default.parseToJsonElement
 import kotlinx.serialization.json.JsonElement
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
@@ -44,4 +45,11 @@ internal data class GeometryDTO(
             .coordinates(coordinates.toString())
             .build()
     }
+}
+
+internal fun Geometry.toDto(): GeometryDTO {
+    return GeometryDTO(
+        type = this.type()?.geometryType,
+        coordinates = this.coordinates()?.let { parseToJsonElement(it) },
+    )
 }

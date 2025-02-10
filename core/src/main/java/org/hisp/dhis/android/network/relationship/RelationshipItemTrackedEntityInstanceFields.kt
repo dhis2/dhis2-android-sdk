@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationship
 
-package org.hisp.dhis.android.core.imports.internal;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.network.common.fields.BaseFields
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+internal object RelationshipItemTrackedEntityInstanceFields : BaseFields<RelationshipItemTrackedEntityInstance>() {
+    private const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
-    }
+    val trackedEntityInstance = fh.field(TRACKED_ENTITY_INSTANCE)
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemFields
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.event
 
-internal object RelationshipFields : BaseFields<Relationship>() {
-    const val RELATIONSHIP = "relationship"
-    const val RELATIONSHIP_NAME = "relationshipName"
-    private const val RELATIONSHIP_TYPE = "relationshipType"
-    private const val FROM = "from"
-    private const val TO = "to"
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.EventImportSummary
+import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
+import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
+import org.hisp.dhis.android.network.common.dto.ImportCountDTO
+import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
 
-    // Used only for children appending, can't be used in query
-    const val ITEMS = "items"
-
-    val allFields = Fields.from(
-        fh.field(RELATIONSHIP),
-        fh.field(RELATIONSHIP_NAME),
-        fh.field(RELATIONSHIP_TYPE),
-        fh.field(BaseIdentifiableObject.CREATED),
-        fh.field(BaseIdentifiableObject.LAST_UPDATED),
-        fh.nestedField<RelationshipItem>(FROM).with(RelationshipItemFields.allFields),
-        fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields),
-    )
+@Serializable
+internal data class EventImportSummaryDTO(
+    override val importCount: ImportCountDTO,
+    override val status: String,
+    override val responseType: String,
+    override val reference: String?,
+    override val conflicts: List<ImportConflictDTO>?,
+    override val description: String?,
+) : BaseImportSummaryDTO {
+    fun toDomain(): EventImportSummary {
+        return EventImportSummary.builder()
+            .applyImportSummaryFields(this)
+            .build()
+    }
 }

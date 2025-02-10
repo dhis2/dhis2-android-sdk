@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.relationship
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityDataValueShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityDataValueShould() {
-        super("trackedentity/tracked_entity_data_value.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityDataValue trackedEntityDataValue = objectMapper.readValue(jsonStream, TrackedEntityDataValue.class);
-
-        assertThat(trackedEntityDataValue.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-15T14:55:23.779"));
-        assertThat(trackedEntityDataValue.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-15T14:55:23.779"));
-
-        assertThat(trackedEntityDataValue.storedBy()).isEqualTo("admin");
-        assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa");
-        assertThat(trackedEntityDataValue.value()).isEqualTo("2013-05-18");
-        assertThat(trackedEntityDataValue.providedElsewhere()).isFalse();
-    }
+internal object RelationshipItemFields : BaseFields<RelationshipItem>() {
+    val allFields = Fields.from(
+        fh.nestedField<RelationshipItemTrackedEntityInstance>(Columns.TRACKED_ENTITY_INSTANCE)
+            .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+        fh.nestedField<RelationshipItemEnrollment>(Columns.ENROLLMENT)
+            .with(RelationshipItemEnrollmentFields.enrollment),
+        fh.nestedField<RelationshipItemEvent>(Columns.EVENT)
+            .with(RelationshipItemEventFields.event),
+    )
 }

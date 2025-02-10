@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.event
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
+@Serializable
+internal data class EventWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: EventImportSummariesDTO?,
+) : WebResponseDTO {
+    fun toDomain(): EventWebResponse {
+        return EventWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response?.toDomain())
+            .build()
     }
 }

@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.NoteTypeColumn
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.note.internal.NoteFields;
+import org.hisp.dhis.android.network.note.NoteFields;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_NewTrackerImporterNote.Builder.class)

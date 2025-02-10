@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.network.relationship
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object TrackedEntityDataValueFields : BaseFields<TrackedEntityDataValue>() {
-    val allFields = Fields.from(
-        fh.field(Columns.DATA_ELEMENT),
-        fh.field(Columns.STORED_BY),
-        fh.field(Columns.VALUE),
-        fh.field(Columns.CREATED),
-        fh.field(Columns.LAST_UPDATED),
-        fh.field(Columns.PROVIDED_ELSEWHERE),
-    )
+internal object RelationshipItemEventFields : BaseFields<RelationshipItemEvent>() {
+    private const val EVENT = "event"
+
+    val event = fh.field(EVENT)
 }

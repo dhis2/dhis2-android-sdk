@@ -7143,11 +7143,6 @@ public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent$B
 	public abstract fun updatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 }
 
-public class org/hisp/dhis/android/core/event/internal/EventPayload {
-	public field events Ljava/util/List;
-	public fun <init> ()V
-}
-
 public final class org/hisp/dhis/android/core/event/search/EventQueryCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
 	public final field scope Lorg/hisp/dhis/android/core/event/search/EventQueryRepositoryScope;
 	public fun blockingCount ()I
@@ -7657,6 +7652,7 @@ public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImpo
 
 public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries$Builder;
 	public abstract fun importSummaries ()Ljava/util/List;
 }
 
@@ -7668,6 +7664,7 @@ public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSum
 
 public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummary$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummary$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {

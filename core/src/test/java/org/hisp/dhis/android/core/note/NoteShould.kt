@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.note.NoteDTO
+import org.junit.Test
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+class NoteShould : BaseObjectKotlinxShould("note/note_30.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val noteDTO = deserialize(NoteDTO.serializer())
+        val note = noteDTO.toDomain()
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
+        assertThat(note.uid()).isEqualTo("noteUid")
+        assertThat(note.value()).isEqualTo("Note")
+        assertThat(note.storedBy()).isEqualTo("android")
+        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058")
     }
 }

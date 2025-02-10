@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.event
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.EventImportSummaries
+import org.hisp.dhis.android.network.common.dto.BaseImportSummariesDTO
+import org.hisp.dhis.android.network.common.dto.applyImportSummariesFields
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
+@Serializable
+internal data class EventImportSummariesDTO(
+    override val status: String,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    val importSummaries: List<EventImportSummaryDTO>?,
+) : BaseImportSummariesDTO {
+    fun toDomain(): EventImportSummaries {
+        return EventImportSummaries.builder()
+            .applyImportSummariesFields(this)
+            .importSummaries(importSummaries?.map { it.toDomain() })
+            .build()
     }
 }

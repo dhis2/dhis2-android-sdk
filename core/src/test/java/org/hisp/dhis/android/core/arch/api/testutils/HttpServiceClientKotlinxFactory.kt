@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
-import org.hisp.dhis.android.network.common.fields.BaseFields
+package org.hisp.dhis.android.core.arch.api.testutils
 
-internal object RelationshipItemEventFields : BaseFields<RelationshipItemEvent>() {
-    private const val EVENT = "event"
+import com.nhaarman.mockitokotlin2.mock
+import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.D2Configuration
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-    val event = fh.field(EVENT)
+internal object HttpServiceClientKotlinxFactory {
+    fun fromDHIS2MockServer(server: Dhis2MockServer): HttpServiceClientKotlinx {
+        return fromServerUrl(server.baseEndpoint)
+    }
+
+    fun fromServerUrl(serverUrl: String): HttpServiceClientKotlinx {
+        val okHttpClient = OkHttpClient.Builder().build()
+        val d2Configuration = D2Configuration.builder()
+            .appName("app")
+            .context(mock())
+            .build()
+        return HttpServiceClientKotlinx(
+            okHttpClient = okHttpClient,
+            d2Configuration = d2Configuration,
+            baseUrl = serverUrl + "api/",
+        )
+    }
 }

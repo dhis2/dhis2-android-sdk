@@ -65,23 +65,21 @@ internal data class DataValueDTO(
             followup?.let { followUp(it) }
         }.build()
     }
+}
 
-    companion object {
-        fun fromDomain(dataValue: DataValue): DataValueDTO {
-            return DataValueDTO(
-                deleted = dataValue.deleted(),
-                dataElement = dataValue.dataElement()!!,
-                period = dataValue.period()!!,
-                orgUnit = dataValue.organisationUnit()!!,
-                categoryOptionCombo = dataValue.categoryOptionCombo()!!,
-                attributeOptionCombo = dataValue.attributeOptionCombo()!!,
-                value = dataValue.value(),
-                storedBy = dataValue.storedBy(),
-                created = dataValue.created()?.let { DateUtils.DATE_FORMAT.format(it) },
-                lastUpdated = dataValue.lastUpdated()?.let { DateUtils.DATE_FORMAT.format(it) },
-                comment = dataValue.comment(),
-                followup = dataValue.followUp(),
-            )
-        }
-    }
+internal fun DataValue.toDto(): DataValueDTO {
+    return DataValueDTO(
+        deleted = this.deleted(),
+        dataElement = this.dataElement()!!,
+        period = this.period()!!,
+        orgUnit = this.organisationUnit()!!,
+        categoryOptionCombo = this.categoryOptionCombo()!!,
+        attributeOptionCombo = this.attributeOptionCombo()!!,
+        value = this.value(),
+        storedBy = this.storedBy(),
+        created = this.created()?.let { DateUtils.DATE_FORMAT.format(it) },
+        lastUpdated = this.lastUpdated()?.let { DateUtils.DATE_FORMAT.format(it) },
+        comment = this.comment(),
+        followup = this.followUp(),
+    )
 }

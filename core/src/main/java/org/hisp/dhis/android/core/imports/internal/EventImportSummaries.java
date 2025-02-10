@@ -48,6 +48,10 @@ public abstract class EventImportSummaries extends BaseImportSummaries implement
     @JsonProperty(IMPORT_SUMMARIES)
     public abstract List<EventImportSummary> importSummaries();
 
+    public static Builder builder() {
+        return new AutoValue_EventImportSummaries.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummaries.Builder<EventImportSummaries.Builder> {

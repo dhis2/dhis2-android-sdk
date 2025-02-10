@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.network.note
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.note.Note
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
+@Serializable
+internal data class NoteDTO(
+    val note: String,
+    val value: String?,
+    val storedBy: String?,
+    val storedDate: String?,
+) {
+    fun toDomain(event: String? = null, enrollment: String? = null): Note {
+        val noteType = when {
+            event != null -> Note.NoteType.EVENT_NOTE
+            enrollment != null -> Note.NoteType.ENROLLMENT_NOTE
+            else -> null
+        }
+        return Note.builder()
+            .uid(note)
+            .noteType(noteType)
+            .event(event)
+            .enrollment(enrollment)
+            .value(value)
+            .storedBy(storedBy)
+            .storedDate(storedDate)
+            .build()
     }
+}
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
-    }
+internal fun Note.toDto(): NoteDTO {
+    return NoteDTO(
+        note = uid(),
+        value = value(),
+        storedBy = storedBy(),
+        storedDate = storedBy(),
+    )
 }

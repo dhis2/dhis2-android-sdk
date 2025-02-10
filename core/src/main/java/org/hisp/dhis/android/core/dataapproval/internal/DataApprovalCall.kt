@@ -47,7 +47,6 @@ internal class DataApprovalCall(
             ).length
     }
 
-    @Suppress("MagicNumber")
     override suspend fun download(query: DataApprovalQuery): List<DataApproval> {
         val partitions = multiDimensionalPartitioner.partitionForSize(
             QUERY_WITHOUT_UIDS_LENGTH,

@@ -41,6 +41,7 @@ internal class DataApprovalNetworkHandlerImpl(
 ) : DataApprovalNetworkHandler {
     private val service: DataApprovalService = DataApprovalService(httpClient)
 
+    @Suppress("MagicNumber")
     override suspend fun getDataApprovals(
         lastUpdated: String?,
         dataApprovalPartition: DataApprovalPartition,

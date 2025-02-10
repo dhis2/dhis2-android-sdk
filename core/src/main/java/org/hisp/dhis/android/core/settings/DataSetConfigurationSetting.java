@@ -33,15 +33,12 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetConfigurationSetting.Builder.class)
 public abstract class DataSetConfigurationSetting implements CoreObject, ObjectWithUidInterface {
 
     @Nullable
@@ -64,7 +61,6 @@ public abstract class DataSetConfigurationSetting implements CoreObject, ObjectW
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

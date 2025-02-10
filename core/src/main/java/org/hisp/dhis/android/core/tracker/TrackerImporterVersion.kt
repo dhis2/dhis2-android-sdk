@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.tracker
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
-
 enum class TrackerImporterVersion {
-    @JsonEnumDefaultValue
     V1,
     V2,
+    ;
+
+    @Suppress("EmptyClassBlock")
+    companion object {}
 }

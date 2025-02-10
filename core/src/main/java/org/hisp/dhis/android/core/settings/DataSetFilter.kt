@@ -25,28 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public enum DataSetFilter {
-    @JsonProperty("syncStatus")
+enum class DataSetFilter {
     SYNC_STATUS,
-
-    @JsonProperty("organisationUnit")
     ORG_UNIT,
-
-    @JsonProperty("assignedToMe")
     ASSIGNED_TO_ME,
-
-    @JsonProperty("period")
     PERIOD,
-
-    @JsonProperty("categoryCombo")
     CAT_COMBO,
+    UNKNOWN,
+    ;
 
-    @JsonEnumDefaultValue
-    UNKNOWN
+    @Suppress("EmptyClassBlock")
+    companion object {}
 }

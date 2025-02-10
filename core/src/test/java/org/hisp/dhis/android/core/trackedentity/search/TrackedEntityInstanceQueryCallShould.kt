@@ -28,12 +28,21 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.anyOrNull
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.AssignedUserMode
@@ -42,8 +51,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.internal.EventFields
-import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -59,7 +67,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.invocation.InvocationOnMock
 import java.text.ParseException
-import java.util.*
+import java.util.Date
 import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
@@ -67,13 +75,13 @@ import javax.net.ssl.HttpsURLConnection
 class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     private val trackedEntityService: TrackedEntityInstanceService = mock()
-    private val eventService: EventService = mock()
+    private val eventNetworkHandler: EventNetworkHandler = mock()
     private val mapper: SearchGridMapper = mock()
     private val coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val dhisVersionManager: DHISVersionManager = mock()
     private val searchGrid: SearchGrid = mock()
     private val teis: List<TrackedEntityInstance> = mock()
-    private val eventPayload: PayloadJackson<Event> = mock()
+    private val eventPayload: Payload<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
     private val order: List<TrackedEntityInstanceQueryScopeOrderByItem> =
         listOf(TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER)
@@ -120,7 +128,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         // Metadata call
         callFactory = TrackedEntityInstanceQueryCallFactory(
             trackedEntityService,
-            eventService,
+            eventNetworkHandler,
             mapper,
             coroutineAPICallExecutor,
             dhisVersionManager,
@@ -186,7 +194,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
         )
-        whenever(eventPayload.items()).doReturn(events)
+        whenever(eventPayload.items).doReturn(events)
 
         val query = query.copy(
             dataValueFilter = listOf(
@@ -208,7 +216,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     @Test
     fun should_query_events_for_multiple_orgunits() = runTest {
-        whenever(eventPayload.items()).doReturn(emptyList())
+        whenever(eventPayload.items).doReturn(emptyList())
 
         val query = query.copy(
             dataValueFilter = listOf(
@@ -270,30 +278,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
-        verify(eventService).getEvents(
-            eq(EventFields.teiQueryFields),
-            getExpectedOrgunit(orgunit?.let { listOf(it) }, query.orgUnitMode),
-            eq(query.orgUnitMode?.toString()),
-            eq(query.eventStatus?.toString()),
-            eq(query.program),
-            eq(query.programStage),
-            eq(query.enrollmentStatus?.toString()),
-            any(),
-            eq(query.followUp),
-            eq(query.eventStartDate.simpleDateFormat()),
-            eq(query.eventEndDate.simpleDateFormat()),
-            eq(query.dueStartDate.simpleDateFormat()),
-            eq(query.dueEndDate.simpleDateFormat()),
-            any(),
-            eq(query.assignedUserMode?.toString()),
-            eq(query.paging),
-            eq(query.page.takeIf { query.paging }),
-            eq(query.pageSize.takeIf { query.paging }),
-            eq(query.lastUpdatedStartDate.simpleDateFormat()),
-            eq(query.lastUpdatedEndDate.simpleDateFormat()),
-            eq(query.includeDeleted),
-            eq(null),
-        )
+        verify(eventNetworkHandler).getEventQueryForOrgunit(query, orgunit)
     }
 
     private fun getExpectedOrgunit(orgUnits: List<String>?, mode: OrganisationUnitMode?): String? {
@@ -339,33 +324,10 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         }
     }
 
-    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> PayloadJackson<Event>) {
-        eventService.stub {
+    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> Payload<Event>) {
+        eventNetworkHandler.stub {
             onBlocking {
-                getEvents(
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                )
+                getEventQueryForOrgunit(anyOrNull(), anyOrNull())
             }.doAnswer(answer)
         }
     }

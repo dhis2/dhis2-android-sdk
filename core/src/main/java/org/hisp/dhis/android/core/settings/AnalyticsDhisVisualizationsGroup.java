@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualizationsGroup.Builder.class)
 public abstract class AnalyticsDhisVisualizationsGroup {
 
     public abstract String name();
@@ -51,7 +48,6 @@ public abstract class AnalyticsDhisVisualizationsGroup {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder name(String name);

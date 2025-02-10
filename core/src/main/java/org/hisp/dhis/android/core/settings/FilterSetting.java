@@ -32,15 +32,11 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_FilterSetting.Builder.class)
 public abstract class FilterSetting implements CoreObject {
 
     @Nullable
@@ -53,11 +49,9 @@ public abstract class FilterSetting implements CoreObject {
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean sort();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean filter();
 
     public static FilterSetting create(Cursor cursor) {
@@ -71,7 +65,6 @@ public abstract class FilterSetting implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

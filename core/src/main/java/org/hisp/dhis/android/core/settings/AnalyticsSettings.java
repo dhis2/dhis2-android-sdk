@@ -28,15 +28,12 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
 public abstract class AnalyticsSettings {
 
     public abstract List<AnalyticsTeiSetting> tei();
@@ -48,7 +45,6 @@ public abstract class AnalyticsSettings {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder tei(List<AnalyticsTeiSetting> tei);

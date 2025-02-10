@@ -30,15 +30,16 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientKotlinxFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.event.EventNetworkHandlerImpl
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -91,7 +92,7 @@ class EventEndpointCallShould {
         assertThat(request.path).doesNotContain(startDateStr)
     }
 
-    private suspend fun givenAEventCallByPagination(page: Int, pageCount: Int): PayloadJackson<Event> {
+    private suspend fun givenAEventCallByPagination(page: Int, pageCount: Int): Payload<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = get(),
             page = page,
@@ -101,15 +102,15 @@ class EventEndpointCallShould {
         return givenACallForQuery(eventQuery)
     }
 
-    private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): PayloadJackson<Event> {
-        return OldEventEndpointCallFactory(eventService).getCollectionCall(eventQuery)
+    private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): Payload<Event> {
+        return OldEventEndpointCallFactory(eventNetworkHandler).getCollectionCall(eventQuery)
     }
 
     private suspend fun givenAEventCallByOrgUnitAndProgram(
         orgUnit: String,
         program: String?,
         startDate: String? = null,
-    ): PayloadJackson<Event> {
+    ): Payload<Event> {
         val eventQuery = TrackerAPIQuery(
             commonParams = TrackerQueryCommonParams(
                 listOf(),
@@ -129,15 +130,15 @@ class EventEndpointCallShould {
 
     companion object {
         private lateinit var mockWebServer: Dhis2MockServer
-        private lateinit var httpServiceClient: HttpServiceClient
-        private lateinit var eventService: EventService
+        private lateinit var httpServiceClient: HttpServiceClientKotlinx
+        private lateinit var eventNetworkHandler: EventNetworkHandler
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
             mockWebServer = Dhis2MockServer(0)
-            httpServiceClient = HttpServiceClientFactory.fromDHIS2MockServer(mockWebServer)
-            eventService = EventService(httpServiceClient)
+            httpServiceClient = HttpServiceClientKotlinxFactory.fromDHIS2MockServer(mockWebServer)
+            eventNetworkHandler = EventNetworkHandlerImpl(httpServiceClient)
         }
 
         @AfterClass

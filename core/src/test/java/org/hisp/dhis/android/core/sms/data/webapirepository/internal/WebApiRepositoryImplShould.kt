@@ -34,6 +34,10 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
+import org.hisp.dhis.android.network.metadata.MetadataNetworkHandlerImpl
+import org.hisp.dhis.android.network.metadata.MetadataService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,46 +47,64 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class WebApiRepositoryImplShould {
 
-    private val apiService: ApiService = mock()
     private val dhisVersionManager: DHISVersionManager = mock()
-    private val defalutMetadataConfig = GetMetadataIdsConfig()
+    private val metadataIdsDTO: MetadataIdsDTO = mock()
+    private val metadataService: MetadataService = mock()
+    private val clientKotlinx: HttpServiceClientKotlinx = mock()
+    private val defaultMetadataConfig = GetMetadataIdsConfig()
+    private val ID_FIELD = "id"
 
+    private lateinit var metadataNetworkHandler: MetadataNetworkHandlerImpl
     private lateinit var testWebRepository: WebApiRepositoryImpl
 
     @Before
     fun init() {
-        testWebRepository = WebApiRepositoryImpl(apiService, dhisVersionManager)
+        metadataNetworkHandler = MetadataNetworkHandlerImpl(clientKotlinx, dhisVersionManager)
+        testWebRepository = WebApiRepositoryImpl(metadataNetworkHandler)
+
+        val networkHandlerImpl = metadataNetworkHandler
+        val serviceField = networkHandlerImpl.javaClass.getDeclaredField("service")
+        serviceField.isAccessible = true
+        serviceField.set(networkHandlerImpl, metadataService)
+
+        whenever(metadataIdsDTO.toDomain()).thenReturn(MetadataIds())
     }
 
     @Test
     fun `Include users query if version lower than 2_35`() = runTest {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn false
+        whenever(metadataService.getMetadataFields(any(), any(), any(), any(), any(), any(), any()))
+            .thenReturn(metadataIdsDTO)
 
-        testWebRepository.metadataCall(defalutMetadataConfig)
-        verify(apiService).getMetadataIds(
-            notNull(),
-            notNull(),
-            notNull(),
-            notNull(),
-            notNull(),
-            notNull(),
-            notNull(),
+        testWebRepository.getMetadataIds(defaultMetadataConfig)
+        verify(metadataService).getMetadataFields(
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
         )
+        verifyNoMoreInteractions(metadataService)
     }
 
     @Test
     fun `Exclude users if version greater or equal to 2_35`() = runTest {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn true
+        whenever(metadataService.getMetadataFields(any(), any(), any(), anyOrNull(), any(), any(), any()))
+            .thenReturn(metadataIdsDTO)
 
-        testWebRepository.metadataCall(defalutMetadataConfig)
-        verify(apiService).getMetadataIds(
-            notNull(),
-            notNull(),
-            notNull(),
+        testWebRepository.getMetadataIds(defaultMetadataConfig)
+        verify(metadataService).getMetadataFields(
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
             isNull(),
-            notNull(),
-            notNull(),
-            notNull(),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
+            eq(ID_FIELD),
         )
+        verifyNoMoreInteractions(metadataService)
     }
 }

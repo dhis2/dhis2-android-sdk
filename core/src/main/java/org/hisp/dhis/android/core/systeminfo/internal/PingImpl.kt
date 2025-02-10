@@ -39,7 +39,7 @@ import java.io.IOException
 
 @Singleton
 class PingImpl internal constructor(
-    private val pingService: PingService,
+    private val pingNetworkHandler: PingNetworkHandler,
 ) : Ping {
 
     override fun get(): Single<String> {
@@ -54,7 +54,7 @@ class PingImpl internal constructor(
     @Suppress("TooGenericExceptionCaught")
     private suspend fun checkPing(): String {
         try {
-            val response = pingService.getPing()
+            val response = pingNetworkHandler.getPing()
             return if (
                 response.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX
             ) {

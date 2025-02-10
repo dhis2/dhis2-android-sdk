@@ -36,6 +36,10 @@ import com.google.auto.value.AutoValue;
 @JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
 public abstract class EventImportSummary extends BaseImportSummary {
 
+    public static Builder builder() {
+        return new AutoValue_EventImportSummary.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {

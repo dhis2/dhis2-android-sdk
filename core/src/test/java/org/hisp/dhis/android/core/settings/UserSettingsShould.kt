@@ -25,30 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class UserSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public UserSettingsShould() {
-        super("settings/user_settings.json");
-    }
-
-    @Override
+class UserSettingsShould : BaseObjectKotlinxShould("settings/user_settings.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserSettings settings = objectMapper.readValue(jsonStream, UserSettings.class);
+    override fun map_from_json_string() {
+        val userSettingsDTO = deserialize(UserSettingsDTO.serializer())
+        val userSettings = userSettingsDTO.toDomain()
 
-        assertThat(settings.keyUiLocale()).isEqualTo("es");
-        assertThat(settings.keyDbLocale()).isEqualTo("en");
+        assertThat(userSettings.keyUiLocale()).isEqualTo("es")
+        assertThat(userSettings.keyDbLocale()).isEqualTo("en")
     }
 }

@@ -25,38 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.event.TrackedEntityDataValueDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class TrackedEntityDataValueShould :
+    BaseObjectKotlinxShould("trackedentity/tracked_entity_data_value.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class TrackedEntityDataValueShould extends BaseObjectShould implements ObjectShould {
-
-    public TrackedEntityDataValueShould() {
-        super("trackedentity/tracked_entity_data_value.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TrackedEntityDataValue trackedEntityDataValue = objectMapper.readValue(jsonStream, TrackedEntityDataValue.class);
+    override fun map_from_json_string() {
+        val trackedEntityDataValueDTO = deserialize(TrackedEntityDataValueDTO.serializer())
+        val trackedEntityDataValue = trackedEntityDataValueDTO.toDomain("event")
 
-        assertThat(trackedEntityDataValue.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-15T14:55:23.779"));
-        assertThat(trackedEntityDataValue.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-15T14:55:23.779"));
+        assertThat(trackedEntityDataValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-11-15T14:55:23.779"))
+        assertThat(
+            trackedEntityDataValue.lastUpdated(),
+        ).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-11-16T14:55:23.779"))
 
-        assertThat(trackedEntityDataValue.storedBy()).isEqualTo("admin");
-        assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa");
-        assertThat(trackedEntityDataValue.value()).isEqualTo("2013-05-18");
-        assertThat(trackedEntityDataValue.providedElsewhere()).isFalse();
+        assertThat(trackedEntityDataValue.storedBy()).isEqualTo("admin")
+        assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa")
+        assertThat(trackedEntityDataValue.value()).isEqualTo("2013-05-18")
+        assertThat(trackedEntityDataValue.providedElsewhere()).isFalse()
     }
 }

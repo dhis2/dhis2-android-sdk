@@ -25,64 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.event;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.event.EventDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class EventShould extends BaseObjectShould implements ObjectShould {
-
-    public EventShould() {
-        super("event/event.json");
-    }
-
-    @Override
+class EventShould : BaseObjectKotlinxShould("event/event.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Event event = objectMapper.readValue(jsonStream, Event.class);
+    override fun map_from_json_string() {
+        val eventDTO = deserialize(EventDTO.serializer())
+        val event = eventDTO.toDomain()
 
-        assertThat(event.uid()).isEqualTo("hnaWBxMw5j3");
-        assertThat(event.status()).isEqualTo(EventStatus.COMPLETED);
-        assertThat(event.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(event.program()).isEqualTo("eBAyeGv0exc");
-        assertThat(event.programStage()).isEqualTo("Zj7UnCAulEk");
-        assertThat(event.enrollment()).isEqualTo("RiLEKhWHlxZ");
-        assertThat(event.geometry().type()).isEqualTo(FeatureType.POINT);
-        assertThat(event.geometry().coordinates()).isEqualTo("[0.0, 0.0]");
-        assertThat(event.deleted()).isFalse();
-        assertThat(event.assignedUser()).isEqualTo("aTwqot2S410");
-        assertThat(event.completedBy()).isEqualTo("system");
+        assertThat(event.uid()).isEqualTo("hnaWBxMw5j3")
+        assertThat(event.status()).isEqualTo(EventStatus.COMPLETED)
+        assertThat(event.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(event.program()).isEqualTo("eBAyeGv0exc")
+        assertThat(event.programStage()).isEqualTo("Zj7UnCAulEk")
+        assertThat(event.enrollment()).isEqualTo("RiLEKhWHlxZ")
+        assertThat(event.geometry()!!.type()).isEqualTo(FeatureType.POINT)
+        assertThat(event.geometry()!!.coordinates()).isEqualTo("[0.0,0.0]")
+        assertThat(event.deleted()).isFalse()
+        assertThat(event.assignedUser()).isEqualTo("aTwqot2S410")
+        assertThat(event.completedBy()).isEqualTo("system")
 
-        assertThat(event.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-08T21:40:22.000"));
-        assertThat(event.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-11-15T14:55:22.995"));
-        assertThat(event.eventDate()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-05-01T00:00:00.000"));
-        assertThat(event.completedDate()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-11-15T00:00:00.000"));
+        assertThat(event.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-08T21:40:22.000"))
+        assertThat(event.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-11-15T14:55:22.995"))
+        assertThat(event.eventDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-05-01T00:00:00.000"))
+        assertThat(event.completedDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-11-15T00:00:00.000"))
 
-        assertThat(event.trackedEntityDataValues().get(0).dataElement()).isEqualTo("vV9UWAZohSf");
-        assertThat(event.trackedEntityDataValues().get(1).dataElement()).isEqualTo("K6uUAvq500H");
-        assertThat(event.trackedEntityDataValues().get(2).dataElement()).isEqualTo("fWIAEtYVEGk");
-        assertThat(event.trackedEntityDataValues().get(3).dataElement()).isEqualTo("msodh3rEMJa");
-        assertThat(event.trackedEntityDataValues().get(4).dataElement()).isEqualTo("eMyVanycQSC");
-        assertThat(event.trackedEntityDataValues().get(5).dataElement()).isEqualTo("oZg33kd9taw");
-        assertThat(event.trackedEntityDataValues().get(6).dataElement()).isEqualTo("qrur9Dvnyt5");
-        assertThat(event.trackedEntityDataValues().get(7).dataElement()).isEqualTo("GieVkTxp4HH");
+        assertThat(event.trackedEntityDataValues()!![0].dataElement()).isEqualTo("vV9UWAZohSf")
+        assertThat(event.trackedEntityDataValues()!![1].dataElement()).isEqualTo("K6uUAvq500H")
+        assertThat(event.trackedEntityDataValues()!![2].dataElement()).isEqualTo("fWIAEtYVEGk")
+        assertThat(event.trackedEntityDataValues()!![3].dataElement()).isEqualTo("msodh3rEMJa")
+        assertThat(event.trackedEntityDataValues()!![4].dataElement()).isEqualTo("eMyVanycQSC")
+        assertThat(event.trackedEntityDataValues()!![5].dataElement()).isEqualTo("oZg33kd9taw")
+        assertThat(event.trackedEntityDataValues()!![6].dataElement()).isEqualTo("qrur9Dvnyt5")
+        assertThat(event.trackedEntityDataValues()!![7].dataElement()).isEqualTo("GieVkTxp4HH")
 
-        assertThat(event.notes().get(0).uid()).isEqualTo("eventNote1");
-        assertThat(event.notes().get(1).uid()).isEqualTo("eventNote2");
+        assertThat(event.notes()!![0].uid()).isEqualTo("eventNote1")
+        assertThat(event.notes()!![1].uid()).isEqualTo("eventNote2")
 
-        assertThat(event.relationships().get(0).uid()).isEqualTo("ZLrITbZfdnv");
+        assertThat(event.relationships()!![0].uid()).isEqualTo("ZLrITbZfdnv")
     }
 }

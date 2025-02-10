@@ -30,23 +30,17 @@ package org.hisp.dhis.android.core.settings;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Collections;
 import java.util.Map;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
 public abstract class ProgramSettings {
 
     @Nullable
-    @JsonProperty()
     public abstract ProgramSetting globalSettings();
 
-    @JsonProperty()
     public abstract Map<String, ProgramSetting> specificSettings();
 
     public static Builder builder() {
@@ -56,7 +50,6 @@ public abstract class ProgramSettings {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder globalSettings(ProgramSetting globalSettings);
 

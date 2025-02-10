@@ -49,7 +49,7 @@ internal object EventInternalAccessor {
 
     fun insertTrackedEntityInstance(
         builder: Event.Builder,
-        trackedEntityInstance: String,
+        trackedEntityInstance: String?,
     ): Event.Builder {
         return builder.trackedEntityInstance(trackedEntityInstance)
     }

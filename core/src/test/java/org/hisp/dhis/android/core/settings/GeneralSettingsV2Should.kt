@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.GeneralSettingsDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class GeneralSettingsV2Should extends BaseObjectShould implements ObjectShould {
-
-    public GeneralSettingsV2Should() {
-        super("settings/general_settings_v2.json");
-    }
-
-    @Override
+class GeneralSettingsV2Should :
+    BaseObjectKotlinxShould("settings/general_settings_v2.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
+    override fun map_from_json_string() {
+        val generalSettingsDTO = deserialize(GeneralSettingsDTO.serializer())
+        val generalSettings = generalSettingsDTO.toDomain()
 
-        assertThat(generalSettings.dataSync()).isNull();
-        assertThat(generalSettings.encryptDB()).isFalse();
-        assertThat(generalSettings.lastUpdated()).isNull();
-        assertThat(generalSettings.metadataSync()).isNull();
-        assertThat(generalSettings.reservedValues()).isEqualTo(40);
-        assertThat(generalSettings.smsGateway()).isEqualTo("+84566464");
-        assertThat(generalSettings.numberSmsToSend()).isEqualTo("+84566464");
-        assertThat(generalSettings.smsResultSender()).isEqualTo("+9456498778");
-        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("+9456498778");
-        assertThat(generalSettings.matomoID()).isEqualTo(123);
-        assertThat(generalSettings.matomoURL()).isEqualTo("https://www.matomo.org");
-        assertThat(generalSettings.allowScreenCapture()).isTrue();
-        assertThat(generalSettings.messageOfTheDay()).isEqualTo("Message of the day");
-        assertThat(generalSettings.experimentalFeatures().size()).isEqualTo(1);
-        assertThat(generalSettings.experimentalFeatures().get(0)).isEqualTo("newFormLayout");
-        assertThat(generalSettings.bypassDHIS2VersionCheck()).isTrue();
+        assertThat(generalSettings.dataSync()).isNull()
+        assertThat(generalSettings.encryptDB()).isFalse()
+        assertThat(generalSettings.lastUpdated()).isNull()
+        assertThat(generalSettings.metadataSync()).isNull()
+        assertThat(generalSettings.reservedValues()).isEqualTo(40)
+        assertThat(generalSettings.smsGateway()).isEqualTo("+84566464")
+        assertThat(generalSettings.numberSmsToSend()).isEqualTo("+84566464")
+        assertThat(generalSettings.smsResultSender()).isEqualTo("+9456498778")
+        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("+9456498778")
+        assertThat(generalSettings.matomoID()).isEqualTo(123)
+        assertThat(generalSettings.matomoURL()).isEqualTo("https://www.matomo.org")
+        assertThat(generalSettings.allowScreenCapture()).isTrue()
+        assertThat(generalSettings.messageOfTheDay()).isEqualTo("Message of the day")
+        assertThat(generalSettings.experimentalFeatures()!!.size).isEqualTo(1)
+        assertThat(generalSettings.experimentalFeatures()!![0]).isEqualTo("newFormLayout")
+        assertThat(generalSettings.bypassDHIS2VersionCheck()).isTrue()
     }
 }

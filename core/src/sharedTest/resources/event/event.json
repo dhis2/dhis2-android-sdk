@@ -16,9 +16,12 @@
   "enrollment": "RiLEKhWHlxZ",
   "deleted": "false",
   "assignedUser": "aTwqot2S410",
-  "coordinate": {
-    "latitude": 0.0,
-    "longitude": 0.0
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      0.0,
+      0.0
+    ]
   },
   "dataValues": [
     {

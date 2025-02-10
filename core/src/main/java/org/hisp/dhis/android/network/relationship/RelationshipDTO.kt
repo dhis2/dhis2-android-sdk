@@ -58,21 +58,19 @@ internal data class RelationshipDTO(
             .to(to?.toDomain(relationship, RelationshipConstraintType.TO))
             .build()
     }
+}
 
-    companion object {
-        fun fromDomain(r: Relationship): RelationshipDTO {
-            return RelationshipDTO(
-                deleted = r.deleted(),
-                relationship = r.uid(),
-                relationshipName = r.name(),
-                created = r.created()?.let { DateUtils.DATE_FORMAT.format(it) },
-                lastUpdated = r.lastUpdated()?.let { DateUtils.DATE_FORMAT.format(it) },
-                relationshipType = r.relationshipType(),
-                from = r.from()?.let { RelationshipItemDTO.fromDomain(it) },
-                to = r.to()?.let { RelationshipItemDTO.fromDomain(it) },
-            )
-        }
-    }
+internal fun Relationship.toDto(): RelationshipDTO {
+    return RelationshipDTO(
+        deleted = this.deleted(),
+        relationship = this.uid(),
+        relationshipName = this.name(),
+        created = this.created()?.let { DateUtils.DATE_FORMAT.format(it) },
+        lastUpdated = this.lastUpdated()?.let { DateUtils.DATE_FORMAT.format(it) },
+        relationshipType = this.relationshipType(),
+        from = this.from()?.let { RelationshipItemDTO.fromDomain(it) },
+        to = this.to()?.let { RelationshipItemDTO.fromDomain(it) },
+    )
 }
 
 @Serializable

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,43 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.DataSetSettingsDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataSetSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public DataSetSettingsShould() {
-        super("settings/dataset_settings.json");
-    }
-
-    @Override
+class DataSetSettingsShould : BaseObjectKotlinxShould("settings/dataset_settings.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        DataSetSettings dataSetSettings = objectMapper.readValue(jsonStream, DataSetSettings.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val dataSetSettingsDTO = deserialize(DataSetSettingsDTO.serializer())
+        val dataSetSettings = dataSetSettingsDTO.toDomain()
 
-        DataSetSetting global = dataSetSettings.globalSettings();
-        assertThat(global.uid()).isNull();
-        assertThat(global.name()).isNull();
-        assertThat(global.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:42:57.763Z"));
-        assertThat(global.periodDSDownload()).isEqualTo(30);
-        assertThat(global.periodDSDBTrimming()).isEqualTo(40);
+        val global = dataSetSettings.globalSettings()
+        assertThat(global.uid()).isNull()
+        assertThat(global.name()).isNull()
+        assertThat(global.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:42:57.763Z"))
+        assertThat(global.periodDSDownload()).isEqualTo(30)
+        assertThat(global.periodDSDBTrimming()).isEqualTo(40)
 
-        DataSetSetting childHealth = dataSetSettings.specificSettings().get("BfMAe6Itzgt");
-        assertThat(childHealth).isNotNull();
-        assertThat(childHealth.uid()).isEqualTo("BfMAe6Itzgt");
-        assertThat(childHealth.name()).isEqualTo("Child Health");
-        assertThat(childHealth.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:38:20.210Z"));
-        assertThat(childHealth.periodDSDownload()).isEqualTo(10);
-        assertThat(childHealth.periodDSDBTrimming()).isEqualTo(15);
+        val childHealth = dataSetSettings.specificSettings()["BfMAe6Itzgt"]
+        assertThat(childHealth).isNotNull()
+        assertThat(childHealth!!.uid()).isEqualTo("BfMAe6Itzgt")
+        assertThat(childHealth.name()).isEqualTo("Child Health")
+        assertThat(childHealth.lastUpdated())
+            .isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:38:20.210Z"))
+        assertThat(childHealth.periodDSDownload()).isEqualTo(10)
+        assertThat(childHealth.periodDSDBTrimming()).isEqualTo(15)
     }
 }

@@ -52,6 +52,6 @@ internal fun Geometry.toDto(): GeometryDTO {
     val jsonParser = KotlinxJsonParser.instance
     return GeometryDTO(
         type = this.type()?.geometryType,
-        coordinates = this.coordinates()?.let { jsonParser.encodeToJsonElement(it) }
+        coordinates = this.coordinates()?.let { jsonParser.encodeToJsonElement(it) },
     )
 }

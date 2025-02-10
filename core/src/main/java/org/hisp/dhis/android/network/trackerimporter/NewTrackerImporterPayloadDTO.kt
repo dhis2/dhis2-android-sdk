@@ -38,14 +38,13 @@ internal data class NewTrackerImporterPayloadDTO(
     val events: List<NewTrackerImporterEventDTO> = emptyList(),
     val relationships: List<NewTrackerImporterRelationshipDTO> = emptyList(),
 
-    )
+)
 
 internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
     return NewTrackerImporterPayloadDTO(
         trackedEntities = this.trackedEntities.map { it.toDto() },
         enrollments = this.enrollments.map { it.toDto() },
         events = this.events.map { it.toDto() },
-        relationships = this.relationships.map { it.toDto() }
+        relationships = this.relationships.map { it.toDto() },
     )
-
 }

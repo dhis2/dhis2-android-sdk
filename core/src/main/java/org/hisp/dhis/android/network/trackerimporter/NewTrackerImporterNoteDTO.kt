@@ -52,5 +52,4 @@ internal fun NewTrackerImporterNote.toDto(): NewTrackerImporterNoteDTO {
         storedBy = storedBy(),
         storedAt = storedAt(),
     )
-
 }

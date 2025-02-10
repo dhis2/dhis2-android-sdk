@@ -46,6 +46,6 @@ internal fun NewTrackerImporterRelationshipItem.toDto(): NewTrackerImporterRelat
         relationshipItemType = this.relationshipItemType()?.name,
         trackedEntity = this.trackedEntity()?.toDto(),
         enrollment = this.enrollment()?.toDto(),
-        event = this.event()?.toDto()
+        event = this.event()?.toDto(),
     )
 }

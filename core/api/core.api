@@ -10883,6 +10883,7 @@ public class org/hisp/dhis/android/core/relationship/RelationshipConstraintTable
 public final class org/hisp/dhis/android/core/relationship/RelationshipConstraintType : java/lang/Enum {
 	public static final field FROM Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
 	public static final field TO Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
 }

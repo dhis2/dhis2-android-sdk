@@ -53,6 +53,6 @@ internal fun NewTrackerImporterRelationship.toDto(): NewTrackerImporterRelations
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         bidirectional = this.bidirectional(),
         from = this.from()?.toDto(),
-        to = this.to()?.toDto()
+        to = this.to()?.toDto(),
     )
 }

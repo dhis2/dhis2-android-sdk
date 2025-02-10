@@ -47,6 +47,6 @@ internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackerIm
         value = this.value(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        trackedEntityInstance = this.trackedEntityInstance()
+        trackedEntityInstance = this.trackedEntityInstance(),
     )
 }

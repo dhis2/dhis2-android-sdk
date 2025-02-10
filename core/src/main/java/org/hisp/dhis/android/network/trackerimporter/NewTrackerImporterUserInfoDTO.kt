@@ -38,6 +38,6 @@ internal data class NewTrackerImporterUserInfoDTO(
 
 internal fun NewTrackerImporterUserInfo.toDto(): NewTrackerImporterUserInfoDTO {
     return NewTrackerImporterUserInfoDTO(
-        uid = this.uid()
+        uid = this.uid(),
     )
 }

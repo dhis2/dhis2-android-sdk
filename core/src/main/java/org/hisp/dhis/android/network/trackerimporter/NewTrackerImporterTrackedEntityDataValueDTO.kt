@@ -51,7 +51,6 @@ internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackerImporte
         dataElement = this.dataElement(),
         createdBy = this.createdBy()?.let { it.toDto() },
         value = this.value(),
-        providedElsewhere = this.providedElsewhere().toString()
+        providedElsewhere = this.providedElsewhere().toString(),
     )
 }
-

@@ -67,7 +67,7 @@ internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackerImporterTrackedE
         aggregatedSyncState = this.aggregatedSyncState()?.name,
         attributes = this.trackedEntityAttributeValues()?.map { it.toDto() },
         enrollments = this.enrollments()?.map { it.toDto() },
-        programOwners = this.programOwners()?.map { it.toDto() }
+        programOwners = this.programOwners()?.map { it.toDto() },
 //        relationships = this.relationships()?.map { it.toDto() }
     )
 }

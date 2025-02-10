@@ -28,17 +28,15 @@
 
 package org.hisp.dhis.android.network.trackerimporter
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.event.internal.EventFields
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
 internal data class NewTrackerImporterEventDTO(
-    @SerialName(EventFields.UID) val uid: String?,
+    val event: String?,
     val enrollment: String?,
     val createdAt: String?,
     val updatedAt: String?,
@@ -46,7 +44,7 @@ internal data class NewTrackerImporterEventDTO(
     val updatedAtClient: String?,
     val program: String?,
     val programStage: String?,
-    @SerialName(EventFields.ORGANISATION_UNIT) val organisationUnit: String?,
+    val orgUnit: String?,
     val occurredAt: String?,
     val status: String?,
     val geometry: GeometryDTO?,
@@ -56,16 +54,16 @@ internal data class NewTrackerImporterEventDTO(
     val attributeOptionCombo: String?,
     val assignedUser: NewTrackerImporterUserInfoDTO?,
     val notes: List<NewTrackerImporterNoteDTO>?,
-    @SerialName(EventFields.TRACKED_ENTITY_DATA_VALUES) val trackedEntityDataValues: List<NewTrackerImporterTrackedEntityDataValueDTO>?,
-    val aggregatedSyncState: String?, //no json property
+    val dataValues: List<NewTrackerImporterTrackedEntityDataValueDTO>?,
+    val aggregatedSyncState: String?, // no json property
     val trackedEntity: String?,
     val relationships: List<NewTrackerImporterRelationshipDTO>? = null,
 
-    )
+)
 
 internal fun NewTrackerImporterEvent.toDto(): NewTrackerImporterEventDTO {
     return NewTrackerImporterEventDTO(
-        uid = this.uid(),
+        event = this.uid(),
         enrollment = this.enrollment(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
@@ -73,7 +71,7 @@ internal fun NewTrackerImporterEvent.toDto(): NewTrackerImporterEventDTO {
         updatedAtClient = this.updatedAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
         program = this.program(),
         programStage = this.programStage(),
-        organisationUnit = this.organisationUnit(),
+        orgUnit = this.organisationUnit(),
         occurredAt = this.occurredAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         status = this.status()?.name,
         geometry = this.geometry()?.let { it.toDto() },
@@ -83,7 +81,7 @@ internal fun NewTrackerImporterEvent.toDto(): NewTrackerImporterEventDTO {
         attributeOptionCombo = this.attributeOptionCombo(),
         assignedUser = this.assignedUser()?.let { it.toDto() },
         notes = this.notes()?.map { it.toDto() },
-        trackedEntityDataValues = this.trackedEntityDataValues()?.map { it.toDto() },
+        dataValues = this.trackedEntityDataValues()?.map { it.toDto() },
         aggregatedSyncState = this.aggregatedSyncState()?.name,
         trackedEntity = this.trackedEntity(),
 //        relationships = this.relationships()?.map { it.toDto() }

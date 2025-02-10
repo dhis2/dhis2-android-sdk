@@ -38,10 +38,10 @@ internal interface TrackerImporterNetworkHandler {
     ): ObjectWithUidWebResponse
 
     suspend fun getJobReport(
-        jobId: String
+        jobId: String,
     ): JobReport
 
     suspend fun getJob(
-        jobId: String
+        jobId: String,
     ): List<JobProgress>
 }

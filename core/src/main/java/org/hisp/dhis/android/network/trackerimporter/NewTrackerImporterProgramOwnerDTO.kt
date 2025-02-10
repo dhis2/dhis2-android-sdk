@@ -42,6 +42,6 @@ internal fun NewTrackerImporterProgramOwner.toDto(): NewTrackerImporterProgramOw
     return NewTrackerImporterProgramOwnerDTO(
         program = this.program(),
         trackedEntity = this.trackedEntity(),
-        orgUnit = this.orgUnit()
+        orgUnit = this.orgUnit(),
     )
 }

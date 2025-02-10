@@ -38,6 +38,6 @@ internal data class NewTrackerImporterRelationshipItemEventDTO(
 
 internal fun NewTrackerImporterRelationshipItemEvent.toDto(): NewTrackerImporterRelationshipItemEventDTO {
     return NewTrackerImporterRelationshipItemEventDTO(
-        event = this.event()
+        event = this.event(),
     )
 }

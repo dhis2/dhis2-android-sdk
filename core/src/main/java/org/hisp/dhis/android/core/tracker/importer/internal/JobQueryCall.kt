@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import org.hisp.dhis.android.network.trackerimporter.TrackerImporterService
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 

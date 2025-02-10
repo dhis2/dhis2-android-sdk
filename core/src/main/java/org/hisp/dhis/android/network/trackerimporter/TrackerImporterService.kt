@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.network.trackerimporter
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 internal const val TRACKER_URL = "tracker"
@@ -43,10 +44,10 @@ internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
 internal const val IMPORT_STRATEGY_DELETE = "DELETE"
 
 @Singleton
-internal class TrackerImporterService(private val client: HttpServiceClient) {
+internal class TrackerImporterService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun postTrackerPayload(
-        payload: NewTrackerImporterPayload,
+        payload: NewTrackerImporterPayloadDTO,
         atomicMode: String,
         importStrategy: String,
     ): ObjectWithUidWebResponse {

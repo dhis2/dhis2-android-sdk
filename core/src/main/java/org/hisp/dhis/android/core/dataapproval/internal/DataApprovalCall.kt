@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.dataapproval.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataApprovalCall(
-    private val service: DataApprovalService,
+    private val networkHandler: DataApprovalNetworkHandler,
     private val handler: DataApprovalHandler,
     private val apiDownloader: APIDownloader,
     private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
@@ -54,18 +53,14 @@ internal class DataApprovalCall(
             QUERY_WITHOUT_UIDS_LENGTH,
             query.workflowsUids,
             query.periodIds,
-            query.organisationUnistUids,
+            query.organisationUnitsUids,
             query.attributeOptionCombosUids,
         )
-        return partitions.flatMap { part ->
+        return partitions.flatMap { partition: DataApprovalPartition ->
             apiDownloader.downloadListAsCoroutine(handler) {
-                service.getDataApprovals(
-                    fields = DataApprovalFields.allFields,
+                networkHandler.getDataApprovals(
                     lastUpdated = query.lastUpdatedStr,
-                    workflow = commaSeparatedCollectionValues(part[0]),
-                    periods = commaSeparatedCollectionValues(part[1]),
-                    organisationUnit = commaSeparatedCollectionValues(part[2]),
-                    attributeOptionCombo = commaSeparatedCollectionValues(part[3]),
+                    dataApprovalPartition = partition,
                 )
             }
         }

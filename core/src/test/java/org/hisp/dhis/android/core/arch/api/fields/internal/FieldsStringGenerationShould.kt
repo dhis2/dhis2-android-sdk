@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
 import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentFields
@@ -88,6 +87,7 @@ import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.customicon.CustomIconFields
+import org.hisp.dhis.android.network.dataapproval.DataApprovalFields
 import org.hisp.dhis.android.network.dataelement.DataElementFields
 import org.hisp.dhis.android.network.dataset.DataElementOperandFields
 import org.hisp.dhis.android.network.dataset.DataInputPeriodFields

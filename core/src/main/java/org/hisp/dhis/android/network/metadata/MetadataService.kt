@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.data.webapirepository.internal
+package org.hisp.dhis.android.network.metadata
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
-@Singleton
-@Suppress("LongParameterList")
-internal class ApiService(private val client: HttpServiceClient) {
+internal class MetadataService(private val client: HttpServiceClientKotlinx) {
 
-    // That's an API call and looks like an API endpoint
-    suspend fun getMetadataIds(
-        dataElements: String?,
-        categoryOptionCombos: String?,
-        organisationUnits: String?,
-        users: String?,
-        trackedEntityTypes: String?,
-        trackedEntityAttributes: String?,
-        programs: String?,
-    ): MetadataResponse {
+    @Suppress("LongParameterList")
+    suspend fun getMetadataFields(
+        dataElementField: String?,
+        categoryOptionComboField: String?,
+        organisationUnitField: String?,
+        userField: String?,
+        trackedEntityTypeField: String?,
+        trackedEntityAttributeField: String?,
+        programField: String?,
+    ): MetadataIdsDTO {
         return client.get {
             url("metadata")
             parameters {
-                attribute("dataElements:fields", dataElements)
-                attribute("categoryOptionCombos:fields", categoryOptionCombos)
-                attribute("organisationUnits:fields", organisationUnits)
-                attribute("users:fields", users)
-                attribute("trackedEntityTypes:fields", trackedEntityTypes)
-                attribute("trackedEntityAttributes:fields", trackedEntityAttributes)
-                attribute("programs:fields", programs)
+                attribute("dataElements:fields", dataElementField)
+                attribute("categoryOptionCombos:fields", categoryOptionComboField)
+                attribute("organisationUnits:fields", organisationUnitField)
+                attribute("users:fields", userField)
+                attribute("trackedEntityTypes:fields", trackedEntityTypeField)
+                attribute("trackedEntityAttributes:fields", trackedEntityAttributeField)
+                attribute("programs:fields", programField)
             }
         }
-    }
-
-    companion object {
-        const val GET_IDS = "id"
     }
 }

@@ -12465,53 +12465,6 @@ public class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepos
 	public fun sendSms (Ljava/lang/String;Ljava/util/List;I)Lio/reactivex/Observable;
 }
 
-public abstract class org/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse {
-	public fun <init> ()V
-	public abstract fun categoryOptionCombos ()Ljava/util/List;
-	public abstract fun dataElements ()Ljava/util/List;
-	public abstract fun organisationUnits ()Ljava/util/List;
-	public abstract fun programs ()Ljava/util/List;
-	public abstract fun system ()Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataSystemInfo;
-	public abstract fun trackedEntityAttributes ()Ljava/util/List;
-	public abstract fun trackedEntityTypes ()Ljava/util/List;
-	public abstract fun users ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse;
-	public abstract fun categoryOptionCombos (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun organisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun programs (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun system (Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataSystemInfo;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun trackedEntityAttributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun trackedEntityTypes (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-	public abstract fun users (Ljava/util/List;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataId {
-	public fun <init> ()V
-	public abstract fun id ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataId$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataId;
-	public abstract fun id (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataId$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataSystemInfo {
-	public fun <init> ()V
-	public abstract fun date ()Ljava/util/Date;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataSystemInfo$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataSystemInfo;
-	public abstract fun date (Ljava/util/Date;)Lorg/hisp/dhis/android/core/sms/data/webapirepository/internal/MetadataResponse$MetadataSystemInfo$Builder;
-}
-
 public abstract class org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
 	public fun readAndConvert ()Lio/reactivex/Single;
 	public fun readAndConvert (I)Lio/reactivex/Single;

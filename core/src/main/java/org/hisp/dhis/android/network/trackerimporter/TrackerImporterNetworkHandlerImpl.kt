@@ -38,22 +38,25 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerImporterNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx
+    httpServiceClient: HttpServiceClientKotlinx,
 ) : TrackerImporterNetworkHandler {
     val service = TrackerImporterService(httpServiceClient)
     override suspend fun postTrackerPayload(
         payload: NewTrackerImporterPayload,
-        importStrategy: String
+        importStrategy: String,
     ): ObjectWithUidWebResponse {
         val payloadDTO: NewTrackerImporterPayloadDTO = payload.toDto()
-        return service.postTrackerPayload(payloadDTO, ATOMIC_MODE_OBJECT, importStrategy)
+        val apiPayload = service.postTrackerPayload(payloadDTO, ATOMIC_MODE_OBJECT, importStrategy)
+        return apiPayload.toDomain()
     }
 
     override suspend fun getJobReport(jobId: String): JobReport {
-        TODO("Not yet implemented")
+        val apiPayload = service.getJobReport(jobId)
+        return apiPayload.toDomain()
     }
 
     override suspend fun getJob(jobId: String): List<JobProgress> {
-        TODO("Not yet implemented")
+        val apiPayload = service.getJob(jobId)
+        return apiPayload.map { it.toDomain() }
     }
 }

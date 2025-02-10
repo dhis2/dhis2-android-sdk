@@ -40,10 +40,7 @@ internal data class HttpMessageResponseDTO(
 ) : WebResponseDTO {
     fun toDomain(): HttpMessageResponse {
         return HttpMessageResponse.builder()
-            .httpStatus(httpStatus)
-            .httpStatusCode(httpStatusCode)
-            .status(status)
-            .message(message)
+            .applyWebResponseFields(this)
             .build()
     }
 }

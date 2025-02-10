@@ -25,48 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.trackerimporter
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.koin.core.annotation.Singleton
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
-internal const val TRACKER_URL = "tracker"
-internal const val JOBS_URL = "tracker/jobs/"
-
-internal const val ATOMIC_MODE = "atomicMode"
-internal const val ATOMIC_MODE_OBJECT = "OBJECT"
-
-internal const val IMPORT_STRATEGY = "importStrategy"
-internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
-internal const val IMPORT_STRATEGY_DELETE = "DELETE"
-
-@Singleton
-internal class TrackerImporterService(private val client: HttpServiceClientKotlinx) {
-
-    suspend fun postTrackerPayload(
-        payload: NewTrackerImporterPayloadDTO,
-        atomicMode: String,
-        importStrategy: String,
-    ): ObjectWithUidWebResponseDTO {
-        return client.post {
-            url(TRACKER_URL)
-            parameters {
-                attribute(ATOMIC_MODE, atomicMode)
-                attribute(IMPORT_STRATEGY, importStrategy)
-            }
-            body(payload)
-        }
-    }
-
-    suspend fun getJobReport(jobId: String): JobReportDTO {
-        return client.get {
-            url("$JOBS_URL$jobId/report")
-        }
-    }
-
-    suspend fun getJob(jobId: String): List<JobProgressDTO> {
-        return client.get {
-            url("$JOBS_URL$jobId")
-        }
+@Serializable
+internal data class ObjectWithUidWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: ObjectWithUidDTO,
+) : WebResponseDTO {
+    fun toDomain(): ObjectWithUidWebResponse {
+        return ObjectWithUidWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response.toDomain())
+            .build()
     }
 }

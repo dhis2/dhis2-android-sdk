@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
-import org.hisp.dhis.android.network.trackerimporter.TrackerImporterService
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 
@@ -52,7 +51,7 @@ internal val ATTEMPTS_INTERVAL = 2.seconds
 
 @Singleton
 internal class JobQueryCall internal constructor(
-    private val service: TrackerImporterService,
+    private val networkHandler: TrackerImporterNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val trackerJobObjectStore: TrackerJobObjectStore,
     private val handler: JobReportHandler,
@@ -127,7 +126,7 @@ internal class JobQueryCall internal constructor(
                 storeError = true,
                 errorCatcher = JobQueryErrorCatcher(),
             ) {
-                service.getJob(jobId)
+                networkHandler.getJob(jobId)
             }.getOrThrow()
 
             jobProgressLog.any { it.completed }
@@ -142,7 +141,7 @@ internal class JobQueryCall internal constructor(
 
     private suspend fun downloadReportAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
         val jobReport = coroutineAPICallExecutor.wrap {
-            service.getJobReport(jobId)
+            networkHandler.getJobReport(jobId)
         }.getOrThrow()
 
         trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))

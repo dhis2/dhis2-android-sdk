@@ -33,10 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -48,32 +44,24 @@ import org.hisp.dhis.android.core.common.State;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataSetCompleteRegistration.Builder.class)
 public abstract class DataSetCompleteRegistration extends BaseDeletableDataObject {
 
-    @JsonProperty
     public abstract String period();
 
-    @JsonProperty
     public abstract String dataSet();
 
-    @JsonProperty
     public abstract String organisationUnit();
 
-    @JsonProperty
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
 
     @Nullable
-    @JsonProperty
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     abstract Boolean completed();
 
@@ -90,7 +78,6 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
 
         public Builder() {
@@ -105,7 +92,6 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
         public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
 
-        @JsonFormat(pattern = "yyyy-MM-dd")
         public abstract Builder date(@Nullable Date date);
 
         public abstract Builder storedBy(@Nullable String storedBy);
@@ -116,6 +102,7 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
         // Auxiliary fields to access values
         abstract Boolean deleted();
+
         abstract Boolean completed();
 
         public DataSetCompleteRegistration build() {

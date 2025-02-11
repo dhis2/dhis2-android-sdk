@@ -28,28 +28,19 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.safeUnmodifiableList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.safeUnmodifiableList;
-
-
 @AutoValue
 public abstract class DataValueImportSummary {
-
-    private static final String IMPORT_COUNT = "importCount";
-    private static final String IMPORT_STATUS = "status";
-    private static final String RESPONSE_TYPE = "responseType";
-    private static final String REFERENCE = "reference";
-    private static final String IMPORT_CONFLICT = "conflicts";
 
     public static final DataValueImportSummary EMPTY = DataValueImportSummary.create(
             ImportCount.EMPTY,
@@ -59,33 +50,27 @@ public abstract class DataValueImportSummary {
     );
 
     @NonNull
-    @JsonProperty(IMPORT_COUNT)
     public abstract ImportCount importCount();
 
     @NonNull
-    @JsonProperty(IMPORT_STATUS)
     public abstract ImportStatus importStatus();
 
     @NonNull
-    @JsonProperty(RESPONSE_TYPE)
     public abstract String responseType();
 
     //TODO: Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
     @Nullable
-    @JsonProperty(REFERENCE)
     public abstract String reference();
 
     @Nullable
-    @JsonProperty(IMPORT_CONFLICT)
     public abstract List<ImportConflict> importConflicts();
 
-    @JsonCreator
     public static DataValueImportSummary create(
-            @JsonProperty(IMPORT_COUNT) ImportCount importCount,
-            @JsonProperty(IMPORT_STATUS) ImportStatus importStatus,
-            @JsonProperty(RESPONSE_TYPE) String responseType,
-            @JsonProperty(REFERENCE) String reference,
-            @JsonProperty(IMPORT_CONFLICT) List<ImportConflict> importConflicts) {
+            ImportCount importCount,
+            ImportStatus importStatus,
+            String responseType,
+            String reference,
+            List<ImportConflict> importConflicts) {
         return new AutoValue_DataValueImportSummary(importCount, importStatus,
                 responseType, reference,
                 safeUnmodifiableList(importConflicts));

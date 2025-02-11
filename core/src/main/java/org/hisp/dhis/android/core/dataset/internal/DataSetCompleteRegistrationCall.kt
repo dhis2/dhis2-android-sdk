@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetCompleteRegistrationCall(
-    private val service: DataSetCompleteRegistrationService,
+    private val networkHandler: DataSetCompleteRegistrationNetworkHandler,
     private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
     private val processor: DataSetCompleteRegistrationCallProcessor,
 ) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
@@ -61,15 +61,14 @@ internal class DataSetCompleteRegistrationCall(
         )
 
         return partitions.flatMap { part ->
-            service.getDataSetCompleteRegistrations(
-                fields = DataSetCompleteRegistrationFields.allFields,
+            networkHandler.getDataSetCompleteRegistrations(
                 lastUpdated = query.lastUpdatedStr,
                 dataSetUids = commaSeparatedCollectionValues(part[0]),
                 periodIds = commaSeparatedCollectionValues(part[1]),
                 organisationUnitIds = commaSeparatedCollectionValues(part[2]),
                 children = true,
                 paging = false,
-            ).dataSetCompleteRegistrations
+            )
         }
     }
 }

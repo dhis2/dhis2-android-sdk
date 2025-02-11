@@ -52,7 +52,7 @@ import java.net.HttpURLConnection
 
 @Singleton
 internal class DataSetCompleteRegistrationPostCall(
-    private val dataSetCompleteRegistrationService: DataSetCompleteRegistrationService,
+    private val networkHandler: DataSetCompleteRegistrationNetworkHandler,
     private val dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler,
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
@@ -81,14 +81,13 @@ internal class DataSetCompleteRegistrationPostCall(
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ) = flow {
-        val payload = DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations)
         val dataValueImportSummary: DataValueImportSummary =
             if (toPostDataSetCompleteRegistrations.isEmpty()) {
                 DataValueImportSummary.EMPTY
             } else {
                 markObjectsAs(toPostDataSetCompleteRegistrations, State.UPLOADING)
                 try {
-                    postCompleteRegistrations(payload).getOrThrow()
+                    postCompleteRegistrations(toPostDataSetCompleteRegistrations).getOrThrow()
                 } catch (e: D2Error) {
                     markObjectsAs(toPostDataSetCompleteRegistrations, errorIfOnline(e))
                     throw e
@@ -104,7 +103,7 @@ internal class DataSetCompleteRegistrationPostCall(
                 .blockingGet()
             markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
             coroutineAPICallExecutor.wrap {
-                dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
+                networkHandler.deleteDataSetCompleteRegistration(
                     dataSetCompleteRegistration.dataSet(),
                     dataSetCompleteRegistration.period(),
                     dataSetCompleteRegistration.organisationUnit(),
@@ -127,7 +126,7 @@ internal class DataSetCompleteRegistrationPostCall(
             )
         }
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-            payload,
+            toPostDataSetCompleteRegistrations,
             dataValueImportSummary,
             deletedDataSetCompleteRegistrations,
             withErrorDataSetCompleteRegistrations,
@@ -136,18 +135,18 @@ internal class DataSetCompleteRegistrationPostCall(
     }
 
     private suspend fun postCompleteRegistrations(
-        payload: DataSetCompleteRegistrationPayload,
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): Result<DataValueImportSummary, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             coroutineAPICallExecutor.wrap(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
                 errorClass = DataValueImportSummaryWebResponse::class.java,
             ) {
-                dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload)
+                networkHandler.postDataSetCompleteRegistrationsWebResponse(dataSetCompleteRegistrations)
             }.map { it.response }
         } else {
             coroutineAPICallExecutor.wrap {
-                dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(payload)
+                networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.network.common.dto
 
-import android.database.Cursor;
+import kotlinx.serialization.Serializable
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Relationship extends BaseRelationship {
-
-    public static Builder builder() {
-        return new $$AutoValue_Relationship.Builder();
-    }
-
-    public static Relationship create(Cursor cursor) {
-        return AutoValue_Relationship.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseRelationship.Builder<Builder> {
-
-        public abstract Relationship build();
-    }
-}
+/**
+ * Wrapper value class for values that must send an explicit "null" on serialization. This is the case of tracker
+ * values (both dataValues and attributeValues): they need to send a "value: null" in the payload to delete values.
+ */
+@JvmInline
+@Serializable
+internal value class ValueDTO(val value: String?)

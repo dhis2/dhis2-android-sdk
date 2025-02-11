@@ -60,7 +60,7 @@ internal class NewTrackedEntityEndpointCallFactory(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
     private val parameterManager: TrackerExporterParameterManager,
-) : TrackedEntityEndpointCallFactory() {
+) : TrackedEntityEndpointCallFactory {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): PayloadJackson<TrackedEntityInstance> {
         return trackedExporterService.getTrackedEntityInstances(
@@ -69,8 +69,8 @@ internal class NewTrackedEntityEndpointCallFactory(
             orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
-            programStatus = getProgramStatus(query),
-            programStartDate = getProgramStartDate(query),
+            programStatus = query.getProgramStatus(),
+            programStartDate = query.getProgramStartDate(),
             order = DEFAULT_TRACKER_ORDER.toAPIString(TrackerExporterVersion.V2),
             paging = true,
             page = query.page,
@@ -86,8 +86,8 @@ internal class NewTrackedEntityEndpointCallFactory(
             trackedEntityInstanceUid = uid,
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
-            programStatus = getProgramStatus(query),
-            programStartDate = getProgramStartDate(query),
+            programStatus = query.getProgramStatus(),
+            programStartDate = query.getProgramStartDate(),
             includeDeleted = true,
         ).let { NewTrackerImporterTrackedEntityTransformer.deTransform(it) }
     }

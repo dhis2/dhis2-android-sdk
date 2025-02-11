@@ -45,6 +45,10 @@ public abstract class EnrollmentImportSummary extends BaseImportSummary {
     @JsonProperty(IMPORT_EVENT)
     public abstract EventImportSummaries events();
 
+    public static Builder builder() {
+        return new AutoValue_EnrollmentImportSummary.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummary.Builder<EnrollmentImportSummary.Builder> {

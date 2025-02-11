@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -56,79 +53,64 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner;
 
 import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
 public abstract class TrackedEntityInstance extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty(TrackedEntityInstanceFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdatedAtClient();
 
     @Nullable
-    @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty()
     public abstract String trackedEntityType();
 
     /**
      * @deprecated since 2.30, replaced by {@link #geometry()}
      */
     @Nullable
-    @JsonProperty()
     @Deprecated
     @ColumnAdapter(IgnoreStringColumnAdapter.class)
     abstract String coordinates();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityAttributeValueListColumnAdapter.class)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
     abstract List<Enrollment> enrollments();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramOwnerListAdapter.class)
     public abstract List<ProgramOwner> programOwners();
 
@@ -158,11 +140,9 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty(TrackedEntityInstanceFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder created(Date created);
@@ -173,7 +153,6 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
 
         public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
-        @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
@@ -186,7 +165,6 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
 
         public abstract Builder geometry(Geometry geometry);
 
-        @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(
                 List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 

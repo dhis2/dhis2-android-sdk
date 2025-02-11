@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
-import com.google.auto.value.AutoValue;
+internal interface TrackedEntityInstanceNetworkHandler {
+    suspend fun postTrackedEntityInstances(
+        instances: List<TrackedEntityInstance>,
+        strategy: String?,
+    ): TEIWebResponse
 
-@AutoValue
-public abstract class Relationship extends BaseRelationship {
+    suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance>
 
-    public static Builder builder() {
-        return new $$AutoValue_Relationship.Builder();
-    }
+    suspend fun getTrackedEntityInstance(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
 
-    public static Relationship create(Cursor cursor) {
-        return AutoValue_Relationship.createFromCursor(cursor);
-    }
+    suspend fun getTrackedEntityInstances(query: TrackerAPIQuery): Payload<TrackedEntityInstance>
 
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseRelationship.Builder<Builder> {
-
-        public abstract Relationship build();
-    }
+    suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance>
 }

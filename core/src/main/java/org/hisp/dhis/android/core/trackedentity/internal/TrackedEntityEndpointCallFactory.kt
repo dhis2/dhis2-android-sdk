@@ -27,45 +27,22 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper
 
-internal abstract class TrackedEntityEndpointCallFactory {
+internal interface TrackedEntityEndpointCallFactory {
 
-    abstract suspend fun getCollectionCall(query: TrackerAPIQuery): PayloadJackson<TrackedEntityInstance>
+    suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance>
 
-    abstract suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
+    suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
 
-    abstract suspend fun getRelationshipEntityCall(
+    suspend fun getRelationshipEntityCall(
         item: RelationshipItemRelative,
-    ): PayloadJackson<TrackedEntityInstance>
+    ): Payload<TrackedEntityInstance>
 
-    abstract suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult
-
-    protected fun getUidStr(query: TrackerAPIQuery): String? {
-        return if (query.uids.isEmpty()) null else query.uids.joinToString(";")
-    }
-
-    protected fun getOrgunitStr(query: TrackerAPIQuery): String? {
-        return TrackerQueryHelper.getOrgunits(query)?.joinToString(";")
-    }
-
-    protected fun getProgramStatus(query: TrackerAPIQuery): String? {
-        return when {
-            query.commonParams.program != null -> query.programStatus?.toString()
-            else -> null
-        }
-    }
-
-    protected fun getProgramStartDate(query: TrackerAPIQuery): String? {
-        return when {
-            query.commonParams.program != null -> query.commonParams.startDate
-            else -> null
-        }
-    }
+    suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult
 }

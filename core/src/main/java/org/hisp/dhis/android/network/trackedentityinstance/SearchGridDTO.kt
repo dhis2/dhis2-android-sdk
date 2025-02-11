@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.exporter
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+package org.hisp.dhis.android.network.trackedentityinstance
 
-internal data class TrackerAPIQuery(
-    val commonParams: TrackerQueryCommonParams,
-    val orgUnit: String? = null,
-    val uids: Collection<String> = emptyList(),
-    val programStatus: EnrollmentStatus? = null,
-    val lastUpdatedStr: String? = null,
-    override val page: Int = 1,
-    override val pageSize: Int = DEFAULT_PAGE_SIZE,
-    override val paging: Boolean = true,
-) : BaseQuery(
-    page,
-    pageSize,
-    paging,
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+
+@Serializable
+@Suppress("MagicNumber")
+internal data class SearchGridDTO(
+    val headers: List<SearchGridHeaderDTO>,
+    val metaData: SearchGridMetadataDTO,
+    val width: Int,
+    val height: Int,
+    val rows: List<List<String>>,
 ) {
-    fun getUidStr(): String? {
-        return if (uids.isEmpty()) null else uids.joinToString(";")
-    }
-
-    fun getOrgunitStr(): String? {
-        return TrackerQueryHelper.getOrgunits(this)?.joinToString(";")
-    }
-
-    fun getEventStartDate(): String? {
-        return when {
-            commonParams.program != null -> commonParams.startDate
-            else -> null
+    fun toDomain(): List<TrackedEntityInstance> {
+        return rows.map { row ->
+            TrackedEntityInstance.builder()
+                .uid(row[0])
+                .created(DateUtils.SPACE_DATE_FORMAT.parse(row[1]))
+                .lastUpdated(DateUtils.SPACE_DATE_FORMAT.parse(row[2]))
+                .organisationUnit(row[3])
+                .trackedEntityType(row[5])
+                .trackedEntityAttributeValues(getAttributes(headers, row))
+                .build()
         }
     }
 
-    fun getProgramStatus(): String? {
-        return when {
-            commonParams.program != null -> programStatus?.toString()
-            else -> null
+    private fun getAttributes(
+        headers: List<SearchGridHeaderDTO>,
+        row: List<String>,
+    ): List<TrackedEntityAttributeValue> {
+        val attributeIndexes = row.indices.drop(NON_ATTRIBUTE_LENGTH)
+
+        return attributeIndexes.map { index ->
+            TrackedEntityAttributeValue.builder()
+                .trackedEntityAttribute(headers[index].name)
+                .value(row[index])
+                .build()
         }
     }
 
-    fun getProgramStartDate(): String? {
-        return when {
-            commonParams.program != null -> commonParams.startDate
-            else -> null
-        }
+    companion object {
+        const val NON_ATTRIBUTE_LENGTH = 7
     }
 }

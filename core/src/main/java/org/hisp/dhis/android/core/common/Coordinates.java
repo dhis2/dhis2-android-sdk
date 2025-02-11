@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Coordinates {
@@ -40,17 +38,14 @@ public abstract class Coordinates {
     private final static String LONGITUDE = "longitude";
 
     @Nullable
-    @JsonProperty(LATITUDE)
     public abstract Double latitude();
 
     @Nullable
-    @JsonProperty(LONGITUDE)
     public abstract Double longitude();
 
-    @JsonCreator
     public static Coordinates create(
-            @JsonProperty(LATITUDE) Double latitude,
-            @JsonProperty(LONGITUDE) Double longitude) {
+            Double latitude,
+            Double longitude) {
         return new AutoValue_Coordinates(latitude, longitude);
     }
 }

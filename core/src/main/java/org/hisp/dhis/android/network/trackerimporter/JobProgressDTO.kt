@@ -26,32 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common.dto
+package org.hisp.dhis.android.network.trackerimporter
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.encodeToJsonElement
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
 
 @Serializable
-internal data class GeometryDTO(
-    val type: String?,
-    val coordinates: JsonElement?,
+internal data class JobProgressDTO(
+    val message: String,
+    val completed: Boolean,
 ) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type?.let { FeatureType.valueOfFeatureType(it) })
-            .coordinates(coordinates.toString())
-            .build()
+    fun toDomain(): JobProgress {
+        return JobProgress(
+            message = message,
+            completed = completed,
+        )
     }
-}
-
-internal fun Geometry.toDto(): GeometryDTO {
-    val jsonParser = KotlinxJsonParser.instance
-    return GeometryDTO(
-        type = this.type()?.geometryType,
-        coordinates = this.coordinates()?.let { jsonParser.encodeToJsonElement(it) },
-    )
 }

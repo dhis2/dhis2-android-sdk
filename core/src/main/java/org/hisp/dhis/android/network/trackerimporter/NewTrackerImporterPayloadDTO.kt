@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,8 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.network.trackerimporter
 
-public enum RelationshipConstraintType {
-    FROM, TO
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+
+@Serializable
+internal data class NewTrackerImporterPayloadDTO(
+    val trackedEntities: List<NewTrackerImporterTrackedEntityDTO> = emptyList(),
+    val enrollments: List<NewTrackerImporterEnrollmentDTO> = emptyList(),
+    val events: List<NewTrackerImporterEventDTO> = emptyList(),
+    val relationships: List<NewTrackerImporterRelationshipDTO> = emptyList(),
+
+)
+
+internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
+    return NewTrackerImporterPayloadDTO(
+        trackedEntities = this.trackedEntities.map { it.toDto() },
+        enrollments = this.enrollments.map { it.toDto() },
+        events = this.events.map { it.toDto() },
+        relationships = this.relationships.map { it.toDto() },
+    )
 }

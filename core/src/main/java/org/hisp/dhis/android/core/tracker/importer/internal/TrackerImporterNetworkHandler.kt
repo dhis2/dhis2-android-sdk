@@ -26,32 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common.dto
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.encodeToJsonElement
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 
-@Serializable
-internal data class GeometryDTO(
-    val type: String?,
-    val coordinates: JsonElement?,
-) {
-    fun toDomain(): Geometry {
-        return Geometry.builder()
-            .type(type?.let { FeatureType.valueOfFeatureType(it) })
-            .coordinates(coordinates.toString())
-            .build()
-    }
-}
+internal interface TrackerImporterNetworkHandler {
+    suspend fun postTrackerPayload(
+        payload: NewTrackerImporterPayload,
+        importStrategy: String,
+    ): ObjectWithUidWebResponse
 
-internal fun Geometry.toDto(): GeometryDTO {
-    val jsonParser = KotlinxJsonParser.instance
-    return GeometryDTO(
-        type = this.type()?.geometryType,
-        coordinates = this.coordinates()?.let { jsonParser.encodeToJsonElement(it) },
-    )
+    suspend fun getJobReport(
+        jobId: String,
+    ): JobReport
+
+    suspend fun getJob(
+        jobId: String,
+    ): List<JobProgress>
 }

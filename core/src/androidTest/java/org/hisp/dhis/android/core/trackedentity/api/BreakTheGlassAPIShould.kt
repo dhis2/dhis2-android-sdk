@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
@@ -49,12 +50,14 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePa
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
 import org.hisp.dhis.android.network.ownership.OwnershipNetworkHandlerImpl
-import org.hisp.dhis.android.network.ownership.OwnershipService
+import org.hisp.dhis.android.network.ownership.OwnsershipParameterManager
 import org.junit.Before
 import java.util.Arrays
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
+class BreakTheGlassAPIShould(
+    private val dhisVersionManager: DHISVersionManager,
+) : BaseRealIntegrationTest() {
     /**
      * Expected configuration to run these tests:
      * - user: android
@@ -89,7 +92,10 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
         trackedEntityInstanceService = TrackedEntityInstanceService(d2.httpServiceClient())
-        ownershipNetworkHandler = OwnershipNetworkHandlerImpl(d2.httpServiceClientKotlinx())
+        ownershipNetworkHandler = OwnershipNetworkHandlerImpl(
+            d2.httpServiceClientKotlinx(),
+            OwnsershipParameterManager(dhisVersionManager)
+        )
         login()
     }
 
@@ -178,7 +184,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         val glassResponse: HttpMessageResponse =
             executor.wrap {
                 ownershipNetworkHandler.breakGlass(
-                    mapOf(OwnershipService.TRACKED_ENTITY to tei.uid()),
+                    tei.uid(),
                     program,
                     "Sync",
                 )

@@ -25,35 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval
 
-package org.hisp.dhis.android.core.dataapproval;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.dataapproval.DataApprovalDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class DataApprovalShould : BaseObjectKotlinxShould("dataapproval/data_approval.json"), ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataApprovalShould extends BaseObjectShould implements ObjectShould {
-
-    public DataApprovalShould() {
-        super("dataapproval/data_approval.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    override fun map_from_json_string() {
+        val dataApprovalDTO = deserialize(DataApprovalDTO.serializer())
+        val dataApproval = dataApprovalDTO.toDomain()
 
-        DataApproval dataApproval =
-                objectMapper.readValue(jsonStream, DataApproval.class);
-
-        assertThat(dataApproval.period()).isEqualTo("2019");
-        assertThat(dataApproval.workflow()).isEqualTo("SGPwZDBfBDT");
-        assertThat(dataApproval.organisationUnit()).isEqualTo("YuQRtpLP10I");
-        assertThat(dataApproval.attributeOptionCombo()).isEqualTo("sSeEjeQ0Rgt");
-        assertThat(dataApproval.state()).isEqualTo(DataApprovalState.UNAPPROVED_WAITING);
+        assertThat(dataApproval.period()).isEqualTo("2019")
+        assertThat(dataApproval.workflow()).isEqualTo("SGPwZDBfBDT")
+        assertThat(dataApproval.organisationUnit()).isEqualTo("YuQRtpLP10I")
+        assertThat(dataApproval.attributeOptionCombo()).isEqualTo("sSeEjeQ0Rgt")
+        assertThat(dataApproval.state()).isEqualTo(DataApprovalState.UNAPPROVED_WAITING)
     }
 }

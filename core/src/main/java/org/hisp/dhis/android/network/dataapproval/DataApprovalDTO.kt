@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataapproval.internal
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
+package org.hisp.dhis.android.network.dataapproval
 
-internal data class DataApprovalQuery(
-    val workflowsUids: Collection<String>,
-    val organisationUnitsUids: Collection<String>,
-    val periodIds: Collection<String>,
-    val attributeOptionCombosUids: Collection<String>,
-    val lastUpdatedStr: String?,
-) : BaseQuery(
-    page = 1,
-    pageSize = DEFAULT_PAGE_SIZE,
-    paging = false,
-)
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState
+
+@Serializable
+internal data class DataApprovalDTO(
+    val wf: String,
+    val ou: String,
+    val pe: String,
+    val aoc: String,
+    val state: String,
+) {
+    fun toDomain(): DataApproval {
+        return DataApproval.builder()
+            .workflow(wf)
+            .organisationUnit(ou)
+            .period(pe)
+            .attributeOptionCombo(aoc)
+            .state(DataApprovalState.valueOf(state))
+            .build()
+    }
+}

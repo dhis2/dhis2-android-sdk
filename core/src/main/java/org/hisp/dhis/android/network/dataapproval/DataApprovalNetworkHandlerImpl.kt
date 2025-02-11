@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,43 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataapproval.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
+package org.hisp.dhis.android.network.dataapproval
+
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalNetworkHandler
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPartition
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataApprovalCall(
-    private val networkHandler: DataApprovalNetworkHandler,
-    private val handler: DataApprovalHandler,
-    private val apiDownloader: APIDownloader,
-    private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
-) : QueryCall<DataApproval, DataApprovalQuery> {
+internal class DataApprovalNetworkHandlerImpl(
+    httpClient: HttpServiceClientKotlinx,
+) : DataApprovalNetworkHandler {
+    private val service: DataApprovalService = DataApprovalService(httpClient)
 
-    companion object {
-        private const val QUERY_WITHOUT_UIDS_LENGTH = (
-            "dataApprovals/multiple?fields=wf,ou,pe,aoc,state&wf=&pe=&ou&aoc="
-            ).length
-    }
-
-    override suspend fun download(query: DataApprovalQuery): List<DataApproval> {
-        val partitions = multiDimensionalPartitioner.partitionForSize(
-            QUERY_WITHOUT_UIDS_LENGTH,
-            query.workflowsUids,
-            query.periodIds,
-            query.organisationUnitsUids,
-            query.attributeOptionCombosUids,
+    @Suppress("MagicNumber")
+    override suspend fun getDataApprovals(
+        lastUpdated: String?,
+        dataApprovalPartition: DataApprovalPartition,
+    ): List<DataApproval> {
+        val dataApprovalDtoList = service.getDataApprovals(
+            fields = DataApprovalFields.allFields,
+            lastUpdated = lastUpdated,
+            workflow = commaSeparatedCollectionValues(dataApprovalPartition[0]),
+            periods = commaSeparatedCollectionValues(dataApprovalPartition[1]),
+            organisationUnit = commaSeparatedCollectionValues(dataApprovalPartition[2]),
+            attributeOptionCombo = commaSeparatedCollectionValues(dataApprovalPartition[3]),
         )
-        return partitions.flatMap { partition: DataApprovalPartition ->
-            apiDownloader.downloadListAsCoroutine(handler) {
-                networkHandler.getDataApprovals(
-                    lastUpdated = query.lastUpdatedStr,
-                    dataApprovalPartition = partition,
-                )
-            }
-        }
+        return dataApprovalDtoList.map { it.toDomain() }
     }
 }

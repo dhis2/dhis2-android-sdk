@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
@@ -37,13 +37,13 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper
 
 internal abstract class TrackedEntityEndpointCallFactory {
 
-    abstract suspend fun getCollectionCall(query: TrackerAPIQuery): PayloadJackson<TrackedEntityInstance>
+    abstract suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance>
 
     abstract suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance
 
     abstract suspend fun getRelationshipEntityCall(
         item: RelationshipItemRelative,
-    ): PayloadJackson<TrackedEntityInstance>
+    ): Payload<TrackedEntityInstance>
 
     abstract suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult
 
@@ -55,7 +55,7 @@ internal abstract class TrackedEntityEndpointCallFactory {
         return TrackerQueryHelper.getOrgunits(query)?.joinToString(";")
     }
 
-    protected fun getProgramStatus(query: TrackerAPIQuery): String? {
+    internal fun getProgramStatus(query: TrackerAPIQuery): String? {
         return when {
             query.commonParams.program != null -> query.programStatus?.toString()
             else -> null

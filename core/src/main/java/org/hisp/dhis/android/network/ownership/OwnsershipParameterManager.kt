@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
+package org.hisp.dhis.android.network.ownership
+
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class NewEventEndpointCallFactory(
-    private val networkHandler: TrackerExporterNetworkHandler,
-) : EventEndpointCallFactory {
-
-    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return networkHandler.getEventCollectionCall(eventQuery)
-    }
-
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
-        return networkHandler.getEventRelationshipEntityCall(item)
+internal class OwnsershipParameterManager(
+    private val dhisVersionManager: DHISVersionManager,
+) {
+    fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+            mapOf(OwnershipService.TRACKED_ENTITY to uid)
+        } else {
+            mapOf(OwnershipService.TRACKED_ENTITY_INSTACE to uid)
+        }
     }
 }

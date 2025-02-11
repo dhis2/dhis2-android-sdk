@@ -25,34 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.tracker
 
-package org.hisp.dhis.android.network.trackerimporter
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.koin.core.annotation.Singleton
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+internal const val TRACKER_URL = "tracker"
+internal const val JOBS_URL = "tracker/jobs/"
 
-@Serializable
-internal data class NewTrackerImporterRelationshipDTO(
-    val relationship: String,
-    val relationshipType: String?,
-    val relationshipName: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val bidirectional: Boolean?,
-    val from: NewTrackerImporterRelationshipItemDTO?,
-    val to: NewTrackerImporterRelationshipItemDTO?,
-)
+internal const val ATOMIC_MODE = "atomicMode"
+internal const val ATOMIC_MODE_OBJECT = "OBJECT"
 
-internal fun NewTrackerImporterRelationship.toDto(): NewTrackerImporterRelationshipDTO {
-    return NewTrackerImporterRelationshipDTO(
-        relationship = this.uid(),
-        relationshipType = this.relationshipType(),
-        relationshipName = this.relationshipName(),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        bidirectional = this.bidirectional(),
-        from = this.from()?.toDto(),
-        to = this.to()?.toDto(),
-    )
+internal const val IMPORT_STRATEGY = "importStrategy"
+internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
+internal const val IMPORT_STRATEGY_DELETE = "DELETE"
+
+@Singleton
+internal class TrackerImporterService(private val client: HttpServiceClientKotlinx) {
+
+    suspend fun postTrackerPayload(
+        payload: NewTrackerImporterPayloadDTO,
+        atomicMode: String,
+        importStrategy: String,
+    ): ObjectWithUidWebResponseDTO {
+        return client.post {
+            url(TRACKER_URL)
+            parameters {
+                attribute(ATOMIC_MODE, atomicMode)
+                attribute(IMPORT_STRATEGY, importStrategy)
+            }
+            body(payload)
+        }
+    }
+
+    suspend fun getJobReport(jobId: String): JobReportDTO {
+        return client.get {
+            url("$JOBS_URL$jobId/report")
+        }
+    }
+
+    suspend fun getJob(jobId: String): List<JobProgressDTO> {
+        return client.get {
+            url("$JOBS_URL$jobId")
+        }
+    }
 }

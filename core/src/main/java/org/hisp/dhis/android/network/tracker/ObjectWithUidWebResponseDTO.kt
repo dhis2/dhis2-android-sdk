@@ -26,20 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
 @Serializable
-internal data class JobProgressDTO(
-    val message: String,
-    val completed: Boolean,
-) {
-    fun toDomain(): JobProgress {
-        return JobProgress(
-            message = message,
-            completed = completed,
-        )
+internal data class ObjectWithUidWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: ObjectWithUidDTO,
+) : WebResponseDTO {
+    fun toDomain(): ObjectWithUidWebResponse {
+        return ObjectWithUidWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response.toDomain())
+            .build()
     }
 }

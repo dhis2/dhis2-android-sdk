@@ -26,18 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEnrollment
+import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
 
 @Serializable
-internal data class NewTrackerImporterRelationshipItemEnrollmentDTO(
-    val enrollment: String?,
-)
-
-internal fun NewTrackerImporterRelationshipItemEnrollment.toDto(): NewTrackerImporterRelationshipItemEnrollmentDTO {
-    return NewTrackerImporterRelationshipItemEnrollmentDTO(
-        enrollment = this.enrollment(),
-    )
+internal data class JobProgressDTO(
+    val message: String,
+    val completed: Boolean,
+) {
+    fun toDomain(): JobProgress {
+        return JobProgress(
+            message = message,
+            completed = completed,
+        )
+    }
 }

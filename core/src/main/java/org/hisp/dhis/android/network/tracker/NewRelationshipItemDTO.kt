@@ -26,22 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
 
 @Serializable
-internal data class NewTrackerImporterProgramOwnerDTO(
-    val program: String,
-    val trackedEntity: String,
-    val orgUnit: String,
+internal data class NewRelationshipItemDTO(
+    val relationship: String?,
+    val relationshipItemType: String?,
+    val trackedEntity: NewRelationshipItemTrackedEntityDTO?,
+    val enrollment: NewRelationshipItemEnrollmentDTO?,
+    val event: NewRelationshipItemEventDTO?,
 )
 
-internal fun NewTrackerImporterProgramOwner.toDto(): NewTrackerImporterProgramOwnerDTO {
-    return NewTrackerImporterProgramOwnerDTO(
-        program = this.program(),
-        trackedEntity = this.trackedEntity(),
-        orgUnit = this.orgUnit(),
+internal fun NewTrackerImporterRelationshipItem.toDto(): NewRelationshipItemDTO {
+    return NewRelationshipItemDTO(
+        relationship = this.relationship(),
+        relationshipItemType = this.relationshipItemType()?.name,
+        trackedEntity = this.trackedEntity()?.toDto(),
+        enrollment = this.enrollment()?.toDto(),
+        event = this.event()?.toDto(),
     )
 }

@@ -26,26 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 
 @Serializable
-internal data class NewTrackerImporterRelationshipItemDTO(
-    val relationship: String?,
-    val relationshipItemType: String?,
-    val trackedEntity: NewTrackerImporterRelationshipItemTrackedEntityDTO?,
-    val enrollment: NewTrackerImporterRelationshipItemEnrollmentDTO?,
-    val event: NewTrackerImporterRelationshipItemEventDTO?,
+internal data class NewTrackedEntityAttributeValueDTO(
+    val attribute: String?,
+    val value: String?,
+    val createdAt: String?,
+    val updatedAt: String?,
+    val trackedEntityInstance: String?,
 )
 
-internal fun NewTrackerImporterRelationshipItem.toDto(): NewTrackerImporterRelationshipItemDTO {
-    return NewTrackerImporterRelationshipItemDTO(
-        relationship = this.relationship(),
-        relationshipItemType = this.relationshipItemType()?.name,
-        trackedEntity = this.trackedEntity()?.toDto(),
-        enrollment = this.enrollment()?.toDto(),
-        event = this.event()?.toDto(),
+internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackedEntityAttributeValueDTO {
+    return NewTrackedEntityAttributeValueDTO(
+        attribute = this.trackedEntityAttribute(),
+        value = this.value(),
+        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
+        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
+        trackedEntityInstance = this.trackedEntityInstance(),
     )
 }

@@ -26,13 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 
 @Serializable
-internal data class NewTrackerImporterNoteDTO(
+internal data class NewNoteDTO(
     val note: String,
     val noteType: String?,
     val event: String?,
@@ -42,8 +42,8 @@ internal data class NewTrackerImporterNoteDTO(
     val storedAt: String?,
 )
 
-internal fun NewTrackerImporterNote.toDto(): NewTrackerImporterNoteDTO {
-    return NewTrackerImporterNoteDTO(
+internal fun NewTrackerImporterNote.toDto(): NewNoteDTO {
+    return NewNoteDTO(
         note = uid(),
         noteType = noteType()?.name,
         event = event(),

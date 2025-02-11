@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -35,7 +35,7 @@ import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
-internal data class NewTrackerImporterEventDTO(
+internal data class NewEventDTO(
     val event: String?,
     val enrollment: String?,
     val createdAt: String?,
@@ -52,17 +52,17 @@ internal data class NewTrackerImporterEventDTO(
     val completedBy: String?,
     val scheduledAt: String?,
     val attributeOptionCombo: String?,
-    val assignedUser: NewTrackerImporterUserInfoDTO?,
-    val notes: List<NewTrackerImporterNoteDTO>?,
-    val dataValues: List<NewTrackerImporterTrackedEntityDataValueDTO>?,
+    val assignedUser: NewUserInfoDTO?,
+    val notes: List<NewNoteDTO>?,
+    val dataValues: List<NewTrackedEntityDataValueDTO>?,
     val aggregatedSyncState: String?, // no json property
     val trackedEntity: String?,
-    val relationships: List<NewTrackerImporterRelationshipDTO>? = null,
+    val relationships: List<NewRelationshipDTO>? = null,
 
-)
+    )
 
-internal fun NewTrackerImporterEvent.toDto(): NewTrackerImporterEventDTO {
-    return NewTrackerImporterEventDTO(
+internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
+    return NewEventDTO(
         event = this.uid(),
         enrollment = this.enrollment(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },

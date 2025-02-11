@@ -26,27 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.GeometryDTO
+import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
-internal data class NewTrackerImporterTrackedEntityAttributeValueDTO(
-    val attribute: String?,
-    val value: String?,
+internal data class NewTrackedEntityDTO(
+    override val deleted: Boolean?,
+    val trackedEntity: String,
     val createdAt: String?,
     val updatedAt: String?,
-    val trackedEntityInstance: String?,
-)
+    val createdAtClient: String?,
+    val updatedAtClient: String?,
+    val organisationUnit: String?,
+    val trackedEntityType: String?,
+    val geometry: GeometryDTO?,
+    val aggregatedSyncState: String?,
+    val attributes: List<NewTrackedEntityAttributeValueDTO>?,
+    val enrollments: List<NewEnrollmentDTO>?,
+    val programOwners: List<NewProgramOwnerDTO>?,
+    val relationships: List<NewRelationshipDTO>? = null,
+) : BaseDeletableDataObjectDTO
 
-internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackerImporterTrackedEntityAttributeValueDTO {
-    return NewTrackerImporterTrackedEntityAttributeValueDTO(
-        attribute = this.trackedEntityAttribute(),
-        value = this.value(),
+internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {
+    return NewTrackedEntityDTO(
+        deleted = this.deleted(),
+        trackedEntity = this.uid(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        trackedEntityInstance = this.trackedEntityInstance(),
+        createdAtClient = this.createdAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
+        updatedAtClient = this.updatedAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
+        organisationUnit = this.organisationUnit(),
+        trackedEntityType = this.trackedEntityType(),
+        geometry = this.geometry()?.let { it.toDto() },
+        aggregatedSyncState = this.aggregatedSyncState()?.name,
+        attributes = this.trackedEntityAttributeValues()?.map { it.toDto() },
+        enrollments = this.enrollments()?.map { it.toDto() },
+        programOwners = this.programOwners()?.map { it.toDto() },
+//        relationships = this.relationships()?.map { it.toDto() }
     )
 }

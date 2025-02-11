@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
-internal data class NewTrackerImporterEnrollmentDTO(
+internal data class NewEnrollmentDTO(
     @SerialName("enrollment") val uid: String,
     val createdAt: String?,
     val updatedAt: String?,
@@ -53,14 +53,14 @@ internal data class NewTrackerImporterEnrollmentDTO(
     val trackedEntity: String?,
     val geometry: GeometryDTO?,
     val aggregatedSyncState: String?,
-    val attributes: List<NewTrackerImporterTrackedEntityAttributeValueDTO>?,
-    val events: List<NewTrackerImporterEventDTO>?,
-    val notes: List<NewTrackerImporterNoteDTO>?,
-    val relationships: List<NewTrackerImporterRelationshipDTO>? = null,
+    val attributes: List<NewTrackedEntityAttributeValueDTO>?,
+    val events: List<NewEventDTO>?,
+    val notes: List<NewNoteDTO>?,
+    val relationships: List<NewRelationshipDTO>? = null,
 )
 
-internal fun NewTrackerImporterEnrollment.toDto(): NewTrackerImporterEnrollmentDTO {
-    return NewTrackerImporterEnrollmentDTO(
+internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
+    return NewEnrollmentDTO(
         uid = this.uid(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },

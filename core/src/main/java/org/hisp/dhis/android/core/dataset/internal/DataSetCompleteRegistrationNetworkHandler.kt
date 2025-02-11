@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.dataset.internal
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+internal interface DataSetCompleteRegistrationNetworkHandler {
 
-import java.util.ArrayList;
-import java.util.List;
+    suspend fun getDataSetCompleteRegistrations(
+        lastUpdated: String?,
+        dataSetUids: String,
+        periodIds: String,
+        organisationUnitIds: String,
+        children: Boolean,
+        paging: Boolean,
+    ): List<DataSetCompleteRegistration>
 
-class DataSetCompleteRegistrationPayload {
+    suspend fun postDataSetCompleteRegistrations(
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
+    ): DataValueImportSummary
 
-    @JsonProperty("completeDataSetRegistrations")
-    List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+    suspend fun postDataSetCompleteRegistrationsWebResponse(
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
+    ): DataValueImportSummaryWebResponse
 
-    DataSetCompleteRegistrationPayload(
-            @JsonProperty("completeDataSetRegistrations")
-                    List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
-
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations == null ?
-                new ArrayList<>() :
-                dataSetCompleteRegistrations;
-    }
+    suspend fun deleteDataSetCompleteRegistration(
+        dataSet: String,
+        periodId: String,
+        orgUnit: String,
+        categoryComboUid: String,
+        categoryOptionUids: String,
+        multiOrganisationUnit: Boolean
+    ): HttpResponse
 }

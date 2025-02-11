@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataapproval.internal
+package org.hisp.dhis.android.network.dataapproval
 
 import org.hisp.dhis.android.core.dataapproval.DataApproval
-import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo
-import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object DataApprovalFields : BaseFields<DataApproval>() {
-    const val WORKFLOW = "wf"
-    const val ORGANISATION_UNIT = "ou"
-    const val PERIOD = "pe"
-    const val ATTRIBUTE_OPTION_COMBO = "aoc"
-
-    val allFields = Fields.from(
-        fh.field(WORKFLOW),
-        fh.field(ORGANISATION_UNIT),
-        fh.field(PERIOD),
-        fh.field(ATTRIBUTE_OPTION_COMBO),
-        fh.field(DataApprovalTableInfo.Columns.STATE),
-    )
+@Suppress("LongParameterList")
+internal class DataApprovalService(private val client: HttpServiceClientKotlinx) {
+    suspend fun getDataApprovals(
+        fields: Fields<DataApproval>,
+        lastUpdated: String?,
+        workflow: String,
+        periods: String,
+        organisationUnit: String,
+        attributeOptionCombo: String,
+    ): List<DataApprovalDTO> {
+        return client.get {
+            url("dataApprovals/multiple")
+            parameters {
+                fields(fields)
+                attribute("lastUpdated", lastUpdated)
+                attribute("wf", workflow)
+                attribute("pe", periods)
+                attribute("ou", organisationUnit)
+                attribute("aoc", attributeOptionCombo)
+            }
+        }
+    }
 }

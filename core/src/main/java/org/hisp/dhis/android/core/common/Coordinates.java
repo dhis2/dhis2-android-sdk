@@ -34,8 +34,6 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Coordinates {
-    private final static String LATITUDE = "latitude";
-    private final static String LONGITUDE = "longitude";
 
     @Nullable
     public abstract Double latitude();

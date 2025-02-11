@@ -127,9 +127,12 @@
               "completedBy": "system",
               "enrollment": "enroll1",
               "deleted": false,
-              "coordinate": {
-                "latitude": 0.0,
-                "longitude": 0.0
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  0.0,
+                  0.0
+                ]
               },
               "dataValues": [
                 {
@@ -263,9 +266,12 @@
               "value": "TEI enrollmnet note 4"
             }
           ],
-          "coordinate": {
-            "latitude": 2.6,
-            "longitude": 4.1
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              2.6,
+              4.1
+            ]
           },
           "events": [
             {
@@ -284,9 +290,12 @@
               "completedBy": "system",
               "enrollment": "enroll2",
               "deleted": false,
-              "coordinate": {
-                "latitude": 0.0,
-                "longitude": 0.0
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  0.0,
+                  0.0
+                ]
               },
               "dataValues": [],
               "notes": [

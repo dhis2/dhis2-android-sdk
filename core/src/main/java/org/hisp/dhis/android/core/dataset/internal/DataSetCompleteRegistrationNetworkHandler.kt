@@ -45,11 +45,11 @@ internal interface DataSetCompleteRegistrationNetworkHandler {
     ): List<DataSetCompleteRegistration>
 
     suspend fun postDataSetCompleteRegistrations(
-        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummary
 
     suspend fun postDataSetCompleteRegistrationsWebResponse(
-        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummaryWebResponse
 
     suspend fun deleteDataSetCompleteRegistration(
@@ -58,6 +58,6 @@ internal interface DataSetCompleteRegistrationNetworkHandler {
         orgUnit: String,
         categoryComboUid: String,
         categoryOptionUids: String,
-        multiOrganisationUnit: Boolean
+        multiOrganisationUnit: Boolean,
     ): HttpResponse
 }

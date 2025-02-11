@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
 import org.junit.Test
 
-class DataSetCompleteRegistrationShould : BaseObjectKotlinxShould("dataset/data_set_complete_registration.json"),
+class DataSetCompleteRegistrationShould :
+    BaseObjectKotlinxShould("dataset/data_set_complete_registration.json"),
     ObjectShould {
     @Test
     override fun map_from_json_string() {

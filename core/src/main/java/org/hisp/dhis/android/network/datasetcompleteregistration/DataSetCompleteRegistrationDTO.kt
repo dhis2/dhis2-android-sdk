@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.dataset.DataSetDTO
 
 @Serializable
 internal data class DataSetCompleteRegistrationDTO(

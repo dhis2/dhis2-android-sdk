@@ -30,26 +30,34 @@ package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
 internal data class NewNoteDTO(
+    override val deleted: Boolean?,
     val note: String,
-    val noteType: String?,
-    val event: String?,
-    val enrollment: String?,
     val value: String?,
     val storedBy: String?,
     val storedAt: String?,
-)
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(): Note {
+        return Note.builder()
+            .uid(note)
+            .deleted(deleted)
+            .value(value)
+            .storedBy(storedBy)
+            .storedDate(storedAt)
+            .build()
+    }
+}
 
 internal fun NewTrackerImporterNote.toDto(): NewNoteDTO {
     return NewNoteDTO(
         note = uid(),
-        noteType = noteType()?.name,
-        event = event(),
-        enrollment = enrollment(),
         value = value(),
         storedBy = storedBy(),
         storedAt = storedAt(),
+        deleted = deleted(),
     )
 }

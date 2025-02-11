@@ -30,13 +30,22 @@ package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 @Serializable
 internal data class NewProgramOwnerDTO(
     val program: String,
     val trackedEntity: String,
     val orgUnit: String,
-)
+) {
+    fun toDomain(): ProgramOwner {
+        return ProgramOwner.builder()
+            .program(program)
+            .ownerOrgUnit(orgUnit)
+            .trackedEntityInstance(trackedEntity)
+            .build()
+    }
+}
 
 internal fun NewTrackerImporterProgramOwner.toDto(): NewProgramOwnerDTO {
     return NewProgramOwnerDTO(

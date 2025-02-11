@@ -31,6 +31,9 @@ package org.hisp.dhis.android.network.tracker
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
 
 @Serializable
 internal data class NewTrackedEntityDataValueDTO(
@@ -40,17 +43,29 @@ internal data class NewTrackedEntityDataValueDTO(
     val dataElement: String?,
     val createdBy: UserInfoDTO?,
     val value: String?,
-    val providedElsewhere: String?,
-)
+    val providedElsewhere: Boolean?,
+) {
+    fun toDomain(): TrackedEntityDataValue {
+        return TrackedEntityDataValue.builder()
+            .event(event)
+            .created(createdAt.toJavaDate())
+            .lastUpdated(updatedAt.toJavaDate())
+            .dataElement(dataElement)
+            .storedBy(createdBy?.username)
+            .value(value)
+            .providedElsewhere(providedElsewhere)
+            .build()
+    }
+}
 
 internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackedEntityDataValueDTO {
     return NewTrackedEntityDataValueDTO(
         event = this.event(),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAt = this.createdAt()?.let { it.dateFormat() },
+        updatedAt = this.updatedAt()?.let { it.dateFormat() },
         dataElement = this.dataElement(),
         createdBy = this.createdBy()?.let { it.toDto() },
         value = this.value(),
-        providedElsewhere = this.providedElsewhere().toString(),
+        providedElsewhere = this.providedElsewhere(),
     )
 }

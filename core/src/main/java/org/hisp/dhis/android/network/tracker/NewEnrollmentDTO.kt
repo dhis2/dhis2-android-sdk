@@ -28,22 +28,26 @@
 
 package org.hisp.dhis.android.network.tracker
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields.ORGANISATION_UNIT
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
 internal data class NewEnrollmentDTO(
-    @SerialName("enrollment") val uid: String,
+    override val deleted: Boolean?,
+    val enrollment: String,
     val createdAt: String?,
     val updatedAt: String?,
     val createdAtClient: String?,
     val updatedAtClient: String?,
-    @SerialName(ORGANISATION_UNIT) val organisationUnit: String?,
+    val orgUnit: String?,
     val program: String?,
     val enrolledAt: String?,
     val occurredAt: String?,
@@ -52,21 +56,46 @@ internal data class NewEnrollmentDTO(
     val status: String?,
     val trackedEntity: String?,
     val geometry: GeometryDTO?,
-    val aggregatedSyncState: String?,
-    val attributes: List<NewTrackedEntityAttributeValueDTO>?,
+    val attributes: List<NewTrackedEntityAttributeValueDTO> = emptyList(),
     val events: List<NewEventDTO>?,
     val notes: List<NewNoteDTO>?,
     val relationships: List<NewRelationshipDTO>? = null,
-)
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(): Enrollment {
+
+        return Enrollment.builder().apply {
+            uid(enrollment)
+            deleted(deleted)
+            created(createdAt.toJavaDate())
+            lastUpdated(updatedAt.toJavaDate())
+            createdAtClient(createdAtClient.toJavaDate())
+            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            organisationUnit(orgUnit)
+            program(program)
+            enrollmentDate(enrolledAt.toJavaDate())
+            incidentDate(occurredAt.toJavaDate())
+            completedDate(completedAt.toJavaDate())
+            followUp(followUp)
+            status(status?.let { EnrollmentStatus.valueOf(it) })
+            trackedEntityInstance(trackedEntity)
+            geometry(geometry?.toDomain())
+            notes(notes?.map { it.toDomain() })
+            EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
+            relationships(relationships?.map { it.toDomain() })
+        }.build()
+    }
+}
+
 
 internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
     return NewEnrollmentDTO(
-        uid = this.uid(),
+        enrollment = this.uid(),
+        deleted = this.deleted(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         createdAtClient = this.createdAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAtClient = this.updatedAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
-        organisationUnit = this.organisationUnit(),
+        orgUnit = this.organisationUnit(),
         program = this.program(),
         enrolledAt = this.enrolledAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         occurredAt = this.occurredAt()?.let { DateUtils.DATE_FORMAT.format(it) },
@@ -75,10 +104,8 @@ internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
         status = this.status()?.name,
         trackedEntity = this.trackedEntity(),
         geometry = this.geometry()?.let { it.toDto() },
-        aggregatedSyncState = this.aggregatedSyncState()?.name,
-        attributes = this.attributes()?.map { it.toDto() },
+        attributes = this.attributes()?.map { it.toDto() } ?: emptyList(),
         events = this.events()?.map { it.toDto() },
         notes = this.notes()?.map { it.toDto() },
-//        relationships = this.relationships()?.map { it.toDto() }
     )
 }

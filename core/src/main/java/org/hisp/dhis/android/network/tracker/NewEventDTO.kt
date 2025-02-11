@@ -29,13 +29,22 @@
 package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventInternalAccessor
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
 internal data class NewEventDTO(
+    override val deleted: Boolean?,
     val event: String?,
     val enrollment: String?,
     val createdAt: String?,
@@ -55,15 +64,46 @@ internal data class NewEventDTO(
     val assignedUser: NewUserInfoDTO?,
     val notes: List<NewNoteDTO>?,
     val dataValues: List<NewTrackedEntityDataValueDTO>?,
-    val aggregatedSyncState: String?, // no json property
     val trackedEntity: String?,
     val relationships: List<NewRelationshipDTO>? = null,
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(): Event {
+        val notes = notes?.map { it.toDomain() }
+        val dataValues = dataValues?.map { it.toDomain() }
+        val relationships = relationships?.map { it.toDomain() }
 
-    )
+        return Event.builder().apply {
+            uid(event)
+            deleted(deleted)
+            enrollment(enrollment)
+            created(createdAt.toJavaDate())
+            lastUpdated(updatedAt.toJavaDate())
+            createdAtClient(createdAtClient.toJavaDate())
+            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            program(program)
+            programStage(programStage)
+            organisationUnit(orgUnit)
+            eventDate(occurredAt.toJavaDate())
+            status(status?.let { EventStatus.valueOf(it) })
+            geometry(geometry?.toDomain())
+            completedDate(completedAt.toJavaDate())
+            completedBy(completedBy)
+            dueDate(scheduledAt.toJavaDate())
+            attributeOptionCombo(attributeOptionCombo)
+            assignedUser(assignedUser?.uid)
+            trackedEntityDataValues(dataValues)
+            notes(notes)
+            relationships(relationships)
+            EventInternalAccessor.insertTrackedEntityInstance(this, trackedEntity)
+        }.build()
+    }
+}
+
 
 internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
     return NewEventDTO(
         event = this.uid(),
+        deleted = this.deleted(),
         enrollment = this.enrollment(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
@@ -82,8 +122,13 @@ internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
         assignedUser = this.assignedUser()?.let { it.toDto() },
         notes = this.notes()?.map { it.toDto() },
         dataValues = this.trackedEntityDataValues()?.map { it.toDto() },
-        aggregatedSyncState = this.aggregatedSyncState()?.name,
         trackedEntity = this.trackedEntity(),
-//        relationships = this.relationships()?.map { it.toDto() }
     )
 }
+
+@Serializable
+internal class NewEventPayload(
+    override val pager: PagerDTO?,
+    @JsonNames("instances", "events") override val items: List<NewEventDTO> = emptyList(),
+) : PayloadJson<NewEventDTO>(pager, items)
+

@@ -31,9 +31,13 @@ package org.hisp.dhis.android.network.tracker
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
 internal data class NewRelationshipDTO(
+    override val deleted: Boolean?,
     val relationship: String,
     val relationshipType: String?,
     val relationshipName: String?,
@@ -42,10 +46,25 @@ internal data class NewRelationshipDTO(
     val bidirectional: Boolean?,
     val from: NewRelationshipItemDTO?,
     val to: NewRelationshipItemDTO?,
-)
+) : BaseDeletableDataObjectDTO {
+
+    fun toDomain(): Relationship {
+        return Relationship.builder()
+            .uid(relationship)
+            .relationshipType(relationshipType)
+            .name(relationshipName)
+            .created(createdAt.toJavaDate())
+            .lastUpdated(updatedAt.toJavaDate())
+            .from(from?.toDomain())
+            .to(to?.toDomain())
+            .deleted(deleted)
+            .build()
+    }
+}
 
 internal fun NewTrackerImporterRelationship.toDto(): NewRelationshipDTO {
     return NewRelationshipDTO(
+        deleted = this.deleted(),
         relationship = this.uid(),
         relationshipType = this.relationshipType(),
         relationshipName = this.relationshipName(),

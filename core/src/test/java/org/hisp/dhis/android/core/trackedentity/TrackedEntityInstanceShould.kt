@@ -28,30 +28,30 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
 import org.junit.Test
 
-class TrackedEntityInstanceShould : BaseObjectShould("trackedentity/tracked_entity_instance.json"), ObjectShould {
+class TrackedEntityInstanceShould :
+    BaseObjectKotlinxShould("trackedentity/tracked_entity_instance.json"),
+    ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val trackedEntityInstance = objectMapper.readValue(jsonStream, TrackedEntityInstance::class.java)
+        val trackedEntityInstanceDTO = deserialize(TrackedEntityInstanceDTO.serializer())
+        val trackedEntityInstance = trackedEntityInstanceDTO.toDomain()
 
-        assertThat(trackedEntityInstance.lastUpdated()).isEqualTo(
-            DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242"),
-        )
-        assertThat(trackedEntityInstance.created()).isEqualTo(
-            DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"),
-        )
+        assertThat(trackedEntityInstance.lastUpdated()).isEqualTo("2015-10-15T11:32:27.242".toJavaDate())
+        assertThat(trackedEntityInstance.created()).isEqualTo("2014-06-06T20:44:21.375".toJavaDate())
 
         assertThat(trackedEntityInstance.uid()).isEqualTo("PgmUFEQYZdt")
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8")
         assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo("nEenWmSyUEp")
         assertThat(trackedEntityInstance.geometry()!!.type()).isEqualTo(FeatureType.POINT)
-        assertThat(trackedEntityInstance.geometry()!!.coordinates()).isEqualTo("[9.0, 9.0]")
+        assertThat(trackedEntityInstance.geometry()!!.coordinates()).isEqualTo("[9.0,9.0]")
         assertThat(trackedEntityInstance.deleted()).isFalse()
 
         assertThat(trackedEntityInstance.trackedEntityAttributeValues()!![0].trackedEntityAttribute())

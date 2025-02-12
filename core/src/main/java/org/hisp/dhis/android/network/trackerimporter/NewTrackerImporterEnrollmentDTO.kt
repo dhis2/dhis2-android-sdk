@@ -32,9 +32,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields.ORGANISATION_UNIT
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.enrollment.EnrollmentFields.ORGANISATION_UNIT
 
 @Serializable
 internal data class NewTrackerImporterEnrollmentDTO(

@@ -7630,6 +7630,7 @@ public final class org/hisp/dhis/android/core/imports/internal/DataValueImportSu
 
 public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries$Builder;
 	public abstract fun importSummaries ()Ljava/util/List;
 }
 
@@ -7641,6 +7642,7 @@ public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImpo
 
 public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary$Builder;
 	public abstract fun events ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries;
 }
 
@@ -7783,6 +7785,7 @@ public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipWe
 
 public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummaries$Builder;
 	public abstract fun importSummaries ()Ljava/util/List;
 }
 
@@ -7794,6 +7797,7 @@ public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSumma
 
 public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
 	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummary$Builder;
 	public abstract fun enrollments ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries;
 }
 
@@ -13798,19 +13802,6 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceFilterCall$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstancePayload {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstancePayload$Builder;
-	public static fun create (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstancePayload;
-	public abstract fun trackedEntityInstances ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstancePayload$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstancePayload;
-	public abstract fun trackedEntityInstances (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstancePayload$Builder;
-}
-
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/BaseObject {
 	public fun <init> ()V
 	public abstract fun downloadLimit ()Ljava/lang/Integer;
@@ -13918,14 +13909,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/ownership/Program
 	public abstract fun reason (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner$Builder;
 	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner$Builder;
 	public abstract fun validUntil (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/trackedentity/search/SearchGrid {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/trackedentity/search/SearchGridMapper {
-	public fun <init> ()V
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceOnlineResult {

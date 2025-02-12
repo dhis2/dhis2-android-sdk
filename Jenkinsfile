@@ -48,6 +48,16 @@ pipeline {
                 }
             }
         }
+        stage('Api validation') {
+            steps {
+                script {
+                    echo 'Running public API validation'
+                    retryOnTimeout(3, 10) {
+                        sh './gradlew :core:apiCheck'
+                    }
+                }
+            }
+        }
         stage('Unit tests') {
             steps {
                 script {

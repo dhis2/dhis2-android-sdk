@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.network.trackedentityinstance
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
 
-import java.util.Map;
-
-import androidx.annotation.NonNull;
-
-@AutoValue
-abstract class SearchGridMetadata {
-    private final static String NAMES = "names";
-
-    @NonNull
-    @JsonProperty(NAMES)
-    abstract Map<String, String> names();
-
-    @JsonCreator
-    static SearchGridMetadata create(
-            @JsonProperty(NAMES) Map<String, String> names) {
-
-        return new AutoValue_SearchGridMetadata(names);
-    }
-}
+@Serializable
+internal data class SearchGridHeaderDTO(
+    val name: String,
+    val column: String,
+    val type: String,
+    val hidden: Boolean,
+    val meta: Boolean,
+)

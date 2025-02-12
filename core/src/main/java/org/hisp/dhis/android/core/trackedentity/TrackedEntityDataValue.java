@@ -32,11 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,38 +42,29 @@ import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
 public abstract class TrackedEntityDataValue extends BaseDataObject implements ObjectWithDeleteInterface {
 
     @Nullable
-    @JsonIgnore()
     public abstract String event();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty()
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty()
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty()
-    @JsonInclude()
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean providedElsewhere();
 
     @Override
@@ -97,7 +83,6 @@ public abstract class TrackedEntityDataValue extends BaseDataObject implements O
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

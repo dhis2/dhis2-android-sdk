@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterProgramOwnerPostCall
+import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceService
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection.HTTP_CONFLICT
 
@@ -54,7 +55,7 @@ import java.net.HttpURLConnection.HTTP_CONFLICT
 internal class OldTrackerImporterPostCall internal constructor(
     private val trackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
     private val trackerStateManager: TrackerPostStateManager,
-    private val trackedEntityInstanceService: TrackedEntityInstanceService,
+    private val networkHandler: TrackedEntityInstanceNetworkHandler,
     private val eventNetworkHandler: EventNetworkHandler,
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val eventImportHandler: EventImportHandler,
@@ -137,14 +138,13 @@ internal class OldTrackerImporterPostCall internal constructor(
             trackedEntityInstances = trackedEntityInstances,
             forcedState = State.UPLOADING,
         )
-        val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(trackedEntityInstances)
 
         val response = coroutineAPICallExecutor.wrap(
             storeError = true,
             acceptedErrorCodes = listOf(HTTP_CONFLICT),
             errorClass = TEIWebResponse::class.java,
         ) {
-            trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, "SYNC")
+            networkHandler.postTrackedEntityInstances(trackedEntityInstances, "SYNC")
         }
 
         return response.getOrThrow().let { webResponse ->

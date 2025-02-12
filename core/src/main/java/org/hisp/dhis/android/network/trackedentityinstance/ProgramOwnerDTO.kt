@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.network.trackedentityinstance
 
-import android.database.Cursor;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Relationship extends BaseRelationship {
-
-    public static Builder builder() {
-        return new $$AutoValue_Relationship.Builder();
+@Serializable
+internal data class ProgramOwnerDTO(
+    val program: String,
+    val trackedEntityInstance: String,
+    val ownerOrgUnit: String,
+) {
+    fun toDomain(): ProgramOwner {
+        return ProgramOwner.builder()
+            .program(program)
+            .trackedEntityInstance(trackedEntityInstance)
+            .ownerOrgUnit(ownerOrgUnit)
+            .build()
     }
+}
 
-    public static Relationship create(Cursor cursor) {
-        return AutoValue_Relationship.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseRelationship.Builder<Builder> {
-
-        public abstract Relationship build();
-    }
+internal fun ProgramOwner.toDto(): ProgramOwnerDTO {
+    return ProgramOwnerDTO(
+        program = program(),
+        trackedEntityInstance = trackedEntityInstance(),
+        ownerOrgUnit = ownerOrgUnit(),
+    )
 }

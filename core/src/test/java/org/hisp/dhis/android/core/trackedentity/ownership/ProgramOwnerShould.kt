@@ -28,15 +28,17 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedentityinstance.ProgramOwnerDTO
 import org.junit.Test
 
-class ProgramOwnerShould : BaseObjectShould("trackedentity/ownership/program_owner.json"), ObjectShould {
+class ProgramOwnerShould : BaseObjectKotlinxShould("trackedentity/ownership/program_owner.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val programOwner = objectMapper.readValue(jsonStream, ProgramOwner::class.java)
+        val programOwnerDTO = deserialize(ProgramOwnerDTO.serializer())
+        val programOwner = programOwnerDTO.toDomain()
 
         assertThat(programOwner.program()).isEqualTo("lxAQ7Zs9VYR")
         assertThat(programOwner.trackedEntityInstance()).isEqualTo("PgmUFEQYZdt")

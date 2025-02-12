@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,52 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.network.trackedentityinstance
 
-import androidx.annotation.NonNull;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-public abstract class SearchGrid {
-    private final static String HEADERS = "headers";
-    private final static String META_DATA = "metaData";
-    private final static String WIDTH = "width";
-    private final static String HEIGHT = "height";
-    private final static String ROWS = "rows";
-
-    @NonNull
-    @JsonProperty(HEADERS)
-    abstract List<SearchGridHeader> headers();
-
-    @NonNull
-    @JsonProperty(META_DATA)
-    abstract SearchGridMetadata metaData();
-
-    @NonNull
-    @JsonProperty(WIDTH)
-    abstract Integer width();
-
-    @NonNull
-    @JsonProperty(HEIGHT)
-    abstract Integer height();
-
-    @NonNull
-    @JsonProperty(ROWS)
-    abstract List<List<String>> rows();
-
-    @JsonCreator
-    static SearchGrid create(
-            @JsonProperty(HEADERS) List<SearchGridHeader> headers,
-            @JsonProperty(META_DATA) SearchGridMetadata metaData,
-            @JsonProperty(WIDTH) Integer width,
-            @JsonProperty(HEIGHT) Integer height,
-            @JsonProperty(ROWS) List<List<String>> rows) {
-
-        return new AutoValue_SearchGrid(headers, metaData, width, height, rows);
+@Serializable
+internal data class TEIWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: TEIImportSummariesDTO?,
+) : WebResponseDTO {
+    fun toDomain(): TEIWebResponse {
+        return TEIWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response?.toDomain())
+            .build()
     }
 }

@@ -48,6 +48,10 @@ public abstract class TEIImportSummaries extends BaseImportSummaries implements 
     @JsonProperty(IMPORT_SUMMARIES)
     public abstract List<TEIImportSummary> importSummaries();
 
+    public static Builder builder() {
+        return new AutoValue_TEIImportSummaries.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummaries.Builder<TEIImportSummaries.Builder> {

@@ -32,46 +32,33 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
 public abstract class TrackedEntityAttributeValue extends BaseDataObject implements ObjectWithDeleteInterface {
 
     @Nullable
-    @JsonProperty(TrackedEntityAttributeValueFields.ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty()
-    @JsonInclude()
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonIgnore()
     public abstract String trackedEntityInstance();
 
     @Override
@@ -90,11 +77,9 @@ public abstract class TrackedEntityAttributeValue extends BaseDataObject impleme
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty(TrackedEntityAttributeValueFields.ATTRIBUTE)
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
         public abstract Builder value(String value);

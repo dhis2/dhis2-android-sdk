@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.network.trackedentityinstance
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
+import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
+import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
+import org.hisp.dhis.android.network.common.dto.ImportCountDTO
+import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
+import org.hisp.dhis.android.network.enrollment.EnrollmentImportSummariesDTO
 
-import androidx.annotation.NonNull;
-
-@AutoValue
-abstract class SearchGridHeader {
-    private final static String NAME = "name";
-    private final static String COLUMN = "column";
-    private final static String TYPE = "type";
-    private final static String HIDDEN = "hidden";
-    private final static String META = "meta";
-
-    @NonNull
-    @JsonProperty(NAME)
-    abstract String name();
-
-    @NonNull
-    @JsonProperty(COLUMN)
-    abstract String column();
-
-    @NonNull
-    @JsonProperty(TYPE)
-    abstract String type();
-
-    @NonNull
-    @JsonProperty(HIDDEN)
-    abstract Boolean hidden();
-
-    @NonNull
-    @JsonProperty(META)
-    abstract Boolean meta();
-
-    @JsonCreator
-    static SearchGridHeader create(
-            @JsonProperty(NAME) String name,
-            @JsonProperty(COLUMN) String column,
-            @JsonProperty(TYPE) String type,
-            @JsonProperty(HIDDEN) Boolean hidden,
-            @JsonProperty(META) Boolean meta) {
-
-        return new AutoValue_SearchGridHeader(name, column, type, hidden, meta);
+@Serializable
+internal data class TEIImportSummaryDTO(
+    override val importCount: ImportCountDTO,
+    override val status: String,
+    override val responseType: String,
+    override val reference: String?,
+    override val conflicts: List<ImportConflictDTO>?,
+    override val description: String?,
+    val enrollments: EnrollmentImportSummariesDTO?,
+) : BaseImportSummaryDTO {
+    fun toDomain(): TEIImportSummary {
+        return TEIImportSummary.builder()
+            .applyImportSummaryFields(this)
+            .enrollments(enrollments?.toDomain())
+            .build()
     }
 }

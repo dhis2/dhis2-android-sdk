@@ -27,66 +27,33 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER
 import org.hisp.dhis.android.core.trackedentity.search.TrackerQueryResult
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OldTrackedEntityEndpointCallFactory(
-    private val trackedEntityInstanceService: TrackedEntityInstanceService,
+    private val networkHandler: TrackedEntityInstanceNetworkHandler,
     private val queryCallFactory: TrackedEntityInstanceQueryCallFactory,
-) : TrackedEntityEndpointCallFactory() {
+) : TrackedEntityEndpointCallFactory {
 
-    override suspend fun getCollectionCall(query: TrackerAPIQuery): PayloadJackson<TrackedEntityInstance> {
-        return trackedEntityInstanceService.getTrackedEntityInstances(
-            fields = TrackedEntityInstanceFields.allFields,
-            trackedEntityInstances = getUidStr(query),
-            orgUnits = getOrgunitStr(query),
-            orgUnitMode = query.commonParams.ouMode.name,
-            program = query.commonParams.program,
-            programStatus = getProgramStatus(query),
-            programStartDate = getProgramStartDate(query),
-            order = DEFAULT_TRACKER_ORDER.toAPIString(TrackerExporterVersion.V1),
-            paging = true,
-            page = query.page,
-            pageSize = query.pageSize,
-            lastUpdatedStartDate = query.lastUpdatedStr,
-            includeAllAttributes = true,
-            includeDeleted = true,
-        )
+    override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
+        return networkHandler.getTrackedEntityInstances(query)
     }
 
     override suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance {
-        return trackedEntityInstanceService.getSingleTrackedEntityInstance(
-            fields = TrackedEntityInstanceFields.allFields,
-            trackedEntityInstanceUid = uid,
-            orgUnitMode = query.commonParams.ouMode.name,
-            program = query.commonParams.program,
-            programStatus = getProgramStatus(query),
-            programStartDate = getProgramStartDate(query),
-            includeAllAttributes = true,
-            includeDeleted = true,
-        )
+        return networkHandler.getTrackedEntityInstance(uid, query)
     }
 
     override suspend fun getRelationshipEntityCall(
         item: RelationshipItemRelative,
-    ): PayloadJackson<TrackedEntityInstance> {
-        return trackedEntityInstanceService.getTrackedEntityInstance(
-            fields = TrackedEntityInstanceFields.asRelationshipFields,
-            trackedEntityInstance = item.itemUid,
-            orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
-            includeAllAttributes = true,
-            includeDeleted = true,
-        )
+    ): Payload<TrackedEntityInstance> {
+        return networkHandler.getRelationshipEntityCall(item)
     }
 
     override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {

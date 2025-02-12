@@ -40,11 +40,22 @@ open class BaseObjectKotlinxShould(private val jsonPath: String) {
     }
 
     protected fun <T> deserializePath(path: String, serializer: kotlinx.serialization.KSerializer<T>): T {
+        val jsonString = getStringValueFromFile(path)
+        return jsonParser.decodeFromString(serializer, jsonString)
+    }
+
+    protected fun <T> serialize(value: T, serializer: kotlinx.serialization.KSerializer<T>): String {
+        return jsonParser.encodeToString(serializer, value)
+    }
+
+    protected fun getStringValueFromFile(): String {
+        return getStringValueFromFile(jsonPath)
+    }
+
+    protected fun getStringValueFromFile(path: String): String {
         val jsonStream: InputStream =
             this::class.java.classLoader?.getResourceAsStream(path)
                 ?: throw IllegalArgumentException("File not found: $jsonPath")
-        val jsonString = jsonStream.bufferedReader().use { it.readText() }
-
-        return jsonParser.decodeFromString(serializer, jsonString)
+        return jsonStream.bufferedReader().use { it.readText() }
     }
 }

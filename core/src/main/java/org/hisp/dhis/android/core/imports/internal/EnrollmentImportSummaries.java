@@ -48,6 +48,10 @@ public abstract class EnrollmentImportSummaries extends BaseImportSummaries impl
     @JsonProperty(IMPORT_SUMMARIES)
     public abstract List<EnrollmentImportSummary> importSummaries();
 
+    public static Builder builder() {
+        return new AutoValue_EnrollmentImportSummaries.Builder();
+    }
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummaries.Builder<EnrollmentImportSummaries.Builder> {

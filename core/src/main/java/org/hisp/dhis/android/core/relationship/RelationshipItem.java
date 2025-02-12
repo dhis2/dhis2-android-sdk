@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -49,31 +45,25 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
 public abstract class RelationshipItem implements CoreObject {
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid relationship();
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(RelationshipItemTrackedEntityInstanceColumnAdapter.class)
     public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(RelationshipItemEnrollmentColumnAdapter.class)
     public abstract RelationshipItemEnrollment enrollment();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(RelationshipItemEventColumnAdapter.class)
     public abstract RelationshipItemEvent event();
 
@@ -122,7 +112,6 @@ public abstract class RelationshipItem implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

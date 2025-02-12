@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.network.trackedentityinstance
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.ValueDTO
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-public abstract class TrackedEntityInstancePayload {
-
-    @JsonProperty()
-    public abstract List<TrackedEntityInstance> trackedEntityInstances();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstancePayload.Builder();
+@Serializable
+internal data class TrackedEntityAttributeValueDTO(
+    val attribute: String?,
+    val value: ValueDTO?,
+    val created: String?,
+    val lastUpdated: String?,
+) {
+    fun toDomain(trackedEntityInstance: String): TrackedEntityAttributeValue {
+        return TrackedEntityAttributeValue.builder()
+            .trackedEntityAttribute(attribute)
+            .trackedEntityInstance(trackedEntityInstance)
+            .value(value?.value)
+            .created(created.toJavaDate())
+            .lastUpdated(lastUpdated.toJavaDate())
+            .build()
     }
+}
 
-    public static TrackedEntityInstancePayload create(List<TrackedEntityInstance> trackedEntityInstances) {
-        return builder().trackedEntityInstances(trackedEntityInstances).build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackedEntityInstances(List<TrackedEntityInstance> trackedEntityInstances);
-
-        public abstract TrackedEntityInstancePayload build();
-    }
-
+internal fun TrackedEntityAttributeValue.toDto(): TrackedEntityAttributeValueDTO {
+    return TrackedEntityAttributeValueDTO(
+        attribute = trackedEntityAttribute(),
+        value = ValueDTO(value()),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+    )
 }

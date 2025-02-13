@@ -48,18 +48,18 @@ internal class NewTrackedEntityEndpointCallFactory(
     private val networkHandler: TrackerExporterNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
-) : TrackedEntityEndpointCallFactory() {
+) : TrackedEntityEndpointCallFactory {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
-        val programStatus = getProgramStatus(query)
-        val programStartDate = getProgramStartDate(query)
+        val programStatus = query.getProgramStatus()
+        val programStartDate = query.getProgramStartDate()
 
         return networkHandler.getTrackedEntityCollectionCall(query, programStatus, programStartDate)
     }
 
     override suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance {
-        val programStatus = getProgramStatus(query)
-        val programStartDate = getProgramStartDate(query)
+        val programStatus = query.getProgramStatus()
+        val programStartDate = query.getProgramStartDate()
 
         return networkHandler.getTrackedEntityEntityCall(uid, query, programStatus, programStartDate)
     }

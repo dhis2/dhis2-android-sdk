@@ -32,13 +32,15 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetCompleteRegistrationNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
+    private val versionManager: DHISVersionManager,
 ) : DataSetCompleteRegistrationNetworkHandler {
     private val service: DataSetCompleteRegistrationService = DataSetCompleteRegistrationService(httpClient)
 
@@ -66,16 +68,15 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummary {
         val apiPayload = DataSetCompleteRegistrationPayload(null, dataSetCompleteRegistrations.map { it.toDto() })
-        val apiResponse = service.postDataSetCompleteRegistrations(apiPayload)
-        return apiResponse.toDomain()
-    }
 
-    override suspend fun postDataSetCompleteRegistrationsWebResponse(
-        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
-    ): DataValueImportSummaryWebResponse {
-        val apiPayload = DataSetCompleteRegistrationPayload(null, dataSetCompleteRegistrations.map { it.toDto() })
-        val apiResponse = service.postDataSetCompleteRegistrationsWebResponse(apiPayload)
-        return apiResponse.toDomain()
+        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+            service.postDataSetCompleteRegistrationsWebResponse(apiPayload)
+                .toDomain()
+                .response
+        } else {
+            service.postDataSetCompleteRegistrations(apiPayload)
+                .toDomain()
+        }
     }
 
     override suspend fun deleteDataSetCompleteRegistration(

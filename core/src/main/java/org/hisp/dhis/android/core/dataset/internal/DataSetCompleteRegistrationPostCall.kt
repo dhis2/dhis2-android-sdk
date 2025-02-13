@@ -43,9 +43,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionReposito
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
@@ -137,17 +135,11 @@ internal class DataSetCompleteRegistrationPostCall(
     private suspend fun postCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): Result<DataValueImportSummary, D2Error> {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            coroutineAPICallExecutor.wrap(
-                acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-                errorClass = DataValueImportSummaryWebResponse::class.java,
-            ) {
-                networkHandler.postDataSetCompleteRegistrationsWebResponse(dataSetCompleteRegistrations)
-            }.map { it.response }
-        } else {
-            coroutineAPICallExecutor.wrap {
-                networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
-            }
+        return coroutineAPICallExecutor.wrap(
+            acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
+            errorClass = DataValueImportSummary::class.java,
+        ) {
+            networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
         }
     }
 

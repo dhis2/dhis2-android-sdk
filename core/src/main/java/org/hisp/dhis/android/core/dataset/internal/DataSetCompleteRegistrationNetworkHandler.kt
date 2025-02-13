@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataset.internal
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 
 internal interface DataSetCompleteRegistrationNetworkHandler {
 
@@ -47,10 +46,6 @@ internal interface DataSetCompleteRegistrationNetworkHandler {
     suspend fun postDataSetCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummary
-
-    suspend fun postDataSetCompleteRegistrationsWebResponse(
-        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
-    ): DataValueImportSummaryWebResponse
 
     suspend fun deleteDataSetCompleteRegistration(
         dataSet: String,

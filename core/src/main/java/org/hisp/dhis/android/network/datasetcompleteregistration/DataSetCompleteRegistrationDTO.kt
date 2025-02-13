@@ -34,43 +34,55 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 
 @Serializable
 internal data class DataSetCompleteRegistrationDTO(
-    override val deleted: Boolean?,
     val period: String?,
     val dataSet: String?,
     val organisationUnit: String?,
     val attributeOptionCombo: String?,
     val date: String?,
     val storedBy: String?,
-//    val completed: Boolean?,
-) : BaseDeletableDataObjectDTO {
+    val completed: Boolean?,
+) {
 
     fun toDomain(): DataSetCompleteRegistration {
         return DataSetCompleteRegistration.builder().apply {
-            deleted(deleted)
             period?.let { period(it) }
             dataSet?.let { dataSet(it) }
             organisationUnit?.let { organisationUnit(it) }
             attributeOptionCombo?.let { attributeOptionCombo(it) }
             date(date.toJavaSimpleDate())
             storedBy(storedBy)
+
+            /**
+             * Since version 2.32, the API introduced the `completed` property. So in case that completed
+             * is not null we fill the `deleted` property with the negation of the `completed` property.
+             * Else we set the `deleted` property to false.
+             * @see org.hisp.dhis.android.core.systeminfo.DHISVersion.V2_32
+             */
+            deleted(completed?.let { !it } ?: false)
         }.build()
     }
 }
 
 internal fun DataSetCompleteRegistration.toDto(): DataSetCompleteRegistrationDTO {
     return DataSetCompleteRegistrationDTO(
-        deleted = this.deleted(),
         period = this.period(),
         dataSet = this.dataSet(),
         organisationUnit = this.organisationUnit(),
         attributeOptionCombo = this.attributeOptionCombo(),
         date = this.date().simpleDateFormat(),
         storedBy = this.storedBy(),
+
+        /**
+         * Since version 2.32, the API introduced the `completed` property. So in case that deleted
+         * is not null we fill the `completed` property with the negation of the `deleted` property.
+         * Else we set the `completed` property to true.
+         * @see org.hisp.dhis.android.core.systeminfo.DHISVersion.V2_32
+         */
+        completed = this.deleted()?.let { !it } ?: true,
     )
 }
 

@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
 
@@ -54,7 +53,6 @@ internal class DataSetCompleteRegistrationPostCall(
     private val dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler,
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val versionManager: DHISVersionManager,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataSetCompleteRegistrations(

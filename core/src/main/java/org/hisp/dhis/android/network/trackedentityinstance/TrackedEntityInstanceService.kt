@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.network.trackedentityinstance
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
-import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.search.SearchGrid
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("LongParameterList")
-internal class TrackedEntityInstanceService(private val client: HttpServiceClient) {
+internal class TrackedEntityInstanceService(private val client: HttpServiceClientKotlinx) {
     suspend fun postTrackedEntityInstances(
         trackedEntityInstances: TrackedEntityInstancePayload?,
         strategy: String?,
-    ): TEIWebResponse {
+    ): TEIWebResponseDTO {
         return client.post {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
@@ -57,7 +52,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         fields: Fields<TrackedEntityInstance>,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
-    ): PayloadJackson<TrackedEntityInstance> {
+    ): TrackedEntityInstancePayload {
         return client.get {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
@@ -79,7 +74,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         fields: Fields<TrackedEntityInstance>,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
-    ): TrackedEntityInstance {
+    ): TrackedEntityInstanceDTO {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid")
             parameters {
@@ -109,7 +104,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         lastUpdatedStartDate: String?,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
-    ): PayloadJackson<TrackedEntityInstance> {
+    ): TrackedEntityInstancePayload {
         return client.get {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
@@ -155,7 +150,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         paging: Boolean,
         page: Int?,
         pageSize: Int?,
-    ): SearchGrid {
+    ): SearchGridDTO {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/query")
             parameters {

@@ -32,6 +32,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.server.RealServerMother
@@ -45,10 +46,8 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
-import org.hisp.dhis.android.network.ownership.OwnershipNetworkHandlerImpl
 import org.hisp.dhis.android.network.ownership.OwnershipService
 import org.junit.Before
 import java.util.Arrays
@@ -80,7 +79,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     private val serverUrl = RealServerMother.url2_30
     private val strategy = "SYNC"
     private lateinit var executor: CoroutineAPICallExecutor
-    private lateinit var trackedEntityInstanceService: TrackedEntityInstanceService
+    private lateinit var networkHandler: TrackedEntityInstanceNetworkHandler
     private lateinit var ownershipNetworkHandler: OwnershipNetworkHandler
     private val uidGenerator: UidGenerator = UidGeneratorImpl()
 
@@ -88,8 +87,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     override fun setUp() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
-        trackedEntityInstanceService = TrackedEntityInstanceService(d2.httpServiceClient())
-        ownershipNetworkHandler = OwnershipNetworkHandlerImpl(d2.httpServiceClientKotlinx())
+        networkHandler = DhisAndroidSdkKoinContext.koin.get()
+        ownershipNetworkHandler = DhisAndroidSdkKoinContext.koin.get()
         login()
     }
 
@@ -232,10 +231,6 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             .build()
     }
 
-    private fun wrapPayload(vararg instances: TrackedEntityInstance): TrackedEntityInstancePayload {
-        return TrackedEntityInstancePayload.create(listOf(*instances))
-    }
-
     private fun teiWithEventInSearchScope(): TrackedEntityInstance {
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
             validTei().toBuilder(),
@@ -277,8 +272,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             acceptedErrorCodes = listOf(409),
             errorClass = TEIWebResponse::class.java,
         ) {
-            trackedEntityInstanceService
-                .postTrackedEntityInstances(wrapPayload(*instances), strategy)
+            networkHandler.postTrackedEntityInstances(instances.asList(), strategy)
         }.getOrThrow()
     }
 

@@ -30,24 +30,17 @@ package org.hisp.dhis.android.core.trackedentity.ownership;
 
 import android.database.Cursor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramOwner.Builder.class)
 public abstract class ProgramOwner extends BaseDataObject {
 
-    @JsonProperty()
     public abstract String program();
 
-    @JsonProperty()
     public abstract String trackedEntityInstance();
 
-    @JsonProperty()
     public abstract String ownerOrgUnit();
 
     public static Builder builder() {
@@ -61,7 +54,6 @@ public abstract class ProgramOwner extends BaseDataObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

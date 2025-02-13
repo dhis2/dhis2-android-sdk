@@ -59,8 +59,9 @@ internal data class NewTrackedEntityDTO(
     val relationships: List<NewRelationshipDTO>? = null,
 ) : BaseDeletableDataObjectDTO {
     fun toDomain(): TrackedEntityInstance {
-        val teiAttributeValues = attributes.map { it.toDomain() }
-        val enrollmentAttributeValues = enrollments.flatMap { it.attributes.orEmpty().map { it.toDomain() } }.orEmpty()
+        val teiAttributeValues = attributes.map { it.toDomain(trackedEntity) }
+        val enrollmentAttributeValues =
+            enrollments.flatMap { it.attributes.orEmpty().map { it.toDomain(trackedEntity) } }.orEmpty()
         val attributes = (teiAttributeValues + enrollmentAttributeValues).distinctBy { it.trackedEntityAttribute() }
 
         return TrackedEntityInstance.builder().apply {
@@ -101,5 +102,14 @@ internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {
 @Serializable
 internal class NewTrackedEntityPayload(
     override val pager: PagerDTO?,
+    val page: Int?,
+    val pageCount: Int?,
+    val pageSize: Int?,
+    val total: Int?,
     @JsonNames("instances", "trackedEntities") override val items: List<NewTrackedEntityDTO> = emptyList(),
-) : PayloadJson<NewTrackedEntityDTO>(pager, items)
+) : PayloadJson<NewTrackedEntityDTO>(pager, items) {
+
+    override fun pager(): PagerDTO {
+        return pager ?: PagerDTO(page ?: 0, pageCount ?: 0, pageSize ?: 0, total ?: 0)
+    }
+}

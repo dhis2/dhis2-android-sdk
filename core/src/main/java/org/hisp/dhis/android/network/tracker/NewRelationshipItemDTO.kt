@@ -45,10 +45,10 @@ internal data class NewRelationshipItemDTO(
     val enrollment: NewRelationshipItemEnrollmentDTO?,
     val event: NewRelationshipItemEventDTO?,
 ) {
-    fun toDomain(): RelationshipItem? {
+    fun toDomain(relationshipUid: String?, constraintType: RelationshipConstraintType): RelationshipItem? {
         val builder = RelationshipItem.builder()
-            .relationship(relationship?.let { ObjectWithUid.create(it) })
-            .relationshipItemType(relationshipItemType?.let { RelationshipConstraintType.valueOf(it) })
+            .relationship(relationshipUid?.let { ObjectWithUid.create(it) })
+            .relationshipItemType(constraintType)
 
         return when {
             trackedEntity != null ->

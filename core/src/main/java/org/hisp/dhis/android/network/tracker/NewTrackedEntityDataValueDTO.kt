@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityD
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.ValueDTO
 
 @Serializable
 internal data class NewTrackedEntityDataValueDTO(
@@ -41,17 +42,17 @@ internal data class NewTrackedEntityDataValueDTO(
     val updatedAt: String?,
     val dataElement: String?,
     val createdBy: UserInfoDTO?,
-    val value: String?,
+    val value: ValueDTO?,
     val providedElsewhere: Boolean?,
 ) {
-    fun toDomain(): TrackedEntityDataValue {
+    fun toDomain(eventUid: String?): TrackedEntityDataValue {
         return TrackedEntityDataValue.builder()
-            .event(event)
+            .event(eventUid)
             .created(createdAt.toJavaDate())
             .lastUpdated(updatedAt.toJavaDate())
             .dataElement(dataElement)
             .storedBy(createdBy?.username)
-            .value(value)
+            .value(value?.value)
             .providedElsewhere(providedElsewhere)
             .build()
     }
@@ -64,7 +65,7 @@ internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackedEntityD
         updatedAt = this.updatedAt()?.let { it.dateFormat() },
         dataElement = this.dataElement(),
         createdBy = this.createdBy()?.let { it.toDto() },
-        value = this.value(),
+        value = ValueDTO(value()),
         providedElsewhere = this.providedElsewhere(),
     )
 }

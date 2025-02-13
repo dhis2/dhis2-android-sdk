@@ -78,7 +78,7 @@ internal data class NewEnrollmentDTO(
             status(status?.let { EnrollmentStatus.valueOf(it) })
             trackedEntityInstance(trackedEntity)
             geometry(geometry?.toDomain())
-            notes(notes?.map { it.toDomain() })
+            notes(notes?.map { it.toDomain(enrollment = enrollment) })
             EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
             relationships(relationships?.map { it.toDomain() })
         }.build()

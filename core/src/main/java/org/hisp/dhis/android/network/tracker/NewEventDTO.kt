@@ -68,10 +68,6 @@ internal data class NewEventDTO(
     val relationships: List<NewRelationshipDTO>? = null,
 ) : BaseDeletableDataObjectDTO {
     fun toDomain(): Event {
-        val notes = notes?.map { it.toDomain() }
-        val dataValues = dataValues?.map { it.toDomain() }
-        val relationships = relationships?.map { it.toDomain() }
-
         return Event.builder().apply {
             uid(event)
             deleted(deleted)
@@ -91,9 +87,9 @@ internal data class NewEventDTO(
             dueDate(scheduledAt.toJavaDate())
             attributeOptionCombo(attributeOptionCombo)
             assignedUser(assignedUser?.uid)
-            trackedEntityDataValues(dataValues)
-            notes(notes)
-            relationships(relationships)
+            trackedEntityDataValues(dataValues?.map { it.toDomain(event) })
+            notes(notes?.map { it.toDomain(event = event) })
+            relationships(relationships?.map { it.toDomain() })
             EventInternalAccessor.insertTrackedEntityInstance(this, trackedEntity)
         }.build()
     }
@@ -128,5 +124,14 @@ internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
 @Serializable
 internal class NewEventPayload(
     override val pager: PagerDTO?,
+    val page: Int?,
+    val pageCount: Int?,
+    val pageSize: Int?,
+    val total: Int?,
     @JsonNames("instances", "events") override val items: List<NewEventDTO> = emptyList(),
-) : PayloadJson<NewEventDTO>(pager, items)
+) : PayloadJson<NewEventDTO>(pager, items) {
+
+    override fun pager(): PagerDTO {
+        return pager ?: PagerDTO(page ?: 0, pageCount ?: 0, pageSize ?: 0, total ?: 0)
+    }
+}

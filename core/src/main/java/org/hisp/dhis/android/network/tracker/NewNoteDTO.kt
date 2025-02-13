@@ -41,9 +41,17 @@ internal data class NewNoteDTO(
     val storedBy: String?,
     val storedAt: String?,
 ) : BaseDeletableDataObjectDTO {
-    fun toDomain(): Note {
+    fun toDomain(event: String? = null, enrollment: String? = null): Note {
+        val noteType = when {
+            event != null -> Note.NoteType.EVENT_NOTE
+            enrollment != null -> Note.NoteType.ENROLLMENT_NOTE
+            else -> null
+        }
         return Note.builder()
             .uid(note)
+            .noteType(noteType)
+            .event(event)
+            .enrollment(enrollment)
             .deleted(deleted)
             .value(value)
             .storedBy(storedBy)

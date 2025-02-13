@@ -28,19 +28,25 @@
 package org.hisp.dhis.android.network.datasetcompleteregistration
 
 import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
+import java.net.HttpURLConnection
 
 @Singleton
 internal class DataSetCompleteRegistrationNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
     private val versionManager: DHISVersionManager,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DataSetCompleteRegistrationNetworkHandler {
     private val service: DataSetCompleteRegistrationService = DataSetCompleteRegistrationService(httpClient)
 
@@ -66,16 +72,22 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
 
     override suspend fun postDataSetCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
-    ): DataValueImportSummary {
+    ): Result<DataValueImportSummary, D2Error> {
         val apiPayload = DataSetCompleteRegistrationPayload(null, dataSetCompleteRegistrations.map { it.toDto() })
 
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            service.postDataSetCompleteRegistrationsWebResponse(apiPayload)
-                .toDomain()
-                .response
+            coroutineAPICallExecutor.wrap(
+                acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
+                errorClass = DataValueImportSummaryWebResponse::class.java,
+            ) {
+                service.postDataSetCompleteRegistrationsWebResponse(apiPayload)
+                    .toDomain()
+            }.map { it.response }
         } else {
-            service.postDataSetCompleteRegistrations(apiPayload)
-                .toDomain()
+            coroutineAPICallExecutor.wrap {
+                service.postDataSetCompleteRegistrations(apiPayload)
+                    .toDomain()
+            }
         }
     }
 
@@ -86,15 +98,16 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
         categoryComboUid: String,
         categoryOptionUids: String,
         multiOrganisationUnit: Boolean,
-    ): HttpResponse {
-        val apiResponse = service.deleteDataSetCompleteRegistration(
-            dataSet,
-            periodId,
-            orgUnit,
-            categoryComboUid,
-            categoryOptionUids,
-            multiOrganisationUnit,
-        )
-        return apiResponse
+    ): Result<HttpResponse, D2Error> {
+        return coroutineAPICallExecutor.wrap {
+            service.deleteDataSetCompleteRegistration(
+                dataSet,
+                periodId,
+                orgUnit,
+                categoryComboUid,
+                categoryOptionUids,
+                multiOrganisationUnit,
+            )
+        }
     }
 }

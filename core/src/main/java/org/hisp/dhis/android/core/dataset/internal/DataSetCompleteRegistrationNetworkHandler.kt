@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.maintenance.D2Error
 
 @Suppress("LongParameterList")
 internal interface DataSetCompleteRegistrationNetworkHandler {
@@ -46,7 +48,7 @@ internal interface DataSetCompleteRegistrationNetworkHandler {
 
     suspend fun postDataSetCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
-    ): DataValueImportSummary
+    ): Result<DataValueImportSummary, D2Error>
 
     suspend fun deleteDataSetCompleteRegistration(
         dataSet: String,
@@ -55,5 +57,5 @@ internal interface DataSetCompleteRegistrationNetworkHandler {
         categoryComboUid: String,
         categoryOptionUids: String,
         multiOrganisationUnit: Boolean,
-    ): HttpResponse
+    ): Result<HttpResponse, D2Error>
 }

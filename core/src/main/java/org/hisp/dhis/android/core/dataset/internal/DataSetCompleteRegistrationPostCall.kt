@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset.internal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -45,7 +44,6 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
-import java.net.HttpURLConnection
 
 @Singleton
 internal class DataSetCompleteRegistrationPostCall(
@@ -53,7 +51,6 @@ internal class DataSetCompleteRegistrationPostCall(
     private val dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler,
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataSetCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
@@ -98,16 +95,14 @@ internal class DataSetCompleteRegistrationPostCall(
                 .uid(dataSetCompleteRegistration.attributeOptionCombo())
                 .blockingGet()
             markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
-            coroutineAPICallExecutor.wrap {
-                networkHandler.deleteDataSetCompleteRegistration(
-                    dataSetCompleteRegistration.dataSet(),
-                    dataSetCompleteRegistration.period(),
-                    dataSetCompleteRegistration.organisationUnit(),
-                    coc!!.categoryCombo()!!.uid(),
-                    CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
-                    false,
-                )
-            }.fold(
+            networkHandler.deleteDataSetCompleteRegistration(
+                dataSetCompleteRegistration.dataSet(),
+                dataSetCompleteRegistration.period(),
+                dataSetCompleteRegistration.organisationUnit(),
+                coc!!.categoryCombo()!!.uid(),
+                CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
+                false,
+            ).fold(
                 onSuccess = { result ->
                     if (result.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX) {
                         deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
@@ -133,12 +128,7 @@ internal class DataSetCompleteRegistrationPostCall(
     private suspend fun postCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): Result<DataValueImportSummary, D2Error> {
-        return coroutineAPICallExecutor.wrap(
-            acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-            errorClass = DataValueImportSummary::class.java,
-        ) {
-            networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
-        }
+        return networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
     }
 
     private fun markObjectsAs(

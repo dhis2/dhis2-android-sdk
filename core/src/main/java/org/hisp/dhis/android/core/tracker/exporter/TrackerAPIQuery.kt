@@ -49,7 +49,25 @@ internal data class TrackerAPIQuery(
         return if (uids.isEmpty()) null else uids.joinToString(";")
     }
 
+    fun getOrgunitStr(): String? {
+        return TrackerQueryHelper.getOrgunits(this)?.joinToString(";")
+    }
+
     fun getEventStartDate(): String? {
+        return when {
+            commonParams.program != null -> commonParams.startDate
+            else -> null
+        }
+    }
+
+    fun getProgramStatus(): String? {
+        return when {
+            commonParams.program != null -> programStatus?.toString()
+            else -> null
+        }
+    }
+
+    fun getProgramStartDate(): String? {
         return when {
             commonParams.program != null -> commonParams.startDate
             else -> null

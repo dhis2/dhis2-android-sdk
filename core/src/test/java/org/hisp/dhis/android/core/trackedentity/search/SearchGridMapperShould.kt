@@ -25,58 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.search
 
-package org.hisp.dhis.android.core.trackedentity.search;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.network.trackedentityinstance.SearchGridDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SearchGridMapperShould extends BaseObjectShould {
-
-    public SearchGridMapperShould() {
-        super("trackedentity/search_grid.json");
-    }
-
+class SearchGridMapperShould : BaseObjectKotlinxShould("trackedentity/search_grid.json") {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SearchGrid searchGrid = objectMapper.readValue(jsonStream, SearchGrid.class);
-        SearchGridMapper mapper = new SearchGridMapper();
+    fun map_from_json_string() {
+        val searchGrid = deserialize(SearchGridDTO.serializer())
+        val teis = searchGrid.toDomain()
 
-        List<TrackedEntityInstance> teis = mapper.transform(searchGrid);
+        assertThat(teis.size).isEqualTo(2)
 
-        assertThat(teis.size()).isEqualTo(2);
+        val tei1 = teis[0]
+        assertThat(tei1.uid()).isEqualTo("PmslDkqLqeG")
+        assertThat(tei1.created()).isEqualTo(DateUtils.SPACE_DATE_FORMAT.parse("2018-04-27 17:34:17.005"))
+        assertThat(tei1.lastUpdated()).isEqualTo(DateUtils.SPACE_DATE_FORMAT.parse("2018-04-27 17:34:28.442"))
+        assertThat(tei1.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(tei1.trackedEntityType()).isEqualTo("nEenWmSyUEp")
 
-        TrackedEntityInstance tei1 = teis.get(0);
-        assertThat(tei1.uid()).isEqualTo("PmslDkqLqeG");
-        assertThat(tei1.created()).isEqualTo(BaseIdentifiableObject.parseSpaceDate("2018-04-27 17:34:17.005"));
-        assertThat(tei1.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseSpaceDate("2018-04-27 17:34:28.442"));
-        assertThat(tei1.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(tei1.trackedEntityType()).isEqualTo("nEenWmSyUEp");
+        val attValue1A = tei1.trackedEntityAttributeValues()!![0]
+        val attValue1B = tei1.trackedEntityAttributeValues()!![1]
+        assertThat(attValue1A.value()).isEqualTo("Firsty")
+        assertThat(attValue1B.value()).isEqualTo("Namey")
 
-        TrackedEntityAttributeValue attValue1A = tei1.trackedEntityAttributeValues().get(0);
-        TrackedEntityAttributeValue attValue1B = tei1.trackedEntityAttributeValues().get(1);
-        assertThat(attValue1A.value()).isEqualTo("Firsty");
-        assertThat(attValue1B.value()).isEqualTo("Namey");
+        val tei2 = teis[1]
+        assertThat(tei2.uid()).isEqualTo("Lf9FhXshRnd")
+        assertThat(tei2.created()).isEqualTo(DateUtils.SPACE_DATE_FORMAT.parse("2018-04-26 06:10:51.634"))
+        assertThat(tei2.lastUpdated()).isEqualTo(DateUtils.SPACE_DATE_FORMAT.parse("2018-04-26 06:10:52.944"))
+        assertThat(tei2.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(tei2.trackedEntityType()).isEqualTo("nEenWmSyUEp")
 
-        TrackedEntityInstance tei2 = teis.get(1);
-        assertThat(tei2.uid()).isEqualTo("Lf9FhXshRnd");
-        assertThat(tei2.created()).isEqualTo(BaseIdentifiableObject.parseSpaceDate("2018-04-26 06:10:51.634"));
-        assertThat(tei2.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseSpaceDate("2018-04-26 06:10:52.944"));
-        assertThat(tei2.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(tei2.trackedEntityType()).isEqualTo("nEenWmSyUEp");
-
-        TrackedEntityAttributeValue attValue2A = tei2.trackedEntityAttributeValues().get(0);
-        TrackedEntityAttributeValue attValue2B = tei2.trackedEntityAttributeValues().get(1);
-        assertThat(attValue2A.value()).isEqualTo("Jorge");
-        assertThat(attValue2B.value()).isEqualTo("Fernandez");
+        val attValue2A = tei2.trackedEntityAttributeValues()!![0]
+        val attValue2B = tei2.trackedEntityAttributeValues()!![1]
+        assertThat(attValue2A.value()).isEqualTo("Jorge")
+        assertThat(attValue2B.value()).isEqualTo("Fernandez")
     }
 }

@@ -31,7 +31,9 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.event.TrackedEntityDataValueDTO
+import org.hisp.dhis.android.network.event.toDto
 import org.junit.Test
 
 class TrackedEntityDataValueShould :
@@ -51,5 +53,18 @@ class TrackedEntityDataValueShould :
         assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa")
         assertThat(trackedEntityDataValue.value()).isEqualTo("2013-05-18")
         assertThat(trackedEntityDataValue.providedElsewhere()).isFalse()
+    }
+
+    @Test
+    fun serialize_empty_values() {
+        val dataValue = TrackedEntityDataValue.builder()
+            .dataElement("cejWyOfXge6")
+            .value(null)
+            .created("2019-12-12T07:35:11.366".toJavaDate())
+            .lastUpdated("2019-12-12T07:35:11.366".toJavaDate())
+            .build()
+        val attributeValueString = serialize(dataValue.toDto(), TrackedEntityDataValueDTO.serializer())
+
+        assertThat(attributeValueString).contains("\"value\":null")
     }
 }

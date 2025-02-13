@@ -25,68 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.search
 
-package org.hisp.dhis.android.core.trackedentity.search;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedentityinstance.SearchGridDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class SearchGridShould extends BaseObjectShould implements ObjectShould {
-
-    public SearchGridShould() {
-        super("trackedentity/search_grid.json");
-    }
-
-    @Override
+class SearchGridShould : BaseObjectKotlinxShould("trackedentity/search_grid.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SearchGrid searchGrid = objectMapper.readValue(jsonStream, SearchGrid.class);
+    override fun map_from_json_string() {
+        val searchGrid = deserialize(SearchGridDTO.serializer())
 
-        assertThat(searchGrid.headers().size()).isEqualTo(9);
+        assertThat(searchGrid.headers.size).isEqualTo(9)
 
-        SearchGridHeader firstHeader = searchGrid.headers().get(0);
-        assertThat(firstHeader.name()).isEqualTo("instance");
-        assertThat(firstHeader.column()).isEqualTo("Instance");
-        assertThat(firstHeader.type()).isEqualTo("java.lang.String");
-        assertThat(firstHeader.hidden()).isFalse();
-        assertThat(firstHeader.meta()).isFalse();
+        val firstHeader = searchGrid.headers[0]
+        assertThat(firstHeader.name).isEqualTo("instance")
+        assertThat(firstHeader.column).isEqualTo("Instance")
+        assertThat(firstHeader.type).isEqualTo("java.lang.String")
+        assertThat(firstHeader.hidden).isFalse()
+        assertThat(firstHeader.meta).isFalse()
 
-        assertThat(searchGrid.width()).isEqualTo(9);
-        assertThat(searchGrid.height()).isEqualTo(2);
+        assertThat(searchGrid.width).isEqualTo(9)
+        assertThat(searchGrid.height).isEqualTo(2)
 
-        SearchGridMetadata metaData = searchGrid.metaData();
-        assertThat(metaData.names().size()).isEqualTo(1);
-        assertThat(metaData.names().get("nEenWmSyUEp")).isEqualTo("Person");
+        val metaData = searchGrid.metaData
+        assertThat(metaData.names.size).isEqualTo(1)
+        assertThat(metaData.names["nEenWmSyUEp"]).isEqualTo("Person")
 
-        assertThat(searchGrid.rows().size()).isEqualTo(2);
+        assertThat(searchGrid.rows.size).isEqualTo(2)
 
-        List<String> firstRow = searchGrid.rows().get(0);
-        assertThat(firstRow.get(0)).isEqualTo("PmslDkqLqeG");
-        assertThat(firstRow.get(1)).isEqualTo("2018-04-27 17:34:17.005");
-        assertThat(firstRow.get(2)).isEqualTo("2018-04-27 17:34:28.442");
-        assertThat(firstRow.get(3)).isEqualTo("DiszpKrYNg8");
-        assertThat(firstRow.get(4)).isEqualTo("Ngelehun CHC");
-        assertThat(firstRow.get(5)).isEqualTo("nEenWmSyUEp");
-        assertThat(firstRow.get(6)).isEqualTo("");
-        assertThat(firstRow.get(7)).isEqualTo("Firsty");
-        assertThat(firstRow.get(8)).isEqualTo("Namey");
+        val firstRow = searchGrid.rows[0]
+        assertThat(firstRow[0]).isEqualTo("PmslDkqLqeG")
+        assertThat(firstRow[1]).isEqualTo("2018-04-27 17:34:17.005")
+        assertThat(firstRow[2]).isEqualTo("2018-04-27 17:34:28.442")
+        assertThat(firstRow[3]).isEqualTo("DiszpKrYNg8")
+        assertThat(firstRow[4]).isEqualTo("Ngelehun CHC")
+        assertThat(firstRow[5]).isEqualTo("nEenWmSyUEp")
+        assertThat(firstRow[6]).isEqualTo("")
+        assertThat(firstRow[7]).isEqualTo("Firsty")
+        assertThat(firstRow[8]).isEqualTo("Namey")
 
-        List<String> secondRow = searchGrid.rows().get(1);
-        assertThat(secondRow.get(0)).isEqualTo("Lf9FhXshRnd");
-        assertThat(secondRow.get(1)).isEqualTo("2018-04-26 06:10:51.634");
-        assertThat(secondRow.get(2)).isEqualTo("2018-04-26 06:10:52.944");
-        assertThat(secondRow.get(3)).isEqualTo("DiszpKrYNg8");
-        assertThat(secondRow.get(4)).isEqualTo("Ngelehun CHC");
-        assertThat(secondRow.get(5)).isEqualTo("nEenWmSyUEp");
-        assertThat(secondRow.get(6)).isEqualTo("false");
-        assertThat(secondRow.get(7)).isEqualTo("Jorge");
-        assertThat(secondRow.get(8)).isEqualTo("Fernandez");
+        val secondRow = searchGrid.rows[1]
+        assertThat(secondRow[0]).isEqualTo("Lf9FhXshRnd")
+        assertThat(secondRow[1]).isEqualTo("2018-04-26 06:10:51.634")
+        assertThat(secondRow[2]).isEqualTo("2018-04-26 06:10:52.944")
+        assertThat(secondRow[3]).isEqualTo("DiszpKrYNg8")
+        assertThat(secondRow[4]).isEqualTo("Ngelehun CHC")
+        assertThat(secondRow[5]).isEqualTo("nEenWmSyUEp")
+        assertThat(secondRow[6]).isEqualTo("false")
+        assertThat(secondRow[7]).isEqualTo("Jorge")
+        assertThat(secondRow[8]).isEqualTo("Fernandez")
     }
 }

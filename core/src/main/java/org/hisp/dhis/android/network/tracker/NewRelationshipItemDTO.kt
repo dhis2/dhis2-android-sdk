@@ -74,7 +74,6 @@ internal data class NewRelationshipItemDTO(
 
             else -> null
         }
-
     }
 }
 

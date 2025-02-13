@@ -59,7 +59,7 @@ internal class TrackerExporterNetworkHandlerImpl(
     override suspend fun getTrackedEntityCollectionCall(
         query: TrackerAPIQuery,
         programStatus: String?,
-        programStartDate: String?
+        programStartDate: String?,
     ): Payload<TrackedEntityInstance> {
         val apiPayload = service.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
@@ -80,9 +80,10 @@ internal class TrackerExporterNetworkHandlerImpl(
     }
 
     override suspend fun getTrackedEntityEntityCall(
-        uid: String, query: TrackerAPIQuery,
+        uid: String,
+        query: TrackerAPIQuery,
         programStatus: String?,
-        programStartDate: String?
+        programStartDate: String?,
     ): TrackedEntityInstance {
         val apiDto = service.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.allFields,
@@ -179,7 +180,6 @@ internal class TrackerExporterNetworkHandlerImpl(
         )
         return apiPayload.mapItems(NewTrackedEntityDTO::toDomain)
     }
-
 
     override suspend fun getEnrollmentRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
         val apiPayload = service.getEnrollmentSingle(

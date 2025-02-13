@@ -43,7 +43,8 @@ internal interface TrackerExporterNetworkHandler {
     ): Payload<TrackedEntityInstance>
 
     suspend fun getTrackedEntityEntityCall(
-        uid: String, query: TrackerAPIQuery,
+        uid: String,
+        query: TrackerAPIQuery,
         programStatus: String?,
         programStartDate: String?,
     ): TrackedEntityInstance
@@ -62,10 +63,8 @@ internal interface TrackerExporterNetworkHandler {
         query: TrackedEntityInstanceQueryOnline,
     ): Payload<TrackedEntityInstance>
 
-
     suspend fun getEnrollmentRelationshipEntityCall(item: RelationshipItemRelative): Enrollment
 
     suspend fun getEventCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
     suspend fun getEventRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
-
 }

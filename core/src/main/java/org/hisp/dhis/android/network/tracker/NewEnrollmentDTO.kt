@@ -62,7 +62,6 @@ internal data class NewEnrollmentDTO(
     val relationships: List<NewRelationshipDTO>? = null,
 ) : BaseDeletableDataObjectDTO {
     fun toDomain(): Enrollment {
-
         return Enrollment.builder().apply {
             uid(enrollment)
             deleted(deleted)
@@ -85,7 +84,6 @@ internal data class NewEnrollmentDTO(
         }.build()
     }
 }
-
 
 internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
     return NewEnrollmentDTO(

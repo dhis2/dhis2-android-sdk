@@ -36,8 +36,7 @@ internal data class NewRelationshipItemTrackedEntityDTO(
     val trackedEntity: String?,
 )
 
-internal fun NewTrackerImporterRelationshipItemTrackedEntity.toDto():
-    NewRelationshipItemTrackedEntityDTO {
+internal fun NewTrackerImporterRelationshipItemTrackedEntity.toDto(): NewRelationshipItemTrackedEntityDTO {
     return NewRelationshipItemTrackedEntityDTO(
         trackedEntity = this.trackedEntity(),
     )

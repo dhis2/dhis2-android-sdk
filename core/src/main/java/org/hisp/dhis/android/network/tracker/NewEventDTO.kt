@@ -99,7 +99,6 @@ internal data class NewEventDTO(
     }
 }
 
-
 internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
     return NewEventDTO(
         event = this.uid(),
@@ -131,4 +130,3 @@ internal class NewEventPayload(
     override val pager: PagerDTO?,
     @JsonNames("instances", "events") override val items: List<NewEventDTO> = emptyList(),
 ) : PayloadJson<NewEventDTO>(pager, items)
-

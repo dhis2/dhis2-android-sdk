@@ -103,4 +103,3 @@ internal class NewTrackedEntityPayload(
     override val pager: PagerDTO?,
     @JsonNames("instances", "trackedEntities") override val items: List<NewTrackedEntityDTO> = emptyList(),
 ) : PayloadJson<NewTrackedEntityDTO>(pager, items)
-

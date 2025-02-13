@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.util.dateFormat

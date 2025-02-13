@@ -94,7 +94,7 @@ class BreakTheGlassAPIShould(
         trackedEntityInstanceService = TrackedEntityInstanceService(d2.httpServiceClient())
         ownershipNetworkHandler = OwnershipNetworkHandlerImpl(
             d2.httpServiceClientKotlinx(),
-            OwnsershipParameterManager(dhisVersionManager)
+            OwnsershipParameterManager(dhisVersionManager),
         )
         login()
     }

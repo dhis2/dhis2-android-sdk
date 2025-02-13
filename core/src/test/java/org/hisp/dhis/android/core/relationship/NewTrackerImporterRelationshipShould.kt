@@ -29,26 +29,33 @@ package org.hisp.dhis.android.core.relationship
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.tracker.NewRelationshipDTO
 import org.junit.Test
 
-class NewTrackerImporterRelationshipShould : BaseObjectShould("relationship/new_relationship.json"), ObjectShould {
+class NewTrackerImporterRelationshipShould :
+    BaseObjectKotlinxShould("relationship/new_relationship.json"),
+    ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val relationship = objectMapper.readValue(jsonStream, NewTrackerImporterRelationship::class.java)
+        val relationshipDTO = deserialize(NewRelationshipDTO.serializer())
+        val relationship = relationshipDTO.toDomain()
 
         assertThat(relationship.uid()).isEqualTo("VdjOfugUb9y")
         assertThat(relationship.relationshipType()).isEqualTo("mxZDvSZYxlw")
-        assertThat(relationship.createdAt()).isEqualTo(
+        assertThat(relationship.created()).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T13:34:46.887"),
         )
-        assertThat(relationship.updatedAt()).isEqualTo(
+        assertThat(relationship.lastUpdated()).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T15:34:46.887"),
         )
-        assertThat(relationship.bidirectional()).isTrue()
+        assertThat(relationship.from()).isNotNull()
+        assertThat(relationship.to()).isNotNull()
         assertThat(relationship.from()?.event()?.event()).isEqualTo("mOFppqD2q8d")
-        assertThat(relationship.to()?.trackedEntity()?.trackedEntity()).isEqualTo("vOxUH373fy5")
+        assertThat(
+            relationship.to()?.trackedEntityInstance()?.trackedEntityInstance(),
+        ).isEqualTo("vOxUH373fy5")
     }
 }

@@ -27,20 +27,16 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth.assertThat
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
-import org.junit.Ignore
+import org.hisp.dhis.android.network.tracker.NewTrackedEntityDTO
 import org.junit.Test
 
-@Ignore("Recheck once the newtracker is migrated")
 class NewTrackerImporterTrackedEntityTransformerShould {
 
-    private val objectMapper: ObjectMapper = Inject.objectMapper()
     private val jsonParser: Json = KotlinxJsonParser.instance
 
     @Test
@@ -52,9 +48,9 @@ class NewTrackerImporterTrackedEntityTransformerShould {
             ?.getResourceAsStream("trackedentity/new_tracker_transformer_new_tracked_entity.json")
 
         val oldTrackedEntity = jsonParser.decodeFromStream(TrackedEntityInstanceDTO.serializer(), oldJson!!).toDomain()
-        val newTrackedEntity = objectMapper.readValue(newJson, NewTrackerImporterTrackedEntity::class.java)
+        val newTrackedEntity = jsonParser.decodeFromStream(NewTrackedEntityDTO.serializer(), newJson!!)
 
-        val transformedTrackedEntity = NewTrackerImporterTrackedEntityTransformer.deTransform(newTrackedEntity)
+        val transformedTrackedEntity = newTrackedEntity.toDomain()
 
         assertThat(transformedTrackedEntity).isEqualTo(oldTrackedEntity)
     }

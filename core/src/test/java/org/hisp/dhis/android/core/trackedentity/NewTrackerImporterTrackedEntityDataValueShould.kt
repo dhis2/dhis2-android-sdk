@@ -29,21 +29,22 @@ package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueDTO
 import org.junit.Test
 
 class NewTrackerImporterTrackedEntityDataValueShould :
-    BaseObjectShould("trackedentity/new_tracker_importer_tracked_entity_data_value.json"), ObjectShould {
+    BaseObjectKotlinxShould("trackedentity/new_tracker_importer_tracked_entity_data_value.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val dataValue =
-            objectMapper.readValue(jsonStream, NewTrackerImporterTrackedEntityDataValue::class.java)
+        val dataValueDTO = deserialize(NewTrackedEntityDataValueDTO.serializer())
+        val dataValue = dataValueDTO.toDomain("xE7jOejl9FI")
 
-        assertThat(dataValue.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:03.231"))
-        assertThat(dataValue.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2022-09-28T14:23:29.016"))
-        assertThat(dataValue.createdBy()?.uid()).isEqualTo("xE7jOejl9FI")
+        assertThat(dataValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:03.231"))
+        assertThat(dataValue.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2022-09-28T14:23:29.016"))
+        assertThat(dataValue.storedBy()).isEqualTo("admin")
         assertThat(dataValue.value()).isEqualTo("4322")
         assertThat(dataValue.dataElement()).isEqualTo("UXz7xuGCEhU")
         assertThat(dataValue.providedElsewhere()).isFalse()

@@ -48,9 +48,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
-import org.hisp.dhis.android.network.ownership.OwnershipNetworkHandlerImpl
-import org.hisp.dhis.android.network.ownership.OwnsershipParameterManager
-import org.hisp.dhis.android.network.ownership.OwnershipService
 import org.junit.Before
 import java.util.Arrays
 

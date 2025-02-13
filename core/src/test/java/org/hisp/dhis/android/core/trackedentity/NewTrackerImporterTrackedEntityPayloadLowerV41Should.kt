@@ -27,26 +27,22 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.tracker.NewTrackedEntityPayload
 import org.junit.Test
 
 class NewTrackerImporterTrackedEntityPayloadLowerV41Should :
-    BaseObjectShould("trackedentity/new_tracker_importer_tracked_entities_lower_v41.json"),
+    BaseObjectKotlinxShould("trackedentity/new_tracker_importer_tracked_entities_lower_v41.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val trackedEntityPayload = objectMapper.readValue(
-            jsonStream,
-            object : TypeReference<TrackerPayload<NewTrackerImporterTrackedEntity>>() {},
-        )
+        val trackedEntityPayload = deserialize(NewTrackedEntityPayload.serializer())
 
-        assertThat(trackedEntityPayload.pager()?.page).isEqualTo(1)
-        assertThat(trackedEntityPayload.pager()?.pageSize).isEqualTo(50)
+        assertThat(trackedEntityPayload.pager().page).isEqualTo(1)
+        assertThat(trackedEntityPayload.pager().pageSize).isEqualTo(50)
         assertThat(trackedEntityPayload.items().size).isEqualTo(2)
     }
 }

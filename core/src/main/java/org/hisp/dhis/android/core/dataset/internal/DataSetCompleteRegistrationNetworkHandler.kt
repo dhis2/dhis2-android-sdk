@@ -32,6 +32,7 @@ import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 
+@Suppress("LongParameterList")
 internal interface DataSetCompleteRegistrationNetworkHandler {
 
     suspend fun getDataSetCompleteRegistrations(

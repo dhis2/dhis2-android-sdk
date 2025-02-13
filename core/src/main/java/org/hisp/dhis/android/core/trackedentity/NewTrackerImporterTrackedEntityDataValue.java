@@ -32,11 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -48,39 +43,30 @@ import org.hisp.dhis.android.core.user.UserInfo;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntityDataValue.Builder.class)
 public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreObject {
 
     @Nullable
-    @JsonIgnore()
     public abstract String event();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonProperty()
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreUserInfoColumnAdapter.class)
     public abstract UserInfo createdBy();
 
     @Nullable
-    @JsonProperty()
-    @JsonInclude()
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean providedElsewhere();
 
     public static Builder builder() {
@@ -94,7 +80,6 @@ public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreOb
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 

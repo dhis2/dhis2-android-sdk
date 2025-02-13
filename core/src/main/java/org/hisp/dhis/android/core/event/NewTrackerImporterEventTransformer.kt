@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event
 
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
 
@@ -70,43 +69,6 @@ internal object NewTrackerImporterEventTransformer {
                     NewTrackerImporterNoteTransformer.transform(it)
                 },
             )
-            .build()
-    }
-
-    fun deTransform(t: NewTrackerImporterEvent): Event {
-        val notes = t.notes()?.map { NewTrackerImporterNoteTransformer.deTransform(it) }
-
-        val dataValues = t.trackedEntityDataValues()?.map {
-            NewTrackerImporterTrackedEntityDataValueTransformer.deTransform(it)
-        }
-        val relationships = t.relationships()?.map { NewTrackerImporterRelationshipTransformer.deTransform(it) }
-
-        return Event.builder()
-            .id(t.id())
-            .uid(t.uid())
-            .deleted(t.deleted())
-            .enrollment(t.enrollment())
-            .created(t.createdAt())
-            .lastUpdated(t.updatedAt())
-            .createdAtClient(t.createdAtClient())
-            .lastUpdatedAtClient(t.updatedAtClient())
-            .program(t.program())
-            .programStage(t.programStage())
-            .organisationUnit(t.organisationUnit())
-            .eventDate(t.occurredAt())
-            .status(t.status())
-            .geometry(t.geometry())
-            .completedDate(t.completedAt())
-            .completedBy(t.completedBy())
-            .dueDate(t.scheduledAt())
-            .attributeOptionCombo(t.attributeOptionCombo())
-            .assignedUser(t.assignedUser()?.uid())
-            .syncState(t.syncState())
-            .aggregatedSyncState(t.aggregatedSyncState())
-            .trackedEntityDataValues(dataValues)
-            .notes(notes)
-            .relationships(relationships)
-            .trackedEntityInstance(t.trackedEntity())
             .build()
     }
 }

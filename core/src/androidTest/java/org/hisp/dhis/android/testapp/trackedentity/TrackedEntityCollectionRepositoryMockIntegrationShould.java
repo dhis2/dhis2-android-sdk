@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -42,8 +44,6 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -154,8 +154,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byAggregatedSyncState().eq(State.SYNCED)
                         .blockingGet();
 
-        // TODO set to assertThat(trackedEntityInstances.size()).isEqualTo(2); after moving write tests to another db
-        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -165,7 +164,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .bySyncState().eq(State.SYNCED)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test

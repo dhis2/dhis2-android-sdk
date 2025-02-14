@@ -139,7 +139,7 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
                 .value(attribute, teiUid);
     }
 
-    private void setDataValueState(TrackedEntityAttributeValue value, State syncState) {
+    static void setDataValueState(TrackedEntityAttributeValue value, State syncState) {
         TrackedEntityAttributeValueStore store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
 
         store.updateWhere(

@@ -26,20 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 @Serializable
-internal data class NewTrackerImporterProgramOwnerDTO(
+internal data class NewProgramOwnerDTO(
     val program: String,
     val trackedEntity: String,
     val orgUnit: String,
-)
+) {
+    fun toDomain(): ProgramOwner {
+        return ProgramOwner.builder()
+            .program(program)
+            .ownerOrgUnit(orgUnit)
+            .trackedEntityInstance(trackedEntity)
+            .build()
+    }
+}
 
-internal fun NewTrackerImporterProgramOwner.toDto(): NewTrackerImporterProgramOwnerDTO {
-    return NewTrackerImporterProgramOwnerDTO(
+internal fun NewTrackerImporterProgramOwner.toDto(): NewProgramOwnerDTO {
+    return NewProgramOwnerDTO(
         program = this.program(),
         trackedEntity = this.trackedEntity(),
         orgUnit = this.orgUnit(),

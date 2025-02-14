@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.event;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -46,8 +48,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class EventCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -145,7 +145,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_geometry_coordinates() {
         List<Event> events =
                 d2.eventModule().events()
-                        .byGeometryCoordinates().eq("[21.0, 43.0]")
+                        .byGeometryCoordinates().eq("[21.0,43.0]")
                         .blockingGet();
 
         assertThat(events.size()).isEqualTo(1);

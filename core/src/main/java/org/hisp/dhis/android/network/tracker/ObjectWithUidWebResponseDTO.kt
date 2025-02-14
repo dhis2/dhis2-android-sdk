@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.tracker.NewRelationshipDTO
-import org.junit.Test
+package org.hisp.dhis.android.network.tracker
 
-class NewTrackerImporterRelationshipShould :
-    BaseObjectKotlinxShould("relationship/new_relationship.json"),
-    ObjectShould {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
-    @Test
-    override fun map_from_json_string() {
-        val relationshipDTO = deserialize(NewRelationshipDTO.serializer())
-        val relationship = relationshipDTO.toDomain()
-
-        assertThat(relationship.uid()).isEqualTo("VdjOfugUb9y")
-        assertThat(relationship.relationshipType()).isEqualTo("mxZDvSZYxlw")
-        assertThat(relationship.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T13:34:46.887"),
-        )
-        assertThat(relationship.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2021-07-26T15:34:46.887"),
-        )
-        assertThat(relationship.from()).isNotNull()
-        assertThat(relationship.to()).isNotNull()
-        assertThat(relationship.from()?.event()?.event()).isEqualTo("mOFppqD2q8d")
-        assertThat(
-            relationship.to()?.trackedEntityInstance()?.trackedEntityInstance(),
-        ).isEqualTo("vOxUH373fy5")
+@Serializable
+internal data class ObjectWithUidWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: ObjectWithUidDTO,
+) : WebResponseDTO {
+    fun toDomain(): ObjectWithUidWebResponse {
+        return ObjectWithUidWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response.toDomain())
+            .build()
     }
 }

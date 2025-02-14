@@ -36,22 +36,25 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class OwnershipNetworkHandlerImpl(
     val httpServiceClient: HttpServiceClientKotlinx,
+    val parameterManager: OwnsershipParameterManager,
 ) : OwnershipNetworkHandler {
     private val service = OwnershipService(httpServiceClient)
     override suspend fun breakGlass(
-        trackedEntity: Map<String, String>,
+        trackedEntityInstance: String,
         program: String,
         reason: String,
     ): HttpMessageResponse {
+        val trackedEntity = parameterManager.getTrackedEntityForOwnershipParameter(trackedEntityInstance)
         val apiPayload = service.breakGlass(trackedEntity, program, reason)
         return apiPayload.toDomain()
     }
 
     override suspend fun transfer(
-        trackedEntity: Map<String, String>,
+        trackedEntityInstance: String,
         program: String,
         ou: String,
     ): HttpMessageResponse {
+        val trackedEntity = parameterManager.getTrackedEntityForOwnershipParameter(trackedEntityInstance)
         val apiPayload = service.transfer(trackedEntity, program, ou)
         return apiPayload.toDomain()
     }

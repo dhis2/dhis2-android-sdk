@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,42 +43,33 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterRelationship.Builder.class)
 public abstract class NewTrackerImporterRelationship extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty("relationship")
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     public abstract String relationshipType();
 
     @Nullable
-    @JsonProperty()
     public abstract String relationshipName();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean bidirectional();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterRelationshipItemAdapter.class)
     public abstract NewTrackerImporterRelationshipItem from();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterRelationshipItemAdapter.class)
     public abstract NewTrackerImporterRelationshipItem to();
 
@@ -96,11 +84,9 @@ public abstract class NewTrackerImporterRelationship extends BaseDeletableDataOb
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty("relationship")
         public abstract Builder uid(String uid);
 
         public abstract Builder relationshipType(String relationshipType);

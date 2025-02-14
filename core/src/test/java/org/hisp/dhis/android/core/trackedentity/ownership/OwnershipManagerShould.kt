@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.clock.internal.FixedClockProvider
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -63,7 +62,6 @@ class OwnershipManagerShould {
     private val dataStatePropagator: DataStatePropagator = mock()
     private val programTempOwnerStore: ProgramTempOwnerStore = mock()
     private val programOwnerStore: ProgramOwnerStore = mock()
-    private val parameterManager: TrackerExporterParameterManager = mock()
     private val fixedDate = LocalDateTime(2020, 2, 5, 0, 0)
     private val clockProvider: ClockProvider = FixedClockProvider(fixedDate)
 
@@ -83,7 +81,6 @@ class OwnershipManagerShould {
             dataStatePropagator,
             programTempOwnerStore,
             programOwnerStore,
-            parameterManager,
             clockProvider,
         )
     }

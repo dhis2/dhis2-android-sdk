@@ -30,17 +30,12 @@ package org.hisp.dhis.android.core.relationship;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterRelationshipItemTrackedEntity.Builder.class)
 public abstract class NewTrackerImporterRelationshipItemTrackedEntity {
 
     @Nullable
-    @JsonProperty()
     public abstract String trackedEntity();
 
     public static Builder builder() {
@@ -50,7 +45,6 @@ public abstract class NewTrackerImporterRelationshipItemTrackedEntity {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder trackedEntity(String trackedEntity);

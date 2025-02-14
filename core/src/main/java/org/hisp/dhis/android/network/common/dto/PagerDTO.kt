@@ -32,8 +32,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class PagerDTO(
-    val page: Int,
-    val pageCount: Int,
-    val pageSize: Int,
-    val total: Int,
+    val page: Int?,
+    val pageCount: Int?,
+    val pageSize: Int?,
+    val total: Int?,
 )

@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -57,7 +56,6 @@ internal class OwnershipManagerImpl(
     private val dataStatePropagator: DataStatePropagator,
     private val programTempOwnerStore: ProgramTempOwnerStore,
     private val programOwnerStore: ProgramOwnerStore,
-    private val parameterManager: TrackerExporterParameterManager,
     private val clockProvider: ClockProvider,
 ) : OwnershipManager {
 
@@ -142,7 +140,7 @@ internal class OwnershipManagerImpl(
     ): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
             ownershipNetworkHandler.breakGlass(
-                parameterManager.getTrackedEntityForOwnershipParameter(trackedEntityInstance),
+                trackedEntityInstance,
                 program,
                 reason,
             )

@@ -26,33 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 
 @Serializable
-internal data class NewTrackerImporterRelationshipDTO(
-    val relationship: String,
-    val relationshipType: String?,
-    val relationshipName: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val bidirectional: Boolean?,
-    val from: NewTrackerImporterRelationshipItemDTO?,
-    val to: NewTrackerImporterRelationshipItemDTO?,
+internal data class NewTrackerImporterPayloadDTO(
+    val trackedEntities: List<NewTrackedEntityDTO> = emptyList(),
+    val enrollments: List<NewEnrollmentDTO> = emptyList(),
+    val events: List<NewEventDTO> = emptyList(),
+    val relationships: List<NewRelationshipDTO> = emptyList(),
+
 )
 
-internal fun NewTrackerImporterRelationship.toDto(): NewTrackerImporterRelationshipDTO {
-    return NewTrackerImporterRelationshipDTO(
-        relationship = this.uid(),
-        relationshipType = this.relationshipType(),
-        relationshipName = this.relationshipName(),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        bidirectional = this.bidirectional(),
-        from = this.from()?.toDto(),
-        to = this.to()?.toDto(),
+internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
+    return NewTrackerImporterPayloadDTO(
+        trackedEntities = this.trackedEntities.map { it.toDto() },
+        enrollments = this.enrollments.map { it.toDto() },
+        events = this.events.map { it.toDto() },
+        relationships = this.relationships.map { it.toDto() },
     )
 }

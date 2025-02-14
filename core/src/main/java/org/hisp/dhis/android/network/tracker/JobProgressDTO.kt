@@ -26,37 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
-import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class TrackerImporterNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
-) : TrackerImporterNetworkHandler {
-    val service = TrackerImporterService(httpServiceClient)
-    override suspend fun postTrackerPayload(
-        payload: NewTrackerImporterPayload,
-        importStrategy: String,
-    ): ObjectWithUidWebResponse {
-        val payloadDTO: NewTrackerImporterPayloadDTO = payload.toDto()
-        val apiPayload = service.postTrackerPayload(payloadDTO, ATOMIC_MODE_OBJECT, importStrategy)
-        return apiPayload.toDomain()
-    }
-
-    override suspend fun getJobReport(jobId: String): JobReport {
-        val apiPayload = service.getJobReport(jobId)
-        return apiPayload.toDomain()
-    }
-
-    override suspend fun getJob(jobId: String): List<JobProgress> {
-        val apiPayload = service.getJob(jobId)
-        return apiPayload.map { it.toDomain() }
+@Serializable
+internal data class JobProgressDTO(
+    val message: String,
+    val completed: Boolean,
+) {
+    fun toDomain(): JobProgress {
+        return JobProgress(
+            message = message,
+            completed = completed,
+        )
     }
 }

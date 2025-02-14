@@ -26,20 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.ownership
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 
-@Serializable
-internal data class JobProgressDTO(
-    val message: String,
-    val completed: Boolean,
+@Singleton
+internal class OwnsershipParameterManager(
+    private val dhisVersionManager: DHISVersionManager,
 ) {
-    fun toDomain(): JobProgress {
-        return JobProgress(
-            message = message,
-            completed = completed,
-        )
+    fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+            mapOf(OwnershipService.TRACKED_ENTITY to uid)
+        } else {
+            mapOf(OwnershipService.TRACKED_ENTITY_INSTACE to uid)
+        }
     }
 }

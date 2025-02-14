@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.exporter
+package org.hisp.dhis.android.network.tracker
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("LongParameterList")
-internal class TrackerExporterService(private val client: HttpServiceClient) {
+internal class TrackerExporterService(private val client: HttpServiceClientKotlinx) {
     suspend fun getSingleTrackedEntityInstance(
         trackedEntityInstanceUid: String,
         fields: Fields<NewTrackerImporterTrackedEntity>,
@@ -46,7 +43,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         programStatus: String?,
         programStartDate: String?,
         includeDeleted: Boolean,
-    ): NewTrackerImporterTrackedEntity {
+    ): NewTrackedEntityDTO {
         return client.get {
             url("$TRACKED_ENTITIES_API/$trackedEntityInstanceUid")
             parameters {
@@ -86,7 +83,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         page: Int?,
         pageSize: Int?,
         includeDeleted: Boolean = false,
-    ): TrackerPayload<NewTrackerImporterTrackedEntity> {
+    ): NewTrackedEntityPayload {
         return client.get {
             url(TRACKED_ENTITIES_API)
             parameters {
@@ -122,7 +119,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
     suspend fun getEnrollmentSingle(
         enrollmentUid: String,
         fields: Fields<NewTrackerImporterEnrollment>,
-    ): NewTrackerImporterEnrollment {
+    ): NewEnrollmentDTO {
         return client.get {
             url("$ENROLLMENTS_API/$enrollmentUid")
             parameters {
@@ -159,7 +156,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         updatedBefore: String? = null,
         includeDeleted: Boolean,
         eventUid: Map<String, String> = emptyMap(),
-    ): TrackerPayload<NewTrackerImporterEvent> {
+    ): NewEventPayload {
         return client.get {
             url(EVENTS_API)
             parameters {
@@ -198,7 +195,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         fields: Fields<NewTrackerImporterEvent>,
         eventUid: Map<String, String>? = null,
         orgUnitMode: Map<String, String>? = null,
-    ): TrackerPayload<NewTrackerImporterEvent> {
+    ): NewEventPayload {
         return client.get {
             url(EVENTS_API)
             parameters {

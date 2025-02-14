@@ -26,25 +26,46 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
-internal data class NewTrackerImporterPayloadDTO(
-    val trackedEntities: List<NewTrackerImporterTrackedEntityDTO> = emptyList(),
-    val enrollments: List<NewTrackerImporterEnrollmentDTO> = emptyList(),
-    val events: List<NewTrackerImporterEventDTO> = emptyList(),
-    val relationships: List<NewTrackerImporterRelationshipDTO> = emptyList(),
+internal data class NewNoteDTO(
+    override val deleted: Boolean?,
+    val note: String,
+    val value: String?,
+    val storedBy: String?,
+    val storedAt: String?,
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(event: String? = null, enrollment: String? = null): Note {
+        val noteType = when {
+            event != null -> Note.NoteType.EVENT_NOTE
+            enrollment != null -> Note.NoteType.ENROLLMENT_NOTE
+            else -> null
+        }
+        return Note.builder()
+            .uid(note)
+            .noteType(noteType)
+            .event(event)
+            .enrollment(enrollment)
+            .deleted(deleted)
+            .value(value)
+            .storedBy(storedBy)
+            .storedDate(storedAt)
+            .build()
+    }
+}
 
-)
-
-internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
-    return NewTrackerImporterPayloadDTO(
-        trackedEntities = this.trackedEntities.map { it.toDto() },
-        enrollments = this.enrollments.map { it.toDto() },
-        events = this.events.map { it.toDto() },
-        relationships = this.relationships.map { it.toDto() },
+internal fun NewTrackerImporterNote.toDto(): NewNoteDTO {
+    return NewNoteDTO(
+        note = uid(),
+        value = value(),
+        storedBy = storedBy(),
+        storedAt = storedAt(),
+        deleted = deleted(),
     )
 }

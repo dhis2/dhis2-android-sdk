@@ -26,27 +26,53 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
-internal data class NewTrackerImporterTrackedEntityAttributeValueDTO(
-    val attribute: String?,
-    val value: String?,
+internal data class NewRelationshipDTO(
+    override val deleted: Boolean?,
+    val relationship: String?,
+    val relationshipType: String?,
+    val relationshipName: String?,
     val createdAt: String?,
     val updatedAt: String?,
-    val trackedEntityInstance: String?,
-)
+    val bidirectional: Boolean?,
+    val from: NewRelationshipItemDTO?,
+    val to: NewRelationshipItemDTO?,
+) : BaseDeletableDataObjectDTO {
 
-internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackerImporterTrackedEntityAttributeValueDTO {
-    return NewTrackerImporterTrackedEntityAttributeValueDTO(
-        attribute = this.trackedEntityAttribute(),
-        value = this.value(),
+    fun toDomain(): Relationship {
+        return Relationship.builder()
+            .uid(relationship)
+            .relationshipType(relationshipType)
+            .name(relationshipName)
+            .created(createdAt.toJavaDate())
+            .lastUpdated(updatedAt.toJavaDate())
+            .from(from?.toDomain(relationship, RelationshipConstraintType.FROM))
+            .to(to?.toDomain(relationship, RelationshipConstraintType.TO))
+            .deleted(deleted)
+            .build()
+    }
+}
+
+internal fun NewTrackerImporterRelationship.toDto(): NewRelationshipDTO {
+    return NewRelationshipDTO(
+        deleted = this.deleted(),
+        relationship = this.uid(),
+        relationshipType = this.relationshipType(),
+        relationshipName = this.relationshipName(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        trackedEntityInstance = this.trackedEntityInstance(),
+        bidirectional = this.bidirectional(),
+        from = this.from()?.toDto(),
+        to = this.to()?.toDto(),
     )
 }

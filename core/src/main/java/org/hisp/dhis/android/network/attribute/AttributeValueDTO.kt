@@ -31,15 +31,16 @@ package org.hisp.dhis.android.network.attribute
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.ValueDTO
 
 @Serializable
 internal data class AttributeValueDTO(
-    val value: String?,
+    val value: ValueDTO?,
     val attribute: ObjectWithUidDTO?,
 ) {
     fun toDomain(): AttributeValue {
         return AttributeValue.builder()
-            .value(value)
+            .value(value?.value)
             .attribute(attribute?.toDomain())
             .build()
     }

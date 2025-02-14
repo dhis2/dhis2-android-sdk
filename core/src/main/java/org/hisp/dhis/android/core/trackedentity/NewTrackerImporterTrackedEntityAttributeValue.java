@@ -34,38 +34,29 @@ import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueFields;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntityAttributeValue.Builder.class)
 public abstract class NewTrackerImporterTrackedEntityAttributeValue implements CoreObject {
 
     @Nullable
-    @JsonProperty(TrackedEntityAttributeValueFields.ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty()
     @JsonInclude()
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
@@ -84,11 +75,9 @@ public abstract class NewTrackerImporterTrackedEntityAttributeValue implements C
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
-        @JsonProperty(TrackedEntityAttributeValueFields.ATTRIBUTE)
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
         public abstract Builder value(String value);

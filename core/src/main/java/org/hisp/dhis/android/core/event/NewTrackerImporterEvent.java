@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -53,7 +50,6 @@ import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.network.event.EventFields;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue;
@@ -63,100 +59,79 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterEvent.Builder.class)
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty(EventFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     public abstract String enrollment();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAtClient();
 
     @Nullable
-    @JsonProperty()
     public abstract String program();
 
     @Nullable
-    @JsonProperty()
     public abstract String programStage();
 
     @Nullable
-    @JsonProperty(EventFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date occurredAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus status();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedAt();
 
     @Nullable
-    @JsonProperty()
     public abstract String completedBy();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date scheduledAt();
 
     @Nullable
-    @JsonProperty()
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(NewTrackerImporterUserInfoColumnAdapter.class)
     public abstract NewTrackerImporterUserInfo assignedUser();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterNoteListColumnAdapter.class)
     public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable
-    @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewRelationshipListColumnAdapter.class)
     abstract List<NewTrackerImporterRelationship> relationships();
 
@@ -166,7 +141,6 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
     public abstract State aggregatedSyncState();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreStringColumnAdapter.class)
     public abstract String trackedEntity();
 
@@ -181,11 +155,9 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty(EventFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder enrollment(String enrollment);
@@ -202,7 +174,6 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
         public abstract Builder programStage(String programStage);
 
-        @JsonProperty(EventFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder occurredAt(Date occurredAt);
@@ -223,7 +194,6 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
         public abstract Builder notes(List<NewTrackerImporterNote> notes);
 
-        @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(
                 List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues);
 

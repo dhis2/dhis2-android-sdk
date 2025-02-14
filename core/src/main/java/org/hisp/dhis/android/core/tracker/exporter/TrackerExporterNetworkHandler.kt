@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+
+package org.hisp.dhis.android.core.tracker.exporter
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 
-@Singleton
-internal class NewEventEndpointCallFactory(
-    private val networkHandler: TrackerExporterNetworkHandler,
-) : EventEndpointCallFactory {
+internal interface TrackerExporterNetworkHandler {
+    suspend fun getTrackedEntityCollectionCall(
+        query: TrackerAPIQuery,
+        programStatus: String?,
+        programStartDate: String?,
+    ): Payload<TrackedEntityInstance>
 
-    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return networkHandler.getEventCollectionCall(eventQuery)
-    }
+    suspend fun getTrackedEntityEntityCall(
+        uid: String,
+        query: TrackerAPIQuery,
+        programStatus: String?,
+        programStartDate: String?,
+    ): TrackedEntityInstance
 
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
-        return networkHandler.getEventRelationshipEntityCall(item)
-    }
+    suspend fun getTrackedEntityRelationshipEntityCall(
+        item: RelationshipItemRelative,
+        program: String?,
+    ): Payload<TrackedEntityInstance>
+
+    suspend fun getEventQueryForOrgunit(
+        query: TrackedEntityInstanceQueryOnline,
+        orgunit: String?,
+    ): List<Event>
+
+    suspend fun getTrackedEntityQuery(
+        query: TrackedEntityInstanceQueryOnline,
+    ): Payload<TrackedEntityInstance>
+
+    suspend fun getEnrollmentRelationshipEntityCall(item: RelationshipItemRelative): Enrollment
+
+    suspend fun getEventCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
+    suspend fun getEventRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
 }

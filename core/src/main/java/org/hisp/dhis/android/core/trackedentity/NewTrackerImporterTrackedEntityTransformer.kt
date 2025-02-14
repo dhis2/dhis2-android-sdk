@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwnerTransformer
 
 internal object NewTrackerImporterTrackedEntityTransformer {
@@ -61,48 +59,6 @@ internal object NewTrackerImporterTrackedEntityTransformer {
             .aggregatedSyncState(o.aggregatedSyncState())
             .trackedEntityAttributeValues(teiTypeAttributes)
             .programOwners(programOwners)
-            .build()
-    }
-
-    fun deTransform(
-        o: NewTrackerImporterTrackedEntity,
-    ): TrackedEntityInstance {
-        val enrollments = o.enrollments()?.map {
-            NewTrackerImporterEnrollmentTransformer.deTransform(it)
-        }
-
-        val teiAttributeValues = o.trackedEntityAttributeValues()?.map { a ->
-            NewTrackerImporterTrackedEntityAttributeValueTransformer.deTransform(a)
-        } ?: emptyList()
-
-        val enrollmentAttributeValues = o.enrollments()?.flatMap {
-            it.attributes()?.map { a ->
-                NewTrackerImporterTrackedEntityAttributeValueTransformer.deTransform(a)
-            } ?: emptyList()
-        } ?: emptyList()
-
-        val attributes = (teiAttributeValues + enrollmentAttributeValues).distinctBy { it.trackedEntityAttribute() }
-
-        val relationships = o.relationships()?.map { NewTrackerImporterRelationshipTransformer.deTransform(it) }
-        val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.deTransform(it) }
-
-        return TrackedEntityInstance.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .created(o.createdAt())
-            .lastUpdated(o.updatedAt())
-            .createdAtClient(o.createdAtClient())
-            .lastUpdatedAtClient(o.updatedAtClient())
-            .organisationUnit(o.organisationUnit())
-            .trackedEntityType(o.trackedEntityType())
-            .geometry(o.geometry())
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .enrollments(enrollments)
-            .trackedEntityAttributeValues(attributes)
-            .programOwners(programOwners)
-            .relationships(relationships)
             .build()
     }
 }

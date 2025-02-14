@@ -32,13 +32,13 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 
 internal interface OwnershipNetworkHandler {
     suspend fun breakGlass(
-        trackedEntity: Map<String, String>,
+        trackedEntityInstance: String,
         program: String,
         reason: String,
     ): HttpMessageResponse
 
     suspend fun transfer(
-        trackedEntity: Map<String, String>,
+        trackedEntityInstance: String,
         program: String,
         ou: String,
     ): HttpMessageResponse

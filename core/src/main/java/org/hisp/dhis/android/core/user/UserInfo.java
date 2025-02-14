@@ -33,12 +33,9 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_UserInfo.Builder.class)
 public abstract class UserInfo {
 
     @Nullable
@@ -65,7 +62,6 @@ public abstract class UserInfo {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder uid(String uid);

@@ -29,31 +29,33 @@ package org.hisp.dhis.android.core.enrollment
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.tracker.NewEnrollmentDTO
 import org.junit.Test
 
 class NewTrackerImporterEnrollmentShould :
-    BaseObjectShould("enrollment/new_tracker_importer_enrollment.json"),
+    BaseObjectKotlinxShould("enrollment/new_tracker_importer_enrollment.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val enrollment = objectMapper.readValue(jsonStream, NewTrackerImporterEnrollment::class.java)
+        val enrollmentDTO = deserialize(NewEnrollmentDTO.serializer())
+        val enrollment = enrollmentDTO.toDomain()
 
-        assertThat(enrollment.createdAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-01-20T10:44:02.929"))
+        assertThat(enrollment.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-01-20T10:44:02.929"))
         assertThat(enrollment.createdAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-02-20T10:44:02.929"))
-        assertThat(enrollment.updatedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-01-20T10:44:33.776"))
-        assertThat(enrollment.updatedAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-02-20T10:44:33.776"))
+        assertThat(enrollment.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-01-20T10:44:33.776"))
+        assertThat(enrollment.lastUpdatedAtClient()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-02-20T10:44:33.776"))
         assertThat(enrollment.uid()).isEqualTo("KpknKHptul0")
         assertThat(enrollment.organisationUnit()).isEqualTo("DiszpKrYNg8")
         assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
-        assertThat(enrollment.enrolledAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-10T00:00:00.000"))
-        assertThat(enrollment.occurredAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-10T00:00:00.000"))
-        assertThat(enrollment.completedAt()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-20T10:44:33.776"))
+        assertThat(enrollment.enrollmentDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-10T00:00:00.000"))
+        assertThat(enrollment.incidentDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-10T00:00:00.000"))
+        assertThat(enrollment.completedDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-20T10:44:33.776"))
         assertThat(enrollment.followUp()).isEqualTo(true)
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.COMPLETED)
-        assertThat(enrollment.trackedEntity()).isEqualTo("vOxUH373fy5")
+        assertThat(enrollment.trackedEntityInstance()).isEqualTo("vOxUH373fy5")
         assertThat(enrollment.deleted()).isEqualTo(false)
     }
 }

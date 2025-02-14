@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.exporter
+package org.hisp.dhis.android.network.tracker
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.ownership.OwnershipService
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -74,14 +73,6 @@ internal class TrackerExporterParameterManager(
             mapOf(TrackerExporterService.ORG_UNITS to uids.joinToString(","))
         } else {
             mapOf(TrackerExporterService.ORG_UNIT to uids.joinToString(";"))
-        }
-    }
-
-    fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
-            mapOf(OwnershipService.TRACKED_ENTITY to uid)
-        } else {
-            mapOf(OwnershipService.TRACKED_ENTITY_INSTACE to uid)
         }
     }
 }

@@ -34,16 +34,14 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
 
+typealias DataSetCompleteRegistrationPartition = List<List<String>>
+
 @Suppress("LongParameterList")
 internal interface DataSetCompleteRegistrationNetworkHandler {
 
     suspend fun getDataSetCompleteRegistrations(
         lastUpdated: String?,
-        dataSetUids: String,
-        periodIds: String,
-        organisationUnitIds: String,
-        children: Boolean,
-        paging: Boolean,
+        partition: DataSetCompleteRegistrationPartition,
     ): List<DataSetCompleteRegistration>
 
     suspend fun postDataSetCompleteRegistrations(
@@ -51,11 +49,6 @@ internal interface DataSetCompleteRegistrationNetworkHandler {
     ): Result<DataValueImportSummary, D2Error>
 
     suspend fun deleteDataSetCompleteRegistration(
-        dataSet: String,
-        periodId: String,
-        orgUnit: String,
-        categoryComboUid: String,
-        categoryOptionUids: String,
-        multiOrganisationUnit: Boolean,
+        dataSetCompleteRegistration: DataSetCompleteRegistration,
     ): Result<HttpResponse, D2Error>
 }

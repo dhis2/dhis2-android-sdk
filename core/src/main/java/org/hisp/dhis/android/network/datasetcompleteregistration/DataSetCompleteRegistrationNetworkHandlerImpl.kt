@@ -29,10 +29,15 @@ package org.hisp.dhis.android.network.datasetcompleteregistration
 
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationNetworkHandler
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPartition
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -47,25 +52,22 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
     httpClient: HttpServiceClientKotlinx,
     private val versionManager: DHISVersionManager,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
 ) : DataSetCompleteRegistrationNetworkHandler {
     private val service: DataSetCompleteRegistrationService = DataSetCompleteRegistrationService(httpClient)
 
     override suspend fun getDataSetCompleteRegistrations(
         lastUpdated: String?,
-        dataSetUids: String,
-        periodIds: String,
-        organisationUnitIds: String,
-        children: Boolean,
-        paging: Boolean,
+        partition: DataSetCompleteRegistrationPartition,
     ): List<DataSetCompleteRegistration> {
         val dataSetCompleteRegistrations = service.getDataSetCompleteRegistrations(
-            DataSetCompleteRegistrationFields.allFields,
-            lastUpdated,
-            dataSetUids,
-            periodIds,
-            organisationUnitIds,
-            children,
-            paging,
+            fields = DataSetCompleteRegistrationFields.allFields,
+            lastUpdated = lastUpdated,
+            dataSetUids = commaSeparatedCollectionValues(partition[0]),
+            periodIds = commaSeparatedCollectionValues(partition[1]),
+            organisationUnitIds = commaSeparatedCollectionValues(partition[2]),
+            children = true,
+            paging = false,
         )
         return dataSetCompleteRegistrations.items.map { it.toDomain() }
     }
@@ -92,21 +94,21 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
     }
 
     override suspend fun deleteDataSetCompleteRegistration(
-        dataSet: String,
-        periodId: String,
-        orgUnit: String,
-        categoryComboUid: String,
-        categoryOptionUids: String,
-        multiOrganisationUnit: Boolean,
+        dataSetCompleteRegistration: DataSetCompleteRegistration,
     ): Result<HttpResponse, D2Error> {
         return coroutineAPICallExecutor.wrap {
+            val coc = categoryOptionComboCollectionRepository
+                .withCategoryOptions()
+                .uid(dataSetCompleteRegistration.attributeOptionCombo())
+                .blockingGet()
+
             service.deleteDataSetCompleteRegistration(
-                dataSet,
-                periodId,
-                orgUnit,
-                categoryComboUid,
-                categoryOptionUids,
-                multiOrganisationUnit,
+                dataSetCompleteRegistration.dataSet(),
+                dataSetCompleteRegistration.period(),
+                dataSetCompleteRegistration.organisationUnit(),
+                coc!!.categoryCombo()!!.uid(),
+                CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
+                false,
             )
         }
     }

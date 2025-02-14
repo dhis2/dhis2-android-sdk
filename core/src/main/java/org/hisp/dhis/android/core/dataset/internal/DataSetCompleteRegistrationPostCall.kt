@@ -33,12 +33,9 @@ import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
-import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
@@ -49,7 +46,6 @@ import org.koin.core.annotation.Singleton
 internal class DataSetCompleteRegistrationPostCall(
     private val networkHandler: DataSetCompleteRegistrationNetworkHandler,
     private val dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler,
-    private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
 ) {
     fun uploadDataSetCompleteRegistrations(
@@ -89,33 +85,23 @@ internal class DataSetCompleteRegistrationPostCall(
 
         val deletedDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
         val withErrorDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
-        for (dataSetCompleteRegistration in toDeleteDataSetCompleteRegistrations) {
-            val coc = categoryOptionComboCollectionRepository
-                .withCategoryOptions()
-                .uid(dataSetCompleteRegistration.attributeOptionCombo())
-                .blockingGet()
+
+        toDeleteDataSetCompleteRegistrations.forEach { toDeleteRegistrations ->
             markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
-            networkHandler.deleteDataSetCompleteRegistration(
-                dataSetCompleteRegistration.dataSet(),
-                dataSetCompleteRegistration.period(),
-                dataSetCompleteRegistration.organisationUnit(),
-                coc!!.categoryCombo()!!.uid(),
-                CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
-                false,
-            ).fold(
+            networkHandler.deleteDataSetCompleteRegistration(toDeleteRegistrations).fold(
                 onSuccess = { result ->
                     if (result.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX) {
-                        deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                        deletedDataSetCompleteRegistrations.add(toDeleteRegistrations)
                     } else {
-                        withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                        withErrorDataSetCompleteRegistrations.add(toDeleteRegistrations)
                     }
                 },
-
                 onFailure = {
-                    withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    withErrorDataSetCompleteRegistrations.add(toDeleteRegistrations)
                 },
             )
         }
+
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             toPostDataSetCompleteRegistrations,
             dataValueImportSummary,
@@ -135,8 +121,8 @@ internal class DataSetCompleteRegistrationPostCall(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
         forcedState: State?,
     ) {
-        for (dscr in dataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dscr, forcedOrOwn(dscr, forcedState))
+        dataSetCompleteRegistrations.forEach {
+            dataSetCompleteRegistrationStore.setState(it, forcedOrOwn(it, forcedState))
         }
     }
 }

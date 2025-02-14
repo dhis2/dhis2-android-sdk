@@ -53,7 +53,7 @@ import java.io.IOException
 
 @Singleton
 internal class FileResourcePostCall(
-    private val fileResourceService: FileResourceService,
+    private val fileResourceNetworkHandler: FileResourceNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataValueStore: DataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
@@ -79,7 +79,7 @@ internal class FileResourcePostCall(
             val fileName = fileResource.name() ?: file.name
             val filePart = getFilePart(file, fileName)
             val responseByteArray = coroutineAPICallExecutor.wrap(storeError = true) {
-                fileResourceService.uploadFile(filePart)
+                fileResourceNetworkHandler.uploadFile(filePart)
             }.getOrThrow()
             handleResponse(String(responseByteArray), fileResource, file, value)
         } else {

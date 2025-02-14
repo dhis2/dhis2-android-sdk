@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal
+package org.hisp.dhis.android.network.fileresource
 
 import io.ktor.client.request.forms.MultiPartFormDataContent
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class FileResourceService(private val client: HttpServiceClient) {
+internal class FileResourceService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {
         return client.post {
@@ -46,7 +43,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         }
     }
 
-    suspend fun getFileResource(fileResource: String): FileResource {
+    suspend fun getFileResource(fileResource: String): FileResourceDTO {
         return client.get {
             url("$FILE_RESOURCES/$fileResource")
         }
@@ -56,7 +53,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         fields: Fields<FileResource>,
         fileResources: Filter<FileResource>,
         paging: Boolean,
-    ): PayloadJackson<FileResource> {
+    ): FileResourcePayload {
         return client.get {
             url(FILE_RESOURCES)
             parameters {

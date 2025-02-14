@@ -33,9 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -43,51 +40,41 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FileResourceDomainColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreFileResourceStorageStatusAdapter;
 import org.hisp.dhis.android.core.common.BaseDataObject;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_FileResource.Builder.class)
 public abstract class FileResource extends BaseDataObject implements ObjectWithUidInterface {
 
     @Nullable
-    @JsonProperty(BaseIdentifiableObject.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty
     public abstract String name();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty
     public abstract String contentType();
 
     @Nullable
-    @JsonProperty
     public abstract Long contentLength();
 
     @Nullable
     public abstract String path();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(FileResourceDomainColumnAdapter.class)
     public abstract FileResourceDomain domain();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(IgnoreFileResourceStorageStatusAdapter.class)
     abstract FileResourceStorageStatus storageStatus();
 
@@ -103,10 +90,8 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataObject.Builder<Builder> {
 
-        @JsonProperty(BaseIdentifiableObject.UID)
         public abstract Builder uid(@NonNull String uid);
 
         public abstract Builder name(@NonNull String name);

@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.fileresource
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.fileresource.FileResourceDTO
 import org.junit.Test
 
-class FileResourceShould : BaseObjectShould("fileresource/file_resource.json"), ObjectShould {
+class FileResourceShould : BaseObjectKotlinxShould("fileresource/file_resource.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val fileResource = objectMapper.readValue(jsonStream, FileResource::class.java)
+        val fileResourceDTO = deserialize(FileResourceDTO.serializer())
+        val fileResource = fileResourceDTO.toDomain()
 
         assertThat(fileResource.uid()).isEqualTo("SyPJ9weHqBM")
         assertThat(fileResource.name()).isEqualTo("doc.pdf")

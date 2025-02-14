@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.event.internal.DateFilterPeriodFields
 import org.hisp.dhis.android.core.event.internal.EventDataFilterFields
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
 import org.hisp.dhis.android.core.event.internal.NewEventFields
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceFields
 import org.hisp.dhis.android.core.legendset.internal.LegendFields
 import org.hisp.dhis.android.core.note.internal.NewNoteFields
 import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableFields
@@ -92,6 +91,7 @@ import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
 import org.hisp.dhis.android.network.eventfilter.EventFilterFields
 import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemFields
 import org.hisp.dhis.android.network.externalmaplayer.ExternalMapLayerFields
+import org.hisp.dhis.android.network.fileresource.FileResourceFields
 import org.hisp.dhis.android.network.indicator.IndicatorFields
 import org.hisp.dhis.android.network.indicatortype.IndicatorTypeFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields

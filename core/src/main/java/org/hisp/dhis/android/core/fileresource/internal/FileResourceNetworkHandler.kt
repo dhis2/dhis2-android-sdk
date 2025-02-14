@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource
 
-internal object FileResourceInternalAccessor {
-    fun isStored(fileResource: FileResource): Boolean {
-        return fileResource.storageStatus()?.let { it == FileResourceStorageStatus.STORED } ?: true
-    }
+package org.hisp.dhis.android.core.fileresource.internal
 
-    fun insertStorageStatus(
-        builder: FileResource.Builder,
-        storageStatus: FileResourceStorageStatus,
-    ): FileResource.Builder {
-        return builder.storageStatus(storageStatus)
-    }
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+
+internal interface FileResourceNetworkHandler {
+
+    suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray
+
+    suspend fun getFileResource(fileResource: String): FileResource
+
+    suspend fun getFileResources(
+        query: UidsQuery,
+    ): Payload<FileResource>
+
+    suspend fun getImageFromTrackedEntityAttribute(
+        v: MissingTrackerAttributeValue,
+        dimension: String,
+    ): ByteArray
+
+    suspend fun getFileFromTrackedEntityAttribute(
+        v: MissingTrackerAttributeValue,
+    ): ByteArray
+
+    suspend fun getFileFromEventValue(
+        v: TrackedEntityDataValue,
+        dimension: String,
+    ): ByteArray
+
+    suspend fun getCustomIcon(
+        v: CustomIcon,
+    ): ByteArray
+
+    suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray
 }

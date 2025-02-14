@@ -59,9 +59,6 @@ public class DataSetCompleteRegistrationImportHandlerShould {
     DataValueImportSummary dataValueImportSummary;
 
     @Mock
-    DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload;
-
-    @Mock
     DataSetCompleteRegistration dataSetCompleteRegistration;
 
     private DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler;
@@ -81,8 +78,7 @@ public class DataSetCompleteRegistrationImportHandlerShould {
 
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                new DataSetCompleteRegistrationPayload(new ArrayList<>()),
-                dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
+                new ArrayList<>(), dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
 
         verify(dataSetCompleteRegistrationStore, never()).setState(
                 any(DataSetCompleteRegistration.class), any(State.class));
@@ -94,13 +90,11 @@ public class DataSetCompleteRegistrationImportHandlerShould {
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
         dataSetCompleteRegistrations.add(dataSetCompleteRegistration);
 
-        dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
-
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         when(dataSetCompleteRegistrationStore.isBeingUpload(any(DataSetCompleteRegistration.class)))
                 .thenReturn(Boolean.TRUE);
 
-        dataSetCompleteRegistrationImportHandler.handleImportSummary(dataSetCompleteRegistrationPayload,
+        dataSetCompleteRegistrationImportHandler.handleImportSummary(dataSetCompleteRegistrations,
                 dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
 
         verify(dataSetCompleteRegistrationStore, times(1)).setState(dataSetCompleteRegistration, State.SYNCED);
@@ -112,14 +106,12 @@ public class DataSetCompleteRegistrationImportHandlerShould {
         List<DataSetCompleteRegistration> dataValueCollection = new ArrayList<>();
         dataValueCollection.add(dataSetCompleteRegistration);
 
-        dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations = dataValueCollection;
-
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
         when(dataSetCompleteRegistrationStore.isBeingUpload(any(DataSetCompleteRegistration.class)))
                 .thenReturn(Boolean.TRUE);
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                dataSetCompleteRegistrationPayload, dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
+                dataValueCollection, dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
 
         verify(dataSetCompleteRegistrationStore, times(1)).setState(dataSetCompleteRegistration, State.ERROR);
     }

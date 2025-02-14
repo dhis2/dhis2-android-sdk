@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.dataset.internal
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+typealias DataSetCompleteRegistrationPartition = List<List<String>>
 
-import java.util.ArrayList;
-import java.util.List;
+@Suppress("LongParameterList")
+internal interface DataSetCompleteRegistrationNetworkHandler {
 
-class DataSetCompleteRegistrationPayload {
+    suspend fun getDataSetCompleteRegistrations(
+        lastUpdated: String?,
+        partition: DataSetCompleteRegistrationPartition,
+    ): List<DataSetCompleteRegistration>
 
-    @JsonProperty("completeDataSetRegistrations")
-    List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+    suspend fun postDataSetCompleteRegistrations(
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
+    ): Result<DataValueImportSummary, D2Error>
 
-    DataSetCompleteRegistrationPayload(
-            @JsonProperty("completeDataSetRegistrations")
-                    List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
-
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations == null ?
-                new ArrayList<>() :
-                dataSetCompleteRegistrations;
-    }
+    suspend fun deleteDataSetCompleteRegistration(
+        dataSetCompleteRegistration: DataSetCompleteRegistration,
+    ): Result<HttpResponse, D2Error>
 }

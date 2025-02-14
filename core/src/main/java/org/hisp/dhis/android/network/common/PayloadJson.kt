@@ -41,10 +41,12 @@ internal open class PayloadJson<T>(
 
     constructor(itemList: List<T>) : this(null, itemList)
 
+    @Deprecated("Use items attribute instead", replaceWith = ReplaceWith("items"))
     override fun items(): List<T> {
         return items
     }
 
+    @Deprecated("Use pager attribute instead", replaceWith = ReplaceWith("pager"))
     override fun pager(): PagerDTO? {
         return pager
     }

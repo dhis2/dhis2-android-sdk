@@ -25,43 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.util.toJavaSimpleDate
+import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+class DataSetCompleteRegistrationWithCompletedShould :
+    BaseObjectKotlinxShould("dataset/data_set_complete_registration_with_completed.json"),
+    ObjectShould {
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class DataSetCompleteRegistrationWithCompletedShould extends BaseObjectShould implements ObjectShould {
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-
-    public DataSetCompleteRegistrationWithCompletedShould() {
-        super("dataset/data_set_complete_registration_with_completed.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    override fun map_from_json_string() {
+        val dataSetCompleteRegistrationDTO = deserialize(DataSetCompleteRegistrationDTO.serializer())
+        val dataSetCompleteRegistration = dataSetCompleteRegistrationDTO.toDomain()
 
-        objectMapper.setTimeZone(dateFormat.getTimeZone());
-
-        DataSetCompleteRegistration dataSetCompleteRegistration =
-                objectMapper.readValue(jsonStream, DataSetCompleteRegistration.class);
-
-        assertThat(dataSetCompleteRegistration.period()).isEqualTo("201703");
-        assertThat(dataSetCompleteRegistration.dataSet()).isEqualTo("BfMAe6Itzgt");
-        assertThat(dataSetCompleteRegistration.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(dataSetCompleteRegistration.attributeOptionCombo()).isEqualTo("HllvX50cXC0");
-        assertThat(dataSetCompleteRegistration.date()).isEqualTo(dateFormat.parse("2010-04-05"));
-        assertThat(dataSetCompleteRegistration.storedBy()).isEqualTo("admin");
-        assertThat(dataSetCompleteRegistration.deleted()).isTrue();
+        assertThat(dataSetCompleteRegistration.period()).isEqualTo("201703")
+        assertThat(dataSetCompleteRegistration.dataSet()).isEqualTo("BfMAe6Itzgt")
+        assertThat(dataSetCompleteRegistration.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(dataSetCompleteRegistration.attributeOptionCombo()).isEqualTo("HllvX50cXC0")
+        assertThat(dataSetCompleteRegistration.date()).isEqualTo("2010-04-05".toJavaSimpleDate())
+        assertThat(dataSetCompleteRegistration.storedBy()).isEqualTo("admin")
+        assertThat(dataSetCompleteRegistration.deleted()).isTrue()
     }
 }

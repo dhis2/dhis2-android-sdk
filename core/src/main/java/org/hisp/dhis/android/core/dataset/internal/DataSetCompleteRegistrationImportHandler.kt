@@ -40,14 +40,14 @@ internal class DataSetCompleteRegistrationImportHandler(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
 ) {
     fun handleImportSummary(
-        dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
+        toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         dataValueImportSummary: DataValueImportSummary,
         deletedDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         withErrorDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummary {
         val newState = if (dataValueImportSummary.importStatus() == ImportStatus.ERROR) State.ERROR else State.SYNCED
-        for (dataSetCompleteRegistration in dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {
-            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration!!)) {
+        for (dataSetCompleteRegistration in toPostDataSetCompleteRegistrations) {
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
                 dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState)
             }
         }

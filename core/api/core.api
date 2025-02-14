@@ -5543,7 +5543,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistra
 public abstract class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
 	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
 	public abstract fun date (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;

@@ -56,6 +56,7 @@ class TrackerImporterFileResourcesPostCallShould {
     private lateinit var fileResourcePostCall: TrackerImporterFileResourcesPostCall
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Suppress("LongMethod")
     @Test
     fun `Should create a single post call for repeated attributes`() = runTest {
         val resourceId = "resourceId"

@@ -25,50 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.relationship;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class NewTrackerImporterRelationshipItem {
-
-    @Nullable
-    public abstract String relationship();
-
-    @Nullable
-    public abstract RelationshipConstraintType relationshipItemType();
-
-    @Nullable
-    public abstract NewTrackerImporterRelationshipItemTrackedEntity trackedEntity();
-
-    @Nullable
-    public abstract NewTrackerImporterRelationshipItemEnrollment enrollment();
-
-    @Nullable
-    public abstract NewTrackerImporterRelationshipItemEvent event();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterRelationshipItem.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder relationship(String relationship);
-
-        public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
-
-        public abstract Builder trackedEntity(NewTrackerImporterRelationshipItemTrackedEntity trackedEntity);
-
-        public abstract Builder enrollment(NewTrackerImporterRelationshipItemEnrollment enrollment);
-
-        public abstract Builder event(NewTrackerImporterRelationshipItemEvent event);
-
-        public abstract NewTrackerImporterRelationshipItem build();
-    }
-}
+internal data class NewTrackerImporterRelationshipItem(
+    val relationship: String?,
+    val relationshipItemType: RelationshipConstraintType?,
+    val trackedEntity: NewTrackerImporterRelationshipItemTrackedEntity?,
+    val enrollment: NewTrackerImporterRelationshipItemEnrollment?,
+    val event: NewTrackerImporterRelationshipItemEvent?,
+)

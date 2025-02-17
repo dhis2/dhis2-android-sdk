@@ -25,45 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class UserInfo {
-
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String username();
-
-    @Nullable
-    public abstract String firstName();
-
-    @Nullable
-    public abstract String surname();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_UserInfo.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder username(String username);
-
-        public abstract Builder firstName(String firstName);
-
-        public abstract Builder surname(String surname);
-
-        public abstract UserInfo build();
-    }
-}
+internal data class UserInfo(
+    val uid: String? = null,
+    val username: String? = null,
+    val firstName: String? = null,
+    val surname: String? = null,
+)

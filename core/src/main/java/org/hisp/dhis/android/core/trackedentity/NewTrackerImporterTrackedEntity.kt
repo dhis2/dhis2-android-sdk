@@ -25,115 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
-import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner;
-
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-public abstract class NewTrackerImporterTrackedEntity implements ObjectWithUidInterface,
-        ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
-
-    @Override
-    public abstract String uid();
-
-    @Nullable
-    @Override
-    public abstract Boolean deleted();
-
-    @Nullable
-    @Override
-    public abstract State syncState();
-
-    @Nullable
-    public abstract Date createdAt();
-
-    @Nullable
-    public abstract Date updatedAt();
-
-    @Nullable
-    public abstract Date createdAtClient();
-
-    @Nullable
-    public abstract Date updatedAtClient();
-
-    @Nullable
-    public abstract String organisationUnit();
-
-    @Nullable
-    public abstract String trackedEntityType();
-
-    @Nullable
-    public abstract Geometry geometry();
-
-    @Nullable
-    public abstract State aggregatedSyncState();
-
-    @Nullable
-    public abstract List<NewTrackerImporterTrackedEntityAttributeValue> trackedEntityAttributeValues();
-
-    @Nullable
-    public abstract List<NewTrackerImporterEnrollment> enrollments();
-
-    @Nullable
-    public abstract List<NewTrackerImporterProgramOwner> programOwners();
-
-    @Nullable
-    abstract List<NewTrackerImporterRelationship> relationships();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterTrackedEntity.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder deleted(Boolean deleted);
-
-        public abstract Builder syncState(State syncState);
-
-        public abstract Builder createdAt(Date created);
-
-        public abstract Builder updatedAt(Date updatedAt);
-
-        public abstract Builder createdAtClient(Date createdAtClient);
-
-        public abstract Builder updatedAtClient(Date updatedAtClient);
-
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract Builder trackedEntityType(String trackedEntityType);
-
-        public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder aggregatedSyncState(State state);
-
-        public abstract Builder trackedEntityAttributeValues(
-                List<NewTrackerImporterTrackedEntityAttributeValue> trackedEntityAttributeValues);
-
-        public abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
-
-        public abstract Builder programOwners(List<NewTrackerImporterProgramOwner> programOwners);
-
-        public abstract Builder relationships(List<NewTrackerImporterRelationship> relationships);
-
-        public abstract NewTrackerImporterTrackedEntity build();
-    }
+internal data class NewTrackerImporterTrackedEntity(
+    val uid: String,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val createdAtClient: Date?,
+    val updatedAtClient: Date?,
+    val organisationUnit: String?,
+    val trackedEntityType: String?,
+    val geometry: Geometry?,
+    val aggregatedSyncState: State?,
+    val trackedEntityAttributeValues: List<NewTrackerImporterTrackedEntityAttributeValue>? = emptyList(),
+    val enrollments: List<NewTrackerImporterEnrollment>? = emptyList(),
+    val programOwners: List<NewTrackerImporterProgramOwner>? = emptyList(),
+    val relationships: List<NewTrackerImporterRelationship>? = emptyList(),
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

@@ -25,63 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.user.UserInfo
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.user.UserInfo;
-
-import java.util.Date;
-
-@AutoValue
-public abstract class NewTrackerImporterTrackedEntityDataValue {
-
-    @Nullable
-    public abstract String event();
-
-    @Nullable
-    public abstract Date createdAt();
-
-    @Nullable
-    public abstract Date updatedAt();
-
-    @Nullable
-    public abstract String dataElement();
-
-    @Nullable
-    public abstract UserInfo createdBy();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract Boolean providedElsewhere();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterTrackedEntityDataValue.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder event(String event);
-
-        public abstract Builder createdAt(Date createdAt);
-
-        public abstract Builder updatedAt(Date updatedAt);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder createdBy(UserInfo createdBy);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder providedElsewhere(Boolean providedElsewhere);
-
-        public abstract NewTrackerImporterTrackedEntityDataValue build();
-    }
-}
+internal data class NewTrackerImporterTrackedEntityDataValue(
+    val event: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val dataElement: String?,
+    val createdBy: UserInfo?,
+    val value: String?,
+    val providedElsewhere: Boolean?,
+)

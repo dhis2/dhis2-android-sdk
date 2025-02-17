@@ -25,30 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class NewTrackerImporterUserInfo {
-
-    @Nullable
-    public abstract String uid();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterUserInfo.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract NewTrackerImporterUserInfo build();
-    }
-}
+internal data class NewTrackerImporterUserInfo(
+    val uid: String?,
+)

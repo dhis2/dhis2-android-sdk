@@ -25,45 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.core.trackedentity.ownership;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
-import org.hisp.dhis.android.core.common.State;
-
-@AutoValue
-public abstract class NewTrackerImporterProgramOwner implements ObjectWithSyncStateInterface {
-
-    @Nullable
-    @Override
-    public abstract State syncState();
-
-    public abstract String program();
-
-    public abstract String trackedEntity();
-
-    public abstract String orgUnit();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterProgramOwner.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder syncState(State syncState);
-
-        public abstract Builder program(String event);
-
-        public abstract Builder trackedEntity(String trackedEntityInstance);
-
-        public abstract Builder orgUnit(String ownerOrgUnit);
-
-        public abstract NewTrackerImporterProgramOwner build();
-    }
-}
+internal data class NewTrackerImporterProgramOwner(
+    val program: String,
+    val trackedEntity: String,
+    val orgUnit: String,
+)

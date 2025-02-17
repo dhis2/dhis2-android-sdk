@@ -25,51 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import java.util.Date;
-
-@AutoValue
-public abstract class NewTrackerImporterTrackedEntityAttributeValue {
-
-    @Nullable
-    public abstract String trackedEntityAttribute();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract Date createdAt();
-
-    @Nullable
-    public abstract Date updatedAt();
-
-    @Nullable
-    public abstract String trackedEntityInstance();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterTrackedEntityAttributeValue.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder createdAt(Date createdAt);
-
-        public abstract Builder updatedAt(Date updatedAt);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract NewTrackerImporterTrackedEntityAttributeValue build();
-    }
-}
+internal data class NewTrackerImporterTrackedEntityAttributeValue(
+    val trackedEntityAttribute: String?,
+    val value: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val trackedEntityInstance: String?,
+)

@@ -25,162 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.event;
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo;
-
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
-public abstract class NewTrackerImporterEvent implements ObjectWithUidInterface,
-        ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
-
-    @Override
-    public abstract String uid();
-
-    @Nullable
-    @Override
-    public abstract Boolean deleted();
-
-    @Nullable
-    @Override
-    public abstract State syncState();
-
-    @Nullable
-    public abstract String enrollment();
-
-    @Nullable
-    public abstract Date createdAt();
-
-    @Nullable
-    public abstract Date updatedAt();
-
-    @Nullable
-    public abstract Date createdAtClient();
-
-    @Nullable
-    public abstract Date updatedAtClient();
-
-    @Nullable
-    public abstract String program();
-
-    @Nullable
-    public abstract String programStage();
-
-    @Nullable
-    public abstract String organisationUnit();
-
-    @Nullable
-    public abstract Date occurredAt();
-
-    @Nullable
-    public abstract EventStatus status();
-
-    @Nullable
-    public abstract Geometry geometry();
-
-    @Nullable
-    public abstract Date completedAt();
-
-    @Nullable
-    public abstract String completedBy();
-
-    @Nullable
-    public abstract Date scheduledAt();
-
-    @Nullable
-    public abstract String attributeOptionCombo();
-
-    @Nullable
-    public abstract NewTrackerImporterUserInfo assignedUser();
-
-    @Nullable
-    public abstract List<NewTrackerImporterNote> notes();
-
-    @Nullable
-    public abstract List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues();
-
-    @Nullable
-    abstract List<NewTrackerImporterRelationship> relationships();
-
-    @Nullable
-    public abstract State aggregatedSyncState();
-
-    @Nullable
-    public abstract String trackedEntity();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterEvent.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder deleted(Boolean deleted);
-
-        public abstract Builder syncState(State syncState);
-
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract Builder createdAt(Date createdAt);
-
-        public abstract Builder updatedAt(Date updatedAt);
-
-        public abstract Builder createdAtClient(Date createdAtClient);
-
-        public abstract Builder updatedAtClient(Date updatedAtClient);
-
-        public abstract Builder program(String program);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract Builder occurredAt(Date occurredAt);
-
-        public abstract Builder status(EventStatus status);
-
-        public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder completedAt(Date completedAt);
-
-        public abstract Builder completedBy(String completedBy);
-
-        public abstract Builder scheduledAt(Date scheduledAt);
-
-        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
-
-        public abstract Builder assignedUser(NewTrackerImporterUserInfo assignedUser);
-
-        public abstract Builder notes(List<NewTrackerImporterNote> notes);
-
-        public abstract Builder trackedEntityDataValues(
-                List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues);
-
-        public abstract Builder relationships(List<NewTrackerImporterRelationship> relationships);
-
-        public abstract Builder aggregatedSyncState(State aggregatedSyncState);
-
-        public abstract Builder trackedEntity(String trackedEntity);
-
-        public abstract NewTrackerImporterEvent build();
-    }
+internal data class NewTrackerImporterEvent(
+    val uid: String,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val enrollment: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val createdAtClient: Date?,
+    val updatedAtClient: Date?,
+    val program: String?,
+    val programStage: String?,
+    val organisationUnit: String?,
+    val occurredAt: Date?,
+    val status: EventStatus?,
+    val geometry: Geometry?,
+    val completedAt: Date?,
+    val completedBy: String?,
+    val scheduledAt: Date?,
+    val attributeOptionCombo: String?,
+    val assignedUser: NewTrackerImporterUserInfo?,
+    val notes: List<NewTrackerImporterNote>? = emptyList(),
+    val trackedEntityDataValues: List<NewTrackerImporterTrackedEntityDataValue>? = emptyList(),
+    val relationships: List<NewTrackerImporterRelationship>? = emptyList(),
+    val aggregatedSyncState: State?,
+    val trackedEntity: String? = null,
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

@@ -25,84 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.State;
-
-import java.util.Date;
-
-@AutoValue
-public abstract class NewTrackerImporterRelationship implements ObjectWithUidInterface,
-        ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
-
-    @Override
-    public abstract String uid();
-
-    @Nullable
-    @Override
-    public abstract Boolean deleted();
-
-    @Nullable
-    @Override
-    public abstract State syncState();
-
-    @Nullable
-    public abstract String relationshipType();
-
-    @Nullable
-    public abstract String relationshipName();
-
-    @Nullable
-    public abstract Date createdAt();
-
-    @Nullable
-    public abstract Date updatedAt();
-
-    @Nullable
-    public abstract Boolean bidirectional();
-
-    @Nullable
-    public abstract NewTrackerImporterRelationshipItem from();
-
-    @Nullable
-    public abstract NewTrackerImporterRelationshipItem to();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterRelationship.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder deleted(Boolean deleted);
-
-        public abstract Builder syncState(State syncState);
-
-        public abstract Builder relationshipType(String relationshipType);
-
-        public abstract Builder relationshipName(String relationshipName);
-
-        public abstract Builder createdAt(Date createdAt);
-
-        public abstract Builder updatedAt(Date lastUpdatedAt);
-
-        public abstract Builder bidirectional(Boolean bidirectional);
-
-        public abstract Builder from(NewTrackerImporterRelationshipItem from);
-
-        public abstract Builder to(NewTrackerImporterRelationshipItem to);
-
-        public abstract NewTrackerImporterRelationship build();
-    }
+internal data class NewTrackerImporterRelationship(
+    val uid: String?,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val relationshipType: String?,
+    val relationshipName: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val bidirectional: Boolean?,
+    val from: NewTrackerImporterRelationshipItem?,
+    val to: NewTrackerImporterRelationshipItem?,
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String? = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

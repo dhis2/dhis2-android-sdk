@@ -41,7 +41,6 @@ import androidx.annotation.Nullable;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.safeUnmodifiableList;
 
-
 @AutoValue
 public abstract class DataValueImportSummary {
 
@@ -57,6 +56,18 @@ public abstract class DataValueImportSummary {
             "ImportSummary",
             null, null
     );
+
+    @JsonCreator
+    public static DataValueImportSummary create(
+            @JsonProperty(IMPORT_COUNT) ImportCount importCount,
+            @JsonProperty(IMPORT_STATUS) ImportStatus importStatus,
+            @JsonProperty(RESPONSE_TYPE) String responseType,
+            @JsonProperty(REFERENCE) String reference,
+            @JsonProperty(IMPORT_CONFLICT) List<ImportConflict> importConflicts) {
+        return new AutoValue_DataValueImportSummary(importCount, importStatus,
+                responseType, reference,
+                safeUnmodifiableList(importConflicts));
+    }
 
     @NonNull
     @JsonProperty(IMPORT_COUNT)
@@ -78,16 +89,4 @@ public abstract class DataValueImportSummary {
     @Nullable
     @JsonProperty(IMPORT_CONFLICT)
     public abstract List<ImportConflict> importConflicts();
-
-    @JsonCreator
-    public static DataValueImportSummary create(
-            @JsonProperty(IMPORT_COUNT) ImportCount importCount,
-            @JsonProperty(IMPORT_STATUS) ImportStatus importStatus,
-            @JsonProperty(RESPONSE_TYPE) String responseType,
-            @JsonProperty(REFERENCE) String reference,
-            @JsonProperty(IMPORT_CONFLICT) List<ImportConflict> importConflicts) {
-        return new AutoValue_DataValueImportSummary(importCount, importStatus,
-                responseType, reference,
-                safeUnmodifiableList(importConflicts));
-    }
 }

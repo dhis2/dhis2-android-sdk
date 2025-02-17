@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal
+package org.hisp.dhis.android.network.datasetcompleteregistration
 
 import io.ktor.client.statement.HttpResponse
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryDTO
+import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
 
-@Singleton
 @Suppress("LongParameterList")
-internal class DataSetCompleteRegistrationService(private val client: HttpServiceClient) {
+internal class DataSetCompleteRegistrationService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun getDataSetCompleteRegistrations(
         fields: Fields<DataSetCompleteRegistration>,
@@ -64,7 +62,7 @@ internal class DataSetCompleteRegistrationService(private val client: HttpServic
 
     suspend fun postDataSetCompleteRegistrations(
         dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
-    ): DataValueImportSummary {
+    ): DataValueImportSummaryDTO {
         return client.post {
             url("completeDataSetRegistrations")
             body(dataSetCompleteRegistrationPayload)
@@ -73,7 +71,7 @@ internal class DataSetCompleteRegistrationService(private val client: HttpServic
 
     suspend fun postDataSetCompleteRegistrationsWebResponse(
         dataSetCompleteRegistrationPayload: DataSetCompleteRegistrationPayload,
-    ): DataValueImportSummaryWebResponse {
+    ): DataValueImportSummaryWebResponseDTO {
         return client.post {
             url("completeDataSetRegistrations")
             body(dataSetCompleteRegistrationPayload)

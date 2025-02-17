@@ -34,14 +34,14 @@ internal object NewTrackerImporterTrackedEntityDataValueTransformer :
     Transformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
 
     override fun transform(o: TrackedEntityDataValue): NewTrackerImporterTrackedEntityDataValue {
-        return NewTrackerImporterTrackedEntityDataValue.builder()
-            .event(o.event())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .dataElement(o.dataElement())
-            .createdBy(o.storedBy()?.let { UserInfo.builder().username(it).build() })
-            .value(o.value())
-            .providedElsewhere(o.providedElsewhere())
-            .build()
+        return NewTrackerImporterTrackedEntityDataValue(
+            event = o.event(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            dataElement = o.dataElement(),
+            createdBy = o.storedBy()?.let { UserInfo(username = it) },
+            value = o.value(),
+            providedElsewhere = o.providedElsewhere(),
+        )
     }
 }

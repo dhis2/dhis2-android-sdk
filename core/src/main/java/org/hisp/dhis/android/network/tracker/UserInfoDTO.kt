@@ -41,9 +41,9 @@ internal data class UserInfoDTO(
 
 internal fun UserInfo.toDto(): UserInfoDTO {
     return UserInfoDTO(
-        uid = uid(),
-        username = username(),
-        firstName = firstName(),
-        surname = surname(),
+        uid = uid,
+        username = username,
+        firstName = firstName,
+        surname = surname,
     )
 }

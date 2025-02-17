@@ -41,33 +41,29 @@ internal object NewTrackerImporterEventTransformer {
             ?.filter { includeSyncedValues || it.syncState() !== State.SYNCED }
             ?.map { NewTrackerImporterTrackedEntityDataValueTransformer.transform(it) }
 
-        return NewTrackerImporterEvent.builder()
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .enrollment(o.enrollment())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .createdAtClient(o.createdAtClient())
-            .updatedAtClient(o.lastUpdatedAtClient())
-            .program(o.program())
-            .programStage(o.programStage())
-            .organisationUnit(o.organisationUnit())
-            .occurredAt(o.eventDate())
-            .status(o.status())
-            .geometry(o.geometry())
-            .completedAt(o.completedDate())
-            .completedBy(o.completedBy())
-            .scheduledAt(o.dueDate())
-            .attributeOptionCombo(o.attributeOptionCombo())
-            .assignedUser(o.assignedUser()?.let { NewTrackerImporterUserInfo.builder().uid(it).build() })
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .trackedEntityDataValues(eventValues)
-            .notes(
-                o.notes()?.map {
-                    NewTrackerImporterNoteTransformer.transform(it)
-                },
-            )
-            .build()
+        return NewTrackerImporterEvent(
+            uid = o.uid(),
+            deleted = o.deleted(),
+            enrollment = o.enrollment(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            createdAtClient = o.createdAtClient(),
+            updatedAtClient = o.lastUpdatedAtClient(),
+            program = o.program(),
+            programStage = o.programStage(),
+            organisationUnit = o.organisationUnit(),
+            occurredAt = o.eventDate(),
+            status = o.status(),
+            geometry = o.geometry(),
+            completedAt = o.completedDate(),
+            completedBy = o.completedBy(),
+            scheduledAt = o.dueDate(),
+            attributeOptionCombo = o.attributeOptionCombo(),
+            assignedUser = o.assignedUser()?.let { NewTrackerImporterUserInfo(uid = it) },
+            syncState = o.syncState(),
+            aggregatedSyncState = o.aggregatedSyncState(),
+            trackedEntityDataValues = eventValues,
+            notes = o.notes()?.map { NewTrackerImporterNoteTransformer.transform(it) },
+        )
     }
 }

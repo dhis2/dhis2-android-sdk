@@ -79,10 +79,10 @@ internal data class NewRelationshipItemDTO(
 
 internal fun NewTrackerImporterRelationshipItem.toDto(): NewRelationshipItemDTO {
     return NewRelationshipItemDTO(
-        relationship = this.relationship(),
-        relationshipItemType = this.relationshipItemType()?.name,
-        trackedEntity = this.trackedEntity()?.toDto(),
-        enrollment = this.enrollment()?.toDto(),
-        event = this.event()?.toDto(),
+        relationship = relationship,
+        relationshipItemType = relationshipItemType?.name,
+        trackedEntity = trackedEntity?.toDto(),
+        enrollment = enrollment?.toDto(),
+        event = event?.toDto(),
     )
 }

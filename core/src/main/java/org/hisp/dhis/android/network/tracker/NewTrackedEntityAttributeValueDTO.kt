@@ -55,9 +55,9 @@ internal data class NewTrackedEntityAttributeValueDTO(
 
 internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackedEntityAttributeValueDTO {
     return NewTrackedEntityAttributeValueDTO(
-        attribute = this.trackedEntityAttribute(),
-        value = ValueDTO(value()),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
+        attribute = trackedEntityAttribute,
+        value = ValueDTO(value),
+        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
     )
 }

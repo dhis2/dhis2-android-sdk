@@ -31,16 +31,16 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
 internal object NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerImporterNote> {
     override fun transform(o: Note): NewTrackerImporterNote {
-        return NewTrackerImporterNote.builder()
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .noteType(o.noteType())
-            .event(o.event())
-            .enrollment(o.enrollment())
-            .value(o.value())
-            .storedBy(o.storedBy())
-            .storedAt(o.storedDate())
-            .syncState(o.syncState())
-            .build()
+        return NewTrackerImporterNote(
+            uid = o.uid(),
+            deleted = o.deleted(),
+            noteType = o.noteType(),
+            event = o.event(),
+            enrollment = o.enrollment(),
+            value = o.value(),
+            storedBy = o.storedBy(),
+            storedAt = o.storedDate(),
+            syncState = o.syncState(),
+        )
     }
 }

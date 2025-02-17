@@ -42,9 +42,9 @@ internal data class NewTrackerImporterPayloadDTO(
 
 internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
     return NewTrackerImporterPayloadDTO(
-        trackedEntities = this.trackedEntities.map { it.toDto() },
-        enrollments = this.enrollments.map { it.toDto() },
-        events = this.events.map { it.toDto() },
-        relationships = this.relationships.map { it.toDto() },
+        trackedEntities = trackedEntities.map { it.toDto() },
+        enrollments = enrollments.map { it.toDto() },
+        events = events.map { it.toDto() },
+        relationships = relationships.map { it.toDto() },
     )
 }

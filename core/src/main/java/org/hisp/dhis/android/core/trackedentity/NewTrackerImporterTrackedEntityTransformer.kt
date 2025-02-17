@@ -44,20 +44,20 @@ internal object NewTrackerImporterTrackedEntityTransformer {
             .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
         val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.transform(it) }
 
-        return NewTrackerImporterTrackedEntity.builder()
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .createdAtClient(o.createdAtClient())
-            .updatedAtClient(o.lastUpdatedAtClient())
-            .organisationUnit(o.organisationUnit())
-            .trackedEntityType(o.trackedEntityType())
-            .geometry(o.geometry())
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .trackedEntityAttributeValues(teiTypeAttributes)
-            .programOwners(programOwners)
-            .build()
+        return NewTrackerImporterTrackedEntity(
+            uid = o.uid(),
+            deleted = o.deleted(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            createdAtClient = o.createdAtClient(),
+            updatedAtClient = o.lastUpdatedAtClient(),
+            organisationUnit = o.organisationUnit(),
+            trackedEntityType = o.trackedEntityType(),
+            geometry = o.geometry(),
+            syncState = o.syncState(),
+            aggregatedSyncState = o.aggregatedSyncState(),
+            trackedEntityAttributeValues = teiTypeAttributes,
+            programOwners = programOwners,
+        )
     }
 }

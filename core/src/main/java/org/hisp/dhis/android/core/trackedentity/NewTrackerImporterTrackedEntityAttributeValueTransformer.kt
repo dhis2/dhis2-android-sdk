@@ -33,12 +33,12 @@ internal object NewTrackerImporterTrackedEntityAttributeValueTransformer :
     Transformer<TrackedEntityAttributeValue, NewTrackerImporterTrackedEntityAttributeValue> {
 
     override fun transform(o: TrackedEntityAttributeValue): NewTrackerImporterTrackedEntityAttributeValue {
-        return NewTrackerImporterTrackedEntityAttributeValue.builder()
-            .trackedEntityAttribute(o.trackedEntityAttribute())
-            .value(o.value())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .trackedEntityInstance(o.trackedEntityInstance())
-            .build()
+        return NewTrackerImporterTrackedEntityAttributeValue(
+            trackedEntityAttribute = o.trackedEntityAttribute(),
+            value = o.value(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            trackedEntityInstance = o.trackedEntityInstance(),
+        )
     }
 }

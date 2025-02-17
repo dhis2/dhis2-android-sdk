@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.trackedentity
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
@@ -49,7 +49,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
     fun allow_access_to_all_tracked_entity_data_values() {
         val trackedEntityAttributeValues =
             d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(4)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(4)
     }
 
     @Test
@@ -58,7 +58,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
             d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byTrackedEntityAttribute().eq("cejWyOfXge6")
                 .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(2)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(2)
     }
 
     @Test
@@ -67,7 +67,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
             d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byValue().eq("4081507")
                 .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }
 
     @Test
@@ -78,7 +78,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
             d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byCreated().eq(date)
                 .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }
 
     @Test
@@ -89,7 +89,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
             d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byLastUpdated().eq(date)
                 .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }
 
     @Test
@@ -98,7 +98,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
             d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byTrackedEntityInstance().eq("nWrB0TfWlvh")
                 .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(2)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(2)
     }
 
     @Test
@@ -114,14 +114,14 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
             d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byDeleted().isTrue
                 .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(0)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(0)
 
         repository.blockingDelete()
 
         trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
             .byDeleted().isTrue
             .blockingGet()
-        Truth.assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
+        assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
 
         repository.blockingSet(value!!.value())
         setDataValueState(value, State.SYNCED)
@@ -132,8 +132,8 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
     fun return_tracked_entity_attribute_value_object_repository() {
         val objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues()
             .value("cejWyOfXge6", "nWrB0TfWlvh")
-        Truth.assertThat(objectRepository.blockingExists()).isEqualTo(java.lang.Boolean.TRUE)
-        Truth.assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("4081507")
+        assertThat(objectRepository.blockingExists()).isEqualTo(java.lang.Boolean.TRUE)
+        assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("4081507")
     }
 
     private fun restoreTeiState(teiUid: String, syncState: State) {

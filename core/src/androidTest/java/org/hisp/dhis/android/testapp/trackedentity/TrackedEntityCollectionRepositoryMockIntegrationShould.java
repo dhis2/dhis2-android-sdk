@@ -154,8 +154,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byAggregatedSyncState().eq(State.SYNCED)
                         .blockingGet();
 
-        // TODO set to assertThat(trackedEntityInstances.size()).isEqualTo(2); after moving write tests to another db
-        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -165,7 +164,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .bySyncState().eq(State.SYNCED)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test

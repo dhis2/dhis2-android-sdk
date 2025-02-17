@@ -110,6 +110,6 @@ internal class NewTrackedEntityPayload(
 ) : PayloadJson<NewTrackedEntityDTO>(pager, items) {
 
     override fun pager(): PagerDTO {
-        return pager ?: PagerDTO(page ?: 0, pageCount ?: 0, pageSize ?: 0, total ?: 0)
+        return pager ?: PagerDTO(page, pageCount, pageSize, total)
     }
 }

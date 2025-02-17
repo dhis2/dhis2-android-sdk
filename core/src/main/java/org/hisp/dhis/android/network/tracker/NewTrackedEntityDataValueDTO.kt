@@ -37,7 +37,6 @@ import org.hisp.dhis.android.network.common.dto.ValueDTO
 
 @Serializable
 internal data class NewTrackedEntityDataValueDTO(
-    val event: String?,
     val createdAt: String?,
     val updatedAt: String?,
     val dataElement: String?,
@@ -60,9 +59,8 @@ internal data class NewTrackedEntityDataValueDTO(
 
 internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackedEntityDataValueDTO {
     return NewTrackedEntityDataValueDTO(
-        event = this.event(),
-        createdAt = this.createdAt()?.let { it.dateFormat() },
-        updatedAt = this.updatedAt()?.let { it.dateFormat() },
+        createdAt = this.createdAt()?.dateFormat(),
+        updatedAt = this.updatedAt()?.dateFormat(),
         dataElement = this.dataElement(),
         createdBy = this.createdBy()?.let { it.toDto() },
         value = ValueDTO(value()),

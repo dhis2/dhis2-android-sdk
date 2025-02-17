@@ -51,17 +51,11 @@ internal class NewTrackedEntityEndpointCallFactory(
 ) : TrackedEntityEndpointCallFactory {
 
     override suspend fun getCollectionCall(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
-        val programStatus = query.getProgramStatus()
-        val programStartDate = query.getProgramStartDate()
-
-        return networkHandler.getTrackedEntityCollectionCall(query, programStatus, programStartDate)
+        return networkHandler.getTrackedEntityCollectionCall(query)
     }
 
     override suspend fun getEntityCall(uid: String, query: TrackerAPIQuery): TrackedEntityInstance {
-        val programStatus = query.getProgramStatus()
-        val programStartDate = query.getProgramStartDate()
-
-        return networkHandler.getTrackedEntityEntityCall(uid, query, programStatus, programStartDate)
+        return networkHandler.getTrackedEntityEntityCall(uid, query)
     }
 
     override suspend fun getRelationshipEntityCall(

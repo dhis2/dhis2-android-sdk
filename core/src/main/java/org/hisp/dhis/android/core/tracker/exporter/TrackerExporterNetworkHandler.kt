@@ -38,15 +38,11 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 internal interface TrackerExporterNetworkHandler {
     suspend fun getTrackedEntityCollectionCall(
         query: TrackerAPIQuery,
-        programStatus: String?,
-        programStartDate: String?,
     ): Payload<TrackedEntityInstance>
 
     suspend fun getTrackedEntityEntityCall(
         uid: String,
         query: TrackerAPIQuery,
-        programStatus: String?,
-        programStartDate: String?,
     ): TrackedEntityInstance
 
     suspend fun getTrackedEntityRelationshipEntityCall(

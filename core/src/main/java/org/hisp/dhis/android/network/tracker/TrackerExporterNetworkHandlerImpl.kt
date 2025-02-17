@@ -58,9 +58,10 @@ internal class TrackerExporterNetworkHandlerImpl(
 
     override suspend fun getTrackedEntityCollectionCall(
         query: TrackerAPIQuery,
-        programStatus: String?,
-        programStartDate: String?,
     ): Payload<TrackedEntityInstance> {
+        val programStatus = query.getProgramStatus()
+        val programStartDate = query.getProgramStartDate()
+
         val apiPayload = service.getTrackedEntityInstances(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
@@ -82,9 +83,10 @@ internal class TrackerExporterNetworkHandlerImpl(
     override suspend fun getTrackedEntityEntityCall(
         uid: String,
         query: TrackerAPIQuery,
-        programStatus: String?,
-        programStartDate: String?,
     ): TrackedEntityInstance {
+        val programStatus = query.getProgramStatus()
+        val programStartDate = query.getProgramStartDate()
+
         val apiDto = service.getSingleTrackedEntityInstance(
             fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstanceUid = uid,

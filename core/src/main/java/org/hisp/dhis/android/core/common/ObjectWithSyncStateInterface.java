@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.common;
 
-@Singleton
-internal class StatePersistorHelper internal constructor() {
-
-    fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>>,
-        o: O,
-        forcedState: State?,
-    ) where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
-        val s = getStateToSet(o, forcedState)
-        if (!stateMap.containsKey(s)) {
-            stateMap[s] = ArrayList()
-        }
-        stateMap[s]!!.add(o.uid())
-    }
-
-    private fun <O> getStateToSet(
-        o: O,
-        forcedState: State?
-    ): State where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
-        return forcedState
-            ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
-    }
-
-    fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDataObjectStore<*>) {
-        for ((key, value) in map) {
-            store.setSyncState(value, key)
-        }
-    }
+public interface ObjectWithSyncStateInterface {
+    State syncState();
 }

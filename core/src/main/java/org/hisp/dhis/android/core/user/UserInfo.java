@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -54,11 +51,6 @@ public abstract class UserInfo {
 
     public static Builder builder() {
         return new AutoValue_UserInfo.Builder();
-    }
-
-    @NonNull
-    public static UserInfo create(Cursor cursor) {
-        return AutoValue_UserInfo.createFromCursor(cursor);
     }
 
     @AutoValue.Builder

@@ -28,26 +28,13 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.NewTrackerImporterUserInfoColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
@@ -60,28 +47,33 @@ import java.util.List;
 
 @AutoValue
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
-public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject implements ObjectWithUidInterface {
+public abstract class NewTrackerImporterEvent implements ObjectWithUidInterface,
+        ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
 
     @Override
     public abstract String uid();
 
     @Nullable
+    @Override
+    public abstract Boolean deleted();
+
+    @Nullable
+    @Override
+    public abstract State syncState();
+
+    @Nullable
     public abstract String enrollment();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAtClient();
 
     @Nullable
@@ -94,71 +86,57 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
     public abstract String organisationUnit();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date occurredAt();
 
     @Nullable
-    @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus status();
 
     @Nullable
-    @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedAt();
 
     @Nullable
     public abstract String completedBy();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date scheduledAt();
 
     @Nullable
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @ColumnAdapter(NewTrackerImporterUserInfoColumnAdapter.class)
     public abstract NewTrackerImporterUserInfo assignedUser();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewTrackerImporterNoteListColumnAdapter.class)
     public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewRelationshipListColumnAdapter.class)
     abstract List<NewTrackerImporterRelationship> relationships();
 
     @Nullable
-    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State aggregatedSyncState();
 
     @Nullable
-    @ColumnAdapter(IgnoreStringColumnAdapter.class)
     public abstract String trackedEntity();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterEvent.Builder();
-    }
-
-    public static NewTrackerImporterEvent create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterEvent.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterEvent.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder uid(String uid);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder syncState(State syncState);
 
         public abstract Builder enrollment(String enrollment);
 

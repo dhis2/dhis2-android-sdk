@@ -28,14 +28,19 @@
 
 package org.hisp.dhis.android.core.trackedentity.ownership;
 
-import android.database.Cursor;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataObject;
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
+import org.hisp.dhis.android.core.common.State;
 
 @AutoValue
-public abstract class NewTrackerImporterProgramOwner extends BaseDataObject {
+public abstract class NewTrackerImporterProgramOwner implements ObjectWithSyncStateInterface {
+
+    @Nullable
+    @Override
+    public abstract State syncState();
 
     public abstract String program();
 
@@ -44,18 +49,14 @@ public abstract class NewTrackerImporterProgramOwner extends BaseDataObject {
     public abstract String orgUnit();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterProgramOwner.Builder();
-    }
-
-    public static NewTrackerImporterProgramOwner create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterProgramOwner.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterProgramOwner.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
+    public abstract static class Builder {
+        public abstract Builder syncState(State syncState);
 
         public abstract Builder program(String event);
 

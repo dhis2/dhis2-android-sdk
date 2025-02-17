@@ -28,39 +28,30 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserInfoColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.user.UserInfo;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreObject {
+public abstract class NewTrackerImporterTrackedEntityDataValue {
 
     @Nullable
     public abstract String event();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
     public abstract String dataElement();
 
     @Nullable
-    @ColumnAdapter(IgnoreUserInfoColumnAdapter.class)
     public abstract UserInfo createdBy();
 
     @Nullable
@@ -70,19 +61,13 @@ public abstract class NewTrackerImporterTrackedEntityDataValue implements CoreOb
     public abstract Boolean providedElsewhere();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterTrackedEntityDataValue.Builder();
-    }
-
-    public static NewTrackerImporterTrackedEntityDataValue create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterTrackedEntityDataValue.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterTrackedEntityDataValue.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder event(String event);
 
         public abstract Builder createdAt(Date createdAt);

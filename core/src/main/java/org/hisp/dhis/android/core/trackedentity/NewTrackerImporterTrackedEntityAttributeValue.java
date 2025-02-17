@@ -28,20 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class NewTrackerImporterTrackedEntityAttributeValue implements CoreObject {
+public abstract class NewTrackerImporterTrackedEntityAttributeValue {
 
     @Nullable
     public abstract String trackedEntityAttribute();
@@ -50,30 +44,22 @@ public abstract class NewTrackerImporterTrackedEntityAttributeValue implements C
     public abstract String value();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
     public abstract String trackedEntityInstance();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterTrackedEntityAttributeValue.Builder();
-    }
-
-    public static NewTrackerImporterTrackedEntityAttributeValue create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterTrackedEntityAttributeValue.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterTrackedEntityAttributeValue.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
         public abstract Builder value(String value);

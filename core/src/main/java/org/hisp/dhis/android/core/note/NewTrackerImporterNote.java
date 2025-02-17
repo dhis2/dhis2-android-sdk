@@ -28,26 +28,32 @@
 
 package org.hisp.dhis.android.core.note;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.NoteTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 
 @AutoValue
-public abstract class NewTrackerImporterNote extends BaseDeletableDataObject implements ObjectWithUidInterface {
+public abstract class NewTrackerImporterNote implements ObjectWithUidInterface,
+        ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
 
-   
+    @Override
     public abstract String uid();
 
     @Nullable
-    @ColumnAdapter(NoteTypeColumnAdapter.class)
+    @Override
+    public abstract Boolean deleted();
+
+    @Nullable
+    @Override
+    public abstract State syncState();
+
+    @Nullable
     public abstract Note.NoteType noteType();
 
     @Nullable
@@ -66,20 +72,18 @@ public abstract class NewTrackerImporterNote extends BaseDeletableDataObject imp
     public abstract String storedAt();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterNote.Builder();
-    }
-
-    public static NewTrackerImporterNote create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterNote.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterNote.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder uid(String uid);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder syncState(State syncState);
 
         public abstract Builder noteType(Note.NoteType noteType);
 

@@ -28,25 +28,31 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterRelationshipItemAdapter;
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class NewTrackerImporterRelationship extends BaseDeletableDataObject implements ObjectWithUidInterface {
+public abstract class NewTrackerImporterRelationship implements ObjectWithUidInterface,
+        ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
 
     @Override
     public abstract String uid();
+
+    @Nullable
+    @Override
+    public abstract Boolean deleted();
+
+    @Nullable
+    @Override
+    public abstract State syncState();
 
     @Nullable
     public abstract String relationshipType();
@@ -55,39 +61,33 @@ public abstract class NewTrackerImporterRelationship extends BaseDeletableDataOb
     public abstract String relationshipName();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
     public abstract Boolean bidirectional();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewTrackerImporterRelationshipItemAdapter.class)
     public abstract NewTrackerImporterRelationshipItem from();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewTrackerImporterRelationshipItemAdapter.class)
     public abstract NewTrackerImporterRelationshipItem to();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterRelationship.Builder();
-    }
-
-    public static NewTrackerImporterRelationship create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterRelationship.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterRelationship.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder uid(String uid);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder syncState(State syncState);
 
         public abstract Builder relationshipType(String relationshipType);
 

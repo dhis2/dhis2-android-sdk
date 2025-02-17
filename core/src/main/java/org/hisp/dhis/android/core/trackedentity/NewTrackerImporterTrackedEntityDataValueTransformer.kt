@@ -35,7 +35,6 @@ internal object NewTrackerImporterTrackedEntityDataValueTransformer :
 
     override fun transform(o: TrackedEntityDataValue): NewTrackerImporterTrackedEntityDataValue {
         return NewTrackerImporterTrackedEntityDataValue.builder()
-            .id(o.id())
             .event(o.event())
             .createdAt(o.created())
             .updatedAt(o.lastUpdated())

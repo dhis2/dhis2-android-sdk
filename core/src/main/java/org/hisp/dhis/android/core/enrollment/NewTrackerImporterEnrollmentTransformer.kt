@@ -47,7 +47,6 @@ internal object NewTrackerImporterEnrollmentTransformer {
             .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
 
         return NewTrackerImporterEnrollment.builder()
-            .id(o.id())
             .uid(o.uid())
             .deleted(o.deleted())
             .createdAt(o.created())

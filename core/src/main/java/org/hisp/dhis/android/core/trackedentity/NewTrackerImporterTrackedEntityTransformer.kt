@@ -45,7 +45,6 @@ internal object NewTrackerImporterTrackedEntityTransformer {
         val programOwners = o.programOwners()?.map { NewTrackerImporterProgramOwnerTransformer.transform(it) }
 
         return NewTrackerImporterTrackedEntity.builder()
-            .id(o.id())
             .uid(o.uid())
             .deleted(o.deleted())
             .createdAt(o.created())

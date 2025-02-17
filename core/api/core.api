@@ -4155,7 +4155,7 @@ public class org/hisp/dhis/android/core/common/DataColumns : org/hisp/dhis/andro
 	public fun <init> ()V
 }
 
-public abstract interface class org/hisp/dhis/android/core/common/DataObject : org/hisp/dhis/android/core/common/CoreObject {
+public abstract interface class org/hisp/dhis/android/core/common/DataObject : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface {
 	public abstract fun state ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 }
@@ -4398,6 +4398,10 @@ public abstract interface class org/hisp/dhis/android/core/common/ObjectWithStyl
 public abstract interface class org/hisp/dhis/android/core/common/ObjectWithStyle$Builder {
 	public abstract fun build ()Ljava/lang/Object;
 	public abstract fun style (Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/common/ObjectWithStyle$Builder;
+}
+
+public abstract interface class org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface {
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 }
 
 public abstract class org/hisp/dhis/android/core/common/ObjectWithUid : org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -6695,15 +6699,15 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentTableInfo$Columns :
 	public fun whereUpdate ()[Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment : org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun attributes ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun completedAt ()Ljava/util/Date;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment;
 	public abstract fun createdAt ()Ljava/util/Date;
 	public abstract fun createdAtClient ()Ljava/util/Date;
+	public abstract fun deleted ()Ljava/lang/Boolean;
 	public abstract fun enrolledAt ()Ljava/util/Date;
 	public abstract fun events ()Ljava/util/List;
 	public abstract fun followUp ()Ljava/lang/Boolean;
@@ -6713,6 +6717,7 @@ public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEn
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun status ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun trackedEntity ()Ljava/lang/String;
 	public abstract fun uid ()Ljava/lang/String;
@@ -6720,7 +6725,7 @@ public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEn
 	public abstract fun updatedAtClient ()Ljava/util/Date;
 }
 
-public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
@@ -6728,19 +6733,18 @@ public abstract class org/hisp/dhis/android/core/enrollment/NewTrackerImporterEn
 	public abstract fun completedAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun createdAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
+	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun enrolledAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun events (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
-	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun notes (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun occurredAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun relationships (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun status (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
+	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun trackedEntity (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
 	public abstract fun updatedAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/NewTrackerImporterEnrollment$Builder;
@@ -7086,7 +7090,7 @@ public class org/hisp/dhis/android/core/event/EventTableInfo$Columns : org/hisp/
 	public fun whereUpdate ()[Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent : org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun assignedUser ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterUserInfo;
@@ -7094,9 +7098,9 @@ public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent :
 	public static fun builder ()Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun completedAt ()Ljava/util/Date;
 	public abstract fun completedBy ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent;
 	public abstract fun createdAt ()Ljava/util/Date;
 	public abstract fun createdAtClient ()Ljava/util/Date;
+	public abstract fun deleted ()Ljava/lang/Boolean;
 	public abstract fun enrollment ()Ljava/lang/String;
 	public abstract fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
 	public abstract fun notes ()Ljava/util/List;
@@ -7106,6 +7110,7 @@ public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent :
 	public abstract fun programStage ()Ljava/lang/String;
 	public abstract fun scheduledAt ()Ljava/util/Date;
 	public abstract fun status ()Lorg/hisp/dhis/android/core/event/EventStatus;
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun trackedEntity ()Ljava/lang/String;
 	public abstract fun trackedEntityDataValues ()Ljava/util/List;
@@ -7114,7 +7119,7 @@ public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent :
 	public abstract fun updatedAtClient ()Ljava/util/Date;
 }
 
-public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun assignedUser (Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterUserInfo;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
@@ -7124,10 +7129,9 @@ public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent$B
 	public abstract fun completedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun createdAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
+	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
-	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun notes (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun occurredAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
@@ -7135,8 +7139,8 @@ public abstract class org/hisp/dhis/android/core/event/NewTrackerImporterEvent$B
 	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun relationships (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun scheduledAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun status (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
+	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun trackedEntity (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun trackedEntityDataValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/NewTrackerImporterEvent$Builder;
@@ -8646,31 +8650,31 @@ public final class org/hisp/dhis/android/core/mockwebserver/ResponseController {
 public final class org/hisp/dhis/android/core/mockwebserver/ResponseController$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/note/NewTrackerImporterNote : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/note/NewTrackerImporterNote : org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote;
+	public abstract fun deleted ()Ljava/lang/Boolean;
 	public abstract fun enrollment ()Ljava/lang/String;
 	public abstract fun event ()Ljava/lang/String;
 	public abstract fun noteType ()Lorg/hisp/dhis/android/core/note/Note$NoteType;
 	public abstract fun storedAt ()Ljava/lang/String;
 	public abstract fun storedBy ()Ljava/lang/String;
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun uid ()Ljava/lang/String;
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public abstract class org/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder {
 	public fun <init> ()V
 	public fun build ()Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote;
+	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
-	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun noteType (Lorg/hisp/dhis/android/core/note/Note$NoteType;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun storedAt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
+	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/NewTrackerImporterNote$Builder;
 }
@@ -10715,41 +10719,40 @@ public abstract class org/hisp/dhis/android/core/relationship/BaseRelationship$B
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship : org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public abstract fun bidirectional ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship;
 	public abstract fun createdAt ()Ljava/util/Date;
+	public abstract fun deleted ()Ljava/lang/Boolean;
 	public abstract fun from ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem;
 	public abstract fun relationshipName ()Ljava/lang/String;
 	public abstract fun relationshipType ()Ljava/lang/String;
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun to ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun uid ()Ljava/lang/String;
 	public abstract fun updatedAt ()Ljava/util/Date;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder {
 	public fun <init> ()V
 	public abstract fun bidirectional (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship;
 	public abstract fun createdAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
+	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun from (Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
-	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun relationshipName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun relationshipType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
+	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun to (Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 	public abstract fun updatedAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationship$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem : org/hisp/dhis/android/core/common/CoreObject {
+public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem;
 	public abstract fun enrollment ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItemEnrollment;
 	public abstract fun event ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItemEvent;
 	public abstract fun relationship ()Ljava/lang/String;
@@ -10763,7 +10766,6 @@ public abstract class org/hisp/dhis/android/core/relationship/NewTrackerImporter
 	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem;
 	public abstract fun enrollment (Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItemEnrollment;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
 	public abstract fun event (Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItemEvent;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
 	public abstract fun relationship (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
 	public abstract fun relationshipItemType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
 	public abstract fun trackedEntity (Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItemTrackedEntity;)Lorg/hisp/dhis/android/core/relationship/NewTrackerImporterRelationshipItem$Builder;
@@ -12935,17 +12937,18 @@ public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriter
 	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity : org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity;
 	public abstract fun createdAt ()Ljava/util/Date;
 	public abstract fun createdAtClient ()Ljava/util/Date;
+	public abstract fun deleted ()Ljava/lang/Boolean;
 	public abstract fun enrollments ()Ljava/util/List;
 	public abstract fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun programOwners ()Ljava/util/List;
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun trackedEntityAttributeValues ()Ljava/util/List;
 	public abstract fun trackedEntityType ()Ljava/lang/String;
@@ -12954,20 +12957,19 @@ public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporte
 	public abstract fun updatedAtClient ()Ljava/util/Date;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity;
 	public abstract fun createdAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
+	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun enrollments (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
-	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun programOwners (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun relationships (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
+	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun trackedEntityAttributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
@@ -12975,10 +12977,9 @@ public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporte
 	public abstract fun updatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntity$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue : org/hisp/dhis/android/core/common/CoreObject {
+public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue;
 	public abstract fun createdAt ()Ljava/util/Date;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
 	public abstract fun trackedEntityAttribute ()Ljava/lang/String;
@@ -12991,17 +12992,15 @@ public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporte
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue;
 	public abstract fun createdAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
 	public abstract fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
 	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
 	public abstract fun updatedAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityAttributeValue$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue : org/hisp/dhis/android/core/common/CoreObject {
+public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue;
 	public abstract fun createdAt ()Ljava/util/Date;
 	public abstract fun createdBy ()Lorg/hisp/dhis/android/core/user/UserInfo;
 	public abstract fun dataElement ()Ljava/lang/String;
@@ -13019,7 +13018,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/NewTrackerImporte
 	public abstract fun createdBy (Lorg/hisp/dhis/android/core/user/UserInfo;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
 	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
 	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
 	public abstract fun providedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
 	public abstract fun updatedAt (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/NewTrackerImporterTrackedEntityDataValue$Builder;
@@ -13840,24 +13838,22 @@ public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQ
 	public abstract fun programStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner : org/hisp/dhis/android/core/common/BaseDataObject {
+public abstract class org/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner : org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner;
 	public abstract fun orgUnit ()Ljava/lang/String;
 	public abstract fun program ()Ljava/lang/String;
+	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
 	public abstract fun trackedEntity ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder : org/hisp/dhis/android/core/common/BaseDataObject$Builder {
+public abstract class org/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner;
-	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
 	public abstract fun orgUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
+	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
 	public abstract fun trackedEntity (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/NewTrackerImporterProgramOwner$Builder;
 }
 
@@ -14704,7 +14700,6 @@ public final class org/hisp/dhis/android/core/user/UserGroupTableInfo$Columns : 
 public abstract class org/hisp/dhis/android/core/user/UserInfo {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserInfo$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/UserInfo;
 	public abstract fun firstName ()Ljava/lang/String;
 	public abstract fun surname ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserInfo$Builder;

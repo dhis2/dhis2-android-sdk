@@ -33,7 +33,6 @@ internal object NewTrackerImporterRelationshipTransformer :
     Transformer<Relationship, NewTrackerImporterRelationship> {
     override fun transform(o: Relationship): NewTrackerImporterRelationship {
         return NewTrackerImporterRelationship.builder()
-            .id(o.id())
             .uid(o.uid())
             .relationshipType(o.relationshipType())
             .relationshipName(o.name())

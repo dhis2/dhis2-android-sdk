@@ -28,55 +28,36 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipItemEnrollmentAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipItemEventAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewRelationshipItemTrackedEntityAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
-
 @AutoValue
-public abstract class NewTrackerImporterRelationshipItem implements CoreObject {
+public abstract class NewTrackerImporterRelationshipItem {
 
     @Nullable
     public abstract String relationship();
 
     @Nullable
-    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewRelationshipItemTrackedEntityAdapter.class)
     public abstract NewTrackerImporterRelationshipItemTrackedEntity trackedEntity();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewRelationshipItemEnrollmentAdapter.class)
     public abstract NewTrackerImporterRelationshipItemEnrollment enrollment();
 
     @Nullable
-    @ColumnAdapter(IgnoreNewRelationshipItemEventAdapter.class)
     public abstract NewTrackerImporterRelationshipItemEvent event();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterRelationshipItem.Builder();
-    }
-
-    public static NewTrackerImporterRelationshipItem create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterRelationshipItem.createFromCursor(cursor);
+        return new AutoValue_NewTrackerImporterRelationshipItem.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder relationship(String relationship);
 

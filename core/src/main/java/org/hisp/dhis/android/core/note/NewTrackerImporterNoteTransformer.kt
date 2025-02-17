@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 internal object NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerImporterNote> {
     override fun transform(o: Note): NewTrackerImporterNote {
         return NewTrackerImporterNote.builder()
-            .id(o.id())
             .uid(o.uid())
             .deleted(o.deleted())
             .noteType(o.noteType())

@@ -27,19 +27,19 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("MagicNumber")
 internal class DataStoreImportHandler(
     private val store: DataStoreEntryStore,
 ) {
 
     fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
-        if (response.httpStatusCode() == 200 || response.httpStatusCode() == 404) {
+        if (response.httpStatusCode() == HttpStatusCode.OK.value || response.httpStatusCode() == HttpStatusCode.NotFound.value) {
             store.deleteWhere(entry)
         } else {
             store.setStateIfUploading(entry, State.ERROR)
@@ -47,7 +47,7 @@ internal class DataStoreImportHandler(
     }
 
     fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
-        val syncState = if (response.status() == "OK") {
+        val syncState = if (response.status() == HttpStatusCode.OK.description) {
             State.SYNCED
         } else {
             State.ERROR

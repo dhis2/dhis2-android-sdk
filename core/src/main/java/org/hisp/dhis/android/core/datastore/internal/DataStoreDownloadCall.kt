@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -45,7 +43,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DataStoreDownloadCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dataStoreEntryService: DataStoreService,
+    private val networkHandler: DataStoreNetworkHandler,
     private val dataStoreEntryHandler: DataStoreHandler,
     private val versionManager: DHISVersionManager,
 ) {
@@ -54,9 +52,7 @@ internal class DataStoreDownloadCall(
             return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
                 cleanForeignKeyErrors = true,
             ) {
-                coroutineAPICallExecutor.wrap(storeError = false) {
-                    dataStoreEntryService.getNamespaces()
-                }
+                networkHandler.getNamespaces()
                     .map { filterNamespaces(params, it) }
                     .fold(
                         onSuccess = { namespaces ->
@@ -102,24 +98,13 @@ internal class DataStoreDownloadCall(
         var lastPage: List<DataStoreEntry> = emptyList()
 
         do {
-            val result = coroutineAPICallExecutor.wrap(storeError = false) {
-                dataStoreEntryService.getNamespaceValues38(namespace, pag, PAGE_SIZE)
-            }
+            val result = networkHandler.getNamespaceValues38(namespace, pag, PAGE_SIZE)
             result.fold(
-                onSuccess = { pagedEntry ->
-                    val pageEntries = pagedEntry.entries.map { keyValuePair ->
-                        val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(keyValuePair.value)
-                        DataStoreEntry.builder()
-                            .namespace(namespace)
-                            .key(keyValuePair.key)
-                            .value(strValue)
-                            .syncState(State.SYNCED)
-                            .deleted(false)
-                            .build()
-                    }
+                onSuccess = { dataStoreEntries ->
+                    val pagedDataStoreEntries = dataStoreEntries.map { it.toBuilder().namespace(namespace).build() }
 
-                    entries = Result.Success((entries.getOrNull() ?: emptyList()) + pageEntries)
-                    lastPage = pageEntries
+                    entries = Result.Success((entries.getOrNull() ?: emptyList()) + pagedDataStoreEntries)
+                    lastPage = pagedDataStoreEntries
                     pag++
                 },
                 onFailure = { t ->
@@ -132,25 +117,9 @@ internal class DataStoreDownloadCall(
     }
 
     private suspend fun fetchNamespace37(namespace: String): Result<List<DataStoreEntry>, D2Error> {
-        val result = coroutineAPICallExecutor.wrap(storeError = false) {
-            dataStoreEntryService.getNamespaceKeys(namespace)
-        }
-
-        return result.map { keys ->
+        return networkHandler.getNamespaceKeys(namespace).map { keys ->
             keys.map { key ->
-                val keyResult = coroutineAPICallExecutor.wrap(storeError = false) {
-                    dataStoreEntryService.getNamespaceKeyValue(namespace, key)
-                }
-
-                val value = keyResult.getOrThrow()
-                val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(value)
-                DataStoreEntry.builder()
-                    .namespace(namespace)
-                    .key(key)
-                    .value(strValue)
-                    .syncState(State.SYNCED)
-                    .deleted(false)
-                    .build()
+                networkHandler.getNamespaceKeyValue(namespace, key).getOrThrow()
             }
         }
     }

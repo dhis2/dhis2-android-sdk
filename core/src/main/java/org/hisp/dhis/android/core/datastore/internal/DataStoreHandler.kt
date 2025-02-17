@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataStoreHandler constructor(
+internal class DataStoreHandler (
     private val store: DataStoreEntryStore,
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
@@ -48,7 +48,7 @@ internal class DataStoreHandler constructor(
         slaves: Collection<DataStoreEntry>?,
         transformer: (DataStoreEntry) -> DataStoreEntry,
     ) {
-        val entriesToHandle = filterUnsycnedEntries(masterUid, slaves)
+        val entriesToHandle = filterNotSyncedEntries(masterUid, slaves)
         handleMany(entriesToHandle)
         cleanOrphan(masterUid, entriesToHandle)
     }
@@ -61,7 +61,7 @@ internal class DataStoreHandler constructor(
         return store.updateOrInsertWhere(o)
     }
 
-    private fun filterUnsycnedEntries(
+    private fun filterNotSyncedEntries(
         namespace: String,
         slaves: Collection<DataStoreEntry>?,
     ): List<DataStoreEntry>? {

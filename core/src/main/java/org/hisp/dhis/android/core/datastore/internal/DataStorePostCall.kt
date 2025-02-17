@@ -27,27 +27,21 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import com.fasterxml.jackson.databind.JsonNode
+import io.ktor.http.HttpStatusCode
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.rxObservable
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("MagicNumber")
 internal class DataStorePostCall(
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dataStoreEntryService: DataStoreService,
+    private val networkHandler: DataStoreNetworkHandler,
     private val dataStoreEntryImportHandler: DataStoreImportHandler,
     private val store: DataStoreEntryStore,
 ) {
@@ -80,15 +74,7 @@ internal class DataStorePostCall(
     }
 
     private suspend fun deleteEntry(entry: DataStoreEntry) {
-        val result = coroutineAPICallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(404),
-            errorClass = HttpMessageResponse::class.java,
-        ) {
-            dataStoreEntryService.deleteNamespaceKeyValue(entry.namespace(), entry.key())
-        }
-
-        result.fold(
+        networkHandler.deleteNamespaceKeyValue(entry).fold(
             onSuccess = { r -> dataStoreEntryImportHandler.handleDelete(entry, r) },
             onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) },
         )
@@ -97,16 +83,17 @@ internal class DataStorePostCall(
     private suspend fun createOrUpdate(entry: DataStoreEntry) {
         val result = when (entry.syncState()) {
             State.TO_POST ->
-                tryCreate(entry).flatMap { r ->
+                networkHandler.postNamespaceKeyValue(entry).flatMap { r ->
                     when (r.httpStatusCode()) {
-                        409 -> tryUpdate(entry)
+                        HttpStatusCode.Conflict.value -> networkHandler.putNamespaceKeyValue(entry)
                         else -> Result.Success(r)
                     }
                 }
+
             else ->
-                tryUpdate(entry).flatMap { r ->
+                networkHandler.putNamespaceKeyValue(entry).flatMap { r ->
                     when (r.httpStatusCode()) {
-                        404 -> tryCreate(entry)
+                        HttpStatusCode.NotFound.value -> networkHandler.postNamespaceKeyValue(entry)
                         else -> Result.Success(r)
                     }
                 }
@@ -116,29 +103,5 @@ internal class DataStorePostCall(
             onSuccess = { r -> dataStoreEntryImportHandler.handleUpdateOrCreate(entry, r) },
             onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) },
         )
-    }
-
-    private suspend fun tryCreate(entry: DataStoreEntry): Result<HttpMessageResponse, D2Error> {
-        return coroutineAPICallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(409),
-            errorClass = HttpMessageResponse::class.java,
-        ) {
-            dataStoreEntryService.postNamespaceKeyValue(entry.namespace(), entry.key(), readValue(entry))
-        }
-    }
-
-    private suspend fun tryUpdate(entry: DataStoreEntry): Result<HttpMessageResponse, D2Error> {
-        return coroutineAPICallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(404),
-            errorClass = HttpMessageResponse::class.java,
-        ) {
-            dataStoreEntryService.putNamespaceKeyValue(entry.namespace(), entry.key(), readValue(entry))
-        }
-    }
-
-    private fun readValue(entry: DataStoreEntry): JsonNode? {
-        return entry.value()?.let { ObjectMapperFactory.objectMapper().readTree(it) }
     }
 }

@@ -57,13 +57,13 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         val trackedEntity = teiStore.selectByUid(teiId)!!
 
         val payload = newTrackerPayloadGenerator.getTrackedEntityPayload(listOf(trackedEntity))
-        assertThat(payload.updated.trackedEntities.first().trackedEntityAttributeValues()?.size).isEqualTo(1)
+        assertThat(payload.updated.trackedEntities.first().trackedEntityAttributeValues?.size).isEqualTo(1)
 
         teiAttributeValueStore.setSyncStateByInstance(teiId, State.SYNCED)
 
         val trackedEntity2 = teiStore.selectByUid(teiId)!!
         val payload2 = newTrackerPayloadGenerator.getTrackedEntityPayload(listOf(trackedEntity2))
-        assertThat(payload2.updated.trackedEntities.first().trackedEntityAttributeValues()?.size).isEqualTo(0)
+        assertThat(payload2.updated.trackedEntities.first().trackedEntityAttributeValues?.size).isEqualTo(0)
     }
 
     @Test
@@ -72,12 +72,12 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         val event = eventStore.selectByUid(singleEventId)!!
 
         val payload = newTrackerPayloadGenerator.getEventPayload(listOf(event))
-        assertThat(payload.updated.events.first().trackedEntityDataValues()?.size).isEqualTo(1)
+        assertThat(payload.updated.events.first().trackedEntityDataValues?.size).isEqualTo(1)
 
         teiDataValueStore.setSyncStateByEvent(singleEventId, State.SYNCED)
 
         val event2 = eventStore.selectByUid(singleEventId)!!
         val payload2 = newTrackerPayloadGenerator.getEventPayload(listOf(event2))
-        assertThat(payload2.updated.events.first().trackedEntityDataValues()?.size).isEqualTo(0)
+        assertThat(payload2.updated.events.first().trackedEntityDataValues?.size).isEqualTo(0)
     }
 }

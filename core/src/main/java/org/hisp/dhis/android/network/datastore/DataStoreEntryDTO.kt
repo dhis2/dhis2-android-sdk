@@ -25,10 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.network.datastore
 
-internal data class DataStorePagedEntry(
-    val entries: List<DataStorePageEntryItem>,
-)
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datastore.DataStoreEntry
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
-internal data class DataStorePageEntryItem(val key: String, val value: Any?)
+@Serializable
+internal data class DataStoreEntryDTO(
+    val key: String,
+    val value: JsonElement?,
+) {
+    fun toDomain(): DataStoreEntry {
+        return DataStoreEntry.builder()
+            .key(key)
+            .value(value.toString())
+            .syncState(State.SYNCED)
+            .deleted(false)
+            .build()
+    }
+}
+
+@Serializable
+internal class DataStoreEntryPayload(
+    override val pager: PagerDTO?,
+    @SerialName("entries") override val items: List<DataStoreEntryDTO> = emptyList(),
+) : PayloadJson<DataStoreEntryDTO>(pager, items)

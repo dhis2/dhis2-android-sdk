@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
-import org.hisp.dhis.android.network.ownership.OwnershipService
 import org.junit.Before
 import java.util.Arrays
 
@@ -177,7 +176,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         val glassResponse: HttpMessageResponse =
             executor.wrap {
                 ownershipNetworkHandler.breakGlass(
-                    mapOf(OwnershipService.TRACKED_ENTITY to tei.uid()),
+                    tei.uid(),
                     program,
                     "Sync",
                 )

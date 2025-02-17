@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.enrollment;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -44,8 +46,6 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -214,7 +214,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void filter_by_geometry_coordinates() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
-                        .byGeometryCoordinates().eq("[4.1, 2.6]")
+                .byGeometryCoordinates().eq("[4.1,2.6]")
                         .blockingGet();
 
         assertThat(enrollments.size()).isEqualTo(1);

@@ -26,30 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.ownership
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 
-@Serializable
-internal data class NewTrackerImporterNoteDTO(
-    val note: String,
-    val noteType: String?,
-    val event: String?,
-    val enrollment: String?,
-    val value: String?,
-    val storedBy: String?,
-    val storedAt: String?,
-)
-
-internal fun NewTrackerImporterNote.toDto(): NewTrackerImporterNoteDTO {
-    return NewTrackerImporterNoteDTO(
-        note = uid(),
-        noteType = noteType()?.name,
-        event = event(),
-        enrollment = enrollment(),
-        value = value(),
-        storedBy = storedBy(),
-        storedAt = storedAt(),
-    )
+@Singleton
+internal class OwnsershipParameterManager(
+    private val dhisVersionManager: DHISVersionManager,
+) {
+    fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
+        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+            mapOf(OwnershipService.TRACKED_ENTITY to uid)
+        } else {
+            mapOf(OwnershipService.TRACKED_ENTITY_INSTACE to uid)
+        }
+    }
 }

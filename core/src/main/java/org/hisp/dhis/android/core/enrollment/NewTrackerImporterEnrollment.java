@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -52,7 +49,6 @@ import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.network.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship;
@@ -62,72 +58,57 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterEnrollment.Builder.class)
 public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty("enrollment")
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAtClient();
 
     @Nullable
-    @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty()
     public abstract String program();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date enrolledAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date occurredAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus status();
 
     @Nullable
-    @JsonProperty()
     public abstract String trackedEntity();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
@@ -137,22 +118,18 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract State aggregatedSyncState();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter.class)
     public abstract List<NewTrackerImporterTrackedEntityAttributeValue> attributes();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
     public abstract List<NewTrackerImporterEvent> events();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterNoteListColumnAdapter.class)
     public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNewRelationshipListColumnAdapter.class)
     abstract List<NewTrackerImporterRelationship> relationships();
 
@@ -167,11 +144,9 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty("enrollment")
         public abstract Builder uid(String uid);
 
         public abstract Builder createdAt(Date createdAt);
@@ -182,7 +157,6 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
         public abstract Builder updatedAtClient(Date updatedAtClient);
 
-        @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder program(String program);

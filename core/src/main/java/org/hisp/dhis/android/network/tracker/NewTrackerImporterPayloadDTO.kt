@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+package org.hisp.dhis.android.network.tracker
 
-internal data class TrackerPayload<T>(
-    @JsonProperty private val pager: TrackerPager?,
-    @JsonProperty private val page: Int?,
-    @JsonProperty private val pageSize: Int?,
-    @JsonIgnore private var items: List<T> = emptyList(),
-) {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 
-    @JsonAnySetter
-    @Suppress("unused")
-    private fun processItems(key: String?, values: List<T>) {
-        items = values
-    }
+@Serializable
+internal data class NewTrackerImporterPayloadDTO(
+    val trackedEntities: List<NewTrackedEntityDTO> = emptyList(),
+    val enrollments: List<NewEnrollmentDTO> = emptyList(),
+    val events: List<NewEventDTO> = emptyList(),
+    val relationships: List<NewRelationshipDTO> = emptyList(),
 
-    fun pager(): TrackerPager? {
-        return pager
-            ?: if (page != null && pageSize != null) {
-                TrackerPager(page = page, pageSize = pageSize)
-            } else {
-                null
-            }
-    }
+)
 
-    fun items(): List<T> {
-        return items
-    }
+internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
+    return NewTrackerImporterPayloadDTO(
+        trackedEntities = this.trackedEntities.map { it.toDto() },
+        enrollments = this.enrollments.map { it.toDto() },
+        events = this.events.map { it.toDto() },
+        relationships = this.relationships.map { it.toDto() },
+    )
 }

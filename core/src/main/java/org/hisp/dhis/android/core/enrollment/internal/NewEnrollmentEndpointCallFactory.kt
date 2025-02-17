@@ -28,19 +28,15 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class NewEnrollmentEndpointCallFactory(
-    private val service: TrackerExporterService,
+    private val networkHandler: TrackerExporterNetworkHandler,
 ) : EnrollmentEndpointCallFactory {
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
-        return service.getEnrollmentSingle(
-            enrollmentUid = item.itemUid,
-            fields = NewEnrollmentFields.asRelationshipFields,
-        ).let { NewTrackerImporterEnrollmentTransformer.deTransform(it) }
+        return networkHandler.getEnrollmentRelationshipEntityCall(item)
     }
 }

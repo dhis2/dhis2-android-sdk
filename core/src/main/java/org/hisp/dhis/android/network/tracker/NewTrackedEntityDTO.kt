@@ -26,48 +26,90 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertEnrollments
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertRelationships
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
-internal data class NewTrackerImporterTrackedEntityDTO(
+internal data class NewTrackedEntityDTO(
     override val deleted: Boolean?,
     val trackedEntity: String,
     val createdAt: String?,
     val updatedAt: String?,
     val createdAtClient: String?,
     val updatedAtClient: String?,
-    val organisationUnit: String?,
+    val orgUnit: String?,
     val trackedEntityType: String?,
     val geometry: GeometryDTO?,
-    val aggregatedSyncState: String?,
-    val attributes: List<NewTrackerImporterTrackedEntityAttributeValueDTO>?,
-    val enrollments: List<NewTrackerImporterEnrollmentDTO>?,
-    val programOwners: List<NewTrackerImporterProgramOwnerDTO>?,
-    val relationships: List<NewTrackerImporterRelationshipDTO>? = null,
-) : BaseDeletableDataObjectDTO
+    val attributes: List<NewTrackedEntityAttributeValueDTO> = emptyList(),
+    val enrollments: List<NewEnrollmentDTO> = emptyList(),
+    val programOwners: List<NewProgramOwnerDTO>?,
+    val relationships: List<NewRelationshipDTO>? = null,
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(): TrackedEntityInstance {
+        val teiAttributeValues = attributes.map { it.toDomain(trackedEntity) }
+        val enrollmentAttributeValues =
+            enrollments.flatMap { it.attributes.orEmpty().map { it.toDomain(trackedEntity) } }.orEmpty()
+        val attributes = (teiAttributeValues + enrollmentAttributeValues).distinctBy { it.trackedEntityAttribute() }
 
-internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackerImporterTrackedEntityDTO {
-    return NewTrackerImporterTrackedEntityDTO(
+        return TrackedEntityInstance.builder().apply {
+            uid(trackedEntity)
+            deleted(deleted)
+            created(createdAt.toJavaDate())
+            lastUpdated(updatedAt.toJavaDate())
+            createdAtClient(createdAtClient.toJavaDate())
+            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            organisationUnit(orgUnit)
+            trackedEntityType(trackedEntityType)
+            geometry(geometry?.toDomain())
+            insertEnrollments(this, enrollments.map { it.toDomain() })
+            trackedEntityAttributeValues(attributes)
+            programOwners(programOwners?.map { it.toDomain() })
+            insertRelationships(this, relationships?.map { it.toDomain() })
+        }.build()
+    }
+}
+
+internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {
+    return NewTrackedEntityDTO(
         deleted = this.deleted(),
         trackedEntity = this.uid(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         createdAtClient = this.createdAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAtClient = this.updatedAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
-        organisationUnit = this.organisationUnit(),
+        orgUnit = this.organisationUnit(),
         trackedEntityType = this.trackedEntityType(),
         geometry = this.geometry()?.let { it.toDto() },
-        aggregatedSyncState = this.aggregatedSyncState()?.name,
-        attributes = this.trackedEntityAttributeValues()?.map { it.toDto() },
-        enrollments = this.enrollments()?.map { it.toDto() },
+        attributes = this.trackedEntityAttributeValues()?.map { it.toDto() } ?: emptyList(),
+        enrollments = this.enrollments()?.map { it.toDto() } ?: emptyList(),
         programOwners = this.programOwners()?.map { it.toDto() },
-//        relationships = this.relationships()?.map { it.toDto() }
     )
+}
+
+@Serializable
+internal class NewTrackedEntityPayload(
+    override val pager: PagerDTO?,
+    val page: Int?,
+    val pageCount: Int?,
+    val pageSize: Int?,
+    val total: Int?,
+    @JsonNames("instances", "trackedEntities") override val items: List<NewTrackedEntityDTO> = emptyList(),
+) : PayloadJson<NewTrackedEntityDTO>(pager, items) {
+
+    override fun pager(): PagerDTO {
+        return pager ?: PagerDTO(page, pageCount, pageSize, total)
+    }
 }

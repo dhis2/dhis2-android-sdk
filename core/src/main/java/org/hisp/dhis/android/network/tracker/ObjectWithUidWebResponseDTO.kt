@@ -26,22 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
+import org.hisp.dhis.android.network.common.dto.WebResponseDTO
+import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
 @Serializable
-internal data class NewTrackerImporterProgramOwnerDTO(
-    val program: String,
-    val trackedEntity: String,
-    val orgUnit: String,
-)
-
-internal fun NewTrackerImporterProgramOwner.toDto(): NewTrackerImporterProgramOwnerDTO {
-    return NewTrackerImporterProgramOwnerDTO(
-        program = this.program(),
-        trackedEntity = this.trackedEntity(),
-        orgUnit = this.orgUnit(),
-    )
+internal data class ObjectWithUidWebResponseDTO(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: ObjectWithUidDTO,
+) : WebResponseDTO {
+    fun toDomain(): ObjectWithUidWebResponse {
+        return ObjectWithUidWebResponse.builder()
+            .applyWebResponseFields(this)
+            .response(response.toDomain())
+            .build()
+    }
 }

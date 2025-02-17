@@ -26,20 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 @Serializable
-internal data class JobProgressDTO(
-    val message: String,
-    val completed: Boolean,
+internal data class NewProgramOwnerDTO(
+    val program: String,
+    val trackedEntity: String,
+    val orgUnit: String,
 ) {
-    fun toDomain(): JobProgress {
-        return JobProgress(
-            message = message,
-            completed = completed,
-        )
+    fun toDomain(): ProgramOwner {
+        return ProgramOwner.builder()
+            .program(program)
+            .ownerOrgUnit(orgUnit)
+            .trackedEntityInstance(trackedEntity)
+            .build()
     }
+}
+
+internal fun NewTrackerImporterProgramOwner.toDto(): NewProgramOwnerDTO {
+    return NewProgramOwnerDTO(
+        program = this.program(),
+        trackedEntity = this.trackedEntity(),
+        orgUnit = this.orgUnit(),
+    )
 }

@@ -26,64 +26,84 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
-internal data class NewTrackerImporterEventDTO(
-    val event: String?,
-    val enrollment: String?,
+internal data class NewEnrollmentDTO(
+    override val deleted: Boolean?,
+    val enrollment: String,
     val createdAt: String?,
     val updatedAt: String?,
     val createdAtClient: String?,
     val updatedAtClient: String?,
-    val program: String?,
-    val programStage: String?,
     val orgUnit: String?,
+    val program: String?,
+    val enrolledAt: String?,
     val occurredAt: String?,
-    val status: String?,
-    val geometry: GeometryDTO?,
     val completedAt: String?,
-    val completedBy: String?,
-    val scheduledAt: String?,
-    val attributeOptionCombo: String?,
-    val assignedUser: NewTrackerImporterUserInfoDTO?,
-    val notes: List<NewTrackerImporterNoteDTO>?,
-    val dataValues: List<NewTrackerImporterTrackedEntityDataValueDTO>?,
-    val aggregatedSyncState: String?, // no json property
+    val followUp: Boolean?,
+    val status: String?,
     val trackedEntity: String?,
-    val relationships: List<NewTrackerImporterRelationshipDTO>? = null,
+    val geometry: GeometryDTO?,
+    val attributes: List<NewTrackedEntityAttributeValueDTO> = emptyList(),
+    val events: List<NewEventDTO>?,
+    val notes: List<NewNoteDTO>?,
+    val relationships: List<NewRelationshipDTO>? = null,
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(): Enrollment {
+        return Enrollment.builder().apply {
+            uid(enrollment)
+            deleted(deleted)
+            created(createdAt.toJavaDate())
+            lastUpdated(updatedAt.toJavaDate())
+            createdAtClient(createdAtClient.toJavaDate())
+            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            organisationUnit(orgUnit)
+            program(program)
+            enrollmentDate(enrolledAt.toJavaDate())
+            incidentDate(occurredAt.toJavaDate())
+            completedDate(completedAt.toJavaDate())
+            followUp(followUp)
+            status(status?.let { EnrollmentStatus.valueOf(it) })
+            trackedEntityInstance(trackedEntity)
+            geometry(geometry?.toDomain())
+            notes(notes?.map { it.toDomain(enrollment = enrollment) })
+            EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
+            relationships(relationships?.map { it.toDomain() })
+        }.build()
+    }
+}
 
-)
-
-internal fun NewTrackerImporterEvent.toDto(): NewTrackerImporterEventDTO {
-    return NewTrackerImporterEventDTO(
-        event = this.uid(),
-        enrollment = this.enrollment(),
+internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
+    return NewEnrollmentDTO(
+        enrollment = this.uid(),
+        deleted = this.deleted(),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         createdAtClient = this.createdAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAtClient = this.updatedAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
-        program = this.program(),
-        programStage = this.programStage(),
         orgUnit = this.organisationUnit(),
+        program = this.program(),
+        enrolledAt = this.enrolledAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         occurredAt = this.occurredAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        status = this.status()?.name,
-        geometry = this.geometry()?.let { it.toDto() },
         completedAt = this.completedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        completedBy = this.completedBy(),
-        scheduledAt = this.scheduledAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        attributeOptionCombo = this.attributeOptionCombo(),
-        assignedUser = this.assignedUser()?.let { it.toDto() },
-        notes = this.notes()?.map { it.toDto() },
-        dataValues = this.trackedEntityDataValues()?.map { it.toDto() },
-        aggregatedSyncState = this.aggregatedSyncState()?.name,
+        followUp = this.followUp(),
+        status = this.status()?.name,
         trackedEntity = this.trackedEntity(),
-//        relationships = this.relationships()?.map { it.toDto() }
+        geometry = this.geometry()?.let { it.toDto() },
+        attributes = this.attributes()?.map { it.toDto() } ?: emptyList(),
+        events = this.events()?.map { it.toDto() },
+        notes = this.notes()?.map { it.toDto() },
     )
 }

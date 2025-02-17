@@ -47,8 +47,8 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjec
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.RELATIONSHIP
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.TRACKED_ENTITY
-import org.hisp.dhis.android.network.trackerimporter.IMPORT_STRATEGY_CREATE_AND_UPDATE
-import org.hisp.dhis.android.network.trackerimporter.IMPORT_STRATEGY_DELETE
+import org.hisp.dhis.android.network.tracker.IMPORT_STRATEGY_CREATE_AND_UPDATE
+import org.hisp.dhis.android.network.tracker.IMPORT_STRATEGY_DELETE
 import org.koin.core.annotation.Singleton
 import java.util.Date
 

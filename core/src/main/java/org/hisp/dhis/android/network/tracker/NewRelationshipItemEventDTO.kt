@@ -26,31 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEvent
 
 @Serializable
-internal data class NewTrackerImporterTrackedEntityDataValueDTO(
+internal data class NewRelationshipItemEventDTO(
     val event: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val dataElement: String?,
-    val createdBy: UserInfoDTO?,
-    val value: String?,
-    val providedElsewhere: String?,
 )
 
-internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackerImporterTrackedEntityDataValueDTO {
-    return NewTrackerImporterTrackedEntityDataValueDTO(
+internal fun NewTrackerImporterRelationshipItemEvent.toDto(): NewRelationshipItemEventDTO {
+    return NewRelationshipItemEventDTO(
         event = this.event(),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        dataElement = this.dataElement(),
-        createdBy = this.createdBy()?.let { it.toDto() },
-        value = this.value(),
-        providedElsewhere = this.providedElsewhere().toString(),
     )
 }

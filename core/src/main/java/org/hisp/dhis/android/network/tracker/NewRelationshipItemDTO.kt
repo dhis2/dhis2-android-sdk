@@ -26,22 +26,59 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
 
 @Serializable
-internal data class NewTrackerImporterRelationshipItemDTO(
+internal data class NewRelationshipItemDTO(
     val relationship: String?,
     val relationshipItemType: String?,
-    val trackedEntity: NewTrackerImporterRelationshipItemTrackedEntityDTO?,
-    val enrollment: NewTrackerImporterRelationshipItemEnrollmentDTO?,
-    val event: NewTrackerImporterRelationshipItemEventDTO?,
-)
+    val trackedEntity: NewRelationshipItemTrackedEntityDTO?,
+    val enrollment: NewRelationshipItemEnrollmentDTO?,
+    val event: NewRelationshipItemEventDTO?,
+) {
+    fun toDomain(relationshipUid: String?, constraintType: RelationshipConstraintType): RelationshipItem? {
+        val builder = RelationshipItem.builder()
+            .relationship(relationshipUid?.let { ObjectWithUid.create(it) })
+            .relationshipItemType(constraintType)
 
-internal fun NewTrackerImporterRelationshipItem.toDto(): NewTrackerImporterRelationshipItemDTO {
-    return NewTrackerImporterRelationshipItemDTO(
+        return when {
+            trackedEntity != null ->
+                builder.trackedEntityInstance(
+                    RelationshipItemTrackedEntityInstance.builder()
+                        .trackedEntityInstance(trackedEntity.trackedEntity)
+                        .build(),
+                ).build()
+
+            enrollment != null ->
+                builder.enrollment(
+                    RelationshipItemEnrollment.builder()
+                        .enrollment(enrollment.enrollment)
+                        .build(),
+                ).build()
+
+            event != null ->
+                builder.event(
+                    RelationshipItemEvent.builder()
+                        .event(event.event)
+                        .build(),
+                ).build()
+
+            else -> null
+        }
+    }
+}
+
+internal fun NewTrackerImporterRelationshipItem.toDto(): NewRelationshipItemDTO {
+    return NewRelationshipItemDTO(
         relationship = this.relationship(),
         relationshipItemType = this.relationshipItemType()?.name,
         trackedEntity = this.trackedEntity()?.toDto(),

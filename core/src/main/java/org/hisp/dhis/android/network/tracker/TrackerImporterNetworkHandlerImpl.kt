@@ -25,48 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.trackerimporter
 
+package org.hisp.dhis.android.network.tracker
+
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterNetworkHandler
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
-internal const val TRACKER_URL = "tracker"
-internal const val JOBS_URL = "tracker/jobs/"
-
-internal const val ATOMIC_MODE = "atomicMode"
-internal const val ATOMIC_MODE_OBJECT = "OBJECT"
-
-internal const val IMPORT_STRATEGY = "importStrategy"
-internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
-internal const val IMPORT_STRATEGY_DELETE = "DELETE"
-
 @Singleton
-internal class TrackerImporterService(private val client: HttpServiceClientKotlinx) {
-
-    suspend fun postTrackerPayload(
-        payload: NewTrackerImporterPayloadDTO,
-        atomicMode: String,
+internal class TrackerImporterNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClientKotlinx,
+) : TrackerImporterNetworkHandler {
+    val service = TrackerImporterService(httpServiceClient)
+    override suspend fun postTrackerPayload(
+        payload: NewTrackerImporterPayload,
         importStrategy: String,
-    ): ObjectWithUidWebResponseDTO {
-        return client.post {
-            url(TRACKER_URL)
-            parameters {
-                attribute(ATOMIC_MODE, atomicMode)
-                attribute(IMPORT_STRATEGY, importStrategy)
-            }
-            body(payload)
-        }
+    ): ObjectWithUidWebResponse {
+        val payloadDTO: NewTrackerImporterPayloadDTO = payload.toDto()
+        val apiPayload = service.postTrackerPayload(payloadDTO, ATOMIC_MODE_OBJECT, importStrategy)
+        return apiPayload.toDomain()
     }
 
-    suspend fun getJobReport(jobId: String): JobReportDTO {
-        return client.get {
-            url("$JOBS_URL$jobId/report")
-        }
+    override suspend fun getJobReport(jobId: String): JobReport {
+        val apiPayload = service.getJobReport(jobId)
+        return apiPayload.toDomain()
     }
 
-    suspend fun getJob(jobId: String): List<JobProgressDTO> {
-        return client.get {
-            url("$JOBS_URL$jobId")
-        }
+    override suspend fun getJob(jobId: String): List<JobProgress> {
+        val apiPayload = service.getJob(jobId)
+        return apiPayload.map { it.toDomain() }
     }
 }

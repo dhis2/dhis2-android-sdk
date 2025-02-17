@@ -26,26 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.WebResponseDTO
-import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
+import org.hisp.dhis.android.core.user.UserInfo
 
 @Serializable
-internal data class ObjectWithUidWebResponseDTO(
-    override val httpStatus: String,
-    override val httpStatusCode: Int,
-    override val status: String,
-    override val message: String,
-    val response: ObjectWithUidDTO,
-) : WebResponseDTO {
-    fun toDomain(): ObjectWithUidWebResponse {
-        return ObjectWithUidWebResponse.builder()
-            .applyWebResponseFields(this)
-            .response(response.toDomain())
-            .build()
-    }
+internal data class UserInfoDTO(
+    val uid: String?,
+    val username: String?,
+    val firstName: String?,
+    val surname: String?,
+)
+
+internal fun UserInfo.toDto(): UserInfoDTO {
+    return UserInfoDTO(
+        uid = uid(),
+        username = username(),
+        firstName = firstName(),
+        surname = surname(),
+    )
 }

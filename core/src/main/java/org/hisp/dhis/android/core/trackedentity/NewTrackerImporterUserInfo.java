@@ -30,17 +30,12 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterUserInfo.Builder.class)
 public abstract class NewTrackerImporterUserInfo {
 
     @Nullable
-    @JsonProperty()
     public abstract String uid();
 
     public abstract Builder toBuilder();
@@ -50,7 +45,6 @@ public abstract class NewTrackerImporterUserInfo {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder uid(String uid);

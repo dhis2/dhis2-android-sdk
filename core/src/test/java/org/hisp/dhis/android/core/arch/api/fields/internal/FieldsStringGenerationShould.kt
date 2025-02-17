@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboFields
 import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
-import org.hisp.dhis.android.core.enrollment.internal.NewEnrollmentFields
 import org.hisp.dhis.android.core.event.internal.DateFilterPeriodFields
 import org.hisp.dhis.android.core.event.internal.EventDataFilterFields
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
@@ -120,6 +119,7 @@ import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
+import org.hisp.dhis.android.network.tracker.NewEnrollmentFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationFields

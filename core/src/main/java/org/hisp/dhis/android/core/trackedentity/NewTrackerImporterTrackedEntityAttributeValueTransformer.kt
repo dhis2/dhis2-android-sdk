@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
 internal object NewTrackerImporterTrackedEntityAttributeValueTransformer :
-    TwoWayTransformer<TrackedEntityAttributeValue, NewTrackerImporterTrackedEntityAttributeValue> {
+    Transformer<TrackedEntityAttributeValue, NewTrackerImporterTrackedEntityAttributeValue> {
 
     override fun transform(o: TrackedEntityAttributeValue): NewTrackerImporterTrackedEntityAttributeValue {
         return NewTrackerImporterTrackedEntityAttributeValue.builder()
@@ -40,17 +40,6 @@ internal object NewTrackerImporterTrackedEntityAttributeValueTransformer :
             .createdAt(o.created())
             .updatedAt(o.lastUpdated())
             .trackedEntityInstance(o.trackedEntityInstance())
-            .build()
-    }
-
-    override fun deTransform(t: NewTrackerImporterTrackedEntityAttributeValue): TrackedEntityAttributeValue {
-        return TrackedEntityAttributeValue.builder()
-            .id(t.id())
-            .trackedEntityAttribute(t.trackedEntityAttribute())
-            .value(t.value())
-            .created(t.createdAt())
-            .lastUpdated(t.updatedAt())
-            .trackedEntityInstance(t.trackedEntityInstance())
             .build()
     }
 }

@@ -27,24 +27,16 @@
  */
 package org.hisp.dhis.android.core.trackedentity.ownership
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
 internal object NewTrackerImporterProgramOwnerTransformer :
-    TwoWayTransformer<ProgramOwner, NewTrackerImporterProgramOwner> {
+    Transformer<ProgramOwner, NewTrackerImporterProgramOwner> {
 
     override fun transform(o: ProgramOwner): NewTrackerImporterProgramOwner {
         return NewTrackerImporterProgramOwner.builder()
             .program(o.program())
             .orgUnit(o.ownerOrgUnit())
             .trackedEntity(o.trackedEntityInstance())
-            .build()
-    }
-
-    override fun deTransform(t: NewTrackerImporterProgramOwner): ProgramOwner {
-        return ProgramOwner.builder()
-            .program(t.program())
-            .ownerOrgUnit(t.orgUnit())
-            .trackedEntityInstance(t.trackedEntity())
             .build()
     }
 }

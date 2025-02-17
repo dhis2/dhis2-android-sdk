@@ -26,25 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
 
 @Serializable
-internal data class NewTrackerImporterPayloadDTO(
-    val trackedEntities: List<NewTrackerImporterTrackedEntityDTO> = emptyList(),
-    val enrollments: List<NewTrackerImporterEnrollmentDTO> = emptyList(),
-    val events: List<NewTrackerImporterEventDTO> = emptyList(),
-    val relationships: List<NewTrackerImporterRelationshipDTO> = emptyList(),
-
+internal data class NewUserInfoDTO(
+    val uid: String?,
 )
 
-internal fun NewTrackerImporterPayload.toDto(): NewTrackerImporterPayloadDTO {
-    return NewTrackerImporterPayloadDTO(
-        trackedEntities = this.trackedEntities.map { it.toDto() },
-        enrollments = this.enrollments.map { it.toDto() },
-        events = this.events.map { it.toDto() },
-        relationships = this.relationships.map { it.toDto() },
+internal fun NewTrackerImporterUserInfo.toDto(): NewUserInfoDTO {
+    return NewUserInfoDTO(
+        uid = this.uid(),
     )
 }

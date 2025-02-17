@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.payload.internal
 
-import com.fasterxml.jackson.annotation.JsonProperty
+package org.hisp.dhis.android.network.tracker
 
-internal data class TrackerPager(
-    @JsonProperty val page: Int,
-    @JsonProperty val pageSize: Int,
-)
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+
+@Serializable
+internal data class NewNoteDTO(
+    override val deleted: Boolean?,
+    val note: String,
+    val value: String?,
+    val storedBy: String?,
+    val storedAt: String?,
+) : BaseDeletableDataObjectDTO {
+    fun toDomain(event: String? = null, enrollment: String? = null): Note {
+        val noteType = when {
+            event != null -> Note.NoteType.EVENT_NOTE
+            enrollment != null -> Note.NoteType.ENROLLMENT_NOTE
+            else -> null
+        }
+        return Note.builder()
+            .uid(note)
+            .noteType(noteType)
+            .event(event)
+            .enrollment(enrollment)
+            .deleted(deleted)
+            .value(value)
+            .storedBy(storedBy)
+            .storedDate(storedAt)
+            .build()
+    }
+}
+
+internal fun NewTrackerImporterNote.toDto(): NewNoteDTO {
+    return NewNoteDTO(
+        note = uid(),
+        value = value(),
+        storedBy = storedBy(),
+        storedAt = storedAt(),
+        deleted = deleted(),
+    )
+}

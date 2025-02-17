@@ -26,18 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackerimporter
+package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterUserInfo
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.ValueDTO
 
 @Serializable
-internal data class NewTrackerImporterUserInfoDTO(
-    val uid: String?,
-)
+internal data class NewTrackedEntityDataValueDTO(
+    val createdAt: String?,
+    val updatedAt: String?,
+    val dataElement: String?,
+    val createdBy: UserInfoDTO?,
+    val value: ValueDTO?,
+    val providedElsewhere: Boolean?,
+) {
+    fun toDomain(eventUid: String?): TrackedEntityDataValue {
+        return TrackedEntityDataValue.builder()
+            .event(eventUid)
+            .created(createdAt.toJavaDate())
+            .lastUpdated(updatedAt.toJavaDate())
+            .dataElement(dataElement)
+            .storedBy(createdBy?.username)
+            .value(value?.value)
+            .providedElsewhere(providedElsewhere)
+            .build()
+    }
+}
 
-internal fun NewTrackerImporterUserInfo.toDto(): NewTrackerImporterUserInfoDTO {
-    return NewTrackerImporterUserInfoDTO(
-        uid = this.uid(),
+internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackedEntityDataValueDTO {
+    return NewTrackedEntityDataValueDTO(
+        createdAt = this.createdAt()?.dateFormat(),
+        updatedAt = this.updatedAt()?.dateFormat(),
+        dataElement = this.dataElement(),
+        createdBy = this.createdBy()?.let { it.toDto() },
+        value = ValueDTO(value()),
+        providedElsewhere = this.providedElsewhere(),
     )
 }

@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
 internal object NewTrackerImporterRelationshipTransformer :
-    TwoWayTransformer<Relationship, NewTrackerImporterRelationship> {
+    Transformer<Relationship, NewTrackerImporterRelationship> {
     override fun transform(o: Relationship): NewTrackerImporterRelationship {
         return NewTrackerImporterRelationship.builder()
             .id(o.id())
@@ -44,21 +43,6 @@ internal object NewTrackerImporterRelationshipTransformer :
             .to(transformRelationshipItem(o.to()))
             .deleted(o.deleted())
             .syncState(o.syncState())
-            .build()
-    }
-
-    override fun deTransform(t: NewTrackerImporterRelationship): Relationship {
-        return Relationship.builder()
-            .id(t.id())
-            .uid(t.uid())
-            .relationshipType(t.relationshipType())
-            .name(t.relationshipName())
-            .created(t.createdAt())
-            .lastUpdated(t.updatedAt())
-            .from(deTransformRelationshipItem(t.from()))
-            .to(deTransformRelationshipItem(t.to()))
-            .deleted(t.deleted())
-            .syncState(t.syncState())
             .build()
     }
 
@@ -81,36 +65,6 @@ internal object NewTrackerImporterRelationshipTransformer :
                 item.hasEvent() ->
                     builder.event(
                         NewTrackerImporterRelationshipItemEvent.builder().event(item.elementUid()).build(),
-                    ).build()
-                else -> null
-            }
-        }
-    }
-
-    private fun deTransformRelationshipItem(item: NewTrackerImporterRelationshipItem?): RelationshipItem? {
-        return item?.let {
-            val builder = RelationshipItem.builder()
-                .relationship(item.relationship()?.let { ObjectWithUid.create(it) })
-                .relationshipItemType(item.relationshipItemType())
-
-            when {
-                item.trackedEntity() != null ->
-                    builder.trackedEntityInstance(
-                        RelationshipItemTrackedEntityInstance.builder()
-                            .trackedEntityInstance(item.trackedEntity()?.trackedEntity())
-                            .build(),
-                    ).build()
-                item.enrollment() != null ->
-                    builder.enrollment(
-                        RelationshipItemEnrollment.builder()
-                            .enrollment(item.enrollment()?.enrollment())
-                            .build(),
-                    ).build()
-                item.event() != null ->
-                    builder.event(
-                        RelationshipItemEvent.builder()
-                            .event(item.event()?.event())
-                            .build(),
                     ).build()
                 else -> null
             }

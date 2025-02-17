@@ -98,18 +98,18 @@ internal class TrackerImporterBreakTheGlassHelper(
         candidateEnrollments
             .mapNotNull { error -> error.enrollment()?.let { id -> payload.enrollments.find { it.uid() == id } } }
             .filter { enrollment ->
-                isProtectedInSearchScope(enrollment.program(), enrollment.organisationUnit())
+                isProtectedInSearchScope(enrollment.program, enrollment.organisationUnit)
             }
             .map { enrollment ->
                 glassErrors.enrollments.add(enrollment)
                 glassErrors.trackedEntities.addAll(
                     payload.trackedEntities.filter {
-                        it.uid() == enrollment.trackedEntity()
+                        it.uid() == enrollment.trackedEntity
                     },
                 )
                 glassErrors.events.addAll(
                     payload.events.filter {
-                        it.enrollment() == enrollment.uid()
+                        it.enrollment == enrollment.uid()
                     },
                 )
             }
@@ -118,7 +118,7 @@ internal class TrackerImporterBreakTheGlassHelper(
             .filter { error -> glassErrors.events.none { it.uid() == error.event() } }
             .mapNotNull { error -> error.event()?.let { id -> payload.events.find { it.uid() == id } } }
             .filter { event ->
-                event.enrollment()?.let { enrollmentStore.selectByUid(it) }?.let {
+                event.enrollment?.let { enrollmentStore.selectByUid(it) }?.let {
                     isProtectedInSearchScope(it.program(), it.organisationUnit())
                 } ?: false
             }
@@ -147,17 +147,17 @@ internal class TrackerImporterBreakTheGlassHelper(
      */
     suspend fun fakeBreakGlass(payload: NewTrackerImporterPayload) {
         val teiProgramForEnrollment = payload.enrollments.mapNotNull {
-            if (it.trackedEntity() != null && it.program() != null) {
-                Pair(it.trackedEntity()!!, it.program()!!)
+            if (it.trackedEntity != null && it.program != null) {
+                Pair(it.trackedEntity, it.program)
             } else {
                 null
             }
         }
 
         val teiProgramForEvent = payload.events
-            .filter { event -> payload.enrollments.none { it.uid() == event.enrollment() } }
+            .filter { event -> payload.enrollments.none { it.uid() == event.enrollment } }
             .mapNotNull { event ->
-                event.enrollment()?.let { enrollmentStore.selectByUid(it) }?.let {
+                event.enrollment?.let { enrollmentStore.selectByUid(it) }?.let {
                     if (it.trackedEntityInstance() != null && it.program() != null) {
                         Pair(it.trackedEntityInstance()!!, it.program()!!)
                     } else {

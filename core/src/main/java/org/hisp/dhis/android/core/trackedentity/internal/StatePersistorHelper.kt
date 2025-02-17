@@ -50,7 +50,7 @@ internal class StatePersistorHelper internal constructor() {
 
     private fun <O> getStateToSet(
         o: O,
-        forcedState: State?
+        forcedState: State?,
     ): State where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
         return forcedState
             ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()

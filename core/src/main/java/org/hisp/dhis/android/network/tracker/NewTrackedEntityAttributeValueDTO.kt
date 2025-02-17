@@ -41,7 +41,6 @@ internal data class NewTrackedEntityAttributeValueDTO(
     val value: ValueDTO?,
     val createdAt: String?,
     val updatedAt: String?,
-    val trackedEntityInstance: String?,
 ) {
     fun toDomain(teiUid: String): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder()
@@ -60,6 +59,5 @@ internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackedEn
         value = ValueDTO(value()),
         createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
         updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        trackedEntityInstance = this.trackedEntityInstance(),
     )
 }

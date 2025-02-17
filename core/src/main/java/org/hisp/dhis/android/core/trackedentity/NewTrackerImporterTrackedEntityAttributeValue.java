@@ -32,8 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -49,7 +47,6 @@ public abstract class NewTrackerImporterTrackedEntityAttributeValue implements C
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @JsonInclude()
     public abstract String value();
 
     @Nullable
@@ -61,7 +58,6 @@ public abstract class NewTrackerImporterTrackedEntityAttributeValue implements C
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonIgnore()
     public abstract String trackedEntityInstance();
 
     public static Builder builder() {

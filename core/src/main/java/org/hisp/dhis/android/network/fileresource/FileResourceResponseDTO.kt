@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.fileresource.internal;
+package org.hisp.dhis.android.network.fileresource
 
-import androidx.annotation.Nullable;
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.fileresource.FileResource;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_FileResourceType.Builder.class)
-abstract class FileResourceType {
-
-    @Nullable
-    @JsonProperty
-    abstract FileResource fileResource();
-
-    public static Builder builder() {
-        return new AutoValue_FileResourceType.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder fileResource(FileResource fileResource);
-
-        public abstract FileResourceType build();
-    }
-}
+@Serializable
+internal data class FileResourceResponseDTO(
+    val response: FileResourceTypeDTO,
+)

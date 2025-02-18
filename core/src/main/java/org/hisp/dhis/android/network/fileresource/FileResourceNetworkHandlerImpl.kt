@@ -45,8 +45,9 @@ internal class FileResourceNetworkHandlerImpl(
     httpServiceClient: HttpServiceClientKotlinx,
 ) : FileResourceNetworkHandler {
     private val service = FileResourceService(httpServiceClient)
-    override suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {
-        return service.uploadFile(filePart)
+    override suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResource {
+        val apiResponse = service.uploadFile(filePart)
+        return apiResponse.response.fileResource.toDomain()
     }
 
     override suspend fun getFileResource(fileResource: String): FileResource {

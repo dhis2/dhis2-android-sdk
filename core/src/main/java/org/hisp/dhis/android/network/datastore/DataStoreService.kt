@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.network.datastore
 
 import kotlinx.serialization.json.JsonElement
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
 internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
     suspend fun getNamespaces(): List<String> {
@@ -75,7 +75,7 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
         namespace: String,
         key: String,
         value: JsonElement?,
-    ): HttpMessageResponse {
+    ): HttpMessageResponseDTO {
         return client.post {
             url("$DATA_STORE/$namespace/$key")
             body(value)
@@ -86,7 +86,7 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
         namespace: String,
         key: String,
         value: JsonElement?,
-    ): HttpMessageResponse {
+    ): HttpMessageResponseDTO {
         return client.put {
             url("$DATA_STORE/$namespace/$key")
             body(value)
@@ -96,7 +96,7 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
     suspend fun deleteNamespaceKeyValue(
         namespace: String,
         key: String,
-    ): HttpMessageResponse {
+    ): HttpMessageResponseDTO {
         return client.delete {
             url("$DATA_STORE/$namespace/$key")
         }

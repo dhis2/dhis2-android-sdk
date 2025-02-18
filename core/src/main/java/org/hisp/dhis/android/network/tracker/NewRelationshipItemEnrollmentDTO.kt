@@ -38,6 +38,6 @@ internal data class NewRelationshipItemEnrollmentDTO(
 
 internal fun NewTrackerImporterRelationshipItemEnrollment.toDto(): NewRelationshipItemEnrollmentDTO {
     return NewRelationshipItemEnrollmentDTO(
-        enrollment = this.enrollment(),
+        enrollment = enrollment,
     )
 }

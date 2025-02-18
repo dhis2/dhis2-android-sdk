@@ -65,14 +65,14 @@ internal data class NewRelationshipDTO(
 
 internal fun NewTrackerImporterRelationship.toDto(): NewRelationshipDTO {
     return NewRelationshipDTO(
-        deleted = this.deleted(),
-        relationship = this.uid(),
-        relationshipType = this.relationshipType(),
-        relationshipName = this.relationshipName(),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        bidirectional = this.bidirectional(),
-        from = this.from()?.toDto(),
-        to = this.to()?.toDto(),
+        deleted = deleted,
+        relationship = uid,
+        relationshipType = relationshipType,
+        relationshipName = relationshipName,
+        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        bidirectional = bidirectional,
+        from = from?.toDto(),
+        to = to?.toDto(),
     )
 }

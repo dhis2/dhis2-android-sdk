@@ -143,8 +143,8 @@ internal class TrackerImporterPostCall internal constructor(
             .jobUid(jobUid)
             .lastUpdated(Date())
 
-        val enrollments = payload.trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
-        val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
+        val enrollments = payload.trackedEntities.flatMap { it.enrollments ?: emptyList() } + payload.enrollments
+        val events = enrollments.flatMap { it.events ?: emptyList() } + payload.events
 
         return generateTypeObjects(builder, TRACKED_ENTITY, payload.trackedEntities, payload.fileResourcesMap) +
             generateTypeObjects(builder, ENROLLMENT, enrollments, payload.fileResourcesMap) +

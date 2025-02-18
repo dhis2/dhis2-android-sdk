@@ -49,8 +49,8 @@ internal data class NewProgramOwnerDTO(
 
 internal fun NewTrackerImporterProgramOwner.toDto(): NewProgramOwnerDTO {
     return NewProgramOwnerDTO(
-        program = this.program(),
-        trackedEntity = this.trackedEntity(),
-        orgUnit = this.orgUnit(),
+        program = program,
+        trackedEntity = trackedEntity,
+        orgUnit = orgUnit,
     )
 }

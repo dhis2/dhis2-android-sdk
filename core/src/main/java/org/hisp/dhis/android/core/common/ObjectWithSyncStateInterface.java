@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,52 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class UserInfo {
-
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String username();
-
-    @Nullable
-    public abstract String firstName();
-
-    @Nullable
-    public abstract String surname();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_UserInfo.Builder();
-    }
-
-    @NonNull
-    public static UserInfo create(Cursor cursor) {
-        return AutoValue_UserInfo.createFromCursor(cursor);
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder username(String username);
-
-        public abstract Builder firstName(String firstName);
-
-        public abstract Builder surname(String surname);
-
-        public abstract UserInfo build();
-    }
+public interface ObjectWithSyncStateInterface {
+    State syncState();
 }

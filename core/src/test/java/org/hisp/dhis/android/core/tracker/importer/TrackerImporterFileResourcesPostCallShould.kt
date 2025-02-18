@@ -28,7 +28,11 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
@@ -52,15 +56,19 @@ class TrackerImporterFileResourcesPostCallShould {
     private lateinit var fileResourcePostCall: TrackerImporterFileResourcesPostCall
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Suppress("LongMethod")
     @Test
     fun `Should create a single post call for repeated attributes`() = runTest {
         val resourceId = "resourceId"
         val attributeId = "attributeId"
 
-        val attributeValue = NewTrackerImporterTrackedEntityAttributeValue.builder()
-            .trackedEntityAttribute(attributeId)
-            .value(resourceId)
-            .build()
+        val attributeValue = NewTrackerImporterTrackedEntityAttributeValue(
+            trackedEntityAttribute = attributeId,
+            value = resourceId,
+            createdAt = null,
+            updatedAt = null,
+            trackedEntityInstance = null,
+        )
 
         val fileResource = FileResource.builder().uid(resourceId).build()
         val fileResources = listOf(fileResource)
@@ -68,21 +76,53 @@ class TrackerImporterFileResourcesPostCallShould {
         val payloadWrapper = NewTrackerImporterPayloadWrapper(
             updated = NewTrackerImporterPayload(
                 trackedEntities = mutableListOf(
-                    NewTrackerImporterTrackedEntity.builder()
-                        .uid("tei_uid")
-                        .trackedEntityAttributeValues(listOf(attributeValue))
-                        .build(),
+                    NewTrackerImporterTrackedEntity(
+                        uid = "tei_uid",
+                        trackedEntityAttributeValues = listOf(attributeValue),
+                        deleted = null,
+                        syncState = null,
+                        createdAt = null,
+                        updatedAt = null,
+                        createdAtClient = null,
+                        updatedAtClient = null,
+                        organisationUnit = null,
+                        trackedEntityType = null,
+                        geometry = null,
+                        aggregatedSyncState = null,
+                        enrollments = null,
+                        programOwners = null,
+                        relationships = null,
+                    ),
                 ),
                 enrollments = mutableListOf(
-                    NewTrackerImporterEnrollment.builder()
-                        .uid("enrollment_uid")
-                        .attributes(listOf(attributeValue))
-                        .build(),
+                    NewTrackerImporterEnrollment(
+                        uid = "enrollment_uid",
+                        attributes = listOf(attributeValue),
+                        deleted = null,
+                        syncState = null,
+                        createdAt = null,
+                        updatedAt = null,
+                        createdAtClient = null,
+                        updatedAtClient = null,
+                        organisationUnit = null,
+                        program = null,
+                        enrolledAt = null,
+                        occurredAt = null,
+                        completedAt = null,
+                        followUp = null,
+                        status = null,
+                        trackedEntity = null,
+                        geometry = null,
+                        aggregatedSyncState = null,
+                        events = null,
+                        notes = null,
+                        relationships = null,
+                    ),
                 ),
             ),
         )
 
-        val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
+        val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute!!)
         whenever(fileResourceHelper.getUploadableFileResources()).doReturn(fileResources)
         whenever(fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)).doReturn(fileResource)
         whenever(fileResourcesPostCall.uploadFileResource(fileResource, fValue))
@@ -92,8 +132,8 @@ class TrackerImporterFileResourcesPostCallShould {
 
         verify(fileResourcesPostCall, times(1)).uploadFileResource(fileResource, fValue)
 
-        val entityValue = result.updated.trackedEntities.first().trackedEntityAttributeValues()!!.first().value()!!
-        val enrollmentValue = result.updated.enrollments.first().attributes()!!.first().value()!!
+        val entityValue = result.updated.trackedEntities.first().trackedEntityAttributeValues!!.first().value!!
+        val enrollmentValue = result.updated.enrollments.first().attributes!!.first().value!!
 
         assertThat(entityValue).isEqualTo(enrollmentValue)
         assertThat(entityValue).isNotEqualTo(resourceId)

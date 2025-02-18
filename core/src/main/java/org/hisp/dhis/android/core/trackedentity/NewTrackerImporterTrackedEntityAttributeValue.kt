@@ -25,30 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.relationship;
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class NewTrackerImporterRelationshipItemTrackedEntity {
-
-    @Nullable
-    public abstract String trackedEntity();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterRelationshipItemTrackedEntity.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder trackedEntity(String trackedEntity);
-
-        public abstract NewTrackerImporterRelationshipItemTrackedEntity build();
-    }
-}
+internal data class NewTrackerImporterTrackedEntityAttributeValue(
+    val trackedEntityAttribute: String?,
+    val value: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val trackedEntityInstance: String?,
+)

@@ -59,11 +59,11 @@ internal data class NewTrackedEntityDataValueDTO(
 
 internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackedEntityDataValueDTO {
     return NewTrackedEntityDataValueDTO(
-        createdAt = this.createdAt()?.dateFormat(),
-        updatedAt = this.updatedAt()?.dateFormat(),
-        dataElement = this.dataElement(),
-        createdBy = this.createdBy()?.let { it.toDto() },
-        value = ValueDTO(value()),
-        providedElsewhere = this.providedElsewhere(),
+        createdAt = createdAt?.dateFormat(),
+        updatedAt = updatedAt?.dateFormat(),
+        dataElement = dataElement,
+        createdBy = createdBy?.let { it.toDto() },
+        value = ValueDTO(value),
+        providedElsewhere = providedElsewhere,
     )
 }

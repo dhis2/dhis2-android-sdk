@@ -62,10 +62,10 @@ internal data class NewNoteDTO(
 
 internal fun NewTrackerImporterNote.toDto(): NewNoteDTO {
     return NewNoteDTO(
-        note = uid(),
-        value = value(),
-        storedBy = storedBy(),
-        storedAt = storedAt(),
-        deleted = deleted(),
+        note = uid,
+        value = value,
+        storedBy = storedBy,
+        storedAt = storedAt,
+        deleted = deleted,
     )
 }

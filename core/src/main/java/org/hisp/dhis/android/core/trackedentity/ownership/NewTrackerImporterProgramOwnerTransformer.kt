@@ -33,10 +33,10 @@ internal object NewTrackerImporterProgramOwnerTransformer :
     Transformer<ProgramOwner, NewTrackerImporterProgramOwner> {
 
     override fun transform(o: ProgramOwner): NewTrackerImporterProgramOwner {
-        return NewTrackerImporterProgramOwner.builder()
-            .program(o.program())
-            .orgUnit(o.ownerOrgUnit())
-            .trackedEntity(o.trackedEntityInstance())
-            .build()
+        return NewTrackerImporterProgramOwner(
+            program = o.program(),
+            orgUnit = o.ownerOrgUnit(),
+            trackedEntity = o.trackedEntityInstance(),
+        )
     }
 }

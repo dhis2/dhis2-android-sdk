@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note
 
-package org.hisp.dhis.android.network.tracker
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.user.UserInfo
-
-@Serializable
-internal data class UserInfoDTO(
-    val uid: String?,
-    val username: String?,
-    val firstName: String?,
-    val surname: String?,
-)
-
-internal fun UserInfo.toDto(): UserInfoDTO {
-    return UserInfoDTO(
-        uid = uid,
-        username = username,
-        firstName = firstName,
-        surname = surname,
-    )
+internal data class NewTrackerImporterNote(
+    val uid: String,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val noteType: Note.NoteType?,
+    val event: String?,
+    val enrollment: String?,
+    val value: String?,
+    val storedBy: String?,
+    val storedAt: String?,
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

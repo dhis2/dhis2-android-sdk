@@ -25,30 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.trackedentity.ownership.NewTrackerImporterProgramOwner
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class NewTrackerImporterUserInfo {
-
-    @Nullable
-    public abstract String uid();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterUserInfo.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract NewTrackerImporterUserInfo build();
-    }
+internal data class NewTrackerImporterTrackedEntity(
+    val uid: String,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val createdAtClient: Date?,
+    val updatedAtClient: Date?,
+    val organisationUnit: String?,
+    val trackedEntityType: String?,
+    val geometry: Geometry?,
+    val aggregatedSyncState: State?,
+    val trackedEntityAttributeValues: List<NewTrackerImporterTrackedEntityAttributeValue>? = emptyList(),
+    val enrollments: List<NewTrackerImporterEnrollment>? = emptyList(),
+    val programOwners: List<NewTrackerImporterProgramOwner>? = emptyList(),
+    val relationships: List<NewTrackerImporterRelationship>? = emptyList(),
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

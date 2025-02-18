@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.network.tracker
-
-import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.user.UserInfo
+import java.util.Date
 
-@Serializable
-internal data class UserInfoDTO(
-    val uid: String?,
-    val username: String?,
-    val firstName: String?,
-    val surname: String?,
+internal data class NewTrackerImporterTrackedEntityDataValue(
+    val event: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val dataElement: String?,
+    val createdBy: UserInfo?,
+    val value: String?,
+    val providedElsewhere: Boolean?,
 )
-
-internal fun UserInfo.toDto(): UserInfoDTO {
-    return UserInfoDTO(
-        uid = uid,
-        username = username,
-        firstName = firstName,
-        surname = surname,
-    )
-}

@@ -25,40 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.enrollment
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
 import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import java.util.Date
 
-@Singleton
-internal class StatePersistorHelper internal constructor() {
-
-    fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>>,
-        o: O,
-        forcedState: State?,
-    ) where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
-        val s = getStateToSet(o, forcedState)
-        if (!stateMap.containsKey(s)) {
-            stateMap[s] = ArrayList()
-        }
-        stateMap[s]!!.add(o.uid())
-    }
-
-    private fun <O> getStateToSet(
-        o: O,
-        forcedState: State?,
-    ): State where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
-        return forcedState
-            ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
-    }
-
-    fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDataObjectStore<*>) {
-        for ((key, value) in map) {
-            store.setSyncState(value, key)
-        }
-    }
+internal data class NewTrackerImporterEnrollment(
+    val uid: String,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val createdAtClient: Date?,
+    val updatedAtClient: Date?,
+    val organisationUnit: String?,
+    val program: String?,
+    val enrolledAt: Date?,
+    val occurredAt: Date?,
+    val completedAt: Date?,
+    val followUp: Boolean?,
+    val status: EnrollmentStatus?,
+    val trackedEntity: String?,
+    val geometry: Geometry?,
+    val aggregatedSyncState: State?,
+    val attributes: List<NewTrackerImporterTrackedEntityAttributeValue>? = emptyList(),
+    val events: List<NewTrackerImporterEvent>? = emptyList(),
+    val notes: List<NewTrackerImporterNote>? = emptyList(),
+    val relationships: List<NewTrackerImporterRelationship>? = emptyList(),
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

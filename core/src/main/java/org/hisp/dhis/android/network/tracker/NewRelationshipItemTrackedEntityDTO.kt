@@ -38,6 +38,6 @@ internal data class NewRelationshipItemTrackedEntityDTO(
 
 internal fun NewTrackerImporterRelationshipItemTrackedEntity.toDto(): NewRelationshipItemTrackedEntityDTO {
     return NewRelationshipItemTrackedEntityDTO(
-        trackedEntity = this.trackedEntity(),
+        trackedEntity = trackedEntity,
     )
 }

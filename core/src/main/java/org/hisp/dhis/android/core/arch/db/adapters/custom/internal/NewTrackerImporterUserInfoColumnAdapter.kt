@@ -37,10 +37,10 @@ internal class NewTrackerImporterUserInfoColumnAdapter : ColumnTypeAdapter<NewTr
         val columnIndex = cursor.getColumnIndex(columnName)
         val assignedUserUid = cursor.getString(columnIndex)
 
-        return assignedUserUid?.let { NewTrackerImporterUserInfo.builder().uid(it).build() }
+        return assignedUserUid?.let { NewTrackerImporterUserInfo(uid = it) }
     }
 
     override fun toContentValues(values: ContentValues, columnName: String, value: NewTrackerImporterUserInfo?) {
-        values.put(columnName, value?.uid())
+        values.put(columnName, value?.uid)
     }
 }

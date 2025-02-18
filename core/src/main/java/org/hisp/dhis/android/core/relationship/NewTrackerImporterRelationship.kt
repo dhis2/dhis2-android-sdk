@@ -25,30 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class NewTrackerImporterRelationshipItemEnrollment {
-
-    @Nullable
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_NewTrackerImporterRelationshipItemEnrollment.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract NewTrackerImporterRelationshipItemEnrollment build();
-    }
+internal data class NewTrackerImporterRelationship(
+    val uid: String?,
+    val deleted: Boolean?,
+    val syncState: State?,
+    val relationshipType: String?,
+    val relationshipName: String?,
+    val createdAt: Date?,
+    val updatedAt: Date?,
+    val bidirectional: Boolean?,
+    val from: NewTrackerImporterRelationshipItem?,
+    val to: NewTrackerImporterRelationshipItem?,
+) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
+    override fun uid(): String? = uid
+    override fun syncState(): State? = syncState
+    override fun deleted(): Boolean? = deleted
 }

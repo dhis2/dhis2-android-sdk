@@ -46,31 +46,26 @@ internal object NewTrackerImporterEnrollmentTransformer {
             .filter { programAttributeUids.contains(it.trackedEntityAttribute()) }
             .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
 
-        return NewTrackerImporterEnrollment.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .createdAtClient(o.createdAtClient())
-            .updatedAtClient(o.lastUpdatedAtClient())
-            .organisationUnit(o.organisationUnit())
-            .program(o.program())
-            .enrolledAt(o.enrollmentDate())
-            .occurredAt(o.incidentDate())
-            .completedAt(o.completedDate())
-            .followUp(o.followUp())
-            .status(o.status())
-            .trackedEntity(o.trackedEntityInstance())
-            .geometry(o.geometry())
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .notes(
-                o.notes()?.map {
-                    NewTrackerImporterNoteTransformer.transform(it)
-                },
-            )
-            .attributes(enrollmentAttributeValues)
-            .build()
+        return NewTrackerImporterEnrollment(
+            uid = o.uid(),
+            deleted = o.deleted(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            createdAtClient = o.createdAtClient(),
+            updatedAtClient = o.lastUpdatedAtClient(),
+            organisationUnit = o.organisationUnit(),
+            program = o.program(),
+            enrolledAt = o.enrollmentDate(),
+            occurredAt = o.incidentDate(),
+            completedAt = o.completedDate(),
+            followUp = o.followUp(),
+            status = o.status(),
+            trackedEntity = o.trackedEntityInstance(),
+            geometry = o.geometry(),
+            syncState = o.syncState(),
+            aggregatedSyncState = o.aggregatedSyncState(),
+            notes = o.notes()?.map { NewTrackerImporterNoteTransformer.transform(it) },
+            attributes = enrollmentAttributeValues,
+        )
     }
 }

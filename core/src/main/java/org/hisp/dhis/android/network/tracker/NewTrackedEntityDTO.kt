@@ -84,18 +84,18 @@ internal data class NewTrackedEntityDTO(
 
 internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {
     return NewTrackedEntityDTO(
-        deleted = this.deleted(),
-        trackedEntity = this.uid(),
-        createdAt = this.createdAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = this.updatedAt()?.let { DateUtils.DATE_FORMAT.format(it) },
-        createdAtClient = this.createdAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAtClient = this.updatedAtClient()?.let { DateUtils.DATE_FORMAT.format(it) },
-        orgUnit = this.organisationUnit(),
-        trackedEntityType = this.trackedEntityType(),
-        geometry = this.geometry()?.let { it.toDto() },
-        attributes = this.trackedEntityAttributeValues()?.map { it.toDto() } ?: emptyList(),
-        enrollments = this.enrollments()?.map { it.toDto() } ?: emptyList(),
-        programOwners = this.programOwners()?.map { it.toDto() },
+        deleted = deleted,
+        trackedEntity = uid,
+        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAtClient = createdAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
+        updatedAtClient = updatedAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
+        orgUnit = organisationUnit,
+        trackedEntityType = trackedEntityType,
+        geometry = geometry?.let { it.toDto() },
+        attributes = trackedEntityAttributeValues?.map { it.toDto() } ?: emptyList(),
+        enrollments = enrollments?.map { it.toDto() } ?: emptyList(),
+        programOwners = programOwners?.map { it.toDto() },
     )
 }
 

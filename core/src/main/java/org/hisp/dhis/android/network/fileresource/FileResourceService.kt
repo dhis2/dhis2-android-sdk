@@ -36,7 +36,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class FileResourceService(private val client: HttpServiceClientKotlinx) {
 
-    suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {
+    suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResourceResponseDTO {
         return client.post {
             url(FILE_RESOURCES)
             body(filePart)

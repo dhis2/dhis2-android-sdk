@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
 internal interface FileResourceNetworkHandler {
 
-    suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray
+    suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResource
 
     suspend fun getFileResource(fileResource: String): FileResource
 

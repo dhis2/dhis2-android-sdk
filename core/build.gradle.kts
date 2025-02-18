@@ -166,6 +166,7 @@ dependencies {
     api(libs.kotlinx.datetime)
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.rx2)
+    api(libs.kotlinx.serialization.json)
 
     // DHIS2 libraries
     api(libs.dhis2.compression)

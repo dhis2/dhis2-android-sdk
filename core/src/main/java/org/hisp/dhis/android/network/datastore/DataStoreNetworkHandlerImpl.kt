@@ -29,6 +29,7 @@ package org.hisp.dhis.android.network.datastore
 
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
@@ -91,7 +92,12 @@ internal class DataStoreNetworkHandlerImpl(
             acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
             errorClass = HttpMessageResponse::class.java,
         ) {
-            service.postNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key(), readValue(dataStoreEntry))
+            val apiResponse = service.postNamespaceKeyValue(
+                dataStoreEntry.namespace(),
+                dataStoreEntry.key(),
+                readValue(dataStoreEntry)
+            )
+            apiResponse.toDomain()
         }
     }
 
@@ -103,7 +109,12 @@ internal class DataStoreNetworkHandlerImpl(
             acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
             errorClass = HttpMessageResponse::class.java,
         ) {
-            service.putNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key(), readValue(dataStoreEntry))
+            val apiResponse = service.putNamespaceKeyValue(
+                dataStoreEntry.namespace(),
+                dataStoreEntry.key(),
+                readValue(dataStoreEntry)
+            )
+            apiResponse.toDomain()
         }
     }
 
@@ -115,11 +126,12 @@ internal class DataStoreNetworkHandlerImpl(
             acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
             errorClass = HttpMessageResponse::class.java,
         ) {
-            service.deleteNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key())
+            val apiResponse = service.deleteNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key())
+            apiResponse.toDomain()
         }
     }
 
     private fun readValue(dataStoreEntry: DataStoreEntry): JsonElement? {
-        return dataStoreEntry.value()?.let { KotlinxJsonParser.instance.parseToJsonElement(it) }
+        return dataStoreEntry.value()?.let { KotlinxJsonParser.instance.encodeToJsonElement(it) }
     }
 }

@@ -45,23 +45,21 @@ internal class DataStorePostCall(
     private val dataStoreEntryImportHandler: DataStoreImportHandler,
     private val store: DataStoreEntryStore,
 ) {
-    fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Observable<D2Progress> {
-        return Observable.defer {
+    fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Observable<D2Progress> =
+        Observable.defer {
             if (entries.isEmpty()) {
-                return@defer Observable.empty<D2Progress>()
+                Observable.empty()
             } else {
                 val progressManager = D2ProgressManager(entries.size)
-
-                return@defer rxObservable {
-                    entries.forEach {
-                        postEntry(it)
-                        send(progressManager.increaseProgress(DataStoreEntry::class.java, false))
+                rxObservable {
+                    entries.forEach { entry ->
+                        postEntry(entry)
+                        send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
                     }
-                    send(progressManager.increaseProgress(DataStoreEntry::class.java, true))
+                    send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
                 }
             }
         }
-    }
 
     private suspend fun postEntry(entry: DataStoreEntry) {
         store.setState(entry, forcedOrOwn(entry, State.UPLOADING))

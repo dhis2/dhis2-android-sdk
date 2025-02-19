@@ -30,13 +30,11 @@ package org.hisp.dhis.android.network.datastore
 import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
-import org.hisp.dhis.android.network.common.JsonWrapper
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -65,20 +63,14 @@ internal class DataStoreNetworkHandlerImpl(
     ): Result<List<DataStoreEntry>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val apiPayload = service.getNamespaceValues38(namespace, page, pageSize)
-            return@wrap apiPayload.items.map { it.toDomain(namespace) }
+            apiPayload.items.map { it.toDomain(namespace) }
         }
     }
 
     override suspend fun getNamespaceKeyValue(namespace: String, key: String): Result<DataStoreEntry, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val apiPayload = service.getNamespaceKeyValue(namespace, key)
-            DataStoreEntry.builder()
-                .namespace(namespace)
-                .key(key)
-                .value(apiPayload.toString())
-                .syncState(State.SYNCED)
-                .deleted(false)
-                .build()
+            DataStoreEntryDTO(key, apiPayload).toDomain(namespace)
         }
     }
 
@@ -92,8 +84,7 @@ internal class DataStoreNetworkHandlerImpl(
         ) {
             val apiResponse = service.postNamespaceKeyValue(
                 dataStoreEntry.namespace(),
-                dataStoreEntry.key(),
-                JsonWrapper.fromString(dataStoreEntry.value()),
+                dataStoreEntry.toDto(),
             )
             apiResponse.toDomain()
         }
@@ -109,8 +100,7 @@ internal class DataStoreNetworkHandlerImpl(
         ) {
             val apiResponse = service.putNamespaceKeyValue(
                 dataStoreEntry.namespace(),
-                dataStoreEntry.key(),
-                JsonWrapper.fromString(dataStoreEntry.value()),
+                dataStoreEntry.toDto(),
             )
             apiResponse.toDomain()
         }

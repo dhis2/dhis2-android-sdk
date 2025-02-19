@@ -29,16 +29,16 @@ package org.hisp.dhis.android.network.datastore
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
+import org.hisp.dhis.android.network.common.JsonWrapper
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 
 @Serializable
 internal data class DataStoreEntryDTO(
     val key: String,
-    val value: JsonElement?,
+    val value: JsonWrapper?,
 ) {
     fun toDomain(namespace: String): DataStoreEntry {
         return DataStoreEntry.builder()
@@ -49,6 +49,13 @@ internal data class DataStoreEntryDTO(
             .deleted(false)
             .build()
     }
+}
+
+internal fun DataStoreEntry.toDto(): DataStoreEntryDTO {
+    return DataStoreEntryDTO(
+        key = key(),
+        value = JsonWrapper.fromString(value()),
+    )
 }
 
 @Serializable

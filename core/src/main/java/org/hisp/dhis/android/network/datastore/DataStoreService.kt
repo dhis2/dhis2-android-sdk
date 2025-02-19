@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.network.datastore
 
-import kotlinx.serialization.json.JsonElement
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.JsonWrapper
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
@@ -66,7 +65,7 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
     suspend fun getNamespaceKeyValue(
         namespace: String,
         key: String,
-    ): JsonElement {
+    ): JsonWrapper {
         return client.get {
             url("$DATA_STORE/$namespace/$key")
         }
@@ -74,23 +73,21 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
 
     suspend fun postNamespaceKeyValue(
         namespace: String,
-        key: String,
-        value: JsonWrapper?,
+        dataStoreEntryDTO: DataStoreEntryDTO,
     ): HttpMessageResponseDTO {
         return client.post {
-            url("$DATA_STORE/$namespace/$key")
-            body(value)
+            url("$DATA_STORE/$namespace/${dataStoreEntryDTO.key}")
+            body(dataStoreEntryDTO.value)
         }
     }
 
     suspend fun putNamespaceKeyValue(
         namespace: String,
-        key: String,
-        value: JsonWrapper?,
+        dataStoreEntryDTO: DataStoreEntryDTO,
     ): HttpMessageResponseDTO {
         return client.put {
-            url("$DATA_STORE/$namespace/$key")
-            body(value)
+            url("$DATA_STORE/$namespace/${dataStoreEntryDTO.key}")
+            body(dataStoreEntryDTO.value)
         }
     }
 

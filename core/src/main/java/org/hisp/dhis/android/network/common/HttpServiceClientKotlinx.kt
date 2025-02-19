@@ -52,10 +52,10 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class HttpServiceClientKotlinx(
+class HttpServiceClientKotlinx(
     val okHttpClient: OkHttpClient,
     val d2Configuration: D2Configuration,
-    val client: HttpClient = HttpClient(OkHttp) {
+    @PublishedApi internal val client: HttpClient = HttpClient(OkHttp) {
         engine {
             preconfigured = okHttpClient
         }
@@ -66,8 +66,9 @@ internal class HttpServiceClientKotlinx(
         followRedirects = false
         addKtorPlugins(d2Configuration)
     },
-    internal var baseUrl: String = "https://temporary-dhis-url.org/api/",
+    @PublishedApi internal var baseUrl: String = "https://temporary-dhis-url.org/api/",
 ) {
+    @PublishedApi
     internal suspend inline fun <reified T> request(
         requestMethod: HttpMethod,
         block: RequestBuilder.() -> Unit,
@@ -96,6 +97,7 @@ internal class HttpServiceClientKotlinx(
         }
     }
 
+    @PublishedApi
     internal fun HttpRequestBuilder.addHeaders(requestBuilder: RequestBuilder) {
         requestBuilder.headers.forEach { (key, value) ->
             header(key, value)

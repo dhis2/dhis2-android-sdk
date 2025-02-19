@@ -28,14 +28,25 @@
 
 package org.hisp.dhis.android.realservertests.apischema
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.PagerDTO
+
+@Serializable
 internal data class ApiSchema(
     val properties: List<SchemaProperty>,
-) {
-    internal companion object {
-        internal data class SchemaProperty(
-            val propertyType: String,
-            val klass: String,
-            val constants: List<String>?,
-        )
-    }
-}
+)
+
+@Serializable
+internal data class SchemaProperty(
+    val propertyType: String,
+    val klass: String,
+    val constants: List<String>?,
+)
+
+@Serializable
+internal class ApiSchemaPayload(
+    override val pager: PagerDTO?,
+    @SerialName("schemas") override val items: List<ApiSchema> = emptyList(),
+) : PayloadJson<ApiSchema>(pager, items)

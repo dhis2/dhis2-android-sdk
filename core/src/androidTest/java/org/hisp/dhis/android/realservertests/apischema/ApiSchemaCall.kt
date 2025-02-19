@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.realservertests.apischema
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 
 internal class ApiSchemaCall internal constructor(
-    private val httpClient: HttpServiceClient,
+    private val httpClient: HttpServiceClientKotlinx,
 ) : ListCall<ApiSchema> {
     override suspend fun download(): List<ApiSchema> {
         val payload = ApiSchemaService(httpClient).getSchema(ApiSchemaFields.allFields)
-        return payload.items()
+        return payload.items
     }
 }

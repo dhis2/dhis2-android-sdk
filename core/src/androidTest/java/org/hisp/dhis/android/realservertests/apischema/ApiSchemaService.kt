@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.realservertests.apischema
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class ApiSchemaService(private val client: HttpServiceClient) {
+internal class ApiSchemaService(private val client: HttpServiceClientKotlinx) {
     suspend fun getSchema(
         fields: Fields<ApiSchema>,
-    ): PayloadJackson<ApiSchema> {
+    ): ApiSchemaPayload {
         return client.get {
             url("schemas")
             parameters {

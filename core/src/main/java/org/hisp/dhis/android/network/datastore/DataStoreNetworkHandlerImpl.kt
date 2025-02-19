@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.datastore.internal.DataStoreNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.JsonWrapper
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -92,7 +93,7 @@ internal class DataStoreNetworkHandlerImpl(
             val apiResponse = service.postNamespaceKeyValue(
                 dataStoreEntry.namespace(),
                 dataStoreEntry.key(),
-                dataStoreEntry.value(),
+                JsonWrapper.fromString(dataStoreEntry.value()),
             )
             apiResponse.toDomain()
         }
@@ -109,7 +110,7 @@ internal class DataStoreNetworkHandlerImpl(
             val apiResponse = service.putNamespaceKeyValue(
                 dataStoreEntry.namespace(),
                 dataStoreEntry.key(),
-                dataStoreEntry.value(),
+                JsonWrapper.fromString(dataStoreEntry.value()),
             )
             apiResponse.toDomain()
         }

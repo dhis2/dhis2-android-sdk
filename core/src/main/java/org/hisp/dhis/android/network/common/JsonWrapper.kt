@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.network.common
 
-import io.ktor.http.HttpStatusCode
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.koin.core.annotation.Singleton
+import android.util.Log
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.JsonElement
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-@Singleton
-internal class DataStoreImportHandler(
-    private val store: DataStoreEntryStore,
-) {
-
-    fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
-        if (response.httpStatusCode() == HttpStatusCode.OK.value ||
-            response.httpStatusCode() == HttpStatusCode.NotFound.value
-        ) {
-            store.deleteWhere(entry)
-        } else {
-            store.setStateIfUploading(entry, State.ERROR)
-        }
-    }
-
-    fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
-        val syncState = if (response.status() == HttpStatusCode.OK.description) {
-            State.SYNCED
-        } else {
-            State.ERROR
-        }
-        store.setStateIfUploading(entry, syncState)
+@JvmInline
+@Serializable
+internal value class JsonWrapper(val json: JsonElement) {
+    companion object {
+        fun fromString(jsonString: String?): JsonWrapper? =
+            jsonString?.let {
+                try {
+                    JsonWrapper(KotlinxJsonParser.instance.parseToJsonElement(it))
+                } catch (e: SerializationException) {
+                    Log.w(JsonWrapper::javaClass.toString(), e.message, e)
+                    null
+                }
+            }
     }
 }

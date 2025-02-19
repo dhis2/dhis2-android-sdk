@@ -47,35 +47,26 @@ internal class DataStoreDownloadCall(
     private val dataStoreEntryHandler: DataStoreHandler,
     private val versionManager: DHISVersionManager,
 ) {
-    fun download(params: DataStoreDownloadParams): Observable<D2Progress> {
-        return rxObservable {
-            return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
-                cleanForeignKeyErrors = true,
-            ) {
-                networkHandler.getNamespaces()
-                    .map { filterNamespaces(params, it) }
-                    .fold(
-                        onSuccess = { namespaces ->
-                            val progressManager = D2ProgressManager(namespaces.size)
-                            namespaces.forEach { namespace ->
-                                downloadNamespace(namespace)
-                                send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
-                            }
-                            send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
-                        },
-                        onFailure = { t -> throw t },
-                    )
+
+    fun download(params: DataStoreDownloadParams): Observable<D2Progress> = rxObservable {
+        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            val namespaces = networkHandler.getNamespaces()
+                .map { filterNamespaces(params, it) }
+                .getOrThrow()
+
+            val progressManager = D2ProgressManager(namespaces.size)
+
+            namespaces.forEach { namespace ->
+                downloadNamespace(namespace)
+                send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
             }
+            send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
         }
     }
 
-    private fun filterNamespaces(params: DataStoreDownloadParams, namespaces: List<String>): List<String> {
-        return if (params.namespaces.isNotEmpty()) {
-            namespaces.filter { params.namespaces.contains(it) }
-        } else {
-            namespaces
-        }
-    }
+    private fun filterNamespaces(params: DataStoreDownloadParams, namespaces: List<String>): List<String> =
+        if (params.namespaces.isNotEmpty()) namespaces.filter { it in params.namespaces } else namespaces
+
 
     private suspend fun downloadNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         return fetchNamespace(namespace).map { list ->
@@ -93,27 +84,20 @@ internal class DataStoreDownloadCall(
     }
 
     private suspend fun fetchNamespace38(namespace: String): Result<List<DataStoreEntry>, D2Error> {
-        var pag = 1
-        var entries: Result<List<DataStoreEntry>, D2Error> = Result.Success(emptyList())
-        var lastPage: List<DataStoreEntry> = emptyList()
+        var page = 1
+        val entries = mutableListOf<DataStoreEntry>()
 
-        do {
-            val result = networkHandler.getNamespaceValues38(namespace, pag, PAGE_SIZE)
-            result.fold(
-                onSuccess = { dataStoreEntries ->
-                    val pagedDataStoreEntries = dataStoreEntries.map { it.toBuilder().namespace(namespace).build() }
-
-                    entries = Result.Success((entries.getOrNull() ?: emptyList()) + pagedDataStoreEntries)
-                    lastPage = pagedDataStoreEntries
-                    pag++
-                },
-                onFailure = { t ->
-                    entries = Result.Failure(t)
-                },
-            )
-        } while (lastPage.size >= PAGE_SIZE && result.succeeded)
-
-        return entries
+        while (true) {
+            when (val result = networkHandler.getNamespaceValues38(namespace, page, PAGE_SIZE)) {
+                is Result.Success -> {
+                    entries += result.value
+                    if (result.value.size < PAGE_SIZE) break
+                    page++
+                }
+                is Result.Failure -> return result
+            }
+        }
+        return Result.Success(entries)
     }
 
     private suspend fun fetchNamespace37(namespace: String): Result<List<DataStoreEntry>, D2Error> {

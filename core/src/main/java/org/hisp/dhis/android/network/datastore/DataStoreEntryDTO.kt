@@ -25,35 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.network.datastore
 
-import io.ktor.http.HttpStatusCode
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.JsonWrapper
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
-@Singleton
-internal class DataStoreImportHandler(
-    private val store: DataStoreEntryStore,
+@Serializable
+internal data class DataStoreEntryDTO(
+    val key: String,
+    val value: JsonWrapper?,
 ) {
-
-    fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
-        if (response.httpStatusCode() == HttpStatusCode.OK.value ||
-            response.httpStatusCode() == HttpStatusCode.NotFound.value
-        ) {
-            store.deleteWhere(entry)
-        } else {
-            store.setStateIfUploading(entry, State.ERROR)
-        }
-    }
-
-    fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
-        val syncState = if (response.status() == HttpStatusCode.OK.description) {
-            State.SYNCED
-        } else {
-            State.ERROR
-        }
-        store.setStateIfUploading(entry, syncState)
+    fun toDomain(namespace: String): DataStoreEntry {
+        return DataStoreEntry.builder()
+            .namespace(namespace)
+            .key(key)
+            .value(value.toString())
+            .syncState(State.SYNCED)
+            .deleted(false)
+            .build()
     }
 }
+
+internal fun DataStoreEntry.toDto(): DataStoreEntryDTO {
+    return DataStoreEntryDTO(
+        key = key(),
+        value = JsonWrapper.fromString(value()),
+    )
+}
+
+@Serializable
+internal class DataStoreEntryPayload(
+    override val pager: PagerDTO?,
+    @SerialName("entries") override val items: List<DataStoreEntryDTO> = emptyList(),
+) : PayloadJson<DataStoreEntryDTO>(pager, items)

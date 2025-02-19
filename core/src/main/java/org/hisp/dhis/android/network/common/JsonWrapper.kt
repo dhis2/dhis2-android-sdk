@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.network.common
 
-internal data class DataStorePagedEntry(
-    val entries: List<DataStorePageEntryItem>,
-)
+import android.util.Log
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.JsonElement
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-internal data class DataStorePageEntryItem(val key: String, val value: Any?)
+@JvmInline
+@Serializable
+internal value class JsonWrapper(val json: JsonElement) {
+    companion object {
+        fun fromString(jsonString: String?): JsonWrapper? =
+            jsonString?.let {
+                try {
+                    JsonWrapper(KotlinxJsonParser.instance.parseToJsonElement(it))
+                } catch (e: SerializationException) {
+                    Log.w(JsonWrapper::javaClass.toString(), e.message, e)
+                    null
+                }
+            }
+    }
+}

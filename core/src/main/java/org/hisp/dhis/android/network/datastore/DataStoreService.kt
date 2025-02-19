@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.network.datastore
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.network.common.JsonWrapper
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
-@Singleton
-internal class DataStoreService(private val client: HttpServiceClient) {
+internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
     suspend fun getNamespaces(): List<String> {
         return client.get {
             url(DATA_STORE)
@@ -52,7 +51,7 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         page: Int,
         pageSize: Int,
         fields: String = ".",
-    ): DataStorePagedEntry {
+    ): DataStoreEntryPayload {
         return client.get {
             url("$DATA_STORE/$namespace")
             parameters {
@@ -66,7 +65,7 @@ internal class DataStoreService(private val client: HttpServiceClient) {
     suspend fun getNamespaceKeyValue(
         namespace: String,
         key: String,
-    ): Any {
+    ): JsonWrapper {
         return client.get {
             url("$DATA_STORE/$namespace/$key")
         }
@@ -74,30 +73,28 @@ internal class DataStoreService(private val client: HttpServiceClient) {
 
     suspend fun postNamespaceKeyValue(
         namespace: String,
-        key: String,
-        value: Any?,
-    ): HttpMessageResponse {
+        dataStoreEntryDTO: DataStoreEntryDTO,
+    ): HttpMessageResponseDTO {
         return client.post {
-            url("$DATA_STORE/$namespace/$key")
-            body(value)
+            url("$DATA_STORE/$namespace/${dataStoreEntryDTO.key}")
+            body(dataStoreEntryDTO.value)
         }
     }
 
     suspend fun putNamespaceKeyValue(
         namespace: String,
-        key: String,
-        value: Any?,
-    ): HttpMessageResponse {
+        dataStoreEntryDTO: DataStoreEntryDTO,
+    ): HttpMessageResponseDTO {
         return client.put {
-            url("$DATA_STORE/$namespace/$key")
-            body(value)
+            url("$DATA_STORE/$namespace/${dataStoreEntryDTO.key}")
+            body(dataStoreEntryDTO.value)
         }
     }
 
     suspend fun deleteNamespaceKeyValue(
         namespace: String,
         key: String,
-    ): HttpMessageResponse {
+    ): HttpMessageResponseDTO {
         return client.delete {
             url("$DATA_STORE/$namespace/$key")
         }

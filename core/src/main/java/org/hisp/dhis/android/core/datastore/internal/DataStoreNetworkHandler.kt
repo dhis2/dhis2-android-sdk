@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.datastore.internal
 
-import io.ktor.http.HttpStatusCode
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-@Singleton
-internal class DataStoreImportHandler(
-    private val store: DataStoreEntryStore,
-) {
+internal interface DataStoreNetworkHandler {
+    suspend fun getNamespaces(): Result<List<String>, D2Error>
 
-    fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
-        if (response.httpStatusCode() == HttpStatusCode.OK.value ||
-            response.httpStatusCode() == HttpStatusCode.NotFound.value
-        ) {
-            store.deleteWhere(entry)
-        } else {
-            store.setStateIfUploading(entry, State.ERROR)
-        }
-    }
+    suspend fun getNamespaceKeys(namespace: String): Result<List<String>, D2Error>
 
-    fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
-        val syncState = if (response.status() == HttpStatusCode.OK.description) {
-            State.SYNCED
-        } else {
-            State.ERROR
-        }
-        store.setStateIfUploading(entry, syncState)
-    }
+    suspend fun getNamespaceValues38(
+        namespace: String,
+        page: Int,
+        pageSize: Int,
+    ): Result<List<DataStoreEntry>, D2Error>
+
+    suspend fun getNamespaceKeyValue(namespace: String, key: String): Result<DataStoreEntry, D2Error>
+
+    suspend fun postNamespaceKeyValue(dataStoreEntry: DataStoreEntry): Result<HttpMessageResponse, D2Error>
+
+    suspend fun putNamespaceKeyValue(dataStoreEntry: DataStoreEntry): Result<HttpMessageResponse, D2Error>
+
+    suspend fun deleteNamespaceKeyValue(dataStoreEntry: DataStoreEntry): Result<HttpMessageResponse, D2Error>
 }

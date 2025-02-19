@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.customicon
 
-import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class IconService(private val client: HttpServiceClient) {

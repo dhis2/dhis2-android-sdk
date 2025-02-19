@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.customicon
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.IconType
 import org.hisp.dhis.android.core.icon.internal.IconNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 

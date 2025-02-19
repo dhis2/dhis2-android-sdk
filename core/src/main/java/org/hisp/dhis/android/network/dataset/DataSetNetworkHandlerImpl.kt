@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.dataset
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton

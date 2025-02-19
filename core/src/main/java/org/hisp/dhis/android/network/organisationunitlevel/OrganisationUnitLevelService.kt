@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.organisationunitlevel
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class OrganisationUnitLevelService(private val client: HttpServiceClient) {

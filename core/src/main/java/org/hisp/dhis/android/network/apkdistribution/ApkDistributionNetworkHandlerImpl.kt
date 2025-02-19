@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.apkdistribution
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.internal.ApkDistributionNetworkHandler
 import org.hisp.dhis.android.core.settings.internal.ApkDistributionVersion
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

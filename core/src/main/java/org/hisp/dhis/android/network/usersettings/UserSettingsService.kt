@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.network.usersettings
 
-import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class UserSettingsService(private val client: HttpServiceClient) {

@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.systeminfo
 
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class SystemInfoService(private val client: HttpServiceClient) {

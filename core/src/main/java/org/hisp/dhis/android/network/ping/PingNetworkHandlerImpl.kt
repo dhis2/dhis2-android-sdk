@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.network.ping
 
 import io.ktor.client.statement.HttpResponse
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

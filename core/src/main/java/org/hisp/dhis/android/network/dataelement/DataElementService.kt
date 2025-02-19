@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.dataelement
 
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 

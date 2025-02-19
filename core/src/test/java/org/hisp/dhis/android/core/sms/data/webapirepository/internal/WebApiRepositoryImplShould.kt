@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
 import org.hisp.dhis.android.network.metadata.MetadataNetworkHandlerImpl
 import org.hisp.dhis.android.network.metadata.MetadataService

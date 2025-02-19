@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.settings
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.hisp.dhis.android.core.settings.DataSetSettings
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SettingsNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

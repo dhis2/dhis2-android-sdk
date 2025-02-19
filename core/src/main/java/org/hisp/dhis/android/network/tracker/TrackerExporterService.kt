@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.tracker
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")

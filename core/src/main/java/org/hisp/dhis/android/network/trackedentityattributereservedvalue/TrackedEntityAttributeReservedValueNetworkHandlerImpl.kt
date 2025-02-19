@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.trackedentityattributereservedvalue
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

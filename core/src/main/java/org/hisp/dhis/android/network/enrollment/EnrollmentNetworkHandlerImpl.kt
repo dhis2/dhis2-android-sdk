@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.enrollment
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentNetworkHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

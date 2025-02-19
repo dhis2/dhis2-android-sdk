@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.network.tracker
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

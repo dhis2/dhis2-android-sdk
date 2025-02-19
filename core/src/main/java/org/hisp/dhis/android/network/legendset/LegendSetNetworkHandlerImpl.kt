@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.legendset
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 

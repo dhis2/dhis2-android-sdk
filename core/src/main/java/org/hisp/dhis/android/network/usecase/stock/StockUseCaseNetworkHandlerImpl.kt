@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.usecase.stock
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

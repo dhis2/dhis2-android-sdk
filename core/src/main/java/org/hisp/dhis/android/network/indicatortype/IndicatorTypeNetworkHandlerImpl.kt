@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.indicatortype
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

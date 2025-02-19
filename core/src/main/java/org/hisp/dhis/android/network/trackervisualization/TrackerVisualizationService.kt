@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.trackervisualization
 
-import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class TrackerVisualizationService(private val client: HttpServiceClient) {

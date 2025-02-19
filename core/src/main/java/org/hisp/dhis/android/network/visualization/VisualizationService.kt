@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.visualization
 
-import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class VisualizationService(private val client: HttpServiceClient) {

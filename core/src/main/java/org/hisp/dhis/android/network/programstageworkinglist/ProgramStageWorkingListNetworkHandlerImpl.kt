@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.programstageworkinglist
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 

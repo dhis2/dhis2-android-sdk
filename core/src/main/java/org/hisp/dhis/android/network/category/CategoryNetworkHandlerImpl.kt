@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.category
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 

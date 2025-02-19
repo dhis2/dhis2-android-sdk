@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.network.metadata
 
 import android.util.Log
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataIds
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNetworkHandler
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

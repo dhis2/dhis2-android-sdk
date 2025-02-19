@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.usersettings
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.internal.UserSettingsNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

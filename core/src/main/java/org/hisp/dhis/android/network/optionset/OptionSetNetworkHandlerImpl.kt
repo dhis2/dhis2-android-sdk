@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.optionset
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.option.internal.OptionSetNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 

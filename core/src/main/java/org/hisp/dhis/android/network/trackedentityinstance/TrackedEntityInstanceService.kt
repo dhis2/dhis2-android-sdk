@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.trackedentityinstance
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")

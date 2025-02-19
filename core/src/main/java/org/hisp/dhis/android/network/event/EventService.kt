@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.event
 
-import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class EventService(private val client: HttpServiceClient) {

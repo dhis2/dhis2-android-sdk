@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.validationrule
 
-import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ValidationRuleService(private val client: HttpServiceClient) {

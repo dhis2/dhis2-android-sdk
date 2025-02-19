@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.authority
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.user.Authority
 import org.hisp.dhis.android.core.user.internal.AuthorityNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

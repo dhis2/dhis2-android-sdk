@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.systemsettings
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields.allFields
 import org.koin.core.annotation.Singleton
 

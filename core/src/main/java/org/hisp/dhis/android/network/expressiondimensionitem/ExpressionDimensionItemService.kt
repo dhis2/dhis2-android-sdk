@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.expressiondimensionitem
 
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 

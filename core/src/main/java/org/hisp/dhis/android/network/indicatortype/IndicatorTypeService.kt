@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.indicatortype
 
-import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 

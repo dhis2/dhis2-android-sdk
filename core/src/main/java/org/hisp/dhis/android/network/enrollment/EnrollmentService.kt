@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.enrollment
 
-import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class EnrollmentService(private val client: HttpServiceClient) {

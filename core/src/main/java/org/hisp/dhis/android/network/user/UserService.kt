@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class UserService(private val client: HttpServiceClient) {

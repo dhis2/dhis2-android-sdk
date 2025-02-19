@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.trackedentityattribute
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.bing
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemap
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingNetworkHandler
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton

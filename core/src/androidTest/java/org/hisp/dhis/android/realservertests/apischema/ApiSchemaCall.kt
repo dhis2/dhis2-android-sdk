@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.realservertests.apischema
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall
 
 internal class ApiSchemaCall internal constructor(
     private val httpClient: HttpServiceClient,

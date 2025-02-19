@@ -33,12 +33,12 @@ import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebRespons
 import org.hisp.dhis.android.core.tracker.importer.internal.JobProgress
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerImporterNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : TrackerImporterNetworkHandler {
     val service = TrackerImporterService(httpServiceClient)
     override suspend fun postTrackerPayload(

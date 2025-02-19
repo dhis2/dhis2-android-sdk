@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.expressiondimensionitem
 
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class ExpressionDimensionItemService(private val client: HttpServiceClientKotlinx) {
+internal class ExpressionDimensionItemService(private val client: HttpServiceClient) {
 
     suspend fun getExpressionDimensionItems(
         uids: Filter<ExpressionDimensionItem>,

@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class VisualizationNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
     private val dhis2VersionManager: DHISVersionManager,
 ) : VisualizationNetworkHandler {
     private val service: VisualizationService = VisualizationService(httpClient)

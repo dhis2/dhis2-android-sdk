@@ -36,15 +36,15 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SettingsNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 internal class SettingsNetworkHandlerImpl(
-    httpServiceClientKotlinx: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : SettingsNetworkHandler {
-    private val service = SettingsService(httpServiceClientKotlinx)
+    private val service = SettingsService(httpServiceClient)
 
     override suspend fun settingsAppInfo(url: String): SettingsAppInfo {
         val apiPayload = service.settingsAppInfo(url)

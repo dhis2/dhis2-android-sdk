@@ -31,10 +31,9 @@ package org.hisp.dhis.android.core.arch.api.testutils
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.serialization.jackson.JacksonConverter
+import io.ktor.serialization.kotlinx.json.json
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
 internal object HttpServiceClientFactory {
@@ -45,8 +44,7 @@ internal object HttpServiceClientFactory {
     fun fromServerUrl(serverUrl: String): HttpServiceClient {
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
-                register(ContentType.Application.Json, converter)
+                json(KotlinxJsonParser.instance)
             }
             expectSuccess = true
         }

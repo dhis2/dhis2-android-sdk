@@ -34,7 +34,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
 import org.hisp.dhis.android.network.metadata.MetadataNetworkHandlerImpl
 import org.hisp.dhis.android.network.metadata.MetadataService
@@ -50,7 +50,7 @@ class WebApiRepositoryImplShould {
     private val dhisVersionManager: DHISVersionManager = mock()
     private val metadataIdsDTO: MetadataIdsDTO = mock()
     private val metadataService: MetadataService = mock()
-    private val clientKotlinx: HttpServiceClientKotlinx = mock()
+    private val clientKotlinx: HttpServiceClient = mock()
     private val defaultMetadataConfig = GetMetadataIdsConfig()
     private val ID_FIELD = "id"
 

@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
     private val dhis2VersionManager: DHISVersionManager,
 ) : TrackedEntityInstanceFilterNetworkHandler {
     private val service: TrackedEntityInstanceFilterService = TrackedEntityInstanceFilterService(httpClient)

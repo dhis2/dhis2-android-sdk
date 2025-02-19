@@ -32,13 +32,13 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramStageNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : ProgramStageNetworkHandler {
     private val service = ProgramStageService(httpServiceClient)
 

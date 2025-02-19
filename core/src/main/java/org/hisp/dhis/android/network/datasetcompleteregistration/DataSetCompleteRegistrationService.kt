@@ -29,13 +29,13 @@ package org.hisp.dhis.android.network.datasetcompleteregistration
 
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryDTO
 import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
 
 @Suppress("LongParameterList")
-internal class DataSetCompleteRegistrationService(private val client: HttpServiceClientKotlinx) {
+internal class DataSetCompleteRegistrationService(private val client: HttpServiceClient) {
 
     suspend fun getDataSetCompleteRegistrations(
         fields: Fields<DataSetCompleteRegistration>,

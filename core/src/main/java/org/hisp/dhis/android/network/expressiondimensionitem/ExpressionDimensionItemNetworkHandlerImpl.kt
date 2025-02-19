@@ -31,12 +31,12 @@ package org.hisp.dhis.android.network.expressiondimensionitem
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ExpressionDimensionItemNetworkHandlerImpl(
-    private val httpServiceClient: HttpServiceClientKotlinx,
+    private val httpServiceClient: HttpServiceClient,
 ) : ExpressionDimensionItemNetworkHandler {
     private val service = ExpressionDimensionItemService(httpServiceClient)
     override suspend fun getExpressionDimensionItems(itemUids: Set<String>): Payload<ExpressionDimensionItem> {

@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceNetworkHandl
 import org.hisp.dhis.android.core.fileresource.internal.MissingTrackerAttributeValue
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FileResourceNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : FileResourceNetworkHandler {
     private val service = FileResourceService(httpServiceClient)
     override suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {

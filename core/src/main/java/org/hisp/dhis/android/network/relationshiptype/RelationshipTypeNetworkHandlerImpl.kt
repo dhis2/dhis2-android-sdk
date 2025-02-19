@@ -31,13 +31,13 @@ package org.hisp.dhis.android.network.relationshiptype
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipTypeNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : RelationshipTypeNetworkHandler {
     private val service: RelationshipTypeService = RelationshipTypeService(httpServiceClient)
     override suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType> {

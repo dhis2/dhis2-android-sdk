@@ -30,12 +30,12 @@ package org.hisp.dhis.android.network.usecase.stock
 
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class StockUseCaseNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : StockUseCaseNetworkHandler {
     private val service = StockUseCaseService(httpServiceClient)
 

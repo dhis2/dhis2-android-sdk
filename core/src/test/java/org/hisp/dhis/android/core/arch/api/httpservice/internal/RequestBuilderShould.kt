@@ -46,8 +46,8 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsAbsouteUrlHeader
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_ABSOLUTE_URL_HEADER
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_EXTERNAL_REQUEST_HEADER
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -77,7 +77,7 @@ class RequestBuilderShould {
     fun build_url_correctly() = runTest {
         val mockEngine = MockEngine { request ->
             assertEquals("https://temporary-dhis-url.org/api/test", request.url.toString())
-            assertThat(request.headers.contains(IsAbsouteUrlHeader)).isFalse()
+            assertThat(request.headers.contains(IS_ABSOLUTE_URL_HEADER)).isFalse()
 
             respondOk()
         }
@@ -95,8 +95,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals("true", request.headers.get(IsAbsouteUrlHeader))
-            assertEquals(false, request.headers.contains(IsExternalRequestHeader))
+            assertEquals("true", request.headers.get(IS_ABSOLUTE_URL_HEADER))
+            assertEquals(false, request.headers.contains(IS_EXTERNAL_REQUEST_HEADER))
 
             respondOk()
         }
@@ -114,8 +114,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals("true", request.headers[IsAbsouteUrlHeader])
-            assertEquals("true", request.headers[IsExternalRequestHeader])
+            assertEquals("true", request.headers[IS_ABSOLUTE_URL_HEADER])
+            assertEquals("true", request.headers[IS_EXTERNAL_REQUEST_HEADER])
 
             respondOk()
         }

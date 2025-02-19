@@ -30,12 +30,12 @@ package org.hisp.dhis.android.network.trackedentityattributereservedvalue
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityAttributeReservedValueNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
 ) : TrackedEntityAttributeReservedValueNetworkHandler {
     private val service = TrackedEntityAttributeReservedValueService(httpClient)
 

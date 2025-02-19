@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ValidationRuleNetworkHandlerImpl(
-    private val httpServiceClient: HttpServiceClientKotlinx,
+    private val httpServiceClient: HttpServiceClient,
 ) : ValidationRuleNetworkHandler {
     private val service: ValidationRuleService = ValidationRuleService(httpServiceClient)
     override suspend fun getValidationRules(uids: Set<String>): Payload<ValidationRule> {

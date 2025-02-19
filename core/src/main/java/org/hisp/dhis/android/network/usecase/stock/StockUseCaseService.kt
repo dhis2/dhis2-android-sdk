@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.usecase.stock
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal class StockUseCaseService(private val client: HttpServiceClientKotlinx) {
+internal class StockUseCaseService(private val client: HttpServiceClient) {
 
     suspend fun stockUseCases(): List<StockUseCaseDTO> {
         return client.get {

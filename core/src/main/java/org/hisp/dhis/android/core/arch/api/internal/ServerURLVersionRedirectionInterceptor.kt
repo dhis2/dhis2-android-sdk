@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.api.internal
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_EXTERNAL_REQUEST_HEADER
 import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
 import java.io.IOException
 
@@ -58,7 +58,7 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
     }
 
     private fun isInternal(request: Request): Boolean {
-        return request.header(IsExternalRequestHeader) == null
+        return request.header(IS_EXTERNAL_REQUEST_HEADER) == null
     }
 
     companion object {

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.ownership
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
-internal class OwnershipService(private val client: HttpServiceClientKotlinx) {
+internal class OwnershipService(private val client: HttpServiceClient) {
 
     suspend fun breakGlass(
         trackedEntity: Map<String, String>,

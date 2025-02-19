@@ -30,10 +30,10 @@ package org.hisp.dhis.android.network.ping
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
 internal class PingService(
-    private val client: HttpServiceClientKotlinx,
+    private val client: HttpServiceClient,
     private val dhisVersionManager: DHISVersionManager,
 ) {
     suspend fun getPing(): HttpResponse {

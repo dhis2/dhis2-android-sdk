@@ -32,13 +32,13 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.event.EventNetworkHandlerImpl
 
 internal object EventCallFactory {
     @JvmStatic
     suspend fun create(
-        httpClient: HttpServiceClientKotlinx,
+        httpClient: HttpServiceClient,
         orgUnit: String?,
         pageSize: Int,
         uids: Collection<String> = emptyList(),

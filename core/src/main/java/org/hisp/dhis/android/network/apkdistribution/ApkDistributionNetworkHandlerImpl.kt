@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.internal.ApkDistributionNetworkHandler
 import org.hisp.dhis.android.core.settings.internal.ApkDistributionVersion
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ApkDistributionNetworkHandlerImpl(
-    httpServiceClientKotlinx: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : ApkDistributionNetworkHandler {
-    private val service = ApkDistributionService(httpServiceClientKotlinx)
+    private val service = ApkDistributionService(httpServiceClient)
 
     override suspend fun latestAppVersion(url: String): LatestAppVersion {
         val apiPayload = service.latestAppVersion(url)

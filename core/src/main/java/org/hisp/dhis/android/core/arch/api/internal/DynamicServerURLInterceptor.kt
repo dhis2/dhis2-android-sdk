@@ -31,7 +31,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsAbsouteUrlHeader
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_ABSOLUTE_URL_HEADER
 import java.io.IOException
 
 internal class DynamicServerURLInterceptor : Interceptor {
@@ -43,9 +43,9 @@ internal class DynamicServerURLInterceptor : Interceptor {
 
     companion object {
         fun transformRequest(request: Request): Request {
-            return if (request.header(IsAbsouteUrlHeader) != null) {
+            return if (request.header(IS_ABSOLUTE_URL_HEADER) != null) {
                 request.newBuilder()
-                    .removeHeader(IsAbsouteUrlHeader)
+                    .removeHeader(IS_ABSOLUTE_URL_HEADER)
                     .build()
             } else {
                 val transformedUrl = transformUrl(request.url.toString())?.let { it.toHttpUrlOrNull() }

@@ -30,14 +30,14 @@ package org.hisp.dhis.android.network.eventfilter
 
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.internal.EventFilterNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventFilterNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
 ) : EventFilterNetworkHandler {
     private val service: EventFilterService = EventFilterService(httpClient)
 

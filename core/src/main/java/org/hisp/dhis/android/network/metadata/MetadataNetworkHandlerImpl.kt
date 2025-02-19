@@ -34,12 +34,12 @@ import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepos
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MetadataNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
     private val dhisVersionManager: DHISVersionManager,
 ) : MetadataNetworkHandler {
     private val service: MetadataService = MetadataService(httpClient)

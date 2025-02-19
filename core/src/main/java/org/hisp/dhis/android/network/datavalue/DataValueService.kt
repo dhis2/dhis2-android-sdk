@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.network.datavalue
 
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
 @Singleton
-internal class DataValueService(private val client: HttpServiceClientKotlinx) {
+internal class DataValueService(private val client: HttpServiceClient) {
 
     suspend fun getDataValues(
         fields: Fields<DataValue>,

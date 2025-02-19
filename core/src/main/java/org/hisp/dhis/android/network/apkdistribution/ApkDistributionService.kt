@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.apkdistribution
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal class ApkDistributionService(private val client: HttpServiceClientKotlinx) {
+internal class ApkDistributionService(private val client: HttpServiceClient) {
     suspend fun latestAppVersion(url: String): LatestAppVersionDTO {
         return client.get {
             url(url)

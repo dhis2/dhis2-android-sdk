@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.organisationunit
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class OrganisationUnitService(private val client: HttpServiceClientKotlinx) {
+internal class OrganisationUnitService(private val client: HttpServiceClient) {
 
     @Suppress("LongParameterList")
     suspend fun getOrganisationUnits(

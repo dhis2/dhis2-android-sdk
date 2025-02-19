@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.api.payload.internal.PayloadJackson
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -207,6 +207,6 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
             }
         }
 
-        return PayloadJackson(itemsList)
+        return PayloadJson(itemsList)
     }
 }

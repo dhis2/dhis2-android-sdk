@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.network.programindicator
 
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class ProgramIndicatorService(private val client: HttpServiceClientKotlinx) {
+internal class ProgramIndicatorService(private val client: HttpServiceClient) {
     suspend fun getProgramIndicator(
         fields: Fields<ProgramIndicator>,
         displayInForm: Filter<ProgramIndicator>?,

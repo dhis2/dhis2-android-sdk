@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.network.programrule
 
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class ProgramRuleService(private val client: HttpServiceClientKotlinx) {
+internal class ProgramRuleService(private val client: HttpServiceClient) {
     suspend fun getProgramRules(
         fields: Fields<ProgramRule>,
         programUidsFilterString: String,

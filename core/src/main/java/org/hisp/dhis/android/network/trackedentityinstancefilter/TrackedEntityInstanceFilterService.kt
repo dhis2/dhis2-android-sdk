@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClientKotlinx) {
+internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityInstanceFilters(
         uids: Filter<TrackedEntityInstanceFilter>,
         accessDataReadFilter: String,

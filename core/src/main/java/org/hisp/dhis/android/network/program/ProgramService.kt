@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.program
 
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class ProgramService(private val client: HttpServiceClientKotlinx) {
+internal class ProgramService(private val client: HttpServiceClient) {
     suspend fun getPrograms(
         fields: Fields<Program>,
         uids: Filter<Program>,

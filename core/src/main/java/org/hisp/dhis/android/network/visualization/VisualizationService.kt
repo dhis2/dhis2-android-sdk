@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.network.visualization
 
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class VisualizationService(private val client: HttpServiceClientKotlinx) {
+internal class VisualizationService(private val client: HttpServiceClient) {
 
     suspend fun getSingleVisualization(
         uid: String,

@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.relationshiptype
 
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class RelationshipTypeService(private val client: HttpServiceClientKotlinx) {
+internal class RelationshipTypeService(private val client: HttpServiceClient) {
     suspend fun getRelationshipTypes(
         fields: Fields<RelationshipType>,
         lastUpdated: Filter<RelationshipType>?,

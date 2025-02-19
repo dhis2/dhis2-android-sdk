@@ -32,12 +32,12 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedC
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalNetworkHandler
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPartition
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataApprovalNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
 ) : DataApprovalNetworkHandler {
     private val service: DataApprovalService = DataApprovalService(httpClient)
 

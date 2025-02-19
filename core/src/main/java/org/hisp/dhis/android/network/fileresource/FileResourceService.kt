@@ -30,11 +30,11 @@ package org.hisp.dhis.android.network.fileresource
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class FileResourceService(private val client: HttpServiceClientKotlinx) {
+internal class FileResourceService(private val client: HttpServiceClient) {
 
     suspend fun uploadFile(filePart: MultiPartFormDataContent): ByteArray {
         return client.post {

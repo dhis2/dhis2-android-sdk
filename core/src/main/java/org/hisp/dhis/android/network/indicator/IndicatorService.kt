@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.indicator
 
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class IndicatorService(private val client: HttpServiceClientKotlinx) {
+internal class IndicatorService(private val client: HttpServiceClient) {
     suspend fun getIndicators(
         fields: Fields<Indicator>,
         lastUpdated: Filter<Indicator>?,

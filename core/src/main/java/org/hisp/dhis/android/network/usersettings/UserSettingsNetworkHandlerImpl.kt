@@ -30,14 +30,14 @@ package org.hisp.dhis.android.network.usersettings
 
 import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.internal.UserSettingsNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserSettingsNetworkHandlerImpl(
-    httpServiceClientKotlinx: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : UserSettingsNetworkHandler {
-    private val service = UserSettingsService(httpServiceClientKotlinx)
+    private val service = UserSettingsService(httpServiceClient)
 
     override suspend fun getUserSettings(): UserSettings {
         val apiPayload = service.getUserSettings(UserSettingsFields.allFields)

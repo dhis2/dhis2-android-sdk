@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.network.usersettings
 
 import org.hisp.dhis.android.core.settings.UserSettings
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class UserSettingsService(private val client: HttpServiceClientKotlinx) {
+internal class UserSettingsService(private val client: HttpServiceClient) {
     suspend fun getUserSettings(fields: Fields<UserSettings>): UserSettingsDTO {
         return client.get {
             url("userSettings")

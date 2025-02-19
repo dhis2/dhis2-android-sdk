@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.relationship
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal class RelationshipService(private val client: HttpServiceClientKotlinx) {
+internal class RelationshipService(private val client: HttpServiceClient) {
 
     suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponseDTO {
         return client.delete {

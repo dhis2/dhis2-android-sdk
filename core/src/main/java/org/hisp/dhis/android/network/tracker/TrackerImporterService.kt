@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.network.tracker
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 internal const val TRACKER_URL = "tracker"
@@ -41,7 +41,7 @@ internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
 internal const val IMPORT_STRATEGY_DELETE = "DELETE"
 
 @Singleton
-internal class TrackerImporterService(private val client: HttpServiceClientKotlinx) {
+internal class TrackerImporterService(private val client: HttpServiceClient) {
 
     suspend fun postTrackerPayload(
         payload: NewTrackerImporterPayloadDTO,

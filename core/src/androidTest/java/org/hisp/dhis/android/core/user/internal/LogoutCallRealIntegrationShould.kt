@@ -51,7 +51,7 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
 
-        create(d2.httpServiceClientKotlinx(), "DiszpKrYNg8", 0, emptyList())
+        create(d2.httpServiceClient(), "DiszpKrYNg8", 0, emptyList())
         assertThat(SqliteCheckerUtility.isDatabaseEmpty(d2.databaseAdapter())).isFalse()
 
         d2.userModule().logOut().blockingAwait()

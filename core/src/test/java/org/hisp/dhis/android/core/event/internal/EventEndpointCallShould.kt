@@ -30,15 +30,15 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientKotlinxFactory
+import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.event.EventNetworkHandlerImpl
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -130,14 +130,14 @@ class EventEndpointCallShould {
 
     companion object {
         private lateinit var mockWebServer: Dhis2MockServer
-        private lateinit var httpServiceClient: HttpServiceClientKotlinx
+        private lateinit var httpServiceClient: HttpServiceClient
         private lateinit var eventNetworkHandler: EventNetworkHandler
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
             mockWebServer = Dhis2MockServer(0)
-            httpServiceClient = HttpServiceClientKotlinxFactory.fromDHIS2MockServer(mockWebServer)
+            httpServiceClient = HttpServiceClientFactory.fromDHIS2MockServer(mockWebServer)
             eventNetworkHandler = EventNetworkHandlerImpl(httpServiceClient)
         }
 

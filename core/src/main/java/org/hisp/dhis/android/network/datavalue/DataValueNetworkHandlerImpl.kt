@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataValueNetworkHandlerImpl(httpService: HttpServiceClientKotlinx) : DataValueNetworkHandler {
+internal class DataValueNetworkHandlerImpl(httpService: HttpServiceClient) : DataValueNetworkHandler {
     private val service: DataValueService = DataValueService(httpService)
     override suspend fun getDataValues(bundle: AggregatedDataCallBundle): List<DataValue> {
         val apiResponse = service.getDataValues(

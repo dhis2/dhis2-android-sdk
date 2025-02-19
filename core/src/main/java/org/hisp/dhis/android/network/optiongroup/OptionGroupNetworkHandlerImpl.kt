@@ -29,14 +29,14 @@ package org.hisp.dhis.android.network.optiongroup
 
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.internal.OptionGroupNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionGroupNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
 ) : OptionGroupNetworkHandler {
     private val service: OptionGroupService = OptionGroupService(httpClient)
 

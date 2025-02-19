@@ -31,12 +31,12 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipNetworkHandlerImpl(
-    client: HttpServiceClientKotlinx,
+    client: HttpServiceClient,
 ) : RelationshipNetworkHandler {
     private val service = RelationshipService(client)
 

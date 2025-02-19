@@ -67,7 +67,6 @@ internal class DataStoreDownloadCall(
     private fun filterNamespaces(params: DataStoreDownloadParams, namespaces: List<String>): List<String> =
         if (params.namespaces.isNotEmpty()) namespaces.filter { it in params.namespaces } else namespaces
 
-
     private suspend fun downloadNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         return fetchNamespace(namespace).map { list ->
             dataStoreEntryHandler.handleMany(namespace, list) { t -> t }

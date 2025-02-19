@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataStoreHandler (
+internal class DataStoreHandler(
     private val store: DataStoreEntryStore,
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 

@@ -74,7 +74,7 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
     suspend fun postNamespaceKeyValue(
         namespace: String,
         key: String,
-        value: JsonElement?,
+        value: String?,
     ): HttpMessageResponseDTO {
         return client.post {
             url("$DATA_STORE/$namespace/$key")
@@ -85,7 +85,7 @@ internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
     suspend fun putNamespaceKeyValue(
         namespace: String,
         key: String,
-        value: JsonElement?,
+        value: String?,
     ): HttpMessageResponseDTO {
         return client.put {
             url("$DATA_STORE/$namespace/$key")

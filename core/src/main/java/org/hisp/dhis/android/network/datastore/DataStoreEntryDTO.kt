@@ -40,8 +40,9 @@ internal data class DataStoreEntryDTO(
     val key: String,
     val value: JsonElement?,
 ) {
-    fun toDomain(): DataStoreEntry {
+    fun toDomain(namespace: String): DataStoreEntry {
         return DataStoreEntry.builder()
+            .namespace(namespace)
             .key(key)
             .value(value.toString())
             .syncState(State.SYNCED)

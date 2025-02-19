@@ -28,11 +28,8 @@
 package org.hisp.dhis.android.network.datastore
 
 import io.ktor.http.HttpStatusCode
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.encodeToJsonElement
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreNetworkHandler
@@ -67,7 +64,7 @@ internal class DataStoreNetworkHandlerImpl(
     ): Result<List<DataStoreEntry>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val apiPayload = service.getNamespaceValues38(namespace, page, pageSize)
-            return@wrap apiPayload.items.map { it.toDomain() }
+            return@wrap apiPayload.items.map { it.toDomain(namespace) }
         }
     }
 
@@ -95,7 +92,7 @@ internal class DataStoreNetworkHandlerImpl(
             val apiResponse = service.postNamespaceKeyValue(
                 dataStoreEntry.namespace(),
                 dataStoreEntry.key(),
-                readValue(dataStoreEntry)
+                dataStoreEntry.value(),
             )
             apiResponse.toDomain()
         }
@@ -112,7 +109,7 @@ internal class DataStoreNetworkHandlerImpl(
             val apiResponse = service.putNamespaceKeyValue(
                 dataStoreEntry.namespace(),
                 dataStoreEntry.key(),
-                readValue(dataStoreEntry)
+                dataStoreEntry.value(),
             )
             apiResponse.toDomain()
         }
@@ -129,9 +126,5 @@ internal class DataStoreNetworkHandlerImpl(
             val apiResponse = service.deleteNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key())
             apiResponse.toDomain()
         }
-    }
-
-    private fun readValue(dataStoreEntry: DataStoreEntry): JsonElement? {
-        return dataStoreEntry.value()?.let { KotlinxJsonParser.instance.encodeToJsonElement(it) }
     }
 }

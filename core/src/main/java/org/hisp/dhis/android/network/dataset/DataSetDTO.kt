@@ -30,8 +30,11 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
 import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
+import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -76,6 +79,7 @@ internal data class DataSetDTO(
     val sections: List<SectionDTO> = emptyList(),
     val compulsoryDataElementOperands: List<DataElementOperandDTO> = emptyList(),
     val dataInputPeriods: List<DataInputPeriodDTO> = emptyList(),
+    val displayOptions: String?,
     val access: AccessDTO?,
     val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
@@ -95,7 +99,9 @@ internal data class DataSetDTO(
             noValueRequiresComment(noValueRequiresComment)
             skipOffline(skipOffline)
             dataElementDecoration(dataElementDecoration)
-            renderAsTabs(renderAsTabs)
+            renderAsTabs(
+                renderAsTabs
+            )
             renderHorizontally(renderHorizontally)
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
@@ -103,6 +109,13 @@ internal data class DataSetDTO(
             DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
+            displayOptions(
+                displayOptions?.let {
+                    KotlinxJsonParser.instance.decodeFromString<DataSetDisplayOptionsDTO>(it).toDomain()
+                } ?: DataSetDisplayOptions.builder().apply {
+                    renderAsTabs?.let { tabsDirection(TabsDirection.HORIZONTAL) }
+                }.build()
+            )
             access?.let { access(access.toDomain()) }
             style?.let { style(style.toDomain()) }
         }.build()

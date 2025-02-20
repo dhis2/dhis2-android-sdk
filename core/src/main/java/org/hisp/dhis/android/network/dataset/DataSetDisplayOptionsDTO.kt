@@ -29,31 +29,20 @@
 package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.dataset.DisplayOptions
+import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
 import org.hisp.dhis.android.core.dataset.SectionPivotMode
+import org.hisp.dhis.android.core.dataset.TabsDirection
 
 @Serializable
-internal data class DisplayOptionsDTO(
-    val pivotMode: String?,
-    val pivotedCategory: String?,
-    val afterSectionText: String?,
-    val beforeSectionText: String?,
+internal data class DataSetDisplayOptionsDTO(
+    val customText: CustomTextDTO?,
+    val tabsDirection: String?,
 ) {
-    fun toDomain(): DisplayOptions {
-        return DisplayOptions.builder()
-            .pivotMode(pivotMode.takeIf { !it.isNullOrEmpty() }?.let { SectionPivotMode.from(it) })
-            .pivotedCategory(pivotedCategory.takeIf { !it.isNullOrEmpty() })
-            .afterSectionText(afterSectionText.takeIf { !it.isNullOrEmpty() })
-            .beforeSectionText(beforeSectionText.takeIf { !it.isNullOrEmpty() })
-            .build()
-    }
-}
-
-internal fun SectionPivotMode.Companion.from(key: String): SectionPivotMode {
-    return when (key) {
-        "n/a" -> SectionPivotMode.DEFAULT
-        "pivot" -> SectionPivotMode.PIVOT
-        "move_categories" -> SectionPivotMode.MOVE_CATEGORIES
-        else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $key")
+    fun toDomain(): DataSetDisplayOptions {
+        return DataSetDisplayOptions.builder().apply {
+            customText?.let { customText(it.toDomain()) }
+            tabsDirection?.let { tabsDirection(TabsDirection.fromJsonValue(it)) }
+        }.build()
     }
 }

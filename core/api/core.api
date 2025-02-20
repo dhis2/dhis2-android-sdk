@@ -1375,8 +1375,6 @@ public final class org/hisp/dhis/android/core/arch/api/HttpServiceClient {
 }
 
 public final class org/hisp/dhis/android/core/arch/api/HttpServiceClient$Companion {
-	public final fun getIsAbsouteUrlHeader ()Ljava/lang/String;
-	public final fun getIsExternalRequestHeader ()Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/api/ParametersBuilder {

@@ -50,7 +50,7 @@ class WebApiRepositoryImplShould {
     private val dhisVersionManager: DHISVersionManager = mock()
     private val metadataIdsDTO: MetadataIdsDTO = mock()
     private val metadataService: MetadataService = mock()
-    private val clientKotlinx: HttpServiceClient = mock()
+    private val httpClient: HttpServiceClient = mock()
     private val defaultMetadataConfig = GetMetadataIdsConfig()
     private val ID_FIELD = "id"
 
@@ -59,7 +59,7 @@ class WebApiRepositoryImplShould {
 
     @Before
     fun init() {
-        metadataNetworkHandler = MetadataNetworkHandlerImpl(clientKotlinx, dhisVersionManager)
+        metadataNetworkHandler = MetadataNetworkHandlerImpl(httpClient, dhisVersionManager)
         testWebRepository = WebApiRepositoryImpl(metadataNetworkHandler)
 
         val networkHandlerImpl = metadataNetworkHandler

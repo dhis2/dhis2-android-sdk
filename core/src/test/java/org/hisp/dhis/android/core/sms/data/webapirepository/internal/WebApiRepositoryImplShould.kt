@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
 import org.hisp.dhis.android.network.metadata.MetadataNetworkHandlerImpl
 import org.hisp.dhis.android.network.metadata.MetadataService
@@ -50,7 +50,7 @@ class WebApiRepositoryImplShould {
     private val dhisVersionManager: DHISVersionManager = mock()
     private val metadataIdsDTO: MetadataIdsDTO = mock()
     private val metadataService: MetadataService = mock()
-    private val clientKotlinx: HttpServiceClientKotlinx = mock()
+    private val httpClient: HttpServiceClient = mock()
     private val defaultMetadataConfig = GetMetadataIdsConfig()
     private val ID_FIELD = "id"
 
@@ -59,7 +59,7 @@ class WebApiRepositoryImplShould {
 
     @Before
     fun init() {
-        metadataNetworkHandler = MetadataNetworkHandlerImpl(clientKotlinx, dhisVersionManager)
+        metadataNetworkHandler = MetadataNetworkHandlerImpl(httpClient, dhisVersionManager)
         testWebRepository = WebApiRepositoryImpl(metadataNetworkHandler)
 
         val networkHandlerImpl = metadataNetworkHandler

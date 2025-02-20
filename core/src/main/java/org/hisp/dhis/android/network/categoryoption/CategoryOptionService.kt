@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.network.categoryoption
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class CategoryOptionService(private val client: HttpServiceClientKotlinx) {
+internal class CategoryOptionService(private val client: HttpServiceClient) {
 
     suspend fun getCategoryOptions(
         fields: Fields<CategoryOption>,

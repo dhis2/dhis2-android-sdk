@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.network.dataapproval
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.dataapproval.DataApproval
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")
-internal class DataApprovalService(private val client: HttpServiceClientKotlinx) {
+internal class DataApprovalService(private val client: HttpServiceClient) {
     suspend fun getDataApprovals(
         fields: Fields<DataApproval>,
         lastUpdated: String?,

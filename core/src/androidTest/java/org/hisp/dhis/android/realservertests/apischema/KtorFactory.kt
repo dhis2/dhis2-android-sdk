@@ -35,19 +35,18 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import io.ktor.serialization.jackson.JacksonConverter
+import io.ktor.serialization.kotlinx.json.json
 import org.hisp.dhis.android.core.arch.api.RequestBuilder
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal object KtorFactory {
     fun getClient(serverUrl: String): HttpTestClient {
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
-                register(ContentType.Application.Json, converter)
+                json(KotlinxJsonParser.instance)
             }
             expectSuccess = true
         }

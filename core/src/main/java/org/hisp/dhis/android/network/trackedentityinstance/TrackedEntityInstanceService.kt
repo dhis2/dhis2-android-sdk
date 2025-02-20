@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.network.trackedentityinstance
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")
-internal class TrackedEntityInstanceService(private val client: HttpServiceClientKotlinx) {
+internal class TrackedEntityInstanceService(private val client: HttpServiceClient) {
     suspend fun postTrackedEntityInstances(
         trackedEntityInstances: TrackedEntityInstancePayload?,
         strategy: String?,

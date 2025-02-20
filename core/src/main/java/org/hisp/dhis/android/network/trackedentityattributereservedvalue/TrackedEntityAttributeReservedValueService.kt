@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.trackedentityattributereservedvalue
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClientKotlinx) {
+internal class TrackedEntityAttributeReservedValueService(private val client: HttpServiceClient) {
     suspend fun generateAndReserveWithOrgUnitCode(
         trackedEntityAttributeUid: String,
         numberToReserve: Int,

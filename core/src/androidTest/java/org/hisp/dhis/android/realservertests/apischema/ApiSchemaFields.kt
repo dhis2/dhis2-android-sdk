@@ -37,7 +37,7 @@ internal object ApiSchemaFields : BaseFields<ApiSchema>() {
     private const val PROPERTY_TYPE = "propertyType"
     private const val CONSTANTS = "constants"
 
-    private val ApiSchemaPropertyFh = FieldsHelper<ApiSchema.Companion.SchemaProperty>()
+    private val ApiSchemaPropertyFh = FieldsHelper<SchemaProperty>()
 
     private val propertyFields = Fields.from(
         ApiSchemaPropertyFh.field(KLASS),
@@ -46,6 +46,6 @@ internal object ApiSchemaFields : BaseFields<ApiSchema>() {
     )
 
     val allFields = Fields.from(
-        fh.nestedField<ApiSchema.Companion.SchemaProperty>(PROPERTIES).with(propertyFields),
+        fh.nestedField<SchemaProperty>(PROPERTIES).with(propertyFields),
     )
 }

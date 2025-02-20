@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.network.systeminfo
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SystemInfoNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
 ) : SystemInfoNetworkHandler {
     private val service: SystemInfoService = SystemInfoService(httpClient)
 

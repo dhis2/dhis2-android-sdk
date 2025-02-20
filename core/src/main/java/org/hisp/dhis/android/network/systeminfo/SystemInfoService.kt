@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.network.systeminfo
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class SystemInfoService(private val client: HttpServiceClientKotlinx) {
+internal class SystemInfoService(private val client: HttpServiceClient) {
     suspend fun getSystemInfo(fields: Fields<SystemInfo>): SystemInfoDTO {
         return client.get {
             url("system/info")

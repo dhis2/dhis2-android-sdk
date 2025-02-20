@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.network.systemsettings
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields.allFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SystemSettingsNetworkHandlerImpl(
-    httpServiceClientKotlinx: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : SystemSettingsNetworkHandler {
-    private val service = SystemSettingsService(httpServiceClientKotlinx)
+    private val service = SystemSettingsService(httpServiceClient)
     override suspend fun getSystemSettings(): List<SystemSetting> {
         val apiPayload = service.getSystemSettings(allFields)
         return apiPayload.toDomainSplitted()

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.authority
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal class AuthorityService(private val client: HttpServiceClientKotlinx) {
+internal class AuthorityService(private val client: HttpServiceClient) {
     suspend fun getAuthorities(): List<AuthorityDTO> {
         return client.get {
             url("me/authorization")

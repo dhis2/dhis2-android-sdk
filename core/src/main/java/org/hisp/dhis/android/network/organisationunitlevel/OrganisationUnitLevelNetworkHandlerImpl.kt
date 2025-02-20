@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.network.organisationunitlevel
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitLevelNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
 ) : OrganisationUnitLevelNetworkHandler {
     private val service = OrganisationUnitLevelService(httpClient)
 

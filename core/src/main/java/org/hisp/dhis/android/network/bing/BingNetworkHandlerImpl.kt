@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.network.bing
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemap
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class BingNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClientKotlinx,
+    httpServiceClient: HttpServiceClient,
 ) : BingNetworkHandler {
     private val service = BingService(httpServiceClient)
     override suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer> {

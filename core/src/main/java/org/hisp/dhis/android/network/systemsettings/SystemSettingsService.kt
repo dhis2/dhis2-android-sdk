@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.network.systemsettings
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class SystemSettingsService(private val client: HttpServiceClientKotlinx) {
+internal class SystemSettingsService(private val client: HttpServiceClient) {
     suspend fun getSystemSettings(fields: Fields<SystemSettingsDTO>): SystemSettingsDTO {
         return client.get {
             url("systemSettings")

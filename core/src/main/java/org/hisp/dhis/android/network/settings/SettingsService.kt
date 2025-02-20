@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.settings
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
 @Suppress("TooManyFunctions")
-internal class SettingsService(private val client: HttpServiceClientKotlinx) {
+internal class SettingsService(private val client: HttpServiceClient) {
 
     suspend fun settingsAppInfo(url: String): SettingsAppInfoDTO {
         return client.get {

@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.network.trackedentitytype
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class TrackedEntityTypeService(private val client: HttpServiceClientKotlinx) {
+internal class TrackedEntityTypeService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityTypes(
         fields: Fields<TrackedEntityType>,
         idFilter: Filter<TrackedEntityType>,

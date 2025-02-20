@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.network.event
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class EventService(private val client: HttpServiceClientKotlinx) {
+internal class EventService(private val client: HttpServiceClient) {
 
     suspend fun postEvents(events: EventPayload, strategy: String): EventWebResponseDTO {
         return client.post {

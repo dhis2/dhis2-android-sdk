@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.option
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class OptionService(val client: HttpServiceClientKotlinx) {
+internal class OptionService(val client: HttpServiceClient) {
     suspend fun getOptions(
         fields: Fields<Option>,
         optionSetUidsFilterString: String,

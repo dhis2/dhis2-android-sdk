@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.network.organisationunitlevel
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal class OrganisationUnitLevelService(private val client: HttpServiceClientKotlinx) {
+internal class OrganisationUnitLevelService(private val client: HttpServiceClient) {
     suspend fun getOrganisationUnitLevels(
         fields: Fields<OrganisationUnitLevel>,
         paging: Boolean,

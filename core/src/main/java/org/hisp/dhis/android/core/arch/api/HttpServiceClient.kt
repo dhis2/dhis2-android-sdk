@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -83,10 +83,10 @@ class HttpServiceClient(
             header(key, value)
         }
         if (requestBuilder.isAbsoluteUrl) {
-            header(IsAbsouteUrlHeader, true)
+            header(IS_ABSOLUTE_URL_HEADER, true)
         }
         if (requestBuilder.isExternalRequest) {
-            header(IsExternalRequestHeader, true)
+            header(IS_EXTERNAL_REQUEST_HEADER, true)
         }
         requestBuilder.authorizationHeader?.let {
             header(HttpHeaders.Authorization, it)
@@ -108,9 +108,9 @@ class HttpServiceClient(
     suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
         return request(HttpMethod.Delete, block)
     }
-    companion object {
-        @PublishedApi internal val IsAbsouteUrlHeader = "isAbsoluteUrl"
 
-        @PublishedApi internal val IsExternalRequestHeader = "isExternalRequest"
+    companion object {
+        internal const val IS_ABSOLUTE_URL_HEADER = "isAbsoluteUrl"
+        internal const val IS_EXTERNAL_REQUEST_HEADER = "isExternalRequest"
     }
 }

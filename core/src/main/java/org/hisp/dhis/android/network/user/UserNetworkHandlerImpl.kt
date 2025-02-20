@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.network.user
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserNetworkHandlerImpl(
-    private val httpClient: HttpServiceClientKotlinx,
+    private val httpClient: HttpServiceClient,
     private val service: UserService = UserService(httpClient),
     private val dhisVersionManager: DHISVersionManager,
 ) : UserNetworkHandler {

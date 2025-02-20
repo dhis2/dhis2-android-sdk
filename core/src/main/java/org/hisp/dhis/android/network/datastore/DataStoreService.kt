@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.network.datastore
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.JsonWrapper
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
-internal class DataStoreService(private val client: HttpServiceClientKotlinx) {
+internal class DataStoreService(private val client: HttpServiceClient) {
     suspend fun getNamespaces(): List<String> {
         return client.get {
             url(DATA_STORE)

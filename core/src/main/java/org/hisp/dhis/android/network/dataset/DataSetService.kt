@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.network.dataset
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class DataSetService(private val client: HttpServiceClientKotlinx) {
+internal class DataSetService(private val client: HttpServiceClient) {
     suspend fun getDataSets(
         fields: Fields<DataSet>,
         uids: Filter<DataSet>,

@@ -158,7 +158,6 @@ dependencies {
     api(libs.ktor)
     api(libs.ktor.okhttp)
     api(libs.ktor.negotiation)
-    api(libs.ktor.jackson)
     api(libs.ktor.serialization.kotlinx.json)
     api(libs.ktor.client.mock)
 

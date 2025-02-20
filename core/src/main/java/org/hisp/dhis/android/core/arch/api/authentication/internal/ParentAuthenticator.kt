@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IsExternalRequestHeader
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_EXTERNAL_REQUEST_HEADER
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
@@ -56,10 +56,10 @@ internal class ParentAuthenticator(
         } else {
             val credentials = credentialsSecureStore.get()
             return when {
-                req.header(IsExternalRequestHeader) != null ->
+                req.header(IS_EXTERNAL_REQUEST_HEADER) != null ->
                     chain.proceed(
                         req.newBuilder()
-                            .removeHeader(IsExternalRequestHeader)
+                            .removeHeader(IS_EXTERNAL_REQUEST_HEADER)
                             .build(),
                     )
                 credentials?.password != null ->

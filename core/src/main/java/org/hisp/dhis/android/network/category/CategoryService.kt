@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.network.category
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryService(private val client: HttpServiceClientKotlinx) {
+internal class CategoryService(private val client: HttpServiceClient) {
     suspend fun getCategories(
         fields: Fields<Category>,
         uids: Filter<Category>,

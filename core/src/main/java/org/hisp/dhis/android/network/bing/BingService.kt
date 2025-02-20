@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.bing
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class BingService(private val client: HttpServiceClientKotlinx) {
+internal class BingService(private val client: HttpServiceClient) {
 
     suspend fun getBaseMap(
         url: String,

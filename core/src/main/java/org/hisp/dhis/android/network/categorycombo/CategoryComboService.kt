@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.network.categorycombo
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class CategoryComboService(private val client: HttpServiceClientKotlinx) {
+internal class CategoryComboService(private val client: HttpServiceClient) {
     suspend fun getCategoryCombos(
         fields: Fields<CategoryCombo>,
         uids: Filter<CategoryCombo>,

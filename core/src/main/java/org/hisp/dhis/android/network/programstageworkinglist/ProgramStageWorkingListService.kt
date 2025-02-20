@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.network.programstageworkinglist
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-internal class ProgramStageWorkingListService(private val client: HttpServiceClientKotlinx) {
+internal class ProgramStageWorkingListService(private val client: HttpServiceClient) {
 
     suspend fun getProgramStageWorkingLists(
         uids: Filter<ProgramStageWorkingList>,

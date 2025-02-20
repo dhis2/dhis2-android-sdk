@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.network.ownership
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OwnershipNetworkHandlerImpl(
-    val httpServiceClient: HttpServiceClientKotlinx,
+    val httpServiceClient: HttpServiceClient,
     val parameterManager: OwnsershipParameterManager,
 ) : OwnershipNetworkHandler {
     private val service = OwnershipService(httpServiceClient)

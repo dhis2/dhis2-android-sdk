@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.trackedentityinstance
 
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
@@ -46,12 +47,11 @@ import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceNetworkHandlerImpl(
-    httpClient: HttpServiceClientKotlinx,
+    httpClient: HttpServiceClient,
     val dhisVersionManager: DHISVersionManager,
 ) : TrackedEntityInstanceNetworkHandler {
     private val service = TrackedEntityInstanceService(httpClient)

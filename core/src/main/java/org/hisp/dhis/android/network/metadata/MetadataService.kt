@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.metadata
 
-import org.hisp.dhis.android.network.common.HttpServiceClientKotlinx
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal class MetadataService(private val client: HttpServiceClientKotlinx) {
+internal class MetadataService(private val client: HttpServiceClient) {
 
     @Suppress("LongParameterList")
     suspend fun getMetadataFields(

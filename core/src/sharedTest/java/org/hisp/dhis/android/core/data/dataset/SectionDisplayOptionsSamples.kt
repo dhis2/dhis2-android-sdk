@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.data.dataset
 
-import org.hisp.dhis.android.core.dataset.DisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
 import org.hisp.dhis.android.core.dataset.SectionPivotMode
 
-class DisplayOptionsSamples {
+class SectionDisplayOptionsSamples {
     companion object {
         @JvmStatic
-        fun getDisplayOptions(): DisplayOptions {
-            return DisplayOptions.builder()
+        fun getDisplayOptions(): SectionDisplayOptions {
+            return SectionDisplayOptions.builder()
                 .pivotMode(SectionPivotMode.DEFAULT)
                 .pivotedCategory("pivotedCategory")
                 .afterSectionText("afterSectionText")

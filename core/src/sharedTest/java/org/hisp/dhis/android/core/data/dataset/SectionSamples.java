@@ -46,7 +46,7 @@ public class SectionSamples {
                 .showColumnTotals(false)
                 .dataSet(ObjectWithUid.create("dataSet"))
                 .disableDataElementAutoGrouping(true)
-                .displayOptions(DisplayOptionsSamples.getDisplayOptions());
+                .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions());
         return sectionBuilder.build();
     }
 }

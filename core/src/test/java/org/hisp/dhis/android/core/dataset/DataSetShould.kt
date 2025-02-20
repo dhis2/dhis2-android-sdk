@@ -63,7 +63,7 @@ class DataSetShould : BaseObjectKotlinxShould("dataset/data_set.json"), ObjectSh
         assertThat(dataSet.skipOffline()).isFalse()
         assertThat(dataSet.displayShortName()).isEqualTo("ART 2010")
         assertThat(dataSet.fieldCombinationRequired()).isFalse()
-        assertThat(dataSet.renderHorizontally()).isFalse()
+        assertThat(dataSet.renderHorizontally()).isTrue()
         assertThat(dataSet.renderAsTabs()).isFalse()
         assertThat(dataSet.mobile()).isFalse()
         assertThat(dataSet.version()).isEqualTo(22)
@@ -81,6 +81,10 @@ class DataSetShould : BaseObjectKotlinxShould("dataset/data_set.json"), ObjectSh
         assertThat(dataSet.sections()!![0].uid()).isEqualTo("Y2rk0vzgvAx")
         assertThat(dataSet.compulsoryDataElementOperands()!!.size).isEqualTo(1)
         assertThat(dataSet.compulsoryDataElementOperands()!![0].uid()).isEqualTo("NJnhOzjaLYk.rCMUTmcreqP")
+        assertThat(dataSet.displayOptions()?.customText()?.header()).isEqualTo("Title")
+        assertThat(dataSet.displayOptions()?.customText()?.subHeader()).isEqualTo("Subtitle")
+        assertThat(dataSet.displayOptions()?.customText()?.align()).isEqualTo(TextAlign.LINE_END)
+        assertThat(dataSet.displayOptions()?.tabsDirection()).isEqualTo(TabsDirection.VERTICAL)
         assertThat(dataSet.access()).isEqualTo(
             Access.create(
                 true,

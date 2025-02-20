@@ -33,6 +33,7 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodePlugin
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 
@@ -46,6 +47,7 @@ internal object HttpServiceClientFactory {
             install(ContentNegotiation) {
                 json(KotlinxJsonParser.instance)
             }
+            install(PreventURLDecodePlugin.instance)
             expectSuccess = true
         }
         return HttpServiceClient(client, serverUrl + "api/")

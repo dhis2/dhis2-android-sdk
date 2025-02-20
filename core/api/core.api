@@ -1411,6 +1411,11 @@ public final class org/hisp/dhis/android/core/arch/api/RequestBuilder {
 	public final fun url (Ljava/lang/String;)V
 }
 
+public final class org/hisp/dhis/android/core/arch/api/authentication/internal/ParentAuthenticatorPlugin {
+	public fun <init> (Lorg/hisp/dhis/android/core/arch/storage/internal/CredentialsSecureStore;Lorg/hisp/dhis/android/core/arch/api/authentication/internal/PasswordAndCookieAuthenticator;Lorg/hisp/dhis/android/core/arch/api/authentication/internal/OpenIDConnectAuthenticator;Lorg/hisp/dhis/android/core/arch/api/authentication/internal/CookieAuthenticatorHelper;)V
+	public final fun getInstance ()Lio/ktor/client/plugins/api/ClientPlugin;
+}
+
 public final class org/hisp/dhis/android/core/arch/api/internal/D2HttpException : java/lang/Exception {
 	public fun <init> (Lorg/hisp/dhis/android/core/arch/api/internal/D2HttpResponse;)V
 	public fun getMessage ()Ljava/lang/String;
@@ -1432,11 +1437,6 @@ public final class org/hisp/dhis/android/core/arch/api/internal/D2HttpResponse {
 	public final fun getStatusCode ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public class org/hisp/dhis/android/core/arch/api/internal/PreventURLDecodeInterceptor : okhttp3/Interceptor {
-	public fun <init> ()V
-	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
 }
 
 public final class org/hisp/dhis/android/core/arch/call/BaseD2Progress : org/hisp/dhis/android/core/arch/call/D2Progress {

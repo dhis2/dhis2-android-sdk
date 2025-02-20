@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import okhttp3.Request
-import okhttp3.Response
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
+import io.ktor.client.statement.HttpResponse
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,8 +42,8 @@ internal class CookieAuthenticatorHelper {
 
     private var cookieValue: String? = null
 
-    fun storeCookieIfSentByServer(res: Response) {
-        val cookieRes = res.header(SET_COOKIE_KEY)
+    fun storeCookieIfSentByServer(res: HttpResponse) {
+        val cookieRes = res.headers[SET_COOKIE_KEY]
         if (cookieRes != null) {
             cookieValue = cookieRes
         }
@@ -56,7 +57,10 @@ internal class CookieAuthenticatorHelper {
         cookieValue = null
     }
 
-    fun addCookieHeader(builder: Request.Builder): Request.Builder {
-        return builder.addHeader(COOKIE_KEY, cookieValue!!)
+    fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
+        requestBuilder.apply {
+            headers.remove(COOKIE_KEY)
+            header(COOKIE_KEY, cookieValue!!)
+        }
     }
 }

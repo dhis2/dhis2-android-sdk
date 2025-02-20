@@ -46,8 +46,8 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_ABSOLUTE_URL_HEADER
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_EXTERNAL_REQUEST_HEADER
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_ABSOLUTE_URL_ATTRIBUTE_KEY
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_EXTERNAL_REQUEST_ATTRIBUTE_KEY
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -77,7 +77,7 @@ class RequestBuilderShould {
     fun build_url_correctly() = runTest {
         val mockEngine = MockEngine { request ->
             assertEquals("https://temporary-dhis-url.org/api/test", request.url.toString())
-            assertThat(request.headers.contains(IS_ABSOLUTE_URL_HEADER)).isFalse()
+            assertThat(request.attributes.contains(IS_ABSOLUTE_URL_ATTRIBUTE_KEY)).isFalse()
 
             respondOk()
         }
@@ -95,8 +95,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals("true", request.headers.get(IS_ABSOLUTE_URL_HEADER))
-            assertEquals(false, request.headers.contains(IS_EXTERNAL_REQUEST_HEADER))
+            assertEquals(true, request.attributes[IS_ABSOLUTE_URL_ATTRIBUTE_KEY])
+            assertEquals(false, request.attributes.contains(IS_EXTERNAL_REQUEST_ATTRIBUTE_KEY))
 
             respondOk()
         }
@@ -114,8 +114,8 @@ class RequestBuilderShould {
         val absoluteUrl = "https://dummy-absolute-url.org/api/test"
         val mockEngine = MockEngine { request ->
             assertEquals(absoluteUrl, request.url.toString())
-            assertEquals("true", request.headers[IS_ABSOLUTE_URL_HEADER])
-            assertEquals("true", request.headers[IS_EXTERNAL_REQUEST_HEADER])
+            assertEquals(true, request.attributes[IS_ABSOLUTE_URL_ATTRIBUTE_KEY])
+            assertEquals(true, request.attributes[IS_EXTERNAL_REQUEST_ATTRIBUTE_KEY])
 
             respondOk()
         }
@@ -188,7 +188,7 @@ class RequestBuilderShould {
         val mockEngine = MockEngine { request ->
 
             assertEquals(HttpMethod.Post, request.method)
-            assertThat(request.body.contentType.toString().contains("multipart/form-data"))
+            assertThat(request.body.contentType.toString().contains("multipart/form-data")).isTrue()
 
             respondOk()
         }

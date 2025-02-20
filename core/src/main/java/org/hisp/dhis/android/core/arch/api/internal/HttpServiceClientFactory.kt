@@ -34,12 +34,14 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
 internal object HttpServiceClientFactory {
     internal fun ktor(
         okHttpClient: OkHttpClient,
         d2Configuration: D2Configuration,
+        authenticator: ParentAuthenticatorPlugin,
     ): HttpClient {
         val client = HttpClient(OkHttp) {
             engine {
@@ -50,7 +52,7 @@ internal object HttpServiceClientFactory {
             }
             expectSuccess = true
             followRedirects = false
-            addKtorPlugins(d2Configuration)
+            addKtorPlugins(d2Configuration, authenticator)
         }
         return client
     }

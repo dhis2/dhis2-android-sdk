@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataset.internal.DataSetDisplayOptionsColumnAdapter;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -132,6 +133,10 @@ public abstract class DataSet extends BaseNameableObject
     @ColumnAdapter(IgnoreDataInputPeriodListColumnAdapter.class)
     public abstract List<DataInputPeriod> dataInputPeriods();
 
+    @Nullable
+    @ColumnAdapter(DataSetDisplayOptionsColumnAdapter.class)
+    public abstract DataSetDisplayOptions displayOptions();
+
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
@@ -191,6 +196,8 @@ public abstract class DataSet extends BaseNameableObject
         public abstract Builder compulsoryDataElementOperands(List<DataElementOperand> compulsoryDataElementOperands);
 
         public abstract Builder dataInputPeriods(List<DataInputPeriod> dataInputPeriods);
+
+        public abstract Builder displayOptions(DataSetDisplayOptions displayOptions);
 
         public abstract Builder access(Access access);
 

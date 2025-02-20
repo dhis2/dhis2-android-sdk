@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class DisplayOptions {
+public abstract class SectionDisplayOptions {
 
     @Nullable
     public abstract String beforeSectionText();
@@ -48,7 +48,7 @@ public abstract class DisplayOptions {
     public abstract String pivotedCategory();
 
     public static Builder builder() {
-        return new AutoValue_DisplayOptions.Builder();
+        return new AutoValue_SectionDisplayOptions.Builder();
     }
 
     @AutoValue.Builder
@@ -62,7 +62,7 @@ public abstract class DisplayOptions {
 
         public abstract Builder pivotedCategory(String pivotedCategory);
 
-        public abstract DisplayOptions build();
+        public abstract SectionDisplayOptions build();
     }
 
 }

@@ -138,7 +138,7 @@ internal class TrackedEntityInstanceDownloadCall(
             val collectionQuery = query.copy(uids = listOf(uid))
             coroutineCallExecutor.wrap(storeError = true) {
                 trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery)
-            }.map { it.items().firstOrNull() }
+            }.map { it.items.firstOrNull() }
         }
     }
 

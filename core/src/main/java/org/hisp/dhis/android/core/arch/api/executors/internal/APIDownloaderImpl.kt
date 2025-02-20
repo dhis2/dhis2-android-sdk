@@ -99,7 +99,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         val startTime = System.currentTimeMillis()
 
         partitions.forEach { partition ->
-            val transformedItems = pageDownloader(partition).items().map { transform(it) }
+            val transformedItems = pageDownloader(partition).items.map { transform(it) }
             results.addAll(transformedItems)
         }
         Log.i(
@@ -150,7 +150,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         downloader: suspend (String) -> Payload<P>,
         transform: (P) -> O,
     ): List<P> {
-        val items = downloader.invoke(masterUid).items()
+        val items = downloader.invoke(masterUid).items
         handler.handleMany(masterUid, items, transform)
 
         return items
@@ -163,7 +163,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     ): List<P> {
         val items = downloader(
             resourceHandler.getLastUpdated(resourceType),
-        ).items()
+        ).items
 
         handler.handleMany(items)
         resourceHandler.handleResource(resourceType)
@@ -174,7 +174,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         handler: Handler<P>,
         downloader: suspend () -> Payload<P>,
     ): List<P> {
-        return downloader.invoke().items()
+        return downloader.invoke().items
             .also { handler.handleMany(it) }
     }
 
@@ -198,7 +198,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
 
         while (true) {
             val payload = downloader(page++, pageSize)
-            val items = payload.items()
+            val items = payload.items
 
             itemsList.addAll(items)
 

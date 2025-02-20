@@ -17,7 +17,7 @@
   "fieldCombinationRequired": false,
   "renderHorizontally": false,
   "renderAsTabs": true,
-  "displayOptions": "{\"customText\": {\"align\": \"line-end\", \"header\": \"TitleTest\", \"subheader\": \"SubtitleTest\"}, \"tabsDirection\": \"vertical\"}",
+  "displayOptions": "{\"customText\": {\"align\": \"line-end\", \"header\": \"Title\", \"subheader\": \"Subtitle\"}, \"tabsDirection\": \"vertical\"}",
   "mobile": false,
   "periodType": "Monthly",
   "openFuturePeriods": 0,

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.TABS_DIRECTIO
 import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.dataset.TextAlign
 
-class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptions> {
+internal class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptions> {
     override fun fromCursor(cursor: Cursor, columnName: String?): DataSetDisplayOptions {
         val headerIndex = cursor.getColumnIndex(HEADER)
         val subHeaderIndex = cursor.getColumnIndex(SUB_HEADER)

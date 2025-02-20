@@ -71,7 +71,9 @@ internal data class SectionDTO(
             indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
             disableDataElementAutoGrouping(disableDataElementAutoGrouping)
             displayOptions?.let {
-                displayOptions(KotlinxJsonParser.instance.decodeFromString<SectionDisplayOptionsDTO>(it).toDomain())
+                displayOptions(
+                    KotlinxJsonParser.instance.decodeFromString(SectionDisplayOptionsDTO.serializer(), it).toDomain(),
+                )
             }
         }.build()
     }

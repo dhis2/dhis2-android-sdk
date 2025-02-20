@@ -109,7 +109,7 @@ internal data class DataSetDTO(
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
             displayOptions(
                 displayOptions?.let {
-                    KotlinxJsonParser.instance.decodeFromString<DataSetDisplayOptionsDTO>(it).toDomain()
+                    KotlinxJsonParser.instance.decodeFromString(DataSetDisplayOptionsDTO.serializer(), it).toDomain()
                 } ?: DataSetDisplayOptions.builder().apply {
                     renderAsTabs?.let { tabsDirection(TabsDirection.HORIZONTAL) }
                 }.build(),

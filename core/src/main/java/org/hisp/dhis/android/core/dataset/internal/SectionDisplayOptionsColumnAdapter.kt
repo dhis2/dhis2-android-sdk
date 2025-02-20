@@ -38,8 +38,7 @@ import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.BEFORE_SECTIO
 import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOTED_CATEGORY
 import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOT_MODE
 
-@Suppress("TooGenericExceptionThrown")
-class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDisplayOptions> {
+internal class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDisplayOptions> {
     override fun fromCursor(cursor: Cursor, columnName: String?): SectionDisplayOptions {
         val beforeSectionTextIndx = cursor.getColumnIndex(BEFORE_SECTION_TEXT)
         val afterSectionTextIndx = cursor.getColumnIndex(AFTER_SECTION_TEXT)
@@ -53,7 +52,7 @@ class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDisplayOptio
             try {
                 sectionPivotMode = SectionPivotMode.valueOf(pivotMode)
             } catch (exception: IllegalArgumentException) {
-                throw RuntimeException("Unknown SectionPivotMode type", exception)
+                throw IllegalArgumentException("Unknown SectionPivotMode type", exception)
             }
         }
 

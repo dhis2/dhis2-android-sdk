@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.dataset
 enum class TextAlign {
     LINE_END,
     LINE_START,
-    CENTER;
+    CENTER,
+    ;
 
     @Suppress("EmptyClassBlock")
     companion object

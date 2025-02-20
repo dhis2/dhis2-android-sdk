@@ -112,7 +112,7 @@ internal data class DataSetDTO(
                     KotlinxJsonParser.instance.decodeFromString<DataSetDisplayOptionsDTO>(it).toDomain()
                 } ?: DataSetDisplayOptions.builder().apply {
                     renderAsTabs?.let { tabsDirection(TabsDirection.HORIZONTAL) }
-                }.build()
+                }.build(),
             )
             access?.let { access(access.toDomain()) }
             style?.let { style(style.toDomain()) }

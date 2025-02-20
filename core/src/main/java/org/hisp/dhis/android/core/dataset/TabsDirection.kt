@@ -29,5 +29,5 @@ package org.hisp.dhis.android.core.dataset
 
 enum class TabsDirection {
     HORIZONTAL,
-    VERTICAL;
+    VERTICAL,
 }

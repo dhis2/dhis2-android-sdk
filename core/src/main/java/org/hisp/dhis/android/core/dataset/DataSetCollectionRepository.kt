@@ -201,7 +201,7 @@ class DataSetCollectionRepository internal constructor(
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<DataSet> = mapOf(
             DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS to
-                    DataSetCompulsoryDataElementOperandChildrenAppender::create,
+                DataSetCompulsoryDataElementOperandChildrenAppender::create,
             DataSetFields.DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender::create,
             DataSetFields.DATA_SET_ELEMENTS to DataSetElementChildrenAppender::create,
             DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender::create,

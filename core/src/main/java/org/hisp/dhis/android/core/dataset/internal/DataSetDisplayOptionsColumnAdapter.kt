@@ -53,7 +53,7 @@ class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptio
                     .header(cursor.getString(headerIndex))
                     .subHeader(cursor.getString(subHeaderIndex))
                     .align(TextAlign.valueOf(cursor.getString(customTextAlignIndex)))
-                    .build()
+                    .build(),
             )
             .tabsDirection(TabsDirection.valueOf(cursor.getString(tabsDirectionIndex)))
             .build()

@@ -37,15 +37,9 @@ import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.CUSTOM_TEXT_A
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.HEADER
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.SUB_HEADER
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.TABS_DIRECTION
-import org.hisp.dhis.android.core.dataset.SectionPivotMode
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.AFTER_SECTION_TEXT
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.BEFORE_SECTION_TEXT
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOTED_CATEGORY
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOT_MODE
 import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.dataset.TextAlign
 
-@Suppress("TooGenericExceptionThrown")
 class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptions> {
     override fun fromCursor(cursor: Cursor, columnName: String?): DataSetDisplayOptions {
         val headerIndex = cursor.getColumnIndex(HEADER)
@@ -58,7 +52,7 @@ class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptio
                 CustomText.builder()
                     .header(cursor.getString(headerIndex))
                     .subHeader(cursor.getString(subHeaderIndex))
-                    .align(TextAlign.fromJsonValue(cursor.getString(customTextAlignIndex)))
+                    .align(TextAlign.valueOf(cursor.getString(customTextAlignIndex)))
                     .build()
             )
             .tabsDirection(TabsDirection.valueOf(cursor.getString(tabsDirectionIndex)))

@@ -42,7 +42,16 @@ internal data class CustomTextDTO(
         return CustomText.builder()
             .header(header)
             .subHeader(subheader)
-            .align(align?.let { TextAlign.fromJsonValue(it) })
+            .align(align?.let { TextAlign.from(it) })
             .build()
+    }
+}
+
+internal fun TextAlign.Companion.from(key: String): TextAlign {
+    return when (key) {
+        "line-end" -> TextAlign.LINE_END
+        "line-start" -> TextAlign.LINE_START
+        "center" -> TextAlign.CENTER
+        else -> throw IllegalArgumentException("Unsupported TextAlign apiValue: $key")
     }
 }

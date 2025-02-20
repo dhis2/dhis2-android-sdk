@@ -30,14 +30,4 @@ package org.hisp.dhis.android.core.dataset
 enum class TabsDirection {
     HORIZONTAL,
     VERTICAL;
-
-    companion object {
-        fun fromJsonValue(value: String?): TabsDirection {
-            return try {
-                value?.uppercase()?.let { TabsDirection.valueOf(it) } ?: HORIZONTAL
-            } catch (e: IllegalArgumentException) {
-                HORIZONTAL
-            }
-        }
-    }
 }

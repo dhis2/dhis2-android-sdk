@@ -30,9 +30,8 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
-import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
-import org.hisp.dhis.android.core.dataset.SectionPivotMode
 import org.hisp.dhis.android.core.dataset.TabsDirection
+import org.hisp.dhis.android.core.dataset.TabsDirection.HORIZONTAL
 
 @Serializable
 internal data class DataSetDisplayOptionsDTO(
@@ -42,7 +41,14 @@ internal data class DataSetDisplayOptionsDTO(
     fun toDomain(): DataSetDisplayOptions {
         return DataSetDisplayOptions.builder().apply {
             customText?.let { customText(it.toDomain()) }
-            tabsDirection?.let { tabsDirection(TabsDirection.fromJsonValue(it)) }
+            tabsDirection?.let {
+                val parsedDirection = try {
+                    TabsDirection.valueOf(tabsDirection.uppercase())
+                } catch (e: IllegalArgumentException) {
+                    HORIZONTAL
+                }
+                tabsDirection(parsedDirection)
+            }
         }.build()
     }
 }

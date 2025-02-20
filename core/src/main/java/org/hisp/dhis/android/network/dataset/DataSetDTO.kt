@@ -99,9 +99,7 @@ internal data class DataSetDTO(
             noValueRequiresComment(noValueRequiresComment)
             skipOffline(skipOffline)
             dataElementDecoration(dataElementDecoration)
-            renderAsTabs(
-                renderAsTabs
-            )
+            renderAsTabs(renderAsTabs)
             renderHorizontally(renderHorizontally)
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })

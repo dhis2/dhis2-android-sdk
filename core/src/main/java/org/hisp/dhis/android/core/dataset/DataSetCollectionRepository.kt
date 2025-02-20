@@ -145,6 +145,22 @@ class DataSetCollectionRepository internal constructor(
         return byOrganisationUnitList(listOf(uid))
     }
 
+    fun byHeader(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.HEADER)
+    }
+
+    fun bySubHeader(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.SUB_HEADER)
+    }
+
+    fun byCustomTextAlign(): EnumFilterConnector<DataSetCollectionRepository, TextAlign> {
+        return cf.enumC(DataSetTableInfo.Columns.CUSTOM_TEXT_ALIGN)
+    }
+
+    fun byTabsDirection(): EnumFilterConnector<DataSetCollectionRepository, TabsDirection> {
+        return cf.enumC(DataSetTableInfo.Columns.TABS_DIRECTION)
+    }
+
     fun byOrganisationUnitList(uids: List<String>): DataSetCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
             DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
@@ -185,7 +201,7 @@ class DataSetCollectionRepository internal constructor(
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<DataSet> = mapOf(
             DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS to
-                DataSetCompulsoryDataElementOperandChildrenAppender::create,
+                    DataSetCompulsoryDataElementOperandChildrenAppender::create,
             DataSetFields.DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender::create,
             DataSetFields.DATA_SET_ELEMENTS to DataSetElementChildrenAppender::create,
             DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender::create,

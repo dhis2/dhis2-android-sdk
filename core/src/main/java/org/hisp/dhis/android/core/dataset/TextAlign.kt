@@ -27,14 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-enum class TextAlign(val jsonValue: String) {
-    LINE_END("line-end"),
-    LINE_START("line-start"),
-    CENTER("center");
+enum class TextAlign {
+    LINE_END,
+    LINE_START,
+    CENTER;
 
-    companion object {
-        fun fromJsonValue(value: String?): TextAlign {
-            return entries.find { it.jsonValue == value } ?: CENTER
-        }
-    }
+    @Suppress("EmptyClassBlock")
+    companion object
 }

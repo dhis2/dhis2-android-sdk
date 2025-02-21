@@ -35,15 +35,15 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class DataSetDisplayOptions {
 
-    public static Builder builder() {
-        return new AutoValue_DataSetDisplayOptions.Builder();
-    }
-
     @Nullable
     public abstract CustomText customText();
 
     @Nullable
     public abstract TabsDirection tabsDirection();
+
+    public static Builder builder() {
+        return new AutoValue_DataSetDisplayOptions.Builder();
+    }
 
     @AutoValue.Builder
     public abstract static class Builder {

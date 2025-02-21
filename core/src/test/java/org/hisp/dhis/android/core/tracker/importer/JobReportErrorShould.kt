@@ -28,24 +28,23 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
-import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
+import org.hisp.dhis.android.network.tracker.JobReportDTO
 import org.junit.Test
 import java.io.IOException
 import java.text.ParseException
 
-class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
+class JobReportErrorShould : BaseObjectKotlinxShould("tracker/importer/jobreport-error.json"), ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
+        val jobReportDTO = deserialize(JobReportDTO.serializer())
+        val jobReport = jobReportDTO.toDomain()
 
         assertThat(jobReport.status).isEqualTo("ERROR")
         assertThat(jobReport.stats).isEqualTo(JobImportCount(0, 0, 0, 1, 1))

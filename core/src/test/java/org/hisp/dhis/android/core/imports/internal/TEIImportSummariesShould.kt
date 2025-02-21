@@ -25,38 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummariesDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class TEIImportSummariesShould extends BaseObjectShould implements ObjectShould {
-
-    public TEIImportSummariesShould() {
-        super("imports/import_summaries.json");
-    }
-
-    @Override
+@RunWith(JUnit4::class)
+class TEIImportSummariesShould : BaseObjectKotlinxShould("imports/import_summaries.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        TEIImportSummaries importSummaries = objectMapper.readValue(jsonStream, TEIImportSummaries.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val importSummariesDTO = deserialize(TEIImportSummariesDTO.serializer())
+        val importSummaries = importSummariesDTO.toDomain()
 
-        assertThat(importSummaries.responseType()).isEqualTo("ImportSummaries");
-        assertThat(importSummaries.status()).isEqualTo(ImportStatus.SUCCESS);
-        assertThat(importSummaries.imported()).isEqualTo(1);
-        assertThat(importSummaries.updated()).isEqualTo(2);
-        assertThat(importSummaries.deleted()).isEqualTo(3);
-        assertThat(importSummaries.ignored()).isEqualTo(4);
+        assertThat(importSummaries.responseType()).isEqualTo("ImportSummaries")
+        assertThat(importSummaries.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummaries.imported()).isEqualTo(1)
+        assertThat(importSummaries.updated()).isEqualTo(2)
+        assertThat(importSummaries.deleted()).isEqualTo(3)
+        assertThat(importSummaries.ignored()).isEqualTo(4)
     }
 }

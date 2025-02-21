@@ -25,48 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.enrollment.EnrollmentImportSummariesDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class EnrollmentImportEnrollmentShould extends BaseObjectShould implements ObjectShould {
-
-    public EnrollmentImportEnrollmentShould() {
-        super("imports/import_enrollment.json");
-    }
-
-    @Override
+@RunWith(JUnit4::class)
+class EnrollmentImportEnrollmentShould :
+    BaseObjectKotlinxShould("imports/import_enrollment.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        EnrollmentImportSummaries importEnrollment = objectMapper.readValue(jsonStream, EnrollmentImportSummaries.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val importEnrollmentDTO = deserialize(EnrollmentImportSummariesDTO.serializer())
+        val importEnrollment = importEnrollmentDTO.toDomain()
 
-        assertThat(importEnrollment.imported()).isEqualTo(0);
-        assertThat(importEnrollment.updated()).isEqualTo(1);
-        assertThat(importEnrollment.ignored()).isEqualTo(0);
-        assertThat(importEnrollment.deleted()).isEqualTo(0);
+        assertThat(importEnrollment.imported()).isEqualTo(0)
+        assertThat(importEnrollment.updated()).isEqualTo(1)
+        assertThat(importEnrollment.ignored()).isEqualTo(0)
+        assertThat(importEnrollment.deleted()).isEqualTo(0)
 
-        assertThat(importEnrollment.responseType()).isEqualTo("ImportSummaries");
-        assertThat(importEnrollment.status()).isEqualTo(ImportStatus.SUCCESS);
-        assertThat(importEnrollment.importSummaries()).isNotNull();
+        assertThat(importEnrollment.responseType()).isEqualTo("ImportSummaries")
+        assertThat(importEnrollment.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importEnrollment.importSummaries()).isNotNull()
 
-        assertThat(importEnrollment.importSummaries().size()).isEqualTo(1);
+        assertThat(importEnrollment.importSummaries()!!.size).isEqualTo(1)
 
-        EnrollmentImportSummary importSummary = importEnrollment.importSummaries().get(0);
+        val importSummary = importEnrollment.importSummaries()!![0]
 
-        assertThat(importSummary).isNotNull();
-        assertThat(importSummary.events()).isNotNull();
-        assertThat(importSummary.reference()).isEqualTo("XaBZwKbHVxS");
+        assertThat(importSummary).isNotNull()
+        assertThat(importSummary.events()).isNotNull()
+        assertThat(importSummary.reference()).isEqualTo("XaBZwKbHVxS")
     }
 }

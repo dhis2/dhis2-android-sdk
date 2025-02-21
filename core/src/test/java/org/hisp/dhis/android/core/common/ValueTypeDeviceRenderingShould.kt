@@ -25,32 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.network.programstage.ValueTypeDeviceRenderingDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ValueTypeDeviceRenderingShould extends BaseObjectShould implements ObjectShould {
-
-    public ValueTypeDeviceRenderingShould() {
-        super("common/value_type_device_rendering.json");
-    }
-
-    @Override
+class ValueTypeDeviceRenderingShould :
+    BaseObjectKotlinxShould("common/value_type_device_rendering.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ValueTypeDeviceRendering valueTypeDeviceRendering =
-                objectMapper.readValue(jsonStream, ValueTypeDeviceRendering.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val valueTypeDeviceRenderingDTO = deserialize(ValueTypeDeviceRenderingDTO.serializer())
+        val valueTypeDeviceRendering = valueTypeDeviceRenderingDTO.toDomain()
 
-        assertThat(valueTypeDeviceRendering.type()).isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
-        assertThat(valueTypeDeviceRendering.min()).isEqualTo(0);
-        assertThat(valueTypeDeviceRendering.max()).isEqualTo(10);
-        assertThat(valueTypeDeviceRendering.step()).isEqualTo(1);
-        assertThat(valueTypeDeviceRendering.decimalPoints()).isEqualTo(0);
+        assertThat(valueTypeDeviceRendering.type())
+            .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS)
+        assertThat(valueTypeDeviceRendering.min()).isEqualTo(0)
+        assertThat(valueTypeDeviceRendering.max()).isEqualTo(10)
+        assertThat(valueTypeDeviceRendering.step()).isEqualTo(1)
+        assertThat(valueTypeDeviceRendering.decimalPoints()).isEqualTo(0)
     }
 }

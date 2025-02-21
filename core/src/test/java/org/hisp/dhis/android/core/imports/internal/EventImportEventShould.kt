@@ -25,49 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.event.EventImportSummariesDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import java.io.IOException
+import java.text.ParseException
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class EventImportEventShould extends BaseObjectShould implements ObjectShould {
-
-    public EventImportEventShould() {
-        super("imports/import_event.json");
-    }
-
-    @Override
+@RunWith(JUnit4::class)
+class EventImportEventShould : BaseObjectKotlinxShould("imports/import_event.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        EventImportSummaries importEvent = objectMapper.readValue(jsonStream, EventImportSummaries.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val importEventDTO = deserialize(EventImportSummariesDTO.serializer())
+        val importEvent = importEventDTO.toDomain()
 
-        assertThat(importEvent.imported()).isEqualTo(1);
-        assertThat(importEvent.updated()).isEqualTo(2);
-        assertThat(importEvent.deleted()).isEqualTo(3);
-        assertThat(importEvent.ignored()).isEqualTo(4);
+        assertThat(importEvent.imported()).isEqualTo(1)
+        assertThat(importEvent.updated()).isEqualTo(2)
+        assertThat(importEvent.deleted()).isEqualTo(3)
+        assertThat(importEvent.ignored()).isEqualTo(4)
 
-        assertThat(importEvent.status()).isEqualTo(ImportStatus.SUCCESS);
-        assertThat(importEvent.responseType()).isEqualTo("ImportSummaries");
-        assertThat(importEvent.importSummaries()).isNotNull();
-        assertThat(importEvent.importSummaries().size()).isEqualTo(2);
+        assertThat(importEvent.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importEvent.responseType()).isEqualTo("ImportSummaries")
+        assertThat(importEvent.importSummaries()).isNotNull()
+        assertThat(importEvent.importSummaries()!!.size).isEqualTo(2)
 
-        EventImportSummary importSummary = importEvent.importSummaries().get(0);
-        assertThat(importSummary).isNotNull();
-        assertThat(importSummary.reference()).isEqualTo("xqpUvfxT4PZ");
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary");
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS);
-        assertThat(importSummary.importCount()).isNotNull();
-
+        val importSummary = importEvent.importSummaries()!![0]
+        assertThat(importSummary).isNotNull()
+        assertThat(importSummary.reference()).isEqualTo("xqpUvfxT4PZ")
+        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummary.importCount()).isNotNull()
     }
 }

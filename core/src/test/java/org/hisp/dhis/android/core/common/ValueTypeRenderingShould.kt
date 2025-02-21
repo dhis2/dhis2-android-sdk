@@ -25,31 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.network.programstage.ValueTypeRenderingDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ValueTypeRenderingShould extends BaseObjectShould implements ObjectShould {
-
-    public ValueTypeRenderingShould() {
-        super("common/value_type_rendering.json");
-    }
-
-    @Override
+class ValueTypeRenderingShould :
+    BaseObjectKotlinxShould("common/value_type_rendering.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ValueTypeRendering valueTypeRendering = objectMapper.readValue(jsonStream, ValueTypeRendering.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val valueTypeRenderingDTO = deserialize(ValueTypeRenderingDTO.serializer())
+        val valueTypeRendering = valueTypeRenderingDTO.toDomain()
 
-        assertThat(valueTypeRendering.desktop()).isEqualTo(ValueTypeDeviceRendering.builder()
-                .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build());
-        assertThat(valueTypeRendering.mobile()).isEqualTo(ValueTypeDeviceRendering.builder()
-                .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1)
-                .build());
+        assertThat(valueTypeRendering.desktop()).isEqualTo(
+            ValueTypeDeviceRendering.builder()
+                .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1)
+                .decimalPoints(0).build(),
+        )
+        assertThat(valueTypeRendering.mobile()).isEqualTo(
+            ValueTypeDeviceRendering.builder()
+                .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2)
+                .decimalPoints(1)
+                .build(),
+        )
     }
 }

@@ -25,29 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.network.common.dto.AccessDTO
+import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class AccessShould extends BaseObjectShould implements ObjectShould {
-
-    public AccessShould() {
-        super("common/access.json");
-    }
-
-    @Override
+class AccessShould : BaseObjectKotlinxShould("common/access.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Access access = objectMapper.readValue(jsonStream, Access.class);
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val accessDTO = deserialize(AccessDTO.serializer())
+        val access = accessDTO.toDomain()
 
-        assertThat(access.read()).isTrue();
-        assertThat(access.write()).isTrue();
-        assertThat(access.data()).isEqualTo(DataAccess.create(true, true));
+        assertThat(access.read()).isTrue()
+        assertThat(access.write()).isTrue()
+        assertThat(access.data()).isEqualTo(DataAccess.create(true, true))
     }
 }

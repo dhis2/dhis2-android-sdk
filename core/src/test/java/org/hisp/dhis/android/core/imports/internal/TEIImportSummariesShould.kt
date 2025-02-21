@@ -35,13 +35,10 @@ import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummariesDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.IOException
-import java.text.ParseException
 
 @RunWith(JUnit4::class)
 class TEIImportSummariesShould : BaseObjectKotlinxShould("imports/import_summaries.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val importSummariesDTO = deserialize(TEIImportSummariesDTO.serializer())
         val importSummaries = importSummariesDTO.toDomain()

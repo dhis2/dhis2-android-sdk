@@ -30,14 +30,11 @@ package org.hisp.dhis.android.core.common
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.programstage.ValueTypeDeviceRenderingDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class ValueTypeDeviceRenderingShould :
     BaseObjectKotlinxShould("common/value_type_device_rendering.json"),
     ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val valueTypeDeviceRenderingDTO = deserialize(ValueTypeDeviceRenderingDTO.serializer())
         val valueTypeDeviceRendering = valueTypeDeviceRenderingDTO.toDomain()

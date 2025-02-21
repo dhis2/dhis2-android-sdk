@@ -32,13 +32,10 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class AppearanceSettingsV2Should : BaseObjectKotlinxShould("settings/appearance_settings_v2.json"), ObjectShould {
     @Test
     @Suppress("LongMethod")
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val appearanceSettingsDTO = deserialize(AppearanceSettingsDTO.serializer())
         val appearanceSettings = appearanceSettingsDTO.toDomain()

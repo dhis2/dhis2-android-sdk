@@ -34,13 +34,10 @@ import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.IOException
-import java.text.ParseException
 
 @RunWith(JUnit4::class)
 class ImportConflictShould : BaseObjectKotlinxShould("imports/import_conflict.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val importConflictDTO = deserialize(ImportConflictDTO.serializer())
         val importConflict = importConflictDTO.toDomain()

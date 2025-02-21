@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.common
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.common.dto.DataAccessDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class DataAccessShould : BaseObjectKotlinxShould("common/data_access.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val dataAccessDTO = deserialize(DataAccessDTO.serializer())
         val dataAccess = dataAccessDTO.toDomain()

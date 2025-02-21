@@ -35,13 +35,10 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.network.tracker.JobReportDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class JobReportErrorShould : BaseObjectKotlinxShould("tracker/importer/jobreport-error.json"), ObjectShould {
 
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val jobReportDTO = deserialize(JobReportDTO.serializer())
         val jobReport = jobReportDTO.toDomain()

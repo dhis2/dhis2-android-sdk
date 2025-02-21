@@ -35,15 +35,12 @@ import org.hisp.dhis.android.network.enrollment.EnrollmentImportSummariesDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.IOException
-import java.text.ParseException
 
 @RunWith(JUnit4::class)
 class EnrollmentImportEnrollmentShould :
     BaseObjectKotlinxShould("imports/import_enrollment.json"),
     ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val importEnrollmentDTO = deserialize(EnrollmentImportSummariesDTO.serializer())
         val importEnrollment = importEnrollmentDTO.toDomain()

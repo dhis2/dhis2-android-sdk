@@ -42,14 +42,11 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterDTO
 import org.junit.Test
 import org.mockito.internal.util.collections.Sets
-import java.io.IOException
-import java.text.ParseException
 
 class TrackedEntityInstanceFilterShould :
     TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter.json"),
     ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val trackedEntityInstanceFilterDTO = deserialize(TrackedEntityInstanceFilterDTO.serializer())
         val trackedEntityInstanceFilter = trackedEntityInstanceFilterDTO.toDomain()

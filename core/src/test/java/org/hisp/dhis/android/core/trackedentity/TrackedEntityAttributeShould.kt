@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class TrackedEntityAttributeShould :
     BaseObjectKotlinxShould("trackedentity/tracked_entity_attribute.json"),
     ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val trackedEntityAttributeDTO = deserialize(TrackedEntityAttributeDTO.serializer())
         val trackedEntityAttribute = trackedEntityAttributeDTO.toDomain()

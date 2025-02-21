@@ -34,13 +34,10 @@ import org.hisp.dhis.android.network.common.dto.ImportCountDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.IOException
-import java.text.ParseException
 
 @RunWith(JUnit4::class)
 class ImportCountShould : BaseObjectKotlinxShould("imports/import_count.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val importCountDTO = deserialize(ImportCountDTO.serializer())
         val importCount = importCountDTO.toDomain()

@@ -41,22 +41,23 @@ import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.dataset.TextAlign
 
 internal class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptions> {
+
     override fun fromCursor(cursor: Cursor, columnName: String?): DataSetDisplayOptions {
         val headerIndex = cursor.getColumnIndex(HEADER)
         val subHeaderIndex = cursor.getColumnIndex(SUB_HEADER)
         val customTextAlignIndex = cursor.getColumnIndex(CUSTOM_TEXT_ALIGN)
         val tabsDirectionIndex = cursor.getColumnIndex(TABS_DIRECTION)
 
-        return DataSetDisplayOptions.builder()
-            .customText(
-                CustomText.builder()
-                    .header(cursor.getString(headerIndex))
-                    .subHeader(cursor.getString(subHeaderIndex))
-                    .align(TextAlign.valueOf(cursor.getString(customTextAlignIndex)))
-                    .build(),
+        return DataSetDisplayOptions.builder().apply {
+            customText(
+                CustomText.builder().apply {
+                    header(cursor.getString(headerIndex))
+                    subHeader(cursor.getString(subHeaderIndex))
+                    cursor.getString(customTextAlignIndex)?.let { align(TextAlign.valueOf(it)) }
+                }.build(),
             )
-            .tabsDirection(TabsDirection.valueOf(cursor.getString(tabsDirectionIndex)))
-            .build()
+            cursor.getString(tabsDirectionIndex)?.let { tabsDirection(TabsDirection.valueOf(it)) }
+        }.build()
     }
 
     override fun toContentValues(values: ContentValues?, columnName: String?, value: DataSetDisplayOptions?) {

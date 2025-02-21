@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,42 +27,27 @@
  */
 package org.hisp.dhis.android.core.arch.api.internal
 
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_ABSOLUTE_URL_HEADER
-import java.io.IOException
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.http.takeFrom
 
-internal class DynamicServerURLInterceptor : Interceptor {
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        return chain.proceed(transformRequest(chain.request()))
+internal object PreventURLDecodePlugin {
+    val instance = createClientPlugin(name = "PreventURLDecodePlugin") {
+        onRequest { request, _ ->
+            replaceEncodedCharacters(request)
+        }
     }
 
-    companion object {
-        fun transformRequest(request: Request): Request {
-            return if (request.header(IS_ABSOLUTE_URL_HEADER) != null) {
-                request.newBuilder()
-                    .removeHeader(IS_ABSOLUTE_URL_HEADER)
-                    .build()
-            } else {
-                val transformedUrl = transformUrl(request.url.toString())?.let { it.toHttpUrlOrNull() }
-                transformedUrl?.let { request.newBuilder().url(it).build() } ?: request
-            }
-        }
+    private fun replaceEncodedCharacters(request: HttpRequestBuilder) {
+        val encodedUrl = request.url.toString()
 
-        fun transformUrl(url: String?): String? {
-            return url?.let {
-                val afterAPI = ServerURLWrapper.extractAfterAPI(url)
+        val nonEncodedUrl = encodedUrl
+            .replace("%2C", ",")
+            .replace("%5B", "[")
+            .replace("%5D", "]")
+            .replace("%3A", ":")
 
-                if (afterAPI != null && ServerURLWrapper.serverUrl != null) {
-                    ServerURLWrapper.serverUrl + "/api/" + afterAPI
-                } else {
-                    url
-                }
-            }
-        }
+        request.url.parameters.clear()
+        request.url.takeFrom(nonEncodedUrl)
     }
 }

@@ -39,6 +39,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import org.hisp.dhis.android.core.arch.api.RequestBuilder
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodePlugin
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
@@ -48,6 +49,7 @@ internal object KtorFactory {
             install(ContentNegotiation) {
                 json(KotlinxJsonParser.instance)
             }
+            install(PreventURLDecodePlugin.instance)
             expectSuccess = true
         }
         return HttpTestClient(client, serverUrl)

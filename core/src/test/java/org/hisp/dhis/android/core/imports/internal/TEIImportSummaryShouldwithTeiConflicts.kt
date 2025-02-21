@@ -25,72 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummaryDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class TEIImportSummaryShould {
+@RunWith(JUnit4::class)
+class TEIImportSummaryShouldwithTeiConflicts :
+    BaseObjectKotlinxShould("imports/import_summary_with_tei_conflicts.json"),
+    ObjectShould {
 
     @Test
-    public void map_from_json_string_with_tei_conflicts() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    override fun map_from_json_string() {
+        val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
+        val importSummary = importSummaryDTO.toDomain()
 
-        String importSummaryStr = new ResourcesFileReader().getStringFromFile(
-                "imports/import_summary_with_tei_conflicts.json");
-        TEIImportSummary importSummary = objectMapper.readValue(importSummaryStr, TEIImportSummary.class);
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
+        assertThat(importSummary.importCount()).isNotNull()
+        assertThat(importSummary.importCount().imported()).isEqualTo(0)
+        assertThat(importSummary.importCount().updated()).isEqualTo(0)
+        assertThat(importSummary.importCount().ignored()).isEqualTo(1)
+        assertThat(importSummary.importCount().deleted()).isEqualTo(0)
 
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.ERROR);
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary");
-        assertThat(importSummary.importCount()).isNotNull();
-        assertThat(importSummary.importCount().imported()).isEqualTo(0);
-        assertThat(importSummary.importCount().updated()).isEqualTo(0);
-        assertThat(importSummary.importCount().ignored()).isEqualTo(1);
-        assertThat(importSummary.importCount().deleted()).isEqualTo(0);
+        assertThat(importSummary.conflicts()).isNotNull()
+        assertThat(importSummary.conflicts()!!.size).isEqualTo(1)
 
-        assertThat(importSummary.conflicts()).isNotNull();
-        assertThat(importSummary.conflicts().size()).isEqualTo(1);
+        val importConflict = importSummary.conflicts()!![0]
 
-        ImportConflict importConflict = importSummary.conflicts().get(0);
-
-        assertThat(importConflict).isNotNull();
-        assertThat(importConflict.value()).isEqualTo("Value '201921212' is not a valid date for attribute iESIqZ0R0R0");
-        assertThat(importConflict.object()).isEqualTo("Attribute.value");
+        assertThat(importConflict).isNotNull()
+        assertThat(importConflict.value())
+            .isEqualTo("Value '201921212' is not a valid date for attribute iESIqZ0R0R0")
+        assertThat(importConflict.`object`()).isEqualTo("Attribute.value")
     }
 
     @Test
-    public void importSummary_shouldParseImportSummaryWithEnrollmentConflictsFromJson() throws Exception {
-        //TODO Test
-    }
-
-    @Test
-    public void map_from_json_string_with_event_conflicts() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String importSummaryStr = new ResourcesFileReader().getStringFromFile("imports/import_summary_with_event_conflicts.json");
-        TEIImportSummary importSummary = objectMapper.readValue(importSummaryStr, TEIImportSummary.class);
-
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary");
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS);
-        assertThat(importSummary.importCount()).isNotNull();
-
-        assertThat(importSummary.importCount().imported()).isEqualTo(0);
-        assertThat(importSummary.importCount().updated()).isEqualTo(1);
-        assertThat(importSummary.importCount().ignored()).isEqualTo(0);
-        assertThat(importSummary.importCount().deleted()).isEqualTo(0);
-
-        assertThat(importSummary.reference()).isEqualTo("Rmp5T1vmZ74");
-
-        assertThat(importSummary.enrollments()).isNotNull();
+    @Throws(Exception::class)
+    fun importSummary_shouldParseImportSummaryWithEnrollmentConflictsFromJson() {
+        // TODO Test
     }
 }

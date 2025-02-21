@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.visualization.CategoryDimension;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummaryDTO
+import org.junit.Test
 
-import java.util.List;
+class TEIImportSummaryShouldwithEventConflicts :
+    BaseObjectKotlinxShould("imports/import_summary_with_event_conflicts.json"),
+    ObjectShould {
+    @Test
+    @Throws(Exception::class)
+    override fun map_from_json_string() {
+        val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
+        val importSummary = importSummaryDTO.toDomain()
 
-public final class IgnoreCategoryDimensionListColumnAdapter
-        extends IgnoreColumnAdapter<List<CategoryDimension>> {
+        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummary.importCount()).isNotNull()
+
+        assertThat(importSummary.importCount().imported()).isEqualTo(0)
+        assertThat(importSummary.importCount().updated()).isEqualTo(1)
+        assertThat(importSummary.importCount().ignored()).isEqualTo(0)
+        assertThat(importSummary.importCount().deleted()).isEqualTo(0)
+
+        assertThat(importSummary.reference()).isEqualTo("Rmp5T1vmZ74")
+
+        assertThat(importSummary.enrollments()).isNotNull()
+    }
 }

@@ -25,39 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedentityinstance.TEIWebResponseDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class TEIWebResponseShould {
-
+@RunWith(JUnit4::class)
+class TEIWebResponseShould :
+    BaseObjectKotlinxShould("imports/web_response.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    override fun map_from_json_string() {
+        val webResponseDto = deserialize(TEIWebResponseDTO.serializer())
+        val webResponse = webResponseDto.toDomain()
 
-        String responseStr = new ResourcesFileReader().getStringFromFile("imports/web_response.json");
-        TEIWebResponse webResponse = objectMapper.readValue(responseStr, TEIWebResponse.class);
-
-        assertThat(webResponse.message()).isEqualTo("Import was successful.");
-        assertThat(webResponse.response()).isNotNull();
-    }
-
-    @Test
-    public void map_from_json_string_with_import_conflicts() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String webResponseStr = new ResourcesFileReader().getStringFromFile(
-                "imports/web_response_with_import_conflicts.json");
-        objectMapper.readValue(webResponseStr, TEIWebResponse.class);
+        assertThat(webResponse.message()).isEqualTo("Import was successful.")
+        assertThat(webResponse.response()).isNotNull()
     }
 }

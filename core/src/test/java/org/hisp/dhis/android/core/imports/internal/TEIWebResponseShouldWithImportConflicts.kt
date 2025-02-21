@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.legendset.LegendSet;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackedentityinstance.TEIWebResponseDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import java.util.List;
+@RunWith(JUnit4::class)
+class TEIWebResponseShouldWithImportConflicts :
+    BaseObjectKotlinxShould("imports/web_response_with_import_conflicts.json"),
+    ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val webResponseDto = deserialize(TEIWebResponseDTO.serializer())
+        val webResponse = webResponseDto.toDomain()
 
-public final class IgnoreLegendSetListColumnAdapter extends IgnoreColumnAdapter<List<LegendSet>> {
+        assertThat(webResponse.message()).isEqualTo("Import was successful.")
+        assertThat(
+            webResponse.response()
+                ?.importSummaries()?.get(1)
+                ?.enrollments()?.importSummaries()?.get(0)
+                ?.events()?.importSummaries()?.get(0)
+                ?.conflicts(),
+        )
+            .isNotEmpty()
+    }
 }

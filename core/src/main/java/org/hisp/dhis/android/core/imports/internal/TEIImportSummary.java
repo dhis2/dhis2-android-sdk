@@ -28,21 +28,14 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TEIImportSummary.Builder.class)
 public abstract class TEIImportSummary extends BaseImportSummary {
 
-    private static final String IMPORT_ENROLLMENT = "enrollments";
-
     @Nullable
-    @JsonProperty(IMPORT_ENROLLMENT)
     public abstract EnrollmentImportSummaries enrollments();
 
     public static Builder builder() {
@@ -50,7 +43,6 @@ public abstract class TEIImportSummary extends BaseImportSummary {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummary.Builder<TEIImportSummary.Builder> {
 
         public abstract Builder enrollments(EnrollmentImportSummaries enrollments);

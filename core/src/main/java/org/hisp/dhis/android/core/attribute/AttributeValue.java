@@ -28,21 +28,15 @@
 
 package org.hisp.dhis.android.core.attribute;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AttributeValue.Builder.class)
 public abstract class AttributeValue {
 
-    @JsonProperty()
     public abstract String value();
 
-    @JsonProperty()
     public abstract ObjectWithUid attribute();
 
     public static Builder builder() {
@@ -52,13 +46,10 @@ public abstract class AttributeValue {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        @JsonProperty()
         public abstract Builder value(String value);
 
-        @JsonProperty()
         public abstract Builder attribute(ObjectWithUid attribute);
 
         public abstract AttributeValue build();

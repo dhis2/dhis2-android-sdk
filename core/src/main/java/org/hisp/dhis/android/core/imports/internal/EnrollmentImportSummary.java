@@ -28,21 +28,14 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_EnrollmentImportSummary.Builder.class)
 public abstract class EnrollmentImportSummary extends BaseImportSummary {
 
-    private static final String IMPORT_EVENT = "events";
-
     @Nullable
-    @JsonProperty(IMPORT_EVENT)
     public abstract EventImportSummaries events();
 
     public static Builder builder() {
@@ -50,7 +43,6 @@ public abstract class EnrollmentImportSummary extends BaseImportSummary {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummary.Builder<EnrollmentImportSummary.Builder> {
 
         public abstract Builder events(EventImportSummaries events);

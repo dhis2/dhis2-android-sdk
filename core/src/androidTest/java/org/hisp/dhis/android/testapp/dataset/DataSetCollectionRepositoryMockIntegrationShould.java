@@ -284,15 +284,15 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
 
     @Test
     public void filter_by_tabs_direction() {
-        List<DataSet> VerticalDataSets = d2.dataSetModule().dataSets()
+        List<DataSet> verticalDataSets = d2.dataSetModule().dataSets()
                 .byTabsDirection().eq(TabsDirection.VERTICAL)
                 .blockingGet();
-        assertThat(VerticalDataSets.size()).isEqualTo(1);
+        assertThat(verticalDataSets.size()).isEqualTo(1);
 
-        List<DataSet> HorizontalDataSets = d2.dataSetModule().dataSets()
+        List<DataSet> horizontalDataSets = d2.dataSetModule().dataSets()
                 .byTabsDirection().eq(TabsDirection.HORIZONTAL)
                 .blockingGet();
-        assertThat(HorizontalDataSets.size()).isEqualTo(1);
+        assertThat(horizontalDataSets.size()).isEqualTo(1);
     }
 
     @Test

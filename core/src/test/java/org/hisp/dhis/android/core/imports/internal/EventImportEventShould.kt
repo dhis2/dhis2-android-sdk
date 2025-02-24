@@ -25,39 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.settings
+package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.event.EventImportSummariesDTO
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-class AnalyticsSettingV3Should : BaseObjectKotlinxShould("settings/analytics_settings_v3.json"), ObjectShould {
-
+@RunWith(JUnit4::class)
+class EventImportEventShould : BaseObjectKotlinxShould("imports/import_event.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val analyticsSettingsDTO = deserialize(AnalyticsSettingsDTO.serializer())
-        val analyticsSettings = analyticsSettingsDTO.toDomain()
+        val importEventDTO = deserialize(EventImportSummariesDTO.serializer())
+        val importEvent = importEventDTO.toDomain()
 
-        AnalyticsSettingAsserts.assertTeiAnalytics(analyticsSettings.tei())
+        assertThat(importEvent.imported()).isEqualTo(1)
+        assertThat(importEvent.updated()).isEqualTo(2)
+        assertThat(importEvent.deleted()).isEqualTo(3)
+        assertThat(importEvent.ignored()).isEqualTo(4)
 
-        AnalyticsSettingAsserts.assertDhisVisualizations(analyticsSettings.dhisVisualizations())
+        assertThat(importEvent.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importEvent.responseType()).isEqualTo("ImportSummaries")
+        assertThat(importEvent.importSummaries()).isNotNull()
+        assertThat(importEvent.importSummaries()!!.size).isEqualTo(2)
 
-        analyticsSettings.dhisVisualizations().home().forEach {
-            it.visualizations().forEach {
-                when (it.uid()) {
-                    "FAFa11yFeFe" ->
-                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
-
-                    "PYBH8ZaAQnC" ->
-                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
-
-                    "s85urBIkN0z" ->
-                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION)
-                }
-            }
-        }
+        val importSummary = importEvent.importSummaries()!![0]
+        assertThat(importSummary).isNotNull()
+        assertThat(importSummary.reference()).isEqualTo("xqpUvfxT4PZ")
+        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummary.importCount()).isNotNull()
     }
 }

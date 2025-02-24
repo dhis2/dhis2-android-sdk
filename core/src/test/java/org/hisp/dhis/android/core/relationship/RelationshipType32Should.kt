@@ -33,14 +33,11 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class RelationshipType32Should :
     BaseObjectKotlinxShould("relationship/relationship_type_32.json"),
     ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val relationshipTypeDTO = deserialize(RelationshipTypeDTO.serializer())
         val relationshipType = relationshipTypeDTO.toDomain()

@@ -28,25 +28,21 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
 import org.hisp.dhis.android.core.tracker.importer.internal.JobObjectReport
-import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
+import org.hisp.dhis.android.network.tracker.JobReportDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
-class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-success.json"), ObjectShould {
+class JobReportSuccessShould : BaseObjectKotlinxShould("tracker/importer/jobreport-success.json"), ObjectShould {
 
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
+        val jobReportDTO = deserialize(JobReportDTO.serializer())
+        val jobReport = jobReportDTO.toDomain()
 
         assertThat(jobReport.status).isEqualTo("OK")
         assertThat(jobReport.validationReport.errorReports).isEmpty()

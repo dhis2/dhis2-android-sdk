@@ -25,35 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.common.dto.ImportCountDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class ImportCountShould extends BaseObjectShould implements ObjectShould {
-
-    public ImportCountShould() {
-        super("imports/import_count.json");
-    }
-
-    @Override
+@RunWith(JUnit4::class)
+class ImportCountShould : BaseObjectKotlinxShould("imports/import_count.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ImportCount importCount = objectMapper.readValue(jsonStream, ImportCount.class);
+    override fun map_from_json_string() {
+        val importCountDTO = deserialize(ImportCountDTO.serializer())
+        val importCount = importCountDTO.toDomain()
 
-        assertThat(importCount.imported()).isEqualTo(0);
-        assertThat(importCount.updated()).isEqualTo(0);
-        assertThat(importCount.ignored()).isEqualTo(1);
-        assertThat(importCount.deleted()).isEqualTo(0);
+        assertThat(importCount.imported()).isEqualTo(0)
+        assertThat(importCount.updated()).isEqualTo(0)
+        assertThat(importCount.ignored()).isEqualTo(1)
+        assertThat(importCount.deleted()).isEqualTo(0)
     }
 }

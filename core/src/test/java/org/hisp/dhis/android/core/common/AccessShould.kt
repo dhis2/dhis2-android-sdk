@@ -25,39 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.settings
+package org.hisp.dhis.android.core.common
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
+import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.junit.Test
 
-class AnalyticsSettingV3Should : BaseObjectKotlinxShould("settings/analytics_settings_v3.json"), ObjectShould {
-
+class AccessShould : BaseObjectKotlinxShould("common/access.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val analyticsSettingsDTO = deserialize(AnalyticsSettingsDTO.serializer())
-        val analyticsSettings = analyticsSettingsDTO.toDomain()
+        val accessDTO = deserialize(AccessDTO.serializer())
+        val access = accessDTO.toDomain()
 
-        AnalyticsSettingAsserts.assertTeiAnalytics(analyticsSettings.tei())
-
-        AnalyticsSettingAsserts.assertDhisVisualizations(analyticsSettings.dhisVisualizations())
-
-        analyticsSettings.dhisVisualizations().home().forEach {
-            it.visualizations().forEach {
-                when (it.uid()) {
-                    "FAFa11yFeFe" ->
-                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
-
-                    "PYBH8ZaAQnC" ->
-                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.VISUALIZATION)
-
-                    "s85urBIkN0z" ->
-                        assertThat(it.type()).isEqualTo(AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION)
-                }
-            }
-        }
+        assertThat(access.read()).isTrue()
+        assertThat(access.write()).isTrue()
+        assertThat(access.data()).isEqualTo(DataAccess.create(true, true))
     }
 }

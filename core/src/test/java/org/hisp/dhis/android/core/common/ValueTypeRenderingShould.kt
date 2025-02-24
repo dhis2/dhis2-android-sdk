@@ -25,37 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.imports.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.network.programstage.ValueTypeRenderingDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(JUnit4.class)
-public class ImportConflictShould extends BaseObjectShould implements ObjectShould {
-
-    public ImportConflictShould() {
-        super("imports/import_conflict.json");
-    }
-
-    @Override
+class ValueTypeRenderingShould :
+    BaseObjectKotlinxShould("common/value_type_rendering.json"),
+    ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ImportConflict importConflict = objectMapper.readValue(jsonStream, ImportConflict.class);
+    override fun map_from_json_string() {
+        val valueTypeRenderingDTO = deserialize(ValueTypeRenderingDTO.serializer())
+        val valueTypeRendering = valueTypeRenderingDTO.toDomain()
 
-        assertThat(importConflict.object()).isEqualTo("UOlfIjgN8X6");
-        assertThat(importConflict.value()).isEqualTo("Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric");
-        assertThat(importConflict.errorCode()).isEqualTo("E7619");
-        assertThat(importConflict.property()).isEqualTo("value");
-        assertThat(importConflict.indexes().get(0)).isEqualTo(2);
-        assertThat(importConflict.indexes().get(1)).isEqualTo(7);
+        assertThat(valueTypeRendering.desktop()).isEqualTo(
+            ValueTypeDeviceRendering.builder()
+                .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1)
+                .decimalPoints(0).build(),
+        )
+        assertThat(valueTypeRendering.mobile()).isEqualTo(
+            ValueTypeDeviceRendering.builder()
+                .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2)
+                .decimalPoints(1)
+                .build(),
+        )
     }
 }

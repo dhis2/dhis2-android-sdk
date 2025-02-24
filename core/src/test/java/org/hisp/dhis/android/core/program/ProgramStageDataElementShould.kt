@@ -35,14 +35,11 @@ import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.network.programstage.ProgramStageDataElementDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class ProgramStageDataElementShould :
     BaseObjectKotlinxShould("program/program_stage_data_element.json"),
     ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val programStageDataElementDTO = deserialize(ProgramStageDataElementDTO.serializer())
         val programStageDataElement = programStageDataElementDTO.toDomain()

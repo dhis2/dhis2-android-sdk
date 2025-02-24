@@ -25,29 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.common;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class AccessShould extends BaseObjectShould implements ObjectShould {
-
-    public AccessShould() {
-        super("common/access.json");
-    }
-
-    @Override
+@RunWith(JUnit4::class)
+class ImportConflictShould : BaseObjectKotlinxShould("imports/import_conflict.json"), ObjectShould {
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Access access = objectMapper.readValue(jsonStream, Access.class);
+    override fun map_from_json_string() {
+        val importConflictDTO = deserialize(ImportConflictDTO.serializer())
+        val importConflict = importConflictDTO.toDomain()
 
-        assertThat(access.read()).isTrue();
-        assertThat(access.write()).isTrue();
-        assertThat(access.data()).isEqualTo(DataAccess.create(true, true));
+        assertThat(importConflict.`object`()).isEqualTo("UOlfIjgN8X6")
+        assertThat(importConflict.value())
+            .isEqualTo("Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric")
+        assertThat(importConflict.errorCode()).isEqualTo("E7619")
+        assertThat(importConflict.property()).isEqualTo("value")
+        assertThat(importConflict.indexes()!![0]).isEqualTo(2)
+        assertThat(importConflict.indexes()!![1]).isEqualTo(7)
     }
 }

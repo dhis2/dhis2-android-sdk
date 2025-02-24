@@ -33,12 +33,9 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.settings.DataSetSettingsDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class DataSetSettingsShould : BaseObjectKotlinxShould("settings/dataset_settings.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val dataSetSettingsDTO = deserialize(DataSetSettingsDTO.serializer())
         val dataSetSettings = dataSetSettingsDTO.toDomain()

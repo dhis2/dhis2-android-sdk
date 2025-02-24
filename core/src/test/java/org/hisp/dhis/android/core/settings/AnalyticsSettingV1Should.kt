@@ -31,13 +31,10 @@ import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class AnalyticsSettingV1Should : BaseObjectKotlinxShould("settings/analytics_settings.json"), ObjectShould {
 
     @Test
-    @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val analyticsSettingsDTO = deserialize(AnalyticsSettingsDTO.serializer())
         val analyticsSettings = analyticsSettingsDTO.toDomain()

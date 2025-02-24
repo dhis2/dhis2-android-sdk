@@ -28,24 +28,17 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummaries.Builder.class)
 public abstract class EventImportSummaries extends BaseImportSummaries implements ImportSummaries {
-
-    private static final String IMPORT_SUMMARIES = "importSummaries";
 
     @Override
     @Nullable
-    @JsonProperty(IMPORT_SUMMARIES)
     public abstract List<EventImportSummary> importSummaries();
 
     public static Builder builder() {
@@ -53,7 +46,6 @@ public abstract class EventImportSummaries extends BaseImportSummaries implement
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummaries.Builder<EventImportSummaries.Builder> {
 
         public abstract Builder importSummaries(List<EventImportSummary> importSummaries);

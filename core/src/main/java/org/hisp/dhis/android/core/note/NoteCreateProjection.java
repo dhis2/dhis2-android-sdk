@@ -30,30 +30,21 @@ package org.hisp.dhis.android.core.note;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Note.Builder.class)
 public abstract class NoteCreateProjection {
 
     @Nullable
-    @JsonIgnore()
     public abstract Note.NoteType noteType();
 
     @Nullable
-    @JsonIgnore()
     public abstract String event();
 
     @Nullable
-    @JsonIgnore()
     public abstract String enrollment();
 
     @Nullable
-    @JsonProperty()
     public abstract String value();
 
     /**
@@ -89,7 +80,6 @@ public abstract class NoteCreateProjection {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder noteType(Note.NoteType noteType);
 

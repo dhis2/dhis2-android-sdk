@@ -25,32 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category
+package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.network.category.CategoryOptionComboDTO
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummaryDTO
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-class CategoryOptionComboShould :
-    BaseObjectKotlinxShould("category/category_option_combo.json"), ObjectShould {
+@RunWith(JUnit4::class)
+class TEIImportSummaryShouldwithTeiConflicts :
+    BaseObjectKotlinxShould("imports/import_summary_with_tei_conflicts.json"),
+    ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val categoryOptionComboDTO = deserialize(CategoryOptionComboDTO.serializer())
-        val categoryOptionCombo = categoryOptionComboDTO.toDomain("categoryComboUid")
+        val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
+        val importSummary = importSummaryDTO.toDomain()
 
-        assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca")
-        assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963")
-        assertThat(categoryOptionCombo.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"),
-        )
-        assertThat(categoryOptionCombo.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"),
-        )
-        assertThat(categoryOptionCombo.name()).isEqualTo("0-11m")
-        assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m")
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
+        assertThat(importSummary.importCount()).isNotNull()
+        assertThat(importSummary.importCount().imported()).isEqualTo(0)
+        assertThat(importSummary.importCount().updated()).isEqualTo(0)
+        assertThat(importSummary.importCount().ignored()).isEqualTo(1)
+        assertThat(importSummary.importCount().deleted()).isEqualTo(0)
+
+        assertThat(importSummary.conflicts()).isNotNull()
+        assertThat(importSummary.conflicts()!!.size).isEqualTo(1)
+
+        val importConflict = importSummary.conflicts()!![0]
+
+        assertThat(importConflict).isNotNull()
+        assertThat(importConflict.value())
+            .isEqualTo("Value '201921212' is not a valid date for attribute iESIqZ0R0R0")
+        assertThat(importConflict.`object`()).isEqualTo("Attribute.value")
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun importSummary_shouldParseImportSummaryWithEnrollmentConflictsFromJson() {
+        // TODO Test
     }
 }

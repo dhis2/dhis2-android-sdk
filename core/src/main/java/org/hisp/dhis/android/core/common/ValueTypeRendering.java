@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -40,17 +38,14 @@ public abstract class ValueTypeRendering {
     public static final String MOBILE = "MOBILE";
 
     @Nullable
-    @JsonProperty(DESKTOP)
     public abstract ValueTypeDeviceRendering desktop();
 
     @Nullable
-    @JsonProperty(MOBILE)
     public abstract ValueTypeDeviceRendering mobile();
 
-    @JsonCreator
     public static ValueTypeRendering create(
-            @JsonProperty(DESKTOP) ValueTypeDeviceRendering desktop,
-            @JsonProperty(MOBILE) ValueTypeDeviceRendering mobile) {
+            ValueTypeDeviceRendering desktop,
+            ValueTypeDeviceRendering mobile) {
 
         return new AutoValue_ValueTypeRendering(desktop, mobile);
     }

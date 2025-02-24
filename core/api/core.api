@@ -2154,10 +2154,6 @@ public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/I
 	public fun <init> ()V
 }
 
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreCategoryDimensionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
 public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreCategoryListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
 	public fun <init> ()V
 }
@@ -2225,10 +2221,6 @@ public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/I
 }
 
 public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreLegendListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreLegendSetListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
 	public fun <init> ()V
 }
 

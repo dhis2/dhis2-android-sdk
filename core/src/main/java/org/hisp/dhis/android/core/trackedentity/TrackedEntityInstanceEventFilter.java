@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,28 +44,23 @@ import org.hisp.dhis.android.core.common.FilterPeriod;
 import org.hisp.dhis.android.core.event.EventStatus;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityInstanceEventFilter.Builder.class)
 public abstract class TrackedEntityInstanceEventFilter implements CoreObject {
 
     @Nullable
     public abstract String trackedEntityInstanceFilter();
 
     @Nullable
-    @JsonProperty()
     public abstract String programStage();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus eventStatus();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(FilterPeriodColumnAdapter.class)
     public abstract FilterPeriod eventCreatedPeriod();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AssignedUserModeColumnAdapter.class)
     public abstract AssignedUserMode assignedUserMode();
 
@@ -83,7 +75,6 @@ public abstract class TrackedEntityInstanceEventFilter implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 

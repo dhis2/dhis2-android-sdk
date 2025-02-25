@@ -33,13 +33,24 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import io.reactivex.Single
 import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceServiceImpl
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
+import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
@@ -80,12 +91,21 @@ class DataSetInstanceServiceShould {
     private val periodGenerator: ParentPeriodGenerator = mock(verboseLogging = true)
     private val dataSetCollectionRepository: DataSetCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val dataElementCollectionRepository: DataElementCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val dataValueCollectionRepository: DataValueCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val categories: List<CategoryOption> = mock()
 
     private val dataSetInstanceService = DataSetInstanceServiceImpl(
         dataSetCollectionRepository = dataSetCollectionRepository,
         organisationUnitService = organisationUnitService,
+        dataElementCollectionRepository = dataElementCollectionRepository,
+        dataValueCollectionRepository = dataValueCollectionRepository,
+        categoryOptionComboCollectionRepository = categoryOptionComboCollectionRepository,
         periodHelper = periodHelper,
         categoryOptionComboService = categoryOptionComboService,
         periodGenerator = periodGenerator,
@@ -200,5 +220,117 @@ class DataSetInstanceServiceShould {
 
         whenever(dataSet.expiryDays()) doReturn -15.0
         assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+    }
+
+    @Test
+    fun `Should return missing mandatory data element operands when data value is missing`() {
+        val operand = mock<DataElementOperand> {
+            on { dataElement() } doReturn ObjectWithUid.create("de1")
+            on { categoryOptionCombo() } doReturn ObjectWithUid.create("coc1")
+        }
+
+        val dataSetWithCompulsory = mock<DataSet> {
+            on { compulsoryDataElementOperands() } doReturn listOf(operand)
+        }
+
+        whenever(dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).get())
+            .thenReturn(Single.just(dataSetWithCompulsory))
+
+        val dataValueQuery = mock<DataValueObjectRepository> {
+            on { blockingExists() } doReturn false
+        }
+        whenever(
+            dataValueCollectionRepository.value(
+                firstPeriodId,
+                orgUnitUid,
+                "de1",
+                "coc1",
+                attOptionComboUid,
+            ),
+        ).thenReturn(dataValueQuery)
+
+        // Execute and test
+        dataSetInstanceService.missingMandatoryDataElementOperands(
+            dataSetUid,
+            firstPeriodId,
+            orgUnitUid,
+            attOptionComboUid,
+        )
+            .test()
+            .assertValue { missingOperands ->
+                missingOperands.size == 1 && missingOperands.first() == operand
+            }
+    }
+
+    @Test
+    fun `Should return missing mandatory fields combination when data values are incomplete`() {
+        val dataSetElement = mock<DataSetElement> {
+            on { categoryCombo() } doReturn ObjectWithUid.create("ccUid")
+            on { dataElement() } doReturn ObjectWithUid.create("de1")
+        }
+        val dataSetWithElements = mock<DataSet> {
+            on { fieldCombinationRequired() } doReturn true
+            on { dataSetElements() } doReturn listOf(dataSetElement)
+        }
+        whenever(dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).get())
+            .thenReturn(Single.just(dataSetWithElements))
+
+        val coc1 = mock<CategoryOptionCombo> { on { uid() } doReturn "coc1" }
+        val coc2 = mock<CategoryOptionCombo> { on { uid() } doReturn "coc2" }
+        val byCatComboUidConnector = mock<StringFilterConnector<CategoryOptionComboCollectionRepository>>()
+        val eqRepo = mock<CategoryOptionComboCollectionRepository>()
+        whenever(categoryOptionComboCollectionRepository.byCategoryComboUid()).thenReturn(byCatComboUidConnector)
+        whenever(byCatComboUidConnector.eq("ccUid")).thenReturn(eqRepo)
+        whenever(eqRepo.blockingGet()).thenReturn(listOf(coc1, coc2))
+
+        val dataValue = mock<DataValue> {
+            on { dataElement() } doReturn "de1"
+            on { categoryOptionCombo() } doReturn "coc1"
+        }
+
+        val periodConnector = mock<StringFilterConnector<DataValueCollectionRepository>>()
+        val repoAfterPeriod = mock<DataValueCollectionRepository>()
+        whenever(dataValueCollectionRepository.byPeriod()).thenReturn(periodConnector)
+        whenever(periodConnector.eq(firstPeriodId)).thenReturn(repoAfterPeriod)
+
+        val orgUnitConnector = mock<StringFilterConnector<DataValueCollectionRepository>>()
+        val repoAfterOrgUnit = mock<DataValueCollectionRepository>()
+        whenever(repoAfterPeriod.byOrganisationUnitUid()).thenReturn(orgUnitConnector)
+        whenever(orgUnitConnector.eq(orgUnitUid)).thenReturn(repoAfterOrgUnit)
+
+        val attrOptionConnector = mock<StringFilterConnector<DataValueCollectionRepository>>()
+        val repoAfterAttrOption = mock<DataValueCollectionRepository>()
+        whenever(repoAfterOrgUnit.byAttributeOptionComboUid()).thenReturn(attrOptionConnector)
+        whenever(attrOptionConnector.eq(attOptionComboUid)).thenReturn(repoAfterAttrOption)
+
+        val deletedConnector = mock<BooleanFilterConnector<DataValueCollectionRepository>>()
+        val repoAfterDeleted = mock<DataValueCollectionRepository>()
+        whenever(repoAfterAttrOption.byDeleted()).thenReturn(deletedConnector)
+        whenever(deletedConnector.isFalse).thenReturn(repoAfterDeleted)
+
+        val deConnector = mock<StringFilterConnector<DataValueCollectionRepository>>()
+        val repoAfterDE = mock<DataValueCollectionRepository>()
+        whenever(repoAfterDeleted.byDataElementUid()).thenReturn(deConnector)
+        whenever(deConnector.eq("de1")).thenReturn(repoAfterDE)
+
+        val cocConnector = mock<StringFilterConnector<DataValueCollectionRepository>>()
+        val finalRepo = mock<DataValueCollectionRepository>()
+        whenever(repoAfterDE.byCategoryOptionComboUid()).thenReturn(cocConnector)
+        whenever(cocConnector.`in`(listOf("coc1", "coc2"))).thenReturn(finalRepo)
+
+        whenever(finalRepo.blockingGet()).thenReturn(listOf(dataValue))
+
+        dataSetInstanceService.missingMandatoryFieldsCombination(
+            dataSetUid,
+            firstPeriodId,
+            orgUnitUid,
+            attOptionComboUid,
+        )
+            .test()
+            .assertValue { missingFields ->
+                missingFields.size == 1 &&
+                    missingFields.first().dataElement()?.uid() == "de1" &&
+                    missingFields.first().categoryOptionCombo()?.uid() == "coc1"
+            }
     }
 }

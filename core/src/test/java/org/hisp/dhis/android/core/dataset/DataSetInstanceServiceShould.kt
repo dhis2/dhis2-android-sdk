@@ -263,6 +263,7 @@ class DataSetInstanceServiceShould {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun `Should return missing mandatory fields combination when data values are incomplete`() {
         val dataSetElement = mock<DataSetElement> {
             on { categoryCombo() } doReturn ObjectWithUid.create("ccUid")

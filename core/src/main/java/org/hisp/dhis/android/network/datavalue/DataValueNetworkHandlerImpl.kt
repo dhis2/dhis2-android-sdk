@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataValueNetworkHandlerImpl(httpService: HttpServiceClient) : DataValueNetworkHandler {
-    private val service: DataValueService = DataValueService(httpService)
+internal class DataValueNetworkHandlerImpl(client: HttpServiceClient) : DataValueNetworkHandler {
+    private val service: DataValueService = DataValueService(client)
     override suspend fun getDataValues(bundle: AggregatedDataCallBundle): List<DataValue> {
         val apiResponse = service.getDataValues(
             fields = DataValueFields.allFields,

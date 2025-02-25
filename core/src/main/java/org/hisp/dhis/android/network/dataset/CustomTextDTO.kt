@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.network.dataset
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataset.CustomText
+import org.hisp.dhis.android.core.dataset.TextAlign
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.Section;
+@Serializable
+internal data class CustomTextDTO(
+    val header: String?,
+    val subheader: String?,
+    val align: String?,
+) {
+    fun toDomain(): CustomText {
+        return CustomText.builder()
+            .header(header)
+            .subHeader(subheader)
+            .align(align?.let { TextAlign.from(it) })
+            .build()
+    }
+}
 
-public class SectionSamples {
-
-    public static Section getSection() {
-        Section.Builder sectionBuilder = Section.builder();
-        fillIdentifiableProperties(sectionBuilder);
-        sectionBuilder
-                .id(1L)
-                .description("descr")
-                .sortOrder(2)
-                .showRowTotals(true)
-                .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"))
-                .disableDataElementAutoGrouping(true)
-                .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions());
-        return sectionBuilder.build();
+internal fun TextAlign.Companion.from(key: String): TextAlign {
+    return when (key) {
+        "line-end" -> TextAlign.LINE_END
+        "line-start" -> TextAlign.LINE_START
+        "center" -> TextAlign.CENTER
+        else -> throw IllegalArgumentException("Unsupported TextAlign apiValue: $key")
     }
 }

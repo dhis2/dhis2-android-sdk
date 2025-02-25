@@ -25,28 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.data.dataset;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.Section;
-
-public class SectionSamples {
-
-    public static Section getSection() {
-        Section.Builder sectionBuilder = Section.builder();
-        fillIdentifiableProperties(sectionBuilder);
-        sectionBuilder
-                .id(1L)
-                .description("descr")
-                .sortOrder(2)
-                .showRowTotals(true)
-                .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"))
-                .disableDataElementAutoGrouping(true)
-                .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions());
-        return sectionBuilder.build();
-    }
+enum class TabsDirection {
+    HORIZONTAL,
+    VERTICAL,
 }

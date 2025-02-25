@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataset.internal.DisplayOptionsColumnAdapter;
+import org.hisp.dhis.android.core.dataset.internal.SectionDisplayOptionsColumnAdapter;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.List;
@@ -84,8 +84,8 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
     public abstract Boolean disableDataElementAutoGrouping();
 
     @Nullable
-    @ColumnAdapter(DisplayOptionsColumnAdapter.class)
-    public abstract DisplayOptions displayOptions();
+    @ColumnAdapter(SectionDisplayOptionsColumnAdapter.class)
+    public abstract SectionDisplayOptions displayOptions();
 
     public static Builder builder() {
         return new $$AutoValue_Section.Builder();
@@ -119,7 +119,7 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
 
         public abstract Builder disableDataElementAutoGrouping(Boolean disableDataElementAutoGrouping);
 
-        public abstract Builder displayOptions(DisplayOptions displayOptions);
+        public abstract Builder displayOptions(SectionDisplayOptions sectionDisplayOptions);
 
         public abstract Section build();
     }

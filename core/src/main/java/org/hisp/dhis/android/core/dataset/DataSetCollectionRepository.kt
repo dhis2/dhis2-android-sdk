@@ -145,6 +145,22 @@ class DataSetCollectionRepository internal constructor(
         return byOrganisationUnitList(listOf(uid))
     }
 
+    fun byHeader(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.HEADER)
+    }
+
+    fun bySubHeader(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.SUB_HEADER)
+    }
+
+    fun byCustomTextAlign(): EnumFilterConnector<DataSetCollectionRepository, TextAlign> {
+        return cf.enumC(DataSetTableInfo.Columns.CUSTOM_TEXT_ALIGN)
+    }
+
+    fun byTabsDirection(): EnumFilterConnector<DataSetCollectionRepository, TabsDirection> {
+        return cf.enumC(DataSetTableInfo.Columns.TABS_DIRECTION)
+    }
+
     fun byOrganisationUnitList(uids: List<String>): DataSetCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
             DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),

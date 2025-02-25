@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.network.dataset
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
+import org.hisp.dhis.android.core.dataset.TabsDirection
+import org.hisp.dhis.android.core.dataset.TabsDirection.HORIZONTAL
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.Section;
-
-public class SectionSamples {
-
-    public static Section getSection() {
-        Section.Builder sectionBuilder = Section.builder();
-        fillIdentifiableProperties(sectionBuilder);
-        sectionBuilder
-                .id(1L)
-                .description("descr")
-                .sortOrder(2)
-                .showRowTotals(true)
-                .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"))
-                .disableDataElementAutoGrouping(true)
-                .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions());
-        return sectionBuilder.build();
+@Serializable
+internal data class DataSetDisplayOptionsDTO(
+    val customText: CustomTextDTO?,
+    val tabsDirection: String?,
+) {
+    fun toDomain(): DataSetDisplayOptions {
+        return DataSetDisplayOptions.builder().apply {
+            customText?.let { customText(it.toDomain()) }
+            tabsDirection?.let {
+                val parsedDirection = try {
+                    TabsDirection.valueOf(tabsDirection.uppercase())
+                } catch (e: IllegalArgumentException) {
+                    HORIZONTAL
+                }
+                tabsDirection(parsedDirection)
+            }
+        }.build()
     }
 }

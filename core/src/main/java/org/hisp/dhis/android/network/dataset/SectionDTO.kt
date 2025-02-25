@@ -58,22 +58,22 @@ internal data class SectionDTO(
     val displayOptions: String?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Section {
-        val jsonParser = KotlinxJsonParser.instance
-        val displayOptionsDTO = displayOptions?.let {
-            jsonParser.decodeFromString<DisplayOptionsDTO>(it)
-        }
-        return Section.builder()
-            .applyBaseIdentifiableFields(this)
-            .description(description)
-            .sortOrder(sortOrder)
-            .showRowTotals(showRowTotals)
-            .showColumnTotals(showColumnTotals)
-            .dataSet(dataSet?.toDomain())
-            .dataElements(dataElements.map { DataElement.builder().uid(it.id).build() })
-            .greyedFields(greyedFields.map { it.toDomain() })
-            .indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            .disableDataElementAutoGrouping(disableDataElementAutoGrouping)
-            .displayOptions(displayOptionsDTO?.toDomain())
-            .build()
+        return Section.builder().apply {
+            applyBaseIdentifiableFields(this@SectionDTO)
+            description(description)
+            sortOrder(sortOrder)
+            showRowTotals(showRowTotals)
+            showColumnTotals(showColumnTotals)
+            dataSet(dataSet?.toDomain())
+            dataElements(dataElements.map { DataElement.builder().uid(it.id).build() })
+            greyedFields(greyedFields.map { it.toDomain() })
+            indicators(indicators.map { Indicator.builder().uid(it.id).build() })
+            disableDataElementAutoGrouping(disableDataElementAutoGrouping)
+            displayOptions?.let {
+                displayOptions(
+                    KotlinxJsonParser.instance.decodeFromString(SectionDisplayOptionsDTO.serializer(), it).toDomain(),
+                )
+            }
+        }.build()
     }
 }

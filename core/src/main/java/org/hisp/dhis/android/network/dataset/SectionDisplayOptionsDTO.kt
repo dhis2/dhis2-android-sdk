@@ -26,21 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset
+package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.dataset.DisplayOptions
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
 import org.hisp.dhis.android.core.dataset.SectionPivotMode
 
-class DisplayOptionsSamples {
-    companion object {
-        @JvmStatic
-        fun getDisplayOptions(): DisplayOptions {
-            return DisplayOptions.builder()
-                .pivotMode(SectionPivotMode.DEFAULT)
-                .pivotedCategory("pivotedCategory")
-                .afterSectionText("afterSectionText")
-                .beforeSectionText("beforeSectionText")
-                .build()
-        }
+@Serializable
+internal data class SectionDisplayOptionsDTO(
+    val pivotMode: String?,
+    val pivotedCategory: String?,
+    val afterSectionText: String?,
+    val beforeSectionText: String?,
+) {
+    fun toDomain(): SectionDisplayOptions {
+        return SectionDisplayOptions.builder()
+            .pivotMode(pivotMode.takeIf { !it.isNullOrEmpty() }?.let { SectionPivotMode.from(it) })
+            .pivotedCategory(pivotedCategory.takeIf { !it.isNullOrEmpty() })
+            .afterSectionText(afterSectionText.takeIf { !it.isNullOrEmpty() })
+            .beforeSectionText(beforeSectionText.takeIf { !it.isNullOrEmpty() })
+            .build()
+    }
+}
+
+internal fun SectionPivotMode.Companion.from(key: String): SectionPivotMode {
+    return when (key) {
+        "n/a" -> SectionPivotMode.DEFAULT
+        "pivot" -> SectionPivotMode.PIVOT
+        "move_categories" -> SectionPivotMode.MOVE_CATEGORIES
+        else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $key")
     }
 }

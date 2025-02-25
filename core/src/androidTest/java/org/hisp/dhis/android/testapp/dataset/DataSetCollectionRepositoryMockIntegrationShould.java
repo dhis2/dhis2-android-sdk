@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.TabsDirection;
+import org.hisp.dhis.android.core.dataset.TextAlign;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -38,8 +42,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -192,7 +194,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byRenderAsTabs().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size()).isEqualTo(1);
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -254,6 +256,43 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
                 .blockingGet();
         assertThat(dataSetSearch.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void filter_by_header() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
+                .byHeader().eq("Title")
+                .blockingGet();
+        assertThat(dataSets.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_sub_header() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
+                .bySubHeader().eq("Subtitle")
+                .blockingGet();
+        assertThat(dataSets.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_custom_text_align() {
+        List<DataSet> dataSets = d2.dataSetModule().dataSets()
+                .byCustomTextAlign().eq(TextAlign.LINE_END)
+                .blockingGet();
+        assertThat(dataSets.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_tabs_direction() {
+        List<DataSet> verticalDataSets = d2.dataSetModule().dataSets()
+                .byTabsDirection().eq(TabsDirection.VERTICAL)
+                .blockingGet();
+        assertThat(verticalDataSets.size()).isEqualTo(1);
+
+        List<DataSet> horizontalDataSets = d2.dataSetModule().dataSets()
+                .byTabsDirection().eq(TabsDirection.HORIZONTAL)
+                .blockingGet();
+        assertThat(horizontalDataSets.size()).isEqualTo(1);
     }
 
     @Test

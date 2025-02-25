@@ -5398,6 +5398,22 @@ public class org/hisp/dhis/android/core/dataelement/DataElementTableInfo$Columns
 	public fun all ()[Ljava/lang/String;
 }
 
+public abstract class org/hisp/dhis/android/core/dataset/CustomText {
+	public fun <init> ()V
+	public abstract fun align ()Lorg/hisp/dhis/android/core/dataset/TextAlign;
+	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/CustomText$Builder;
+	public abstract fun header ()Ljava/lang/String;
+	public abstract fun subHeader ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/CustomText$Builder {
+	public fun <init> ()V
+	public abstract fun align (Lorg/hisp/dhis/android/core/dataset/TextAlign;)Lorg/hisp/dhis/android/core/dataset/CustomText$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/CustomText;
+	public abstract fun header (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/CustomText$Builder;
+	public abstract fun subHeader (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/CustomText$Builder;
+}
+
 public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod : org/hisp/dhis/android/core/common/BaseObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
@@ -5441,6 +5457,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis
 	public abstract fun dataElementDecoration ()Ljava/lang/Boolean;
 	public abstract fun dataInputPeriods ()Ljava/util/List;
 	public abstract fun dataSetElements ()Ljava/util/List;
+	public abstract fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions;
 	public abstract fun expiryDays ()Ljava/lang/Double;
 	public abstract fun fieldCombinationRequired ()Ljava/lang/Boolean;
 	public abstract fun indicators ()Ljava/util/List;
@@ -5470,6 +5487,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet$Builder : org/h
 	public abstract fun dataElementDecoration (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun dataInputPeriods (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun dataSetElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
+	public abstract fun displayOptions (Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun expiryDays (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun fieldCombinationRequired (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
@@ -5492,9 +5510,11 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun byAccessDataWrite ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byCategoryComboUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byColor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byCustomTextAlign ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byDataElementDecoration ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byExpiryDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byFieldCombinationRequired ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byHeader ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byIcon ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byMobile ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byNoValueRequiresComment ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
@@ -5507,6 +5527,8 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun byRenderAsTabs ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byRenderHorizontally ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun bySkipOffline ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun bySubHeader ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byTabsDirection ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byTimelyDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byValidCompleteOnly ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byVersion ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
@@ -5622,6 +5644,20 @@ public class org/hisp/dhis/android/core/dataset/DataSetDataElementLinkTableInfo$
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 	public fun whereUpdate ()[Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/DataSetDisplayOptions {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions$Builder;
+	public abstract fun customText ()Lorg/hisp/dhis/android/core/dataset/CustomText;
+	public abstract fun tabsDirection ()Lorg/hisp/dhis/android/core/dataset/TabsDirection;
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/DataSetDisplayOptions$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions;
+	public abstract fun customText (Lorg/hisp/dhis/android/core/dataset/CustomText;)Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions$Builder;
+	public abstract fun tabsDirection (Lorg/hisp/dhis/android/core/dataset/TabsDirection;)Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSetEditableStatus {
@@ -5832,9 +5868,11 @@ public final class org/hisp/dhis/android/core/dataset/DataSetTableInfo {
 public class org/hisp/dhis/android/core/dataset/DataSetTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
 	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
 	public static final field CATEGORY_COMBO Ljava/lang/String;
+	public static final field CUSTOM_TEXT_ALIGN Ljava/lang/String;
 	public static final field DATA_ELEMENT_DECORATION Ljava/lang/String;
 	public static final field EXPIRY_DAYS Ljava/lang/String;
 	public static final field FIELD_COMBINATION_REQUIRED Ljava/lang/String;
+	public static final field HEADER Ljava/lang/String;
 	public static final field MOBILE Ljava/lang/String;
 	public static final field NOTIFY_COMPLETING_USER Ljava/lang/String;
 	public static final field NO_VALUE_REQUIRES_COMMENT Ljava/lang/String;
@@ -5843,30 +5881,14 @@ public class org/hisp/dhis/android/core/dataset/DataSetTableInfo$Columns : org/h
 	public static final field RENDER_AS_TABS Ljava/lang/String;
 	public static final field RENDER_HORIZONTALLY Ljava/lang/String;
 	public static final field SKIP_OFFLINE Ljava/lang/String;
+	public static final field SUB_HEADER Ljava/lang/String;
+	public static final field TABS_DIRECTION Ljava/lang/String;
 	public static final field TIMELY_DAYS Ljava/lang/String;
 	public static final field VALID_COMPLETE_ONLY Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
 	public static final field WORKFLOW Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/dataset/DisplayOptions {
-	public fun <init> ()V
-	public abstract fun afterSectionText ()Ljava/lang/String;
-	public abstract fun beforeSectionText ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
-	public abstract fun pivotMode ()Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
-	public abstract fun pivotedCategory ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/dataset/DisplayOptions$Builder {
-	public fun <init> ()V
-	public abstract fun afterSectionText (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
-	public abstract fun beforeSectionText (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DisplayOptions;
-	public abstract fun pivotMode (Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
-	public abstract fun pivotedCategory (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -5877,7 +5899,7 @@ public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis
 	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun disableDataElementAutoGrouping ()Ljava/lang/Boolean;
-	public abstract fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/DisplayOptions;
+	public abstract fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
 	public abstract fun greyedFields ()Ljava/util/List;
 	public abstract fun indicators ()Ljava/util/List;
 	public abstract fun showColumnTotals ()Ljava/lang/Boolean;
@@ -5893,7 +5915,7 @@ public abstract class org/hisp/dhis/android/core/dataset/Section$Builder : org/h
 	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun disableDataElementAutoGrouping (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun displayOptions (Lorg/hisp/dhis/android/core/dataset/DisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public abstract fun displayOptions (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun greyedFields (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
@@ -5949,6 +5971,24 @@ public class org/hisp/dhis/android/core/dataset/SectionDataElementLinkTableInfo$
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 	public fun whereUpdate ()[Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/SectionDisplayOptions {
+	public fun <init> ()V
+	public abstract fun afterSectionText ()Ljava/lang/String;
+	public abstract fun beforeSectionText ()Ljava/lang/String;
+	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder;
+	public abstract fun pivotMode ()Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
+	public abstract fun pivotedCategory ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder {
+	public fun <init> ()V
+	public abstract fun afterSectionText (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder;
+	public abstract fun beforeSectionText (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
+	public abstract fun pivotMode (Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;)Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder;
+	public abstract fun pivotedCategory (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -6028,6 +6068,27 @@ public class org/hisp/dhis/android/core/dataset/SectionTableInfo$Columns : org/h
 	public fun all ()[Ljava/lang/String;
 }
 
+public final class org/hisp/dhis/android/core/dataset/TabsDirection : java/lang/Enum {
+	public static final field HORIZONTAL Lorg/hisp/dhis/android/core/dataset/TabsDirection;
+	public static final field VERTICAL Lorg/hisp/dhis/android/core/dataset/TabsDirection;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/TabsDirection;
+	public static fun values ()[Lorg/hisp/dhis/android/core/dataset/TabsDirection;
+}
+
+public final class org/hisp/dhis/android/core/dataset/TextAlign : java/lang/Enum {
+	public static final field CENTER Lorg/hisp/dhis/android/core/dataset/TextAlign;
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/TextAlign$Companion;
+	public static final field LINE_END Lorg/hisp/dhis/android/core/dataset/TextAlign;
+	public static final field LINE_START Lorg/hisp/dhis/android/core/dataset/TextAlign;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/TextAlign;
+	public static fun values ()[Lorg/hisp/dhis/android/core/dataset/TextAlign;
+}
+
+public final class org/hisp/dhis/android/core/dataset/TextAlign$Companion {
+}
+
 public class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder : org/hisp/dhis/android/core/arch/db/querybuilders/internal/ReadOnlySQLStatementBuilder {
 	public static final field AS Ljava/lang/String;
 	public static final field ATTRIBUTE_OPTION_COMBO_UID_ALIAS Ljava/lang/String;
@@ -6085,14 +6146,6 @@ public final class org/hisp/dhis/android/core/dataset/internal/DataSetModuleImpl
 	public fun dataSetInstances ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceCollectionRepository;
 	public fun dataSets ()Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;
 	public fun sections ()Lorg/hisp/dhis/android/core/dataset/SectionCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DisplayOptionsColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DisplayOptions;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/dataset/DisplayOptions;)V
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {

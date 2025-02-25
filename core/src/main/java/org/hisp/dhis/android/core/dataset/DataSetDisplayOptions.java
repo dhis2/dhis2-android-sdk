@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.dataset;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.Section;
+import com.google.auto.value.AutoValue;
 
-public class SectionSamples {
+@AutoValue
+public abstract class DataSetDisplayOptions {
 
-    public static Section getSection() {
-        Section.Builder sectionBuilder = Section.builder();
-        fillIdentifiableProperties(sectionBuilder);
-        sectionBuilder
-                .id(1L)
-                .description("descr")
-                .sortOrder(2)
-                .showRowTotals(true)
-                .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"))
-                .disableDataElementAutoGrouping(true)
-                .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions());
-        return sectionBuilder.build();
+    @Nullable
+    public abstract CustomText customText();
+
+    @Nullable
+    public abstract TabsDirection tabsDirection();
+
+    public static Builder builder() {
+        return new AutoValue_DataSetDisplayOptions.Builder();
     }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder customText(CustomText customText);
+
+        public abstract Builder tabsDirection(TabsDirection tabsDirection);
+
+        public abstract DataSetDisplayOptions build();
+    }
+
 }

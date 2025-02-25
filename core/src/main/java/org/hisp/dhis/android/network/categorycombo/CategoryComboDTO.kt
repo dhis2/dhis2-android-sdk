@@ -41,7 +41,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class CategoryComboDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -56,8 +56,8 @@ internal data class CategoryComboDTO(
         return CategoryCombo.builder()
             .applyBaseIdentifiableFields(this)
             .isDefault(this.isDefault)
-            .categories(this.categories.map { Category.builder().uid(it.uid).build() })
-            .categoryOptionCombos(this.categoryOptionCombos.map { it.toDomain(this.uid) })
+            .categories(this.categories.map { Category.builder().uid(it.id).build() })
+            .categoryOptionCombos(this.categoryOptionCombos.map { it.toDomain(this.id) })
             .build()
     }
 }

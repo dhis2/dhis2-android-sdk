@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.visualization
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
@@ -42,7 +41,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class VisualizationDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -110,9 +109,9 @@ internal data class VisualizationDTO(
             displayDensity?.let { displayDensity(DisplayDensity.valueOf(it)) }
             digitGroupSeparator?.let { digitGroupSeparator(DigitGroupSeparator.valueOf(it)) }
             aggregationType?.let { aggregationType(AggregationType.valueOf(it)) }
-            columns(columns.map { it.toDomain(uid, LayoutPosition.COLUMN) })
-            rows(rows.map { it.toDomain(uid, LayoutPosition.ROW) })
-            filters(filters.map { it.toDomain(uid, LayoutPosition.FILTER) })
+            columns(columns.map { it.toDomain(id, LayoutPosition.COLUMN) })
+            rows(rows.map { it.toDomain(id, LayoutPosition.ROW) })
+            filters(filters.map { it.toDomain(id, LayoutPosition.FILTER) })
         }.build()
     }
 }

@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
+import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
 internal data class NewRelationshipDTO(
@@ -42,8 +42,8 @@ internal data class NewRelationshipDTO(
     val relationship: String?,
     val relationshipType: String?,
     val relationshipName: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
+    val createdAt: DateStringDTO?,
+    val updatedAt: DateStringDTO?,
     val bidirectional: Boolean?,
     val from: NewRelationshipItemDTO?,
     val to: NewRelationshipItemDTO?,
@@ -54,8 +54,8 @@ internal data class NewRelationshipDTO(
             .uid(relationship)
             .relationshipType(relationshipType)
             .name(relationshipName)
-            .created(createdAt.toJavaDate())
-            .lastUpdated(updatedAt.toJavaDate())
+            .created(createdAt?.toDomain())
+            .lastUpdated(updatedAt?.toDomain())
             .from(from?.toDomain(relationship, RelationshipConstraintType.FROM))
             .to(to?.toDomain(relationship, RelationshipConstraintType.TO))
             .deleted(deleted)
@@ -69,8 +69,8 @@ internal fun NewTrackerImporterRelationship.toDto(): NewRelationshipDTO {
         relationship = uid,
         relationshipType = relationshipType,
         relationshipName = relationshipName,
-        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAt = createdAt?.toDto(),
+        updatedAt = updatedAt?.toDto(),
         bidirectional = bidirectional,
         from = from?.toDto(),
         to = to?.toDto(),

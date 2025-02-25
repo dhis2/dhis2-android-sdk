@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.optiongroup
+package org.hisp.dhis.android.network.common.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.core.util.toJavaSimpleDate
+import java.util.Date
 
+@JvmInline
 @Serializable
-internal data class OptionGroupDTO(
-    override val id: String,
-    override val code: String?,
-    override val name: String?,
-    override val displayName: String?,
-    override val created: String?,
-    override val lastUpdated: String?,
-    override val deleted: Boolean?,
-    val optionSet: ObjectWithUidDTO?,
-    val options: List<ObjectWithUidDTO> = emptyList(),
-) : BaseIdentifiableObjectDTO {
-    fun toDomain(): OptionGroup {
-        return OptionGroup.builder()
-            .applyBaseIdentifiableFields(this)
-            .optionSet(optionSet?.toDomain())
-            .options(options.map { it.toDomain() })
-            .build()
+internal value class SimpleDateStringDTO(
+    val date: String?,
+) {
+    fun toDomain(): Date? {
+        return date.toJavaSimpleDate()
     }
 }
 
-@Serializable
-internal class OptionGroupPayload(
-    override val pager: PagerDTO?,
-    @SerialName("optionGroups") override val items: List<OptionGroupDTO> = emptyList(),
-) : PayloadJson<OptionGroupDTO>(pager, items)
+internal fun Date.toSimpleDateDto(): SimpleDateStringDTO {
+    return SimpleDateStringDTO(this.simpleDateFormat())
+}

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.trackervisualization
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class TrackerVisualizationDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -67,8 +66,8 @@ internal data class TrackerVisualizationDTO(
             program(program?.toDomain())
             programStage(programStage?.toDomain())
             trackedEntityType(trackedEntityType?.toDomain())
-            columns(columns.map { it.toDomain(uid, LayoutPosition.COLUMN) })
-            filters(filters.map { it.toDomain(uid, LayoutPosition.FILTER) })
+            columns(columns.map { it.toDomain(id, LayoutPosition.COLUMN) })
+            filters(filters.map { it.toDomain(id, LayoutPosition.FILTER) })
         }.build()
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.user
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
@@ -36,7 +35,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class UserGroupDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,

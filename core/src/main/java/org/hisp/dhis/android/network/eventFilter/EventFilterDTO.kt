@@ -38,7 +38,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class EventFilterDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -56,7 +56,7 @@ internal data class EventFilterDTO(
             .program(program)
             .programStage(programStage)
             .description(description)
-            .eventQueryCriteria(eventQueryCriteria?.toDomain(uid))
+            .eventQueryCriteria(eventQueryCriteria?.toDomain(id))
             .build()
     }
 }

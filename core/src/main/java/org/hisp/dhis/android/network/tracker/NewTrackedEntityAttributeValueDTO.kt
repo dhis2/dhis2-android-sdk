@@ -29,25 +29,25 @@
 package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.ValueDTO
+import org.hisp.dhis.android.network.common.dto.toDto
 
 @Serializable
 internal data class NewTrackedEntityAttributeValueDTO(
     val attribute: String?,
     val value: ValueDTO?,
-    val createdAt: String?,
-    val updatedAt: String?,
+    val createdAt: DateStringDTO?,
+    val updatedAt: DateStringDTO?,
 ) {
     fun toDomain(teiUid: String): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder()
             .trackedEntityAttribute(attribute)
             .value(value?.value)
-            .created(createdAt.toJavaDate())
-            .lastUpdated(updatedAt.toJavaDate())
+            .created(createdAt?.toDomain())
+            .lastUpdated(updatedAt?.toDomain())
             .trackedEntityInstance(teiUid)
             .build()
     }
@@ -57,7 +57,7 @@ internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackedEn
     return NewTrackedEntityAttributeValueDTO(
         attribute = trackedEntityAttribute,
         value = ValueDTO(value),
-        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAt = createdAt?.toDto(),
+        updatedAt = updatedAt?.toDto(),
     )
 }

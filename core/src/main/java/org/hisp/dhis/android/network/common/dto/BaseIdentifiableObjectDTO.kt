@@ -31,7 +31,7 @@ package org.hisp.dhis.android.network.common.dto
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
 internal interface BaseIdentifiableObjectDTO {
-    val uid: String
+    val id: String
     val code: String?
     val name: String?
     val displayName: String?
@@ -42,7 +42,7 @@ internal interface BaseIdentifiableObjectDTO {
 
 internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDTO): T where
       T : BaseIdentifiableObject.Builder<T> {
-    uid(item.uid)
+    uid(item.id)
     code(item.code)
     name(item.name)
     displayName(item.displayName)

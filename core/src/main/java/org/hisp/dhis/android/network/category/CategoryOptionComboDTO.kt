@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.category
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
@@ -39,7 +38,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class CategoryOptionComboDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -52,7 +51,7 @@ internal data class CategoryOptionComboDTO(
         return CategoryOptionCombo.builder()
             .applyBaseIdentifiableFields(this)
             .categoryCombo(ObjectWithUid.create(categoryComboUid))
-            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
+            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.id).build() })
             .build()
     }
 }

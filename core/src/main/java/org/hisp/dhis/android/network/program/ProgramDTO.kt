@@ -48,7 +48,7 @@ import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
 
 @Serializable
 internal data class ProgramDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,

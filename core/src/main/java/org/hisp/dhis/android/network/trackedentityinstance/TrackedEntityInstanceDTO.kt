@@ -32,10 +32,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
@@ -48,10 +47,10 @@ import org.hisp.dhis.android.network.relationship.toDto
 internal data class TrackedEntityInstanceDTO(
     override val deleted: Boolean?,
     val trackedEntityInstance: String,
-    val created: String?,
-    val lastUpdated: String?,
-    val createdAtClient: String?,
-    val lastUpdatedAtClient: String?,
+    val created: DateStringDTO?,
+    val lastUpdated: DateStringDTO?,
+    val createdAtClient: DateStringDTO?,
+    val lastUpdatedAtClient: DateStringDTO?,
     val orgUnit: String?,
     val trackedEntityType: String?,
     val geometry: GeometryDTO?,
@@ -64,10 +63,10 @@ internal data class TrackedEntityInstanceDTO(
         return TrackedEntityInstance.builder().apply {
             deleted(deleted)
             uid(trackedEntityInstance)
-            created(created.toJavaDate())
-            lastUpdated(lastUpdated.toJavaDate())
-            createdAtClient(createdAtClient.toJavaDate())
-            lastUpdatedAtClient(lastUpdatedAtClient.toJavaDate())
+            created(created?.toDomain())
+            lastUpdated(lastUpdated?.toDomain())
+            createdAtClient(createdAtClient?.toDomain())
+            lastUpdatedAtClient(lastUpdatedAtClient?.toDomain())
             organisationUnit(orgUnit)
             trackedEntityType(trackedEntityType)
             geometry(geometry?.toDomain())
@@ -83,10 +82,10 @@ internal fun TrackedEntityInstance.toDto(): TrackedEntityInstanceDTO {
     return TrackedEntityInstanceDTO(
         deleted = deleted(),
         trackedEntityInstance = uid(),
-        created = created().dateFormat(),
-        lastUpdated = lastUpdated().dateFormat(),
-        createdAtClient = createdAtClient().dateFormat(),
-        lastUpdatedAtClient = lastUpdatedAtClient().dateFormat(),
+        created = created()?.toDto(),
+        lastUpdated = lastUpdated()?.toDto(),
+        createdAtClient = createdAtClient()?.toDto(),
+        lastUpdatedAtClient = lastUpdatedAtClient()?.toDto(),
         orgUnit = organisationUnit(),
         trackedEntityType = trackedEntityType(),
         geometry = geometry()?.toDto(),

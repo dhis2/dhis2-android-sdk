@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.network.common.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Serializable
 internal data class ObjectWithUidDTO(
-    @SerialName("id") val uid: String,
+    val id: String,
 ) {
     fun toDomain(): ObjectWithUid {
-        return ObjectWithUid.create(uid)
+        return ObjectWithUid.create(id)
     }
 }

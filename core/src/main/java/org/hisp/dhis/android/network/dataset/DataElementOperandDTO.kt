@@ -28,21 +28,20 @@
 
 package org.hisp.dhis.android.network.dataset
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
 internal data class DataElementOperandDTO(
-    @SerialName("id") val uid: String,
+    val id: String,
     val deleted: Boolean?,
     val dataElement: ObjectWithUidDTO?,
     val categoryOptionCombo: ObjectWithUidDTO?,
 ) {
     fun toDomain(): DataElementOperand {
         return DataElementOperand.builder()
-            .uid(uid)
+            .uid(id)
             .deleted(deleted)
             .dataElement(dataElement?.toDomain())
             .categoryOptionCombo(categoryOptionCombo?.toDomain())

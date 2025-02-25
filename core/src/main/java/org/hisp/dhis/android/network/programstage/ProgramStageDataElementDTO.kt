@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.programstage
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
@@ -38,7 +37,7 @@ import org.hisp.dhis.android.network.dataelement.DataElementDTO
 
 @Serializable
 internal data class ProgramStageDataElementDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,

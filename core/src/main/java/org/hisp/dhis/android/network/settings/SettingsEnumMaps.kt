@@ -72,7 +72,7 @@ internal fun TrackerExporterVersion.Companion.from(key: String): TrackerExporter
     return when (key) {
         "V1" -> TrackerExporterVersion.V1
         "V2" -> TrackerExporterVersion.V2
-        else -> TrackerExporterVersion.V1
+        else -> throw IllegalArgumentException("Invalid version: $key")
     }
 }
 
@@ -80,7 +80,7 @@ internal fun TrackerImporterVersion.Companion.from(key: String): TrackerImporter
     return when (key) {
         "V1" -> TrackerImporterVersion.V1
         "V2" -> TrackerImporterVersion.V2
-        else -> TrackerImporterVersion.V1
+        else -> throw IllegalArgumentException("Invalid version: $key")
     }
 }
 

@@ -202,10 +202,14 @@ internal class DataSetInstanceServiceImpl(
 
                     dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
                         ?.map { dataValue ->
-                            DataElementOperand.builder()
-                                .dataElement(ObjectWithUid.create(dataValue.dataElement()))
-                                .categoryOptionCombo(ObjectWithUid.create(dataValue.categoryOptionCombo()))
-                                .build()
+                            DataElementOperand.builder().apply {
+                                uid(
+                                    listOfNotNull(dataValue.dataElement(), dataValue.categoryOptionCombo())
+                                        .joinToString("."),
+                                )
+                                dataValue.dataElement()?.let { dataElement(ObjectWithUid.create(it)) }
+                                dataValue.categoryOptionCombo()?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
+                            }.build()
                         } ?: emptyList()
                 } ?: emptyList()
             }

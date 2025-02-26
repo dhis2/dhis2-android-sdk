@@ -331,7 +331,8 @@ class DataSetInstanceServiceShould {
             .assertValue { missingFields ->
                 missingFields.size == 1 &&
                     missingFields.first().dataElement()?.uid() == "de1" &&
-                    missingFields.first().categoryOptionCombo()?.uid() == "coc1"
+                    missingFields.first().categoryOptionCombo()?.uid() == "coc1" &&
+                    missingFields.first().uid() == "de1.coc1"
             }
     }
 }

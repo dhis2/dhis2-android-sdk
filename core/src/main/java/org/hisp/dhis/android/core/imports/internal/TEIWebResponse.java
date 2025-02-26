@@ -35,8 +35,6 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class TEIWebResponse extends WebResponse {
 
-    private static final String RESPONSE = "response"; // is called response from api
-
     @Nullable
     public abstract TEIImportSummaries response();
 

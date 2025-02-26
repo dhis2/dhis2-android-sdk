@@ -34,11 +34,6 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class ImportCount {
-    private static final String IMPORTED = "imported";
-    private static final String UPDATED = "updated";
-    private static final String DELETED = "deleted";
-    private static final String IGNORED = "ignored";
-
     public static final ImportCount EMPTY = ImportCount.create(0, 0, 0, 0);
 
     @NonNull

@@ -35,8 +35,6 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class RelationshipDeleteWebResponse extends WebResponse {
 
-    private static final String RESPONSE = "response";
-
     @Nullable
     public abstract RelationshipImportSummary response();
 

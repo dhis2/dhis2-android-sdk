@@ -35,8 +35,6 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class EventWebResponse extends WebResponse {
 
-    private static final String IMPORT_SUMMARIES = "response"; // is called response from api
-
     @Nullable
     public abstract EventImportSummaries response();
 

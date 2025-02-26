@@ -249,8 +249,7 @@ class DataSetInstanceServiceShould {
             ),
         ).thenReturn(dataValueQuery)
 
-        // Execute and test
-        dataSetInstanceService.missingMandatoryDataElementOperands(
+        dataSetInstanceService.getMissingMandatoryDataElementOperands(
             dataSetUid,
             firstPeriodId,
             orgUnitUid,
@@ -321,7 +320,7 @@ class DataSetInstanceServiceShould {
 
         whenever(finalRepo.blockingGet()).thenReturn(listOf(dataValue))
 
-        dataSetInstanceService.missingMandatoryFieldsCombination(
+        dataSetInstanceService.getMissingMandatoryFieldsCombination(
             dataSetUid,
             firstPeriodId,
             orgUnitUid,

@@ -51,28 +51,28 @@ interface DataSetInstanceService {
 
     fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
 
-    fun missingMandatoryDataElementOperands(
+    fun getMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<List<DataElementOperand>>
 
-    fun blockingMissingMandatoryDataElementOperands(
+    fun blockingGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand>
 
-    fun missingMandatoryFieldsCombination(
+    fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<List<DataElementOperand>>
 
-    fun blockingMissingMandatoryFieldsCombination(
+    fun blockingGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,

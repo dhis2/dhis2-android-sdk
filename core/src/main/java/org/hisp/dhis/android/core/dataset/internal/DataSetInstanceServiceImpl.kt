@@ -127,7 +127,7 @@ internal class DataSetInstanceServiceImpl(
         return dataSet.access().write() ?: false
     }
 
-    override fun missingMandatoryDataElementOperands(
+    override fun getMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -140,13 +140,13 @@ internal class DataSetInstanceServiceImpl(
         }
     }
 
-    override fun blockingMissingMandatoryDataElementOperands(
+    override fun blockingGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return missingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+        return getMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
             .blockingGet()
     }
 
@@ -169,7 +169,7 @@ internal class DataSetInstanceServiceImpl(
         } ?: false
     }
 
-    override fun missingMandatoryFieldsCombination(
+    override fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -215,13 +215,13 @@ internal class DataSetInstanceServiceImpl(
             }
         }
 
-    override fun blockingMissingMandatoryFieldsCombination(
+    override fun blockingGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return missingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+        return getMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
             .blockingGet()
     }
 

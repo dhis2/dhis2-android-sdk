@@ -77,7 +77,7 @@ class DataSetInstanceServiceMockIntegrationShould :
     @Test
     fun return_missing_mandatory_data_element_operands() {
         val dataElementOperands = d2.dataSetModule().dataSetInstanceService()
-            .blockingMissingMandatoryDataElementOperands(
+            .blockingGetMissingMandatoryDataElementOperands(
                 "lyLU2wR22tC",
                 "201908",
                 "DiszpKrYNg8",
@@ -92,7 +92,7 @@ class DataSetInstanceServiceMockIntegrationShould :
     @Test
     fun return_missing_mandatory_fields_combinations() {
         val dataElementOperands = d2.dataSetModule().dataSetInstanceService()
-            .blockingMissingMandatoryFieldsCombination(
+            .blockingGetMissingMandatoryFieldsCombination(
                 "BfMAe6Itzgt",
                 "201908",
                 "DiszpKrYNg8",

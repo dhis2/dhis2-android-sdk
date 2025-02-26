@@ -146,8 +146,12 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return getMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
-            .blockingGet()
+        return getMissingMandatoryDataElementOperands(
+            dataSetUid,
+            periodId,
+            organisationUnitUid,
+            attributeOptionComboUid,
+        ).blockingGet()
     }
 
     private fun hasDataValue(

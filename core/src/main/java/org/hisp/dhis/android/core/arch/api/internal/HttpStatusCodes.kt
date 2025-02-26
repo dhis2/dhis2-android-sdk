@@ -37,6 +37,7 @@ internal object HttpStatusCodes {
     const val REDIRECT_MAX = 399
 
     const val NOT_FOUND = 404
+    const val CONFLICT = 409
 
     const val INTERNAL_SERVER_ERROR = 500
 }

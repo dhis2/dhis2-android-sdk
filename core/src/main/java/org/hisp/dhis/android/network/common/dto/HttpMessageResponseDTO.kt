@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.common.dto
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 
 @Serializable
@@ -42,5 +43,13 @@ internal data class HttpMessageResponseDTO(
         return HttpMessageResponse.builder()
             .applyWebResponseFields(this)
             .build()
+    }
+
+    companion object {
+        fun toErrorClass(body: String): HttpMessageResponse {
+            return KotlinxJsonParser.instance
+                .decodeFromString(serializer(), body)
+                .toDomain()
+        }
     }
 }

@@ -273,13 +273,7 @@ abstract class EventAPIRealShould internal constructor(
     }
 
     private suspend fun postPayload(events: List<Event>): Result<EventWebResponse, D2Error> {
-        return apiCallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(409),
-            errorClass = EventWebResponse::class.java,
-        ) {
-            eventNetworkHandler.postEvents(events, strategy)
-        }
+        return eventNetworkHandler.postEvents(events, strategy)
     }
 
     private fun login() {

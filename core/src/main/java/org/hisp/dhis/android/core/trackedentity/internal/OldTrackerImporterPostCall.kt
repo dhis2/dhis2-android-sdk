@@ -30,15 +30,12 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse
-import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -48,7 +45,6 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreak
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterProgramOwnerPostCall
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceService
 import org.koin.core.annotation.Singleton
-import java.net.HttpURLConnection.HTTP_CONFLICT
 
 @Singleton
 @Suppress("LongParameterList")
@@ -59,7 +55,6 @@ internal class OldTrackerImporterPostCall internal constructor(
     private val eventNetworkHandler: EventNetworkHandler,
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val eventImportHandler: EventImportHandler,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
     private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall,
     private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
@@ -139,13 +134,7 @@ internal class OldTrackerImporterPostCall internal constructor(
             forcedState = State.UPLOADING,
         )
 
-        val response = coroutineAPICallExecutor.wrap(
-            storeError = true,
-            acceptedErrorCodes = listOf(HTTP_CONFLICT),
-            errorClass = TEIWebResponse::class.java,
-        ) {
-            networkHandler.postTrackedEntityInstances(trackedEntityInstances, "SYNC")
-        }
+        val response = networkHandler.postTrackedEntityInstances(trackedEntityInstances, "SYNC")
 
         return response.getOrThrow().let { webResponse ->
             teiWebResponseHandler.handleWebResponse(webResponse, trackedEntityInstances)
@@ -170,13 +159,7 @@ internal class OldTrackerImporterPostCall internal constructor(
 
             val strategy = "SYNC"
             try {
-                val webResponse = coroutineAPICallExecutor.wrap(
-                    storeError = true,
-                    acceptedErrorCodes = listOf(HTTP_CONFLICT),
-                    errorClass = EventWebResponse::class.java,
-                ) {
-                    eventNetworkHandler.postEvents(validEvents.items, strategy)
-                }.getOrThrow()
+                val webResponse = eventNetworkHandler.postEvents(validEvents.items, strategy).getOrThrow()
 
                 eventImportHandler.handleEventImportSummaries(
                     eventImportSummaries = webResponse.response()?.importSummaries(),

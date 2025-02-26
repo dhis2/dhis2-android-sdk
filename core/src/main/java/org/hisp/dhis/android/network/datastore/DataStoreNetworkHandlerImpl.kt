@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -80,7 +81,7 @@ internal class DataStoreNetworkHandlerImpl(
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
-            errorClass = HttpMessageResponse::class.java,
+            errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
             val apiResponse = service.postNamespaceKeyValue(
                 dataStoreEntry.namespace(),
@@ -96,7 +97,7 @@ internal class DataStoreNetworkHandlerImpl(
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
-            errorClass = HttpMessageResponse::class.java,
+            errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
             val apiResponse = service.putNamespaceKeyValue(
                 dataStoreEntry.namespace(),
@@ -112,7 +113,7 @@ internal class DataStoreNetworkHandlerImpl(
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
-            errorClass = HttpMessageResponse::class.java,
+            errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
             val apiResponse = service.deleteNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key())
             apiResponse.toDomain()

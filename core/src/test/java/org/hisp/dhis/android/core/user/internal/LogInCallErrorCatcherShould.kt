@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.Before
 import org.junit.Test
@@ -43,7 +42,7 @@ class LogInCallErrorCatcherShould {
 
     @Before
     fun setUp() {
-        catcher = UserAuthenticateCallErrorCatcher(objectMapper())
+        catcher = UserAuthenticateCallErrorCatcher()
     }
 
     @Test

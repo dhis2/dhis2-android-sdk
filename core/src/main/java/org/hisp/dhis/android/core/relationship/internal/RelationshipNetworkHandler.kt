@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.Relationship
 
 internal interface RelationshipNetworkHandler {
-    suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse
-    suspend fun postRelationship(relationships: List<Relationship>): RelationshipWebResponse
+    suspend fun deleteRelationship(relationship: String): Result<RelationshipDeleteWebResponse, D2Error>
+    suspend fun postRelationship(relationships: List<Relationship>): Result<RelationshipWebResponse, D2Error>
 }

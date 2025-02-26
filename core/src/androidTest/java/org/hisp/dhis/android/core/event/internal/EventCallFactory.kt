@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -39,6 +40,7 @@ internal object EventCallFactory {
     @JvmStatic
     suspend fun create(
         httpClient: HttpServiceClient,
+        coroutineAPICallExecutor: CoroutineAPICallExecutor,
         orgUnit: String?,
         pageSize: Int,
         uids: Collection<String> = emptyList(),
@@ -60,7 +62,7 @@ internal object EventCallFactory {
         )
 
         return OldEventEndpointCallFactory(
-            EventNetworkHandlerImpl(httpClient),
+            EventNetworkHandlerImpl(httpClient, coroutineAPICallExecutor),
         ).getCollectionCall(eventQuery)
     }
 }

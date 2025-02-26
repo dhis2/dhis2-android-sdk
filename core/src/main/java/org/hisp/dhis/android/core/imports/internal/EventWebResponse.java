@@ -28,21 +28,16 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_EventWebResponse.Builder.class)
 public abstract class EventWebResponse extends WebResponse {
 
     private static final String IMPORT_SUMMARIES = "response"; // is called response from api
 
     @Nullable
-    @JsonProperty(IMPORT_SUMMARIES)
     public abstract EventImportSummaries response();
 
     public static Builder builder() {
@@ -59,7 +54,6 @@ public abstract class EventWebResponse extends WebResponse {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(EventImportSummaries response);
 

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.datavalue
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.network.common.dto.WebResponseDTO
 
@@ -48,5 +49,13 @@ internal data class DataValueImportSummaryWebResponseDTO(
             status,
             message,
         )
+    }
+
+    companion object {
+        fun toErrorClass(body: String): DataValueImportSummaryWebResponse {
+            return KotlinxJsonParser.instance
+                .decodeFromString(serializer(), body)
+                .toDomain()
+        }
     }
 }

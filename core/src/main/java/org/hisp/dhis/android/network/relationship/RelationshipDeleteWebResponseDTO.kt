@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.relationship
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.network.common.dto.WebResponseDTO
 import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
@@ -46,5 +47,13 @@ internal data class RelationshipDeleteWebResponseDTO(
             .applyWebResponseFields(this)
             .response(response.toDomain())
             .build()
+    }
+
+    companion object {
+        fun toErrorClass(body: String): RelationshipDeleteWebResponse {
+            return KotlinxJsonParser.instance
+                .decodeFromString(serializer(), body)
+                .toDomain()
+        }
     }
 }

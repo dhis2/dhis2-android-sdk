@@ -10,6 +10,7 @@ detekt = "1.21.0"
 dokka = "1.9.20"
 nexusPublish = "2.0.0"
 apiCompatibility = "0.16.3"
+cyclonedx = "2.1.0"
 
 targetSdkVersion = "34"
 minSdkVersion = "21"
@@ -123,6 +124,7 @@ androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testin
 livedata-testing-ktx = { group = "com.jraska.livedata", name = "testing-ktx", version.ref = "liveDataTesting" }
 
 [plugins]
+cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "apiCompatibility" }

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class ProgramRuleDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -59,7 +59,7 @@ internal data class ProgramRuleDTO(
             .condition(condition)
             .program(program?.toDomain())
             .programStage(programStage?.toDomain())
-            .programRuleActions(programRuleActions.map { it.toDomain(uid) })
+            .programRuleActions(programRuleActions.map { it.toDomain(id) })
             .build()
     }
 }

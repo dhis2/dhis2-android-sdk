@@ -47,7 +47,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
 internal data class DataSetDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -103,10 +103,10 @@ internal data class DataSetDTO(
             renderHorizontally(renderHorizontally)
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
-            indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
+            indicators(indicators.map { Indicator.builder().uid(it.id).build() })
             DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
-            dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
+            dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
             displayOptions(
                 displayOptions?.let {
                     KotlinxJsonParser.instance.decodeFromString(DataSetDisplayOptionsDTO.serializer(), it).toDomain()

@@ -40,7 +40,7 @@ class Visualization36DTOShould : BaseObjectKotlinxShould("visualization/visualiz
     override fun map_from_json_string() {
         val visualization36 = deserialize(Visualization36DTO.serializer())
 
-        assertThat(visualization36.uid).isEqualTo("PYBH8ZaAQnC")
+        assertThat(visualization36.id).isEqualTo("PYBH8ZaAQnC")
         assertThat(visualization36.type).isEqualTo(VisualizationType.PIVOT_TABLE.name)
 
         assertThat(visualization36.legendDisplayStrategy).isEqualTo(LegendStrategy.FIXED.name)

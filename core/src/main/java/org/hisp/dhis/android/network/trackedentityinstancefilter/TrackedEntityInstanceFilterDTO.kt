@@ -40,7 +40,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class TrackedEntityInstanceFilterDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -61,8 +61,8 @@ internal data class TrackedEntityInstanceFilterDTO(
             program?.let { program(program.toDomain()) }
             description(description)
             sortOrder(sortOrder)
-            entityQueryCriteria(entityQueryCriteria?.toDomain(uid))
-            eventFilters(eventFilters?.map { it.toDomain(uid) } ?: emptyList())
+            entityQueryCriteria(entityQueryCriteria?.toDomain(id))
+            eventFilters(eventFilters?.map { it.toDomain(id) } ?: emptyList())
         }.build()
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.dataset
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class SectionDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -66,9 +65,9 @@ internal data class SectionDTO(
             showRowTotals(showRowTotals)
             showColumnTotals(showColumnTotals)
             dataSet(dataSet?.toDomain())
-            dataElements(dataElements.map { DataElement.builder().uid(it.uid).build() })
+            dataElements(dataElements.map { DataElement.builder().uid(it.id).build() })
             greyedFields(greyedFields.map { it.toDomain() })
-            indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
+            indicators(indicators.map { Indicator.builder().uid(it.id).build() })
             disableDataElementAutoGrouping(disableDataElementAutoGrouping)
             displayOptions?.let {
                 displayOptions(

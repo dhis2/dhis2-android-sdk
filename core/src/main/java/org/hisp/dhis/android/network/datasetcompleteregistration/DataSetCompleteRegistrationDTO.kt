@@ -31,10 +31,10 @@ package org.hisp.dhis.android.network.datasetcompleteregistration
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import org.hisp.dhis.android.core.util.simpleDateFormat
-import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.SimpleDateStringDTO
+import org.hisp.dhis.android.network.common.dto.toSimpleDateDto
 
 @Serializable
 internal data class DataSetCompleteRegistrationDTO(
@@ -42,7 +42,7 @@ internal data class DataSetCompleteRegistrationDTO(
     val dataSet: String?,
     val organisationUnit: String?,
     val attributeOptionCombo: String?,
-    val date: String?,
+    val date: SimpleDateStringDTO?,
     val storedBy: String?,
     val completed: Boolean?,
 ) {
@@ -53,7 +53,7 @@ internal data class DataSetCompleteRegistrationDTO(
             dataSet?.let { dataSet(it) }
             organisationUnit?.let { organisationUnit(it) }
             attributeOptionCombo?.let { attributeOptionCombo(it) }
-            date(date.toJavaSimpleDate())
+            date(date?.toDomain())
             storedBy(storedBy)
 
             /**
@@ -73,7 +73,7 @@ internal fun DataSetCompleteRegistration.toDto(): DataSetCompleteRegistrationDTO
         dataSet = this.dataSet(),
         organisationUnit = this.organisationUnit(),
         attributeOptionCombo = this.attributeOptionCombo(),
-        date = this.date().simpleDateFormat(),
+        date = this.date()?.toSimpleDateDto(),
         storedBy = this.storedBy(),
 
         /**

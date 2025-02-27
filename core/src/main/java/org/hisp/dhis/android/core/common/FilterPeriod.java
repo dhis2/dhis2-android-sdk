@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -42,7 +41,6 @@ public abstract class FilterPeriod {
     @Nullable
     public abstract Integer periodTo();
 
-    @JsonCreator
     public static FilterPeriod create(Integer periodFrom, Integer periodTo) {
         return builder()
                 .periodFrom(periodFrom)

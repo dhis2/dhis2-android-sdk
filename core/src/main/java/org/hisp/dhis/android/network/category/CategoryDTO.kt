@@ -40,7 +40,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class CategoryDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -54,7 +54,7 @@ internal data class CategoryDTO(
         return Category.builder()
             .applyBaseIdentifiableFields(this)
             .dataDimensionType(this.dataDimensionType)
-            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.uid).build() })
+            .categoryOptions(this.categoryOptions.map { CategoryOption.builder().uid(it.id).build() })
             .build()
     }
 }

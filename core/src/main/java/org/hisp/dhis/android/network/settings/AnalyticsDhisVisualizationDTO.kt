@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.settings
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
@@ -36,7 +35,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 
 @Serializable
 internal data class AnalyticsDhisVisualizationDTO(
-    @SerialName("id") val uid: String?,
+    val id: String?,
     val scopeUid: String?,
     val groupUid: String?,
     val groupName: String?,
@@ -47,7 +46,7 @@ internal data class AnalyticsDhisVisualizationDTO(
 ) {
     fun toDomain(): AnalyticsDhisVisualization {
         return AnalyticsDhisVisualization.builder()
-            .uid(uid)
+            .uid(id)
             .scopeUid(scopeUid)
             .groupUid(groupUid)
             .groupName(groupName)

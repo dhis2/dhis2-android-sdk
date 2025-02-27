@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@PublishedApi
 internal class ParentAuthenticatorPlugin(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,

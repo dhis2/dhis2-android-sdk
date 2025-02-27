@@ -5770,13 +5770,13 @@ public final class org/hisp/dhis/android/core/dataset/DataSetInstanceCollectionR
 
 public abstract interface class org/hisp/dhis/android/core/dataset/DataSetInstanceService {
 	public abstract fun blockingGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetEditableStatus;
+	public abstract fun blockingGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public abstract fun blockingGetMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public abstract fun blockingHasDataWriteAccess (Ljava/lang/String;)Z
-	public abstract fun blockingMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
-	public abstract fun blockingMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public abstract fun getEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun getMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun getMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun missingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun missingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary : org/hisp/dhis/android/core/common/CoreObject {

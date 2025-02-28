@@ -75,7 +75,7 @@ public abstract class CustomIntent implements ObjectWithUidInterface, CoreObject
     public abstract CustomIntentResponse response();
 
     public static CustomIntent create(Cursor cursor) {
-        return AutoValue_CustomIntent.createFromCursor(cursor);
+        return $AutoValue_CustomIntent.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

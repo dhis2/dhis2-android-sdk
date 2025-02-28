@@ -50,7 +50,7 @@ public abstract class CustomIntentDataElement implements CoreObject {
     }
 
     public static CustomIntentDataElement create(Cursor cursor) {
-        return AutoValue_CustomIntentDataElement.createFromCursor(cursor);
+        return $AutoValue_CustomIntentDataElement.createFromCursor(cursor);
     }
 
     @AutoValue.Builder

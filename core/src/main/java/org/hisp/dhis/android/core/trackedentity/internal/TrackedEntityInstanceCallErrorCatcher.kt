@@ -29,12 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import java.io.IOException
 import javax.net.ssl.HttpsURLConnection
-import kotlin.Throws
 
 internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
     override fun mustBeStored(): Boolean {
@@ -43,7 +41,7 @@ internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
 
     @Throws(IOException::class)
     override fun catchError(response: D2HttpResponse): D2ErrorCode? {
-        val parsed = objectMapper().readValue(response.errorBody, HttpMessageResponse::class.java)
+        val parsed = HttpMessageResponseDTO.toErrorClass(response.errorBody)
 
         @Suppress("MagicNumber")
         return if (

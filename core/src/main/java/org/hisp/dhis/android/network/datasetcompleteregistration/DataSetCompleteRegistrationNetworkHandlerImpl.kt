@@ -40,10 +40,10 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFi
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationNetworkHandler
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPartition
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
 
@@ -80,10 +80,9 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
             coroutineAPICallExecutor.wrap(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-                errorClass = DataValueImportSummaryWebResponse::class.java,
+                errorClassParser = DataValueImportSummaryWebResponseDTO::toErrorClass,
             ) {
-                service.postDataSetCompleteRegistrationsWebResponse(apiPayload)
-                    .toDomain()
+                service.postDataSetCompleteRegistrationsWebResponse(apiPayload).toDomain()
             }.map { it.response }
         } else {
             coroutineAPICallExecutor.wrap {

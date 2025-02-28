@@ -266,13 +266,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private suspend fun postTrackedEntities(vararg instances: TrackedEntityInstance): TEIWebResponse {
-        return executor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(409),
-            errorClass = TEIWebResponse::class.java,
-        ) {
-            networkHandler.postTrackedEntityInstances(instances.asList(), strategy)
-        }.getOrThrow()
+        return networkHandler.postTrackedEntityInstances(instances.asList(), strategy).getOrThrow()
     }
 
     private fun login() {

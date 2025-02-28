@@ -28,8 +28,12 @@
 package org.hisp.dhis.android.network.relationship
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipNetworkHandler
 import org.koin.core.annotation.Singleton
@@ -37,15 +41,28 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class RelationshipNetworkHandlerImpl(
     client: HttpServiceClient,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : RelationshipNetworkHandler {
     private val service = RelationshipService(client)
 
-    override suspend fun deleteRelationship(relationship: String): RelationshipDeleteWebResponse {
-        return service.deleteRelationship(relationship).toDomain()
+    override suspend fun deleteRelationship(relationship: String): Result<RelationshipDeleteWebResponse, D2Error> {
+        return coroutineAPICallExecutor.wrap(
+            storeError = true,
+            acceptedErrorCodes = listOf(HttpStatusCodes.NOT_FOUND),
+            errorClassParser = RelationshipDeleteWebResponseDTO::toErrorClass,
+        ) {
+            service.deleteRelationship(relationship).toDomain()
+        }
     }
 
-    override suspend fun postRelationship(relationships: List<Relationship>): RelationshipWebResponse {
+    override suspend fun postRelationship(relationships: List<Relationship>): Result<RelationshipWebResponse, D2Error> {
         val payload = RelationshipPayload(relationships = relationships.map { it.toDto() })
-        return service.postRelationship(payload).toDomain()
+        return coroutineAPICallExecutor.wrap(
+            storeError = true,
+            acceptedErrorCodes = listOf(HttpStatusCodes.CONFLICT),
+            errorClassParser = RelationshipWebResponseDTO::toErrorClass,
+        ) {
+            service.postRelationship(payload).toDomain()
+        }
     }
 }

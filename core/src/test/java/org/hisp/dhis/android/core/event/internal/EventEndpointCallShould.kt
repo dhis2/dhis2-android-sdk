@@ -31,6 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event
@@ -131,6 +133,7 @@ class EventEndpointCallShould {
     companion object {
         private lateinit var mockWebServer: Dhis2MockServer
         private lateinit var httpServiceClient: HttpServiceClient
+        private lateinit var coroutineAPICallExecutor: CoroutineAPICallExecutor
         private lateinit var eventNetworkHandler: EventNetworkHandler
 
         @BeforeClass
@@ -138,7 +141,8 @@ class EventEndpointCallShould {
         fun setUpClass() {
             mockWebServer = Dhis2MockServer(0)
             httpServiceClient = HttpServiceClientFactory.fromDHIS2MockServer(mockWebServer)
-            eventNetworkHandler = EventNetworkHandlerImpl(httpServiceClient)
+            coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
+            eventNetworkHandler = EventNetworkHandlerImpl(httpServiceClient, coroutineAPICallExecutor)
         }
 
         @AfterClass

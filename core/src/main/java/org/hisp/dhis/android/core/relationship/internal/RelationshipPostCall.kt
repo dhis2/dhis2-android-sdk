@@ -29,41 +29,30 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
-import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
 import org.koin.core.annotation.Singleton
-import java.net.HttpURLConnection.HTTP_CONFLICT
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
 import java.net.HttpURLConnection.HTTP_OK
 
 @Singleton
-internal class RelationshipPostCall internal constructor(
+internal class RelationshipPostCall(
     private val relationshipNetworkHandler: RelationshipNetworkHandler,
     private val relationshipStore: RelationshipStore,
     private val relationshipImportHandler: RelationshipImportHandler,
     private val dataStatePropagator: DataStatePropagator,
     private val trackerStateManager: TrackerPostStateManager,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
 
     fun deleteRelationships(relationships: List<Relationship>): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
         for (relationship in relationships) {
-            val response = coroutineAPICallExecutor.wrap(
-                storeError = true,
-                acceptedErrorCodes = listOf(HTTP_NOT_FOUND),
-                errorClass = RelationshipDeleteWebResponse::class.java,
-            ) {
-                relationshipNetworkHandler.deleteRelationship(relationship.uid()!!)
-            }
+            val response = relationshipNetworkHandler.deleteRelationship(relationship.uid()!!)
 
             response.fold(
                 onSuccess = { webResponse ->
@@ -99,13 +88,7 @@ internal class RelationshipPostCall internal constructor(
                     relationships = relationships,
                     forcedState = State.UPLOADING,
                 )
-                val httpResponse = coroutineAPICallExecutor.wrap(
-                    storeError = true,
-                    acceptedErrorCodes = listOf(HTTP_CONFLICT),
-                    errorClass = RelationshipWebResponse::class.java,
-                ) {
-                    relationshipNetworkHandler.postRelationship(relationships)
-                }.getOrThrow()
+                val httpResponse = relationshipNetworkHandler.postRelationship(relationships).getOrThrow()
 
                 relationshipImportHandler.handleRelationshipImportSummaries(
                     importSummaries = httpResponse.response()?.importSummaries(),

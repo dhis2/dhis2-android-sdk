@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
@@ -39,7 +41,7 @@ internal interface TrackedEntityInstanceNetworkHandler {
     suspend fun postTrackedEntityInstances(
         instances: List<TrackedEntityInstance>,
         strategy: String?,
-    ): TEIWebResponse
+    ): Result<TEIWebResponse, D2Error>
 
     suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance>
 

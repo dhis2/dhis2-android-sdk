@@ -73,4 +73,34 @@ class DataSetInstanceServiceMockIntegrationShould :
             DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)::class.java,
         )
     }
+
+    @Test
+    fun return_missing_mandatory_data_element_operands() {
+        val dataElementOperands = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetMissingMandatoryDataElementOperands(
+                "lyLU2wR22tC",
+                "201908",
+                "DiszpKrYNg8",
+                "Gmbgme7z9BF",
+            )
+
+        assertThat(dataElementOperands.size).isEqualTo(1)
+        assertThat(dataElementOperands[0].dataElement()?.uid()).isEqualTo("bx6fsa0t90x")
+        assertThat(dataElementOperands[0].categoryOptionCombo()).isNull()
+    }
+
+    @Test
+    fun return_missing_mandatory_fields_combinations() {
+        val dataElementOperands = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetMissingMandatoryFieldsCombination(
+                "BfMAe6Itzgt",
+                "201908",
+                "DiszpKrYNg8",
+                "Gmbgme7z9BF",
+            )
+
+        assertThat(dataElementOperands.size).isEqualTo(1)
+        assertThat(dataElementOperands[0].dataElement()?.uid()).isEqualTo("g9eOBujte1U")
+        assertThat(dataElementOperands[0].categoryOptionCombo()?.uid()).isEqualTo("Gmbgme7z9BF")
+    }
 }

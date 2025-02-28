@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.visualization;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -40,15 +37,12 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryDimension.Builder.class)
 public abstract class CategoryDimension {
 
     @Nullable
-    @JsonProperty()
     public abstract ObjectWithUid category();
 
     @Nullable
-    @JsonProperty()
     public abstract List<ObjectWithUid> categoryOptions();
 
     public static Builder builder() {
@@ -58,7 +52,6 @@ public abstract class CategoryDimension {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder category(ObjectWithUid category);

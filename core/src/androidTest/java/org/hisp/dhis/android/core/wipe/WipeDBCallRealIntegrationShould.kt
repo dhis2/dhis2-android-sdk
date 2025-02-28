@@ -50,7 +50,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
 
-        create(d2.httpServiceClient(), "DiszpKrYNg8", 0, emptyList())
+        create(d2.httpServiceClient(), d2.coroutineAPICallExecutor(), "DiszpKrYNg8", 0, emptyList())
 
         assertThatDatabase(d2.databaseAdapter()).isNotEmpty
 

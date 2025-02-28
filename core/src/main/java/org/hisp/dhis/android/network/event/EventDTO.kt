@@ -33,10 +33,9 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
@@ -51,19 +50,19 @@ internal data class EventDTO(
     val event: String,
     val enrollment: String?,
     val trackedEntityInstance: String?,
-    val created: String?,
-    val lastUpdated: String?,
-    val createdAtClient: String?,
-    val lastUpdatedAtClient: String?,
+    val created: DateStringDTO?,
+    val lastUpdated: DateStringDTO?,
+    val createdAtClient: DateStringDTO?,
+    val lastUpdatedAtClient: DateStringDTO?,
     val program: String?,
     val programStage: String?,
     val orgUnit: String?,
-    val eventDate: String?,
+    val eventDate: DateStringDTO?,
     val status: String?,
     val geometry: GeometryDTO?,
-    val completedDate: String?,
+    val completedDate: DateStringDTO?,
     val completedBy: String?,
-    val dueDate: String?,
+    val dueDate: DateStringDTO?,
     val attributeOptionCombo: String?,
     val assignedUser: String?,
     val notes: List<NoteDTO>?,
@@ -76,19 +75,19 @@ internal data class EventDTO(
             uid(event)
             enrollment(enrollment)
             EventInternalAccessor.insertTrackedEntityInstance(this, trackedEntityInstance)
-            created(created.toJavaDate())
-            lastUpdated(lastUpdated.toJavaDate())
-            createdAtClient(createdAtClient.toJavaDate())
-            lastUpdatedAtClient(lastUpdatedAtClient.toJavaDate())
+            created(created?.toDomain())
+            lastUpdated(lastUpdated?.toDomain())
+            createdAtClient(createdAtClient?.toDomain())
+            lastUpdatedAtClient(lastUpdatedAtClient?.toDomain())
             program(program)
             programStage(programStage)
             organisationUnit(orgUnit)
-            eventDate(eventDate.toJavaDate())
+            eventDate(eventDate?.toDomain())
             status(status?.let { EventStatus.valueOf(it) })
             geometry(geometry?.toDomain())
-            completedDate(completedDate.toJavaDate())
+            completedDate(completedDate?.toDomain())
             completedBy(completedBy)
-            dueDate(dueDate.toJavaDate())
+            dueDate(dueDate?.toDomain())
             attributeOptionCombo(attributeOptionCombo)
             assignedUser(assignedUser)
             notes(notes?.map { it.toDomain(event = event) })
@@ -104,19 +103,19 @@ internal fun Event.toDto(): EventDTO {
         event = this.uid(),
         enrollment = this.enrollment(),
         trackedEntityInstance = EventInternalAccessor.accessTrackedEntityInstance(this),
-        created = this.created().dateFormat(),
-        lastUpdated = this.lastUpdated().dateFormat(),
-        createdAtClient = this.createdAtClient().dateFormat(),
-        lastUpdatedAtClient = this.lastUpdatedAtClient().dateFormat(),
+        created = this.created()?.toDto(),
+        lastUpdated = this.lastUpdated()?.toDto(),
+        createdAtClient = this.createdAtClient()?.toDto(),
+        lastUpdatedAtClient = this.lastUpdatedAtClient()?.toDto(),
         program = this.program(),
         programStage = this.programStage(),
         orgUnit = this.organisationUnit(),
-        eventDate = this.eventDate().dateFormat(),
+        eventDate = this.eventDate()?.toDto(),
         status = this.status()?.name,
         geometry = this.geometry()?.toDto(),
-        completedDate = this.completedDate().dateFormat(),
+        completedDate = this.completedDate()?.toDto(),
         completedBy = this.completedBy(),
-        dueDate = this.dueDate().dateFormat(),
+        dueDate = this.dueDate()?.toDto(),
         attributeOptionCombo = this.attributeOptionCombo(),
         assignedUser = this.assignedUser(),
         notes = this.notes()?.map { it.toDto() },

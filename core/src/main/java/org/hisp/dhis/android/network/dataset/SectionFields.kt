@@ -45,7 +45,7 @@ internal object SectionFields : BaseFields<Section>() {
         fh.field(Columns.SORT_ORDER),
         fh.field(Columns.SHOW_ROW_TOTALS),
         fh.field(Columns.SHOW_COLUMN_TOTALS),
-        fh.field(Columns.DISABLE_DATA_ELEMENT_AUTO_GROUPING),
+        fh.field(Columns.DISABLE_DATA_ELEMENT_AUTO_GROUP),
         fh.field(DISPLAY_OPTIONS),
         fh.nestedFieldWithUid(Columns.DATA_SET),
         fh.nestedFieldWithUid(DATA_ELEMENTS),

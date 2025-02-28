@@ -29,9 +29,13 @@
 package org.hisp.dhis.android.network.trackedentityinstance
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -52,17 +56,23 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TrackedEntityInstanceNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManager,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : TrackedEntityInstanceNetworkHandler {
     private val service = TrackedEntityInstanceService(httpClient)
 
     override suspend fun postTrackedEntityInstances(
         instances: List<TrackedEntityInstance>,
         strategy: String?,
-    ): TEIWebResponse {
+    ): Result<TEIWebResponse, D2Error> {
         val payload = TrackedEntityInstancePayload(items = instances.map { it.toDto() })
-        val response = service.postTrackedEntityInstances(payload, strategy)
-        return response.toDomain()
+        return coroutineAPICallExecutor.wrap(
+            storeError = true,
+            acceptedErrorCodes = listOf(HttpStatusCodes.CONFLICT),
+            errorClassParser = TEIWebResponseDTO::toErrorClass,
+        ) {
+            service.postTrackedEntityInstances(payload, strategy).toDomain()
+        }
     }
 
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {

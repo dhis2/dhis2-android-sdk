@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.category.CategoryOptionComboDTO
 import org.junit.Test
 
-class CategoryOptionComboShould : BaseObjectKotlinxShould("category/category_option_combo.json"), ObjectShould {
+class CategoryOptionComboShould :
+    BaseObjectKotlinxShould("category/category_option_combo.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {

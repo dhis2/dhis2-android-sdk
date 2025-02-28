@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.network.dataset
 
-import org.hisp.dhis.android.core.visualization.CategoryDimension;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionPivotMode
 
-import java.util.List;
+@Serializable
+internal data class SectionDisplayOptionsDTO(
+    val pivotMode: String?,
+    val pivotedCategory: String?,
+    val afterSectionText: String?,
+    val beforeSectionText: String?,
+) {
+    fun toDomain(): SectionDisplayOptions {
+        return SectionDisplayOptions.builder()
+            .pivotMode(pivotMode.takeIf { !it.isNullOrEmpty() }?.let { SectionPivotMode.from(it) })
+            .pivotedCategory(pivotedCategory.takeIf { !it.isNullOrEmpty() })
+            .afterSectionText(afterSectionText.takeIf { !it.isNullOrEmpty() })
+            .beforeSectionText(beforeSectionText.takeIf { !it.isNullOrEmpty() })
+            .build()
+    }
+}
 
-public final class IgnoreCategoryDimensionListColumnAdapter
-        extends IgnoreColumnAdapter<List<CategoryDimension>> {
+internal fun SectionPivotMode.Companion.from(key: String): SectionPivotMode {
+    return when (key) {
+        "n/a" -> SectionPivotMode.DEFAULT
+        "pivot" -> SectionPivotMode.PIVOT
+        "move_categories" -> SectionPivotMode.MOVE_CATEGORIES
+        else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $key")
+    }
 }

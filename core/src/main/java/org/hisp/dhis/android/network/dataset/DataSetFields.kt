@@ -49,6 +49,7 @@ internal object DataSetFields : BaseFields<DataSet>() {
     const val DATA_INPUT_PERIODS = "dataInputPeriods"
     private const val ACCESS = "access"
     private const val STYLE = "style"
+    private const val DISPLAY_OPTIONS = "displayOptions"
 
     val uid = fh.uid()
 
@@ -69,6 +70,7 @@ internal object DataSetFields : BaseFields<DataSet>() {
         fh.field(Columns.DATA_ELEMENT_DECORATION),
         fh.field(Columns.RENDER_AS_TABS),
         fh.field(Columns.RENDER_HORIZONTALLY),
+        fh.field(DISPLAY_OPTIONS),
         fh.nestedFieldWithUid(Columns.WORKFLOW),
         fh.nestedField<DataSetElement>(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
         fh.nestedFieldWithUid(INDICATORS),

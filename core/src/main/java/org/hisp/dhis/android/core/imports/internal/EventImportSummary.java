@@ -28,12 +28,9 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_EventImportSummary.Builder.class)
 public abstract class EventImportSummary extends BaseImportSummary {
 
     public static Builder builder() {
@@ -41,7 +38,6 @@ public abstract class EventImportSummary extends BaseImportSummary {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
 
         public abstract EventImportSummary build();

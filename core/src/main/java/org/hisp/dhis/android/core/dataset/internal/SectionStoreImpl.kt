@@ -58,7 +58,7 @@ internal class SectionStoreImpl(
                 w.bind(9, getUidOrNull(o.dataSet()))
                 w.bind(10, o.showRowTotals())
                 w.bind(11, o.showColumnTotals())
-                w.bind(12, o.disableDataElementAutoGrouping())
+                w.bind(12, o.disableDataElementAutoGroup())
                 w.bind(13, o.displayOptions()?.beforeSectionText())
                 w.bind(14, o.displayOptions()?.afterSectionText())
                 w.bind(15, o.displayOptions()?.pivotMode())

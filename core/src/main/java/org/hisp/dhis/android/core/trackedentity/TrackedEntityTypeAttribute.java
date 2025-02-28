@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -44,30 +40,23 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-@JsonDeserialize(builder = $AutoValue_TrackedEntityTypeAttribute.Builder.class)
 public abstract class TrackedEntityTypeAttribute implements CoreObject {
 
-    @JsonIgnore()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityAttribute();
 
-    @JsonProperty()
     public abstract Boolean displayInList();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean mandatory();
 
-    @JsonProperty()
     public abstract Boolean searchable();
 
     @Nullable
-    @JsonIgnore()
     public abstract Integer sortOrder();
 
     public static Builder builder() {
@@ -81,7 +70,6 @@ public abstract class TrackedEntityTypeAttribute implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

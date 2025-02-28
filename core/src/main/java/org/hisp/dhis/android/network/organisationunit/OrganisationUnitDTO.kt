@@ -43,7 +43,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
 internal data class OrganisationUnitDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -70,7 +70,7 @@ internal data class OrganisationUnitDTO(
     fun toDomain(): OrganisationUnit {
         return OrganisationUnit.builder()
             .applyBaseNameableFields(this)
-            .parent(parent?.uid?.let { ObjectWithUid.create(it) })
+            .parent(parent?.id?.let { ObjectWithUid.create(it) })
             .path(path)
             .apply {
                 openingDate?.let { openingDate(it) }
@@ -78,9 +78,9 @@ internal data class OrganisationUnitDTO(
             }
             .level(level)
             .geometry(evaluateGeometry())
-            .programs(programs?.map { ObjectWithUid.create(it.uid) })
-            .programs(programs?.map { ObjectWithUid.create(it.uid) })
-            .dataSets(dataSets?.map { ObjectWithUid.create(it.uid) })
+            .programs(programs?.map { ObjectWithUid.create(it.id) })
+            .programs(programs?.map { ObjectWithUid.create(it.id) })
+            .dataSets(dataSets?.map { ObjectWithUid.create(it.id) })
             .organisationUnitGroups(organisationUnitGroups?.map { it.toDomain() })
             .displayNamePath(evaluateDisplayNamePath())
             .build()

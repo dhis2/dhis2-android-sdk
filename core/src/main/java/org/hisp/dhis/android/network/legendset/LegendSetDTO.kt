@@ -38,7 +38,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class LegendSetDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -52,7 +52,7 @@ internal data class LegendSetDTO(
         return LegendSet.builder()
             .applyBaseIdentifiableFields(this)
             .symbolizer(symbolizer)
-            .legends(legends.map { it.toDomain(uid) })
+            .legends(legends.map { it.toDomain(id) })
             .build()
     }
 }

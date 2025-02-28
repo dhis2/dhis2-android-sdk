@@ -29,13 +29,12 @@
 package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 
@@ -43,15 +42,15 @@ import org.hisp.dhis.android.network.common.dto.toDto
 internal data class NewEnrollmentDTO(
     override val deleted: Boolean?,
     val enrollment: String,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val createdAtClient: String?,
-    val updatedAtClient: String?,
+    val createdAt: DateStringDTO?,
+    val updatedAt: DateStringDTO?,
+    val createdAtClient: DateStringDTO?,
+    val updatedAtClient: DateStringDTO?,
     val orgUnit: String?,
     val program: String?,
-    val enrolledAt: String?,
-    val occurredAt: String?,
-    val completedAt: String?,
+    val enrolledAt: DateStringDTO?,
+    val occurredAt: DateStringDTO?,
+    val completedAt: DateStringDTO?,
     val followUp: Boolean?,
     val status: String?,
     val trackedEntity: String?,
@@ -65,15 +64,15 @@ internal data class NewEnrollmentDTO(
         return Enrollment.builder().apply {
             uid(enrollment)
             deleted(deleted)
-            created(createdAt.toJavaDate())
-            lastUpdated(updatedAt.toJavaDate())
-            createdAtClient(createdAtClient.toJavaDate())
-            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            created(createdAt?.toDomain())
+            lastUpdated(updatedAt?.toDomain())
+            createdAtClient(createdAtClient?.toDomain())
+            lastUpdatedAtClient(updatedAtClient?.toDomain())
             organisationUnit(orgUnit)
             program(program)
-            enrollmentDate(enrolledAt.toJavaDate())
-            incidentDate(occurredAt.toJavaDate())
-            completedDate(completedAt.toJavaDate())
+            enrollmentDate(enrolledAt?.toDomain())
+            incidentDate(occurredAt?.toDomain())
+            completedDate(completedAt?.toDomain())
             followUp(followUp)
             status(status?.let { EnrollmentStatus.valueOf(it) })
             trackedEntityInstance(trackedEntity)
@@ -89,15 +88,15 @@ internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
     return NewEnrollmentDTO(
         enrollment = uid,
         deleted = deleted,
-        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        createdAtClient = createdAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAtClient = updatedAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAt = createdAt?.toDto(),
+        updatedAt = updatedAt?.toDto(),
+        createdAtClient = createdAtClient?.toDto(),
+        updatedAtClient = updatedAtClient?.toDto(),
         orgUnit = organisationUnit,
         program = program,
-        enrolledAt = enrolledAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        occurredAt = occurredAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        completedAt = completedAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        enrolledAt = enrolledAt?.toDto(),
+        occurredAt = occurredAt?.toDto(),
+        completedAt = completedAt?.toDto(),
         followUp = followUp,
         status = status?.name,
         trackedEntity = trackedEntity,

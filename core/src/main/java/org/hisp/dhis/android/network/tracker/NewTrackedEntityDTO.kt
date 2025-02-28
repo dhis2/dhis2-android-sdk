@@ -30,14 +30,13 @@ package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertEnrollments
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertRelationships
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
@@ -46,10 +45,10 @@ import org.hisp.dhis.android.network.common.dto.toDto
 internal data class NewTrackedEntityDTO(
     override val deleted: Boolean?,
     val trackedEntity: String,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val createdAtClient: String?,
-    val updatedAtClient: String?,
+    val createdAt: DateStringDTO?,
+    val updatedAt: DateStringDTO?,
+    val createdAtClient: DateStringDTO?,
+    val updatedAtClient: DateStringDTO?,
     val orgUnit: String?,
     val trackedEntityType: String?,
     val geometry: GeometryDTO?,
@@ -67,10 +66,10 @@ internal data class NewTrackedEntityDTO(
         return TrackedEntityInstance.builder().apply {
             uid(trackedEntity)
             deleted(deleted)
-            created(createdAt.toJavaDate())
-            lastUpdated(updatedAt.toJavaDate())
-            createdAtClient(createdAtClient.toJavaDate())
-            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            created(createdAt?.toDomain())
+            lastUpdated(updatedAt?.toDomain())
+            createdAtClient(createdAtClient?.toDomain())
+            lastUpdatedAtClient(updatedAtClient?.toDomain())
             organisationUnit(orgUnit)
             trackedEntityType(trackedEntityType)
             geometry(geometry?.toDomain())
@@ -86,10 +85,10 @@ internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {
     return NewTrackedEntityDTO(
         deleted = deleted,
         trackedEntity = uid,
-        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        createdAtClient = createdAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAtClient = updatedAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAt = createdAt?.toDto(),
+        updatedAt = updatedAt?.toDto(),
+        createdAtClient = createdAtClient?.toDto(),
+        updatedAtClient = updatedAtClient?.toDto(),
         orgUnit = organisationUnit,
         trackedEntityType = trackedEntityType,
         geometry = geometry?.let { it.toDto() },

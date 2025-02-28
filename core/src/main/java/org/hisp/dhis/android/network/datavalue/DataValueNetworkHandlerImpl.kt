@@ -29,19 +29,26 @@
 package org.hisp.dhis.android.network.datavalue
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueNetworkHandler
 import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataValueNetworkHandlerImpl(httpService: HttpServiceClient) : DataValueNetworkHandler {
-    private val service: DataValueService = DataValueService(httpService)
+internal class DataValueNetworkHandlerImpl(
+    client: HttpServiceClient,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : DataValueNetworkHandler {
+    private val service: DataValueService = DataValueService(client)
     override suspend fun getDataValues(bundle: AggregatedDataCallBundle): List<DataValue> {
         val apiResponse = service.getDataValues(
             fields = DataValueFields.allFields,
@@ -56,15 +63,22 @@ internal class DataValueNetworkHandlerImpl(httpService: HttpServiceClient) : Dat
         return apiResponse.dataValues.map { it.toDomain() }
     }
 
-    override suspend fun postDataValues(dataValueSet: DataValueSet): DataValueImportSummary {
+    override suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
         val apiPayload = DataValueSetDTO.fromDomain(dataValueSet)
-        val apiResponse = service.postDataValues(apiPayload)
-        return apiResponse.toDomain()
+        return coroutineAPICallExecutor.wrap {
+            service.postDataValues(apiPayload).toDomain()
+        }
     }
 
-    override suspend fun postDataValuesWebResponse(dataValueSet: DataValueSet): DataValueImportSummaryWebResponse {
+    override suspend fun postDataValuesWebResponse(
+        dataValueSet: DataValueSet,
+    ): Result<DataValueImportSummaryWebResponse, D2Error> {
         val apiPayload = DataValueSetDTO.fromDomain(dataValueSet)
-        val apiResponse = service.postDataValuesWebResponse(apiPayload)
-        return apiResponse.toDomain()
+        return coroutineAPICallExecutor.wrap(
+            acceptedErrorCodes = listOf(HttpStatusCodes.CONFLICT),
+            errorClassParser = DataValueImportSummaryWebResponseDTO::toErrorClass,
+        ) {
+            service.postDataValuesWebResponse(apiPayload).toDomain()
+        }
     }
 }

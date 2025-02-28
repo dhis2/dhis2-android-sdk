@@ -32,16 +32,12 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValueTypeRenderingTypeColumnAdapter;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ValueTypeDeviceRendering.Builder.class)
 public abstract class ValueTypeDeviceRendering implements CoreObject {
 
     @Nullable
@@ -54,24 +50,19 @@ public abstract class ValueTypeDeviceRendering implements CoreObject {
     public abstract String deviceType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ValueTypeRenderingTypeColumnAdapter.class)
     public abstract ValueTypeRenderingType type();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer min();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer max();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer step();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer decimalPoints();
 
     public static ValueTypeDeviceRendering create(Cursor cursor) {
@@ -85,7 +76,6 @@ public abstract class ValueTypeDeviceRendering implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

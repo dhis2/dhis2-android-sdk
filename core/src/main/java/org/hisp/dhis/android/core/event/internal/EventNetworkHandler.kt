@@ -29,14 +29,16 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
 internal interface EventNetworkHandler {
-    suspend fun postEvents(events: List<Event>, strategy: String): EventWebResponse
+    suspend fun postEvents(events: List<Event>, strategy: String): Result<EventWebResponse, D2Error>
     suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
     suspend fun getEventQueryForOrgunit(
         query: TrackedEntityInstanceQueryOnline,

@@ -160,6 +160,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private suspend fun downloadEvents() {
         val eventPayload = EventCallFactory.create(
             d2.httpServiceClient(),
+            d2.coroutineAPICallExecutor(),
             orgUnitUid,
             50,
             emptyList(),

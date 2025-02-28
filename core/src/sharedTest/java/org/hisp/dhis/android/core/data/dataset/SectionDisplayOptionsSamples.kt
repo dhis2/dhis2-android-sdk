@@ -26,43 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.data.dataset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionPivotMode
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class DisplayOptions {
-
-    @Nullable
-    public abstract String beforeSectionText();
-
-    @Nullable
-    public abstract String afterSectionText();
-
-    @Nullable
-    public abstract SectionPivotMode pivotMode();
-
-    @Nullable
-    public abstract String pivotedCategory();
-
-    public static Builder builder() {
-        return new AutoValue_DisplayOptions.Builder();
+class SectionDisplayOptionsSamples {
+    companion object {
+        @JvmStatic
+        fun getDisplayOptions(): SectionDisplayOptions {
+            return SectionDisplayOptions.builder()
+                .pivotMode(SectionPivotMode.DEFAULT)
+                .pivotedCategory("pivotedCategory")
+                .afterSectionText("afterSectionText")
+                .beforeSectionText("beforeSectionText")
+                .build()
+        }
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder beforeSectionText(String beforeSectionText);
-
-        public abstract Builder afterSectionText(String afterSectionText);
-
-        public abstract Builder pivotMode(SectionPivotMode pivotMode);
-
-        public abstract Builder pivotedCategory(String pivotedCategory);
-
-        public abstract DisplayOptions build();
-    }
-
 }

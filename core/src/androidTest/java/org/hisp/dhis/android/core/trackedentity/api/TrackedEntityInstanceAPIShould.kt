@@ -412,13 +412,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
 
     @Throws(D2Error::class)
     private suspend fun executePostCall(instances: List<TrackedEntityInstance>): TEIWebResponse {
-        return executor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(409),
-            errorClass = TEIWebResponse::class.java,
-        ) {
-            networkHandler.postTrackedEntityInstances(instances, strategy)
-        }.getOrThrow()
+        return networkHandler.postTrackedEntityInstances(instances, strategy).getOrThrow()
     }
 
     private suspend fun getTrackedEntity(teiUid: String): Payload<TrackedEntityInstance> {

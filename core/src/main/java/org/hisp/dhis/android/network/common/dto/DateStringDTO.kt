@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.legendset.LegendSet;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import java.util.Date
 
-import java.util.List;
+@JvmInline
+@Serializable
+internal value class DateStringDTO(
+    val date: String?,
+) {
+    fun toDomain(): Date? {
+        return date.toJavaDate()
+    }
+}
 
-public final class IgnoreLegendSetListColumnAdapter extends IgnoreColumnAdapter<List<LegendSet>> {
+internal fun Date.toDto(): DateStringDTO {
+    return DateStringDTO(this.dateFormat())
 }

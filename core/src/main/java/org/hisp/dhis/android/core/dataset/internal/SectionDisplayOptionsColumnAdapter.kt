@@ -31,16 +31,15 @@ package org.hisp.dhis.android.core.dataset.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.dataset.DisplayOptions
+import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
 import org.hisp.dhis.android.core.dataset.SectionPivotMode
 import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.AFTER_SECTION_TEXT
 import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.BEFORE_SECTION_TEXT
 import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOTED_CATEGORY
 import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOT_MODE
 
-@Suppress("TooGenericExceptionThrown")
-class DisplayOptionsColumnAdapter : ColumnTypeAdapter<DisplayOptions> {
-    override fun fromCursor(cursor: Cursor, columnName: String?): DisplayOptions {
+internal class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDisplayOptions> {
+    override fun fromCursor(cursor: Cursor, columnName: String?): SectionDisplayOptions {
         val beforeSectionTextIndx = cursor.getColumnIndex(BEFORE_SECTION_TEXT)
         val afterSectionTextIndx = cursor.getColumnIndex(AFTER_SECTION_TEXT)
         val pivotedCategoryIndx = cursor.getColumnIndex(PIVOTED_CATEGORY)
@@ -53,11 +52,11 @@ class DisplayOptionsColumnAdapter : ColumnTypeAdapter<DisplayOptions> {
             try {
                 sectionPivotMode = SectionPivotMode.valueOf(pivotMode)
             } catch (exception: IllegalArgumentException) {
-                throw RuntimeException("Unknown SectionPivotMode type", exception)
+                throw IllegalArgumentException("Unknown SectionPivotMode type", exception)
             }
         }
 
-        return DisplayOptions.builder()
+        return SectionDisplayOptions.builder()
             .beforeSectionText(cursor.getString(beforeSectionTextIndx))
             .afterSectionText(cursor.getString(afterSectionTextIndx))
             .pivotMode(sectionPivotMode)
@@ -65,7 +64,7 @@ class DisplayOptionsColumnAdapter : ColumnTypeAdapter<DisplayOptions> {
             .build()
     }
 
-    override fun toContentValues(values: ContentValues?, columnName: String?, value: DisplayOptions?) {
+    override fun toContentValues(values: ContentValues?, columnName: String?, value: SectionDisplayOptions?) {
         value?.beforeSectionText()?.let { values?.put(BEFORE_SECTION_TEXT, it) }
         value?.afterSectionText()?.let { values?.put(AFTER_SECTION_TEXT, it) }
         value?.pivotMode()?.let { values?.put(PIVOT_MODE, it.name) }

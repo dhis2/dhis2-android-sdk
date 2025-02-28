@@ -89,7 +89,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
     @Test
     public void filter_by_disable_data_element_autoGrouping() {
         List<Section> sections = d2.dataSetModule().sections()
-                .byDisableDataElementAutoGrouping().eq(true)
+                .byDisableDataElementAutoGroup().eq(true)
                 .blockingGet();
         assertThat(sections.size()).isEqualTo(1);
     }

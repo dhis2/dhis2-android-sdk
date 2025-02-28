@@ -29,14 +29,20 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetEditableStatus
 import org.hisp.dhis.android.core.dataset.DataSetInstanceService
 import org.hisp.dhis.android.core.dataset.DataSetNonEditableReason
+import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
@@ -48,7 +54,10 @@ import java.util.Date
 @Suppress("TooManyFunctions")
 internal class DataSetInstanceServiceImpl(
     private val dataSetCollectionRepository: DataSetCollectionRepository,
+    private val dataElementCollectionRepository: DataElementCollectionRepository,
+    private val dataValueCollectionRepository: DataValueCollectionRepository,
     private val categoryOptionRepository: CategoryOptionCollectionRepository,
+    private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val organisationUnitService: OrganisationUnitService,
     private val periodHelper: PeriodHelper,
     private val categoryOptionComboService: CategoryOptionComboService,
@@ -83,20 +92,28 @@ internal class DataSetInstanceServiceImpl(
         return when {
             !blockingHasDataWriteAccess(dataSetUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_DATASET_DATA_WRITE_ACCESS)
+
             !blockingIsCategoryOptionHasDataWriteAccess(attributeOptionComboUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_ATTRIBUTE_OPTION_COMBO_ACCESS)
+
             !blockingIsPeriodInCategoryOptionRange(period, attributeOptionComboUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ATTRIBUTE_OPTION_RANGE)
+
             !blockingIsOrgUnitInCaptureScope(organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
+
             !blockingIsAttributeOptionComboAssignToOrgUnit(attributeOptionComboUid, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ATTRIBUTE_OPTION_COMBO_NO_ASSIGN_TO_ORGUNIT)
+
             !blockingIsPeriodInOrgUnitRange(period, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ORGUNIT_RANGE)
+
             dataSet?.let { blockingIsExpired(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.EXPIRED)
+
             dataSet?.let { blockingIsClosed(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)
+
             else -> DataSetEditableStatus.Editable
         }
     }
@@ -108,6 +125,108 @@ internal class DataSetInstanceServiceImpl(
     override fun blockingHasDataWriteAccess(dataSetUid: String): Boolean {
         val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet() ?: return false
         return dataSet.access().write() ?: false
+    }
+
+    override fun getMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>> {
+        return dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).get().map {
+            it.compulsoryDataElementOperands()?.filter { dataElementOperand ->
+                !hasDataValue(dataElementOperand, periodId, organisationUnitUid, attributeOptionComboUid)
+            } ?: emptyList()
+        }
+    }
+
+    override fun blockingGetMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand> {
+        return getMissingMandatoryDataElementOperands(
+            dataSetUid,
+            periodId,
+            organisationUnitUid,
+            attributeOptionComboUid,
+        ).blockingGet()
+    }
+
+    private fun hasDataValue(
+        dataElementOperand: DataElementOperand,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Boolean {
+        return dataElementOperand.dataElement()?.let { dataElement ->
+            dataElementOperand.categoryOptionCombo()?.let { categoryOptionCombo ->
+                dataValueCollectionRepository.value(
+                    periodId,
+                    organisationUnitUid,
+                    dataElement.uid(),
+                    categoryOptionCombo.uid(),
+                    attributeOptionComboUid,
+                ).blockingExists()
+            }
+        } ?: false
+    }
+
+    override fun getMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>> =
+        dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).get().map { dataSet ->
+            if (dataSet.fieldCombinationRequired() != true) return@map emptyList()
+
+            dataSet.dataSetElements().orEmpty().flatMap { dataSetElement ->
+                val categoryComboUid = dataSetElement.categoryCombo()?.uid()
+                    ?: dataElementCollectionRepository
+                        .uid(dataSetElement.dataElement().uid())
+                        .blockingGet()
+                        ?.categoryComboUid()
+
+                categoryComboUid?.let { catComboUid ->
+                    val categoryOptionCombos = categoryOptionComboCollectionRepository
+                        .byCategoryComboUid().eq(catComboUid)
+                        .blockingGet()
+
+                    val dataValues = dataValueCollectionRepository
+                        .byPeriod().eq(periodId)
+                        .byOrganisationUnitUid().eq(organisationUnitUid)
+                        .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+                        .byDeleted().isFalse
+                        .byDataElementUid().eq(dataSetElement.dataElement().uid())
+                        .byCategoryOptionComboUid()
+                        .`in`(UidsHelper.getUidsList(categoryOptionCombos))
+                        .blockingGet()
+
+                    dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
+                        ?.map { dataValue ->
+                            DataElementOperand.builder().apply {
+                                uid(
+                                    listOfNotNull(dataValue.dataElement(), dataValue.categoryOptionCombo())
+                                        .joinToString("."),
+                                )
+                                dataValue.dataElement()?.let { dataElement(ObjectWithUid.create(it)) }
+                                dataValue.categoryOptionCombo()?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
+                            }.build()
+                        } ?: emptyList()
+                } ?: emptyList()
+            }
+        }
+
+    override fun blockingGetMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand> {
+        return getMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+            .blockingGet()
     }
 
     internal fun blockingIsCategoryOptionHasDataWriteAccess(categoryOptionComboUid: String): Boolean {

@@ -30,14 +30,13 @@ package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.toDto
@@ -47,19 +46,19 @@ internal data class NewEventDTO(
     override val deleted: Boolean?,
     val event: String?,
     val enrollment: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val createdAtClient: String?,
-    val updatedAtClient: String?,
+    val createdAt: DateStringDTO?,
+    val updatedAt: DateStringDTO?,
+    val createdAtClient: DateStringDTO?,
+    val updatedAtClient: DateStringDTO?,
     val program: String?,
     val programStage: String?,
     val orgUnit: String?,
-    val occurredAt: String?,
+    val occurredAt: DateStringDTO?,
     val status: String?,
     val geometry: GeometryDTO?,
-    val completedAt: String?,
+    val completedAt: DateStringDTO?,
     val completedBy: String?,
-    val scheduledAt: String?,
+    val scheduledAt: DateStringDTO?,
     val attributeOptionCombo: String?,
     val assignedUser: NewUserInfoDTO?,
     val notes: List<NewNoteDTO>?,
@@ -72,19 +71,19 @@ internal data class NewEventDTO(
             uid(event)
             deleted(deleted)
             enrollment(enrollment)
-            created(createdAt.toJavaDate())
-            lastUpdated(updatedAt.toJavaDate())
-            createdAtClient(createdAtClient.toJavaDate())
-            lastUpdatedAtClient(updatedAtClient.toJavaDate())
+            created(createdAt?.toDomain())
+            lastUpdated(updatedAt?.toDomain())
+            createdAtClient(createdAtClient?.toDomain())
+            lastUpdatedAtClient(updatedAtClient?.toDomain())
             program(program)
             programStage(programStage)
             organisationUnit(orgUnit)
-            eventDate(occurredAt.toJavaDate())
+            eventDate(occurredAt?.toDomain())
             status(status?.let { EventStatus.valueOf(it) })
             geometry(geometry?.toDomain())
-            completedDate(completedAt.toJavaDate())
+            completedDate(completedAt?.toDomain())
             completedBy(completedBy)
-            dueDate(scheduledAt.toJavaDate())
+            dueDate(scheduledAt?.toDomain())
             attributeOptionCombo(attributeOptionCombo)
             assignedUser(assignedUser?.uid)
             trackedEntityDataValues(dataValues?.map { it.toDomain(event) })
@@ -100,19 +99,19 @@ internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
         event = uid,
         deleted = deleted,
         enrollment = enrollment,
-        createdAt = createdAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAt = updatedAt?.let { DateUtils.DATE_FORMAT.format(it) },
-        createdAtClient = createdAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
-        updatedAtClient = updatedAtClient?.let { DateUtils.DATE_FORMAT.format(it) },
+        createdAt = createdAt?.toDto(),
+        updatedAt = updatedAt?.toDto(),
+        createdAtClient = createdAtClient?.toDto(),
+        updatedAtClient = updatedAtClient?.toDto(),
         program = program,
         programStage = programStage,
         orgUnit = organisationUnit,
-        occurredAt = occurredAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        occurredAt = occurredAt?.toDto(),
         status = status?.name,
         geometry = geometry?.let { it.toDto() },
-        completedAt = completedAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        completedAt = completedAt?.toDto(),
         completedBy = completedBy,
-        scheduledAt = scheduledAt?.let { DateUtils.DATE_FORMAT.format(it) },
+        scheduledAt = scheduledAt?.toDto(),
         attributeOptionCombo = attributeOptionCombo,
         assignedUser = assignedUser?.let { it.toDto() },
         notes = notes?.map { it.toDto() },

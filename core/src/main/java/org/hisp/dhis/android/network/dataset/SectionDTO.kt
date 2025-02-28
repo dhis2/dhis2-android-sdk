@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.network.dataset
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.Section
@@ -41,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class SectionDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -56,26 +54,26 @@ internal data class SectionDTO(
     val dataElements: List<ObjectWithUidDTO> = emptyList(),
     val greyedFields: List<DataElementOperandDTO> = emptyList(),
     val indicators: List<ObjectWithUidDTO> = emptyList(),
-    val disableDataElementAutoGrouping: Boolean?,
+    val disableDataElementAutoGroup: Boolean?,
     val displayOptions: String?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Section {
-        val jsonParser = KotlinxJsonParser.instance
-        val displayOptionsDTO = displayOptions?.let {
-            jsonParser.decodeFromString<DisplayOptionsDTO>(it)
-        }
-        return Section.builder()
-            .applyBaseIdentifiableFields(this)
-            .description(description)
-            .sortOrder(sortOrder)
-            .showRowTotals(showRowTotals)
-            .showColumnTotals(showColumnTotals)
-            .dataSet(dataSet?.toDomain())
-            .dataElements(dataElements.map { DataElement.builder().uid(it.uid).build() })
-            .greyedFields(greyedFields.map { it.toDomain() })
-            .indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
-            .disableDataElementAutoGrouping(disableDataElementAutoGrouping)
-            .displayOptions(displayOptionsDTO?.toDomain())
-            .build()
+        return Section.builder().apply {
+            applyBaseIdentifiableFields(this@SectionDTO)
+            description(description)
+            sortOrder(sortOrder)
+            showRowTotals(showRowTotals)
+            showColumnTotals(showColumnTotals)
+            dataSet(dataSet?.toDomain())
+            dataElements(dataElements.map { DataElement.builder().uid(it.id).build() })
+            greyedFields(greyedFields.map { it.toDomain() })
+            indicators(indicators.map { Indicator.builder().uid(it.id).build() })
+            disableDataElementAutoGroup(disableDataElementAutoGroup)
+            displayOptions?.let {
+                displayOptions(
+                    KotlinxJsonParser.instance.decodeFromString(SectionDisplayOptionsDTO.serializer(), it).toDomain(),
+                )
+            }
+        }.build()
     }
 }

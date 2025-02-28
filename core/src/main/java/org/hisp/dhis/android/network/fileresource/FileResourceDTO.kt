@@ -34,16 +34,16 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 
 @Serializable
 internal data class FileResourceDTO(
     val id: String?,
     val name: String?,
-    val created: String?,
-    val lastUpdated: String?,
+    val created: DateStringDTO?,
+    val lastUpdated: DateStringDTO?,
     val contentType: String?,
     val contentLength: Long?,
     val domain: String?,
@@ -53,8 +53,8 @@ internal data class FileResourceDTO(
         return FileResource.builder().apply {
             id?.let { uid(it) }
             name?.let { name(it) }
-            created.toJavaDate()?.let { created(it) }
-            lastUpdated.toJavaDate()?.let { lastUpdated(it) }
+            created?.toDomain()?.let { created(it) }
+            lastUpdated?.toDomain()?.let { lastUpdated(it) }
             contentType?.let { contentType(it) }
             contentLength?.let { contentLength(it) }
             domain?.let { domain(FileResourceDomain.valueOf(it)) }

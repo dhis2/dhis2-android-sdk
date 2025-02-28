@@ -29,10 +29,13 @@
 package org.hisp.dhis.android.network.event
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
@@ -43,17 +46,24 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.koin.core.annotation.Singleton
+import java.net.HttpURLConnection.HTTP_CONFLICT
 
 @Singleton
 internal class EventNetworkHandlerImpl(
     httpClient: HttpServiceClient,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : EventNetworkHandler {
     private val service = EventService(httpClient)
 
-    override suspend fun postEvents(events: List<Event>, strategy: String): EventWebResponse {
+    override suspend fun postEvents(events: List<Event>, strategy: String): Result<EventWebResponse, D2Error> {
         val payload = EventPayload(items = events.map { it.toDto() })
-        val response = service.postEvents(payload, strategy)
-        return response.toDomain()
+        return coroutineAPICallExecutor.wrap(
+            storeError = true,
+            acceptedErrorCodes = listOf(HTTP_CONFLICT),
+            errorClassParser = EventWebResponseDTO::toErrorClass,
+        ) {
+            service.postEvents(payload, strategy).toDomain()
+        }
     }
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {

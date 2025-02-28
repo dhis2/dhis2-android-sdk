@@ -26,34 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.dataset
+package org.hisp.dhis.android.core.dataset;
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.dataset.DisplayOptions
-import org.hisp.dhis.android.core.dataset.SectionPivotMode
+import androidx.annotation.Nullable;
 
-@Serializable
-internal data class DisplayOptionsDTO(
-    val pivotMode: String?,
-    val pivotedCategory: String?,
-    val afterSectionText: String?,
-    val beforeSectionText: String?,
-) {
-    fun toDomain(): DisplayOptions {
-        return DisplayOptions.builder()
-            .pivotMode(pivotMode.takeIf { !it.isNullOrEmpty() }?.let { SectionPivotMode.from(it) })
-            .pivotedCategory(pivotedCategory.takeIf { !it.isNullOrEmpty() })
-            .afterSectionText(afterSectionText.takeIf { !it.isNullOrEmpty() })
-            .beforeSectionText(beforeSectionText.takeIf { !it.isNullOrEmpty() })
-            .build()
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class CustomText {
+
+    public static Builder builder() {
+        return new AutoValue_CustomText.Builder();
     }
-}
 
-internal fun SectionPivotMode.Companion.from(key: String): SectionPivotMode {
-    return when (key) {
-        "n/a" -> SectionPivotMode.DEFAULT
-        "pivot" -> SectionPivotMode.PIVOT
-        "move_categories" -> SectionPivotMode.MOVE_CATEGORIES
-        else -> throw IllegalArgumentException("Unsupported SectionPivotMode apiValue: $key")
+    @Nullable
+    public abstract String header();
+
+    @Nullable
+    public abstract String subHeader();
+
+    @Nullable
+    public abstract TextAlign align();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder header(String header);
+
+        public abstract Builder subHeader(String subHeader);
+
+        public abstract Builder align(TextAlign align);
+
+        public abstract CustomText build();
     }
 }

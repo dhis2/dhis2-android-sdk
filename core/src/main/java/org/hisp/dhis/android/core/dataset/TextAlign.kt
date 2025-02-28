@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.data.dataset
+enum class TextAlign {
+    LINE_END,
+    LINE_START,
+    CENTER,
+    ;
 
-import org.hisp.dhis.android.core.dataset.DisplayOptions
-import org.hisp.dhis.android.core.dataset.SectionPivotMode
-
-class DisplayOptionsSamples {
-    companion object {
-        @JvmStatic
-        fun getDisplayOptions(): DisplayOptions {
-            return DisplayOptions.builder()
-                .pivotMode(SectionPivotMode.DEFAULT)
-                .pivotedCategory("pivotedCategory")
-                .afterSectionText("afterSectionText")
-                .beforeSectionText("beforeSectionText")
-                .build()
-        }
-    }
+    @Suppress("EmptyClassBlock")
+    companion object
 }

@@ -30,8 +30,11 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
 import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
+import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -44,7 +47,7 @@ import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
 
 @Serializable
 internal data class DataSetDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
@@ -76,6 +79,7 @@ internal data class DataSetDTO(
     val sections: List<SectionDTO> = emptyList(),
     val compulsoryDataElementOperands: List<DataElementOperandDTO> = emptyList(),
     val dataInputPeriods: List<DataInputPeriodDTO> = emptyList(),
+    val displayOptions: String?,
     val access: AccessDTO?,
     val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
@@ -99,10 +103,17 @@ internal data class DataSetDTO(
             renderHorizontally(renderHorizontally)
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
-            indicators(indicators.map { Indicator.builder().uid(it.uid).build() })
+            indicators(indicators.map { Indicator.builder().uid(it.id).build() })
             DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
-            dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(uid)) })
+            dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
+            displayOptions(
+                displayOptions?.let {
+                    KotlinxJsonParser.instance.decodeFromString(DataSetDisplayOptionsDTO.serializer(), it).toDomain()
+                } ?: DataSetDisplayOptions.builder().apply {
+                    renderAsTabs?.let { tabsDirection(TabsDirection.HORIZONTAL) }
+                }.build(),
+            )
             access?.let { access(access.toDomain()) }
             style?.let { style(style.toDomain()) }
         }.build()

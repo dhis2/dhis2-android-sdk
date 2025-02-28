@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.program
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.program.ProgramSection
@@ -42,7 +41,7 @@ import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttribu
 
 @Serializable
 internal data class ProgramSectionDTO(
-    @SerialName("id") override val uid: String,
+    override val id: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,

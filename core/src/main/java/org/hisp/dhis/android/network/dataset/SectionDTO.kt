@@ -54,7 +54,7 @@ internal data class SectionDTO(
     val dataElements: List<ObjectWithUidDTO> = emptyList(),
     val greyedFields: List<DataElementOperandDTO> = emptyList(),
     val indicators: List<ObjectWithUidDTO> = emptyList(),
-    val disableDataElementAutoGrouping: Boolean?,
+    val disableDataElementAutoGroup: Boolean?,
     val displayOptions: String?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Section {
@@ -68,7 +68,7 @@ internal data class SectionDTO(
             dataElements(dataElements.map { DataElement.builder().uid(it.id).build() })
             greyedFields(greyedFields.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            disableDataElementAutoGrouping(disableDataElementAutoGrouping)
+            disableDataElementAutoGroup(disableDataElementAutoGroup)
             displayOptions?.let {
                 displayOptions(
                     KotlinxJsonParser.instance.decodeFromString(SectionDisplayOptionsDTO.serializer(), it).toDomain(),

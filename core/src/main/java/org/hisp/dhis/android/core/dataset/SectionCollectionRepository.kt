@@ -84,8 +84,8 @@ class SectionCollectionRepository internal constructor(
         return cf.string(SectionTableInfo.Columns.DATA_SET)
     }
 
-    fun byDisableDataElementAutoGrouping(): BooleanFilterConnector<SectionCollectionRepository> {
-        return cf.bool(SectionTableInfo.Columns.DISABLE_DATA_ELEMENT_AUTO_GROUPING)
+    fun byDisableDataElementAutoGroup(): BooleanFilterConnector<SectionCollectionRepository> {
+        return cf.bool(SectionTableInfo.Columns.DISABLE_DATA_ELEMENT_AUTO_GROUP)
     }
 
     fun byPivotMode(): EnumFilterConnector<SectionCollectionRepository, SectionPivotMode> {

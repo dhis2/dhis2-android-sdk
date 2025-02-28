@@ -94,7 +94,7 @@
               "id": "g9eOBujte1U"
             }
           ],
-          "disableDataElementAutoGrouping": true,
+          "disableDataElementAutoGroup": true,
           "displayOptions": "{\"pivotMode\":\"move_categories\",\"pivotedCategory\":\"pivoted category\",\"afterSectionText\":\"Text after section\",\"beforeSectionText\":\"Text before section\"}"
         }
       ],

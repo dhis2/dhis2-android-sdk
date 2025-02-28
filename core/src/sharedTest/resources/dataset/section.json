@@ -7,7 +7,7 @@
   "displayName": "Immunization",
   "description": "Immunization dose administration",
   "showColumnTotals": false,
-  "disableDataElementAutoGrouping": true,
+  "disableDataElementAutoGroup": true,
   "displayOptions": "{\"pivotMode\":\"n/a\",\"pivotedCategory\":null,\"afterSectionText\":\"\",\"beforeSectionText\":\"Text before section\"}",
   "sortOrder": 2,
   "showRowTotals": false,

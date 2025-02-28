@@ -147,6 +147,8 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                         createMockResponse(VERSIONS_JSON)
                     path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion") ->
                         createMockResponse(LATEST_APP_VERSION_JSON)
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/customIntents") ->
+                        createMockResponse(CUSTOM_INTENTS)
                     path.startsWith("/api/programs?") ->
                         createMockResponse(PROGRAMS_JSON)
                     path.startsWith("/api/programIndicators?") ->
@@ -273,6 +275,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(SYNCHRONIZATION_SETTTINGS_JSON)
         enqueueMockResponse(APPEARANCE_SETTINGS_JSON)
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON)
+        enqueueMockResponse(CUSTOM_INTENTS)
         enqueueMockResponse(USER_SETTINGS_JSON)
         enqueueMockResponse(SYSTEM_SETTINGS_JSON)
         enqueueMockResponse(VERSIONS_JSON)
@@ -383,6 +386,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val USER_SETTINGS_JSON = "settings/user_settings.json"
         private const val VERSIONS_JSON = "settings/versions.json"
         private const val LATEST_APP_VERSION_JSON = "settings/latest_app_version.json"
+        private const val CUSTOM_INTENTS = "settings/custom_intents.json"
         private const val PROGRAMS_JSON = "program/programs.json"
         private const val PROGRAMS_INDICATORS_JSON = "program/program_indicators.json"
         private const val PROGRAM_STAGES_JSON = "program/program_stages.json"

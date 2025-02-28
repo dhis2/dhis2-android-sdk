@@ -81,7 +81,7 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
     public abstract List<Indicator> indicators();
 
     @Nullable
-    public abstract Boolean disableDataElementAutoGrouping();
+    public abstract Boolean disableDataElementAutoGroup();
 
     @Nullable
     @ColumnAdapter(SectionDisplayOptionsColumnAdapter.class)
@@ -117,7 +117,7 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
 
         public abstract Builder indicators(List<Indicator> indicators);
 
-        public abstract Builder disableDataElementAutoGrouping(Boolean disableDataElementAutoGrouping);
+        public abstract Builder disableDataElementAutoGroup(Boolean disableDataElementAutoGroup);
 
         public abstract Builder displayOptions(SectionDisplayOptions sectionDisplayOptions);
 

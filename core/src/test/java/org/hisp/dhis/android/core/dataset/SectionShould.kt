@@ -56,7 +56,7 @@ class SectionShould : BaseObjectKotlinxShould("dataset/section.json"), ObjectSho
         assertThat(section.sortOrder()).isEqualTo(2)
         assertThat(section.showRowTotals()).isFalse()
         assertThat(section.showColumnTotals()).isFalse()
-        assertThat(section.disableDataElementAutoGrouping()).isTrue()
+        assertThat(section.disableDataElementAutoGroup()).isTrue()
         assertThat(section.dataElements()!!.size).isEqualTo(15)
         assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)

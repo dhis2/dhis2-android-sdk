@@ -5902,7 +5902,7 @@ public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis
 	public abstract fun dataElements ()Ljava/util/List;
 	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun description ()Ljava/lang/String;
-	public abstract fun disableDataElementAutoGrouping ()Ljava/lang/Boolean;
+	public abstract fun disableDataElementAutoGroup ()Ljava/lang/Boolean;
 	public abstract fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
 	public abstract fun greyedFields ()Ljava/util/List;
 	public abstract fun indicators ()Ljava/util/List;
@@ -5918,7 +5918,7 @@ public abstract class org/hisp/dhis/android/core/dataset/Section$Builder : org/h
 	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun disableDataElementAutoGrouping (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public abstract fun disableDataElementAutoGroup (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun displayOptions (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun greyedFields (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
@@ -5933,7 +5933,7 @@ public final class org/hisp/dhis/android/core/dataset/SectionCollectionRepositor
 	public final fun byBeforeSectionText ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDataSetUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
-	public final fun byDisableDataElementAutoGrouping ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byDisableDataElementAutoGroup ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byPivotMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byPivotedCategory ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byShowColumnTotals ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
@@ -6062,7 +6062,7 @@ public class org/hisp/dhis/android/core/dataset/SectionTableInfo$Columns : org/h
 	public static final field BEFORE_SECTION_TEXT Ljava/lang/String;
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUPING Ljava/lang/String;
+	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUP Ljava/lang/String;
 	public static final field PIVOTED_CATEGORY Ljava/lang/String;
 	public static final field PIVOT_MODE Ljava/lang/String;
 	public static final field SHOW_COLUMN_TOTALS Ljava/lang/String;

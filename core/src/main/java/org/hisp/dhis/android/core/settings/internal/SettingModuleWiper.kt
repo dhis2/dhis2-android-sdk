@@ -32,6 +32,9 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicatorTableInfo
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
+import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
+import org.hisp.dhis.android.core.settings.CustomIntentDataElementTableInfo
+import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
 import org.hisp.dhis.android.core.settings.DataSetConfigurationSettingTableInfo
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo
 import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
@@ -63,6 +66,9 @@ internal class SettingModuleWiper(
         tableWiper.wipeTable(AnalyticsTeiDataElementTableInfo.TABLE_INFO)
         tableWiper.wipeTable(AnalyticsTeiIndicatorTableInfo.TABLE_INFO)
         tableWiper.wipeTable(AnalyticsTeiAttributeTableInfo.TABLE_INFO)
+        tableWiper.wipeTable(CustomIntentTableInfo.TABLE_INFO)
+        tableWiper.wipeTable(CustomIntentDataElementTableInfo.TABLE_INFO)
+        tableWiper.wipeTable(CustomIntentAttributeTableInfo.TABLE_INFO)
         tableWiper.wipeTable(UserSettingsTableInfo.TABLE_INFO)
         tableWiper.wipeTable(AnalyticsDhisVisualizationTableInfo.TABLE_INFO)
         tableWiper.wipeTable(LatestAppVersionTableInfo.TABLE_INFO)

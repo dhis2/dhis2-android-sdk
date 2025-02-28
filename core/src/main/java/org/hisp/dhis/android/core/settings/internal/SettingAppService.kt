@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CustomIntents
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.LatestAppVersion
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class SettingAppService(
     private val settingNetworkHandler: SettingsNetworkHandler,
     private val apkDistributionNetworkHandler: ApkDistributionNetworkHandler,
@@ -75,6 +77,10 @@ internal class SettingAppService(
 
     suspend fun analyticsSettings(version: SettingsAppDataStoreVersion): AnalyticsSettings {
         return settingNetworkHandler.analyticsSettings("${getNamespace(version)}/analytics")
+    }
+
+    suspend fun customIntents(version: SettingsAppDataStoreVersion): CustomIntents {
+        return settingNetworkHandler.customIntents("${getNamespace(version)}/customIntents")
     }
 
     suspend fun latestAppVersion(): LatestAppVersion {

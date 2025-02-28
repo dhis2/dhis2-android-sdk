@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.settings.internal
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.hisp.dhis.android.core.settings.CustomIntentDataElement
+import org.koin.core.annotation.Singleton
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
+@Singleton
+internal class CustomIntentHandler(
+    store: CustomIntentStore,
+    private val customIntentDataElementTriggerHandler: CustomIntentDataElementTriggerHandler,
+    private val customIntentAttributeTriggerHandler: CustomIntentAttributeTriggerHandler,
+) : IdentifiableWithoutDeleteInterfaceHandlerImpl<CustomIntent>(store) {
 
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
+    override fun afterObjectHandled(o: CustomIntent, action: HandleAction) {
+        o.trigger()?.dataElements()?.let { handleDataElementTrigger(o.uid(), it) }
+        o.trigger()?.attributes()?.let { handleAttributeTrigger(o.uid(), it) }
     }
 
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
+    private fun handleDataElementTrigger(customIntentUid: String, dataElementList: List<CustomIntentDataElement>) {
+        customIntentDataElementTriggerHandler.handleMany(customIntentUid, dataElementList)
     }
 
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 170
+    private fun handleAttributeTrigger(customIntentUid: String, attributeList: List<CustomIntentAttribute>) {
+        customIntentAttributeTriggerHandler.handleMany(customIntentUid, attributeList)
     }
 }

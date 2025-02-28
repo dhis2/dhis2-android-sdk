@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+package org.hisp.dhis.android.core.settings.internal
 
-import android.content.Context
-import android.content.res.AssetManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentTrigger
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
-
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
+internal class CustomIntentTriggerChildrenAppender private constructor(
+    private val dataElementLinkChildStore: CustomIntentDataElementTriggerStore,
+    private val attributeLinkChildStore: CustomIntentAttributeTriggerStore,
+) : ChildrenAppender<CustomIntent>() {
+    override fun appendChildren(customIntent: CustomIntent): CustomIntent {
+        val builder = customIntent.toBuilder()
+        builder.trigger(
+            CustomIntentTrigger.builder()
+                .dataElements(dataElementLinkChildStore.selectLinksForMasterUid(customIntent.uid()))
+                .attributes(attributeLinkChildStore.selectLinksForMasterUid(customIntent.uid()))
+                .build(),
+        )
+        return builder.build()
     }
 
     companion object {
-        const val VERSION = 170
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CustomIntent> {
+            return CustomIntentTriggerChildrenAppender(
+                CustomIntentDataElementTriggerStoreImpl(databaseAdapter),
+                CustomIntentAttributeTriggerStoreImpl(databaseAdapter),
+            )
+        }
     }
 }

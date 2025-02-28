@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.settings
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CustomIntents
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
@@ -78,6 +79,11 @@ internal class SettingsNetworkHandlerImpl(
 
     override suspend fun analyticsSettings(url: String): AnalyticsSettings {
         val apiPayload = service.analyticsSettings(url)
+        return apiPayload.toDomain()
+    }
+
+    override suspend fun customIntents(url: String): CustomIntents {
+        val apiPayload = service.customIntents(url)
         return apiPayload.toDomain()
     }
 }

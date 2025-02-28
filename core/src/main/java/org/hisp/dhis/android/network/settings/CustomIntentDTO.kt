@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.network.settings
 
-@Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentActionType
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
-    }
-
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+@Serializable
+internal data class CustomIntentDTO(
+    val id: String,
+    val name: String?,
+    val trigger: CustomIntentTriggerDTO?,
+    val action: List<String>?,
+    val packageName: String?,
+    val request: CustomIntentRequestDTO?,
+    val response: CustomIntentResponseDTO?,
+) {
+    fun toDomain(): CustomIntent {
+        return CustomIntent.builder()
+            .uid(id)
+            .name(name)
+            .trigger(trigger?.toDomain(id))
+            .action(action?.map { CustomIntentActionType.valueOf(it) })
+            .packageName(packageName)
+            .request(request?.toDomain())
+            .response(response?.toDomain())
+            .build()
     }
 }

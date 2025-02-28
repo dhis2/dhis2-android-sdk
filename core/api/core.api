@@ -11402,6 +11402,184 @@ public abstract class org/hisp/dhis/android/core/settings/CompletionSpinnerSetti
 	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
 }
 
+public abstract class org/hisp/dhis/android/core/settings/CustomIntent : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+	public fun <init> ()V
+	public abstract fun action ()Ljava/util/List;
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntent;
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun packageName ()Ljava/lang/String;
+	public abstract fun request ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
+	public abstract fun response ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponse;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun trigger ()Lorg/hisp/dhis/android/core/settings/CustomIntentTrigger;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntent$Builder {
+	public fun <init> ()V
+	public abstract fun action (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntent;
+	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun packageName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun request (Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun response (Lorg/hisp/dhis/android/core/settings/CustomIntentResponse;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun trigger (Lorg/hisp/dhis/android/core/settings/CustomIntentTrigger;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentActionType : java/lang/Enum {
+	public static final field DATA_ENTRY Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
+	public static final field SEARCH Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
+	public static fun values ()[Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentAttribute : org/hisp/dhis/android/core/common/CoreObject {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute;
+	public abstract fun customIntentUid ()Ljava/lang/String;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute;
+	public abstract fun customIntentUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder;
+	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentAttributeTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/settings/CustomIntentAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field CUSTOM_INTENT_UID Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyWithUidCollectionRepositoryImpl {
+	public final fun byAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentCollectionRepository;
+	public final fun byDataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentCollectionRepository;
+	public final fun byName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentDataElement : org/hisp/dhis/android/core/common/CoreObject {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement;
+	public abstract fun customIntentUid ()Ljava/lang/String;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement;
+	public abstract fun customIntentUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
+	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentDataElementTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/settings/CustomIntentDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field CUSTOM_INTENT_UID Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest {
+	public fun <init> ()V
+	public abstract fun arguments ()Ljava/util/Map;
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest$Builder {
+	public fun <init> ()V
+	public abstract fun arguments (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponse {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponse$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponse;
+	public abstract fun data ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponse$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponse;
+	public abstract fun data (Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponse$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseData {
+	public fun <init> ()V
+	public abstract fun argument ()Ljava/lang/String;
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;
+	public abstract fun path ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder {
+	public fun <init> ()V
+	public abstract fun argument (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;
+	public abstract fun path (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/settings/CustomIntentTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field ACTION Ljava/lang/String;
+	public static final field NAME Ljava/lang/String;
+	public static final field PACKAGE_NAME Ljava/lang/String;
+	public static final field REQUEST_ARGUMENTS Ljava/lang/String;
+	public static final field RESPONSE_DATA_ARGUMENT Ljava/lang/String;
+	public static final field RESPONSE_DATA_PATH Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentTrigger {
+	public fun <init> ()V
+	public abstract fun attributes ()Ljava/util/List;
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentTrigger$Builder;
+	public abstract fun dataElements ()Ljava/util/List;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentTrigger$Builder {
+	public fun <init> ()V
+	public abstract fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntentTrigger$Builder;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentTrigger;
+	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntentTrigger$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntents {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntents$Builder;
+	public abstract fun customIntents ()Ljava/util/List;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntents$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntents;
+	public abstract fun customIntents (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntents$Builder;
+}
+
 public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
@@ -12007,6 +12185,7 @@ public abstract class org/hisp/dhis/android/core/settings/QuickAction$Builder {
 public abstract interface class org/hisp/dhis/android/core/settings/SettingModule {
 	public abstract fun analyticsSetting ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettingObjectRepository;
 	public abstract fun appearanceSettings ()Lorg/hisp/dhis/android/core/settings/AppearanceSettingsObjectRepository;
+	public abstract fun customIntents ()Lorg/hisp/dhis/android/core/settings/CustomIntentCollectionRepository;
 	public abstract fun dataSetSetting ()Lorg/hisp/dhis/android/core/settings/DataSetSettingsObjectRepository;
 	public abstract fun generalSetting ()Lorg/hisp/dhis/android/core/settings/GeneralSettingObjectRepository;
 	public abstract fun latestAppVersion ()Lorg/hisp/dhis/android/core/settings/LatestAppVersionObjectRepository;

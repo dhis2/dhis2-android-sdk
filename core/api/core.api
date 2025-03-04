@@ -1600,7 +1600,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/Databa
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$Companion;
 	public fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/lang/String;
@@ -1617,21 +1616,6 @@ public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetad
 	public final fun getVersion ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public synthetic class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$$serializer;
-	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
-	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$Companion {
-	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseImportExport {

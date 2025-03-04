@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.QuickAction
 import org.hisp.dhis.android.core.settings.internal.QuickActionDAO
@@ -48,7 +47,7 @@ internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickA
     companion object {
         fun serialize(o: List<QuickAction>?): String? {
             return o?.let {
-                Json.encodeToString(
+                KotlinxJsonParser.instance.encodeToString(
                     ListSerializer(QuickActionDAO.serializer()),
                     it.map { it.toDao() },
                 )

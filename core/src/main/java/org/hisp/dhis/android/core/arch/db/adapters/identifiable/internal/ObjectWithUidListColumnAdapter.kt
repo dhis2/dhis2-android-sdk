@@ -33,7 +33,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.ObjectWithUidDAO
@@ -69,7 +68,7 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
         fun serialize(o: List<ObjectWithUid>?): String? {
             val dao = o?.map { it.toDao() }
             return dao?.let {
-                Json.encodeToString(ListSerializer(ObjectWithUidDAO.serializer()), it)
+                KotlinxJsonParser.instance.encodeToString(ListSerializer(ObjectWithUidDAO.serializer()), it)
             }
         }
     }

@@ -27,23 +27,35 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import com.fasterxml.jackson.core.type.TypeReference
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO.Companion.toDao
 
 internal class MapLayerImagerProviderAreaListColumnAdapter :
     JSONObjectListColumnAdapter<MapLayerImageryProviderArea>() {
-    override fun getTypeReference(): TypeReference<List<MapLayerImageryProviderArea>> {
-        return object : TypeReference<List<MapLayerImageryProviderArea>>() {}
-    }
 
     override fun serialize(o: List<MapLayerImageryProviderArea>?): String? =
         MapLayerImagerProviderAreaListColumnAdapter.serialize(o)
 
+    override fun deserialize(str: String): List<MapLayerImageryProviderArea> {
+        val dao = KotlinxJsonParser.instance.decodeFromString(
+            ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
+            str,
+        )
+        return dao.map { it.toDomain() }
+    }
+
     companion object {
         fun serialize(o: List<MapLayerImageryProviderArea>?): String? {
             return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+                val dao = it.map { it.toDao() }
+                return Json.encodeToString(
+                    ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
+                    dao,
+                )
             }
         }
     }

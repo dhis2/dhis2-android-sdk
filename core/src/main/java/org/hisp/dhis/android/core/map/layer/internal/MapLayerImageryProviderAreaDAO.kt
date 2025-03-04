@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import kotlinx.serialization.SerializationException
+package org.hisp.dhis.android.core.map.layer.internal
 
-internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<O>> {
-    override fun fromCursor(cursor: Cursor, columnName: String): List<O> {
-        val columnIndex = cursor.getColumnIndex(columnName)
-        val str = cursor.getString(columnIndex)
-        return str?.let {
-            try {
-                deserialize(it)
-            } catch (e: SerializationException) {
-                listOf()
-            } catch (e: IllegalArgumentException) {
-                listOf()
-            } catch (e: IllegalStateException) {
-                listOf()
-            }
-        } ?: listOf()
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
+
+@Serializable
+internal data class MapLayerImageryProviderAreaDAO(
+    val bbox: List<Double>?,
+    val zoomMax: Int,
+    val zoomMin: Int,
+) {
+    fun toDomain(): MapLayerImageryProviderArea {
+        return MapLayerImageryProviderArea.builder()
+            .bbox(bbox)
+            .zoomMax(zoomMax)
+            .zoomMin(zoomMin)
+            .build()
     }
 
-    override fun toContentValues(contentValues: ContentValues, columnName: String, o: List<O>?) {
-        try {
-            contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
-            e.printStackTrace()
+    companion object {
+        fun MapLayerImageryProviderArea.toDao(): MapLayerImageryProviderAreaDAO {
+            return MapLayerImageryProviderAreaDAO(
+                bbox = this.bbox(),
+                zoomMax = this.zoomMax(),
+                zoomMin = this.zoomMin(),
+            )
         }
     }
-
-    abstract fun serialize(o: List<O>?): String?
-
-    abstract fun deserialize(str: String): List<O>
 }

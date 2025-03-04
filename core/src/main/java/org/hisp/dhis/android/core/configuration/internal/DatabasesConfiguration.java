@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core.configuration.internal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.BuildConfig;
@@ -42,17 +39,13 @@ import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabasesConfiguration.Builder.class)
 public abstract class DatabasesConfiguration {
 
-    @JsonProperty
     public abstract long versionCode();
 
-    @JsonProperty()
     @Nullable
     public abstract Integer maxAccounts();
 
-    @JsonProperty()
     @NonNull
     public abstract List<DatabaseAccount> accounts();
 
@@ -66,7 +59,6 @@ public abstract class DatabasesConfiguration {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder versionCode(long versionCode);

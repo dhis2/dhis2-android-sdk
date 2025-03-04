@@ -30,28 +30,20 @@ package org.hisp.dhis.android.core.configuration.internal.migration;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseUserConfigurationOld.Builder.class)
 public abstract class DatabaseUserConfigurationOld {
 
-    @JsonProperty()
     @NonNull
     public abstract String username();
 
-    @JsonProperty()
     @NonNull
     public abstract String databaseName();
 
-    @JsonProperty()
     @NonNull
     public abstract String databaseCreationDate();
 
-    @JsonProperty()
     @NonNull
     public abstract boolean encrypted();
 
@@ -62,7 +54,6 @@ public abstract class DatabaseUserConfigurationOld {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder username(String username);

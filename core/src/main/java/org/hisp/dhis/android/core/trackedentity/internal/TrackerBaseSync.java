@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
@@ -54,7 +53,6 @@ public abstract class TrackerBaseSync extends BaseObject {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
 
         public abstract T program(String program);

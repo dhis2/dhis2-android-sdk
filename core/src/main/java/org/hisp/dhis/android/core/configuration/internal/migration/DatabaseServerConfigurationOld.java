@@ -30,22 +30,16 @@ package org.hisp.dhis.android.core.configuration.internal.migration;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseServerConfigurationOld.Builder.class)
 public abstract class DatabaseServerConfigurationOld {
 
-    @JsonProperty()
     @NonNull
     public abstract String serverUrl();
 
-    @JsonProperty()
     @NonNull
     public abstract List<DatabaseUserConfigurationOld> users();
 
@@ -56,7 +50,6 @@ public abstract class DatabaseServerConfigurationOld {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder serverUrl(String serverUrl);
 

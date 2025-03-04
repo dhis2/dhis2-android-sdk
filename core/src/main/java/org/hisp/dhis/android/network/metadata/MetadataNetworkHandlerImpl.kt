@@ -47,18 +47,20 @@ internal class MetadataNetworkHandlerImpl(
     override suspend fun getMetadataFields(
         config: GetMetadataIdsConfig,
     ): MetadataIds {
-        if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35) && config.users) {
+        val updatedConfig = if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35) && config.users) {
             Log.i(TAG, "Version greater or equal to 2.35. Skipping users query to metadata endpoint")
-            config.users = false
+            config.copy(users = false)
+        } else {
+            config
         }
         val metadataDTO = service.getMetadataFields(
-            field(config.dataElements),
-            field(config.categoryOptionCombos),
-            field(config.organisationUnits),
-            field(config.users),
-            field(config.trackedEntityTypes),
-            field(config.trackedEntityAttributes),
-            field(config.programs),
+            field(updatedConfig.dataElements),
+            field(updatedConfig.categoryOptionCombos),
+            field(updatedConfig.organisationUnits),
+            field(updatedConfig.users),
+            field(updatedConfig.trackedEntityTypes),
+            field(updatedConfig.trackedEntityAttributes),
+            field(updatedConfig.programs),
         )
         return metadataDTO.toDomain()
     }

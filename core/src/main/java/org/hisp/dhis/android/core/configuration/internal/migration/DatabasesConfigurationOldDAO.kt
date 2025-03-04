@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,19 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.configuration.internal.migration
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseServerConfigurationOldDAO.Companion.toDao
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-
-public class Inject {
-    private Inject() {
-        // no instances
+@Serializable
+internal data class DatabasesConfigurationOldDAO(
+    val loggedServerUrl: String,
+    val servers: List<DatabaseServerConfigurationOldDAO>,
+) {
+    fun toDomain(): DatabasesConfigurationOld {
+        return DatabasesConfigurationOld.builder()
+            .loggedServerUrl(loggedServerUrl)
+            .servers(servers.map { it.toDomain() })
+            .build()
     }
 
-    // configures and returns instance of object mapper
-    public static ObjectMapper objectMapper() {
-        return ObjectMapperFactory.objectMapper();
+    companion object {
+        fun DatabasesConfigurationOld.toDao(): DatabasesConfigurationOldDAO {
+            return DatabasesConfigurationOldDAO(
+                loggedServerUrl = this.loggedServerUrl(),
+                servers = this.servers().map { it.toDao() },
+            )
+        }
     }
 }

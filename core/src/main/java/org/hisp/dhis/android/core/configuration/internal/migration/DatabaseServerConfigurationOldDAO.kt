@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common
+package org.hisp.dhis.android.core.configuration.internal.migration
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import java.io.InputStream
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseUserConfigurationOldDAO.Companion.toDao
 
-open class BaseObjectKotlinxShould(private val jsonPath: String) {
-
-    private val jsonParser = KotlinxJsonParser.instance
-
-    protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>): T {
-        return deserializePath(jsonPath, serializer)
+@Serializable
+internal data class DatabaseServerConfigurationOldDAO(
+    val serverUrl: String,
+    val users: List<DatabaseUserConfigurationOldDAO>,
+) {
+    fun toDomain(): DatabaseServerConfigurationOld {
+        return DatabaseServerConfigurationOld.builder()
+            .serverUrl(serverUrl)
+            .users(users.map { it.toDomain() })
+            .build()
     }
 
-    protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>, jsonString: String): T {
-        return jsonParser.decodeFromString(serializer, jsonString)
-    }
-
-    protected fun <T> deserializePath(path: String, serializer: kotlinx.serialization.KSerializer<T>): T {
-        val jsonString = getStringValueFromFile(path)
-        return jsonParser.decodeFromString(serializer, jsonString)
-    }
-
-    protected fun <T> serialize(value: T, serializer: kotlinx.serialization.KSerializer<T>): String {
-        return jsonParser.encodeToString(serializer, value)
-    }
-
-    protected fun getStringValueFromFile(): String {
-        return getStringValueFromFile(jsonPath)
-    }
-
-    protected fun getStringValueFromFile(path: String): String {
-        val jsonStream: InputStream = this::class.java.classLoader?.getResourceAsStream(path)
-            ?: throw IllegalArgumentException("File not found: $jsonPath")
-        return jsonStream.bufferedReader().use { it.readText() }
+    companion object {
+        fun DatabaseServerConfigurationOld.toDao(): DatabaseServerConfigurationOldDAO {
+            return DatabaseServerConfigurationOldDAO(
+                serverUrl = this.serverUrl(),
+                users = this.users().map { it.toDao() },
+            )
+        }
     }
 }

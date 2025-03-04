@@ -28,17 +28,19 @@
 package org.hisp.dhis.android.core.configuration.internal.migration
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOldDAO.Companion.toDao
 import org.junit.Test
 
 class DatabasesConfigurationOldShould :
-    BaseObjectShould("configuration/databases_configuration_old.json"),
+    BaseObjectKotlinxShould("configuration/databases_configuration_old.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val configuration = deserialize(DatabasesConfigurationOld::class.java)
+        val configurationDao = deserialize(DatabasesConfigurationOldDAO.serializer())
+        val configuration = configurationDao.toDomain()
 
         assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org")
         assertThat(configuration.servers().size).isEqualTo(1)
@@ -55,11 +57,13 @@ class DatabasesConfigurationOldShould :
 
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
-        val configuration = deserialize(
-            DatabasesConfigurationOld::class.java,
-        )
-        val serialized = serialize(configuration)
-        val deserialized = deserialize(serialized, DatabasesConfigurationOld::class.java)
+        val configurationDao = deserialize(DatabasesConfigurationOldDAO.serializer())
+        val configuration = configurationDao.toDomain()
+
+        val serialized = serialize(configuration.toDao(), DatabasesConfigurationOldDAO.serializer())
+        val deserializedDao = deserialize(DatabasesConfigurationOldDAO.serializer(), serialized)
+        val deserialized = deserializedDao.toDomain()
+
         assertThat(deserialized).isEqualTo(configuration)
     }
 }

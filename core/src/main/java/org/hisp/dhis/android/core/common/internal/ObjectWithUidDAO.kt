@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common.internal
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.network.common.fields.Field;
-
-@AutoValue
-public abstract class ObjectWithUid implements ObjectWithUidInterface {
-
-    public static final Field<ObjectWithUid> uid = Field.create(UID);
-
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    public static ObjectWithUid create(String uid) {
-        return new AutoValue_ObjectWithUid(uid);
+@Serializable
+internal data class ObjectWithUidDAO(
+    val uid: String,
+) {
+    fun toDomain(): ObjectWithUid {
+        return ObjectWithUid.create(uid)
     }
 
-    public static ObjectWithUid fromIdentifiable(IdentifiableObject identifiableObject) {
-        return create(identifiableObject.uid());
+    companion object {
+        fun ObjectWithUid.toDao(): ObjectWithUidDAO {
+            return ObjectWithUidDAO(uid())
+        }
     }
 }

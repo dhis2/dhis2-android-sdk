@@ -27,20 +27,28 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.json.Json
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.internal.DateFilterPeriodDAO
+import org.hisp.dhis.android.core.common.internal.DateFilterPeriodDAO.Companion.toDao
 
 internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun getEnumClass(): Class<DateFilterPeriod> {
-        return DateFilterPeriod::class.java
-    }
-
     override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+
+    override fun deserialize(str: String): DateFilterPeriod {
+        return KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDAO>(
+            str,
+        ).toDomain()
+    }
 
     companion object {
         fun serialize(o: DateFilterPeriod?): String? {
             return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+                Json.encodeToString(
+                    DateFilterPeriodDAO.serializer(),
+                    it.toDao(),
+                )
             }
         }
     }

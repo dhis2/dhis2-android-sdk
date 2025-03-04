@@ -27,24 +27,32 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.json.Json
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionRepetitionDAO
+import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionRepetitionDAO.Companion.toDao
 
 internal class TrackerVisualizationDimensionRepetitionColumnAdapter :
     JSONObjectColumnAdapter<TrackerVisualizationDimensionRepetition>() {
-
-    override fun getEnumClass(): Class<TrackerVisualizationDimensionRepetition> {
-        return TrackerVisualizationDimensionRepetition::class.java
-    }
 
     override fun serialize(o: TrackerVisualizationDimensionRepetition?): String? {
         return TrackerVisualizationDimensionRepetitionColumnAdapter.serialize(o)
     }
 
+    override fun deserialize(str: String): TrackerVisualizationDimensionRepetition {
+        return KotlinxJsonParser.instance.decodeFromString<TrackerVisualizationDimensionRepetitionDAO>(
+            str,
+        ).toDomain()
+    }
+
     companion object {
         fun serialize(o: TrackerVisualizationDimensionRepetition?): String? {
             return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+                Json.encodeToString(
+                    TrackerVisualizationDimensionRepetitionDAO.serializer(),
+                    it.toDao(),
+                )
             }
         }
     }

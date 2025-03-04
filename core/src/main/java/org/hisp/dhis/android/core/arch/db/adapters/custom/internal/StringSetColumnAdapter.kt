@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
 internal class StringSetColumnAdapter : JSONObjectSetColumnAdapter<String>() {
@@ -42,7 +41,7 @@ internal class StringSetColumnAdapter : JSONObjectSetColumnAdapter<String>() {
     companion object {
         fun serialize(o: Set<String>?): String? {
             return o?.let {
-                Json.encodeToString(SetSerializer(String.serializer()), it)
+                KotlinxJsonParser.instance.encodeToString(SetSerializer(String.serializer()), it)
             }
         }
     }

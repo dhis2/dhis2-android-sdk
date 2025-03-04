@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionRepetitionDAO
@@ -49,7 +48,7 @@ internal class TrackerVisualizationDimensionRepetitionColumnAdapter :
     companion object {
         fun serialize(o: TrackerVisualizationDimensionRepetition?): String? {
             return o?.let {
-                Json.encodeToString(
+                KotlinxJsonParser.instance.encodeToString(
                     TrackerVisualizationDimensionRepetitionDAO.serializer(),
                     it.toDao(),
                 )

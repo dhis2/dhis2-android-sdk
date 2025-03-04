@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO
@@ -52,7 +51,7 @@ internal class MapLayerImagerProviderAreaListColumnAdapter :
         fun serialize(o: List<MapLayerImageryProviderArea>?): String? {
             return o?.let {
                 val dao = it.map { it.toDao() }
-                return Json.encodeToString(
+                return KotlinxJsonParser.instance.encodeToString(
                     ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
                     dao,
                 )

@@ -34,11 +34,22 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DatabaseConfigurationInsecureStoreImpl(
     insecureStore: InsecureStore,
-) : DatabaseConfigurationInsecureStore,
-    JsonKeyValueStoreImpl<DatabasesConfiguration, DatabasesConfigurationDAO>(
+) : DatabaseConfigurationInsecureStore {
+    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDAO>(
         insecureStore,
         "DB_CONFIGS",
         DatabasesConfigurationDAO.serializer(),
-        DatabasesConfigurationDAO::toDao,
-        DatabasesConfigurationDAO::toDomain,
     )
+
+    override fun set(o: DatabasesConfiguration) {
+        return daoStore.set(DatabasesConfigurationDAO.toDao(o))
+    }
+
+    override fun get(): DatabasesConfiguration? {
+        return daoStore.get()?.toDomain()
+    }
+
+    override fun remove() {
+        daoStore.remove()
+    }
+}

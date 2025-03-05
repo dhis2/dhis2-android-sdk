@@ -5140,55 +5140,6 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun versionCode (J)Lorg/hisp/dhis/android/core/configuration/internal/DatabasesConfiguration$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-	public abstract fun serverUrl ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-	public abstract fun users ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld;
-	public abstract fun serverUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-	public abstract fun users (Ljava/util/List;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun databaseCreationDate ()Ljava/lang/String;
-	public abstract fun databaseName ()Ljava/lang/String;
-	public abstract fun encrypted ()Z
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun username ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld;
-	public abstract fun databaseCreationDate (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun databaseName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun encrypted (Z)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-	public abstract fun loggedServerUrl ()Ljava/lang/String;
-	public abstract fun servers ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld;
-	public abstract fun loggedServerUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-	public abstract fun servers (Ljava/util/List;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-}
-
 public abstract class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;

@@ -36,24 +36,4 @@ internal data class DatabaseUserConfigurationOldDAO(
     val databaseName: String,
     val databaseCreationDate: String,
     val encrypted: Boolean,
-) {
-    fun toDomain(): DatabaseUserConfigurationOld {
-        return DatabaseUserConfigurationOld.builder()
-            .username(username)
-            .databaseName(databaseName)
-            .databaseCreationDate(databaseCreationDate)
-            .encrypted(encrypted)
-            .build()
-    }
-
-    companion object {
-        fun DatabaseUserConfigurationOld.toDao(): DatabaseUserConfigurationOldDAO {
-            return DatabaseUserConfigurationOldDAO(
-                username = this.username(),
-                databaseName = this.databaseName(),
-                databaseCreationDate = this.databaseCreationDate(),
-                encrypted = this.encrypted(),
-            )
-        }
-    }
-}
+)

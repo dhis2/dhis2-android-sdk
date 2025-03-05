@@ -33,33 +33,31 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import java.io.IOException
 
 @Suppress("TooGenericExceptionThrown")
-internal open class JsonKeyValueStoreImpl<O, T>(
+internal open class JsonKeyValueStoreImpl<T>(
     private val secureStore: KeyValueStore,
     private val key: String,
     private val serializer: KSerializer<T>,
-    private val domainToDao: (O) -> T,
-    private val daoToDomain: (T) -> O,
-) : ObjectKeyValueStore<O> {
-    private var value: O? = null
+) : ObjectKeyValueStore<T> {
+    private var value: T? = null
 
-    override fun set(o: O) {
+    override fun set(t: T) {
         try {
-            val strObject = KotlinxJsonParser.instance.encodeToString(serializer, domainToDao(o))
+            val strObject = KotlinxJsonParser.instance.encodeToString(serializer, t)
             secureStore.setData(key, strObject)
-            this.value = o
+            this.value = t
         } catch (e: SerializationException) {
             throw RuntimeException("Couldn't persist object in key value store")
         }
     }
 
-    override fun get(): O? {
+    override fun get(): T? {
         val strObject = secureStore.getData(key)
         return when {
             strObject == null -> null
             this.value != null -> this.value
             else -> {
                 val parsedValue = try {
-                    daoToDomain(KotlinxJsonParser.instance.decodeFromString(serializer, strObject))
+                    KotlinxJsonParser.instance.decodeFromString(serializer, strObject)
                 } catch (e: IOException) {
                     throw RuntimeException("Couldn't read object from key value store")
                 }

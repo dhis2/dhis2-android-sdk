@@ -38,31 +38,27 @@ class DatabasesConfigurationOldShould :
 
     @Test
     override fun map_from_json_string() {
-        val configurationDao = deserialize(DatabasesConfigurationOldDAO.serializer())
-        val configuration = configurationDao.toDomain()
+        val configuration = deserialize(DatabasesConfigurationOldDAO.serializer())
 
-        assertThat(configuration.loggedServerUrl()).isEqualTo("https://dhis2.org")
-        assertThat(configuration.servers().size).isEqualTo(1)
+        assertThat(configuration.loggedServerUrl).isEqualTo("https://dhis2.org")
+        assertThat(configuration.servers.size).isEqualTo(1)
 
-        val server = configuration.servers()[0]
-        assertThat(server.serverUrl()).isEqualTo("https://dhis2.org")
-        assertThat(server.users().size).isEqualTo(1)
+        val server = configuration.servers[0]
+        assertThat(server.serverUrl).isEqualTo("https://dhis2.org")
+        assertThat(server.users.size).isEqualTo(1)
 
-        val user = server.users()[0]
-        assertThat(user.username()).isEqualTo("user")
-        assertThat(user.databaseName()).isEqualTo("dbname.db")
-        assertThat(user.encrypted()).isTrue()
+        val user = server.users[0]
+        assertThat(user.username).isEqualTo("user")
+        assertThat(user.databaseName).isEqualTo("dbname.db")
+        assertThat(user.encrypted).isTrue()
     }
 
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
-        val configurationDao = deserialize(DatabasesConfigurationOldDAO.serializer())
-        val configuration = configurationDao.toDomain()
+        val configuration = deserialize(DatabasesConfigurationOldDAO.serializer())
 
-        val serialized =
-            serialize(DatabasesConfigurationOldDAO.toDao(configuration), DatabasesConfigurationOldDAO.serializer())
-        val deserializedDao = deserialize(serialized, DatabasesConfigurationOldDAO.serializer())
-        val deserialized = deserializedDao.toDomain()
+        val serialized = serialize(configuration, DatabasesConfigurationOldDAO.serializer())
+        val deserialized = deserialize(serialized, DatabasesConfigurationOldDAO.serializer())
 
         assertThat(deserialized).isEqualTo(configuration)
     }

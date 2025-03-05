@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,18 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.json.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.QuickAction
 
-import java.io.IOException;
+@Serializable
+internal data class QuickActionDAO(
+    val actionId: String,
+) {
+    fun toDomain(): QuickAction {
+        return QuickAction.builder()
+            .actionId(actionId)
+            .build()
+    }
 
-public class StringJsonElementSerializer extends JsonSerializer<String> {
-
-    @Override
-    public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeRawValue(value);
+    companion object {
+        fun QuickAction.toDao(): QuickActionDAO {
+            return QuickActionDAO(
+                actionId = this.actionId(),
+            )
+        }
     }
 }

@@ -27,22 +27,30 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import com.fasterxml.jackson.core.type.TypeReference
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.QuickAction
+import org.hisp.dhis.android.core.settings.internal.QuickActionDAO
+import org.hisp.dhis.android.core.settings.internal.QuickActionDAO.Companion.toDao
 
 internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickAction>() {
-    override fun getTypeReference(): TypeReference<List<QuickAction>> {
-        return object : TypeReference<List<QuickAction>>() {}
-    }
 
     override fun serialize(o: List<QuickAction>?): String? =
         QuickActionListColumnAdapter.serialize(o)
 
+    override fun deserialize(str: String): List<QuickAction> {
+        return KotlinxJsonParser.instance.decodeFromString<List<QuickActionDAO>>(
+            str,
+        ).map { it.toDomain() }
+    }
+
     companion object {
         fun serialize(o: List<QuickAction>?): String? {
             return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+                KotlinxJsonParser.instance.encodeToString(
+                    ListSerializer(QuickActionDAO.serializer()),
+                    it.map { it.toDao() },
+                )
             }
         }
     }

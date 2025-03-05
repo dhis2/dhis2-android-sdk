@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import kotlinx.serialization.builtins.ListSerializer
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO.Companion.toDao
+package org.hisp.dhis.android.core.visualization.internal
 
-internal class MapLayerImagerProviderAreaListColumnAdapter :
-    JSONObjectListColumnAdapter<MapLayerImageryProviderArea>() {
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
-    override fun serialize(o: List<MapLayerImageryProviderArea>?): String? =
-        MapLayerImagerProviderAreaListColumnAdapter.serialize(o)
-
-    override fun deserialize(str: String): List<MapLayerImageryProviderArea> {
-        val dao = KotlinxJsonParser.instance.decodeFromString(
-            ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
-            str,
-        )
-        return dao.map { it.toDomain() }
+@Serializable
+internal data class TrackerVisualizationDimensionRepetitionDAO(
+    val indexes: List<Int>?,
+) {
+    fun toDomain(): TrackerVisualizationDimensionRepetition {
+        return TrackerVisualizationDimensionRepetition.builder()
+            .indexes(indexes)
+            .build()
     }
 
     companion object {
-        fun serialize(o: List<MapLayerImageryProviderArea>?): String? {
-            return o?.let {
-                val dao = it.map { it.toDao() }
-                return KotlinxJsonParser.instance.encodeToString(
-                    ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
-                    dao,
-                )
-            }
+        fun TrackerVisualizationDimensionRepetition.toDao(): TrackerVisualizationDimensionRepetitionDAO {
+            return TrackerVisualizationDimensionRepetitionDAO(
+                indexes = this.indexes(),
+            )
         }
     }
 }

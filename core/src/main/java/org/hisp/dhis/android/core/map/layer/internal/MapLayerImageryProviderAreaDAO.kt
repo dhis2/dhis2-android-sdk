@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.json.internal;
+package org.hisp.dhis.android.core.map.layer.internal
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 
-import org.hisp.dhis.android.core.common.FeatureType;
+@Serializable
+internal data class MapLayerImageryProviderAreaDAO(
+    val bbox: List<Double>?,
+    val zoomMax: Int,
+    val zoomMin: Int,
+) {
+    fun toDomain(): MapLayerImageryProviderArea {
+        return MapLayerImageryProviderArea.builder()
+            .bbox(bbox)
+            .zoomMax(zoomMax)
+            .zoomMin(zoomMin)
+            .build()
+    }
 
-import java.io.IOException;
-
-public class GeometryTypeSerializer extends JsonSerializer<FeatureType> {
-
-    @Override
-    public void serialize(FeatureType value, JsonGenerator gen, SerializerProvider serializers)
-            throws IOException {
-        gen.writeString(value.getGeometryType());
+    companion object {
+        fun MapLayerImageryProviderArea.toDao(): MapLayerImageryProviderAreaDAO {
+            return MapLayerImageryProviderAreaDAO(
+                bbox = this.bbox(),
+                zoomMax = this.zoomMax(),
+                zoomMin = this.zoomMin(),
+            )
+        }
     }
 }

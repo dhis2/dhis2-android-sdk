@@ -2731,30 +2731,6 @@ public final class org/hisp/dhis/android/core/arch/json/internal/DateMultiFormat
 public final class org/hisp/dhis/android/core/arch/json/internal/DateMultiFormatDeserializer$Companion {
 }
 
-public class org/hisp/dhis/android/core/arch/json/internal/GeometryTypeDeserializer : com/fasterxml/jackson/databind/JsonDeserializer {
-	public fun <init> ()V
-	public synthetic fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/lang/Object;
-	public fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Lorg/hisp/dhis/android/core/common/FeatureType;
-}
-
-public class org/hisp/dhis/android/core/arch/json/internal/GeometryTypeSerializer : com/fasterxml/jackson/databind/JsonSerializer {
-	public fun <init> ()V
-	public synthetic fun serialize (Ljava/lang/Object;Lcom/fasterxml/jackson/core/JsonGenerator;Lcom/fasterxml/jackson/databind/SerializerProvider;)V
-	public fun serialize (Lorg/hisp/dhis/android/core/common/FeatureType;Lcom/fasterxml/jackson/core/JsonGenerator;Lcom/fasterxml/jackson/databind/SerializerProvider;)V
-}
-
-public class org/hisp/dhis/android/core/arch/json/internal/JsonElementStringConverter : com/fasterxml/jackson/databind/util/StdConverter {
-	public fun <init> ()V
-	public synthetic fun convert (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convert (Ljava/lang/Object;)Ljava/lang/String;
-}
-
-public class org/hisp/dhis/android/core/arch/json/internal/StringJsonElementSerializer : com/fasterxml/jackson/databind/JsonSerializer {
-	public fun <init> ()V
-	public synthetic fun serialize (Ljava/lang/Object;Lcom/fasterxml/jackson/core/JsonGenerator;Lcom/fasterxml/jackson/databind/SerializerProvider;)V
-	public fun serialize (Ljava/lang/String;Lcom/fasterxml/jackson/core/JsonGenerator;Lcom/fasterxml/jackson/databind/SerializerProvider;)V
-}
-
 public abstract interface class org/hisp/dhis/android/core/arch/modules/internal/TypedModuleDownloader {
 	public abstract fun downloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

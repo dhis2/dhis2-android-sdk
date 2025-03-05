@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.network.common.dto
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
@@ -38,8 +37,8 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 internal data class DateFilterPeriodDTO(
     val startBuffer: Int?,
     val endBuffer: Int?,
-    val startDate: String?,
-    val endDate: String?,
+    val startDate: SimpleDateStringDTO?,
+    val endDate: SimpleDateStringDTO?,
     val period: String?,
     val type: String?,
 ) {
@@ -47,8 +46,8 @@ internal data class DateFilterPeriodDTO(
         return DateFilterPeriod.builder()
             .startBuffer(startBuffer)
             .endBuffer(endBuffer)
-            .startDate(startDate?.let { DateUtils.SIMPLE_DATE_FORMAT.parse(it) })
-            .endDate(endDate?.let { DateUtils.SIMPLE_DATE_FORMAT.parse(it) })
+            .startDate(startDate?.let { it.toDomain() })
+            .endDate(endDate?.let { it.toDomain() })
             .period(period?.let { RelativePeriod.valueOf(it) })
             .type(type?.let { DatePeriodType.valueOf(it) })
             .build()

@@ -30,17 +30,12 @@ package org.hisp.dhis.android.core.settings;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_QuickAction.Builder.class)
 public abstract class QuickAction {
 
     @NonNull
-    @JsonProperty()
     public abstract String actionId();
 
     public abstract Builder toBuilder();
@@ -50,7 +45,6 @@ public abstract class QuickAction {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder actionId(String uid);
 

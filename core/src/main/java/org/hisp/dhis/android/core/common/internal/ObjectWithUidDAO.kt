@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.json.internal;
+package org.hisp.dhis.android.core.common.internal
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import org.hisp.dhis.android.core.common.FeatureType;
+@Serializable
+internal data class ObjectWithUidDAO(
+    val uid: String,
+) {
+    fun toDomain(): ObjectWithUid {
+        return ObjectWithUid.create(uid)
+    }
 
-import java.io.IOException;
-
-public class GeometryTypeDeserializer extends JsonDeserializer<FeatureType> {
-    @Override
-    public FeatureType deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
-        JsonToken jsonToken = p.getCurrentToken();
-        if (jsonToken == JsonToken.VALUE_STRING) {
-            return FeatureType.valueOfFeatureType(p.getValueAsString());
+    companion object {
+        fun ObjectWithUid.toDao(): ObjectWithUidDAO {
+            return ObjectWithUidDAO(uid())
         }
-        return null;
     }
 }

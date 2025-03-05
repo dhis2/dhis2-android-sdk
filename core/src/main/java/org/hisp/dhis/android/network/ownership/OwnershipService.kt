@@ -42,8 +42,8 @@ internal class OwnershipService(private val client: HttpServiceClient) {
             parameters {
                 attribute(PROGRAM, program)
                 attribute(REASON, reason)
+                trackedEntity.forEach { (key, value) -> attribute(key, value) }
             }
-            body(trackedEntity)
         }
     }
 
@@ -57,8 +57,8 @@ internal class OwnershipService(private val client: HttpServiceClient) {
             parameters {
                 attribute(PROGRAM, program)
                 attribute(ORG_UNIT, ou)
+                trackedEntity.forEach { (key, value) -> attribute(key, value) }
             }
-            body(trackedEntity)
         }
     }
 

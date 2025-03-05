@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
-import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
@@ -173,7 +172,7 @@ internal class DatabaseImportExportImpl(
         )
 
         exportMetadataFile.bufferedWriter(Charsets.UTF_8).use {
-            it.write(Json.encodeToString(DatabaseExportMetadata.serializer(), metadata))
+            it.write(KotlinxJsonParser.instance.encodeToString(DatabaseExportMetadata.serializer(), metadata))
         }
 
         val zipName = credentials.username + '-' + getCurrentTimeAndDate() + '-' + ExportZip

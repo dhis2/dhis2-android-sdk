@@ -60,7 +60,7 @@ class DatabasesConfigurationShould :
         val configuration = configurationDao.toDomain()
 
         val serialized = serialize(configuration.toDao(), DatabasesConfigurationDAO.serializer())
-        val deserializedDao = deserialize(DatabasesConfigurationDAO.serializer(), serialized)
+        val deserializedDao = deserialize(serialized, DatabasesConfigurationDAO.serializer())
         val deserialized = deserializedDao.toDomain()
 
         assertThat(deserialized).isEqualTo(configuration)

@@ -39,7 +39,7 @@ open class BaseObjectKotlinxShould(private val jsonPath: String) {
         return deserializePath(jsonPath, serializer)
     }
 
-    protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>, jsonString: String): T {
+    protected fun <T> deserialize(jsonString: String, serializer: kotlinx.serialization.KSerializer<T>): T {
         return jsonParser.decodeFromString(serializer, jsonString)
     }
 

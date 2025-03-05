@@ -27,41 +27,24 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationDAO
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationDAO.Companion.toDao
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOld
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOldDAO
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOldDAO.Companion.toDao
 import java.io.IOException
 
 @Suppress("TooGenericExceptionThrown")
-internal open class JsonKeyValueStoreImpl<O>(
+internal open class JsonKeyValueStoreImpl<O, T>(
     private val secureStore: KeyValueStore,
     private val key: String,
-    private val clazz: Class<O>,
+    private val serializer: KSerializer<T>,
+    private val domainToDao: (O) -> T,
+    private val daoToDomain: (T) -> O,
 ) : ObjectKeyValueStore<O> {
     private var value: O? = null
 
     override fun set(o: O) {
         try {
-            val strObject = when (o) {
-                is DatabasesConfigurationOld ->
-                    KotlinxJsonParser.instance.encodeToString(
-                        DatabasesConfigurationOldDAO.serializer(),
-                        o.toDao(),
-                    )
-
-                is DatabasesConfiguration ->
-                    KotlinxJsonParser.instance.encodeToString(
-                        DatabasesConfigurationDAO.serializer(),
-                        o.toDao(),
-                    )
-
-                else -> ""
-            }
+            val strObject = KotlinxJsonParser.instance.encodeToString(serializer, domainToDao(o))
             secureStore.setData(key, strObject)
             this.value = o
         } catch (e: SerializationException) {
@@ -75,27 +58,13 @@ internal open class JsonKeyValueStoreImpl<O>(
             strObject == null -> null
             this.value != null -> this.value
             else -> {
-                val parsedValue: Any = try {
-                    when (clazz) {
-                        DatabasesConfigurationOld::class.java ->
-                            KotlinxJsonParser.instance.decodeFromString(
-                                DatabasesConfigurationOldDAO.serializer(),
-                                strObject,
-                            ).toDomain()
-
-                        DatabasesConfiguration::class.java ->
-                            KotlinxJsonParser.instance.decodeFromString(
-                                DatabasesConfigurationDAO.serializer(),
-                                strObject,
-                            ).toDomain()
-
-                        else -> throw RuntimeException("Unsupported class type")
-                    }
+                val parsedValue = try {
+                    daoToDomain(KotlinxJsonParser.instance.decodeFromString(serializer, strObject))
                 } catch (e: IOException) {
                     throw RuntimeException("Couldn't read object from key value store")
                 }
                 @Suppress("UNCHECKED_CAST")
-                this.value = parsedValue as O
+                this.value = parsedValue
                 return this.value
             }
         }

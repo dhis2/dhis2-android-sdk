@@ -44,10 +44,10 @@ internal data class DatabasesConfigurationOldDAO(
     }
 
     companion object {
-        fun DatabasesConfigurationOld.toDao(): DatabasesConfigurationOldDAO {
+        fun toDao(config: DatabasesConfigurationOld): DatabasesConfigurationOldDAO {
             return DatabasesConfigurationOldDAO(
-                loggedServerUrl = this.loggedServerUrl(),
-                servers = this.servers().map { it.toDao() },
+                loggedServerUrl = config.loggedServerUrl(),
+                servers = config.servers().map { it.toDao() },
             )
         }
     }

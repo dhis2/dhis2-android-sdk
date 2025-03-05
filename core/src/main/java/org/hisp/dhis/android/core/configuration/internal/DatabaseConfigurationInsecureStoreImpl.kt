@@ -35,4 +35,10 @@ import org.koin.core.annotation.Singleton
 internal class DatabaseConfigurationInsecureStoreImpl(
     insecureStore: InsecureStore,
 ) : DatabaseConfigurationInsecureStore,
-    JsonKeyValueStoreImpl<DatabasesConfiguration>(insecureStore, "DB_CONFIGS", DatabasesConfiguration::class.java)
+    JsonKeyValueStoreImpl<DatabasesConfiguration, DatabasesConfigurationDAO>(
+        insecureStore,
+        "DB_CONFIGS",
+        DatabasesConfigurationDAO.serializer(),
+        DatabasesConfigurationDAO::toDao,
+        DatabasesConfigurationDAO::toDomain,
+    )

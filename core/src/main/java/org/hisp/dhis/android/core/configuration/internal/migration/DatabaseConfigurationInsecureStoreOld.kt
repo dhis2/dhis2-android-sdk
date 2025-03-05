@@ -33,6 +33,12 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
 internal object DatabaseConfigurationInsecureStoreOld {
     operator fun get(insecureStore: InsecureStore): ObjectKeyValueStore<DatabasesConfigurationOld> {
-        return JsonKeyValueStoreImpl(insecureStore, "DB_CONFIGS", DatabasesConfigurationOld::class.java)
+        return JsonKeyValueStoreImpl(
+            insecureStore,
+            "DB_CONFIGS",
+            DatabasesConfigurationOldDAO.serializer(),
+            DatabasesConfigurationOldDAO::toDao,
+            DatabasesConfigurationOldDAO::toDomain,
+        )
     }
 }

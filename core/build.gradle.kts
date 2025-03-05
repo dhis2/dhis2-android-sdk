@@ -146,10 +146,6 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.compiler)
 
-    // Jackson
-    api(libs.jackson.core)
-    api(libs.jackson.kotlin)
-
     // Square libraries
     api(libs.okhttp)
     api(libs.okhttp.mockwebserver)

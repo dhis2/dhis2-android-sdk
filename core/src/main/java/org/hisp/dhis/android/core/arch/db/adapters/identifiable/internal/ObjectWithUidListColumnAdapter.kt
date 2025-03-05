@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
@@ -59,7 +58,7 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
     override fun toContentValues(values: ContentValues, columnName: String, value: List<ObjectWithUid>?) {
         try {
             values.put(columnName, serialize(value))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }

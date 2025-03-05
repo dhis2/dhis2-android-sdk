@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import kotlinx.serialization.SerializationException
 
@@ -41,10 +39,6 @@ internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>
         return str?.let {
             try {
                 deserialize(it)
-            } catch (e: JsonProcessingException) {
-                setOf()
-            } catch (e: JsonMappingException) {
-                setOf()
             } catch (e: SerializationException) {
                 setOf()
             } catch (e: IllegalArgumentException) {
@@ -58,7 +52,7 @@ internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>
     override fun toContentValues(contentValues: ContentValues, columnName: String, o: Set<O>?) {
         try {
             contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }

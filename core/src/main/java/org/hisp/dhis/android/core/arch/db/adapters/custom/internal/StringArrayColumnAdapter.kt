@@ -31,33 +31,42 @@ import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-internal abstract class JSONObjectColumnAdapter<O> : ColumnTypeAdapter<O> {
-    override fun fromCursor(cursor: Cursor, columnName: String): O? {
+class StringArrayColumnAdapter : ColumnTypeAdapter<List<String>> {
+    override fun fromCursor(cursor: Cursor, columnName: String): List<String> {
         val columnIndex = cursor.getColumnIndex(columnName)
-        val str = cursor.getString(columnIndex)
-        return str?.let {
+        val sourceValue = cursor.getString(columnIndex)
+
+        return if (sourceValue.isNullOrEmpty()) {
+            emptyList()
+        } else if (sourceValue.startsWith("/")) {
+            sourceValue.substring(1).split("/").dropLastWhile { it.isEmpty() }
+        } else {
             try {
-                deserialize(it)
+                KotlinxJsonParser.instance.decodeFromString(ListSerializer(String.serializer()), sourceValue)
             } catch (e: SerializationException) {
-                null
-            } catch (e: IllegalArgumentException) {
-                null
-            } catch (e: IllegalStateException) {
-                null
+                throw SerializationException("Couldn't deserialize string array")
             }
         }
     }
 
-    override fun toContentValues(contentValues: ContentValues, columnName: String, o: O?) {
-        try {
-            contentValues.put(columnName, serialize(o))
-        } catch (e: SerializationException) {
-            e.printStackTrace()
-        }
+    override fun toContentValues(values: ContentValues, columnName: String, value: List<String>) {
+        values.put(columnName, serialize(value))
     }
 
-    abstract fun serialize(o: O?): String?
-
-    abstract fun deserialize(str: String): O
+    companion object {
+        fun serialize(value: List<String>?): String {
+            try {
+                return KotlinxJsonParser.instance.encodeToString(
+                    ListSerializer(String.serializer()),
+                    value ?: emptyList(),
+                )
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't serialize string array")
+            }
+        }
+    }
 }

@@ -27,14 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import java.io.IOException
 
 @Suppress("TooManyFunctions")
 object GeometryHelper {
@@ -81,8 +83,7 @@ object GeometryHelper {
         return getGeometryObject(
             geometry,
             FeatureType.POINT,
-            object : TypeReference<List<Double>>() {
-            },
+            ListSerializer(Double.serializer()),
         )
     }
 
@@ -99,8 +100,7 @@ object GeometryHelper {
         return getGeometryObject(
             geometry,
             FeatureType.POLYGON,
-            object : TypeReference<List<List<List<Double>>>>() {
-            },
+            ListSerializer(ListSerializer(ListSerializer(Double.serializer()))),
         )
     }
 
@@ -117,8 +117,7 @@ object GeometryHelper {
         return getGeometryObject(
             geometry,
             FeatureType.MULTI_POLYGON,
-            object : TypeReference<List<List<List<List<Double>>>>>() {
-            },
+            ListSerializer(ListSerializer(ListSerializer(ListSerializer(Double.serializer())))),
         )
     }
 
@@ -228,28 +227,23 @@ object GeometryHelper {
     private fun <T> getGeometryObject(
         geometry: Geometry,
         type: FeatureType,
-        typeReference: TypeReference<T>,
+        serializer: KSerializer<T>,
     ): T {
-        if (geometry.type() != type) {
-            throw d2Error(null, "The given geometry has not " + type.geometryType + " type.")
-        }
+        require(geometry.type() == type) { "The given geometry has not ${type.geometryType} type." }
+        val coordinates = geometry.coordinates()
+            ?: throw d2Error(null, "The given geometry has no coordinates.")
 
-        if (geometry.coordinates() == null) {
-            throw d2Error(null, "The given geometry has no coordinates.")
-        }
-
-        try {
-            return ObjectMapper().readValue(geometry.coordinates(), typeReference)
-        } catch (e: IOException) {
+        return try {
+            KotlinxJsonParser.instance.decodeFromString(serializer, coordinates)
+        } catch (e: SerializationException) {
             throw d2Error(
                 e,
-                "It has not been possible to generate a " + type.geometryType +
-                    " from geometry coordinates: " + geometry.coordinates() + ".",
+                "It has not been possible to generate a ${type.geometryType} from geometry coordinates: $coordinates."
             )
         }
     }
 
-    private fun d2Error(e: IOException?, errorDescription: String): D2Error {
+    private fun d2Error(e: SerializationException?, errorDescription: String): D2Error {
         return D2Error.builder()
             .errorComponent(D2ErrorComponent.SDK)
             .errorCode(D2ErrorCode.IMPOSSIBLE_TO_GENERATE_COORDINATES)

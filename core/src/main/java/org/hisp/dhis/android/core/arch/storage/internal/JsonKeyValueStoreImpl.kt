@@ -70,33 +70,35 @@ internal open class JsonKeyValueStoreImpl<O>(
     }
 
     override fun get(): O? {
-        if (this.value != null) return this.value
+        val strObject = secureStore.getData(key)
+        return when {
+            strObject == null -> null
+            this.value != null -> this.value
+            else -> {
+                val parsedValue: Any = try {
+                    when (clazz) {
+                        DatabasesConfigurationOld::class.java ->
+                            KotlinxJsonParser.instance.decodeFromString(
+                                DatabasesConfigurationOldDAO.serializer(),
+                                strObject,
+                            ).toDomain()
 
-        val strObject = secureStore.getData(key) ?: return null
+                        DatabasesConfiguration::class.java ->
+                            KotlinxJsonParser.instance.decodeFromString(
+                                DatabasesConfigurationDAO.serializer(),
+                                strObject,
+                            ).toDomain()
 
-        val parsedValue: Any = try {
-            when (clazz) {
-                DatabasesConfigurationOld::class.java ->
-                    KotlinxJsonParser.instance.decodeFromString(
-                        DatabasesConfigurationOldDAO.serializer(),
-                        strObject
-                    ).toDomain()
-
-                DatabasesConfiguration::class.java ->
-                    KotlinxJsonParser.instance.decodeFromString(
-                        DatabasesConfigurationDAO.serializer(),
-                        strObject
-                    ).toDomain()
-
-                else -> throw RuntimeException("Unsupported class type")
+                        else -> throw RuntimeException("Unsupported class type")
+                    }
+                } catch (e: IOException) {
+                    throw RuntimeException("Couldn't read object from key value store")
+                }
+                @Suppress("UNCHECKED_CAST")
+                this.value = parsedValue as O
+                return this.value
             }
-        } catch (e: IOException) {
-            throw RuntimeException("Couldn't read object from key value store")
         }
-
-        @Suppress("UNCHECKED_CAST")
-        this.value = parsedValue as O
-        return this.value
     }
 
     override fun remove() {

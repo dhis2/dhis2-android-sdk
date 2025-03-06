@@ -2395,10 +2395,6 @@ public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/I
 	public fun <init> ()V
 }
 
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreUserCredentialsAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
 public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreUserGroupListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
 	public fun <init> ()V
 }
@@ -14298,7 +14294,6 @@ public abstract class org/hisp/dhis/android/core/user/User$Builder : org/hisp/dh
 	public abstract fun phoneNumber (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun surname (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun teiSearchOrganisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun userCredentials (Lorg/hisp/dhis/android/core/user/UserCredentials;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun userGroups (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
@@ -14360,7 +14355,6 @@ public final class org/hisp/dhis/android/core/user/UserGroupTableInfo$Columns : 
 public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
 	public static fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public static fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public static fun accessUserCredentials (Lorg/hisp/dhis/android/core/user/User;)Lorg/hisp/dhis/android/core/user/UserCredentials;
 	public static fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public static fun insertTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }

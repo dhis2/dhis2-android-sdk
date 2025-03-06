@@ -38,11 +38,10 @@ class UserCredentialShould : BaseObjectKotlinxShould("user/user_credentials.json
     @Test
     override fun map_from_json_string() {
         val userCredentialsDTO = deserialize(UserCredentialsDTO.serializer())
-        val userCredentials = userCredentialsDTO.toDomain()
 
-        assertThat(userCredentials.username()).isEqualTo("admin")
+        assertThat(userCredentialsDTO.username).isEqualTo("admin")
 
-        val userRoles = userCredentials.userRoles()
+        val userRoles = userCredentialsDTO.userRoles?.map { it.toDomain() }
 
         assertThat(userRoles?.getOrNull(0)?.uid()).isEqualTo("Ufph3mGRmMo")
         assertThat(userRoles?.getOrNull(1)?.uid()).isEqualTo("UYXOT4A7JMI")

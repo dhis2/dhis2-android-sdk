@@ -115,13 +115,10 @@ internal class DatabaseConfigurationMigration(
 
             val users = config.servers.flatMap { serverConf ->
                 serverConf.users.map { userConf ->
-                    DatabaseAccount.builder()
-                        .username(userConf.username)
+                    DatabaseAccount.builder().username(userConf.username)
                         .serverUrl(ServerUrlParser.removeTrailingApi(serverConf.serverUrl))
-                        .databaseName(userConf.databaseName)
-                        .databaseCreationDate(userConf.databaseCreationDate)
-                        .encrypted(userConf.encrypted)
-                        .build()
+                        .databaseName(userConf.databaseName).databaseCreationDate(userConf.databaseCreationDate)
+                        .encrypted(userConf.encrypted).build()
                 }
             }
             DatabasesConfiguration.builder().accounts(users).build()

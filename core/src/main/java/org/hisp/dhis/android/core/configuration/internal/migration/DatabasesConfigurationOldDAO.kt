@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.json.internal
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import java.util.Date
+package org.hisp.dhis.android.core.configuration.internal.migration
 
-internal object ObjectMapperFactory {
+import kotlinx.serialization.Serializable
 
-    @JvmStatic
-    fun objectMapper(): ObjectMapper {
-        val dateModule = SimpleModule()
-        dateModule.addDeserializer(Date::class.java, DateMultiFormatDeserializer())
-
-        return ObjectMapper()
-            .registerModule(dateModule)
-            .registerModule(KotlinModule())
-            .setDateFormat(DateUtils.DATE_FORMAT.raw())
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    }
-}
+@Serializable
+internal data class DatabasesConfigurationOldDAO(
+    val loggedServerUrl: String,
+    val servers: List<DatabaseServerConfigurationOldDAO>,
+)

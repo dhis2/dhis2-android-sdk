@@ -32,30 +32,24 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterOperators;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramStageWorkingListEventDataFilter.Builder.class)
 public abstract class ProgramStageWorkingListEventDataFilter extends FilterOperators implements CoreObject {
 
     /**
      * The related program stage working list
      */
     @Nullable
-    @JsonProperty()
     public abstract String programStageWorkingList();
 
     /**
      * The data element id or data item
      */
     @Nullable
-    @JsonProperty()
     public abstract String dataItem();
 
     public static Builder builder() {
@@ -69,7 +63,6 @@ public abstract class ProgramStageWorkingListEventDataFilter extends FilterOpera
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
         public abstract Builder id(Long id);
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal.migration;
+package org.hisp.dhis.android.core.configuration.internal.migration
 
-import androidx.annotation.NonNull;
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseServerConfigurationOld.Builder.class)
-public abstract class DatabaseServerConfigurationOld {
-
-    @JsonProperty()
-    @NonNull
-    public abstract String serverUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract List<DatabaseUserConfigurationOld> users();
-
-    public static Builder builder() {
-        return new AutoValue_DatabaseServerConfigurationOld.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder serverUrl(String serverUrl);
-
-        public abstract Builder users(List<DatabaseUserConfigurationOld> users);
-
-        public abstract DatabaseServerConfigurationOld build();
-    }
-}
+@Serializable
+internal data class DatabaseUserConfigurationOldDAO(
+    val username: String,
+    val databaseName: String,
+    val databaseCreationDate: String,
+    val encrypted: Boolean,
+)

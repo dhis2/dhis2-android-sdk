@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,19 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.configuration.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportDBDAO.Companion.toDao
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-
-public class Inject {
-    private Inject() {
-        // no instances
+@Serializable
+internal data class DatabaseAccountDAO(
+    val username: String,
+    val serverUrl: String,
+    val databaseName: String,
+    val databaseCreationDate: String,
+    val encrypted: Boolean,
+    val syncState: String?,
+    val importDB: DatabaseAccountImportDBDAO?,
+) {
+    fun toDomain(): DatabaseAccount {
+        return DatabaseAccount.builder()
+            .username(username)
+            .serverUrl(serverUrl)
+            .databaseName(databaseName)
+            .databaseCreationDate(databaseCreationDate)
+            .encrypted(encrypted)
+            .syncState(syncState?.let { State.valueOf(it) })
+            .importDB(importDB?.toDomain())
+            .build()
     }
 
-    // configures and returns instance of object mapper
-    public static ObjectMapper objectMapper() {
-        return ObjectMapperFactory.objectMapper();
+    companion object {
+        fun DatabaseAccount.toDao(): DatabaseAccountDAO {
+            return DatabaseAccountDAO(
+                username = this.username(),
+                serverUrl = this.serverUrl(),
+                databaseName = this.databaseName(),
+                databaseCreationDate = this.databaseCreationDate(),
+                encrypted = this.encrypted(),
+                syncState = this.syncState()?.name,
+                importDB = this.importDB()?.toDao(),
+            )
+        }
     }
 }

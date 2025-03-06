@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,43 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal.migration;
+package org.hisp.dhis.android.core.configuration.internal
 
-import androidx.annotation.NonNull;
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabasesConfigurationOld.Builder.class)
-public abstract class DatabasesConfigurationOld {
-
-    @JsonProperty()
-    @NonNull
-    public abstract String loggedServerUrl();
-
-    @JsonProperty()
-    @NonNull
-    public abstract List<DatabaseServerConfigurationOld> servers();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfigurationOld.Builder();
+@Serializable
+internal data class DatabaseAccountImportDBDAO(
+    val status: String,
+    val protectedDbName: String,
+) {
+    fun toDomain(): DatabaseAccountImportDB {
+        return DatabaseAccountImportDB.builder()
+            .status(DatabaseAccountImportStatus.valueOf(status))
+            .protectedDbName(protectedDbName)
+            .build()
     }
 
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder loggedServerUrl(String loggedServerUrl);
-
-        public abstract Builder servers(List<DatabaseServerConfigurationOld> servers);
-
-        public abstract DatabasesConfigurationOld build();
+    companion object {
+        fun DatabaseAccountImportDB.toDao(): DatabaseAccountImportDBDAO {
+            return DatabaseAccountImportDBDAO(
+                status = this.status().name,
+                protectedDbName = this.protectedDbName(),
+            )
+        }
     }
 }

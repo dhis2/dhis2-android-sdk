@@ -174,6 +174,7 @@ internal class DataSetInstanceServiceImpl(
         } ?: false
     }
 
+    @Suppress("MagicNumber")
     override fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,

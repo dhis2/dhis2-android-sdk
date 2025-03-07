@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -196,7 +195,7 @@ internal class LogInCall(
     }
 
     private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
-        val username = UserInternalAccessor.accessUserCredentials(user).username()!!
+        val username = user.username()!!
         return Credentials(username, serverUrl, null, openIDConnectState)
     }
 }

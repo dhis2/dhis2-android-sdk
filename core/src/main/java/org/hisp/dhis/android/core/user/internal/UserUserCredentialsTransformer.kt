@@ -51,7 +51,6 @@ internal class UserUserCredentialsTransformer : TwoWayTransformer<User, UserCred
             .displayName(t.displayName())
             .username(t.username())
             .userRoles(t.userRoles())
-            .userCredentials(t)
             .build()
     }
 }

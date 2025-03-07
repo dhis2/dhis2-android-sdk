@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,21 +40,6 @@ internal class UserHandler(
     private val userGroupHandler: UserGroupHandler,
     private val userGroupCollectionCleaner: UserGroupCollectionCleaner,
 ) : IdentifiableHandlerImpl<User>(userStore) {
-
-    override fun beforeObjectHandled(o: User): User {
-        return o.toBuilder().run {
-            val userCredentials = UserInternalAccessor.accessUserCredentials(o)
-
-            if (o.username() == null && userCredentials.username() != null) {
-                username(userCredentials.username())
-            }
-            if (o.userRoles() == null && userCredentials.userRoles() != null) {
-                userRoles(userCredentials.userRoles())
-            }
-
-            build()
-        }
-    }
 
     override fun afterObjectHandled(o: User, action: HandleAction) {
         userRoleCollectionCleaner.deleteNotPresent(o.userRoles())

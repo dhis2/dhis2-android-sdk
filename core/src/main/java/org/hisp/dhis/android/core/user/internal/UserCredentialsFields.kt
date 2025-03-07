@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.network.common.fields.BaseFields
@@ -38,8 +37,6 @@ internal object UserCredentialsFields : BaseFields<UserCredentials>() {
     const val USER_ROLES = "userRoles"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(BaseIdentifiableObject.UUID),
         fh.field(USERNAME),
         fh.nestedField<UserRole>(USER_ROLES).with(UserRoleFields.allFields),
     )

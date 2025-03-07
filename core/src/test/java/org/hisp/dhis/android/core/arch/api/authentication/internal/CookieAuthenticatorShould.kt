@@ -62,9 +62,9 @@ class CookieAuthenticatorShould {
                 mapOf(
                     "set-cookie" to listOf(
                         "JSESSIONID=4DD96301F71D2F5EC41DFD1D3BC012AB; Path=/current; Secure; HttpOnly",
-                        "_ga=34FJALK23LLFLF; Secure; HttpOnly"
-                    )
-                )
+                        "_ga=34FJALK23LLFLF; Secure; HttpOnly",
+                    ),
+                ),
             )
         }
 

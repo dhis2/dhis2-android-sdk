@@ -238,7 +238,7 @@ object GeometryHelper {
         } catch (e: SerializationException) {
             throw d2Error(
                 e,
-                "It has not been possible to generate a ${type.geometryType} from geometry coordinates: $coordinates."
+                "It has not been possible to generate a ${type.geometryType} from geometry coordinates: $coordinates.",
             )
         }
     }

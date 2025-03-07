@@ -1783,13 +1783,17 @@ public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/F
 public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/FilterPeriodColumnAdapter$Companion {
 }
 
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
+public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
+	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter$Companion;
 	public fun <init> ()V
 	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
 	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/util/List;
-	public static fun serialize (Ljava/util/List;)Ljava/lang/String;
 	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
 	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter$Companion {
+	public final fun serialize (Ljava/util/List;)Ljava/lang/String;
 }
 
 public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IsColumnNotNullColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
@@ -1873,13 +1877,17 @@ public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/RightVa
 	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;)V
 }
 
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
+public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
+	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter$Companion;
 	public fun <init> ()V
 	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
 	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/util/List;
-	public static fun serialize (Ljava/util/List;)Ljava/lang/String;
 	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
 	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter$Companion {
+	public final fun serialize (Ljava/util/List;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/TrackerDataViewColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
@@ -2729,18 +2737,6 @@ public final class org/hisp/dhis/android/core/arch/helpers/internal/DataStateHel
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/helpers/internal/DataStateHelper;
 	public static final fun errorIfOnline (Ljava/lang/Throwable;)Lorg/hisp/dhis/android/core/common/State;
 	public static final fun forcedOrOwn (Lorg/hisp/dhis/android/core/common/DataObject;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/State;
-}
-
-public final class org/hisp/dhis/android/core/arch/json/internal/DateMultiFormatDeserializer : com/fasterxml/jackson/databind/deser/std/StdDeserializer {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/json/internal/DateMultiFormatDeserializer$Companion;
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/Class;)V
-	public synthetic fun <init> (Ljava/lang/Class;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/lang/Object;
-	public fun deserialize (Lcom/fasterxml/jackson/core/JsonParser;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/util/Date;
-}
-
-public final class org/hisp/dhis/android/core/arch/json/internal/DateMultiFormatDeserializer$Companion {
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/modules/internal/TypedModuleDownloader {

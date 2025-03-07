@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import kotlinx.serialization.SerializationException
 
@@ -53,7 +52,7 @@ internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<
     override fun toContentValues(contentValues: ContentValues, columnName: String, o: List<O>?) {
         try {
             contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }

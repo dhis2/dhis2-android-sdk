@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.Coordinates
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
@@ -43,14 +44,12 @@ object CoordinateHelper {
      */
     @JvmStatic
     fun getCoordinatesFromGeometry(geometry: Geometry): Coordinates? {
-        val mapper = ObjectMapper()
         val coordinateTokens: List<Double>
         return if (geometry.type() == FeatureType.POINT && geometry.coordinates() != null) {
             try {
-                coordinateTokens = mapper.readValue<List<Double>>(
-                    geometry.coordinates(),
-                    object : TypeReference<List<Double>?>() {},
-                )
+                coordinateTokens = geometry.coordinates()
+                    ?.let { KotlinxJsonParser.instance.decodeFromString(ListSerializer(Double.serializer()), it) }
+                    ?: emptyList()
                 Coordinates.create(coordinateTokens[1], coordinateTokens[0])
             } catch (e: IOException) {
                 null

@@ -21,7 +21,6 @@ annotation = "1.6.0"
 paging = "3.2.1"
 
 # java
-jackson = "2.13.4"
 autoValue = "1.10.2"
 autoValueCursor = "2.0.1"
 okHttp = "4.12.0"
@@ -83,9 +82,6 @@ auto-value-cursor-annotations = { group = "com.gabrielittner.auto.value", name =
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koinKsp" }
 koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinKsp" }
-
-jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }

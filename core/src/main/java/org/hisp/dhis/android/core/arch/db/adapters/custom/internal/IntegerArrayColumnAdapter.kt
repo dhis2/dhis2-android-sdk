@@ -25,44 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.json.internal
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import com.fasterxml.jackson.core.JsonParseException
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import java.io.IOException
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Date>(vc) {
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Date {
-        val node = jp.codec.readTree<JsonNode>(jp)
-        val date = node.textValue()
-        for (DATE_FORMAT in DATE_FORMATS) {
+class IntegerArrayColumnAdapter : ColumnTypeAdapter<List<Int>> {
+    override fun fromCursor(cursor: Cursor, columnName: String): List<Int> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val sourceValue = cursor.getString(columnIndex)
+
+        if (sourceValue == null || sourceValue == "") {
+            return emptyList()
+        } else {
             try {
-                return SimpleDateFormat(DATE_FORMAT, Locale.US).parse(date)!!
-            } catch (e: ParseException) {
-                continue
+                return KotlinxJsonParser.instance.decodeFromString(ListSerializer(Int.serializer()), sourceValue)
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't deserialize integer array")
             }
         }
-        throw JsonParseException(jp, "Unparseable date: \"$date\".")
+    }
+
+    override fun toContentValues(values: ContentValues, columnName: String, value: List<Int>) {
+        values.put(columnName, serialize(value))
     }
 
     companion object {
-        private val DATE_FORMATS = arrayOf(
-            "yyyy-MM-dd'T'HH:mm:ss.SSS",
-            "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
-            "yyyy-MM-dd'T'HH:mm:ss",
-            "yyyy-MM-dd'T'HH:mm:ssZ",
-            "yyyy-MM-dd'T'HH:mm",
-            "yyyy-MM-dd'T'HH:mmZ",
-            "yyyy-MM-dd",
-        )
+        fun serialize(value: List<Int>?): String {
+            try {
+                return KotlinxJsonParser.instance.encodeToString(ListSerializer(Int.serializer()), value ?: emptyList())
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't serialize integer array")
+            }
+        }
     }
 }

@@ -29,26 +29,9 @@
 package org.hisp.dhis.android.core.configuration.internal.migration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseServerConfigurationOldDAO.Companion.toDao
 
 @Serializable
 internal data class DatabasesConfigurationOldDAO(
     val loggedServerUrl: String,
     val servers: List<DatabaseServerConfigurationOldDAO>,
-) {
-    fun toDomain(): DatabasesConfigurationOld {
-        return DatabasesConfigurationOld.builder()
-            .loggedServerUrl(loggedServerUrl)
-            .servers(servers.map { it.toDomain() })
-            .build()
-    }
-
-    companion object {
-        fun DatabasesConfigurationOld.toDao(): DatabasesConfigurationOldDAO {
-            return DatabasesConfigurationOldDAO(
-                loggedServerUrl = this.loggedServerUrl(),
-                servers = this.servers().map { it.toDao() },
-            )
-        }
-    }
-}
+)

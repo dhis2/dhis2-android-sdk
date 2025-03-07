@@ -46,11 +46,11 @@ internal data class DatabasesConfigurationDAO(
     }
 
     companion object {
-        fun DatabasesConfiguration.toDao(): DatabasesConfigurationDAO {
+        fun toDao(config: DatabasesConfiguration): DatabasesConfigurationDAO {
             return DatabasesConfigurationDAO(
-                versionCode = this.versionCode(),
-                maxAccounts = this.maxAccounts(),
-                accounts = this.accounts().map { it.toDao() },
+                versionCode = config.versionCode(),
+                maxAccounts = config.maxAccounts(),
+                accounts = config.accounts().map { it.toDao() },
             )
         }
     }

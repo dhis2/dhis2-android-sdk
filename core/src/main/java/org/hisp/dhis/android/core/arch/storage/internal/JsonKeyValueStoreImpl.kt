@@ -27,75 +27,44 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationDAO
-import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationDAO.Companion.toDao
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOld
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOldDAO
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOldDAO.Companion.toDao
 import java.io.IOException
 
 @Suppress("TooGenericExceptionThrown")
-internal open class JsonKeyValueStoreImpl<O>(
+internal open class JsonKeyValueStoreImpl<T>(
     private val secureStore: KeyValueStore,
     private val key: String,
-    private val clazz: Class<O>,
-) : ObjectKeyValueStore<O> {
-    private var value: O? = null
+    private val serializer: KSerializer<T>,
+) : ObjectKeyValueStore<T> {
+    private var value: T? = null
 
-    override fun set(o: O) {
+    override fun set(t: T) {
         try {
-            val strObject = when (o) {
-                is DatabasesConfigurationOld ->
-                    KotlinxJsonParser.instance.encodeToString(
-                        DatabasesConfigurationOldDAO.serializer(),
-                        o.toDao(),
-                    )
-
-                is DatabasesConfiguration ->
-                    KotlinxJsonParser.instance.encodeToString(
-                        DatabasesConfigurationDAO.serializer(),
-                        o.toDao(),
-                    )
-
-                else -> ""
-            }
+            val strObject = KotlinxJsonParser.instance.encodeToString(serializer, t)
             secureStore.setData(key, strObject)
-            this.value = o
+            this.value = t
         } catch (e: SerializationException) {
             throw RuntimeException("Couldn't persist object in key value store")
         }
     }
 
-    override fun get(): O? {
-        return if (this.value == null) {
-            val strObject = secureStore.getData(key) ?: return null
-
-            try {
-                @Suppress("UNCHECKED_CAST")
-                this.value = when (clazz) {
-                    DatabasesConfigurationOld::class.java ->
-                        KotlinxJsonParser.instance.decodeFromString(
-                            DatabasesConfigurationOldDAO.serializer(),
-                            strObject,
-                        ).toDomain() as O
-
-                    DatabasesConfiguration::class.java ->
-                        KotlinxJsonParser.instance.decodeFromString(
-                            DatabasesConfigurationDAO.serializer(),
-                            strObject,
-                        ).toDomain() as O
-
-                    else -> throw RuntimeException("Unsupported class type")
+    override fun get(): T? {
+        val strObject = secureStore.getData(key)
+        return when {
+            strObject == null -> null
+            this.value != null -> this.value
+            else -> {
+                val parsedValue = try {
+                    KotlinxJsonParser.instance.decodeFromString(serializer, strObject)
+                } catch (e: IOException) {
+                    throw RuntimeException("Couldn't read object from key value store")
                 }
-                this.value
-            } catch (e: IOException) {
-                throw RuntimeException("Couldn't read object from key value store")
+                @Suppress("UNCHECKED_CAST")
+                this.value = parsedValue
+                return this.value
             }
-        } else {
-            this.value
         }
     }
 

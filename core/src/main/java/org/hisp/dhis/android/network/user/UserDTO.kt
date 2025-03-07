@@ -60,13 +60,13 @@ internal data class UserDTO(
     val userCredentials: UserCredentialsDTO? = null,
     val organisationUnits: List<OrganisationUnitDTO>? = emptyList(),
     val teiSearchOrganisationUnits: List<OrganisationUnitDTO>? = emptyList(),
-    val userRoles: List<UserRoleDTO>? = emptyList(),
+    val userRoles: List<UserRoleDTO>?,
     val userGroups: List<UserGroupDTO>? = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): User {
         return User.builder()
             .applyBaseIdentifiableFields(this)
-            .username(username)
+            .username(username ?: userCredentials?.username)
             .birthday(birthday)
             .education(education)
             .gender(gender)
@@ -80,10 +80,9 @@ internal data class UserDTO(
             .email(email)
             .phoneNumber(phoneNumber)
             .nationality(nationality)
-            .userCredentials(userCredentials?.toDomain())
             .organisationUnits(organisationUnits?.map { it.toDomain() })
             .teiSearchOrganisationUnits(teiSearchOrganisationUnits?.map { it.toDomain() })
-            .userRoles(userRoles?.map { it.toDomain() })
+            .userRoles((userRoles ?: userCredentials?.userRoles)?.map { it.toDomain() })
             .userGroups(userGroups?.map { it.toDomain() })
             .build()
     }

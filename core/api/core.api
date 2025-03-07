@@ -2403,10 +2403,6 @@ public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/I
 	public fun <init> ()V
 }
 
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreUserCredentialsAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
 public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreUserGroupListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
 	public fun <init> ()V
 }
@@ -5134,55 +5130,6 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/DatabasesConfiguration;
 	public abstract fun maxAccounts (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/configuration/internal/DatabasesConfiguration$Builder;
 	public abstract fun versionCode (J)Lorg/hisp/dhis/android/core/configuration/internal/DatabasesConfiguration$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-	public abstract fun serverUrl ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-	public abstract fun users ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld;
-	public abstract fun serverUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-	public abstract fun users (Ljava/util/List;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseServerConfigurationOld$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun databaseCreationDate ()Ljava/lang/String;
-	public abstract fun databaseName ()Ljava/lang/String;
-	public abstract fun encrypted ()Z
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun username ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld;
-	public abstract fun databaseCreationDate (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun databaseName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun encrypted (Z)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabaseUserConfigurationOld$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-	public abstract fun loggedServerUrl ()Ljava/lang/String;
-	public abstract fun servers ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld;
-	public abstract fun loggedServerUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
-	public abstract fun servers (Ljava/util/List;)Lorg/hisp/dhis/android/core/configuration/internal/migration/DatabasesConfigurationOld$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -14343,7 +14290,6 @@ public abstract class org/hisp/dhis/android/core/user/User$Builder : org/hisp/dh
 	public abstract fun phoneNumber (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun surname (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun teiSearchOrganisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun userCredentials (Lorg/hisp/dhis/android/core/user/UserCredentials;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun userGroups (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
@@ -14405,7 +14351,6 @@ public final class org/hisp/dhis/android/core/user/UserGroupTableInfo$Columns : 
 public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
 	public static fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public static fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public static fun accessUserCredentials (Lorg/hisp/dhis/android/core/user/User;)Lorg/hisp/dhis/android/core/user/UserCredentials;
 	public static fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public static fun insertTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }

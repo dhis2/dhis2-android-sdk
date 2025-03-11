@@ -36,8 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationColumnsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationStore
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationFields
-import org.hisp.dhis.android.network.visualization.VisualizationFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -88,13 +86,16 @@ class TrackerVisualizationCollectionRepository internal constructor(
     fun byTrackedEntityType(): StringFilterConnector<TrackerVisualizationCollectionRepository> {
         return cf.string(TrackerVisualizationTableInfo.Columns.TRACKED_ENTITY_TYPE)
     }
+
     fun withColumnsAndFilters(): TrackerVisualizationCollectionRepository {
-        return cf.withChild(VisualizationFields.ITEMS)
+        return cf.withChild(ITEMS)
     }
 
     internal companion object {
+        private const val ITEMS = "items"
+
         val childrenAppenders: ChildrenAppenderGetter<TrackerVisualization> = mapOf(
-            TrackerVisualizationFields.ITEMS to TrackerVisualizationColumnsFiltersChildrenAppender::create,
+            ITEMS to TrackerVisualizationColumnsFiltersChildrenAppender::create,
         )
     }
 }

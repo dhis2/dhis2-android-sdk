@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.program
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO

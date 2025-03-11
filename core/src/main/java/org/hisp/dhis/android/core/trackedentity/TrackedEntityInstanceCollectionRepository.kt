@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.ProgramOwnerChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -212,19 +211,20 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     }
 
     fun withTrackedEntityAttributeValues(): TrackedEntityInstanceCollectionRepository {
-        return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
+        return cf.withChild(TRACKED_ENTITY_ATTRIBUTE_VALUES)
     }
 
     fun withProgramOwners(): TrackedEntityInstanceCollectionRepository {
-        return cf.withChild(TrackedEntityInstanceFields.PROGRAM_OWNERS)
+        return cf.withChild(PROGRAM_OWNERS)
     }
 
     internal companion object {
+        internal const val TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes"
+        private const val PROGRAM_OWNERS = "programOwners"
+
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance> = mapOf(
-            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES to
-                TrackedEntityAttributeValueChildrenAppender::create,
-            TrackedEntityInstanceFields.PROGRAM_OWNERS to
-                ::ProgramOwnerChildrenAppender,
+            TRACKED_ENTITY_ATTRIBUTE_VALUES to TrackedEntityAttributeValueChildrenAppender::create,
+            PROGRAM_OWNERS to ::ProgramOwnerChildrenAppender,
         )
     }
 }

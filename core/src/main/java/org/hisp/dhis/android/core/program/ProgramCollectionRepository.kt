@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramAttributeChildrenAppen
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.network.program.ProgramFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -235,13 +234,15 @@ class ProgramCollectionRepository internal constructor(
     }
 
     fun withAttributes(): ProgramCollectionRepository {
-        return cf.withChild(ProgramFields.ATTRIBUTE_VALUES)
+        return cf.withChild(ATTRIBUTE_VALUES)
     }
 
     internal companion object {
+        private const val ATTRIBUTE_VALUES = "attributeValues"
+
         val childrenAppenders: ChildrenAppenderGetter<Program> = mapOf(
             ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to ::ProgramTrackedEntityTypeChildrenAppender,
-            ProgramFields.ATTRIBUTE_VALUES to ProgramAttributeChildrenAppender::create,
+            ATTRIBUTE_VALUES to ProgramAttributeChildrenAppender::create,
         )
     }
 }

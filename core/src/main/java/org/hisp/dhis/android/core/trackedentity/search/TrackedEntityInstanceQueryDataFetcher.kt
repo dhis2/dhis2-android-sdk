@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMod
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository.Companion.TRACKED_ENTITY_ATTRIBUTE_VALUES
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
@@ -220,7 +220,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
             childrenAppenders,
             ChildrenSelection(
                 setOf(
-                    TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
+                    TRACKED_ENTITY_ATTRIBUTE_VALUES,
                 ),
             ),
         )

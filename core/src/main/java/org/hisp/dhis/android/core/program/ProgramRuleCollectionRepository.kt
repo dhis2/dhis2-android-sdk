@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
-import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -76,12 +75,14 @@ class ProgramRuleCollectionRepository internal constructor(
     }
 
     fun withProgramRuleActions(): ProgramRuleCollectionRepository {
-        return cf.withChild(ProgramRuleFields.PROGRAM_RULE_ACTIONS)
+        return cf.withChild(PROGRAM_RULE_ACTIONS)
     }
 
     internal companion object {
+        private const val PROGRAM_RULE_ACTIONS = "programRuleActions"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramRule> = mapOf(
-            ProgramRuleFields.PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender::create,
+            PROGRAM_RULE_ACTIONS to ProgramRuleActionChildrenAppender::create,
         )
     }
 }

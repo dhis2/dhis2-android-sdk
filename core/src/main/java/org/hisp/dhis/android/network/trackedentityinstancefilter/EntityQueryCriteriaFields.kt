@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.DateFilterPeriodFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object EntityQueryCriteriaFields : BaseFields<EntityQueryCriteria>() {
+    const val ATTRIBUTE_VALUE_FILTER = "attributeValueFilters"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(Columns.FOLLOW_UP),
+        fh.field(Columns.ORGANISATION_UNIT),
+        fh.field(Columns.OU_MODE),
+        fh.field(Columns.ASSIGNED_USER_MODE),
+        fh.field(Columns.ORDER),
+        fh.field(Columns.DISPLAY_COLUMN_ORDER),
+        fh.field(Columns.EVENT_STATUS),
+        fh.field(Columns.PROGRAM_STAGE),
+        fh.field(Columns.TRACKED_ENTITY_INSTANCES),
+        fh.field(Columns.TRACKED_ENTITY_TYPE),
+        fh.field(Columns.ENROLLMENT_STATUS),
+        fh.nestedField<DateFilterPeriod>(Columns.EVENT_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.LAST_UPDATED_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.ENROLLMENT_INCIDENT_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<DateFilterPeriod>(Columns.ENROLLMENT_CREATED_DATE).with(DateFilterPeriodFields.allFields),
+        fh.nestedField<AttributeValueFilter>(ATTRIBUTE_VALUE_FILTER).with(AttributeValueFilterFields.allFields),
     )
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.tracker
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEnrollment
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEvent
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemTrackedEntity
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object NewRelationshipItemFields : BaseFields<NewTrackerImporterRelationshipItem>() {
+    private const val TRACKED_ENTITY = "trackedEntity"
+    private const val ENROLLMENT = "enrollment"
+    private const val EVENT = "event"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.nestedField<NewTrackerImporterRelationshipItemTrackedEntity>(TRACKED_ENTITY)
+            .with(NewRelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+        fh.nestedField<NewTrackerImporterRelationshipItemEnrollment>(ENROLLMENT)
+            .with(NewRelationshipItemEnrollmentFields.enrollment),
+        fh.nestedField<NewTrackerImporterRelationshipItemEvent>(EVENT)
+            .with(NewRelationshipItemEventFields.event),
     )
 }

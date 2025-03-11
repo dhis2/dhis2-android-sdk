@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.programstageworkinglist
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object ProgramStageWorkingListAttributeValueFilterFields :
+    BaseFields<ProgramStageWorkingListAttributeValueFilter>() {
+    private const val API_IN = "in"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(ItemFilterTableInfo.Columns.ATTRIBUTE),
+        fh.field(ItemFilterTableInfo.Columns.SW),
+        fh.field(ItemFilterTableInfo.Columns.EW),
+        fh.field(ItemFilterTableInfo.Columns.LE),
+        fh.field(ItemFilterTableInfo.Columns.GE),
+        fh.field(ItemFilterTableInfo.Columns.GT),
+        fh.field(ItemFilterTableInfo.Columns.LT),
+        fh.field(ItemFilterTableInfo.Columns.EQ),
+        fh.field(API_IN),
+        fh.field(ItemFilterTableInfo.Columns.LIKE),
+        fh.field(ItemFilterTableInfo.Columns.DATE_FILTER),
     )
 }

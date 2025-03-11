@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.program
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns
+import org.hisp.dhis.android.core.program.SectionRendering
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object ProgramSectionFields : BaseFields<ProgramSection>() {
+    @Deprecated("In version 2.33 and later, use {@link #TRACKED_ENTITY_ATTRIBUTES} instead.")
+    const val ATTRIBUTES = "programTrackedEntityAttribute"
+    const val TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes"
+    private const val STYLE = "style"
+    private const val RENDER_TYPE = "renderType"
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(Columns.DESCRIPTION),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.FORM_NAME),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(ATTRIBUTES),
+        fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTES),
+        fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
+        fh.nestedField<SectionRendering>(RENDER_TYPE),
     )
 }

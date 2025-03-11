@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.validationrule
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns
-import org.hisp.dhis.android.core.validation.internal.ValidationRuleExpressionFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields

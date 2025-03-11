@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.programstageworkinglist
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object ProgramStageQueryCriteriaFields : BaseFields<ProgramStageQueryCriteria>() {
+    const val DATA_FILTERS = "dataFilters"
+    const val ATTRIBUTE_VALUE_FILTER = "attributeValueFilters"
+    const val ORDER = "order"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(Columns.EVENT_STATUS),
+        fh.field(Columns.EVENT_CREATED_AT),
+        fh.field(Columns.EVENT_OCCURRED_AT),
+        fh.field(Columns.EVENT_SCHEDULED_AT),
+        fh.field(Columns.ENROLLMENT_STATUS),
+        fh.field(Columns.ENROLLMENT_AT),
+        fh.field(Columns.ENROLLMENT_OCCURRED_AT),
+        fh.field(ORDER),
+        fh.field(Columns.ORG_UNIT),
+        fh.field(Columns.OU_MODE),
+        fh.field(Columns.ASSIGNED_USER_MODE),
+        fh.nestedField<ProgramStageWorkingListEventDataFilter>(DATA_FILTERS)
+            .with(ProgramStageWorkingListEventDataFilterFields.allFields),
+        fh.nestedField<ProgramStageWorkingListAttributeValueFilter>(ATTRIBUTE_VALUE_FILTER)
+            .with(ProgramStageWorkingListAttributeValueFilterFields.allFields),
     )
 }

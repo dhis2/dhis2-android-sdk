@@ -28,40 +28,36 @@
 package org.hisp.dhis.android.network.tracker
 
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object NewEnrollmentFields : BaseFields<NewTrackerImporterEnrollment>() {
+internal object NewTrackedEntityInstanceFields : BaseFields<NewTrackerImporterTrackedEntity>() {
+    private const val UID = "trackedEntity"
     private const val CREATED_AT = "createdAt"
     private const val UPDATED_AT = "updatedAt"
     private const val CREATED_AT_CLIENT = "createdAtClient"
     private const val UPDATED_AT_CLIENT = "updatedAtClient"
-    private const val PROGRAM = "program"
-    private const val ENROLLED_AT = "enrolledAt"
-    private const val OCCURRED_AT = "occurredAt"
-    private const val COMPLETED_AT = "completedAt"
-    private const val FOLLOW_UP = "followUp"
-    private const val STATUS = "status"
-    const val TRACKED_ENTITY = "trackedEntity"
-    const val UID = "enrollment"
-    const val ORGANISATION_UNIT = "orgUnit"
-    const val DELETED = "deleted"
-    private const val EVENTS = "events"
-    private const val NOTES = "notes"
-    private const val GEOMETRY = "geometry"
+    private const val ORGANISATION_UNIT = "orgUnit"
+    private const val TRACKED_ENTITY_TYPE = "trackedEntityType"
+    private const val TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes"
     private const val RELATIONSHIPS = "relationships"
+    private const val DELETED = "deleted"
+    private const val ENROLLMENTS = "enrollments"
+    private const val PROGRAM_OWNERS = "programOwners"
+    private const val GEOMETRY = "geometry"
+
+    val asRelationshipFields = Fields.from(commonFields())
 
     val allFields = Fields.from(
         commonFields(),
-        fh.nestedField<NewTrackerImporterEvent>(EVENTS).with(NewEventFields.allFields),
-        fh.nestedField<NewTrackerImporterNote>(NOTES).with(NewNoteFields.allFields),
         fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),
+        fh.nestedField<NewTrackerImporterEnrollment>(ENROLLMENTS).with(NewEnrollmentFields.allFields),
+        fh.nestedField<ProgramOwner>(PROGRAM_OWNERS),
     )
-
-    val asRelationshipFields = Fields.from(commonFields())
 
     private fun commonFields() = listOf(
         fh.field(UID),
@@ -70,14 +66,12 @@ internal object NewEnrollmentFields : BaseFields<NewTrackerImporterEnrollment>()
         fh.field(CREATED_AT_CLIENT),
         fh.field(UPDATED_AT_CLIENT),
         fh.field(ORGANISATION_UNIT),
-        fh.field(PROGRAM),
-        fh.field(ENROLLED_AT),
-        fh.field(OCCURRED_AT),
-        fh.field(COMPLETED_AT),
-        fh.field(FOLLOW_UP),
-        fh.field(STATUS),
-        fh.field(DELETED),
-        fh.field(TRACKED_ENTITY),
+        fh.field(TRACKED_ENTITY_TYPE),
         fh.field(GEOMETRY),
+        fh.field(DELETED),
+        fh.nestedField<NewTrackerImporterTrackedEntityAttributeValue>(
+            TRACKED_ENTITY_ATTRIBUTE_VALUES,
+        )
+            .with(NewTrackedEntityAttributeValueFields.allFields),
     )
 }

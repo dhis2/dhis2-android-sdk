@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.tracker
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object NewRelationshipFields : BaseFields<NewTrackerImporterRelationship>() {
+    const val RELATIONSHIP = "relationship"
+    private const val RELATIONSHIP_NAME = "relationshipName"
+    private const val RELATIONSHIP_TYPE = "relationshipType"
+    private const val CREATED_AT = "createdAt"
+    private const val UPDATED_AT = "updatedAt"
+    private const val FROM = "from"
+    private const val TO = "to"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(RELATIONSHIP),
+        fh.field(RELATIONSHIP_NAME),
+        fh.field(RELATIONSHIP_TYPE),
+        fh.field(CREATED_AT),
+        fh.field(UPDATED_AT),
+        fh.nestedField<NewTrackerImporterRelationshipItem>(FROM).with(NewRelationshipItemFields.allFields),
+        fh.nestedField<NewTrackerImporterRelationshipItem>(TO).with(NewRelationshipItemFields.allFields),
     )
 }

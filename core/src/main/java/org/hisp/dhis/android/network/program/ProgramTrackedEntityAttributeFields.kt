@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.program
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object ProgramTrackedEntityAttributeFields : BaseFields<ProgramTrackedEntityAttribute>() {
+    const val RENDER_TYPE = "renderType"
 
     val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.getNameableFields(),
+        fh.field(Columns.MANDATORY),
+        fh.field(Columns.ALLOW_FUTURE_DATE),
+        fh.field(Columns.DISPLAY_IN_LIST),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.SEARCHABLE),
+        fh.field(RENDER_TYPE),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
     )
 }

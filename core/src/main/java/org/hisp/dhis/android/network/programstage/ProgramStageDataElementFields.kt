@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.programstage
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.dataelement.DataElementFields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object ProgramStageDataElementFields : BaseFields<ProgramStageDataElement>() {
+    const val RENDER_TYPE = "renderType"
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(Columns.DISPLAY_IN_REPORTS),
+        fh.field(Columns.COMPULSORY),
+        fh.field(Columns.ALLOW_PROVIDED_ELSEWHERE),
+        fh.field(Columns.SORT_ORDER),
+        fh.field(Columns.ALLOW_FUTURE_DATE),
+        fh.field(RENDER_TYPE),
+        fh.nestedField<DataElement>(Columns.DATA_ELEMENT).with(DataElementFields.allFields),
+        fh.nestedField<ObjectWithUid>(Columns.PROGRAM_STAGE).with(ObjectWithUid.uid),
     )
 }

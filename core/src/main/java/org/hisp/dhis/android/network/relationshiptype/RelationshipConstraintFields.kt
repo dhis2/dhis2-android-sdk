@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.legendset
+package org.hisp.dhis.android.network.relationshiptype
 
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.TrackerDataView
 import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 
-internal object LegendSetFields : BaseFields<LegendSet>() {
-    const val LEGENDS = "legends"
-
-    val uid: Field<LegendSet> = fh.uid()
+internal object RelationshipConstraintFields : BaseFields<RelationshipConstraint>() {
+    private const val TRACKER_DATA_VIEW = "trackerDataView"
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),
-        fh.field(Columns.SYMBOLIZER),
-        fh.nestedField<Legend>(LEGENDS).with(LegendFields.allFields),
+        fh.field(Columns.RELATIONSHIP_ENTITY),
+        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
+        fh.nestedFieldWithUid(Columns.PROGRAM),
+        fh.nestedFieldWithUid(Columns.PROGRAM_STAGE),
+        fh.nestedField<TrackerDataView>(TRACKER_DATA_VIEW).with(TrackerDataViewFields.allFields),
     )
 }

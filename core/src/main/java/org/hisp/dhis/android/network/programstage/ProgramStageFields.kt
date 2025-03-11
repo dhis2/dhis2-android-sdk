@@ -30,14 +30,12 @@ package org.hisp.dhis.android.network.programstage
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
+import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields

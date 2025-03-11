@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-internal object HttpStatusCodes {
-    const val OK_CODE = 200
-    const val SUCCESS_MIN = OK_CODE
-    const val SUCCESS_MAX = 299
+import io.ktor.http.HttpStatusCode
 
-    const val REDIRECT_MIN = 300
-    const val REDIRECT_MAX = 399
-
-    const val NOT_FOUND = 404
-    const val CONFLICT = 409
-
-    const val INTERNAL_SERVER_ERROR = 500
-}
+/**
+ * Checks if a given status code is a redirection code according to HTTP standards.
+ *
+ * Codes from 300 to 399 are considered to be redirections.
+ */
+@Suppress("MagicNumber")
+internal fun HttpStatusCode.isRedirection(): Boolean = value in (300 until 400)

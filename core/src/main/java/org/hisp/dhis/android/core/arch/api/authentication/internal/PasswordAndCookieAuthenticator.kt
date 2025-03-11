@@ -33,8 +33,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpResponse
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
+import org.hisp.dhis.android.core.arch.api.internal.isRedirection
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.koin.core.annotation.Singleton
 
@@ -82,7 +81,7 @@ internal class PasswordAndCookieAuthenticator(
 
     private fun hasAuthenticationFailed(res: HttpResponse): Boolean {
         val location = res.headers[LOCATION_KEY]
-        return res.status.value in REDIRECT_MIN..REDIRECT_MAX &&
+        return res.status.isRedirection() &&
             location != null &&
             LOGIN_KEY_LIST.any { location.contains(it) }
     }

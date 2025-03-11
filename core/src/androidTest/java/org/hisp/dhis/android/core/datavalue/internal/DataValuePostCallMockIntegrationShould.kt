@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -64,7 +64,7 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     @Test
     fun post_dataValues_undetermined_warning() {
         // Given user sets one undetermined data value
-        dhis2MockServer.enqueueMockResponse(HttpStatusCodes.CONFLICT, "datavalueset/data_value_set_warning.json")
+        dhis2MockServer.enqueueMockResponse(HttpStatusCode.Conflict.value, "datavalueset/data_value_set_warning.json")
         provideDataValues("40", "50L")
 
         // When user sync data in order to upload the data values

@@ -28,14 +28,12 @@
 package org.hisp.dhis.android.core.mockwebserver
 
 import android.util.Log
+import io.ktor.http.HttpStatusCode
 import okhttp3.internal.UTC
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.INTERNAL_SERVER_ERROR
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.NOT_FOUND
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.OK_CODE
 import org.hisp.dhis.android.core.arch.file.IFileReader
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
 import java.io.IOException
@@ -74,18 +72,18 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     }
 
     @JvmOverloads
-    fun enqueueMockResponse(code: Int = OK_CODE) {
+    fun enqueueMockResponse(code: Int = HttpStatusCode.OK.value) {
         enqueueMockResponseText(code, "{}")
     }
 
     fun enqueueMockResponseWithEmptyBody(code: Int) {
-        var mockResponse = MockResponse()
+        val mockResponse = MockResponse()
         mockResponse.setResponseCode(code)
         server.enqueue(mockResponse)
     }
 
     fun enqueueMockResponseText(code: Int, response: String?) {
-        var mockResponse = MockResponse()
+        val mockResponse = MockResponse()
         mockResponse.setResponseCode(code)
         mockResponse.setBody(response!!)
         mockResponse.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
@@ -93,12 +91,12 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     }
 
     fun enqueueMockResponse(code: Int, fileName: String) {
-        var response = createMockResponse(fileName, code)
+        val response = createMockResponse(fileName, code)
         server.enqueue(response)
     }
 
     fun enqueueMockResponse(fileName: String) {
-        var response = createMockResponse(fileName)
+        val response = createMockResponse(fileName)
         response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
         server.enqueue(response)
     }
@@ -110,142 +108,206 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     @Suppress("LongMethod")
     fun setRequestDispatcher() {
         val dispatcher: Dispatcher = object : Dispatcher() {
-            public override fun dispatch(request: RecordedRequest): MockResponse {
+            override fun dispatch(request: RecordedRequest): MockResponse {
                 val path = request.path ?: return MockResponse()
-                    .setResponseCode(NOT_FOUND)
+                    .setResponseCode(HttpStatusCode.NotFound.value)
                     .setBody("Path not found")
                 return when {
                     path == "/api/me/authorization" ->
                         createMockResponse(AUTHORITIES_JSON)
+
                     path.startsWith("/api/me?") ->
                         createMockResponse(USER_JSON)
+
                     path.startsWith("/api/system/info?") ->
                         createMockResponse(SYSTEM_INFO_JSON)
+
                     path.startsWith("/api/systemSettings?") ->
                         createMockResponse(SYSTEM_SETTINGS_JSON)
+
                     path.startsWith("/api/dataStore/USE_CASES/stockUseCases") ->
                         createMockResponse(STOCK_USE_CASES_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info") ->
                         createMockResponse(ANDROID_SETTINGS_INFO_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings") ->
                         createMockResponse(GENERAL_SETTINGS_V1_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings") ->
                         createMockResponse(DATASET_SETTINGS_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings") ->
                         createMockResponse(PROGRAM_SETTINGS_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/generalSettings") ->
                         createMockResponse(GENERAL_SETTINGS_V2_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/synchronization") ->
                         createMockResponse(SYNCHRONIZATION_SETTTINGS_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/appearance") ->
                         createMockResponse(APPEARANCE_SETTINGS_JSON)
+
                     path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/analytics") ->
                         createMockResponse(ANALYTICS_SETTINGS_JSON)
+
                     path.startsWith("/api/userSettings?") ->
                         createMockResponse(USER_SETTINGS_JSON)
+
                     path.startsWith("/api/dataStore/APK_DISTRIBUTION/versions") ->
                         createMockResponse(VERSIONS_JSON)
+
                     path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion") ->
                         createMockResponse(LATEST_APP_VERSION_JSON)
+
                     path.startsWith("/api/programs?") ->
                         createMockResponse(PROGRAMS_JSON)
+
                     path.startsWith("/api/programIndicators?") ->
                         createMockResponse(PROGRAMS_INDICATORS_JSON)
+
                     path.startsWith("/api/programStages?") ->
                         createMockResponse(PROGRAM_STAGES_JSON)
+
                     path.startsWith("/api/trackedEntityTypes?") ->
                         createMockResponse(TRACKED_ENTITY_TYPES_JSON)
+
                     path.startsWith("/api/trackedEntityAttributes?") ->
                         createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON)
+
                     path.startsWith("/api/programRules?") ->
                         createMockResponse(PROGRAM_RULES_JSON)
+
                     path.startsWith("/api/trackedEntityInstanceFilters?") ->
                         createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON)
+
                     path.startsWith("/api/eventFilters?") ->
                         createMockResponse(EVENT_FILTERS_JSON)
+
                     path.startsWith("/api/programStageWorkingLists?") ->
                         createMockResponse(PROGRAM_STAGE_WORKING_LISTS)
+
                     path.startsWith("/api/relationshipTypes?") ->
                         createMockResponse(RELATIONSHIP_TYPES_JSON)
+
                     path.startsWith("/api/optionSets?") ->
                         createMockResponse(OPTION_SETS_JSON)
+
                     path.startsWith("/api/options?") ->
                         createMockResponse(OPTIONS_JSON)
+
                     path.startsWith("/api/optionGroups?") ->
                         createMockResponse(OPTION_GROUPS_JSON)
+
                     path.startsWith("/api/validationRules?dataSet") ->
                         createMockResponse(VALIDATION_RULE_UIDS_JSON)
+
                     path.startsWith("/api/validationRules?") ->
                         createMockResponse(VALIDATION_RULES_JSON)
+
                     path.startsWith("/api/dataSets?") ->
                         createMockResponse(DATA_SETS_JSON)
+
                     path.startsWith("/api/dataElements?") ->
                         createMockResponse(DATA_ELEMENTS_JSON)
+
                     path.startsWith("/api/attributes?") ->
                         createMockResponse(ATTRIBUTES_JSON)
+
                     path.startsWith("/api/indicators?") ->
                         createMockResponse(INDICATORS_JSON)
+
                     path.startsWith("/api/indicatorTypes?") ->
                         createMockResponse(INDICATOR_TYPES_JSON)
+
                     path.startsWith("/api/categoryCombos?") ->
                         createMockResponse(CATEGORY_COMBOS_JSON)
+
                     path.startsWith("/api/categories?") ->
                         createMockResponse(CATEGORIES_JSON)
+
                     path.startsWith("/api/categoryOptions?") ->
                         createMockResponse(CATEGORY_OPTIONS_JSON)
+
                     path.startsWith("/api/categoryOptions/orgUnits?") ->
                         createMockResponse(CATEGORY_OPTION_ORGUNITS_JSON)
+
                     path.startsWith("/api/visualizations/PYBH8ZaAQnC?") ->
                         createMockResponse(VISUALIZATIONS_1_JSON)
+
                     path.startsWith("/api/visualizations/FAFa11yFeFe?") ->
                         createMockResponse(VISUALIZATIONS_2_JSON)
+
                     path.startsWith("/api/eventVisualizations/s85urBIkN0z?") ->
                         createMockResponse(TRACKER_VISUALIZATIONS_1_JSON)
+
                     path.startsWith("/api/organisationUnits?") ->
                         createMockResponse(ORGANISATION_UNITS_JSON)
+
                     path.startsWith("/api/organisationUnitLevels?") ->
                         createMockResponse(ORGANISATION_UNIT_LEVELS_JSON)
+
                     path.startsWith("/api/constants?") ->
                         createMockResponse(CONSTANTS_JSON)
+
                     path.startsWith("/api/trackedEntityInstances?") ->
                         createMockResponse(TRACKED_ENTITY_INSTANCES_JSON)
+
                     path.startsWith("/api/tracker/trackedEntities?") ->
                         createMockResponse(NEW_TRACKED_ENTITY_INSTANCES_JSON)
+
                     path.startsWith("/api/events?") ->
                         createMockResponse(EVENTS_JSON)
+
                     path.startsWith("/api/tracker/events?") ->
                         createMockResponse(NEW_EVENTS_JSON)
+
                     path.startsWith("/api/dataValueSets?") ->
                         createMockResponse(DATA_VALUES_JSON)
+
                     path.startsWith("/api/completeDataSetRegistrations?") ->
                         createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON)
+
                     path.startsWith("/api/dataApprovals/multiple?") ->
                         createMockResponse(DATA_APPROVALS_MULTIPLE_JSON)
+
                     path.startsWith("/api/legendSets?") ->
                         createMockResponse(LEGEND_SETS_JSON)
+
                     path.startsWith("/api/expressionDimensionItems?") ->
                         createMockResponse(EXPRESSION_DIMENSION_ITEMS)
+
                     path.startsWith("/api/icons?") ->
                         createMockResponse(CUSTOM_ICONS_JSON)
+
                     path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve") ->
                         createMockResponse(RESERVE_VALUES_JSON)
+
                     path.startsWith("/api/metadata") ->
                         createMockResponse(SMS_METADATA)
+
                     path.startsWith("/api/fileResources?") ->
                         createMockResponse(FILE_RESOURCES)
+
                     path.startsWith("/api/fileResources/befryEfXge5") ->
                         createMockResponse(FILE_RESOURCE)
+
                     path.startsWith("/api/trackedEntityInstances/nWrB0TfWlvh/aejWyOfXge6/image") ->
                         createMockResponse(TRACKED_ENTITY_IMAGE)
+
                     path == "/api/dataStore" ->
                         createMockResponse(DATA_STORE_NAMESPACES)
+
                     path.startsWith("/api/dataStore/capture") ->
                         createMockResponse(DATA_STORE_NAMESPACE_CAPTURE)
+
                     path.startsWith("/api/dataStore/scorecard") ->
                         createMockResponse(DATA_STORE_NAMESPACE_SCORECARD)
+
                     else -> {
                         MockResponse()
-                            .setResponseCode(NOT_FOUND)
+                            .setResponseCode(HttpStatusCode.NotFound.value)
                             .setBody("Path not present in Dhis2MockServer dispatcher: $path")
                     }
                 }
@@ -306,7 +368,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(CATEGORY_OPTION_ORGUNITS_JSON)
         enqueueMockResponse(VISUALIZATIONS_1_JSON)
         enqueueMockResponse(VISUALIZATIONS_2_JSON)
-        enqueueMockResponse(NOT_FOUND)
+        enqueueMockResponse(HttpStatusCode.NotFound.value)
         enqueueMockResponse(TRACKER_VISUALIZATIONS_1_JSON)
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON)
         enqueueMockResponse(PROGRAMS_INDICATORS_JSON)
@@ -319,30 +381,30 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     }
 
     private fun createMockResponse(fileName: String): MockResponse {
-        return createMockResponse(fileName, OK_CODE)
+        return createMockResponse(fileName, HttpStatusCode.OK.value)
     }
 
     private fun createMockResponse(fileName: String, code: Int): MockResponse {
         try {
-            var body = fileReader.getStringFromFile(fileName)
-            var response = MockResponse()
+            val body = fileReader.getStringFromFile(fileName)
+            val response = MockResponse()
             response.setResponseCode(code)
             response.setBody(body!!)
             response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
             return response
         } catch (e: IOException) {
-            return MockResponse().setResponseCode(INTERNAL_SERVER_ERROR)
+            return MockResponse().setResponseCode(HttpStatusCode.InternalServerError.value)
                 .setBody("Error reading JSON file for MockServer")
         }
     }
 
     fun enqueueMockResponse(fileName: String, dateHeader: Date) {
-        var response = createMockResponse(fileName)
+        val response = createMockResponse(fileName)
 
-        var rfc1123: DateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
+        val rfc1123: DateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
         rfc1123.isLenient = false
         rfc1123.timeZone = UTC
-        var dateHeaderValue = rfc1123.format(dateHeader)
+        val dateHeaderValue = rfc1123.format(dateHeader)
 
         response.setHeader("Date", dateHeaderValue)
 

@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.datavalue
 
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -75,7 +75,7 @@ internal class DataValueNetworkHandlerImpl(
     ): Result<DataValueImportSummaryWebResponse, D2Error> {
         val apiPayload = DataValueSetDTO.fromDomain(dataValueSet)
         return coroutineAPICallExecutor.wrap(
-            acceptedErrorCodes = listOf(HttpStatusCodes.CONFLICT),
+            acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
             errorClassParser = DataValueImportSummaryWebResponseDTO::toErrorClass,
         ) {
             service.postDataValuesWebResponse(apiPayload).toDomain()

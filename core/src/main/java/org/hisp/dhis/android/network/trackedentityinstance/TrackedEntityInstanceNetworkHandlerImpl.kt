@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.network.trackedentityinstance
 
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.EventStatus
@@ -68,7 +68,7 @@ internal class TrackedEntityInstanceNetworkHandlerImpl(
         val payload = TrackedEntityInstancePayload(items = instances.map { it.toDto() })
         return coroutineAPICallExecutor.wrap(
             storeError = true,
-            acceptedErrorCodes = listOf(HttpStatusCodes.CONFLICT),
+            acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
             errorClassParser = TEIWebResponseDTO::toErrorClass,
         ) {
             service.postTrackedEntityInstances(payload, strategy).toDomain()

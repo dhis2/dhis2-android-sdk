@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.programstageworkinglist
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields

@@ -30,16 +30,13 @@ package org.hisp.dhis.android.network.program
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.program.internal.ProgramRuleVariableFields
-import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
+import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields

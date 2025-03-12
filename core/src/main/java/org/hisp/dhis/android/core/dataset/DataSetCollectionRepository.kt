@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenApp
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.network.dataset.DataSetFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -183,28 +182,33 @@ class DataSetCollectionRepository internal constructor(
     }
 
     fun withCompulsoryDataElementOperands(): DataSetCollectionRepository {
-        return cf.withChild(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS)
+        return cf.withChild(COMPULSORY_DATA_ELEMENT_OPERANDS)
     }
 
     fun withDataInputPeriods(): DataSetCollectionRepository {
-        return cf.withChild(DataSetFields.DATA_INPUT_PERIODS)
+        return cf.withChild(DATA_INPUT_PERIODS)
     }
 
     fun withDataSetElements(): DataSetCollectionRepository {
-        return cf.withChild(DataSetFields.DATA_SET_ELEMENTS)
+        return cf.withChild(DATA_SET_ELEMENTS)
     }
 
     fun withIndicators(): DataSetCollectionRepository {
-        return cf.withChild(DataSetFields.INDICATORS)
+        return cf.withChild(INDICATORS)
     }
 
     internal companion object {
+        private const val DATA_SET_ELEMENTS = "dataSetElements"
+        private const val INDICATORS = "indicators"
+        private const val COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands"
+        private const val DATA_INPUT_PERIODS = "dataInputPeriods"
+
         val childrenAppenders: ChildrenAppenderGetter<DataSet> = mapOf(
-            DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS to
+            COMPULSORY_DATA_ELEMENT_OPERANDS to
                 DataSetCompulsoryDataElementOperandChildrenAppender::create,
-            DataSetFields.DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender::create,
-            DataSetFields.DATA_SET_ELEMENTS to DataSetElementChildrenAppender::create,
-            DataSetFields.INDICATORS to DataSetIndicatorChildrenAppender::create,
+            DATA_INPUT_PERIODS to DataInputPeriodChildrenAppender::create,
+            DATA_SET_ELEMENTS to DataSetElementChildrenAppender::create,
+            INDICATORS to DataSetIndicatorChildrenAppender::create,
         )
     }
 }

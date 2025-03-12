@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.dataset.internal.SectionDataElementChildrenApp
 import org.hisp.dhis.android.core.dataset.internal.SectionGreyedFieldsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionStore
-import org.hisp.dhis.android.network.dataset.SectionFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -105,22 +104,26 @@ class SectionCollectionRepository internal constructor(
     }
 
     fun withDataElements(): SectionCollectionRepository {
-        return cf.withChild(SectionFields.DATA_ELEMENTS)
+        return cf.withChild(DATA_ELEMENTS)
     }
 
     fun withGreyedFields(): SectionCollectionRepository {
-        return cf.withChild(SectionFields.GREYED_FIELDS)
+        return cf.withChild(GREYED_FIELDS)
     }
 
     fun withIndicators(): SectionCollectionRepository {
-        return cf.withChild(SectionFields.INDICATORS)
+        return cf.withChild(INDICATORS)
     }
 
     internal companion object {
+        private const val DATA_ELEMENTS = "dataElements"
+        private const val GREYED_FIELDS = "greyedFields"
+        private const val INDICATORS = "indicators"
+
         val childrenAppenders: ChildrenAppenderGetter<Section> = mapOf(
-            SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender::create,
-            SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender::create,
-            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender::create,
+            GREYED_FIELDS to SectionGreyedFieldsChildrenAppender::create,
+            DATA_ELEMENTS to SectionDataElementChildrenAppender::create,
+            INDICATORS to SectionIndicatorsChildrenAppender::create,
         )
     }
 }

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
-import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -73,12 +72,14 @@ class TrackedEntityTypeCollectionRepository internal constructor(
     }
 
     fun withTrackedEntityTypeAttributes(): TrackedEntityTypeCollectionRepository {
-        return cf.withChild(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES)
+        return cf.withChild(TRACKED_ENTITY_TYPE_ATTRIBUTES)
     }
 
     internal companion object {
+        private const val TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes"
+
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityType> = mapOf(
-            TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES to
+            TRACKED_ENTITY_TYPE_ATTRIBUTES to
                 TrackedEntityTypeAttributeChildrenAppender::create,
         )
     }

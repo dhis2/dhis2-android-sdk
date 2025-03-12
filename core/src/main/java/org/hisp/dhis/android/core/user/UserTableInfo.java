@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.network.user.UserFields;
 
 public final class UserTableInfo {
 
@@ -52,24 +51,38 @@ public final class UserTableInfo {
     };
 
     static class Columns extends IdentifiableColumns {
+        private static final String USERNAME = "username";
+        private static final String BIRTHDAY = "birthday";
+        private static final String EDUCATION = "education";
+        private static final String GENDER = "gender";
+        private static final String JOB_TITLE = "jobTitle";
+        private static final String SURNAME = "surname";
+        private static final String FIRST_NAME = "firstName";
+        private static final String INTRODUCTION = "introduction";
+        private static final String EMPLOYER = "employer";
+        private static final String INTERESTS = "interests";
+        private static final String LANGUAGES = "languages";
+        private static final String EMAIL = "email";
+        private static final String PHONE_NUMBER = "phoneNumber";
+        private static final String NATIONALITY = "nationality";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    UserFields.BIRTHDAY,
-                    UserFields.EDUCATION,
-                    UserFields.GENDER,
-                    UserFields.JOB_TITLE,
-                    UserFields.SURNAME,
-                    UserFields.FIRST_NAME,
-                    UserFields.INTRODUCTION,
-                    UserFields.EMPLOYER,
-                    UserFields.INTERESTS,
-                    UserFields.LANGUAGES,
-                    UserFields.EMAIL,
-                    UserFields.PHONE_NUMBER,
-                    UserFields.NATIONALITY,
-                    UserFields.USERNAME
+                    BIRTHDAY,
+                    EDUCATION,
+                    GENDER,
+                    JOB_TITLE,
+                    SURNAME,
+                    FIRST_NAME,
+                    INTRODUCTION,
+                    EMPLOYER,
+                    INTERESTS,
+                    LANGUAGES,
+                    EMAIL,
+                    PHONE_NUMBER,
+                    NATIONALITY,
+                    USERNAME
             );
         }
     }

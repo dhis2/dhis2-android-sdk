@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
-import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -190,12 +189,14 @@ class EnrollmentCollectionRepository internal constructor(
     }
 
     fun withNotes(): EnrollmentCollectionRepository {
-        return cf.withChild(EnrollmentFields.NOTES)
+        return cf.withChild(NOTES)
     }
 
     internal companion object {
+        private const val NOTES = "notes"
+
         val childrenAppenders: ChildrenAppenderGetter<Enrollment> = mapOf(
-            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender::create,
+            NOTES to NoteForEnrollmentChildrenAppender::create,
         )
     }
 }

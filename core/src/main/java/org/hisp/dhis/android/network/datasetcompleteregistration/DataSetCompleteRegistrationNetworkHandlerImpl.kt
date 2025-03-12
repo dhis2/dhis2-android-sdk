@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationFields
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationNetworkHandler
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPartition
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary

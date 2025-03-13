@@ -45,6 +45,8 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
@@ -148,6 +150,28 @@ object BaseEvaluatorSamples {
         .categoryOptionCombo(categoryOptionCombo.uid())
         .build()
 
+    val optionSet = OptionSet.builder()
+        .uid(generator.generate())
+        .displayName("Option set 1")
+        .valueType(ValueType.TEXT)
+        .build()
+
+    val option1 = Option.builder()
+        .uid(generator.generate())
+        .code("optionCode1")
+        .name("Option name 1")
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
+        .displayName("Option name 1")
+        .build()
+
+    val option2 = Option.builder()
+        .uid(generator.generate())
+        .code("optionCode2")
+        .name("Option name 2")
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
+        .displayName("Option name 2")
+        .build()
+
     val attribute: Category = Category.builder()
         .uid(generator.generate())
         .displayName("Attribute 1")
@@ -216,6 +240,15 @@ object BaseEvaluatorSamples {
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
+    val dataElement5 = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 5")
+        .valueType(ValueType.TEXT)
+        .aggregationType(AggregationType.DEFAULT.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
+        .build()
+
     val dataElementOperand = DataElementOperand.builder()
         .uid("${dataElement1.uid()}.${categoryOptionCombo.uid()}")
         .dataElement(ObjectWithUid.create(dataElement1.uid()))
@@ -232,6 +265,13 @@ object BaseEvaluatorSamples {
         .uid(generator.generate())
         .displayName("Attribute 2")
         .valueType(ValueType.TEXT)
+        .build()
+
+    val attribute3 = TrackedEntityAttribute.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 3")
+        .valueType(ValueType.TEXT)
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
         .build()
 
     val period2019SunW25: Period = Period.builder()

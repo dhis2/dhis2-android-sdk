@@ -90,7 +90,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_aggregate_data_from_multiple_teis() {
-
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(
@@ -115,7 +114,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_evaluate_event_data_values_aggregation_types() {
-
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
         helper.createTrackerEvent(
@@ -188,7 +186,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_evaluate_event_attribute_values_aggregation_types() {
-
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
         helper.createTrackerEvent(
@@ -263,7 +260,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_evaluate_event_data_values_with_option_aggregation_types() {
-
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(
@@ -285,14 +281,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(
             evaluateEventDataElementOption(
                 deAggregation = AggregationType.COUNT,
-                option = option2
-            ),
-        ).isEqualTo("1")
-
-        assertThat(
-            evaluateEventDataElementOption(
-                deAggregation = AggregationType.COUNT,
-                pe = period201911
+                option = option2,
             ),
         ).isEqualTo("1")
 
@@ -300,7 +289,14 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
             evaluateEventDataElementOption(
                 deAggregation = AggregationType.COUNT,
                 pe = period201911,
-                option = option2
+            ),
+        ).isEqualTo("1")
+
+        assertThat(
+            evaluateEventDataElementOption(
+                deAggregation = AggregationType.COUNT,
+                pe = period201911,
+                option = option2,
             ),
         ).isEqualTo("0")
 
@@ -331,7 +327,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_evaluate_event_attribute_with_option_aggregation_types() {
-
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute3.uid(), option1.code()!!)
 
         assertThat(
@@ -365,7 +360,6 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Test
     fun should_override_aggregation_type() {
-
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(

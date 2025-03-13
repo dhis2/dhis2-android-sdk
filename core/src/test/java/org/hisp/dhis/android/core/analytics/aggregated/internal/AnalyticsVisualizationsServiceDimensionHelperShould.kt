@@ -40,7 +40,9 @@ import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.DimensionItemType
+import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -88,6 +90,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         when (val item = dimensionItems.first()) {
             is DimensionItem.DataItem.DataElementItem ->
                 assertThat(item.uid).isEqualTo(uid1)
+
             else ->
                 fail("Unexpected dimension item type")
         }
@@ -117,6 +120,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
                 assertThat(item.dataElement).isEqualTo(uid1)
                 assertThat(item.categoryOptionCombo).isEqualTo(uid2)
             }
+
             else ->
                 fail("Unexpected dimension item type")
         }
@@ -144,6 +148,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         when (val item = dimensionItems.first()) {
             is DimensionItem.DataItem.IndicatorItem ->
                 assertThat(item.uid).isEqualTo(uid1)
+
             else ->
                 fail("Unexpected dimension item type")
         }
@@ -171,6 +176,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
         when (val item = dimensionItems.first()) {
             is DimensionItem.DataItem.ProgramIndicatorItem ->
                 assertThat(item.uid).isEqualTo(uid1)
+
             else ->
                 fail("Unexpected dimension item type")
         }
@@ -200,6 +206,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
                 assertThat(item.program).isEqualTo(uid1)
                 assertThat(item.dataElement).isEqualTo(uid2)
             }
+
             else ->
                 fail("Unexpected dimension item type")
         }
@@ -229,8 +236,63 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
                 assertThat(item.program).isEqualTo(uid1)
                 assertThat(item.attribute).isEqualTo(uid2)
             }
+
             else ->
                 fail("Unexpected dimension item type")
+        }
+    }
+
+    @Test
+    fun `Should parse event dataElements with options dimension items`() {
+        val dataDimensions = listOf(
+            VisualizationDimension.builder().id("dx").items(
+                listOf(
+                    VisualizationDimensionItem.builder().dimensionItem("$uid1.$uid2.$uid3")
+                        .dimensionItemType(DimensionItemType.PROGRAM_DATA_ELEMENT_OPTION.name).build(),
+                ),
+            ).build(),
+        )
+
+        val dimensionItem = helper.getDimensionItems(dataDimensions)
+
+        assertThat(dimensionItem).hasSize(1)
+        when (val item = dimensionItem.first()) {
+            is DimensionItem.DataItem.EventDataItem.DataElementOption -> {
+                assertThat(item.program).isEqualTo(uid1)
+                assertThat(item.dataElement).isEqualTo(uid2)
+                assertThat(item.option).isEqualTo(uid3)
+            }
+
+            else -> {
+                fail("Unexpected dimension item type")
+            }
+        }
+    }
+
+    @Test
+    fun `Should parse event attributes with options dimension items`() {
+        val dataDimensions = listOf(
+            VisualizationDimension.builder().id("dx").items(
+                listOf(
+                    VisualizationDimensionItem.builder().dimensionItem("$uid1.$uid2.$uid3")
+                        .dimensionItemType(DimensionItemType.PROGRAM_ATTRIBUTE_OPTION.name).build(),
+                ),
+            ).build(),
+        )
+
+        val dimensionItem = helper.getDimensionItems(dataDimensions)
+
+        assertThat(dimensionItem).hasSize(1)
+        when (val item = dimensionItem.first()) {
+            is DimensionItem.DataItem.EventDataItem.AttributeOption -> {
+                assertThat(item.program).isEqualTo(uid1)
+                assertThat(item.attribute).isEqualTo(uid2)
+                assertThat(item.option).isEqualTo(uid3)
+            }
+
+            else -> {
+                fail("Unexpected dimension item type")
+            }
         }
     }
 
@@ -257,6 +319,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
             is DimensionItem.DataItem.ExpressionDimensionItem -> {
                 assertThat(item.uid).isEqualTo(uid1)
             }
+
             else ->
                 fail("Unexpected dimension item type")
         }

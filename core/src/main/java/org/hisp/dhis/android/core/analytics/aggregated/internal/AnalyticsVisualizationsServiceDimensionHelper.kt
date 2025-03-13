@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.composedUidOperandRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.tripleComposedUidOperandRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
@@ -112,6 +113,18 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
 
                 DataDimensionItemType.EXPRESSION_DIMENSION_ITEM ->
                     item.dimensionItem()?.let { DimensionItem.DataItem.ExpressionDimensionItem(it) }
+
+                DataDimensionItemType.PROGRAM_ATTRIBUTE_OPTION ->
+                    item.dimensionItem()?.let {
+                        val (program, attribute, option) = tripleComposedUidOperandRegex.find(it)!!.destructured
+                        DimensionItem.DataItem.EventDataItem.AttributeOption(program, attribute, option)
+                    }
+
+                DataDimensionItemType.PROGRAM_DATA_ELEMENT_OPTION ->
+                    item.dimensionItem()?.let {
+                        val (program, dataElement, option) = tripleComposedUidOperandRegex.find(it)!!.destructured
+                        DimensionItem.DataItem.EventDataItem.DataElementOption(program, dataElement, option)
+                    }
 
                 else ->
                     null

@@ -127,6 +127,11 @@ public final class org/hisp/dhis/android/core/analytics/AnalyticsException$Inval
 	public final fun getUid ()Ljava/lang/String;
 }
 
+public final class org/hisp/dhis/android/core/analytics/AnalyticsException$InvalidOption : org/hisp/dhis/android/core/analytics/AnalyticsException {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getUid ()Ljava/lang/String;
+}
+
 public final class org/hisp/dhis/android/core/analytics/AnalyticsException$InvalidOrganisationUnit : org/hisp/dhis/android/core/analytics/AnalyticsException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun getUid ()Ljava/lang/String;
@@ -314,6 +319,21 @@ public final class org/hisp/dhis/android/core/analytics/aggregated/DimensionItem
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class org/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$AttributeOption : org/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$AttributeOption;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$AttributeOption;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$AttributeOption;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttribute ()Ljava/lang/String;
+	public final fun getOption ()Ljava/lang/String;
+	public final fun getProgram ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class org/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElement : org/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -322,6 +342,21 @@ public final class org/hisp/dhis/android/core/analytics/aggregated/DimensionItem
 	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElement;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElement;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getProgram ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElementOption : org/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElementOption;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElementOption;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem$DataItem$EventDataItem$DataElementOption;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getOption ()Ljava/lang/String;
 	public final fun getProgram ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -581,9 +616,23 @@ public final class org/hisp/dhis/android/core/analytics/aggregated/MetadataItem$
 	public final fun getProgram ()Lorg/hisp/dhis/android/core/program/Program;
 }
 
+public final class org/hisp/dhis/android/core/analytics/aggregated/MetadataItem$EventAttributeOptionItem : org/hisp/dhis/android/core/analytics/aggregated/MetadataItem {
+	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute;Lorg/hisp/dhis/android/core/program/Program;Lorg/hisp/dhis/android/core/option/Option;)V
+	public final fun getItem ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute;
+	public final fun getOption ()Lorg/hisp/dhis/android/core/option/Option;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/program/Program;
+}
+
 public final class org/hisp/dhis/android/core/analytics/aggregated/MetadataItem$EventDataElementItem : org/hisp/dhis/android/core/analytics/aggregated/MetadataItem {
 	public fun <init> (Lorg/hisp/dhis/android/core/dataelement/DataElement;Lorg/hisp/dhis/android/core/program/Program;)V
 	public final fun getItem ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/program/Program;
+}
+
+public final class org/hisp/dhis/android/core/analytics/aggregated/MetadataItem$EventDataElementOptionItem : org/hisp/dhis/android/core/analytics/aggregated/MetadataItem {
+	public fun <init> (Lorg/hisp/dhis/android/core/dataelement/DataElement;Lorg/hisp/dhis/android/core/program/Program;Lorg/hisp/dhis/android/core/option/Option;)V
+	public final fun getItem ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	public final fun getOption ()Lorg/hisp/dhis/android/core/option/Option;
 	public final fun getProgram ()Lorg/hisp/dhis/android/core/program/Program;
 }
 
@@ -14744,7 +14793,9 @@ public final class org/hisp/dhis/android/core/visualization/DataDimensionItemTyp
 	public static final field EXPRESSION_DIMENSION_ITEM Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field INDICATOR Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field PROGRAM_ATTRIBUTE Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
+	public static final field PROGRAM_ATTRIBUTE_OPTION Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field PROGRAM_DATA_ELEMENT Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
+	public static final field PROGRAM_DATA_ELEMENT_OPTION Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field PROGRAM_INDICATOR Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field REPORTING_RATE Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field VALIDATION_RULE Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
@@ -14771,7 +14822,9 @@ public final class org/hisp/dhis/android/core/visualization/DimensionItemType : 
 	public static final field ORGANISATION_UNIT Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
 	public static final field PERIOD Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
 	public static final field PROGRAM_ATTRIBUTE Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
+	public static final field PROGRAM_ATTRIBUTE_OPTION Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
 	public static final field PROGRAM_DATA_ELEMENT Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
+	public static final field PROGRAM_DATA_ELEMENT_OPTION Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
 	public static final field PROGRAM_INDICATOR Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
 	public static final field REPORTING_RATE Lorg/hisp/dhis/android/core/visualization/DimensionItemType;
 	public static final field VALIDATION_RULE Lorg/hisp/dhis/android/core/visualization/DimensionItemType;

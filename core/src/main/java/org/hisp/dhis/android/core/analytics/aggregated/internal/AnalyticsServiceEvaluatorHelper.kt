@@ -94,6 +94,7 @@ internal class AnalyticsServiceEvaluatorHelper(
         return when {
             filterDataItems.isEmpty() ->
                 throw AnalyticsException.InvalidArguments("Invalid arguments: no data dimension is specified.")
+
             filterDataItems.size == 1 -> getEvaluatorFromDataDimension(filterDataItems.first())
             allAreDataElements -> dataElementEvaluator
             else ->
@@ -115,6 +116,7 @@ internal class AnalyticsServiceEvaluatorHelper(
         }
     }
 
+    @Suppress("MaxLineLength")
     private fun getLegendFromDataDimension(evaluationItem: AnalyticsServiceEvaluationItem, value: String?): String? {
         val dimensionDataItem = (
             evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>() +
@@ -126,26 +128,44 @@ internal class AnalyticsServiceEvaluatorHelper(
                 dimensionDataItem.uid,
                 value,
             )
+
             is DimensionItem.DataItem.DataElementOperandItem -> legendEvaluator.getLegendByDataElement(
                 dimensionDataItem.dataElement,
                 value,
             )
+
             is DimensionItem.DataItem.ProgramIndicatorItem -> legendEvaluator.getLegendByProgramIndicator(
                 dimensionDataItem.uid,
                 value,
             )
+
             is DimensionItem.DataItem.IndicatorItem -> legendEvaluator.getLegendByIndicator(
                 dimensionDataItem.uid,
                 value,
             )
+
             is DimensionItem.DataItem.EventDataItem.DataElement -> legendEvaluator.getLegendByDataElement(
                 dimensionDataItem.dataElement,
                 value,
             )
+
             is DimensionItem.DataItem.EventDataItem.Attribute -> legendEvaluator.getLegendByTrackedEntityAttribute(
                 dimensionDataItem.attribute,
                 value,
             )
+
+            is DimensionItem.DataItem.EventDataItem.DataElementOption -> legendEvaluator.getLegendByDataElement(
+                dimensionDataItem.dataElement,
+                value,
+            )
+
+            is DimensionItem.DataItem.EventDataItem.AttributeOption ->
+                legendEvaluator
+                    .getLegendByTrackedEntityAttribute(
+                        dimensionDataItem.attribute,
+                        value,
+                    )
+
             is DimensionItem.DataItem.ExpressionDimensionItem -> null
         }
     }

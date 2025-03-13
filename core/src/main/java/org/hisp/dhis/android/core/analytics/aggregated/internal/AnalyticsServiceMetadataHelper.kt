@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.legendset.internal.LegendStore
+import org.hisp.dhis.android.core.option.internal.OptionStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -64,6 +65,7 @@ internal class AnalyticsServiceMetadataHelper(
     private val organisationUnitGroupStore: OrganisationUnitGroupStore,
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,
     private val programStore: ProgramStore,
+    private val optionStore: OptionStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
@@ -113,7 +115,7 @@ internal class AnalyticsServiceMetadataHelper(
         return metadata
     }
 
-    @SuppressWarnings("ThrowsCount", "ComplexMethod")
+    @SuppressWarnings("ThrowsCount", "ComplexMethod", "LongMethod")
     private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
         return listOf(
             when (item) {
@@ -169,6 +171,28 @@ internal class AnalyticsServiceMetadataHelper(
                     MetadataItem.EventAttributeItem(attribute, program)
                 }
 
+                is DimensionItem.DataItem.EventDataItem.DataElementOption -> {
+                    val dataElement = dataElementStore.selectByUid(item.dataElement)
+                        ?: throw AnalyticsException.InvalidDataElement(item.id)
+                    val program = programStore.selectByUid(item.program)
+                        ?: throw AnalyticsException.InvalidProgram(item.id)
+                    val option = optionStore.selectByUid(item.option)
+                        ?: throw AnalyticsException.InvalidOption(item.id)
+
+                    MetadataItem.EventDataElementOptionItem(dataElement, program, option)
+                }
+
+                is DimensionItem.DataItem.EventDataItem.AttributeOption -> {
+                    val attribute = trackedEntityAttributeStore.selectByUid(item.attribute)
+                        ?: throw AnalyticsException.InvalidTrackedEntityAttribute(item.id)
+                    val program = programStore.selectByUid(item.program)
+                        ?: throw AnalyticsException.InvalidProgram(item.id)
+                    val option = optionStore.selectByUid(item.option)
+                        ?: throw AnalyticsException.InvalidOption(item.id)
+
+                    MetadataItem.EventAttributeOptionItem(attribute, program, option)
+                }
+
                 is DimensionItem.DataItem.ExpressionDimensionItem -> {
                     val expressionItem = expressionDimensionItemStore.selectByUid(item.uid)
                         ?: throw AnalyticsException.InvalidExpressionDimensionItem(item.uid)
@@ -186,6 +210,7 @@ internal class AnalyticsServiceMetadataHelper(
                     val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
                     MetadataItem.PeriodItem(period)
                 }
+
                 is DimensionItem.PeriodItem.Relative -> {
                     val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
                     MetadataItem.RelativePeriodItem(item.relative, periods)

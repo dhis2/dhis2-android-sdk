@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.api.internal
 
 import UserAgentPlugin
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.plugins.HttpTimeout
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 
@@ -43,6 +42,7 @@ internal fun HttpClientConfig<*>.addKtorPlugins(
     install(ServerURLVersionRedirectionPlugin.instance)
     install(PreventURLDecodePlugin.instance)
     install(authenticator.instance)
-    install(HttpTimeout) {
+    for (plugin in d2Configuration.networkplugins()) {
+        install(plugin)
     }
 }

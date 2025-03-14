@@ -57,6 +57,7 @@ public abstract class org/hisp/dhis/android/core/D2Configuration {
 	public abstract fun context ()Landroid/content/Context;
 	public abstract fun interceptors ()Ljava/util/List;
 	public abstract fun networkInterceptors ()Ljava/util/List;
+	public abstract fun networkplugins ()Ljava/util/List;
 	public abstract fun readTimeoutInSeconds ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/D2Configuration$Builder;
 	public abstract fun writeTimeoutInSeconds ()Ljava/lang/Integer;
@@ -71,6 +72,7 @@ public abstract class org/hisp/dhis/android/core/D2Configuration$Builder {
 	public abstract fun context (Landroid/content/Context;)Lorg/hisp/dhis/android/core/D2Configuration$Builder;
 	public abstract fun interceptors (Ljava/util/List;)Lorg/hisp/dhis/android/core/D2Configuration$Builder;
 	public abstract fun networkInterceptors (Ljava/util/List;)Lorg/hisp/dhis/android/core/D2Configuration$Builder;
+	public abstract fun networkplugins (Ljava/util/List;)Lorg/hisp/dhis/android/core/D2Configuration$Builder;
 	public abstract fun readTimeoutInSeconds (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/D2Configuration$Builder;
 	public abstract fun writeTimeoutInSeconds (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/D2Configuration$Builder;
 }

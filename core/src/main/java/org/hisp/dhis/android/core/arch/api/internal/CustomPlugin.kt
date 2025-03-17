@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,24 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.api.internal
 
-import UserAgentPlugin
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.plugins.DefaultRequest
-import org.hisp.dhis.android.core.D2Configuration
-import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
+import io.ktor.client.plugins.HttpClientPlugin
 
-@Suppress("UNCHECKED_CAST")
-internal fun HttpClientConfig<*>.addKtorPlugins(
-    d2Configuration: D2Configuration,
-    authenticator: ParentAuthenticatorPlugin,
-) {
-    install(UserAgentPlugin) { this.d2Configuration = d2Configuration }
-    install(DynamicServerURLPlugin.instance)
-    install(ServerURLVersionRedirectionPlugin.instance)
-    install(PreventURLDecodePlugin.instance)
-    install(DefaultRequest) {}
-    install(authenticator.instance)
-    for (plugin in d2Configuration.networkPlugins()) {
-        install(plugin.plugin, plugin.config as (Any) -> Unit)
-    }
-}
+class CustomPlugin<TBuilder : Any, TPlugin : Any>(
+    val plugin: HttpClientPlugin<TBuilder, TPlugin>,
+    val config: TBuilder.() -> Unit = {}
+)

@@ -35,12 +35,11 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.arch.api.internal.CustomPlugin;
 
 import java.util.Collections;
 import java.util.List;
 
-import io.ktor.client.plugins.api.ClientPlugin;
 import okhttp3.Interceptor;
 
 @AutoValue
@@ -68,7 +67,7 @@ public abstract class D2Configuration {
     public abstract List<Interceptor> networkInterceptors();
 
     @NonNull
-    public abstract List<ClientPlugin<Unit>> networkplugins();
+    public abstract List<CustomPlugin> networkPlugins();
 
     @NonNull
     public abstract Context context();
@@ -82,7 +81,7 @@ public abstract class D2Configuration {
                 .writeTimeoutInSeconds(30)
                 .networkInterceptors(Collections.emptyList())
                 .interceptors(Collections.emptyList())
-                .networkplugins(Collections.emptyList());
+                .networkPlugins(Collections.emptyList());
     }
 
     @AutoValue.Builder
@@ -104,7 +103,7 @@ public abstract class D2Configuration {
 
         public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
 
-        public abstract Builder networkplugins(List<ClientPlugin<Unit>> networkplugins);
+        public abstract Builder networkPlugins(List<CustomPlugin> networkPlugins);
 
         public abstract D2Configuration build();
     }

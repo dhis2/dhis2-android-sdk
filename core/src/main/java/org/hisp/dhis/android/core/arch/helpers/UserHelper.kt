@@ -31,8 +31,17 @@ import okio.ByteString
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.security.SecureRandom
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
+@Suppress("MagicNumber")
 object UserHelper {
+    private const val SALT_SIZE = 16
+    private const val HASH_SIZE = 32
+    private const val ITERATIONS = 10000
+    private const val ALGORITHM = "PBKDF2WithHmacSHA256"
+
     /**
      * Encode the given username and password to a base 64 [String].
      *
@@ -63,6 +72,7 @@ object UserHelper {
      * @param password The password of the user account.
      * @return An encoded MD5 [String].
      */
+    @Deprecated("Use createPasswordHash instead")
     fun md5(username: String, password: String): String {
         return try {
             val credentials = usernameAndPassword(username, password)
@@ -91,5 +101,81 @@ object UserHelper {
 
     private fun usernameAndPassword(username: String, password: String): String {
         return "$username:$password"
+    }
+
+    /**
+     * Generates a random salt of length [SALT_SIZE].
+     */
+    private fun generateSalt(): ByteArray {
+        val random = SecureRandom()
+        val salt = ByteArray(SALT_SIZE)
+        random.nextBytes(salt)
+        return salt
+    }
+
+    /**
+     * Applies PBKDF2 with [ITERATIONS] iterations to obtain a hash
+     * of length [HASH_SIZE] bytes.
+     */
+    private fun hashPassword(password: String, salt: ByteArray): ByteArray {
+        val spec = PBEKeySpec(password.toCharArray(), salt, ITERATIONS, HASH_SIZE * 8)
+        val factory = SecretKeyFactory.getInstance(ALGORITHM)
+        return factory.generateSecret(spec).encoded
+    }
+
+    /**
+     * Converts a byte array to a hexadecimal String.
+     */
+    private fun toHex(array: ByteArray): String {
+        val sb = StringBuilder(array.size * 2)
+        for (b in array) {
+            val i = b.toInt() and 0xFF
+            val hex = i.toString(16)
+            if (hex.length < 2) sb.append('0')
+            sb.append(hex)
+        }
+        return sb.toString()
+    }
+
+    /**
+     * Converts a hexadecimal String to a byte array.
+     */
+    private fun fromHex(hex: String): ByteArray {
+        val bytes = ByteArray(hex.length / 2)
+        for (i in bytes.indices) {
+            bytes[i] = hex.substring(i * 2, i * 2 + 2).toInt(16).toByte()
+        }
+        return bytes
+    }
+
+    /**
+     * Creates a hash from the password. Returns "salt:hash" in hexadecimal.
+     */
+    fun createPasswordHash(password: String): String {
+        val salt = generateSalt()
+        val hash = hashPassword(password, salt)
+        return "${toHex(salt)}:${toHex(hash)}"
+    }
+
+    /**
+     * Verifies if the given password matches the stored hash.
+     * The expected format of [stored] is "salt:hash" in hexadecimal.
+     */
+    fun verifyPassword(password: String, stored: String): Boolean {
+        val parts = stored.split(":")
+        if (parts.size != 2) return false
+
+        val salt = fromHex(parts[0])
+        val storedHash = fromHex(parts[1])
+        val candidateHash = hashPassword(password, salt)
+
+        // Compare byte by byte to prevent timing attacks
+        if (candidateHash.size != storedHash.size) return false
+        for (i in candidateHash.indices) {
+            if (candidateHash[i] != storedHash[i]) {
+                return false
+            }
+        }
+        return true
     }
 }

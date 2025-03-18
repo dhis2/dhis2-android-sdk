@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.api.internal.CustomPlugin;
+import org.hisp.dhis.android.core.arch.api.NetworkPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +67,7 @@ public abstract class D2Configuration {
     public abstract List<Interceptor> networkInterceptors();
 
     @NonNull
-    public abstract List<CustomPlugin> networkPlugins();
+    public abstract List<NetworkPlugin> networkPlugins();
 
     @NonNull
     public abstract Context context();
@@ -103,7 +103,7 @@ public abstract class D2Configuration {
 
         public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
 
-        public abstract Builder networkPlugins(List<CustomPlugin> networkPlugins);
+        public abstract Builder networkPlugins(List<NetworkPlugin> networkPlugins);
 
         public abstract D2Configuration build();
     }

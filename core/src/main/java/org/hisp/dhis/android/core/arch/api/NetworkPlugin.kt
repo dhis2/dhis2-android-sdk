@@ -26,11 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api
 
 import io.ktor.client.plugins.HttpClientPlugin
 
-class CustomPlugin<TBuilder : Any, TPlugin : Any>(
+class NetworkPlugin<TBuilder : Any, TPlugin : Any>(
     val plugin: HttpClientPlugin<TBuilder, TPlugin>,
     val config: TBuilder.() -> Unit = {},
 )

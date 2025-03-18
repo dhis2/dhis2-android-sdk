@@ -32,5 +32,5 @@ import io.ktor.client.plugins.HttpClientPlugin
 
 class CustomPlugin<TBuilder : Any, TPlugin : Any>(
     val plugin: HttpClientPlugin<TBuilder, TPlugin>,
-    val config: TBuilder.() -> Unit = {}
+    val config: TBuilder.() -> Unit = {},
 )

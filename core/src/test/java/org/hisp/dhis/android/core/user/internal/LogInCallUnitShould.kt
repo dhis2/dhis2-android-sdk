@@ -76,6 +76,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
+    private val hash = UserHelper.createPasswordHash(PASSWORD)
 
     @Before
     @Throws(Exception::class)
@@ -87,7 +88,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(credentials.username).thenReturn(USERNAME)
         whenever(credentials.password).thenReturn(PASSWORD)
         whenever(authenticatedUser.user()).thenReturn(UID)
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PASSWORD))
+        whenever(authenticatedUser.hash()).thenReturn(hash)
         whenever(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint)
         whenever(systemInfoFromDb.contextPath()).thenReturn(baseEndpoint)
         systemInfoCall.stub {
@@ -241,11 +242,12 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private fun verifySuccess() {
-        val authenticatedUserModel = AuthenticatedUser.builder()
-            .user(UID)
-            .hash(UserHelper.md5(USERNAME, PASSWORD))
-            .build()
-        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel)
+        val userArgumentCaptor = argumentCaptor<AuthenticatedUser>()
+        verify(authenticatedUserStore).updateOrInsertWhere(userArgumentCaptor.capture())
+        val capturedUser = userArgumentCaptor.firstValue
+
+        assertThat(capturedUser.user()).isEqualTo(UID)
+        assertThat(UserHelper.verifyPassword(PASSWORD, capturedUser.hash()!!)).isTrue()
         verify(userHandler).handle(eq(apiUser))
     }
 

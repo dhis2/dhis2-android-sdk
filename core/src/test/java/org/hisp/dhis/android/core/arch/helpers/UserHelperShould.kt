@@ -75,4 +75,91 @@ class UserHelperShould {
         val base64 = UserHelper.base64("user", "pässword")
         assertThat(base64).isEqualTo("dXNlcjpww6Rzc3dvcmQ=")
     }
+
+    @Test
+    fun create_password_hash_evaluate_same_string() {
+        val hash1 = UserHelper.createPasswordHash("password1")
+        val hash2 = UserHelper.createPasswordHash("password!?ñ")
+
+        assertThat(hash1.length).isEqualTo(97)
+        assertThat(hash2.length).isEqualTo(97)
+        assertThat(UserHelper.verifyPassword("password1", hash1)).isTrue()
+        assertThat(UserHelper.verifyPassword("password!?ñ", hash2)).isTrue()
+    }
+
+    @Test
+    fun create_password_hash_evaluate_different_string() {
+        val hash = UserHelper.createPasswordHash("password2")
+
+        assertThat(hash.length).isEqualTo(97)
+        assertThat(UserHelper.verifyPassword("password3", hash)).isFalse()
+    }
+
+    @Test
+    fun create_password_hash_evaluate_special_chars() {
+        val hash = UserHelper.createPasswordHash("pässword")
+
+        assertThat(hash.length).isEqualTo(97)
+        assertThat(UserHelper.verifyPassword("password", hash)).isFalse()
+    }
+
+    @Test
+    fun create_password_hash_is_unique_for_same_input() {
+        val hash1 = UserHelper.createPasswordHash("samePassword")
+        val hash2 = UserHelper.createPasswordHash("samePassword")
+        assertThat(hash1).isNotEqualTo(hash2)
+
+        assertThat(UserHelper.verifyPassword("samePassword", hash1)).isTrue()
+        assertThat(UserHelper.verifyPassword("samePassword", hash2)).isTrue()
+    }
+
+    @Test
+    fun create_password_hash_returns_proper_format() {
+        val password = "myPassword"
+        val hash = UserHelper.createPasswordHash(password)
+        val parts = hash.split(":")
+        assertThat(parts.size).isEqualTo(2)
+
+        assertThat(parts[0].length).isEqualTo(32)
+        assertThat(parts[1].length).isEqualTo(64)
+    }
+
+    @Test
+    fun verify_password_returns_false_for_malformed_hash_no_colon() {
+        val result = UserHelper.verifyPassword("password", "abcdef")
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun verify_password_returns_false_for_malformed_hash_too_many_colons() {
+        val result = UserHelper.verifyPassword("password", "abc:def:ghi")
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun verify_password_returns_false_for_empty_stored_hash() {
+        val result = UserHelper.verifyPassword("password", "")
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun verify_password_with_empty_password() {
+        val hash = UserHelper.createPasswordHash("")
+        assertThat(UserHelper.verifyPassword("", hash)).isTrue()
+        assertThat(UserHelper.verifyPassword("notEmpty", hash)).isFalse()
+    }
+
+    @Test(expected = NumberFormatException::class)
+    fun verify_password_throws_exception_for_invalid_hex_salt() {
+        val invalidSalt = "zzzzzzzzzzzzzzzz" // Salt invalid: (not hexadecimal)
+        val validHashPart = "f".repeat(64)
+        UserHelper.verifyPassword("password", "$invalidSalt:$validHashPart")
+    }
+
+    @Test(expected = NumberFormatException::class)
+    fun verify_password_throws_exception_for_invalid_hex_hash() {
+        val validSalt = "f".repeat(32)
+        val invalidHashPart = "z".repeat(64) // Hash invalid: (not hexadecimal)
+        UserHelper.verifyPassword("password", "$validSalt:$invalidHashPart")
+    }
 }

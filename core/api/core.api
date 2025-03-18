@@ -1428,6 +1428,13 @@ public final class org/hisp/dhis/android/core/arch/api/HttpServiceClient {
 public final class org/hisp/dhis/android/core/arch/api/HttpServiceClient$Companion {
 }
 
+public final class org/hisp/dhis/android/core/arch/api/NetworkPlugin {
+	public fun <init> (Lio/ktor/client/plugins/HttpClientPlugin;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lio/ktor/client/plugins/HttpClientPlugin;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getConfig ()Lkotlin/jvm/functions/Function1;
+	public final fun getPlugin ()Lio/ktor/client/plugins/HttpClientPlugin;
+}
+
 public final class org/hisp/dhis/android/core/arch/api/ParametersBuilder {
 	public fun <init> (Ljava/util/List;)V
 	public final fun attribute (Ljava/lang/String;Ljava/lang/Boolean;)V
@@ -1460,13 +1467,6 @@ public final class org/hisp/dhis/android/core/arch/api/RequestBuilder {
 	public final fun parameters (Lkotlin/jvm/functions/Function1;)V
 	public final fun setHeaders (Ljava/util/List;)V
 	public final fun url (Ljava/lang/String;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/api/internal/CustomPlugin {
-	public fun <init> (Lio/ktor/client/plugins/HttpClientPlugin;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lio/ktor/client/plugins/HttpClientPlugin;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getConfig ()Lkotlin/jvm/functions/Function1;
-	public final fun getPlugin ()Lio/ktor/client/plugins/HttpClientPlugin;
 }
 
 public final class org/hisp/dhis/android/core/arch/api/internal/D2HttpException : java/lang/Exception {

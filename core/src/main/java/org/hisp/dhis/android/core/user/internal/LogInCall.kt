@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -152,7 +153,9 @@ internal class LogInCall(
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
-        if (credentials.getHash() != existingUser.hash()) {
+        val storedHash = existingUser.hash() ?: throw exceptions.noStoredHashError()
+        val password = credentials.password ?: throw exceptions.badCredentialsError()
+        if (!UserHelper.verifyPassword(password, storedHash)) {
             throw exceptions.badCredentialsError()
         }
         credentialsSecureStore.set(credentials)

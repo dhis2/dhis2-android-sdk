@@ -95,4 +95,12 @@ internal class LogInExceptions internal constructor(
             .errorComponent(D2ErrorComponent.SDK)
             .build()
     }
+
+    fun noStoredHashError(): D2Error {
+        throw D2Error.builder()
+            .errorCode(D2ErrorCode.BAD_CREDENTIALS)
+            .errorDescription("No stored hash found. Cannot login offline.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
 }

@@ -8,6 +8,9 @@
         android:icon="@android:drawable/sym_def_app_icon"
         android:label="@string/title"
         android:theme="@android:style/Theme.DeviceDefault"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="false"
         android:requestLegacyExternalStorage="true">
         <activity android:name=".TestLabActivity"
             android:exported="true">

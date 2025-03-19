@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.category;
+package org.hisp.dhis.android.core.arch.domain
 
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import android.database.Cursor
+import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.fail
+import org.junit.Test
+import java.lang.reflect.Method
 
-public class CategoryCategoryComboLinkPublicAccessShould extends BasePublicAccessShould<CategoryCategoryComboLink> {
+class DomainClassesShould {
+    @Test
+    fun `have builder, create and toBuilder methods`() {
+        domainClasses.forEach { clazz ->
+            val builderMethod = getMethodOrFail(clazz, "builder")
+            assertThat(builderMethod).isNotNull()
 
-    @Mock
-    private CategoryCategoryComboLink object;
+            val createMethod = getMethodOrFail(clazz, "create", Cursor::class.java)
+            assertThat(createMethod).isNotNull()
 
-    @Override
-    public CategoryCategoryComboLink object() {
-        return object;
+            val toBuilderMethod = getMethodOrFail(clazz, "toBuilder")
+            assertThat(toBuilderMethod).isNotNull()
+        }
     }
 
-    @Override
-    public void has_public_create_method() {
-        CategoryCategoryComboLink.create(null);
-    }
-
-    @Override
-    public void has_public_builder_method() {
-        CategoryCategoryComboLink.builder();
-    }
-
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+    private fun getMethodOrFail(clazz: Class<*>, methodName: String, vararg parameterTypes: Class<*>): Method? {
+        return runCatching {
+            clazz.getMethod(methodName, *parameterTypes)
+        }.getOrElse {
+            fail("Method '$methodName' does not exist in ${clazz.simpleName}")
+            null
+        }
     }
 }

@@ -14786,6 +14786,7 @@ public abstract class org/hisp/dhis/android/core/visualization/CategoryDimension
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
 	public abstract fun category ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun categoryOptions ()Ljava/util/List;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/CategoryDimension;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
 }
 

@@ -25,25 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class ProgramSettingObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_program_setting() {
-        ProgramSettings programSetting = d2.settingModule().programSetting().blockingGet();
+    fun find_program_setting() {
+        val programSetting = d2.settingModule().programSetting().blockingGet()
 
-        assertThat(programSetting.globalSettings()).isNotNull();
-        assertThat(programSetting.specificSettings().size()).isEqualTo(2);
+        assertThat(programSetting!!.globalSettings()).isNotNull()
+        assertThat(programSetting.specificSettings().size).isEqualTo(2)
     }
 }

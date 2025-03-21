@@ -25,29 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.settings.SynchronizationSettings;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class SynchronizationSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class SynchronizationSettingObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_synchronization_settings() {
-        SynchronizationSettings syncSettings = d2.settingModule().synchronizationSettings().blockingGet();
+    fun find_synchronization_settings() {
+        val syncSettings = d2.settingModule().synchronizationSettings().blockingGet()
 
-        assertThat(syncSettings.dataSync()).isNotNull();
-        assertThat(syncSettings.metadataSync()).isNotNull();
-        assertThat(syncSettings.trackerImporterVersion()).isNotNull();
-        assertThat(syncSettings.trackerExporterVersion()).isNotNull();
-        assertThat(syncSettings.dataSetSettings()).isNotNull();
-        assertThat(syncSettings.programSettings()).isNotNull();
+        assertThat(syncSettings!!.dataSync()).isNotNull()
+        assertThat(syncSettings.metadataSync()).isNotNull()
+        assertThat(syncSettings.trackerImporterVersion()).isNotNull()
+        assertThat(syncSettings.trackerExporterVersion()).isNotNull()
+        assertThat(syncSettings.dataSetSettings()).isNotNull()
+        assertThat(syncSettings.programSettings()).isNotNull()
     }
 }

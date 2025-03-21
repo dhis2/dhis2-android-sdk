@@ -25,134 +25,138 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.validation
 
-package org.hisp.dhis.android.testapp.validation;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import org.hisp.dhis.android.core.validation.ValidationRuleImportance
+import org.hisp.dhis.android.core.validation.ValidationRuleOperator
+import org.junit.Test
 
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.core.validation.MissingValueStrategy;
-import org.hisp.dhis.android.core.validation.ValidationRule;
-import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
-import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Collections;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class ValidationRuleRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules().blockingGet();
-        assertThat(validationRule.size()).isEqualTo(2);
+    fun find_all() {
+        val validationRule = d2.validationModule().validationRules().blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_instruction() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byInstruction().eq("PCV 2 cannot be higher than PCV 1 doses given")
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_instruction() {
+        val validationRule = d2.validationModule().validationRules()
+            .byInstruction().eq("PCV 2 cannot be higher than PCV 1 doses given")
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_importance() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byImportance().eq(ValidationRuleImportance.LOW)
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_importance() {
+        val validationRule = d2.validationModule().validationRules()
+            .byImportance().eq(ValidationRuleImportance.LOW)
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_operator() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byOperator().eq(ValidationRuleOperator.less_than)
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_operator() {
+        val validationRule = d2.validationModule().validationRules()
+            .byOperator().eq(ValidationRuleOperator.less_than)
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_period_type() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byPeriodType().eq(PeriodType.Monthly)
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(2);
+    fun filter_by_period_type() {
+        val validationRule = d2.validationModule().validationRules()
+            .byPeriodType().eq(PeriodType.Monthly)
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_skip_form_validation() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .bySkipFormValidation().eq(Boolean.TRUE)
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_skip_form_validation() {
+        val validationRule = d2.validationModule().validationRules()
+            .bySkipFormValidation().eq(java.lang.Boolean.TRUE)
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_left_side_expression() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byLeftSideExpression().eq("#{GCGfEY82Wz6.psbwp3CQEhs}")
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_left_side_expression() {
+        val validationRule = d2.validationModule().validationRules()
+            .byLeftSideExpression().eq("#{GCGfEY82Wz6.psbwp3CQEhs}")
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_left_side_description() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byLeftSideDescription().eq("At Measles, Slept under LLITN last night, >=1 year Fixed")
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_left_side_description() {
+        val validationRule = d2.validationModule().validationRules()
+            .byLeftSideDescription().eq("At Measles, Slept under LLITN last night, >=1 year Fixed")
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_left_side_missing_value_strategy() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byLeftSideMissingValueStrategy().eq(MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING)
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_left_side_missing_value_strategy() {
+        val validationRule = d2.validationModule().validationRules()
+            .byLeftSideMissingValueStrategy().eq(MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING)
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_right_side_expression() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byRightSideExpression().eq("#{YtbsuPPo010.psbwp3CQEhs}")
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_right_side_expression() {
+        val validationRule = d2.validationModule().validationRules()
+            .byRightSideExpression().eq("#{YtbsuPPo010.psbwp3CQEhs}")
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_right_side_description() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byRightSideDescription().eq("Measles, >=1 year Fixed[34.291]")
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_right_side_description() {
+        val validationRule = d2.validationModule().validationRules()
+            .byRightSideDescription().eq("Measles, >=1 year Fixed[34.291]")
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_right_side_missing_value_strategy() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byRightSideMissingValueStrategy().eq(MissingValueStrategy.NEVER_SKIP)
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_right_side_missing_value_strategy() {
+        val validationRule = d2.validationModule().validationRules()
+            .byRightSideMissingValueStrategy().eq(MissingValueStrategy.NEVER_SKIP)
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_organisation_unit_levels() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byOrganisationUnitLevels().like("3")
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(1);
+    fun filter_by_organisation_unit_levels() {
+        val validationRule = d2.validationModule().validationRules()
+            .byOrganisationUnitLevels().like("3")
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_data_set_uids() {
-        List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byDataSetUids(Collections.singletonList("BfMAe6Itzgt"))
-                .blockingGet();
-        assertThat(validationRule.size()).isEqualTo(2);
+    fun filter_by_data_set_uids() {
+        val validationRule = d2.validationModule().validationRules()
+            .byDataSetUids(listOf("BfMAe6Itzgt"))
+            .blockingGet()
+
+        assertThat(validationRule.size).isEqualTo(2)
     }
 }

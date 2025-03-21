@@ -25,25 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class DataSetSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class DataSetSettingObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_dataset_setting() {
-        DataSetSettings dataSetSettings = d2.settingModule().dataSetSetting().blockingGet();
+    fun find_dataset_setting() {
+        val dataSetSettings = d2.settingModule().dataSetSetting().blockingGet()
 
-        assertThat(dataSetSettings.globalSettings()).isNotNull();
-        assertThat(dataSetSettings.specificSettings().size()).isEqualTo(2);
+        assertThat(dataSetSettings!!.globalSettings()).isNotNull()
+        assertThat(dataSetSettings.specificSettings().size).isEqualTo(2)
     }
 }

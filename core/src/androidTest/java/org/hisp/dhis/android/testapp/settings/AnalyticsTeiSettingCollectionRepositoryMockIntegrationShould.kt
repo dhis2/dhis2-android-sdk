@@ -25,81 +25,77 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.settings.ChartType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting;
-import org.hisp.dhis.android.core.settings.ChartType;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class AnalyticsTeiSettingCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class AnalyticsTeiSettingCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_analytics_tei_settings() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis().blockingGet();
+    fun find_analytics_tei_settings() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis().blockingGet()
 
-        assertThat(teiSettings.size()).isEqualTo(3);
+        assertThat(teiSettings.size).isEqualTo(3)
     }
 
     @Test
-    public void filter_by_name() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
-                .byName().eq("Height evolution")
-                .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(1);
+    fun filter_by_name() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis()
+            .byName().eq("Height evolution")
+            .blockingGet()
+        assertThat(teiSettings.size).isEqualTo(1)
 
-        AnalyticsTeiSetting teiSetting = teiSettings.get(0);
-        assertThat(teiSetting.data().dataElements().size()).isEqualTo(2);
-        assertThat(teiSetting.data().indicators().size()).isEqualTo(0);
-        assertThat(teiSetting.data().attributes().size()).isEqualTo(0);
+        val teiSetting = teiSettings[0]
+        assertThat(teiSetting.data()!!.dataElements().size).isEqualTo(2)
+        assertThat(teiSetting.data()!!.indicators().size).isEqualTo(0)
+        assertThat(teiSetting.data()!!.attributes().size).isEqualTo(0)
     }
 
     @Test
-    public void filter_by_short_name() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
-                .byShortName().eq("H. evolution")
-                .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(1);
+    fun filter_by_short_name() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis()
+            .byShortName().eq("H. evolution")
+            .blockingGet()
+
+        assertThat(teiSettings.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_program() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
-                .byProgram().eq("IpHINAT79UW")
-                .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(2);
+    fun filter_by_program() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis()
+            .byProgram().eq("IpHINAT79UW")
+            .blockingGet()
+
+        assertThat(teiSettings.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_program_stage() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
-                .byProgramStage().eq("dBwrot7S420")
-                .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(2);
+    fun filter_by_program_stage() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis()
+            .byProgramStage().eq("dBwrot7S420")
+            .blockingGet()
+
+        assertThat(teiSettings.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_period() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
-                .byPeriod().eq(PeriodType.Monthly)
-                .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(1);
+    fun filter_by_period() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis()
+            .byPeriod().eq(PeriodType.Monthly)
+            .blockingGet()
+
+        assertThat(teiSettings.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_type() {
-        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
-                .byType().eq(ChartType.LINE)
-                .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(1);
+    fun filter_by_type() {
+        val teiSettings = d2.settingModule().analyticsSetting().teis()
+            .byType().eq(ChartType.LINE)
+            .blockingGet()
+
+        assertThat(teiSettings.size).isEqualTo(1)
     }
 }

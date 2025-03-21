@@ -56,7 +56,7 @@ class LocalDataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
 
     @Test
     fun return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.dataStoreModule().localDataStore().value("no_key").blockingExists()).isTrue()
+        assertThat(d2.dataStoreModule().localDataStore().value("no_key").blockingExists()).isFalse()
         assertThat(d2.dataStoreModule().localDataStore().value("key1").blockingExists()).isTrue()
     }
 

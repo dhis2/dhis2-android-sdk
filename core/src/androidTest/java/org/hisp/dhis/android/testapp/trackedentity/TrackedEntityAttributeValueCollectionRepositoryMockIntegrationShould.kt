@@ -33,40 +33,34 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.testapp.trackedentity.TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould.setDataValueState
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.text.ParseException
 
-@RunWith(D2JunitRunner::class)
-class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
-
-    BaseMockIntegrationTestFullDispatcher() {
+class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_all_tracked_entity_data_values() {
-        val trackedEntityAttributeValues =
-            d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet()
+        val trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet()
+
         assertThat(trackedEntityAttributeValues.size).isEqualTo(4)
     }
 
     @Test
     fun filter_by_tracked_entity_attribute() {
-        val trackedEntityAttributeValues =
-            d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byTrackedEntityAttribute().eq("cejWyOfXge6")
-                .blockingGet()
+        val trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
+            .byTrackedEntityAttribute().eq("cejWyOfXge6")
+            .blockingGet()
         assertThat(trackedEntityAttributeValues.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_value() {
-        val trackedEntityAttributeValues =
-            d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byValue().eq("4081507")
-                .blockingGet()
+        val trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
+            .byValue().eq("4081507")
+            .blockingGet()
         assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }
 
@@ -85,19 +79,17 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
     @Throws(ParseException::class)
     fun filter_by_last_updated() {
         val date = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.000")
-        val trackedEntityAttributeValues =
-            d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byLastUpdated().eq(date)
-                .blockingGet()
+        val trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
+            .byLastUpdated().eq(date)
+            .blockingGet()
         assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_tracked_entity_instance() {
-        val trackedEntityAttributeValues =
-            d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byTrackedEntityInstance().eq("nWrB0TfWlvh")
-                .blockingGet()
+        val trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
+            .byTrackedEntityInstance().eq("nWrB0TfWlvh")
+            .blockingGet()
         assertThat(trackedEntityAttributeValues.size).isEqualTo(2)
     }
 
@@ -140,5 +132,10 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
         val store = DhisAndroidSdkKoinContext.koin.get<TrackedEntityInstanceStore>()
         store.setAggregatedSyncState(teiUid, syncState)
         store.setSyncState(teiUid, syncState)
+    }
+
+    private fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
+        val store: TrackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+        store.updateWhere(value.toBuilder().syncState(syncState).build())
     }
 }

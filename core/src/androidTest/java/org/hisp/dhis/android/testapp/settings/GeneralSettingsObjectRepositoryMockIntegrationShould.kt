@@ -31,17 +31,15 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.settings.DataSyncPeriod
 import org.hisp.dhis.android.core.settings.ExperimentalFeature
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class GeneralSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_android_setting() {
         val generalSettings = d2.settingModule().generalSetting().blockingGet()
+
         assertThat(generalSettings!!.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS)
-        assertThat(generalSettings!!.bypassDHIS2VersionCheck()).isTrue()
+        assertThat(generalSettings.bypassDHIS2VersionCheck()).isTrue()
     }
 
     @Test

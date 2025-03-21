@@ -45,8 +45,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
 
     @Test
     fun filter_all() {
-        val mapLayers = d2.mapsModule().mapLayers()
-            .blockingGet()
+        val mapLayers = d2.mapsModule().mapLayers().blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(9)
     }

@@ -42,16 +42,12 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.util.Date
 
-@RunWith(D2JunitRunner::class)
 class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    @Throws(D2Error::class)
     fun update_organisation_unit() {
         val orgUnitUid = "new_org_unit"
         OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build())
@@ -80,7 +76,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_enrollment_date() {
         val enrollmentDate = Date()
 
@@ -93,7 +88,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun not_update_status_when_passing_same_value() {
         val enrollmentUid = "enrollment_uid"
 
@@ -133,7 +127,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_incident_date() {
         val incidentDate = Date()
 
@@ -146,7 +139,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_completed_date() {
         val completedDate = Date()
 
@@ -159,7 +151,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_follow_up() {
         val repository = objectRepository()
 
@@ -170,7 +161,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_enrollment_status_completed() {
         val enrollmentStatus = EnrollmentStatus.COMPLETED
 
@@ -184,7 +174,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_enrollment_status_active() {
         val enrollmentStatus = EnrollmentStatus.ACTIVE
 
@@ -198,7 +187,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_geometry() {
         val geometry = Geometry.builder()
             .type(FeatureType.POINT)
@@ -214,7 +202,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    @Throws(D2Error::class)
     fun update_invalid_geometry() {
         val geometry = Geometry.builder()
             .type(FeatureType.POINT)

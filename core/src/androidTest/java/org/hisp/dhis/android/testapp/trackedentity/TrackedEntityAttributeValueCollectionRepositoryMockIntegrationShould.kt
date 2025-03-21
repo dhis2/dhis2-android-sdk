@@ -132,7 +132,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould :
     fun return_tracked_entity_attribute_value_object_repository() {
         val objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues()
             .value("cejWyOfXge6", "nWrB0TfWlvh")
-        assertThat(objectRepository.blockingExists()).isEqualTo(java.lang.Boolean.TRUE)
+        assertThat(objectRepository.blockingExists()).isTrue()
         assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("4081507")
     }
 

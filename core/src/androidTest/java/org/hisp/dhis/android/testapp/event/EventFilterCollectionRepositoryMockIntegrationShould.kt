@@ -25,175 +25,170 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.event
 
-package org.hisp.dhis.android.testapp.event;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class EventFilterCollectionRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
-
+class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .blockingGet();
+    fun find_all() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_program() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byProgram().eq("lxAQ7Zs9VYR")
-                        .blockingGet();
+    fun filter_by_program() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_program_stage() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byProgramStage().eq("dBwrot7S420")
-                        .blockingGet();
+    fun filter_by_program_stage() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byProgramStage().eq("dBwrot7S420")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_description() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byDescription().eq("Simple Filter for TB events")
-                        .blockingGet();
+    fun filter_by_description() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byDescription().eq("Simple Filter for TB events")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_follow_up() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byFollowUp().eq(Boolean.FALSE)
-                        .blockingGet();
+    fun filter_by_follow_up() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byFollowUp().eq(java.lang.Boolean.FALSE)
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_organisation_unit() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byOrganisationUnit().eq("DiszpKrYNg8")
-                        .blockingGet();
+    fun filter_by_organisation_unit() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byOrganisationUnit().eq("DiszpKrYNg8")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_ou_mode() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byOuMode().eq(OrganisationUnitMode.ACCESSIBLE)
-                        .blockingGet();
+    fun filter_by_ou_mode() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byOuMode().eq(OrganisationUnitMode.ACCESSIBLE)
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_assigned_user_mode() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byAssignedUserMode().eq(AssignedUserMode.CURRENT)
-                        .blockingGet();
+    fun filter_by_assigned_user_mode() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byAssignedUserMode().eq(AssignedUserMode.CURRENT)
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_order() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byOrder().eq("dueDate:asc,createdDate:desc")
-                        .blockingGet();
+    fun filter_by_order() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byOrder().eq("dueDate:asc,createdDate:desc")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_display_column_order() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byDisplayColumnOrder().like("assignedUser")
-                        .blockingGet();
+    fun filter_by_display_column_order() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byDisplayColumnOrder().like("assignedUser")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(2);
+        Truth.assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_events() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byEvents().like("event2Uid")
-                        .blockingGet();
+    fun filter_by_events() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byEvents().like("event2Uid")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_event_status() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byEventStatus().eq(EventStatus.ACTIVE)
-                        .blockingGet();
+    fun filter_by_event_status() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byEventStatus().eq(EventStatus.ACTIVE)
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_event_date() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byEventDate().like("2014-05-01")
-                        .blockingGet();
+    fun filter_by_event_date() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byEventDate().like("2014-05-01")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_due_date() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byDueDate().like("LAST_2_SIXMONTHS")
-                        .blockingGet();
+    fun filter_by_due_date() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byDueDate().like("LAST_2_SIXMONTHS")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_last_updated_date() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byLastUpdatedDate().like("-5")
-                        .blockingGet();
+    fun filter_by_last_updated_date() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byLastUpdatedDate().like("-5")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_completed_date() {
-        List<EventFilter> eventFilters = d2.eventModule().eventFilters()
-                        .byCompletedDate().like("RELATIVE")
-                        .blockingGet();
+    fun filter_by_completed_date() {
+        val eventFilters = d2.eventModule().eventFilters()
+            .byCompletedDate().like("RELATIVE")
+            .blockingGet()
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        Truth.assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
-    public void include_event_data_filters_as_children() {
-        EventFilter eventFilter = d2.eventModule().eventFilters()
-                .withEventDataFilters().one().blockingGet();
+    fun include_event_data_filters_as_children() {
+        val eventFilter = d2.eventModule().eventFilters()
+            .withEventDataFilters().one().blockingGet()
 
-        assertThat(eventFilter.eventQueryCriteria().dataFilters().size()).isEqualTo(4);
-        assertThat(eventFilter.eventQueryCriteria().dataFilters().get(0).dataItem()).isEqualTo("abcDataElementUid");
+        Truth.assertThat(
+            eventFilter!!.eventQueryCriteria()!!
+                .dataFilters()!!.size
+        ).isEqualTo(4)
+        Truth.assertThat(
+            eventFilter.eventQueryCriteria()!!.dataFilters()!![0].dataItem()
+        ).isEqualTo("abcDataElementUid")
     }
 }

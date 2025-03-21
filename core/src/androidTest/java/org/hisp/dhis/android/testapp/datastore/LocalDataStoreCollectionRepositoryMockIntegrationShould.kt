@@ -25,53 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.datastore
 
-package org.hisp.dhis.android.testapp.datastore;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.datastore.KeyValuePair;
-import org.hisp.dhis.android.core.datastore.LocalDataStoreObjectRepository;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class LocalDataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        assertThat(d2.dataStoreModule().localDataStore().blockingGet().size()).isEqualTo(2);
+    fun find_all() {
+        Truth.assertThat(d2.dataStoreModule().localDataStore().blockingGet().size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_key() {
-        KeyValuePair pair = d2.dataStoreModule().localDataStore()
-                .byKey().eq("key1")
-                .one()
-                .blockingGet();
+    fun filter_by_key() {
+        val pair = d2.dataStoreModule().localDataStore()
+            .byKey().eq("key1")
+            .one()
+            .blockingGet()
 
-        assertThat(pair.key()).isEqualTo("key1");
-        assertThat(pair.value()).isEqualTo("value1");
+        Truth.assertThat(pair!!.key()).isEqualTo("key1")
+        Truth.assertThat(pair.value()).isEqualTo("value1")
     }
 
     @Test
-    public void filter_by_value() {
-        KeyValuePair pair = d2.dataStoreModule().localDataStore()
-                .byValue().eq("value2")
-                .one()
-                .blockingGet();
+    fun filter_by_value() {
+        val pair = d2.dataStoreModule().localDataStore()
+            .byValue().eq("value2")
+            .one()
+            .blockingGet()
 
-        assertThat(pair.key()).isEqualTo("key2");
-        assertThat(pair.value()).isEqualTo("value2");
+        Truth.assertThat(pair!!.key()).isEqualTo("key2")
+        Truth.assertThat(pair.value()).isEqualTo("value2")
     }
 
     @Test
-    public void return_object_repository() {
-        LocalDataStoreObjectRepository objectRepository = d2.dataStoreModule().localDataStore()
-                .value("key1");
-        assertThat(objectRepository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(objectRepository.blockingGet().value()).isEqualTo("value1");
+    fun return_object_repository() {
+        val objectRepository = d2.dataStoreModule().localDataStore()
+            .value("key1")
+        Truth.assertThat(objectRepository.blockingExists()).isTrue()
+        Truth.assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("value1")
     }
 }

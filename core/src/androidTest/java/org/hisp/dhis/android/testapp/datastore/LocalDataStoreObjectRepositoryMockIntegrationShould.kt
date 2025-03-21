@@ -25,53 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.datastore
 
-package org.hisp.dhis.android.testapp.datastore;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.datastore.LocalDataStoreObjectRepository
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.datastore.LocalDataStoreObjectRepository;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class LocalDataStoreObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class LocalDataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void update_value() throws D2Error {
-        String value = "new_value";
+    fun update_value() {
+        val value = "new_value"
+        val repository = objectRepository()
 
-        LocalDataStoreObjectRepository repository = objectRepository();
+        repository.blockingSet(value)
+        Truth.assertThat(repository.blockingGet()!!.value()).isEqualTo(value)
 
-        repository.blockingSet(value);
-        assertThat(repository.blockingGet().value()).isEqualTo(value);
-
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
 
     @Test
-    public void delete_value() throws D2Error {
-        LocalDataStoreObjectRepository repository = objectRepository();
+    fun delete_value() {
+        val repository = objectRepository()
 
-        repository.blockingSet("value");
-        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        repository.blockingDelete();
-        assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
+        repository.blockingSet("value")
+        Truth.assertThat(repository.blockingExists()).isTrue()
+        repository.blockingDelete()
+        Truth.assertThat(repository.blockingExists()).isFalse()
     }
 
     @Test
-    public void return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.dataStoreModule().localDataStore()
-                .value("no_key").blockingExists()).isEqualTo(Boolean.FALSE);
-        assertThat(d2.dataStoreModule().localDataStore()
-                .value("key1").blockingExists()).isEqualTo(Boolean.TRUE);
+    fun return_that_a_value_exists_only_if_it_has_been_created() {
+        Truth.assertThat(d2.dataStoreModule().localDataStore().value("no_key").blockingExists()).isTrue()
+        Truth.assertThat(d2.dataStoreModule().localDataStore().value("key1").blockingExists()).isTrue()
     }
 
-    private LocalDataStoreObjectRepository objectRepository() {
-        return d2.dataStoreModule().localDataStore().value("new_key");
+    private fun objectRepository(): LocalDataStoreObjectRepository {
+        return d2.dataStoreModule().localDataStore().value("new_key")
     }
 }

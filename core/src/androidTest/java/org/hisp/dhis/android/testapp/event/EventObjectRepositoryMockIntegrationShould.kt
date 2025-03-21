@@ -25,211 +25,214 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.event
 
-package org.hisp.dhis.android.testapp.event;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.event.EventCreateProjection
+import org.hisp.dhis.android.core.event.EventObjectRepository
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Assert
+import org.junit.Test
+import java.util.Date
 
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.event.EventCreateProjection;
-import org.hisp.dhis.android.core.event.EventObjectRepository;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Date;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-
-@RunWith(D2JunitRunner.class)
-public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void update_organisation_unit() throws D2Error {
-        String orgUnitUid = "new_org_unit";
-        new OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build());
+    fun update_organisation_unit() {
+        val orgUnitUid = "new_org_unit"
+        OrganisationUnitStoreImpl(databaseAdapter).insert(
+            OrganisationUnit.builder().uid(orgUnitUid).build()
+        )
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.blockingGet().organisationUnit()).isEqualTo(orgUnitUid);
+        repository.setOrganisationUnitUid(orgUnitUid)
+        Truth.assertThat(repository.blockingGet()!!.organisationUnit()).isEqualTo(orgUnitUid)
 
-        repository.blockingDelete();
-        new OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid);
+        repository.blockingDelete()
+        OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid)
     }
 
-    @Test(expected = D2Error.class)
-    public void not_update_organisation_unit_if_not_exists() throws D2Error {
-        String orgUnitUid = "new_org_unit";
+    @Test(expected = D2Error::class)
+    @Throws(D2Error::class)
+    fun not_update_organisation_unit_if_not_exists() {
+        val orgUnitUid = "new_org_unit"
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
         try {
-            repository.setOrganisationUnitUid(orgUnitUid);
+            repository.setOrganisationUnitUid(orgUnitUid)
         } finally {
-            repository.blockingDelete();
+            repository.blockingDelete()
         }
     }
 
     @Test
-    public void update_event_date() throws D2Error {
-        Date eventDate = new Date();
+    fun update_event_date() {
+        val eventDate = Date()
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setEventDate(eventDate);
-        assertThat(repository.blockingGet().eventDate()).isEqualTo(eventDate);
+        repository.setEventDate(eventDate)
+        Truth.assertThat(repository.blockingGet()!!.eventDate()).isEqualTo(eventDate)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_event_status_completed() throws D2Error {
-        EventStatus eventStatus = EventStatus.COMPLETED;
+    fun update_event_status_completed() {
+        val eventStatus = EventStatus.COMPLETED
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setStatus(eventStatus);
-        assertThat(repository.blockingGet().status()).isEqualTo(eventStatus);
-        assertThat(repository.blockingGet().completedDate()).isNotNull();
-        assertThat(repository.blockingGet().completedBy()).isNotNull();
+        repository.setStatus(eventStatus)
+        Truth.assertThat(repository.blockingGet()!!.status()).isEqualTo(eventStatus)
+        Truth.assertThat(repository.blockingGet()!!.completedDate()).isNotNull()
+        Truth.assertThat(repository.blockingGet()!!.completedBy()).isNotNull()
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_event_status_active() throws D2Error {
-        EventStatus eventStatus = EventStatus.ACTIVE;
+    fun update_event_status_active() {
+        val eventStatus = EventStatus.ACTIVE
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setStatus(eventStatus);
-        assertThat(repository.blockingGet().status()).isEqualTo(eventStatus);
-        assertThat(repository.blockingGet().completedDate()).isNull();
-        assertThat(repository.blockingGet().completedBy()).isNull();
+        repository.setStatus(eventStatus)
+        Truth.assertThat(repository.blockingGet()!!.status()).isEqualTo(eventStatus)
+        Truth.assertThat(repository.blockingGet()!!.completedDate()).isNull()
+        Truth.assertThat(repository.blockingGet()!!.completedBy()).isNull()
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_completed_date() throws D2Error {
-        Date completedDate = new Date();
+    fun update_completed_date() {
+        val completedDate = Date()
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setCompletedDate(completedDate);
-        assertThat(repository.blockingGet().completedDate()).isEqualTo(completedDate);
+        repository.setCompletedDate(completedDate)
+        Truth.assertThat(repository.blockingGet()!!.completedDate()).isEqualTo(completedDate)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_completed_by() throws D2Error {
-        EventObjectRepository repository = objectRepository();
+    fun update_completed_by() {
+        val repository = objectRepository()
 
-        repository.setCompletedBy("admin");
-        assertThat(repository.blockingGet().completedBy()).isEqualTo("admin");
+        repository.setCompletedBy("admin")
+        Truth.assertThat(repository.blockingGet()!!.completedBy()).isEqualTo("admin")
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_due_date() throws D2Error {
-        Date dueDate = new Date();
+    fun update_due_date() {
+        val dueDate = Date()
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setDueDate(dueDate);
-        assertThat(repository.blockingGet().dueDate()).isEqualTo(dueDate);
+        repository.setDueDate(dueDate)
+        Truth.assertThat(repository.blockingGet()!!.dueDate()).isEqualTo(dueDate)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_geometry() throws D2Error {
-        Geometry geometry = Geometry.builder()
-                .type(FeatureType.POINT)
-                .coordinates("[10.00, 11.00]")
-                .build();
+    fun update_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates("[10.00, 11.00]")
+            .build()
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setGeometry(geometry);
-        assertThat(repository.blockingGet().geometry()).isEqualTo(geometry);
+        repository.setGeometry(geometry)
+        Truth.assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_invalid_geometry() throws D2Error {
-        Geometry geometry = Geometry.builder()
-                .type(FeatureType.POINT)
-                .build();
+    fun update_invalid_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .build()
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
         try {
-            repository.setGeometry(geometry);
-            fail("Invalid geometry should fail");
-        } catch (D2Error d2Error) {
-            assertThat(d2Error.errorCode()).isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE);
+            repository.setGeometry(geometry)
+            Assert.fail("Invalid geometry should fail")
+        } catch (d2Error: D2Error) {
+            Truth.assertThat(d2Error.errorCode())
+                .isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE)
         } finally {
-            repository.blockingDelete();
+            repository.blockingDelete()
         }
     }
 
     @Test
-    public void update_attribute_option_combo() throws D2Error {
-        String attributeOptionCombo = "new_att_opt_comb";
-        new CategoryOptionComboStoreImpl(databaseAdapter)
-                .insert(CategoryOptionCombo.builder().uid(attributeOptionCombo).build());
+    fun update_attribute_option_combo() {
+        val attributeOptionCombo = "new_att_opt_comb"
+        CategoryOptionComboStoreImpl(databaseAdapter)
+            .insert(CategoryOptionCombo.builder().uid(attributeOptionCombo).build())
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setAttributeOptionComboUid(attributeOptionCombo);
-        assertThat(repository.blockingGet().attributeOptionCombo()).isEqualTo(attributeOptionCombo);
+        repository.setAttributeOptionComboUid(attributeOptionCombo)
+        Truth.assertThat(repository.blockingGet()!!.attributeOptionCombo())
+            .isEqualTo(attributeOptionCombo)
 
-        repository.delete();
-        new CategoryOptionComboStoreImpl(databaseAdapter).delete(attributeOptionCombo);
+        repository.delete()
+        CategoryOptionComboStoreImpl(databaseAdapter).delete(attributeOptionCombo)
     }
 
-    @Test(expected = D2Error.class)
-    public void not_update_attribute_option_combo_if_not_exists() throws D2Error {
-        String attributeOptionCombo = "new_att_opt_comb";
+    @Test(expected = D2Error::class)
+    @Throws(D2Error::class)
+    fun not_update_attribute_option_combo_if_not_exists() {
+        val attributeOptionCombo = "new_att_opt_comb"
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
         try {
-            repository.setAttributeOptionComboUid(attributeOptionCombo);
+            repository.setAttributeOptionComboUid(attributeOptionCombo)
         } finally {
-            repository.blockingDelete();
+            repository.blockingDelete()
         }
     }
 
     @Test
-    public void update_assigned_user() throws D2Error {
-        String assignedUser = "aTwqot2S410";
+    fun update_assigned_user() {
+        val assignedUser = "aTwqot2S410"
 
-        EventObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setAssignedUser(assignedUser);
-        assertThat(repository.blockingGet().assignedUser()).isEqualTo(assignedUser);
+        repository.setAssignedUser(assignedUser)
+        Truth.assertThat(repository.blockingGet()!!.assignedUser()).isEqualTo(assignedUser)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
-    private EventObjectRepository objectRepository() throws D2Error {
-        String eventUid = d2.eventModule().events().blockingAdd(
-                EventCreateProjection.create("enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
-                        "DiszpKrYNg8", "bRowv6yZOF2"));
-        return d2.eventModule().events().uid(eventUid);
+    @Throws(D2Error::class)
+    private fun objectRepository(): EventObjectRepository {
+        val eventUid = d2.eventModule().events().blockingAdd(
+            EventCreateProjection.create(
+                "enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
+                "DiszpKrYNg8", "bRowv6yZOF2"
+            )
+        )
+        return d2.eventModule().events().uid(eventUid)
     }
 }

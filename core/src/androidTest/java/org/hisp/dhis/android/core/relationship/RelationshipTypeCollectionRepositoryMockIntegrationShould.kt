@@ -25,82 +25,70 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.relationship;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-@RunWith(D2JunitRunner.class)
-public class RelationshipTypeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<RelationshipType> relationshipTypes =
-                d2.relationshipModule().relationshipTypes()
-                        .blockingGet();
+    fun find_all() {
+        val relationshipTypes = d2.relationshipModule().relationshipTypes()
+                .blockingGet()
 
-        assertThat(relationshipTypes.size()).isEqualTo(4);
+        Truth.assertThat(relationshipTypes.size).isEqualTo(4)
     }
 
     @Test
-    public void filter_by_bidirectional() {
-        List<RelationshipType> relationshipTypes =
-                d2.relationshipModule().relationshipTypes()
-                        .byBidirectional().eq(true)
-                        .blockingGet();
+    fun filter_by_bidirectional() {
+        val relationshipTypes = d2.relationshipModule().relationshipTypes()
+                .byBidirectional().eq(true)
+                .blockingGet()
 
-        assertThat(relationshipTypes.size()).isEqualTo(1);
+        Truth.assertThat(relationshipTypes.size).isEqualTo(1)
     }
 
     @Test
-    public void find_with_constraints() {
-        List<RelationshipType> relationshipTypes =
-                d2.relationshipModule().relationshipTypes()
-                        .byUid().eq("WiH6923nMtb")
-                        .withConstraints()
-                        .blockingGet();
+    fun find_with_constraints() {
+        val relationshipTypes = d2.relationshipModule().relationshipTypes()
+                .byUid().eq("WiH6923nMtb")
+                .withConstraints()
+                .blockingGet()
 
-        assertThat(relationshipTypes.size()).isEqualTo(1);
-        for (RelationshipType type : relationshipTypes) {
-            assertThat(type.fromConstraint()).isNotNull();
-            assertThat(type.toConstraint()).isNotNull();
+        Truth.assertThat(relationshipTypes.size).isEqualTo(1)
+        for (type in relationshipTypes) {
+            Truth.assertThat(type.fromConstraint()).isNotNull()
+            Truth.assertThat(type.toConstraint()).isNotNull()
         }
     }
 
     @Test
-    public void by_tracked_entity_instance() {
-        List<RelationshipType> relationshipTypes =
-                d2.relationshipModule().relationshipTypes()
-                        .byAvailableForTrackedEntityInstance("nWrB0TfWlvh")
-                        .blockingGet();
+    fun by_tracked_entity_instance() {
+        val relationshipTypes = d2.relationshipModule().relationshipTypes()
+                .byAvailableForTrackedEntityInstance("nWrB0TfWlvh")
+                .blockingGet()
 
-        assertThat(relationshipTypes.size()).isEqualTo(2);
+        Truth.assertThat(relationshipTypes.size).isEqualTo(2)
     }
 
     @Test
-    public void by_enrollment() {
-        List<RelationshipType> relationshipTypes =
-                d2.relationshipModule().relationshipTypes()
-                        .byAvailableForEnrollment("enroll1")
-                        .blockingGet();
+    fun by_enrollment() {
+        val relationshipTypes = d2.relationshipModule().relationshipTypes()
+                .byAvailableForEnrollment("enroll1")
+                .blockingGet()
 
-        assertThat(relationshipTypes.size()).isEqualTo(1);
+        Truth.assertThat(relationshipTypes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_event() {
-        List<RelationshipType> relationshipTypes =
-                d2.relationshipModule().relationshipTypes()
-                        .byAvailableForEvent("single1")
-                        .blockingGet();
+    fun by_event() {
+        val relationshipTypes = d2.relationshipModule().relationshipTypes()
+                .byAvailableForEvent("single1")
+                .blockingGet()
 
-        assertThat(relationshipTypes.size()).isEqualTo(1);
+        Truth.assertThat(relationshipTypes.size).isEqualTo(1)
     }
 }

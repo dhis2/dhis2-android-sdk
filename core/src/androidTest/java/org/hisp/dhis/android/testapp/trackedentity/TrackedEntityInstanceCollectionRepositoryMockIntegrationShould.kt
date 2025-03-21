@@ -25,84 +25,75 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.trackedentity
 
-package org.hisp.dhis.android.testapp.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void allow_access_to_all_teis_without_children() {
-        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
-        assertThat(trackedEntityInstances.size()).isEqualTo(2);
+    fun allow_access_to_all_teis_without_children() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances().blockingGet()
+        assertThat(trackedEntityInstances.size).isEqualTo(2)
 
-        TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
-        assertThat(trackedEntityInstance.uid()).isEqualTo("nWrB0TfWlvh");
-        assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null).isTrue();
-
+        val trackedEntityInstance = trackedEntityInstances[0]
+        assertThat(trackedEntityInstance.uid()).isEqualTo("nWrB0TfWlvh")
+        assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues()).isNull()
     }
 
     @Test
-    public void allow_access_to_one_tei_without_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.uid()).isEqualTo("nWrB0TfWlvh");
-        assertThat(tei.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(tei.trackedEntityAttributeValues() == null).isTrue();
+    fun allow_access_to_one_tei_without_children() {
+        val tei = d2.trackedEntityModule().trackedEntityInstances()
+            .uid("nWrB0TfWlvh")
+            .blockingGet()
+
+        assertThat(tei!!.uid()).isEqualTo("nWrB0TfWlvh")
+        assertThat(tei.organisationUnit()).isEqualTo("DiszpKrYNg8")
+        assertThat(tei.trackedEntityAttributeValues()).isNull()
     }
 
     @Test
-    public void include_tracked_entity_attribute_values_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances()
-                .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD").blockingGet();
+    fun include_tracked_entity_attribute_values_as_children() {
+        val tei = d2.trackedEntityModule().trackedEntityInstances()
+            .withTrackedEntityAttributeValues().uid("nWrB0TfWlvD")
+            .blockingGet()
 
-        assertThat(tei.trackedEntityAttributeValues().size()).isEqualTo(2);
-
-
-        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("aejWyOfXge6");
-        assertThat(tei.trackedEntityAttributeValues().get(0).value()).isEqualTo("aefryrfXge5");
+        assertThat(tei!!.trackedEntityAttributeValues()!!.size).isEqualTo(2)
+        assertThat(tei.trackedEntityAttributeValues()!![0].trackedEntityAttribute()).isEqualTo("aejWyOfXge6")
+        assertThat(tei.trackedEntityAttributeValues()!![0].value()).isEqualTo("aefryrfXge5")
     }
 
     @Test
-    public void include_program_owners_as_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances()
-                .withProgramOwners().uid("nWrB0TfWlvD").blockingGet();
+    fun include_program_owners_as_children() {
+        val tei = d2.trackedEntityModule().trackedEntityInstances()
+            .withProgramOwners().uid("nWrB0TfWlvD").blockingGet()
 
-        assertThat(tei.programOwners().size()).isEqualTo(1);
-
-
-        assertThat(tei.programOwners().get(0).program()).isEqualTo("IpHINAT79UW");
-        assertThat(tei.programOwners().get(0).trackedEntityInstance()).isEqualTo("nWrB0TfWlvD");
-        assertThat(tei.programOwners().get(0).ownerOrgUnit()).isEqualTo("DiszpKrYNg8");
+        assertThat(tei!!.programOwners()!!.size).isEqualTo(1)
+        assertThat(tei.programOwners()!![0].program()).isEqualTo("IpHINAT79UW")
+        assertThat(tei.programOwners()!![0].trackedEntityInstance()).isEqualTo("nWrB0TfWlvD")
+        assertThat(tei.programOwners()!![0].ownerOrgUnit()).isEqualTo("DiszpKrYNg8")
     }
 
     @Test
-    public void add_tracked_entity_instances_to_the_repository() throws D2Error {
-        List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
-        assertThat(trackedEntityInstances1.size()).isEqualTo(2);
+    @Throws(D2Error::class)
+    fun add_tracked_entity_instances_to_the_repository() {
+        val trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances().blockingGet()
+        assertThat(trackedEntityInstances1.size).isEqualTo(2)
 
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
-                TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
+        val teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
+            TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp")
+        )
 
-        List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
-        assertThat(trackedEntityInstances2.size()).isEqualTo(3);
+        val trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances().blockingGet()
+        assertThat(trackedEntityInstances2.size).isEqualTo(3)
 
-        TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingGet();
-        assertThat(trackedEntityInstance.uid()).isEqualTo(teiUid);
+        val trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingGet()
+        assertThat(trackedEntityInstance!!.uid()).isEqualTo(teiUid)
 
-        d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingDelete();
+        d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingDelete()
     }
 }

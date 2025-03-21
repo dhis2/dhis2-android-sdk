@@ -25,216 +25,189 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.trackedentity
 
-package org.hisp.dhis.android.testapp.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .blockingGet();
+    fun find_all() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes().blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(2);
+        assertThat(trackedEntityAttributes.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_pattern() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byPattern().eq("RANDOM(XXX######)")
-                        .blockingGet();
+    fun filter_by_pattern() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byPattern().eq("RANDOM(XXX######)")
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_sort_order_in_list_no_programs() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .bySortOrderInListNoProgram().eq(0)
-                        .blockingGet();
+    fun filter_by_sort_order_in_list_no_programs() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .bySortOrderInListNoProgram().eq(0)
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_option_set() {
-        List<TrackedEntityAttribute> dataElements =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byOptionSetUid().eq("VQ2lai3OfVG")
-                        .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(1);
+    fun filter_by_option_set() {
+        val dataElements = d2.trackedEntityModule().trackedEntityAttributes()
+            .byOptionSetUid().eq("VQ2lai3OfVG")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void by_value_type() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byValueType().eq(ValueType.NUMBER)
-                        .blockingGet();
+    fun by_value_type() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byValueType().eq(ValueType.NUMBER)
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_expression() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byExpression().eq("expression")
-                        .blockingGet();
+    fun by_expression() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byExpression().eq("expression")
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_program_scope() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byProgramScope().isTrue()
-                        .blockingGet();
+    fun by_program_scope() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byProgramScope().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_display_in_list_no_program() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byDisplayInListNoProgram().isTrue()
-                        .blockingGet();
+    fun by_display_in_list_no_program() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byDisplayInListNoProgram().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_generated() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byGenerated().isTrue()
-                        .blockingGet();
+    fun by_generated() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byGenerated().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_display_on_visit_schedule() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byDisplayOnVisitSchedule().isTrue()
-                        .blockingGet();
+    fun by_display_on_visit_schedule() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byDisplayOnVisitSchedule().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_confidential() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byConfidential().isTrue()
-                        .blockingGet();
+    fun by_confidential() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byConfidential().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_orgunit_scope() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byOrgUnitScope().isTrue()
-                        .blockingGet();
+    fun by_orgunit_scope() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byOrgUnitScope().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_unique() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byUnique().isTrue()
-                        .blockingGet();
+    fun by_unique() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byUnique().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_inherit() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byInherit().isTrue()
-                        .blockingGet();
+    fun by_inherit() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byInherit().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(2);
+        assertThat(trackedEntityAttributes.size).isEqualTo(2)
     }
 
     @Test
-    public void by_field_mask() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byFieldMask().eq("XXXXX")
-                        .blockingGet();
+    fun by_field_mask() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byFieldMask().eq("XXXXX")
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_form_name() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byFormName().eq("formname")
-                        .blockingGet();
+    fun by_form_name() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byFormName().eq("formname")
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void by_display_form_name() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byDisplayFormName().eq("displayformname")
-                        .blockingGet();
+    fun by_display_form_name() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byDisplayFormName().eq("displayformname")
+            .blockingGet()
 
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void withLegendSets() {
-        TrackedEntityAttribute trackedEntityAttribute =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .withLegendSets()
-                        .one()
-                        .blockingGet();
-        assertThat(trackedEntityAttribute.legendSets().size()).isEqualTo(2);
+    fun withLegendSets() {
+        val trackedEntityAttribute = d2.trackedEntityModule().trackedEntityAttributes()
+            .withLegendSets()
+            .one().blockingGet()
+
+        assertThat(trackedEntityAttribute!!.legendSets()!!.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_field_color() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byColor().eq("#556")
-                        .blockingGet();
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+    fun filter_by_field_color() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byColor().eq("#556")
+            .blockingGet()
+
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_field_icon() {
-        List<TrackedEntityAttribute> trackedEntityAttributes =
-                d2.trackedEntityModule().trackedEntityAttributes()
-                        .byIcon().eq("attribute-icon")
-                        .blockingGet();
-        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
+    fun filter_by_field_icon() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byIcon().eq("attribute-icon")
+            .blockingGet()
+
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
 }

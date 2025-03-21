@@ -25,91 +25,89 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.trackedentity
 
-package org.hisp.dhis.android.testapp.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Assert
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class TrackedEntityInstanceObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void update_organisation_unit() throws D2Error {
-        String orgUnitUid = "new_org_unit";
-        new OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build());
+    fun update_organisation_unit() {
+        val orgUnitUid = "new_org_unit"
+        OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build())
 
-        TrackedEntityInstanceObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.blockingGet().organisationUnit()).isEqualTo(orgUnitUid);
+        repository.setOrganisationUnitUid(orgUnitUid)
+        assertThat(repository.blockingGet()!!.organisationUnit()).isEqualTo(orgUnitUid)
 
-        repository.blockingDelete();
-        new OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid);
+        repository.blockingDelete()
+        OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid)
     }
 
-    @Test(expected = D2Error.class)
-    public void not_update_organisation_unit_if_not_exists() throws D2Error {
-        String orgUnitUid = "new_org_unit";
+    @Test(expected = D2Error::class)
+    @Throws(D2Error::class)
+    fun not_update_organisation_unit_if_not_exists() {
+        val orgUnitUid = "new_org_unit"
 
-        TrackedEntityInstanceObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
         try {
-            repository.setOrganisationUnitUid(orgUnitUid);
+            repository.setOrganisationUnitUid(orgUnitUid)
         } finally {
-            repository.blockingDelete();
+            repository.blockingDelete()
         }
     }
 
     @Test
-    public void update_geometry() throws D2Error {
-        Geometry geometry = Geometry.builder()
-                .type(FeatureType.POINT)
-                .coordinates("[11, 10]")
-                .build();
+    fun update_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates("[11, 10]")
+            .build()
 
-        TrackedEntityInstanceObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
-        repository.setGeometry(geometry);
-        assertThat(repository.blockingGet().geometry()).isEqualTo(geometry);
+        repository.setGeometry(geometry)
+        assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
     }
 
     @Test
-    public void update_invalid_geometry() throws D2Error {
-        Geometry geometry = Geometry.builder()
-                .type(FeatureType.POINT)
-                .build();
+    fun update_invalid_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .build()
 
-        TrackedEntityInstanceObjectRepository repository = objectRepository();
+        val repository = objectRepository()
 
         try {
-            repository.setGeometry(geometry);
-            fail("Invalid geometry should fail");
-        } catch (D2Error d2Error) {
-            assertThat(d2Error.errorCode()).isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE);
+            repository.setGeometry(geometry)
+            Assert.fail("Invalid geometry should fail")
+        } catch (d2Error: D2Error) {
+            assertThat(d2Error.errorCode())
+                .isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE)
         } finally {
-            repository.blockingDelete();
+            repository.blockingDelete()
         }
     }
 
-    private TrackedEntityInstanceObjectRepository objectRepository() throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
-                TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
-        return d2.trackedEntityModule().trackedEntityInstances().uid(teiUid);
+    @Throws(D2Error::class)
+    private fun objectRepository(): TrackedEntityInstanceObjectRepository {
+        val teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
+            TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp")
+        )
+        return d2.trackedEntityModule().trackedEntityInstances().uid(teiUid)
     }
 }

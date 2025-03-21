@@ -25,89 +25,71 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.trackedentity
 
-package org.hisp.dhis.android.testapp.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
-
+class TrackedEntityTypeAttributeCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .blockingGet();
+    fun find_all() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes().blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_tracked_entity_type_uid() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
-                        .blockingGet();
+    fun filter_by_tracked_entity_type_uid() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes()
+            .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
+            .blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_tracked_entity_attribute_uid() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .byTrackedEntityAttributeUid().eq("cejWyOfXge6")
-                        .blockingGet();
+    fun filter_by_tracked_entity_attribute_uid() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes()
+            .byTrackedEntityAttributeUid().eq("cejWyOfXge6")
+            .blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_display_in_list() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .byDisplayInList().isTrue()
-                        .blockingGet();
+    fun filter_by_display_in_list() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes()
+            .byDisplayInList().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_mandatory() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .byMandatory().isFalse()
-                        .blockingGet();
+    fun filter_by_mandatory() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes()
+            .byMandatory().isFalse
+            .blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_searchable() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .bySearchable().isTrue()
-                        .blockingGet();
+    fun filter_by_searchable() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes()
+            .bySearchable().isTrue
+            .blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_sort_order() {
-        List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes =
-                d2.trackedEntityModule().trackedEntityTypeAttributes()
-                        .bySortOrder().smallerThan(2)
-                        .blockingGet();
+    fun filter_by_sort_order() {
+        val trackedEntityTypeAttributes = d2.trackedEntityModule().trackedEntityTypeAttributes()
+            .bySortOrder().smallerThan(2)
+            .blockingGet()
 
-        assertThat(trackedEntityTypeAttributes.size()).isEqualTo(1);
+        assertThat(trackedEntityTypeAttributes.size).isEqualTo(1)
     }
 }

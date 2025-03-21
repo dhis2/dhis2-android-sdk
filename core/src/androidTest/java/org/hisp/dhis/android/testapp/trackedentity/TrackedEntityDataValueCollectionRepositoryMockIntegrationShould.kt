@@ -25,121 +25,114 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.trackedentity
 
-package org.hisp.dhis.android.testapp.trackedentity;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Ignore
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void allow_access_to_all_tracked_entity_data_values() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues().blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(13);
+    fun allow_access_to_all_tracked_entity_data_values() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues().blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(13)
     }
 
     @Test
-    public void filter_by_event() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byEvent().eq("single1")
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(6);
+    fun filter_by_event() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byEvent().eq("single1")
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(6)
     }
 
     @Test
-    public void filter_by_created() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2015-02-28T12:05:00.333");
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byCreated().eq(date)
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
+    fun filter_by_created() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byCreated().eq("2015-02-28T12:05:00.333".toJavaDate())
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_last_updated() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse("2015-02-28T12:05:00.222");
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byLastUpdated().eq(date)
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
+    fun filter_by_last_updated() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byLastUpdated().eq("2015-02-28T12:05:00.222".toJavaDate())
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_data_element() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byDataElement().eq("bx6fsa0t90x")
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
+    fun filter_by_data_element() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byDataElement().eq("bx6fsa0t90x")
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(2)
     }
 
     @Ignore("Pending to fix mapping ANDROSDK-1643")
     @Test
-    public void filter_by_stored_by() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byStoredBy().eq("storer")
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
+    fun filter_by_stored_by() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byStoredBy().eq("storer")
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_value() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byValue().eq("11")
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
+    fun filter_by_value() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byValue().eq("11")
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_provided_elsewhere() {
-        List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byProvidedElsewhere().eq(true)
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
+    fun filter_by_provided_elsewhere() {
+        val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byProvidedElsewhere().eq(true)
+            .blockingGet()
+
+        assertThat(trackedEntityDataValues.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_deleted() throws D2Error {
-        TrackedEntityDataValueObjectRepository repository = d2.trackedEntityModule().trackedEntityDataValues()
-                .value("single1", "g9eOBujte1U");
+    fun filter_by_deleted() {
+        val repository = d2.trackedEntityModule().trackedEntityDataValues()
+            .value("single1", "g9eOBujte1U")
 
-        TrackedEntityDataValue value = repository.blockingGet();
+        val value = repository.blockingGet()
 
-        List<TrackedEntityDataValue> trackedEntityDataValues =
-                d2.trackedEntityModule().trackedEntityDataValues()
-                        .byDeleted().isTrue()
-                        .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(0);
+        var trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+            .byDeleted().isTrue
+            .blockingGet()
+        assertThat(trackedEntityDataValues.size).isEqualTo(0)
 
-        repository.blockingDelete();
+        repository.blockingDelete()
 
         trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byDeleted().isTrue()
-                .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
+            .byDeleted().isTrue
+            .blockingGet()
+        assertThat(trackedEntityDataValues.size).isEqualTo(1)
 
-        repository.blockingSet(value.value());
+        repository.blockingSet(value!!.value())
     }
 
     @Test
-    public void return_tracked_entity_data_value_object_repository() {
-        TrackedEntityDataValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityDataValues()
-                .value("single1", "g9eOBujte1U");
-        assertThat(objectRepository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(objectRepository.blockingGet().value()).isEqualTo("1");
+    fun return_tracked_entity_data_value_object_repository() {
+        val objectRepository = d2.trackedEntityModule().trackedEntityDataValues()
+            .value("single1", "g9eOBujte1U")
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+        assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("1")
     }
 }

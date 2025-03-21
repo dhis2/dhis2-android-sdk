@@ -25,95 +25,78 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.program
 
-package org.hisp.dhis.android.testapp.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.program.ProgramRuleVariable;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class ProgramRuleVariableCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .blockingGet();
+    fun find_all() {
+        val ruleVariables = d2.programModule().programRuleVariables().blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(2);
+        assertThat(ruleVariables.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_use_code_for_option_set() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .byUseCodeForOptionSet()
-                        .isFalse()
-                        .blockingGet();
+    fun filter_by_use_code_for_option_set() {
+        val ruleVariables = d2.programModule().programRuleVariables()
+            .byUseCodeForOptionSet()
+            .isFalse
+            .blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(1);
+        assertThat(ruleVariables.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_program() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .byProgramUid()
-                        .eq("lxAQ7Zs9VYR")
-                        .blockingGet();
+    fun filter_by_program() {
+        val ruleVariables = d2.programModule().programRuleVariables()
+            .byProgramUid()
+            .eq("lxAQ7Zs9VYR")
+            .blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(2);
+        assertThat(ruleVariables.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_program_stage() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .byProgramStageUid()
-                        .eq("dBwrot7S420")
-                        .blockingGet();
+    fun filter_by_program_stage() {
+        val ruleVariables = d2.programModule().programRuleVariables()
+            .byProgramStageUid()
+            .eq("dBwrot7S420")
+            .blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(1);
+        assertThat(ruleVariables.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_data_element() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .byDataElementUid()
-                        .eq("sWoqcoByYmD")
-                        .blockingGet();
+    fun filter_by_data_element() {
+        val ruleVariables = d2.programModule().programRuleVariables()
+            .byDataElementUid()
+            .eq("sWoqcoByYmD")
+            .blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(1);
+        assertThat(ruleVariables.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_tracked_entity_attribute() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .byTrackedEntityAttributeUid()
-                        .eq("cejWyOfXge6")
-                        .blockingGet();
+    fun filter_by_tracked_entity_attribute() {
+        val ruleVariables = d2.programModule().programRuleVariables()
+            .byTrackedEntityAttributeUid()
+            .eq("cejWyOfXge6")
+            .blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(1);
+        assertThat(ruleVariables.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_program_rule_variable_source_type() {
-        List<ProgramRuleVariable> ruleVariables =
-                d2.programModule().programRuleVariables()
-                        .byProgramRuleVariableSourceType()
-                        .eq(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
-                        .blockingGet();
+    fun filter_by_program_rule_variable_source_type() {
+        val ruleVariables = d2.programModule().programRuleVariables()
+            .byProgramRuleVariableSourceType()
+            .eq(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
+            .blockingGet()
 
-        assertThat(ruleVariables.size()).isEqualTo(2);
+        assertThat(ruleVariables.size).isEqualTo(2)
     }
 }

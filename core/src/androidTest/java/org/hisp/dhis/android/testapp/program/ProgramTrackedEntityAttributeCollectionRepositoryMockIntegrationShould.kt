@@ -25,135 +25,115 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.program
 
-package org.hisp.dhis.android.testapp.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationShould 
-        extends BaseMockIntegrationTestFullDispatcher {
-
+class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationShould
+    : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .blockingGet();
+    fun find_all() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes().blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(2);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_mandatory() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .byMandatory()
-                        .isFalse()
-                        .blockingGet();
+    fun filter_by_mandatory() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .byMandatory()
+            .isFalse
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_tracked_entity_attribute() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .byTrackedEntityAttribute()
-                        .eq("cejWyOfXge6")
-                        .blockingGet();
+    fun filter_by_tracked_entity_attribute() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .byTrackedEntityAttribute()
+            .eq("cejWyOfXge6")
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_allow_future_date() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .byAllowFutureDate()
-                        .isTrue()
-                        .blockingGet();
+    fun filter_by_allow_future_date() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .byAllowFutureDate()
+            .isTrue
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_display_in_list() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .byDisplayInList()
-                        .isTrue()
-                        .blockingGet();
+    fun filter_by_display_in_list() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .byDisplayInList()
+            .isTrue
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_program() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .byProgram()
-                        .eq("IpHINAT79UW")
-                        .blockingGet();
+    fun filter_by_program() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .byProgram()
+            .eq("IpHINAT79UW")
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(2);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_sort_order() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .bySortOrder()
-                        .biggerThan(1)
-                        .blockingGet();
+    fun filter_by_sort_order() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .bySortOrder()
+            .biggerThan(1)
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_searchable() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .bySearchable()
-                        .isTrue()
-                        .blockingGet();
+    fun filter_by_searchable() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .bySearchable()
+            .isTrue
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes.size).isEqualTo(1)
     }
 
     @Test
-    public void include_render_type_as_children() {
-        ProgramTrackedEntityAttribute programTrackedEntityAttribute =
-                d2.programModule().programTrackedEntityAttributes()
-                        .byUid().eq("YhqgQ6Iy4c4")
-                        .withRenderType()
-                        .one().blockingGet();
+    fun include_render_type_as_children() {
+        val programTrackedEntityAttribute = d2.programModule().programTrackedEntityAttributes()
+            .byUid().eq("YhqgQ6Iy4c4")
+            .withRenderType()
+            .one().blockingGet()
 
-        assertThat(programTrackedEntityAttribute.renderType().mobile().type())
-                .isEqualTo(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS);
-        assertThat(programTrackedEntityAttribute.renderType().desktop().type())
-                .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
+        assertThat(programTrackedEntityAttribute!!.renderType()!!.mobile()!!.type())
+            .isEqualTo(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS)
+        assertThat(programTrackedEntityAttribute.renderType()!!.desktop()!!.type())
+            .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS)
     }
 
     @Test
-    public void order_by_sort_order() {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                d2.programModule().programTrackedEntityAttributes()
-                        .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
-                .blockingGet();
+    fun order_by_sort_order() {
+        val programTrackedEntityAttributes = d2.programModule().programTrackedEntityAttributes()
+            .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
+            .blockingGet()
 
-        assertThat(programTrackedEntityAttributes.get(0).uid()).isEqualTo("QhqgQ6Iy4c4");
-        assertThat(programTrackedEntityAttributes.get(0).sortOrder()).isEqualTo(2);
-        assertThat(programTrackedEntityAttributes.get(1).uid()).isEqualTo("YhqgQ6Iy4c4");
-        assertThat(programTrackedEntityAttributes.get(1).sortOrder()).isEqualTo(1);
+        assertThat(programTrackedEntityAttributes[0].uid()).isEqualTo("QhqgQ6Iy4c4")
+        assertThat(programTrackedEntityAttributes[0].sortOrder()).isEqualTo(2)
+        assertThat(programTrackedEntityAttributes[1].uid()).isEqualTo("YhqgQ6Iy4c4")
+        assertThat(programTrackedEntityAttributes[1].sortOrder()).isEqualTo(1)
     }
 }

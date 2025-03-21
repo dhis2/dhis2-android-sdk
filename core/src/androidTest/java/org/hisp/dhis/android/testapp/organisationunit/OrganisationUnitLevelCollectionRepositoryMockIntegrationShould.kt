@@ -25,32 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.organisationunit
 
-package org.hisp.dhis.android.testapp.organisationunit;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels().blockingGet();
-        assertThat(organisationUnitLevels.size()).isEqualTo(4);
+    fun find_all() {
+        val organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels().blockingGet()
+        assertThat(organisationUnitLevels.size).isEqualTo(4)
     }
 
     @Test
-    public void filter_by_short_name() {
-        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels()
-                .byLevel().eq(4).blockingGet();
-        assertThat(organisationUnitLevels.size()).isEqualTo(1);
+    fun filter_by_short_name() {
+        val organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels()
+            .byLevel().eq(4)
+            .blockingGet()
+        assertThat(organisationUnitLevels.size).isEqualTo(1)
     }
 }

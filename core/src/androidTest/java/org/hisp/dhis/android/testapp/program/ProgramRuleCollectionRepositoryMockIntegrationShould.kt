@@ -25,80 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.program
 
-package org.hisp.dhis.android.testapp.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class ProgramRuleCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<ProgramRule> rules =
-                d2.programModule().programRules()
-                        .blockingGet();
-        
-        assertThat(rules.size()).isEqualTo(3);
+    fun find_all() {
+        val rules = d2.programModule().programRules().blockingGet()
+
+        assertThat(rules.size).isEqualTo(3)
     }
 
     @Test
-    public void filter_by_priority() {
-        List<ProgramRule> rules =
-                d2.programModule().programRules()
-                        .byPriority()
-                        .eq(2)
-                        .blockingGet();
+    fun filter_by_priority() {
+        val rules = d2.programModule().programRules()
+            .byPriority()
+            .eq(2)
+            .blockingGet()
 
-        assertThat(rules.size()).isEqualTo(2);
+        assertThat(rules.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_condition() {
-        List<ProgramRule> rules =
-                d2.programModule().programRules()
-                        .byCondition()
-                        .eq("#{hemoglobin} < 9")
-                        .blockingGet();
+    fun filter_by_condition() {
+        val rules = d2.programModule().programRules()
+            .byCondition()
+            .eq("#{hemoglobin} < 9")
+            .blockingGet()
 
-        assertThat(rules.size()).isEqualTo(1);
+        assertThat(rules.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_program() {
-        List<ProgramRule> rules =
-                d2.programModule().programRules()
-                        .byProgramUid()
-                        .eq("lxAQ7Zs9VYR")
-                        .blockingGet();
+    fun filter_by_program() {
+        val rules = d2.programModule().programRules()
+            .byProgramUid()
+            .eq("lxAQ7Zs9VYR")
+            .blockingGet()
 
-        assertThat(rules.size()).isEqualTo(3);
+        assertThat(rules.size).isEqualTo(3)
     }
 
     @Test
-    public void filter_by_program_stage() {
-        List<ProgramRule> rules =
-                d2.programModule().programRules()
-                        .byProgramStageUid()
-                        .eq("dBwrot7S420")
-                        .blockingGet();
+    fun filter_by_program_stage() {
+        val rules = d2.programModule().programRules()
+            .byProgramStageUid()
+            .eq("dBwrot7S420")
+            .blockingGet()
 
-        assertThat(rules.size()).isEqualTo(1);
+        assertThat(rules.size).isEqualTo(1)
     }
 
     @Test
-    public void include_program_rule_actions_as_children() {
-        ProgramRule programRule = d2.programModule().programRules()
-                .withProgramRuleActions().one().blockingGet();
-        assertThat(programRule.programRuleActions().size()).isEqualTo(1);
-        assertThat(programRule.programRuleActions().get(0).content()).isEqualTo("The hemoglobin value cannot be above 99");
+    fun include_program_rule_actions_as_children() {
+        val programRule = d2.programModule().programRules()
+            .withProgramRuleActions().one().blockingGet()
+        assertThat(programRule!!.programRuleActions()!!.size).isEqualTo(1)
+        assertThat(programRule.programRuleActions()!![0].content())
+            .isEqualTo("The hemoglobin value cannot be above 99")
     }
 }

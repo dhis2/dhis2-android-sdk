@@ -25,139 +25,117 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.program
 
-package org.hisp.dhis.android.testapp.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould 
-        extends BaseMockIntegrationTestFullDispatcher {
-
+class ProgramStageDataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .blockingGet();
+    fun find_all() {
+        val programStageDataElements = d2.programModule().programStageDataElements().blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(6);
+        assertThat(programStageDataElements.size).isEqualTo(6)
     }
 
     @Test
-    public void filter_by_display_in_reports() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byDisplayInReports()
-                        .isFalse()
-                        .blockingGet();
+    fun filter_by_display_in_reports() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byDisplayInReports()
+            .isFalse
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(5);
+        assertThat(programStageDataElements.size).isEqualTo(5)
     }
 
     @Test
-    public void filter_by_compulsory() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byCompulsory()
-                        .isTrue()
-                        .blockingGet();
+    fun filter_by_compulsory() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byCompulsory()
+            .isTrue
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(2);
+        assertThat(programStageDataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_allow_provided_elsewhere() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byAllowProvidedElsewhere()
-                        .isTrue()
-                        .blockingGet();
+    fun filter_by_allow_provided_elsewhere() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byAllowProvidedElsewhere()
+            .isTrue
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(1);
+        assertThat(programStageDataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_sort_order() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .bySortOrder()
-                        .biggerThan(1)
-                        .blockingGet();
+    fun filter_by_sort_order() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .bySortOrder()
+            .biggerThan(1)
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(2);
+        assertThat(programStageDataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_allow_future_date() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byAllowFutureDate()
-                        .isTrue()
-                        .blockingGet();
+    fun filter_by_allow_future_date() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byAllowFutureDate()
+            .isTrue
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(1);
+        assertThat(programStageDataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_data_element() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byDataElement()
-                        .eq("Ok9OQpitjQr")
-                        .blockingGet();
+    fun filter_by_data_element() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byDataElement()
+            .eq("Ok9OQpitjQr")
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(2);
+        assertThat(programStageDataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_program_stage() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byProgramStage()
-                        .eq("dBwrot7S420")
-                        .blockingGet();
+    fun filter_by_program_stage() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byProgramStage()
+            .eq("dBwrot7S420")
+            .blockingGet()
 
-        assertThat(programStageDataElements.size()).isEqualTo(3);
+        assertThat(programStageDataElements.size).isEqualTo(3)
     }
 
     @Test
-    public void include_render_type_as_children() {
-        ProgramStageDataElement programStageDataElement =
-                d2.programModule().programStageDataElements()
-                        .byUid().eq("QgGD234oA8C")
-                        .withRenderType()
-                        .one().blockingGet();
+    fun include_render_type_as_children() {
+        val programStageDataElement = d2.programModule().programStageDataElements()
+            .byUid().eq("QgGD234oA8C")
+            .withRenderType()
+            .one().blockingGet()
 
-        assertThat(programStageDataElement.renderType().mobile().type())
-                .isEqualTo(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS);
-        assertThat(programStageDataElement.renderType().desktop().type())
-                .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
+        assertThat(programStageDataElement!!.renderType()!!.mobile()!!.type())
+            .isEqualTo(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS)
+        assertThat(programStageDataElement.renderType()!!.desktop()!!.type())
+            .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS)
     }
 
     @Test
-    public void order_by_sort_order() {
-        List<ProgramStageDataElement> programStageDataElements =
-                d2.programModule().programStageDataElements()
-                        .byProgramStage().eq("dBwrot7S420")
-                        .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
-                .blockingGet();
+    fun order_by_sort_order() {
+        val programStageDataElements = d2.programModule().programStageDataElements()
+            .byProgramStage().eq("dBwrot7S420")
+            .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
+            .blockingGet()
 
-        assertThat(programStageDataElements.get(0).uid()).isEqualTo("QgGD234oA8i");
-        assertThat(programStageDataElements.get(0).sortOrder()).isEqualTo(2);
-        assertThat(programStageDataElements.get(1).uid()).isEqualTo("ZD8pd21Dt4i");
-        assertThat(programStageDataElements.get(1).sortOrder()).isEqualTo(1);
-        assertThat(programStageDataElements.get(2).uid()).isEqualTo("eM6beRIqUnM");
-        assertThat(programStageDataElements.get(2).sortOrder()).isEqualTo(0);
+        assertThat(programStageDataElements[0].uid()).isEqualTo("QgGD234oA8i")
+        assertThat(programStageDataElements[0].sortOrder()).isEqualTo(2)
+        assertThat(programStageDataElements[1].uid()).isEqualTo("ZD8pd21Dt4i")
+        assertThat(programStageDataElements[1].sortOrder()).isEqualTo(1)
+        assertThat(programStageDataElements[2].uid()).isEqualTo("eM6beRIqUnM")
+        assertThat(programStageDataElements[2].sortOrder()).isEqualTo(0)
     }
-
 }

@@ -29,15 +29,13 @@ package org.hisp.dhis.android.core.relationship
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
         val relationshipTypes = d2.relationshipModule().relationshipTypes()
-                .blockingGet()
+            .blockingGet()
 
         Truth.assertThat(relationshipTypes.size).isEqualTo(4)
     }
@@ -45,8 +43,8 @@ class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun filter_by_bidirectional() {
         val relationshipTypes = d2.relationshipModule().relationshipTypes()
-                .byBidirectional().eq(true)
-                .blockingGet()
+            .byBidirectional().eq(true)
+            .blockingGet()
 
         Truth.assertThat(relationshipTypes.size).isEqualTo(1)
     }
@@ -54,9 +52,9 @@ class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun find_with_constraints() {
         val relationshipTypes = d2.relationshipModule().relationshipTypes()
-                .byUid().eq("WiH6923nMtb")
-                .withConstraints()
-                .blockingGet()
+            .byUid().eq("WiH6923nMtb")
+            .withConstraints()
+            .blockingGet()
 
         Truth.assertThat(relationshipTypes.size).isEqualTo(1)
         for (type in relationshipTypes) {
@@ -68,8 +66,8 @@ class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun by_tracked_entity_instance() {
         val relationshipTypes = d2.relationshipModule().relationshipTypes()
-                .byAvailableForTrackedEntityInstance("nWrB0TfWlvh")
-                .blockingGet()
+            .byAvailableForTrackedEntityInstance("nWrB0TfWlvh")
+            .blockingGet()
 
         Truth.assertThat(relationshipTypes.size).isEqualTo(2)
     }
@@ -77,8 +75,8 @@ class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun by_enrollment() {
         val relationshipTypes = d2.relationshipModule().relationshipTypes()
-                .byAvailableForEnrollment("enroll1")
-                .blockingGet()
+            .byAvailableForEnrollment("enroll1")
+            .blockingGet()
 
         Truth.assertThat(relationshipTypes.size).isEqualTo(1)
     }
@@ -86,8 +84,8 @@ class RelationshipTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun by_event() {
         val relationshipTypes = d2.relationshipModule().relationshipTypes()
-                .byAvailableForEvent("single1")
-                .blockingGet()
+            .byAvailableForEvent("single1")
+            .blockingGet()
 
         Truth.assertThat(relationshipTypes.size).isEqualTo(1)
     }

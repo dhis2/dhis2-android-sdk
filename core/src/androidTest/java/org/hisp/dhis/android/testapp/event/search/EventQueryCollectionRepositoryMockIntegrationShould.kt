@@ -25,89 +25,70 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.event.search
 
-package org.hisp.dhis.android.testapp.event.search;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.util.toJavaSimpleDate
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.search.EventQueryRepositoryScope;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class EventQueryCollectionRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
-
+class EventQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_by_program() {
-        List<Event> events =
-                d2.eventModule().eventQuery()
-                        .byProgram().eq("lxAQ7Zs9VYR")
-                        .blockingGet();
+    fun find_by_program() {
+        val events = d2.eventModule().eventQuery()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .blockingGet()
 
-        assertThat(events.size()).isEqualTo(2);
+        assertThat(events.size).isEqualTo(2)
     }
 
     @Test
-    public void find_uids_by_program() {
-        List<String> eventUids =
-                d2.eventModule().eventQuery()
-                        .byProgram().eq("lxAQ7Zs9VYR")
-                        .blockingGetUids();
+    fun find_uids_by_program() {
+        val eventUids = d2.eventModule().eventQuery()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .blockingGetUids()
 
-        assertThat(eventUids.size()).isEqualTo(2);
+        assertThat(eventUids.size).isEqualTo(2)
     }
 
     @Test
-    public void get_scope() {
-        EventQueryRepositoryScope scope =
-                d2.eventModule().eventQuery().scope;
+    fun get_scope() {
+        val scope = d2.eventModule().eventQuery().scope
 
-        assertThat(scope.mode()).isNotNull();
+        assertThat(scope.mode()).isNotNull()
     }
 
     @Test
-    public void filter_by_event_filter() {
-        List<Event> event =
-                d2.eventModule().eventQuery()
-                        .byEventFilter().eq("atoQ7Zs9Ijo")
-                        .blockingGet();
+    fun filter_by_event_filter() {
+        val event = d2.eventModule().eventQuery()
+            .byEventFilter().eq("atoQ7Zs9Ijo")
+            .blockingGet()
 
-        assertThat(event.size()).isEqualTo(1);
+        assertThat(event.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_data_value() {
-        List<Event> events1 =
-                d2.eventModule().eventQuery()
-                        .byDataValue("hB9F8vKFmlk").eq("3842")
-                        .blockingGet();
+    fun filter_by_data_value() {
+        val events1 = d2.eventModule().eventQuery()
+            .byDataValue("hB9F8vKFmlk").eq("3842")
+            .blockingGet()
 
-        assertThat(events1.size()).isEqualTo(1);
+        assertThat(events1.size).isEqualTo(1)
 
-        List<Event> events2 =
-                d2.eventModule().eventQuery()
-                        .byDataValue("hB9F8vKFmlk").ge("3842")
-                        .blockingGet();
+        val events2 = d2.eventModule().eventQuery()
+            .byDataValue("hB9F8vKFmlk").ge("3842")
+            .blockingGet()
 
-        assertThat(events2.size()).isEqualTo(2);
+        assertThat(events2.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_date_data_value() throws ParseException {
-        List<Event> events1 =
-                d2.eventModule().eventQuery()
-                        .byDataValue("uFAQYm3UgBL").after(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-02-01"))
-                        .byDataValue("uFAQYm3UgBL").before(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-02-10"))
-                        .blockingGet();
+    fun filter_by_date_data_value() {
+        val events1 = d2.eventModule().eventQuery()
+            .byDataValue("uFAQYm3UgBL").after("2019-02-01".toJavaSimpleDate()!!)
+            .byDataValue("uFAQYm3UgBL").before("2019-02-10".toJavaSimpleDate()!!)
+            .blockingGet()
 
-        assertThat(events1.size()).isEqualTo(1);
+        assertThat(events1.size).isEqualTo(1)
     }
 }

@@ -25,40 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.option
 
-package org.hisp.dhis.android.testapp.option;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class OptionSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets().blockingGet();
-        assertThat(optionSets.size()).isEqualTo(2);
+    fun find_all() {
+        val optionSets = d2.optionModule().optionSets().blockingGet()
+        assertThat(optionSets.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_version() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets()
-                .byVersion().eq(1).blockingGet();
-        assertThat(optionSets.size()).isEqualTo(1);
+    fun filter_by_version() {
+        val optionSets = d2.optionModule().optionSets()
+            .byVersion().eq(1).blockingGet()
+        assertThat(optionSets.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_value_type() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets()
-                .byValueType().eq(ValueType.TEXT).blockingGet();
-        assertThat(optionSets.size()).isEqualTo(1);
+    fun filter_by_value_type() {
+        val optionSets = d2.optionModule().optionSets()
+            .byValueType().eq(ValueType.TEXT).blockingGet()
+        assertThat(optionSets.size).isEqualTo(1)
     }
 }

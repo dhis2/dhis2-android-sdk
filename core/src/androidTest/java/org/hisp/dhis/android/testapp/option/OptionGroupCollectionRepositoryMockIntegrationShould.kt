@@ -25,51 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.option
 
-package org.hisp.dhis.android.testapp.option;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.option.OptionGroup;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class OptionGroupCollectionRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<OptionGroup> optionGroups =
-                d2.optionModule().optionGroups()
-                        .blockingGet();
+    fun find_all() {
+        val optionGroups = d2.optionModule().optionGroups()
+            .blockingGet()
 
-        assertThat(optionGroups.size()).isEqualTo(1);
+        assertThat(optionGroups.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_option_set() {
-        List<OptionGroup> optionGroups =
-                d2.optionModule().optionGroups()
-                        .byOptionSetUid()
-                        .eq("VQ2lai3OfVG")
-                        .blockingGet();
+    fun filter_by_option_set() {
+        val optionGroups = d2.optionModule().optionGroups()
+            .byOptionSetUid()
+            .eq("VQ2lai3OfVG")
+            .blockingGet()
 
-        assertThat(optionGroups.size()).isEqualTo(1);
+        assertThat(optionGroups.size).isEqualTo(1)
     }
 
     @Test
-    public void add_options_as_children() {
-        OptionGroup optionGroup =
-                d2.optionModule().optionGroups()
-                        .withOptions()
-                        .one().blockingGet();
+    fun add_options_as_children() {
+        val optionGroup = d2.optionModule().optionGroups()
+            .withOptions()
+            .one().blockingGet()
 
-        assertThat(optionGroup.options().size()).isEqualTo(2);
-        assertThat(optionGroup.options().get(0).uid()).isEqualTo("Y1ILwhy5VDY");
-        assertThat(optionGroup.options().get(1).uid()).isEqualTo("egT1YqFWsVk");
+        assertThat(optionGroup!!.options()!!.size).isEqualTo(2)
+        assertThat(optionGroup.options()!![0].uid()).isEqualTo("Y1ILwhy5VDY")
+        assertThat(optionGroup.options()!![1].uid()).isEqualTo("egT1YqFWsVk")
     }
 }

@@ -25,43 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.legendset
 
-package org.hisp.dhis.android.testapp.legendset;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class LegendSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
-                .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(5);
+    fun find_all() {
+        val legendSets = d2.legendSetModule().legendSets()
+            .blockingGet()
+        assertThat(legendSets.size).isEqualTo(5)
     }
 
     @Test
-    public void filter_by_symbolizer() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
-                .bySymbolizer().eq("color")
-                .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(5);
+    fun filter_by_symbolizer() {
+        val legendSets = d2.legendSetModule().legendSets()
+            .bySymbolizer().eq("color")
+            .blockingGet()
+        assertThat(legendSets.size).isEqualTo(5)
     }
 
     @Test
-    public void include_legends_as_children() {
-        LegendSet legendSet = d2.legendSetModule().legendSets()
-                .withLegends()
-                .one()
-                .blockingGet();
-        assertThat(legendSet.legends().size()).isEqualTo(2);
+    fun include_legends_as_children() {
+        val legendSet = d2.legendSetModule().legendSets()
+            .withLegends()
+            .one()
+            .blockingGet()
+        assertThat(legendSet!!.legends()!!.size).isEqualTo(2)
     }
 }

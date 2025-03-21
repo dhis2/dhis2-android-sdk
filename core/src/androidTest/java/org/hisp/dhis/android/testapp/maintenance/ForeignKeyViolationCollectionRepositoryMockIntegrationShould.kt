@@ -25,83 +25,73 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.maintenance
 
-package org.hisp.dhis.android.testapp.maintenance;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ForeignKeyViolationCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class ForeignKeyViolationCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(4);
+    fun find_all() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations().blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(4)
     }
 
     @Test
-    public void filter_by_from_table() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromTable().eq("Option").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(1);
+    fun filter_by_from_table() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byFromTable().eq("Option").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_from_column() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromColumn().eq("optionSet").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(1);
+    fun filter_by_from_column() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byFromColumn().eq("optionSet").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_to_table() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byToTable().eq("OptionSet").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(1);
+    fun filter_by_to_table() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byToTable().eq("OptionSet").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_to_column() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byToColumn().eq("uid").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(2);
+    fun filter_by_to_column() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byToColumn().eq("uid").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_not_found_value() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byNotFoundValue().eq("non_existent_option_set_uid").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(1);
+    fun filter_by_not_found_value() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byNotFoundValue().eq("non_existent_option_set_uid").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_from_object_uid() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromObjectUid().eq("non_existent_option_uid").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(1);
+    fun filter_by_from_object_uid() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byFromObjectUid().eq("non_existent_option_uid").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_from_object_row() {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byFromObjectRow().like("optionSet: non_existent_option_set_uid").blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(1);
+    fun filter_by_from_object_row() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byFromObjectRow().like("optionSet: non_existent_option_set_uid").blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_created() throws ParseException {
-        List<ForeignKeyViolation> foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-                .byCreated().after(DateUtils.DATE_FORMAT.parse("2019-01-15T08:14:06.767")).blockingGet();
-        assertThat(foreignKeyViolations.size()).isEqualTo(4);
+    fun filter_by_created() {
+        val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
+            .byCreated().after("2019-01-15T08:14:06.767".toJavaDate()!!).blockingGet()
+        assertThat(foreignKeyViolations.size).isEqualTo(4)
     }
 }

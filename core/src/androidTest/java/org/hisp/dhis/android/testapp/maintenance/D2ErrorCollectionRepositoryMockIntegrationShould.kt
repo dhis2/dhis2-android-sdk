@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.maintenance
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
@@ -36,45 +36,47 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class D2ErrorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun filter_d2_error_by_url() {
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet()
-        Truth.assertThat(d2Errors.size).isEqualTo(1)
+
+        assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
     fun filter_d2_error_by_d2_error_code() {
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byD2ErrorCode().eq(D2ErrorCode.BAD_CREDENTIALS).blockingGet()
-        Truth.assertThat(d2Errors.size).isEqualTo(1)
+
+        assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
     fun filter_d2_error_by_d2_error_component() {
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byD2ErrorComponent().eq(D2ErrorComponent.Server).blockingGet()
-        Truth.assertThat(d2Errors.size).isEqualTo(4)
+
+        assertThat(d2Errors.size).isEqualTo(4)
     }
 
     @Test
     fun filter_d2_error_by_error_description() {
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byErrorDescription().eq("Error processing response").blockingGet()
-        Truth.assertThat(d2Errors.size).isEqualTo(1)
+
+        assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
     fun filter_d2_error_by_http_error_code() {
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byHttpErrorCode().eq(402).blockingGet()
-        Truth.assertThat(d2Errors.size).isEqualTo(1)
+
+        assertThat(d2Errors.size).isEqualTo(1)
     }
 
     @Test
@@ -86,6 +88,6 @@ class D2ErrorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byCreated().afterOrEqual(startDate).blockingGet()
 
-        Truth.assertThat(d2Errors.size).isEqualTo(5)
+        assertThat(d2Errors.size).isEqualTo(5)
     }
 }

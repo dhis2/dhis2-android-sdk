@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.enrollment
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
@@ -41,28 +41,31 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun allow_access_to_all_enrollments_without_children() {
         val enrollments = d2.enrollmentModule().enrollments().blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+        assertThat(enrollments.size).isEqualTo(2)
 
         val enrollment = enrollments[0]
-        Truth.assertThat(enrollment.uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
+        assertThat(enrollment.uid()).isEqualTo("enroll1")
+        assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
     }
 
     @Test
     fun allow_access_to_one_enrollment_without_children() {
         val enrollment = d2.enrollmentModule().enrollments().uid("enroll1").blockingGet()
-        Truth.assertThat(enrollment!!.uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
+        assertThat(enrollment!!.uid()).isEqualTo("enroll1")
+        assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
     }
 
     @Test
     fun include_notes_as_children() {
         val enrollment1 = d2.enrollmentModule().enrollments()
-            .withNotes().uid("enroll1").blockingGet()
+            .withNotes().uid("enroll1")
+            .blockingGet()
         val enrollment2 = d2.enrollmentModule().enrollments()
-            .withNotes().uid("enroll2").blockingGet()
-        Truth.assertThat(enrollment1!!.notes()!!.size).isEqualTo(2)
-        Truth.assertThat(enrollment2!!.notes()!!.size).isEqualTo(2)
+            .withNotes().uid("enroll2")
+            .blockingGet()
+
+        assertThat(enrollment1!!.notes()!!.size).isEqualTo(2)
+        assertThat(enrollment2!!.notes()!!.size).isEqualTo(2)
     }
 
     @Test
@@ -70,8 +73,9 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollment = d2.enrollmentModule().enrollments()
             .byUid().eq("enroll1")
             .one().blockingGet()
-        Truth.assertThat(enrollment!!.uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
+
+        assertThat(enrollment!!.uid()).isEqualTo("enroll1")
+        assertThat(enrollment.program()).isEqualTo("IpHINAT79UW")
     }
 
     @Test
@@ -79,7 +83,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byCreated().eq("2019-01-10T13:40:28.322".toJavaDate())
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -87,7 +92,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byLastUpdated().eq("2019-01-10T13:40:28.718".toJavaDate())
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -95,7 +101,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byCreatedAtClient().eq("2018-01-08T13:40:28.718")
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -103,7 +110,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byLastUpdatedAtClient().eq("2018-01-11T13:40:28.718")
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -111,7 +119,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byOrganisationUnit().eq("DiszpKrYNg8")
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+
+        assertThat(enrollments.size).isEqualTo(2)
     }
 
     @Test
@@ -119,7 +128,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byProgram().eq("IpHINAT79UW")
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+
+        assertThat(enrollments.size).isEqualTo(2)
     }
 
     @Test
@@ -127,7 +137,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byEnrollmentDate().eq("2018-01-10T13:45:00.000".toJavaDate())
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -135,7 +145,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byIncidentDate().eq("2019-01-10T12:23:00.000".toJavaDate())
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -143,7 +154,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byFollowUp().isTrue
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -151,7 +163,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byStatus().eq(EnrollmentStatus.ACTIVE)
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+
+        assertThat(enrollments.size).isEqualTo(2)
     }
 
     @Test
@@ -159,7 +172,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byTrackedEntityInstance().eq("nWrB0TfWlvD")
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -167,7 +181,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byAggregatedSyncState().eq(State.SYNCED)
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+
+        assertThat(enrollments.size).isEqualTo(2)
     }
 
     @Test
@@ -175,7 +190,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+
+        assertThat(enrollments.size).isEqualTo(2)
     }
 
     @Test
@@ -183,7 +199,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
         val enrollments = d2.enrollmentModule().enrollments()
             .byDeleted().isFalse
             .blockingGet()
-        Truth.assertThat(enrollments.size).isEqualTo(2)
+
+        assertThat(enrollments.size).isEqualTo(2)
     }
 
     @Test
@@ -192,7 +209,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .byGeometryType().eq(FeatureType.POLYGON)
             .blockingGet()
 
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -201,7 +218,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .byGeometryCoordinates().eq("[4.1,2.6]")
             .blockingGet()
 
-        Truth.assertThat(enrollments.size).isEqualTo(1)
+        assertThat(enrollments.size).isEqualTo(1)
     }
 
     @Test
@@ -210,8 +227,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .orderByCreated(RepositoryScope.OrderByDirection.DESC)
             .blockingGet()
 
-        Truth.assertThat(enrollments[0].uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollments[1].uid()).isEqualTo("enroll2")
+        assertThat(enrollments[0].uid()).isEqualTo("enroll1")
+        assertThat(enrollments[1].uid()).isEqualTo("enroll2")
     }
 
     @Test
@@ -220,8 +237,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .orderByCreatedAtClient(RepositoryScope.OrderByDirection.DESC)
             .blockingGet()
 
-        Truth.assertThat(enrollments[0].uid()).isEqualTo("enroll2")
-        Truth.assertThat(enrollments[1].uid()).isEqualTo("enroll1")
+        assertThat(enrollments[0].uid()).isEqualTo("enroll2")
+        assertThat(enrollments[1].uid()).isEqualTo("enroll1")
     }
 
     @Test
@@ -230,8 +247,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .orderByLastUpdated(RepositoryScope.OrderByDirection.DESC)
             .blockingGet()
 
-        Truth.assertThat(enrollments[0].uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollments[1].uid()).isEqualTo("enroll2")
+        assertThat(enrollments[0].uid()).isEqualTo("enroll1")
+        assertThat(enrollments[1].uid()).isEqualTo("enroll2")
     }
 
     @Test
@@ -240,8 +257,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.DESC)
             .blockingGet()
 
-        Truth.assertThat(enrollments[0].uid()).isEqualTo("enroll2")
-        Truth.assertThat(enrollments[1].uid()).isEqualTo("enroll1")
+        assertThat(enrollments[0].uid()).isEqualTo("enroll2")
+        assertThat(enrollments[1].uid()).isEqualTo("enroll1")
     }
 
     @Test
@@ -250,8 +267,8 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .orderByEnrollmentDate(RepositoryScope.OrderByDirection.DESC)
             .blockingGet()
 
-        Truth.assertThat(enrollments[0].uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollments[1].uid()).isEqualTo("enroll2")
+        assertThat(enrollments[0].uid()).isEqualTo("enroll1")
+        assertThat(enrollments[1].uid()).isEqualTo("enroll2")
     }
 
     @Test
@@ -260,23 +277,23 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .orderByIncidentDate(RepositoryScope.OrderByDirection.DESC)
             .blockingGet()
 
-        Truth.assertThat(enrollments[0].uid()).isEqualTo("enroll1")
-        Truth.assertThat(enrollments[1].uid()).isEqualTo("enroll2")
+        assertThat(enrollments[0].uid()).isEqualTo("enroll1")
+        assertThat(enrollments[1].uid()).isEqualTo("enroll2")
     }
 
     @Test
     fun add_enrollments_to_the_repository() {
         val enrollments1 = d2.enrollmentModule().enrollments().blockingGet()
-        Truth.assertThat(enrollments1.size).isEqualTo(2)
+        assertThat(enrollments1.size).isEqualTo(2)
 
         val enrolmentUid = d2.enrollmentModule().enrollments()
             .blockingAdd(EnrollmentCreateProjection.create("DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"))
 
         val enrollments2 = d2.enrollmentModule().enrollments().blockingGet()
-        Truth.assertThat(enrollments2.size).isEqualTo(3)
+        assertThat(enrollments2.size).isEqualTo(3)
 
         val enrollment = d2.enrollmentModule().enrollments().uid(enrolmentUid).blockingGet()
-        Truth.assertThat(enrollment!!.uid()).isEqualTo(enrolmentUid)
+        assertThat(enrollment!!.uid()).isEqualTo(enrolmentUid)
 
         d2.enrollmentModule().enrollments().uid(enrolmentUid).blockingDelete()
     }

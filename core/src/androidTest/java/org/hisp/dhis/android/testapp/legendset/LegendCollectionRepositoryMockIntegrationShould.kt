@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.testapp.legendset
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class LegendCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val legends = d2.legendSetModule().legends()
-            .blockingGet()
-        Truth.assertThat(legends.size).isEqualTo(7)
+        val legends = d2.legendSetModule().legends().blockingGet()
+        assertThat(legends.size).isEqualTo(7)
     }
 
     @Test
@@ -44,7 +43,8 @@ class LegendCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestF
         val legends = d2.legendSetModule().legends()
             .byStartValue().eq(15.0)
             .blockingGet()
-        Truth.assertThat(legends.size).isEqualTo(1)
+
+        assertThat(legends.size).isEqualTo(1)
     }
 
     @Test
@@ -52,7 +52,8 @@ class LegendCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestF
         val legends = d2.legendSetModule().legends()
             .byEndValue().eq(30.0)
             .blockingGet()
-        Truth.assertThat(legends.size).isEqualTo(1)
+
+        assertThat(legends.size).isEqualTo(1)
     }
 
     @Test
@@ -61,7 +62,8 @@ class LegendCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestF
             .byStartValue().smallerThan(20.0)
             .byEndValue().biggerThan(20.0)
             .blockingGet()
-        Truth.assertThat(legends.size).isEqualTo(3)
+
+        assertThat(legends.size).isEqualTo(3)
     }
 
     @Test
@@ -69,7 +71,8 @@ class LegendCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestF
         val legends = d2.legendSetModule().legends()
             .byColor().eq("#E6AE5E")
             .blockingGet()
-        Truth.assertThat(legends.size).isEqualTo(1)
+
+        assertThat(legends.size).isEqualTo(1)
     }
 
     @Test
@@ -77,6 +80,7 @@ class LegendCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestF
         val legends = d2.legendSetModule().legends()
             .byLegendSet().eq("QiOkbpGEud4")
             .blockingGet()
-        Truth.assertThat(legends.size).isEqualTo(2)
+
+        assertThat(legends.size).isEqualTo(2)
     }
 }

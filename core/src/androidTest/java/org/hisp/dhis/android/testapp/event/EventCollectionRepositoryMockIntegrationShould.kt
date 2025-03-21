@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.event
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
@@ -46,7 +46,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -55,7 +55,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byUid().eq("single1")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -64,7 +64,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byEnrollmentUid().eq("enroll1")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -73,7 +73,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byCreated().eq("2017-08-07T15:47:25.959".toJavaDate())
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -82,7 +82,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byLastUpdated().eq("2019-01-01T22:26:39.094".toJavaDate())
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -91,7 +91,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byCreatedAtClient().eq("2018-02-28T00:00:00.000")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(0)
+        assertThat(events.size).isEqualTo(0)
     }
 
     @Test
@@ -100,7 +100,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byLastUpdatedAtClient().eq("2018-02-28T00:00:00.000")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(0)
+        assertThat(events.size).isEqualTo(0)
     }
 
     @Test
@@ -109,7 +109,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byStatus().eq(EventStatus.ACTIVE)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -118,7 +118,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byGeometryType().eq(FeatureType.POINT)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -127,7 +127,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byGeometryCoordinates().eq("[21.0,43.0]")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -136,7 +136,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byProgramUid().eq("IpHINAT79UW")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(2)
+        assertThat(events.size).isEqualTo(2)
     }
 
     @Test
@@ -145,7 +145,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byProgramStageUid().eq("dBwrot7S420")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -154,7 +154,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byOrganisationUnitUid().eq("DiszpKrYNg8")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -170,7 +170,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byEventDate().inPeriods(periods)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -180,7 +180,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .eq("2016-02-27T14:34:00.000".toJavaDate())
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -189,7 +189,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byCompletedBy().eq("android")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -200,7 +200,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .afterOrEqual("2017-01-28T12:35:00.000".toJavaDate()!!)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(2)
+        assertThat(events.size).isEqualTo(2)
     }
 
     @Test
@@ -209,7 +209,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -218,7 +218,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byAggregatedSyncState().eq(State.SYNCED)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -227,7 +227,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byAttributeOptionComboUid().eq("bRowv6yZOF2")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(2)
+        assertThat(events.size).isEqualTo(2)
     }
 
     @Test
@@ -236,7 +236,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byDeleted().isFalse
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(4)
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -245,7 +245,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byTrackedEntityInstanceUids(listOf("nWrB0TfWlvh"))
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -254,7 +254,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byDataValue("hB9F8vKFmlk").lt("3843")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -263,7 +263,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byFollowUp(true)
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
@@ -272,35 +272,38 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .byAssignedUser().eq("aTwqot2S410")
             .blockingGet()
 
-        Truth.assertThat(events.size).isEqualTo(1)
+        assertThat(events.size).isEqualTo(1)
     }
 
     @Test
     fun count_tracked_entity_instances_unrestricted() {
         val count = d2.eventModule().events().countTrackedEntityInstances()
 
-        Truth.assertThat(count).isEqualTo(2)
+        assertThat(count).isEqualTo(2)
     }
 
     @Test
     fun count_tracked_entity_instances_restricted() {
         val count = d2.eventModule().events().byUid().eq("event1").countTrackedEntityInstances()
 
-        Truth.assertThat(count).isEqualTo(1)
+        assertThat(count).isEqualTo(1)
     }
 
     @Test
     fun include_tracked_entity_data_values_as_children() {
         val event = d2.eventModule().events()
-            .withTrackedEntityDataValues().uid("single1").blockingGet()
-        Truth.assertThat(event!!.trackedEntityDataValues()!!.size).isEqualTo(6)
+            .withTrackedEntityDataValues().uid("single1")
+            .blockingGet()
+        assertThat(event!!.trackedEntityDataValues()!!.size).isEqualTo(6)
     }
 
     @Test
     fun include_notes_as_children() {
         val event = d2.eventModule().events()
-            .withNotes().uid("single1").blockingGet()
-        Truth.assertThat(event!!.notes()!!.size).isEqualTo(2)
+            .withNotes().uid("single1")
+            .blockingGet()
+
+        assertThat(event!!.notes()!!.size).isEqualTo(2)
     }
 
     @Test
@@ -308,10 +311,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByDueDate(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event1")
-        Truth.assertThat(events[1].uid()).isEqualTo("event2")
-        Truth.assertThat(events[2].uid()).isEqualTo("single1")
-        Truth.assertThat(events[3].uid()).isEqualTo("single2")
+
+        assertThat(events[0].uid()).isEqualTo("event1")
+        assertThat(events[1].uid()).isEqualTo("event2")
+        assertThat(events[2].uid()).isEqualTo("single1")
+        assertThat(events[3].uid()).isEqualTo("single2")
     }
 
     @Test
@@ -319,10 +323,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByCreated(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event1")
-        Truth.assertThat(events[1].uid()).isEqualTo("event2")
-        Truth.assertThat(events[2].uid()).isEqualTo("single1")
-        Truth.assertThat(events[3].uid()).isEqualTo("single2")
+
+        assertThat(events[0].uid()).isEqualTo("event1")
+        assertThat(events[1].uid()).isEqualTo("event2")
+        assertThat(events[2].uid()).isEqualTo("single1")
+        assertThat(events[3].uid()).isEqualTo("single2")
     }
 
     @Test
@@ -330,10 +335,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByCreatedAtClient(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event1")
-        Truth.assertThat(events[1].uid()).isEqualTo("event2")
-        Truth.assertThat(events[2].uid()).isEqualTo("single1")
-        Truth.assertThat(events[3].uid()).isEqualTo("single2")
+
+        assertThat(events[0].uid()).isEqualTo("event1")
+        assertThat(events[1].uid()).isEqualTo("event2")
+        assertThat(events[2].uid()).isEqualTo("single1")
+        assertThat(events[3].uid()).isEqualTo("single2")
     }
 
     @Test
@@ -341,10 +347,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event1")
-        Truth.assertThat(events[1].uid()).isEqualTo("event2")
-        Truth.assertThat(events[2].uid()).isEqualTo("single2")
-        Truth.assertThat(events[3].uid()).isEqualTo("single1")
+
+        assertThat(events[0].uid()).isEqualTo("event1")
+        assertThat(events[1].uid()).isEqualTo("event2")
+        assertThat(events[2].uid()).isEqualTo("single2")
+        assertThat(events[3].uid()).isEqualTo("single1")
     }
 
     @Test
@@ -352,10 +359,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event1")
-        Truth.assertThat(events[1].uid()).isEqualTo("event2")
-        Truth.assertThat(events[2].uid()).isEqualTo("single1")
-        Truth.assertThat(events[3].uid()).isEqualTo("single2")
+
+        assertThat(events[0].uid()).isEqualTo("event1")
+        assertThat(events[1].uid()).isEqualTo("event2")
+        assertThat(events[2].uid()).isEqualTo("single1")
+        assertThat(events[3].uid()).isEqualTo("single2")
     }
 
     @Test
@@ -364,10 +372,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
             .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event2")
-        Truth.assertThat(events[1].uid()).isEqualTo("event1")
-        Truth.assertThat(events[2].uid()).isEqualTo("single2")
-        Truth.assertThat(events[3].uid()).isEqualTo("single1")
+
+        assertThat(events[0].uid()).isEqualTo("event2")
+        assertThat(events[1].uid()).isEqualTo("event1")
+        assertThat(events[2].uid()).isEqualTo("single2")
+        assertThat(events[3].uid()).isEqualTo("single1")
     }
 
     @Test
@@ -375,10 +384,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByCompleteDate(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event2")
-        Truth.assertThat(events[1].uid()).isEqualTo("single1")
-        Truth.assertThat(events[2].uid()).isEqualTo("single2")
-        Truth.assertThat(events[3].uid()).isEqualTo("event1")
+
+        assertThat(events[0].uid()).isEqualTo("event2")
+        assertThat(events[1].uid()).isEqualTo("single1")
+        assertThat(events[2].uid()).isEqualTo("single2")
+        assertThat(events[3].uid()).isEqualTo("event1")
     }
 
     @Test
@@ -386,7 +396,8 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByOrganisationUnitName(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events.size).isEqualTo(4)
+
+        assertThat(events.size).isEqualTo(4)
     }
 
     @Test
@@ -394,10 +405,11 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val events = d2.eventModule().events()
             .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
             .blockingGet()
-        Truth.assertThat(events[0].uid()).isEqualTo("event1") // eventDate
-        Truth.assertThat(events[1].uid()).isEqualTo("event2") // dueDate
-        Truth.assertThat(events[2].uid()).isEqualTo("single2") // eventDate
-        Truth.assertThat(events[3].uid()).isEqualTo("single1") // eventDate
+
+        assertThat(events[0].uid()).isEqualTo("event1") // eventDate
+        assertThat(events[1].uid()).isEqualTo("event2") // dueDate
+        assertThat(events[2].uid()).isEqualTo("single2") // eventDate
+        assertThat(events[3].uid()).isEqualTo("single1") // eventDate
     }
 
     @Test
@@ -407,16 +419,17 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .orderByDataElement(RepositoryScope.OrderByDirection.DESC, "hB9F8vKFmlk")
             .withTrackedEntityDataValues()
             .blockingGet()
-        Truth.assertThat(events.size).isEqualTo(2)
-        Truth.assertThat(events[0].uid()).isEqualTo("single2") // 3843
-        Truth.assertThat(events[1].uid()).isEqualTo("single1") // 3842
+
+        assertThat(events.size).isEqualTo(2)
+        assertThat(events[0].uid()).isEqualTo("single2") // 3843
+        assertThat(events[1].uid()).isEqualTo("single1") // 3842
     }
 
     @Test
     @Throws(D2Error::class)
     fun add_events_to_the_repository() {
         val events1 = d2.eventModule().events().blockingGet()
-        Truth.assertThat(events1.size).isEqualTo(4)
+        assertThat(events1.size).isEqualTo(4)
 
         val eventUid = d2.eventModule().events().blockingAdd(
             EventCreateProjection.create(
@@ -429,10 +442,10 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         )
 
         val events2 = d2.eventModule().events().blockingGet()
-        Truth.assertThat(events2.size).isEqualTo(5)
+        assertThat(events2.size).isEqualTo(5)
 
         val event = d2.eventModule().events().uid(eventUid).blockingGet()
-        Truth.assertThat(event!!.uid()).isEqualTo(eventUid)
+        assertThat(event!!.uid()).isEqualTo(eventUid)
 
         d2.eventModule().events().uid(eventUid).blockingDelete()
     }

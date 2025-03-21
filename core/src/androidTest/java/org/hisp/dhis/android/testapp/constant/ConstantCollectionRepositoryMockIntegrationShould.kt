@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.constant
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -35,7 +35,8 @@ class ConstantCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
     @Test
     fun find_all() {
         val constants = d2.constantModule().constants().blockingGet()
-        Truth.assertThat(constants.size).isEqualTo(2)
+
+        assertThat(constants.size).isEqualTo(2)
     }
 
     @Test
@@ -43,6 +44,7 @@ class ConstantCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
         val constants = d2.constantModule().constants()
             .byValue().eq(3.14)
             .blockingGet()
-        Truth.assertThat(constants.size).isEqualTo(1)
+
+        assertThat(constants.size).isEqualTo(1)
     }
 }

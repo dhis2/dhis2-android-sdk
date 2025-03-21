@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.dataelement
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -35,9 +35,8 @@ import org.junit.Test
 class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val dataElements = d2.dataElementModule().dataElements()
-            .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(10)
+        val dataElements = d2.dataElementModule().dataElements().blockingGet()
+        assertThat(dataElements.size).isEqualTo(10)
     }
 
     @Test
@@ -45,7 +44,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byValueType().eq(ValueType.TEXT)
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(2)
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
@@ -53,7 +53,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byZeroIsSignificant().isFalse
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(8)
+
+        assertThat(dataElements.size).isEqualTo(8)
     }
 
     @Test
@@ -61,7 +62,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byAggregationType().eq("AVERAGE")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(2)
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
@@ -69,7 +71,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byFormName().eq("ANC Visit")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(2)
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
@@ -77,7 +80,7 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byDomainType().eq("TRACKER")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(10)
+        assertThat(dataElements.size).isEqualTo(10)
     }
 
     @Test
@@ -85,7 +88,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byDisplayFormName().eq("ANC Visit")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(2)
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
@@ -93,7 +97,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byOptionSetUid().eq("VQ2lai3OfVG")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(1)
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
@@ -101,7 +106,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byCategoryComboUid().eq("m2jTvAj5kkm")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(6)
+
+        assertThat(dataElements.size).isEqualTo(6)
     }
 
     @Test
@@ -109,7 +115,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byFieldMask().eq("XXXXX")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(1)
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
@@ -117,7 +124,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byColor().eq("#600")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(1)
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
@@ -125,7 +133,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val dataElements = d2.dataElementModule().dataElements()
             .byIcon().eq("data-element-icon-2")
             .blockingGet()
-        Truth.assertThat(dataElements.size).isEqualTo(1)
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
@@ -136,8 +145,8 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .blockingGet()[4]
 
         val legendSets = dataElementWithLegendSets.legendSets()
-        Truth.assertThat(legendSets!!.size).isEqualTo(1)
-        Truth.assertThat(legendSets[0].uid()).isEqualTo("TiOkbpGEud4")
+        assertThat(legendSets!!.size).isEqualTo(1)
+        assertThat(legendSets[0].uid()).isEqualTo("TiOkbpGEud4")
     }
 
     @Test
@@ -148,10 +157,10 @@ class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegration
                 .blockingGet()[4]
 
         val attributeValues = dataElementWithAttributeValues.attributeValues()
-        Truth.assertThat(attributeValues!!.size).isEqualTo(2)
-        Truth.assertThat(attributeValues[0].attribute().uid()).isEqualTo("b0vcadVrn08")
-        Truth.assertThat(attributeValues[0].value()).isEqualTo("Direct 2")
-        Truth.assertThat(attributeValues[1].attribute().uid()).isEqualTo("qXS2NDUEAOS")
-        Truth.assertThat(attributeValues[1].value()).isEqualTo("Direct")
+        assertThat(attributeValues!!.size).isEqualTo(2)
+        assertThat(attributeValues[0].attribute().uid()).isEqualTo("b0vcadVrn08")
+        assertThat(attributeValues[0].value()).isEqualTo("Direct 2")
+        assertThat(attributeValues[1].attribute().uid()).isEqualTo("qXS2NDUEAOS")
+        assertThat(attributeValues[1].value()).isEqualTo("Direct")
     }
 }

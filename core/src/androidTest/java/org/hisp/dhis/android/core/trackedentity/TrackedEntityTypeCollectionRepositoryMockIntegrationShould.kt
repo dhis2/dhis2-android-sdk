@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -35,16 +35,17 @@ import org.junit.Test
 class TrackedEntityTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_all_tracked_entity_types_without_children() {
-        val trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
-            .blockingGet()
-        Truth.assertThat(trackedEntityTypes.size).isEqualTo(1)
+        val trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes().blockingGet()
+
+        assertThat(trackedEntityTypes.size).isEqualTo(1)
     }
 
     @Test
     fun include_attributes_as_children() {
         val trackedEntityType = d2.trackedEntityModule().trackedEntityTypes()
             .withTrackedEntityTypeAttributes().one().blockingGet()
-        Truth.assertThat(trackedEntityType!!.trackedEntityTypeAttributes()!!.size).isEqualTo(1)
+
+        assertThat(trackedEntityType!!.trackedEntityTypeAttributes()!!.size).isEqualTo(1)
     }
 
     @Test
@@ -52,7 +53,8 @@ class TrackedEntityTypeCollectionRepositoryMockIntegrationShould : BaseMockInteg
         val trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
             .byFeatureType().eq(FeatureType.NONE)
             .blockingGet()
-        Truth.assertThat(trackedEntityTypes.size).isEqualTo(1)
+
+        assertThat(trackedEntityTypes.size).isEqualTo(1)
     }
 
     @Test
@@ -60,7 +62,8 @@ class TrackedEntityTypeCollectionRepositoryMockIntegrationShould : BaseMockInteg
         val trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
             .byColor().eq("#000")
             .blockingGet()
-        Truth.assertThat(trackedEntityTypes.size).isEqualTo(1)
+
+        assertThat(trackedEntityTypes.size).isEqualTo(1)
     }
 
     @Test
@@ -68,6 +71,7 @@ class TrackedEntityTypeCollectionRepositoryMockIntegrationShould : BaseMockInteg
         val trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
             .byIcon().eq("my-tracked-entity-attribute-icon-name")
             .blockingGet()
-        Truth.assertThat(trackedEntityTypes.size).isEqualTo(1)
+
+        assertThat(trackedEntityTypes.size).isEqualTo(1)
     }
 }

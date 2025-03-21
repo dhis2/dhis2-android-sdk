@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.program
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.program.ProgramRuleAction
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.program.ProgramRuleActionType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -37,142 +36,128 @@ class ProgramRuleActionCollectionRepositoryMockIntegrationShould :
     BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions().blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(3)
+        assertThat(programRuleActions.size).isEqualTo(3)
     }
 
     @Test
     fun filter_by_data() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byData()
-                .eq("data")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byData()
+            .eq("data")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_content() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byContent()
-                .eq("The hemoglobin value cannot be above 99")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byContent()
+            .eq("The hemoglobin value cannot be above 99")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_displayContent() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byDisplayContent()
-                .eq("La valeur d'hémoglobine ne peut pas être supérieure à 99")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byDisplayContent()
+            .eq("La valeur d'hémoglobine ne peut pas être supérieure à 99")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_tracked_entity_attribute() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byTrackedEntityAttributeUid()
-                .eq("cejWyOfXge6")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byTrackedEntityAttributeUid()
+            .eq("cejWyOfXge6")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_program_indicator() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byProgramIndicatorUid()
-                .eq("GSae40Fyppf")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byProgramIndicatorUid()
+            .eq("GSae40Fyppf")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_program_stage_section() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byProgramStageSectionUid()
-                .eq("bbjzL5gp0NZ")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byProgramStageSectionUid()
+            .eq("bbjzL5gp0NZ")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_program_rule_action_type() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byProgramRuleActionType()
-                .eq(ProgramRuleActionType.SHOWWARNING)
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byProgramRuleActionType()
+            .eq(ProgramRuleActionType.SHOWWARNING)
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_program_stage() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byProgramStageUid()
-                .eq("dBwrot7S420")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byProgramStageUid()
+            .eq("dBwrot7S420")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_data_element() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byDataElementUid()
-                .eq("Ok9OQpitjQr")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byDataElementUid()
+            .eq("Ok9OQpitjQr")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_program_rule() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byProgramRuleUid()
-                .eq("GC4gpdoSD4r")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byProgramRuleUid()
+            .eq("GC4gpdoSD4r")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_option() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byOptionUid()
-                .eq("egT1YqFWsVk")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byOptionUid()
+            .eq("egT1YqFWsVk")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_option_group() {
-        var programRuleActions: List<ProgramRuleAction?> =
-            d2.programModule().programRuleActions()
-                .byOptionGroupUid()
-                .eq("j3JYGVCIEdz")
-                .blockingGet()
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byOptionGroupUid()
+            .eq("j3JYGVCIEdz")
+            .blockingGet()
 
-        Truth.assertThat(programRuleActions.size).isEqualTo(1)
+        assertThat(programRuleActions.size).isEqualTo(1)
     }
 }

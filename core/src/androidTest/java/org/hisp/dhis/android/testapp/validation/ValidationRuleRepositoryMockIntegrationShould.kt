@@ -82,7 +82,7 @@ class ValidationRuleRepositoryMockIntegrationShould : BaseMockIntegrationTestFul
     @Test
     fun filter_by_skip_form_validation() {
         val validationRule = d2.validationModule().validationRules()
-            .bySkipFormValidation().eq(java.lang.Boolean.TRUE)
+            .bySkipFormValidation().isTrue
             .blockingGet()
 
         assertThat(validationRule.size).isEqualTo(1)

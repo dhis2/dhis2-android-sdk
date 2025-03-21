@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.event
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -37,10 +37,9 @@ import org.junit.Test
 class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val eventFilters = d2.eventModule().eventFilters()
-            .blockingGet()
+        val eventFilters = d2.eventModule().eventFilters().blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -49,7 +48,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byProgram().eq("lxAQ7Zs9VYR")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -58,7 +57,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byProgramStage().eq("dBwrot7S420")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -67,16 +66,16 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byDescription().eq("Simple Filter for TB events")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_follow_up() {
         val eventFilters = d2.eventModule().eventFilters()
-            .byFollowUp().eq(java.lang.Boolean.FALSE)
+            .byFollowUp().isFalse
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -85,7 +84,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byOrganisationUnit().eq("DiszpKrYNg8")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -94,7 +93,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byOuMode().eq(OrganisationUnitMode.ACCESSIBLE)
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -103,7 +102,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byAssignedUserMode().eq(AssignedUserMode.CURRENT)
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -112,7 +111,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byOrder().eq("dueDate:asc,createdDate:desc")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -121,7 +120,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byDisplayColumnOrder().like("assignedUser")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(2)
+        assertThat(eventFilters.size).isEqualTo(2)
     }
 
     @Test
@@ -130,7 +129,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byEvents().like("event2Uid")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -139,7 +138,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byEventStatus().eq(EventStatus.ACTIVE)
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -148,7 +147,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byEventDate().like("2014-05-01")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -157,7 +156,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byDueDate().like("LAST_2_SIXMONTHS")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -166,7 +165,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byLastUpdatedDate().like("-5")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -175,7 +174,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .byCompletedDate().like("RELATIVE")
             .blockingGet()
 
-        Truth.assertThat(eventFilters.size).isEqualTo(1)
+        assertThat(eventFilters.size).isEqualTo(1)
     }
 
     @Test
@@ -183,12 +182,7 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val eventFilter = d2.eventModule().eventFilters()
             .withEventDataFilters().one().blockingGet()
 
-        Truth.assertThat(
-            eventFilter!!.eventQueryCriteria()!!
-                .dataFilters()!!.size,
-        ).isEqualTo(4)
-        Truth.assertThat(
-            eventFilter.eventQueryCriteria()!!.dataFilters()!![0].dataItem(),
-        ).isEqualTo("abcDataElementUid")
+        assertThat(eventFilter!!.eventQueryCriteria()!!.dataFilters()!!.size).isEqualTo(4)
+        assertThat(eventFilter.eventQueryCriteria()!!.dataFilters()!![0].dataItem()).isEqualTo("abcDataElementUid")
     }
 }

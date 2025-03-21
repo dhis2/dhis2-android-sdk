@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.dataapproval
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -37,7 +37,8 @@ class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
     fun find_all() {
         val dataApprovals = d2.dataSetModule().dataApprovals()
             .blockingGet()
-        Truth.assertThat(dataApprovals.size).isEqualTo(1)
+
+        assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
@@ -45,7 +46,8 @@ class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val dataApprovals = d2.dataSetModule().dataApprovals()
             .byWorkflowUid().eq("rIUL3hYOjJc")
             .blockingGet()
-        Truth.assertThat(dataApprovals.size).isEqualTo(1)
+
+        assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
@@ -53,7 +55,8 @@ class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val dataApprovals = d2.dataSetModule().dataApprovals()
             .byOrganisationUnitUid().eq("DiszpKrYNg8")
             .blockingGet()
-        Truth.assertThat(dataApprovals.size).isEqualTo(1)
+
+        assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
@@ -61,7 +64,8 @@ class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val dataApprovals = d2.dataSetModule().dataApprovals()
             .byPeriodId().eq("2018")
             .blockingGet()
-        Truth.assertThat(dataApprovals.size).isEqualTo(1)
+
+        assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
@@ -69,7 +73,8 @@ class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val dataApprovals = d2.dataSetModule().dataApprovals()
             .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
             .blockingGet()
-        Truth.assertThat(dataApprovals.size).isEqualTo(1)
+
+        assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
@@ -77,6 +82,7 @@ class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val dataApprovals = d2.dataSetModule().dataApprovals()
             .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
             .blockingGet()
-        Truth.assertThat(dataApprovals.size).isEqualTo(1)
+
+        assertThat(dataApprovals.size).isEqualTo(1)
     }
 }

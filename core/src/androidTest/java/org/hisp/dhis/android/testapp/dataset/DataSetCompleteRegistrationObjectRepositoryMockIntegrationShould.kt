@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.dataset
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationObjectRepository
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -49,8 +49,8 @@ class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould : BaseMoc
         }
 
         val dataSetCompleteRegistration = objectRepository().blockingGet()
-        Truth.assertThat(dataSetCompleteRegistration!!.deleted()).isTrue()
-        Truth.assertThat(dataSetCompleteRegistration.syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(dataSetCompleteRegistration!!.deleted()).isTrue()
+        assertThat(dataSetCompleteRegistration.syncState()).isEqualTo(State.TO_UPDATE)
     }
 
     @Test

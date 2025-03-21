@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.settings
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -35,8 +35,8 @@ class LatestAppVersionObjectRepositoryMockIntegrationShould : BaseMockIntegratio
     @Test
     fun find_latest_app_version() {
         val latestAppVersion = d2.settingModule().latestAppVersion().blockingGet()
-        Truth.assertThat(latestAppVersion?.version()).isEqualTo("40.3")
-        Truth.assertThat(latestAppVersion?.downloadURL()).isEqualTo(
+        assertThat(latestAppVersion?.version()).isEqualTo("40.3")
+        assertThat(latestAppVersion?.downloadURL()).isEqualTo(
             "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.3/dhis2-40.3.apk",
         )
     }

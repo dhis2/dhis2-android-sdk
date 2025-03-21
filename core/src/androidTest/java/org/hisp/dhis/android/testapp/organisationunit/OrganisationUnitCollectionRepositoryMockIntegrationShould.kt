@@ -38,6 +38,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun find_all() {
         val organisationUnits = d2.organisationUnitModule().organisationUnits().blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(3)
     }
 
@@ -46,6 +47,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byParentUid().eq("YuQRtpLP10I")
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(2)
     }
 
@@ -54,6 +56,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byPath().eq("/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8")
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(1)
     }
 
@@ -62,6 +65,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byOpeningDate().eq("1970-01-01T00:00:00.000".toJavaDate())
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(1)
     }
 
@@ -70,6 +74,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byClosedDate().eq("2025-05-22T15:21:48.516".toJavaDate())
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(1)
     }
 
@@ -78,6 +83,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byLevel().eq(4)
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(2)
     }
 
@@ -86,6 +92,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byGeometryType().eq(FeatureType.POINT)
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(1)
     }
 
@@ -94,6 +101,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byGeometryCoordinates().isNotNull
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(1)
     }
 
@@ -113,12 +121,12 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     @Test
     fun filter_by_root_organisation_unit() {
         val rootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
-            .byRootOrganisationUnit(java.lang.Boolean.TRUE)
+            .byRootOrganisationUnit(true)
             .blockingGet()
         assertThat(rootOrganisationUnits.size).isEqualTo(1)
 
         val notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
-            .byRootOrganisationUnit(java.lang.Boolean.FALSE)
+            .byRootOrganisationUnit(false)
             .blockingGet()
         assertThat(notRootOrganisationUnits.size).isEqualTo(2)
     }
@@ -128,6 +136,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byProgramUids(listOf("lxAQ7Zs9VYR"))
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(1)
     }
 
@@ -136,15 +145,17 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnits = d2.organisationUnitModule().organisationUnits()
             .byDataSetUids(listOf("lyLU2wR22tC"))
             .blockingGet()
+
         assertThat(organisationUnits.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_root_capture_organisation_unit() {
         val rootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
-            .byRootOrganisationUnit(java.lang.Boolean.TRUE)
+            .byRootOrganisationUnit(true)
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .blockingGet()
+
         assertThat(rootOrganisationUnits.size).isEqualTo(1)
     }
 
@@ -153,6 +164,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule().organisationUnits()
             .byUid().eq("DiszpKrYNg8")
             .withProgramUids().one().blockingGet()
+
         assertThat(organisationUnit!!.programs()!!.size).isEqualTo(3)
         for (program in organisationUnit.programs()!!) {
             assertThat(program.uid()).isNotNull()
@@ -164,6 +176,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule().organisationUnits()
             .byUid().eq("DiszpKrYNg8")
             .withDataSetUids().one().blockingGet()
+
         assertThat(organisationUnit!!.dataSets()!!.size).isEqualTo(2)
         for (dataSet in organisationUnit.dataSets()!!) {
             assertThat(dataSet.uid()).isNotNull()
@@ -175,6 +188,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule().organisationUnits()
             .byUid().eq("DiszpKrYNg8")
             .withOrganisationUnitGroups().one().blockingGet()
+
         assertThat(organisationUnit!!.organisationUnitGroups()!![0].name()).isEqualTo("CHC")
     }
 
@@ -183,6 +197,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule()
             .organisationUnits()
             .withProgramUids().blockingGet()[1]
+
         assertThat(organisationUnit.programs()!!.size).isEqualTo(3)
         for (program in organisationUnit.programs()!!) {
             assertThat(program.uid()).isNotNull()
@@ -194,6 +209,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule()
             .organisationUnits()
             .withDataSetUids().blockingGet()[1]
+
         assertThat(organisationUnit.dataSets()!!.size).isEqualTo(2)
         for (dataSet in organisationUnit.dataSets()!!) {
             assertThat(dataSet.uid()).isNotNull()
@@ -205,6 +221,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule()
             .organisationUnits()
             .withOrganisationUnitGroups().blockingGet()[1]
+
         assertThat(organisationUnit.organisationUnitGroups()!![0].name()).isEqualTo("CHC")
     }
 
@@ -213,6 +230,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule().organisationUnits()
             .byUid().eq("DiszpKrYNg8")
             .withProgramUids().one().blockingGet()
+
         assertThat(organisationUnit!!.programs()!!.size).isEqualTo(3)
         for (program in organisationUnit.programs()!!) {
             assertThat(program.uid()).isNotNull()
@@ -224,6 +242,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule().organisationUnits()
             .byUid().eq("DiszpKrYNg8")
             .withDataSetUids().one().blockingGet()
+
         assertThat(organisationUnit!!.dataSets()!!.size).isEqualTo(2)
         for (dataSet in organisationUnit.dataSets()!!) {
             assertThat(dataSet.uid()).isNotNull()
@@ -235,6 +254,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val organisationUnit = d2.organisationUnitModule().organisationUnits()
             .byUid().eq("DiszpKrYNg8")
             .withOrganisationUnitGroups().one().blockingGet()
+
         assertThat(organisationUnit!!.organisationUnitGroups()!![0].name()).isEqualTo("CHC")
     }
 }

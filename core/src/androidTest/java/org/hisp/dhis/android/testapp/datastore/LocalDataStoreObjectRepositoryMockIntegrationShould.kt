@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.datastore
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.datastore.LocalDataStoreObjectRepository
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -39,7 +39,7 @@ class LocalDataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
         val repository = objectRepository()
 
         repository.blockingSet(value)
-        Truth.assertThat(repository.blockingGet()!!.value()).isEqualTo(value)
+        assertThat(repository.blockingGet()!!.value()).isEqualTo(value)
 
         repository.blockingDelete()
     }
@@ -49,15 +49,15 @@ class LocalDataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationT
         val repository = objectRepository()
 
         repository.blockingSet("value")
-        Truth.assertThat(repository.blockingExists()).isTrue()
+        assertThat(repository.blockingExists()).isTrue()
         repository.blockingDelete()
-        Truth.assertThat(repository.blockingExists()).isFalse()
+        assertThat(repository.blockingExists()).isFalse()
     }
 
     @Test
     fun return_that_a_value_exists_only_if_it_has_been_created() {
-        Truth.assertThat(d2.dataStoreModule().localDataStore().value("no_key").blockingExists()).isTrue()
-        Truth.assertThat(d2.dataStoreModule().localDataStore().value("key1").blockingExists()).isTrue()
+        assertThat(d2.dataStoreModule().localDataStore().value("no_key").blockingExists()).isTrue()
+        assertThat(d2.dataStoreModule().localDataStore().value("key1").blockingExists()).isTrue()
     }
 
     private fun objectRepository(): LocalDataStoreObjectRepository {

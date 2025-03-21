@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.testapp.datastore
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class LocalDataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        Truth.assertThat(d2.dataStoreModule().localDataStore().blockingGet().size).isEqualTo(2)
+        assertThat(d2.dataStoreModule().localDataStore().blockingGet().size).isEqualTo(2)
     }
 
     @Test
@@ -44,8 +44,8 @@ class LocalDataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrat
             .one()
             .blockingGet()
 
-        Truth.assertThat(pair!!.key()).isEqualTo("key1")
-        Truth.assertThat(pair.value()).isEqualTo("value1")
+        assertThat(pair!!.key()).isEqualTo("key1")
+        assertThat(pair.value()).isEqualTo("value1")
     }
 
     @Test
@@ -55,15 +55,16 @@ class LocalDataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrat
             .one()
             .blockingGet()
 
-        Truth.assertThat(pair!!.key()).isEqualTo("key2")
-        Truth.assertThat(pair.value()).isEqualTo("value2")
+        assertThat(pair!!.key()).isEqualTo("key2")
+        assertThat(pair.value()).isEqualTo("value2")
     }
 
     @Test
     fun return_object_repository() {
         val objectRepository = d2.dataStoreModule().localDataStore()
             .value("key1")
-        Truth.assertThat(objectRepository.blockingExists()).isTrue()
-        Truth.assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("value1")
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+        assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("value1")
     }
 }

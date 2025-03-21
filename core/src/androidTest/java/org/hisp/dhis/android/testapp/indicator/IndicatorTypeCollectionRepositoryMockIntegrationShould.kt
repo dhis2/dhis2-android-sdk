@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.testapp.indicator
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class IndicatorTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val indicatorTypes = d2.indicatorModule().indicatorTypes()
-            .blockingGet()
-        Truth.assertThat(indicatorTypes.size).isEqualTo(1)
+        val indicatorTypes = d2.indicatorModule().indicatorTypes().blockingGet()
+
+        assertThat(indicatorTypes.size).isEqualTo(1)
     }
 
     @Test
@@ -44,7 +44,8 @@ class IndicatorTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         val indicatorTypes = d2.indicatorModule().indicatorTypes()
             .byNumber().isFalse
             .blockingGet()
-        Truth.assertThat(indicatorTypes.size).isEqualTo(1)
+
+        assertThat(indicatorTypes.size).isEqualTo(1)
     }
 
     @Test
@@ -52,6 +53,7 @@ class IndicatorTypeCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         val indicatorTypes = d2.indicatorModule().indicatorTypes()
             .byFactor().eq(100)
             .blockingGet()
-        Truth.assertThat(indicatorTypes.size).isEqualTo(1)
+
+        assertThat(indicatorTypes.size).isEqualTo(1)
     }
 }

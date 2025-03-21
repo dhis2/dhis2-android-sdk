@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.imports
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
@@ -37,63 +37,80 @@ class TrackerImportConflictCollectionRepositoryMockIntegrationShould : BaseMockI
     @Test
     fun find_all() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts().blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(2)
+
+        assertThat(trackerImportConflicts.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_conflict() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byConflict().eq("conflict").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byConflict().eq("conflict")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_value() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byValue().eq("value").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byValue().eq("value")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_tracked_entity_instance() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byTrackedEntityInstanceUid().eq("nWrB0TfWlvh").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byTrackedEntityInstanceUid().eq("nWrB0TfWlvh")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_enrollment() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byEnrollmentUid().eq("enroll2").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byEnrollmentUid().eq("enroll2")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_event() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byEventUid().eq("event2").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byEventUid().eq("event2")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_tale_reference() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byTableReference().eq("table_reference").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byTableReference().eq("table_reference")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_error_code() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byErrorCode().eq("error_code").blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byErrorCode().eq("error_code")
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_status() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byStatus().eq(ImportStatus.SUCCESS).blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(1)
+            .byStatus().eq(ImportStatus.SUCCESS)
+            .blockingGet()
+
+        assertThat(trackerImportConflicts.size).isEqualTo(1)
     }
 
     @Test
@@ -101,6 +118,7 @@ class TrackerImportConflictCollectionRepositoryMockIntegrationShould : BaseMockI
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
             .byCreated().eq("2017-11-29T11:27:46.935".toJavaDate())
             .blockingGet()
-        Truth.assertThat(trackerImportConflicts.size).isEqualTo(2)
+
+        assertThat(trackerImportConflicts.size).isEqualTo(2)
     }
 }

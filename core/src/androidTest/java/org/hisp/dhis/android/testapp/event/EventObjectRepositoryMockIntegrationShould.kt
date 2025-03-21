@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.event
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.common.FeatureType
@@ -55,7 +55,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setOrganisationUnitUid(orgUnitUid)
-        Truth.assertThat(repository.blockingGet()!!.organisationUnit()).isEqualTo(orgUnitUid)
+        assertThat(repository.blockingGet()!!.organisationUnit()).isEqualTo(orgUnitUid)
 
         repository.blockingDelete()
         OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid)
@@ -82,7 +82,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setEventDate(eventDate)
-        Truth.assertThat(repository.blockingGet()!!.eventDate()).isEqualTo(eventDate)
+        assertThat(repository.blockingGet()!!.eventDate()).isEqualTo(eventDate)
 
         repository.blockingDelete()
     }
@@ -94,9 +94,9 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setStatus(eventStatus)
-        Truth.assertThat(repository.blockingGet()!!.status()).isEqualTo(eventStatus)
-        Truth.assertThat(repository.blockingGet()!!.completedDate()).isNotNull()
-        Truth.assertThat(repository.blockingGet()!!.completedBy()).isNotNull()
+        assertThat(repository.blockingGet()!!.status()).isEqualTo(eventStatus)
+        assertThat(repository.blockingGet()!!.completedDate()).isNotNull()
+        assertThat(repository.blockingGet()!!.completedBy()).isNotNull()
 
         repository.blockingDelete()
     }
@@ -108,9 +108,9 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setStatus(eventStatus)
-        Truth.assertThat(repository.blockingGet()!!.status()).isEqualTo(eventStatus)
-        Truth.assertThat(repository.blockingGet()!!.completedDate()).isNull()
-        Truth.assertThat(repository.blockingGet()!!.completedBy()).isNull()
+        assertThat(repository.blockingGet()!!.status()).isEqualTo(eventStatus)
+        assertThat(repository.blockingGet()!!.completedDate()).isNull()
+        assertThat(repository.blockingGet()!!.completedBy()).isNull()
 
         repository.blockingDelete()
     }
@@ -122,7 +122,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setCompletedDate(completedDate)
-        Truth.assertThat(repository.blockingGet()!!.completedDate()).isEqualTo(completedDate)
+        assertThat(repository.blockingGet()!!.completedDate()).isEqualTo(completedDate)
 
         repository.blockingDelete()
     }
@@ -132,7 +132,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setCompletedBy("admin")
-        Truth.assertThat(repository.blockingGet()!!.completedBy()).isEqualTo("admin")
+        assertThat(repository.blockingGet()!!.completedBy()).isEqualTo("admin")
 
         repository.blockingDelete()
     }
@@ -144,7 +144,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setDueDate(dueDate)
-        Truth.assertThat(repository.blockingGet()!!.dueDate()).isEqualTo(dueDate)
+        assertThat(repository.blockingGet()!!.dueDate()).isEqualTo(dueDate)
 
         repository.blockingDelete()
     }
@@ -159,7 +159,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setGeometry(geometry)
-        Truth.assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
+        assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
 
         repository.blockingDelete()
     }
@@ -176,8 +176,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
             repository.setGeometry(geometry)
             Assert.fail("Invalid geometry should fail")
         } catch (d2Error: D2Error) {
-            Truth.assertThat(d2Error.errorCode())
-                .isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE)
+            assertThat(d2Error.errorCode()).isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE)
         } finally {
             repository.blockingDelete()
         }
@@ -192,7 +191,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setAttributeOptionComboUid(attributeOptionCombo)
-        Truth.assertThat(repository.blockingGet()!!.attributeOptionCombo())
+        assertThat(repository.blockingGet()!!.attributeOptionCombo())
             .isEqualTo(attributeOptionCombo)
 
         repository.delete()
@@ -220,7 +219,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         val repository = objectRepository()
 
         repository.setAssignedUser(assignedUser)
-        Truth.assertThat(repository.blockingGet()!!.assignedUser()).isEqualTo(assignedUser)
+        assertThat(repository.blockingGet()!!.assignedUser()).isEqualTo(assignedUser)
 
         repository.blockingDelete()
     }

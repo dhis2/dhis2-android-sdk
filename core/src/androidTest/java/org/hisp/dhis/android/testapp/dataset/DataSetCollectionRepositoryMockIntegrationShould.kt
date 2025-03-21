@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.dataset
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.dataset.TextAlign
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -38,9 +38,8 @@ import org.junit.Test
 class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val dataSets = d2.dataSetModule().dataSets()
-            .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(3)
+        val dataSets = d2.dataSetModule().dataSets().blockingGet()
+        assertThat(dataSets.size).isEqualTo(3)
     }
 
     @Test
@@ -48,7 +47,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byPeriodType().eq(PeriodType.Monthly)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -56,7 +56,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byCategoryComboUid().eq("m2jTvAj5kkm")
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -64,7 +65,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byMobile().isFalse
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -72,7 +74,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byVersion().eq(22)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -80,7 +83,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byVersion().biggerThan(21)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -88,7 +92,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byVersion().biggerThan(22)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -96,7 +101,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byVersion().smallerThan(21)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -104,7 +110,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byVersion().smallerThan(23)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -112,7 +119,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byExpiryDays().eq(1)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -120,7 +128,7 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byTimelyDays().eq(3)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -128,7 +136,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byNotifyCompletingUser().isFalse
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -136,7 +145,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byOpenFuturePeriods().eq(3)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -144,7 +154,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byFieldCombinationRequired().isFalse
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -152,7 +163,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byValidCompleteOnly().isFalse
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -160,7 +172,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byNoValueRequiresComment().isTrue
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -168,7 +181,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .bySkipOffline().isFalse
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -176,7 +190,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byDataElementDecoration().isTrue
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -184,7 +199,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byRenderAsTabs().isTrue
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -192,7 +208,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byRenderHorizontally().isFalse
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -200,7 +217,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byAccessDataWrite().isTrue
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(3)
+
+        assertThat(dataSets.size).isEqualTo(3)
     }
 
     @Test
@@ -208,7 +226,7 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byColor().eq("#000")
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -216,7 +234,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byIcon().eq("my-icon-name")
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -224,7 +243,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byOrganisationUnitUid("DiszpKrYNg8")
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -232,7 +252,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byOrganisationUnitList(listOf("DiszpKrYNg8"))
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -240,12 +261,12 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSetCapture = d2.dataSetModule().dataSets()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .blockingGet()
-        Truth.assertThat(dataSetCapture.size).isEqualTo(3)
+        assertThat(dataSetCapture.size).isEqualTo(3)
 
         val dataSetSearch = d2.dataSetModule().dataSets()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .blockingGet()
-        Truth.assertThat(dataSetSearch.size).isEqualTo(0)
+        assertThat(dataSetSearch.size).isEqualTo(0)
     }
 
     @Test
@@ -253,7 +274,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byHeader().eq("Title")
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(2)
+
+        assertThat(dataSets.size).isEqualTo(2)
     }
 
     @Test
@@ -261,7 +283,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .bySubHeader().eq("Subtitle")
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -269,7 +292,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSets = d2.dataSetModule().dataSets()
             .byCustomTextAlign().eq(TextAlign.LINE_END)
             .blockingGet()
-        Truth.assertThat(dataSets.size).isEqualTo(1)
+
+        assertThat(dataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -277,12 +301,13 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val verticalDataSets = d2.dataSetModule().dataSets()
             .byTabsDirection().eq(TabsDirection.VERTICAL)
             .blockingGet()
-        Truth.assertThat(verticalDataSets.size).isEqualTo(1)
+        assertThat(verticalDataSets.size).isEqualTo(1)
 
         val horizontalDataSets = d2.dataSetModule().dataSets()
             .byTabsDirection().eq(TabsDirection.HORIZONTAL)
             .blockingGet()
-        Truth.assertThat(horizontalDataSets.size).isEqualTo(1)
+
+        assertThat(horizontalDataSets.size).isEqualTo(1)
     }
 
     @Test
@@ -290,7 +315,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSet = d2.dataSetModule().dataSets()
             .withCompulsoryDataElementOperands()
             .one().blockingGet()
-        Truth.assertThat(dataSet!!.compulsoryDataElementOperands()!!.size).isEqualTo(2)
+
+        assertThat(dataSet!!.compulsoryDataElementOperands()!!.size).isEqualTo(2)
     }
 
     @Test
@@ -298,7 +324,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSet = d2.dataSetModule().dataSets()
             .withDataInputPeriods()
             .one().blockingGet()
-        Truth.assertThat(dataSet!!.dataInputPeriods()!!.size).isEqualTo(1)
+
+        assertThat(dataSet!!.dataInputPeriods()!!.size).isEqualTo(1)
     }
 
     @Test
@@ -306,7 +333,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSet = d2.dataSetModule().dataSets()
             .withDataSetElements()
             .one().blockingGet()
-        Truth.assertThat(dataSet!!.dataSetElements()!!.size).isEqualTo(2)
+
+        assertThat(dataSet!!.dataSetElements()!!.size).isEqualTo(2)
     }
 
     @Test
@@ -315,7 +343,8 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
             .withDataSetElements()
             .uid("lyLU2wR22tC")
             .blockingGet()
-        Truth.assertThat(dataSet!!.dataSetElements()!!.size).isEqualTo(2)
+
+        assertThat(dataSet!!.dataSetElements()!!.size).isEqualTo(2)
     }
 
     @Test
@@ -323,6 +352,7 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSet = d2.dataSetModule().dataSets()
             .withIndicators()
             .one().blockingGet()
-        Truth.assertThat(dataSet!!.indicators()!!.size).isEqualTo(1)
+
+        assertThat(dataSet!!.indicators()!!.size).isEqualTo(1)
     }
 }

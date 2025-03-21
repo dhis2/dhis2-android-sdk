@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.dataset
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -37,98 +37,88 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
 
     @Test
     fun find_all() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations().blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 
     @Test
     fun filter_by_period() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byPeriod()
-                .eq("2016")
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byPeriod()
+            .eq("2016")
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(1)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_data_set() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byDataSetUid()
-                .eq("lyLU2wR22tC")
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byDataSetUid()
+            .eq("lyLU2wR22tC")
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 
     @Test
     fun filter_by_organisation_unit() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byOrganisationUnitUid()
-                .eq("DiszpKrYNg8")
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byOrganisationUnitUid()
+            .eq("DiszpKrYNg8")
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_attribute_option_combo() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byAttributeOptionComboUid()
-                .eq("bRowv6yZOF2").blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byAttributeOptionComboUid()
+            .eq("bRowv6yZOF2").blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 
     @Test
     @Throws(ParseException::class)
     fun filter_by_date_after() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byDate()
-                .after("2010-08-03".toJavaSimpleDate()!!)
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byDate()
+            .after("2010-08-03".toJavaSimpleDate()!!)
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(1)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(1)
     }
 
     @Test
     @Throws(ParseException::class)
     fun filter_by_date_before() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byDate()
-                .before("2010-08-03".toJavaSimpleDate()!!)
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byDate()
+            .before("2010-08-03".toJavaSimpleDate()!!)
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_stored_by() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byStoredBy()
-                .eq("imported")
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byStoredBy()
+            .eq("imported")
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
     }
 
     @Test
     fun filter_by_deleted() {
-        val dataSetCompleteRegistrations =
-            d2.dataSetModule().dataSetCompleteRegistrations()
-                .byDeleted().isFalse
-                .blockingGet()
+        val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
+            .byDeleted().isFalse
+            .blockingGet()
 
-        Truth.assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 }

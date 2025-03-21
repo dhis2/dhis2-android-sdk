@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
@@ -39,7 +39,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val relationships = d2.relationshipModule().relationships()
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(3)
+        assertThat(relationships.size).isEqualTo(3)
     }
 
     @Test
@@ -48,7 +48,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .byUid().eq("AJOytZW7OaI")
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
@@ -57,7 +57,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .byName().eq("Lab Sample to Person")
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
@@ -66,7 +66,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
@@ -75,7 +75,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
@@ -84,7 +84,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .byRelationshipType().eq("V2kkHafqs8G")
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
@@ -93,7 +93,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .bySyncState().eq(State.SYNCED)
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(3)
+        assertThat(relationships.size).isEqualTo(3)
     }
 
     @Test
@@ -104,31 +104,31 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val relationships = d2.relationshipModule().relationships()
             .getByItem(item)
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
     fun get_by_item_including_deleted() {
         val item = RelationshipItem.builder().trackedEntityInstance(
-            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh")
-                .build(),
+            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build(),
         ).build()
         val relationships = d2.relationshipModule().relationships().getByItem(item, true)
-        Truth.assertThat(relationships.size).isEqualTo(1)
+
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
     fun get_by_item_including_all_linked() {
         val item = RelationshipItem.builder().trackedEntityInstance(
-            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh")
-                .build(),
+            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build(),
         ).build()
         val relationships = d2.relationshipModule().relationships().getByItem(
             item,
             includeDeleted = false,
             onlyAccessible = false,
         )
-        Truth.assertThat(relationships.size).isEqualTo(2)
+
+        assertThat(relationships.size).isEqualTo(2)
     }
 
     @Test
@@ -145,7 +145,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .byItem(item)
             .blockingGet()
 
-        Truth.assertThat(relationships.size).isEqualTo(1)
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
@@ -154,6 +154,6 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
             .uid("AJOytZW7OaB")
             .blockingGet()
 
-        Truth.assertThat(relationship!!.uid()).isEqualTo("AJOytZW7OaB")
+        assertThat(relationship!!.uid()).isEqualTo("AJOytZW7OaB")
     }
 }

@@ -83,7 +83,7 @@ class TrackedEntityInstanceFilterCollectionRepositoryMockIntegrationShould : Bas
     @Test
     fun filter_by_follow_up() {
         val trackedEntityInstanceFilters = d2.trackedEntityModule().trackedEntityInstanceFilters()
-            .byFollowUp().eq(java.lang.Boolean.TRUE)
+            .byFollowUp().isTrue
             .blockingGet()
 
         assertThat(trackedEntityInstanceFilters.size).isEqualTo(1)

@@ -25,67 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.dataapproval
 
-package org.hisp.dhis.android.testapp.dataapproval;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.dataapproval.DataApproval;
-import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class DataApprovalCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
-                .blockingGet();
-        assertThat(dataApprovals.size()).isEqualTo(1);
+    fun find_all() {
+        val dataApprovals = d2.dataSetModule().dataApprovals()
+            .blockingGet()
+        Truth.assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_workflow() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
-                .byWorkflowUid().eq("rIUL3hYOjJc")
-                .blockingGet();
-        assertThat(dataApprovals.size()).isEqualTo(1);
+    fun filter_by_workflow() {
+        val dataApprovals = d2.dataSetModule().dataApprovals()
+            .byWorkflowUid().eq("rIUL3hYOjJc")
+            .blockingGet()
+        Truth.assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_organisation_unit() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
-                .byOrganisationUnitUid().eq("DiszpKrYNg8")
-                .blockingGet();
-        assertThat(dataApprovals.size()).isEqualTo(1);
+    fun filter_by_organisation_unit() {
+        val dataApprovals = d2.dataSetModule().dataApprovals()
+            .byOrganisationUnitUid().eq("DiszpKrYNg8")
+            .blockingGet()
+        Truth.assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_period() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
-                .byPeriodId().eq("2018")
-                .blockingGet();
-        assertThat(dataApprovals.size()).isEqualTo(1);
+    fun filter_by_period() {
+        val dataApprovals = d2.dataSetModule().dataApprovals()
+            .byPeriodId().eq("2018")
+            .blockingGet()
+        Truth.assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_attribute_option_combo() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
-                .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
-                .blockingGet();
-        assertThat(dataApprovals.size()).isEqualTo(1);
+    fun filter_by_attribute_option_combo() {
+        val dataApprovals = d2.dataSetModule().dataApprovals()
+            .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
+            .blockingGet()
+        Truth.assertThat(dataApprovals.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_state() {
-        List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
-                .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
-                .blockingGet();
-        assertThat(dataApprovals.size()).isEqualTo(1);
+    fun filter_by_state() {
+        val dataApprovals = d2.dataSetModule().dataApprovals()
+            .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
+            .blockingGet()
+        Truth.assertThat(dataApprovals.size).isEqualTo(1)
     }
 }

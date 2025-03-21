@@ -99,7 +99,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
     @Test
     fun get_by_item() {
         val item = RelationshipItem.builder().trackedEntityInstance(
-            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()
+            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build(),
         ).build()
         val relationships = d2.relationshipModule().relationships()
             .getByItem(item)
@@ -111,7 +111,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
     fun get_by_item_including_deleted() {
         val item = RelationshipItem.builder().trackedEntityInstance(
             RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh")
-                .build()
+                .build(),
         ).build()
         val relationships = d2.relationshipModule().relationships().getByItem(item, true)
         Truth.assertThat(relationships.size).isEqualTo(1)
@@ -121,12 +121,12 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
     fun get_by_item_including_all_linked() {
         val item = RelationshipItem.builder().trackedEntityInstance(
             RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh")
-                .build()
+                .build(),
         ).build()
         val relationships = d2.relationshipModule().relationships().getByItem(
             item,
             includeDeleted = false,
-            onlyAccessible = false
+            onlyAccessible = false,
         )
         Truth.assertThat(relationships.size).isEqualTo(2)
     }
@@ -136,7 +136,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         val item = RelationshipItem.builder()
             .trackedEntityInstance(
                 RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh")
-                    .build()
+                    .build(),
             )
             .relationshipItemType(RelationshipConstraintType.FROM)
             .build()

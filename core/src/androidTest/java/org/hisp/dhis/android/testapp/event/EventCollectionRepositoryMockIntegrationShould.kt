@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *  
+ *
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -164,7 +164,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             Period.builder()
                 .startDate("2017-02-27T00:00:00.000".toJavaDate())
                 .endDate("2017-02-27T00:00:00.000".toJavaDate())
-                .build()
+                .build(),
         )
         val events = d2.eventModule().events()
             .byEventDate().inPeriods(periods)
@@ -420,9 +420,12 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
 
         val eventUid = d2.eventModule().events().blockingAdd(
             EventCreateProjection.create(
-                "enroll1", "lxAQ7Zs9VYR", "dBwrot7S420",
-                "DiszpKrYNg8", "bRowv6yZOF2"
-            )
+                "enroll1",
+                "lxAQ7Zs9VYR",
+                "dBwrot7S420",
+                "DiszpKrYNg8",
+                "bRowv6yZOF2",
+            ),
         )
 
         val events2 = d2.eventModule().events().blockingGet()

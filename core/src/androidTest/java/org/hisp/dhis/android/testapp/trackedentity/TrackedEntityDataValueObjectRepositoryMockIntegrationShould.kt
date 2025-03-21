@@ -105,13 +105,13 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
         assertThat(
             d2.trackedEntityModule().trackedEntityDataValues()
                 .value("no_event", "no_data_element")
-                .blockingExists()
+                .blockingExists(),
         ).isFalse()
 
         assertThat(
             d2.trackedEntityModule().trackedEntityDataValues()
                 .value("single1", "jDx8LZlznYu")
-                .blockingExists()
+                .blockingExists(),
         ).isTrue()
     }
 
@@ -148,7 +148,7 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
             WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, sampleEvent)
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, sampleDataElement)
-                .build()
+                .build(),
         )
     }
 

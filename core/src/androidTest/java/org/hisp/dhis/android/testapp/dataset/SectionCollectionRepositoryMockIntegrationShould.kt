@@ -25,130 +25,124 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.dataset
 
-package org.hisp.dhis.android.testapp.dataset;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.dataset.SectionPivotMode
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionPivotMode;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.junit.Test;
-
-import java.util.List;
-
-public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class SectionCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all_objects() {
-        List<Section> sections = d2.dataSetModule().sections().blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
-        assertThat(sections.get(0).name()).isEqualTo("Immunization");
+    fun find_all_objects() {
+        val sections = d2.dataSetModule().sections().blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
+        Truth.assertThat(sections[0].name()).isEqualTo("Immunization")
     }
 
     @Test
-    public void filter_by_description() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byDescription().eq("Immunization dose administration")
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_description() {
+        val sections = d2.dataSetModule().sections()
+            .byDescription().eq("Immunization dose administration")
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_sort_order() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .bySortOrder().eq(1)
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_sort_order() {
+        val sections = d2.dataSetModule().sections()
+            .bySortOrder().eq(1)
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_show_row_totals() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byShowRowTotals().isTrue()
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_show_row_totals() {
+        val sections = d2.dataSetModule().sections()
+            .byShowRowTotals().isTrue
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_show_column_totals() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byShowColumnTotals().isFalse()
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_show_column_totals() {
+        val sections = d2.dataSetModule().sections()
+            .byShowColumnTotals().isFalse
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_data_set_uid() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byDataSetUid().eq("lyLU2wR22tC")
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_data_set_uid() {
+        val sections = d2.dataSetModule().sections()
+            .byDataSetUid().eq("lyLU2wR22tC")
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_disable_data_element_autoGrouping() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byDisableDataElementAutoGroup().eq(true)
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_disable_data_element_autoGrouping() {
+        val sections = d2.dataSetModule().sections()
+            .byDisableDataElementAutoGroup().eq(true)
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_pivot_mode() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byPivotMode().eq(SectionPivotMode.MOVE_CATEGORIES)
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_pivot_mode() {
+        val sections = d2.dataSetModule().sections()
+            .byPivotMode().eq(SectionPivotMode.MOVE_CATEGORIES)
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_pivoted_category() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byPivotedCategory().eq("pivoted category")
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_pivoted_category() {
+        val sections = d2.dataSetModule().sections()
+            .byPivotedCategory().eq("pivoted category")
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_after_section_text() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byAfterSectionText().eq("Text after section")
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_after_section_text() {
+        val sections = d2.dataSetModule().sections()
+            .byAfterSectionText().eq("Text after section")
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_before_section_text() {
-        List<Section> sections = d2.dataSetModule().sections()
-                .byBeforeSectionText().eq("Text before section")
-                .blockingGet();
-        assertThat(sections.size()).isEqualTo(1);
+    fun filter_by_before_section_text() {
+        val sections = d2.dataSetModule().sections()
+            .byBeforeSectionText().eq("Text before section")
+            .blockingGet()
+        Truth.assertThat(sections.size).isEqualTo(1)
     }
 
     @Test
-    public void return_greyed_fields_as_children() {
-        Section section = d2.dataSetModule().sections()
-                .withGreyedFields().one().blockingGet();
-        assertThat(section.greyedFields().size()).isEqualTo(1);
-        assertThat(section.greyedFields().get(0).uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
+    fun return_greyed_fields_as_children() {
+        val section = d2.dataSetModule().sections()
+            .withGreyedFields().one().blockingGet()
+        Truth.assertThat(section!!.greyedFields()!!.size).isEqualTo(1)
+        Truth.assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
     }
 
     @Test
-    public void return_data_element_as_children() {
-        Section section = d2.dataSetModule().sections()
-                .withDataElements().one().blockingGet();
-        assertThat(section.dataElements().size()).isEqualTo(1);
-        assertThat(section.dataElements().get(0).uid()).isEqualTo("g9eOBujte1U");
-        assertThat(section.dataElements().get(0).code()).isEqualTo("DE_2005735");
+    fun return_data_element_as_children() {
+        val section = d2.dataSetModule().sections()
+            .withDataElements().one().blockingGet()
+        Truth.assertThat(section!!.dataElements()!!.size).isEqualTo(1)
+        Truth.assertThat(section.dataElements()!![0].uid()).isEqualTo("g9eOBujte1U")
+        Truth.assertThat(section.dataElements()!![0].code()).isEqualTo("DE_2005735")
     }
 
     @Test
-    public void return_indicators_as_children() {
-        Section section = d2.dataSetModule().sections()
-                .withIndicators().one().blockingGet();
-        assertThat(section.indicators().size()).isEqualTo(1);
-        assertThat(section.indicators().get(0).uid()).isEqualTo("ReUHfIn0pTQ");
-        assertThat(section.indicators().get(0).code()).isEqualTo("IN_52462");
+    fun return_indicators_as_children() {
+        val section = d2.dataSetModule().sections()
+            .withIndicators().one().blockingGet()
+        Truth.assertThat(section!!.indicators()!!.size).isEqualTo(1)
+        Truth.assertThat(section.indicators()!![0].uid()).isEqualTo("ReUHfIn0pTQ")
+        Truth.assertThat(section.indicators()!![0].code()).isEqualTo("IN_52462")
     }
 }

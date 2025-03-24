@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.testapp.indicator
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_all() {
-        val indicators = d2.indicatorModule().indicators()
-            .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+        val indicators = d2.indicatorModule().indicators().blockingGet()
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -46,8 +45,9 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .withLegendSets()
             .one()
             .blockingGet()!!
-        Truth.assertThat(indicator.legendSets()!!.size).isEqualTo(1)
-        Truth.assertThat(indicator.legendSets()!![0].uid()).isEqualTo("rtOkbpGEud4")
+
+        assertThat(indicator.legendSets()!!.size).isEqualTo(1)
+        assertThat(indicator.legendSets()!![0].uid()).isEqualTo("rtOkbpGEud4")
     }
 
     @Test
@@ -55,7 +55,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byAnnualized().isFalse
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -63,7 +64,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byIndicatorTypeUid().eq("bWuNrMHEoZ0")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -75,7 +77,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
                     "-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
             )
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -83,7 +86,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byNumeratorDescription().eq("ANC1-ANC3")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -91,7 +95,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byDenominator().eq("#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -99,7 +104,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byDenominatorDescription().eq("Total 1st ANC visits")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -107,7 +113,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byUrl().eq("url")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -115,7 +122,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byColor().eq("#FF0000")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -123,7 +131,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byIcon().eq("circle")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -131,7 +140,8 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .byDataSetUid("lyLU2wR22tC")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 
     @Test
@@ -139,6 +149,7 @@ class IndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         val indicators = d2.indicatorModule().indicators()
             .bySectionUid("Y2rk0vzgvAx")
             .blockingGet()
-        Truth.assertThat(indicators.size).isEqualTo(1)
+
+        assertThat(indicators.size).isEqualTo(1)
     }
 }

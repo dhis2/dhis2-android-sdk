@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,11 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
-class UserCredentialsObjectRepositoryMockIntegrationShould :
-    BaseMockIntegrationTestFullDispatcher() {
+class UserCredentialsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun find_user() {
         val userCredentials = d2.userModule().userCredentials().blockingGet()!!
+
         assertThat(userCredentials.username()).isEqualTo("android")
         assertThat(userCredentials.name()).isEqualTo("John Barnes")
         assertThat(userCredentials.displayName()).isEqualTo("John Barnes")
@@ -44,6 +44,7 @@ class UserCredentialsObjectRepositoryMockIntegrationShould :
     @Test
     fun return_user_roles_as_children() {
         val userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet()!!
+
         assertThat(userCredentials.userRoles()!!.size).isEqualTo(1)
         assertThat(userCredentials.userRoles()!![0].name()).isEqualTo("Superuser")
     }

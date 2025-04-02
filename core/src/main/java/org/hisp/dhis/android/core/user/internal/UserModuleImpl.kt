@@ -31,6 +31,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.*
+import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
+import org.hisp.dhis.android.core.user.loginconfig.LoginConfigCall
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
 import org.koin.core.annotation.Singleton
@@ -49,6 +51,7 @@ internal class UserModuleImpl(
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
     private val openIDConnectHandler: OpenIDConnectHandlerImpl,
+    private val loginConfigCall: LoginConfigCall,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {
@@ -106,5 +109,13 @@ internal class UserModuleImpl(
 
     override fun openIdHandler(): OpenIDConnectHandler {
         return openIDConnectHandler
+    }
+
+    override fun loginConfig(serverUrl: String): Single<LoginConfig> {
+        return rxSingle { loginConfigCall.loginConfig(serverUrl) }
+    }
+
+    override fun blockingLoginConfig(serverUrl: String): LoginConfig {
+        return loginConfig(serverUrl).blockingGet()
     }
 }

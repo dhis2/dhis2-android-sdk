@@ -1,0 +1,33 @@
+{
+  "apiVersion": "2.41.3",
+  "applicationTitle": "DHIS 2 Demo - Sierra Leone",
+  "applicationDescription": "Welcome to the DHIS 2 demo application",
+  "applicationNotification": "Log in with admin / district and feel free to do changes as system is reset every night.\u003Cbr\u003E\u003Cbr\u003E\u003Ci\u003ENote: In order to maintain access for everyone, changes to the admin user password are blocked in the DHIS2 play environment.\u003C/i\u003E",
+  "applicationLeftSideFooter": "Learn more at \u003Ca href=\"http://www.dhis2.org\"\u003Edhis2.org\u003C/a\u003E",
+  "countryFlag": "sierra_leone",
+  "uiLocale": "en",
+  "loginPopup": "",
+  "loginPageLayout": "SIDEBAR",
+  "recaptchaSite": "6LcVwT0UAAAAAAkO_EGPiYOiymIszZUeHfqWIYX5",
+  "emailConfigured": false,
+  "selfRegistrationEnabled": true,
+  "selfRegistrationNoRecaptcha": false,
+  "allowAccountRecovery": true,
+  "useCustomLogoFront": false,
+  "oidcProviders": [
+    {
+      "id": "external_dhis2_provider_1",
+      "icon": "icon1.png",
+      "iconPadding": "10px",
+      "loginText": "Login with Provider 1",
+      "url": "https://external_dhis2_provider1.com/login"
+    },
+    {
+      "id": "external_dhis2_provider_2",
+      "icon": "icon2.png",
+      "iconPadding": "15px",
+      "loginText": "Login with Provider 2",
+      "url": "https://external_dhis2_provider2.com/login"
+    }
+  ]
+}

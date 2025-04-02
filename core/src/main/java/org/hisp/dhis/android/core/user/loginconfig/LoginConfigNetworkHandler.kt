@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.user.loginconfig
 
-internal interface LoginConfigNetworkHandler {
+internal fun interface LoginConfigNetworkHandler {
     suspend fun loginConfig(): LoginConfig
 }

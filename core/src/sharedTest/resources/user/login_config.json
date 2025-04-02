@@ -18,14 +18,14 @@
     {
       "id": "external_dhis2_provider_1",
       "icon": "icon1.png",
-      "iconPadding": "10px",
+      "iconPadding": "10px 10px",
       "loginText": "Login with Provider 1",
       "url": "https://external_dhis2_provider1.com/login"
     },
     {
       "id": "external_dhis2_provider_2",
       "icon": "icon2.png",
-      "iconPadding": "15px",
+      "iconPadding": "15px 15px",
       "loginText": "Login with Provider 2",
       "url": "https://external_dhis2_provider2.com/login"
     }

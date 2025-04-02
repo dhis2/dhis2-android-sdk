@@ -53,9 +53,12 @@ class LoginConfigCallMockIntegrationShould : BaseMockIntegrationTest() {
         assertThat(loginConfig.applicationTitle).isEqualTo("DHIS 2 Demo - Sierra Leone")
         assertThat(loginConfig.applicationDescription).isEqualTo("Welcome to the DHIS 2 demo application")
         assertThat(loginConfig.applicationNotification).isEqualTo(
-            "Log in with admin / district and feel free to do changes as system is reset every night.<br><br><i>Note: In order to maintain access for everyone, changes to the admin user password are blocked in the DHIS2 play environment.</i>"
+            "Log in with admin / district and feel free to do changes as system is reset every night." +
+                "<br><br><i>Note: In order to maintain access for everyone, changes to the admin user " +
+                "password are blocked in the DHIS2 play environment.</i>",
         )
-        assertThat(loginConfig.applicationLeftSideFooter).isEqualTo("Learn more at <a href=\"http://www.dhis2.org\">dhis2.org</a>")
+        assertThat(loginConfig.applicationLeftSideFooter)
+            .isEqualTo("Learn more at <a href=\"http://www.dhis2.org\">dhis2.org</a>")
         assertThat(loginConfig.countryFlag).isEqualTo("sierra_leone")
         assertThat(loginConfig.uiLocale).isEqualTo("en")
         assertThat(loginConfig.loginPopup).isEqualTo("")

@@ -29,12 +29,7 @@
 package org.hisp.dhis.android.network.loginconfig
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
 import org.hisp.dhis.android.core.user.loginconfig.LoginOidcProvider
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 
 @Serializable
 internal data class LoginOidcProviderDTO(

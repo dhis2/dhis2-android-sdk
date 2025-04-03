@@ -27,22 +27,36 @@
  */
 package org.hisp.dhis.android.core.user.loginconfig
 
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
-import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
+import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
-@Singleton
-class LoginConfigCall internal constructor(
-    private val networkHandler: LoginConfigNetworkHandler,
-) {
+@Singleton(binds = [LoginConfigObjectRepository::class])
+class LoginConfigObjectRepository(
+    private val loginConfigCall: LoginConfigCall,
+    val serverUrl: String,
+) : ReadOnlyObjectRepository<LoginConfig> {
+    override fun get(): Single<LoginConfig?> {
+        return rxSingle { loginConfigCall.download(serverUrl) }.map { it }
+    }
 
-    @Throws(D2Error::class)
-    suspend fun download(serverUrl: String?): LoginConfig {
-        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
-        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
-        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+    override fun blockingGet(): LoginConfig? {
+        return get().blockingGet()
+    }
 
-        return networkHandler.loginConfig()
+    override fun exists(): Single<Boolean> {
+        return get()
+            .map { true }
+            .onErrorReturn { false }
+    }
+
+    override fun blockingExists(): Boolean {
+        return try {
+            blockingGet() != null
+        } catch (e: D2Error) {
+            false
+        }
     }
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user.loginconfig
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [LoginConfigObjectRepository::class])
@@ -52,10 +51,11 @@ class LoginConfigObjectRepository(
             .onErrorReturn { false }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun blockingExists(): Boolean {
         return try {
             blockingGet() != null
-        } catch (e: D2Error) {
+        } catch (e: Exception) {
             false
         }
     }

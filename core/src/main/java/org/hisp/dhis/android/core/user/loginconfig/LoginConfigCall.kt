@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class LoginConfigCall internal constructor(
+internal class LoginConfigCall internal constructor(
     private val networkHandler: LoginConfigNetworkHandler,
 ) {
 

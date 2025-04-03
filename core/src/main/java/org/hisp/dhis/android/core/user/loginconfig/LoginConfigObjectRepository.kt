@@ -28,21 +28,20 @@
 package org.hisp.dhis.android.core.user.loginconfig
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
-import org.koin.core.annotation.Singleton
 
-@Singleton(binds = [LoginConfigObjectRepository::class])
-class LoginConfigObjectRepository(
+class LoginConfigObjectRepository internal constructor(
     private val loginConfigCall: LoginConfigCall,
-    val serverUrl: String,
+    private val serverUrl: String,
 ) : ReadOnlyObjectRepository<LoginConfig> {
     override fun get(): Single<LoginConfig?> {
         return rxSingle { loginConfigCall.download(serverUrl) }.map { it }
     }
 
-    override fun blockingGet(): LoginConfig? {
-        return get().blockingGet()
+    override fun blockingGet(): LoginConfig {
+        return runBlocking { loginConfigCall.download(serverUrl) }
     }
 
     override fun exists(): Single<Boolean> {
@@ -51,12 +50,7 @@ class LoginConfigObjectRepository(
             .onErrorReturn { false }
     }
 
-    @Suppress("TooGenericExceptionCaught")
     override fun blockingExists(): Boolean {
-        return try {
-            blockingGet() != null
-        } catch (e: Exception) {
-            false
-        }
+        return exists().blockingGet()
     }
 }

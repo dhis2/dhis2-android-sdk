@@ -14420,11 +14420,10 @@ public abstract interface class org/hisp/dhis/android/core/user/UserModule {
 	public abstract fun blockingIsLogged ()Z
 	public abstract fun blockingLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogOut ()V
-	public abstract fun blockingLoginConfig (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfig;
 	public abstract fun isLogged ()Lio/reactivex/Single;
 	public abstract fun logIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun logOut ()Lio/reactivex/Completable;
-	public abstract fun loginConfig (Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun loginConfig (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfigObjectRepository;
 	public abstract fun openIdHandler ()Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;
 	public abstract fun user ()Lorg/hisp/dhis/android/core/user/UserObjectRepository;
 	public abstract fun userCredentials ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
@@ -14565,8 +14564,12 @@ public final class org/hisp/dhis/android/core/user/loginconfig/LoginConfig {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/user/loginconfig/LoginConfigCall {
-	public final fun loginConfig (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class org/hisp/dhis/android/core/user/loginconfig/LoginConfigObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository {
+	public fun blockingExists ()Z
+	public synthetic fun blockingGet ()Ljava/lang/Object;
+	public fun blockingGet ()Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfig;
+	public fun exists ()Lio/reactivex/Single;
+	public fun get ()Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/user/loginconfig/LoginOidcProvider {

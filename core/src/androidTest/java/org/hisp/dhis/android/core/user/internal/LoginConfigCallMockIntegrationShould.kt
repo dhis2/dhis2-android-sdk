@@ -89,7 +89,7 @@ class LoginConfigCallMockIntegrationShould : BaseMockIntegrationTest() {
     }
 
     private fun getDownload(): LoginConfig {
-        return d2.userModule().loginConfig(dhis2MockServer.baseEndpoint).blockingGet()!!
+        return d2.userModule().loginConfig(dhis2MockServer.baseEndpoint).blockingGet()
     }
 
     companion object {

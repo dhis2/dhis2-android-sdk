@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user
+package org.hisp.dhis.android.network.loginconfig
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfigObjectRepository
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
+import org.hisp.dhis.android.core.user.loginconfig.LoginConfigNetworkHandler
+import org.koin.core.annotation.Singleton
 
-@Suppress("TooManyFunctions")
-interface UserModule {
-    fun authenticatedUser(): AuthenticatedUserObjectRepository
-    fun userRoles(): UserRoleCollectionRepository
-    fun userGroups(): UserGroupCollectionRepository
-    fun authorities(): AuthorityCollectionRepository
-    fun user(): UserObjectRepository
-    fun accountManager(): AccountManager
-    fun logIn(username: String, password: String, serverUrl: String): Single<User>
-    fun blockingLogIn(username: String, password: String, serverUrl: String): User
-    fun logOut(): Completable
-    fun blockingLogOut()
-    fun isLogged(): Single<Boolean>
-    fun blockingIsLogged(): Boolean
-    fun openIdHandler(): OpenIDConnectHandler
-    fun loginConfig(serverUrl: String): LoginConfigObjectRepository
+@Singleton
+internal class LoginConfigNetworkHandlerImpl(
+    httpClient: HttpServiceClient,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : LoginConfigNetworkHandler {
+    private val service: LoginConfigService = LoginConfigService(httpClient)
 
-    @Deprecated(message = "Use user() instead.")
-    fun userCredentials(): UserCredentialsObjectRepository
+    override suspend fun loginConfig(): LoginConfig {
+        val loginConfigDTO = coroutineAPICallExecutor.wrap {
+            service.getLoginConfig()
+        }.getOrThrow()
+
+        return loginConfigDTO.toDomain()
+    }
 }

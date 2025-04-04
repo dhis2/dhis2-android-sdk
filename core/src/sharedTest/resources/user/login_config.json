@@ -1,0 +1,38 @@
+{
+  "apiVersion": "2.41.3",
+  "applicationTitle": "DHIS 2 Demo - Sierra Leone",
+  "applicationDescription": "Welcome to the DHIS 2 demo application",
+  "applicationNotification": "Log in with admin / district and feel free to do changes as system is reset every night.\u003Cbr\u003E\u003Cbr\u003E\u003Ci\u003ENote: In order to maintain access for everyone, changes to the admin user password are blocked in the DHIS2 play environment.\u003C/i\u003E",
+  "applicationLeftSideFooter": "Learn more at \u003Ca href=\"http://www.dhis2.org\"\u003Edhis2.org\u003C/a\u003E",
+  "applicationRightSideFooter": "Learn more at \u003Ca href=\"http://www.dhis2.org\"\u003Edhis2.org\u003C/a\u003E",
+  "countryFlag": "sierra_leone",
+  "uiLocale": "en",
+  "loginPageLogo": "/api/staticContent/logo_front.png",
+  "loginPopup": "",
+  "loginPageLayout": "SIDEBAR",
+  "loginPageTemplate": "login_page_template_test",
+  "recaptchaSite": "6LcVwT0UAAAAAAkO_EGPiYOiymIszZUeHfqWIYX5",
+  "minPasswordLength": "8",
+  "maxPasswordLength": "72",
+  "emailConfigured": false,
+  "selfRegistrationEnabled": true,
+  "selfRegistrationNoRecaptcha": false,
+  "allowAccountRecovery": true,
+  "useCustomLogoFront": false,
+  "oidcProviders": [
+    {
+      "id": "external_dhis2_provider_1",
+      "icon": "/dhis-web-commons/oidc/icon1.svg",
+      "iconPadding": "10px 10px",
+      "loginText": "Login with Provider 1",
+      "url": "oauth2/authorization/provider1"
+    },
+    {
+      "id": "external_dhis2_provider_2",
+      "icon": "/dhis-web-commons/oidc/icon2.svg",
+      "iconPadding": "15px 15px",
+      "loginText": "Login with Provider 2",
+      "url": "oauth2/authorization/provider2"
+    }
+  ]
+}

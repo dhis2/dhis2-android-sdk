@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import com.fasterxml.jackson.core.type.TypeReference
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.JSONObjectListColumnAdapter
@@ -36,11 +35,12 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.CustomIntentActionType
 
 internal class CustomIntentActionColumnAdapter : JSONObjectListColumnAdapter<CustomIntentActionType>() {
-    override fun getTypeReference(): TypeReference<List<CustomIntentActionType>> {
-        return object : TypeReference<List<CustomIntentActionType>>() {}
-    }
 
     override fun serialize(o: List<CustomIntentActionType>?): String = CustomIntentActionColumnAdapter.serialize(o)
+
+    override fun deserialize(str: String): List<CustomIntentActionType> {
+        return KotlinxJsonParser.instance.decodeFromString<List<String>>(str).map { CustomIntentActionType.valueOf(it) }
+    }
 
     companion object {
         fun serialize(o: List<CustomIntentActionType>?): String {

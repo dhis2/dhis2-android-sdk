@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -90,7 +90,7 @@ internal class DataSetCompleteRegistrationPostCall(
             markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
             networkHandler.deleteDataSetCompleteRegistration(toDeleteRegistrations).fold(
                 onSuccess = { result ->
-                    if (result.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX) {
+                    if (result.status.isSuccess()) {
                         deletedDataSetCompleteRegistrations.add(toDeleteRegistrations)
                     } else {
                         withErrorDataSetCompleteRegistrations.add(toDeleteRegistrations)

@@ -43,8 +43,10 @@ internal class CookieAuthenticatorHelper {
     private var cookieValue: String? = null
 
     fun storeCookieIfSentByServer(res: HttpResponse) {
-        val cookieRes = res.headers[SET_COOKIE_KEY]
-        if (cookieRes != null) {
+        val cookies = res.headers.getAll(SET_COOKIE_KEY)
+
+        if (!cookies.isNullOrEmpty()) {
+            val cookieRes = cookies.joinToString("; ") { it.substringBefore(";") }
             cookieValue = cookieRes
         }
     }

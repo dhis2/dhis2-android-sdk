@@ -34,9 +34,6 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
-import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
-import org.hisp.dhis.android.core.user.internal.UserGroupFields
-import org.hisp.dhis.android.core.user.internal.UserRoleFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,141 +25,135 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.relationship;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseNameableObject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .blockingGet();
+    fun find_all() {
+        val relationships = d2.relationshipModule().relationships()
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(3);
+        assertThat(relationships.size).isEqualTo(3)
     }
 
     @Test
-    public void filter_by_uid() {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .byUid().eq("AJOytZW7OaI")
-                        .blockingGet();
+    fun filter_by_uid() {
+        val relationships = d2.relationshipModule().relationships()
+            .byUid().eq("AJOytZW7OaI")
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(1);
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_name() {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .byName().eq("Lab Sample to Person")
-                        .blockingGet();
+    fun filter_by_name() {
+        val relationships = d2.relationshipModule().relationships()
+            .byName().eq("Lab Sample to Person")
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(1);
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_created() throws ParseException {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
-                        .blockingGet();
+    fun filter_by_created() {
+        val relationships = d2.relationshipModule().relationships()
+            .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(1);
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_last_updated() throws ParseException {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
-                        .blockingGet();
+    fun filter_by_last_updated() {
+        val relationships = d2.relationshipModule().relationships()
+            .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(1);
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_relationship_type() {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .byRelationshipType().eq("V2kkHafqs8G")
-                        .blockingGet();
+    fun filter_by_relationship_type() {
+        val relationships = d2.relationshipModule().relationships()
+            .byRelationshipType().eq("V2kkHafqs8G")
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(1);
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_sync_state() {
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships()
-                        .bySyncState().eq(State.SYNCED)
-                        .blockingGet();
+    fun filter_by_sync_state() {
+        val relationships = d2.relationshipModule().relationships()
+            .bySyncState().eq(State.SYNCED)
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(3);
+        assertThat(relationships.size).isEqualTo(3)
     }
 
     @Test
-    public void get_by_item() {
-        RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
-        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item);
-        assertThat(relationships.size()).isEqualTo(1);
+    fun get_by_item() {
+        val item = RelationshipItem.builder().trackedEntityInstance(
+            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build(),
+        ).build()
+        val relationships = d2.relationshipModule().relationships()
+            .getByItem(item)
+
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void get_by_item_including_deleted() {
-        RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
-        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item, true);
-        assertThat(relationships.size()).isEqualTo(1);
+    fun get_by_item_including_deleted() {
+        val item = RelationshipItem.builder().trackedEntityInstance(
+            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build(),
+        ).build()
+        val relationships = d2.relationshipModule().relationships().getByItem(item, true)
+
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void get_by_item_including_all_linked() {
-        RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
-        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item, false, false);
-        assertThat(relationships.size()).isEqualTo(2);
+    fun get_by_item_including_all_linked() {
+        val item = RelationshipItem.builder().trackedEntityInstance(
+            RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build(),
+        ).build()
+        val relationships = d2.relationshipModule().relationships().getByItem(
+            item,
+            includeDeleted = false,
+            onlyAccessible = false,
+        )
+
+        assertThat(relationships.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_item() {
-        RelationshipItem item = RelationshipItem.builder()
-                .trackedEntityInstance(
-                        RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()
-                )
-                .relationshipItemType(RelationshipConstraintType.FROM)
-                .build();
+    fun filter_by_item() {
+        val item = RelationshipItem.builder()
+            .trackedEntityInstance(
+                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh")
+                    .build(),
+            )
+            .relationshipItemType(RelationshipConstraintType.FROM)
+            .build()
 
-        List<Relationship> relationships = d2.relationshipModule().relationships()
-                .byItem(item)
-                .blockingGet();
+        val relationships = d2.relationshipModule().relationships()
+            .byItem(item)
+            .blockingGet()
 
-        assertThat(relationships.size()).isEqualTo(1);
+        assertThat(relationships.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_object_repository() {
-        Relationship relationship =
-                d2.relationshipModule().relationships()
-                        .uid("AJOytZW7OaB")
-                        .blockingGet();
+    fun filter_by_object_repository() {
+        val relationship = d2.relationshipModule().relationships()
+            .uid("AJOytZW7OaB")
+            .blockingGet()
 
-        assertThat(relationship.uid()).isEqualTo("AJOytZW7OaB");
+        assertThat(relationship!!.uid()).isEqualTo("AJOytZW7OaB")
     }
-
 }

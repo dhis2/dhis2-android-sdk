@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,147 +25,142 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.dataelement
 
-package org.hisp.dhis.android.testapp.dataelement;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class DataElementCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class DataElementCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_all() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(10);
+    fun find_all() {
+        val dataElements = d2.dataElementModule().dataElements().blockingGet()
+        assertThat(dataElements.size).isEqualTo(10)
     }
 
     @Test
-    public void filter_by_value_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byValueType().eq(ValueType.TEXT)
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(2);
+    fun filter_by_value_type() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byValueType().eq(ValueType.TEXT)
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_zero_is_significant() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byZeroIsSignificant().isFalse()
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(8);
+    fun filter_by_zero_is_significant() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byZeroIsSignificant().isFalse
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(8)
     }
 
     @Test
-    public void filter_by_aggregation_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byAggregationType().eq("AVERAGE")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(2);
+    fun filter_by_aggregation_type() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byAggregationType().eq("AVERAGE")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_form_name() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byFormName().eq("ANC Visit")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(2);
+    fun filter_by_form_name() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byFormName().eq("ANC Visit")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_domain_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byDomainType().eq("TRACKER")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(10);
+    fun filter_by_domain_type() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byDomainType().eq("TRACKER")
+            .blockingGet()
+        assertThat(dataElements.size).isEqualTo(10)
     }
 
     @Test
-    public void filter_by_display_form_name() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byDisplayFormName().eq("ANC Visit")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(2);
+    fun filter_by_display_form_name() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byDisplayFormName().eq("ANC Visit")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(2)
     }
 
     @Test
-    public void filter_by_option_set() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byOptionSetUid().eq("VQ2lai3OfVG")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(1);
+    fun filter_by_option_set() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byOptionSetUid().eq("VQ2lai3OfVG")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_category_combo() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byCategoryComboUid().eq("m2jTvAj5kkm")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(6);
+    fun filter_by_category_combo() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byCategoryComboUid().eq("m2jTvAj5kkm")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(6)
     }
 
     @Test
-    public void filter_by_field_mask() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byFieldMask().eq("XXXXX")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(1);
+    fun filter_by_field_mask() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byFieldMask().eq("XXXXX")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_field_color() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byColor().eq("#600")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(1);
+    fun filter_by_field_color() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byColor().eq("#600")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void filter_by_field_icon() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements()
-                .byIcon().eq("data-element-icon-2")
-                .blockingGet();
-        assertThat(dataElements.size()).isEqualTo(1);
+    fun filter_by_field_icon() {
+        val dataElements = d2.dataElementModule().dataElements()
+            .byIcon().eq("data-element-icon-2")
+            .blockingGet()
+
+        assertThat(dataElements.size).isEqualTo(1)
     }
 
     @Test
-    public void include_legends_as_children() {
-        DataElement dataElementWithLegendSets = d2.dataElementModule().dataElements()
-                .withLegendSets()
-                .blockingGet()
-                .get(4);
+    fun include_legends_as_children() {
+        val dataElementWithLegendSets = d2.dataElementModule()
+            .dataElements()
+            .withLegendSets()
+            .blockingGet()[4]
 
-        List<ObjectWithUid> legendSets = dataElementWithLegendSets.legendSets();
-        assertThat(legendSets.size()).isEqualTo(1);
-        assertThat(legendSets.get(0).uid()).isEqualTo("TiOkbpGEud4");
+        val legendSets = dataElementWithLegendSets.legendSets()
+        assertThat(legendSets!!.size).isEqualTo(1)
+        assertThat(legendSets[0].uid()).isEqualTo("TiOkbpGEud4")
     }
 
     @Test
-    public void include_attributeValues_as_children() {
-        DataElement dataElementWithAttributeValues = d2.dataElementModule().dataElements()
+    fun include_attributeValues_as_children() {
+        val dataElementWithAttributeValues =
+            d2.dataElementModule().dataElements()
                 .withAttributes()
-                .blockingGet().get(4);
+                .blockingGet()[4]
 
-        List<AttributeValue> attributeValues = dataElementWithAttributeValues.attributeValues();
-        assertThat(attributeValues.size()).isEqualTo(2);
-        assertThat(attributeValues.get(0).attribute().uid()).isEqualTo("b0vcadVrn08");
-        assertThat(attributeValues.get(0).value()).isEqualTo("Direct 2");
-        assertThat(attributeValues.get(1).attribute().uid()).isEqualTo("qXS2NDUEAOS");
-        assertThat(attributeValues.get(1).value()).isEqualTo("Direct");
-
+        val attributeValues = dataElementWithAttributeValues.attributeValues()
+        assertThat(attributeValues!!.size).isEqualTo(2)
+        assertThat(attributeValues[0].attribute().uid()).isEqualTo("b0vcadVrn08")
+        assertThat(attributeValues[0].value()).isEqualTo("Direct 2")
+        assertThat(attributeValues[1].attribute().uid()).isEqualTo("qXS2NDUEAOS")
+        assertThat(attributeValues[1].value()).isEqualTo("Direct")
     }
-
 }

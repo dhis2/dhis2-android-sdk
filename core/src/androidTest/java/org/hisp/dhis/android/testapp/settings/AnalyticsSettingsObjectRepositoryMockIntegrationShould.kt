@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup;
-import org.hisp.dhis.android.core.settings.AnalyticsSettings;
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class AnalyticsSettingsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
+class AnalyticsSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    public void find_analytics_settings() {
-        AnalyticsSettings analyticsSettings = d2.settingModule().analyticsSetting().blockingGet();
-        assertThat(analyticsSettings.tei().size()).isEqualTo(3);
+    fun find_analytics_settings() {
+        val analyticsSettings = d2.settingModule().analyticsSetting().blockingGet()
+        assertThat(analyticsSettings!!.tei().size).isEqualTo(3)
 
-        for (AnalyticsTeiSetting teiSetting : analyticsSettings.tei()) {
-            if ("fqEx2avRp1L".equals(teiSetting.uid())) {
-                assertThat(teiSetting.data().dataElements().size()).isEqualTo(2);
-                assertThat(teiSetting.data().indicators().size()).isEqualTo(0);
-                assertThat(teiSetting.data().attributes().size()).isEqualTo(0);
-                assertThat(teiSetting.whoNutritionData()).isNull();
-            } else if ("XQUhloISaQJ".equals(teiSetting.uid())) {
-                assertThat(teiSetting.data().dataElements().size()).isEqualTo(0);
-                assertThat(teiSetting.data().indicators().size()).isEqualTo(1);
-                assertThat(teiSetting.data().attributes().size()).isEqualTo(1);
-                assertThat(teiSetting.whoNutritionData()).isNull();
-            } else if ("yEdtdG7ql9K".equals(teiSetting.uid())) {
-                assertThat(teiSetting.data()).isNull();
-                assertThat(teiSetting.whoNutritionData().x().dataElements().size()).isEqualTo(1);
-                assertThat(teiSetting.whoNutritionData().x().indicators().size()).isEqualTo(0);
-                assertThat(teiSetting.whoNutritionData().y().dataElements().size()).isEqualTo(0);
-                assertThat(teiSetting.whoNutritionData().y().indicators().size()).isEqualTo(1);
+        for (teiSetting in analyticsSettings.tei()) {
+            if ("fqEx2avRp1L" == teiSetting.uid()) {
+                assertThat(teiSetting.data()!!.dataElements().size).isEqualTo(2)
+                assertThat(teiSetting.data()!!.indicators().size).isEqualTo(0)
+                assertThat(teiSetting.data()!!.attributes().size).isEqualTo(0)
+                assertThat(teiSetting.whoNutritionData()).isNull()
+            } else if ("XQUhloISaQJ" == teiSetting.uid()) {
+                assertThat(teiSetting.data()!!.dataElements().size).isEqualTo(0)
+                assertThat(teiSetting.data()!!.indicators().size).isEqualTo(1)
+                assertThat(teiSetting.data()!!.attributes().size).isEqualTo(1)
+                assertThat(teiSetting.whoNutritionData()).isNull()
+            } else if ("yEdtdG7ql9K" == teiSetting.uid()) {
+                assertThat(teiSetting.data()).isNull()
+                assertThat(teiSetting.whoNutritionData()!!.x().dataElements().size).isEqualTo(1)
+                assertThat(teiSetting.whoNutritionData()!!.x().indicators().size).isEqualTo(0)
+                assertThat(teiSetting.whoNutritionData()!!.y().dataElements().size).isEqualTo(0)
+                assertThat(teiSetting.whoNutritionData()!!.y().indicators().size).isEqualTo(1)
             }
         }
 
-        for (AnalyticsDhisVisualizationsGroup analyticsDhisVisualizationsGroup : analyticsSettings.dhisVisualizations().home()) {
-            if (analyticsDhisVisualizationsGroup.id().equals("12345678910")) {
-                assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(3);
-            } else if (analyticsDhisVisualizationsGroup.id().equals("12345678911")) {
-                assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(1);
+        for (analyticsDhisVisualizationsGroup in analyticsSettings.dhisVisualizations().home()) {
+            if (analyticsDhisVisualizationsGroup.id() == "12345678910") {
+                assertThat(analyticsDhisVisualizationsGroup.visualizations().size).isEqualTo(3)
+            } else if (analyticsDhisVisualizationsGroup.id() == "12345678911") {
+                assertThat(analyticsDhisVisualizationsGroup.visualizations().size).isEqualTo(1)
             }
         }
     }

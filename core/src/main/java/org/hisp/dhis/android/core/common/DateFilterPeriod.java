@@ -30,39 +30,29 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DateFilterPeriod.Builder.class)
 public abstract class DateFilterPeriod {
 
     @Nullable
-    @JsonProperty()
     public abstract Integer startBuffer();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer endBuffer();
 
     @Nullable
-    @JsonProperty()
     public abstract Date startDate();
 
     @Nullable
-    @JsonProperty()
     public abstract Date endDate();
 
     @Nullable
-    @JsonProperty()
     public abstract RelativePeriod period();
 
     @Nullable
-    @JsonProperty()
     public abstract DatePeriodType type();
 
     public abstract Builder toBuilder();
@@ -72,7 +62,6 @@ public abstract class DateFilterPeriod {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder startBuffer(Integer startBuffer);
 

@@ -50,13 +50,12 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields;
 
 import java.util.List;
 
 @AutoValue
 public abstract class TrackedEntityAttribute extends BaseNameableObject
-        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
+        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 
     @Nullable
     public abstract String pattern();
@@ -95,7 +94,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Boolean confidential();
 
     @Nullable
-    @ColumnName(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
+    @ColumnName(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE)
     public abstract Boolean orgUnitScope();
 
     @Nullable
@@ -181,6 +180,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         // Auxiliary fields
         abstract Access access();
+
         abstract ObjectStyle style();
 
         public TrackedEntityAttribute build() {

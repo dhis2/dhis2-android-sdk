@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.koin.core.annotation.Singleton
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 @Singleton
 @Suppress("TooManyFunctions")
@@ -162,7 +163,7 @@ internal class DataSetInstanceServiceImpl(
     ): Boolean {
         return dataElementOperand.dataElement()?.let { dataElement ->
             dataElementOperand.categoryOptionCombo()?.let { categoryOptionCombo ->
-                dataValueCollectionRepository.value(
+                dataValueCollectionRepository.byDeleted().isFalse.value(
                     periodId,
                     organisationUnitUid,
                     dataElement.uid(),
@@ -173,13 +174,16 @@ internal class DataSetInstanceServiceImpl(
         } ?: false
     }
 
+    @Suppress("MagicNumber")
     override fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>> =
-        dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).get().map { dataSet ->
+    ): Single<List<DataElementOperand>> {
+        val stringListCache = ExpirableCache<String, List<String>>(TimeUnit.SECONDS.toMillis(120))
+
+        return dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).get().map { dataSet ->
             if (dataSet.fieldCombinationRequired() != true) return@map emptyList()
 
             dataSet.dataSetElements().orEmpty().flatMap { dataSetElement ->
@@ -190,9 +194,9 @@ internal class DataSetInstanceServiceImpl(
                         ?.categoryComboUid()
 
                 categoryComboUid?.let { catComboUid ->
-                    val categoryOptionCombos = categoryOptionComboCollectionRepository
-                        .byCategoryComboUid().eq(catComboUid)
-                        .blockingGet()
+                    val categoryOptionCombos = getCachedCategoryComboUid(catComboUid, stringListCache) { uid ->
+                        categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).blockingGetUids()
+                    }
 
                     val dataValues = dataValueCollectionRepository
                         .byPeriod().eq(periodId)
@@ -201,7 +205,7 @@ internal class DataSetInstanceServiceImpl(
                         .byDeleted().isFalse
                         .byDataElementUid().eq(dataSetElement.dataElement().uid())
                         .byCategoryOptionComboUid()
-                        .`in`(UidsHelper.getUidsList(categoryOptionCombos))
+                        .`in`(categoryOptionCombos)
                         .blockingGet()
 
                     dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
@@ -212,12 +216,27 @@ internal class DataSetInstanceServiceImpl(
                                         .joinToString("."),
                                 )
                                 dataValue.dataElement()?.let { dataElement(ObjectWithUid.create(it)) }
-                                dataValue.categoryOptionCombo()?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
+                                dataValue.categoryOptionCombo()
+                                    ?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
                             }.build()
                         } ?: emptyList()
                 } ?: emptyList()
             }
         }
+    }
+
+    private fun getCachedCategoryComboUid(
+        uid: String?,
+        categoryComboUidCache: ExpirableCache<String, List<String>>,
+        getFromRepository: (String) -> List<String>,
+    ): List<String> {
+        return if (uid != null) {
+            categoryComboUidCache[uid] ?: getFromRepository(uid)
+                .also { categoryComboUidCache[uid] = it }
+        } else {
+            emptyList()
+        }
+    }
 
     override fun blockingGetMissingMandatoryFieldsCombination(
         dataSetUid: String,

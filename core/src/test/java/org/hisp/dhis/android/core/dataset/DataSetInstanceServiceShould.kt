@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -275,13 +274,11 @@ class DataSetInstanceServiceShould {
         whenever(dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).get())
             .thenReturn(Single.just(dataSetWithElements))
 
-        val coc1 = mock<CategoryOptionCombo> { on { uid() } doReturn "coc1" }
-        val coc2 = mock<CategoryOptionCombo> { on { uid() } doReturn "coc2" }
         val byCatComboUidConnector = mock<StringFilterConnector<CategoryOptionComboCollectionRepository>>()
         val eqRepo = mock<CategoryOptionComboCollectionRepository>()
         whenever(categoryOptionComboCollectionRepository.byCategoryComboUid()).thenReturn(byCatComboUidConnector)
         whenever(byCatComboUidConnector.eq("ccUid")).thenReturn(eqRepo)
-        whenever(eqRepo.blockingGet()).thenReturn(listOf(coc1, coc2))
+        whenever(eqRepo.blockingGetUids()).thenReturn(listOf("coc1", "coc2"))
 
         val dataValue = mock<DataValue> {
             on { dataElement() } doReturn "de1"

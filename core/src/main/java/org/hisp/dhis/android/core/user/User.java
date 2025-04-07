@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserCredentialsAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserGroupListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -90,10 +89,6 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
 
     @Nullable
     public abstract String nationality();
-
-    @Nullable
-    @ColumnAdapter(IgnoreUserCredentialsAdapter.class)
-    abstract UserCredentials userCredentials();
 
     @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
@@ -154,8 +149,6 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
         public abstract Builder phoneNumber(String phoneNumber);
 
         public abstract Builder nationality(String nationality);
-
-        public abstract Builder userCredentials(UserCredentials userCredentials);
 
         public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 

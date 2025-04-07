@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeFields
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
 import org.koin.core.annotation.Singleton
@@ -93,7 +92,7 @@ class ProgramTrackedEntityAttributeCollectionRepository internal constructor(
     }
 
     fun withRenderType(): ProgramTrackedEntityAttributeCollectionRepository {
-        return cf.withChild(ProgramTrackedEntityAttributeFields.RENDER_TYPE)
+        return cf.withChild(RENDER_TYPE)
     }
 
     fun orderBySortOrder(
@@ -103,8 +102,10 @@ class ProgramTrackedEntityAttributeCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val RENDER_TYPE = "renderType"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramTrackedEntityAttribute> = mapOf(
-            ProgramTrackedEntityAttributeFields.RENDER_TYPE to
+            RENDER_TYPE to
                 ::ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender,
         )
     }

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionDataElementChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramStageSectionFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionProgramIndicatorChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
 import org.koin.core.annotation.Singleton
@@ -85,17 +84,20 @@ class ProgramStageSectionsCollectionRepository internal constructor(
     }
 
     fun withProgramIndicators(): ProgramStageSectionsCollectionRepository {
-        return cf.withChild(ProgramStageSectionFields.PROGRAM_INDICATORS)
+        return cf.withChild(PROGRAM_INDICATORS)
     }
 
     fun withDataElements(): ProgramStageSectionsCollectionRepository {
-        return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS)
+        return cf.withChild(DATA_ELEMENTS)
     }
 
     internal companion object {
+        private const val PROGRAM_INDICATORS = "programIndicators"
+        private const val DATA_ELEMENTS = "dataElements"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramStageSection> = mapOf(
-            ProgramStageSectionFields.PROGRAM_INDICATORS to ProgramStageSectionProgramIndicatorChildrenAppender::create,
-            ProgramStageSectionFields.DATA_ELEMENTS to ProgramStageSectionDataElementChildrenAppender::create,
+            PROGRAM_INDICATORS to ProgramStageSectionProgramIndicatorChildrenAppender::create,
+            DATA_ELEMENTS to ProgramStageSectionDataElementChildrenAppender::create,
         )
     }
 }

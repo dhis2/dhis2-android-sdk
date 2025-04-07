@@ -34,6 +34,7 @@ import io.ktor.client.plugins.HttpTimeout
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
 
+@Suppress("UNCHECKED_CAST")
 internal fun HttpClientConfig<*>.addKtorPlugins(
     d2Configuration: D2Configuration,
     authenticator: ParentAuthenticatorPlugin,
@@ -42,7 +43,9 @@ internal fun HttpClientConfig<*>.addKtorPlugins(
     install(DynamicServerURLPlugin.instance)
     install(ServerURLVersionRedirectionPlugin.instance)
     install(PreventURLDecodePlugin.instance)
+    install(HttpTimeout) {}
     install(authenticator.instance)
-    install(HttpTimeout) {
+    for (plugin in d2Configuration.networkPlugins()) {
+        install(plugin.plugin, plugin.config as (Any) -> Unit)
     }
 }

@@ -49,8 +49,8 @@ class User37Should : BaseObjectKotlinxShould("user/user37.json"), ObjectShould {
         assertThat(user.firstName()).isEqualTo("John")
         assertThat(user.email()).isEqualTo("john@hmail.com")
         assertThat(user.displayName()).isEqualTo("John Barnes")
-        assertThat(UserInternalAccessor.accessUserCredentials(user).username()).isEqualTo("android")
-        assertThat(UserInternalAccessor.accessUserCredentials(user).userRoles()!![0].uid())
+        assertThat(user.username()).isEqualTo("android")
+        assertThat(user.userRoles()!![0].uid())
             .isEqualTo("Ufph3mGRmMo")
         assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
     }

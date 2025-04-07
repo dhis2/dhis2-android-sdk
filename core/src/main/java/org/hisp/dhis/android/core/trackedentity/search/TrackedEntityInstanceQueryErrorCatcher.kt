@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
+import kotlinx.serialization.SerializationException
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -74,9 +73,7 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
             }
         } catch (e: IOException) {
             DefaultErrorCode
-        } catch (e: JsonProcessingException) {
-            DefaultErrorCode
-        } catch (e: JsonMappingException) {
+        } catch (e: SerializationException) {
             DefaultErrorCode
         }
     }

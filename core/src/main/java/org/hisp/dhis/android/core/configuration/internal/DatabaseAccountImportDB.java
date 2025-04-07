@@ -29,20 +29,14 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseAccountImportDB.Builder.class)
 public abstract class DatabaseAccountImportDB {
 
-    @JsonProperty()
     @NonNull
     public abstract DatabaseAccountImportStatus status();
 
-    @JsonProperty
     @NonNull
     public abstract String protectedDbName();
 
@@ -53,7 +47,6 @@ public abstract class DatabaseAccountImportDB {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder status(DatabaseAccountImportStatus importStatus);

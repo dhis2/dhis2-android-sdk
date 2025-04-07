@@ -37,10 +37,6 @@ public final class UserInternalAccessor {
     private UserInternalAccessor() {
     }
 
-    public static UserCredentials accessUserCredentials(User user) {
-        return user.userCredentials();
-    }
-
     public static List<OrganisationUnit> accessOrganisationUnits(User user) {
         return user.organisationUnits();
     }

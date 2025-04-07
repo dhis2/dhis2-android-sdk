@@ -29,38 +29,35 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.SerializationException
 
 internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<O>> {
-    protected abstract fun getTypeReference(): TypeReference<List<O>>
-
     override fun fromCursor(cursor: Cursor, columnName: String): List<O> {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
-        return try {
-            ObjectMapperFactory.objectMapper().readValue(str, getTypeReference())
-        } catch (e: JsonProcessingException) {
-            listOf()
-        } catch (e: JsonMappingException) {
-            listOf()
-        } catch (e: IllegalArgumentException) {
-            listOf()
-        } catch (e: IllegalStateException) {
-            listOf()
-        }
+        return str?.let {
+            try {
+                deserialize(it)
+            } catch (e: SerializationException) {
+                listOf()
+            } catch (e: IllegalArgumentException) {
+                listOf()
+            } catch (e: IllegalStateException) {
+                listOf()
+            }
+        } ?: listOf()
     }
 
     override fun toContentValues(contentValues: ContentValues, columnName: String, o: List<O>?) {
         try {
             contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }
 
     abstract fun serialize(o: List<O>?): String?
+
+    abstract fun deserialize(str: String): List<O>
 }

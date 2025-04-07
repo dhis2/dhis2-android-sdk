@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.legendset.internal.LegendStore
+import org.hisp.dhis.android.core.option.internal.OptionStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -66,6 +67,7 @@ class AnalyticsServiceMetadataHelperShould {
     private val organisationUnitGroupStore: OrganisationUnitGroupStore = mock()
     private val organisationUnitLevelStore: OrganisationUnitLevelStore = mock()
     private val programStore: ProgramStore = mock()
+    private val optionStore: OptionStore = mock()
     private val trackedEntityAttribute: TrackedEntityAttributeStore = mock()
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository = mock()
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
@@ -84,6 +86,7 @@ class AnalyticsServiceMetadataHelperShould {
         organisationUnitGroupStore,
         organisationUnitLevelStore,
         programStore,
+        optionStore,
         trackedEntityAttribute,
         programIndicatorRepository,
         analyticsOrganisationUnitHelper,

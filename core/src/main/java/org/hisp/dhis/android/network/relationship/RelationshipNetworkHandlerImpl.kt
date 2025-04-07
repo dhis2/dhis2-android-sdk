@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.network.relationship
 
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
@@ -48,7 +48,7 @@ internal class RelationshipNetworkHandlerImpl(
     override suspend fun deleteRelationship(relationship: String): Result<RelationshipDeleteWebResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(
             storeError = true,
-            acceptedErrorCodes = listOf(HttpStatusCodes.NOT_FOUND),
+            acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
             errorClassParser = RelationshipDeleteWebResponseDTO::toErrorClass,
         ) {
             service.deleteRelationship(relationship).toDomain()
@@ -59,7 +59,7 @@ internal class RelationshipNetworkHandlerImpl(
         val payload = RelationshipPayload(relationships = relationships.map { it.toDto() })
         return coroutineAPICallExecutor.wrap(
             storeError = true,
-            acceptedErrorCodes = listOf(HttpStatusCodes.CONFLICT),
+            acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
             errorClassParser = RelationshipWebResponseDTO::toErrorClass,
         ) {
             service.postRelationship(payload).toDomain()

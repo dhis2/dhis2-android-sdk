@@ -25,56 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-import android.content.ContentValues;
-import android.database.Cursor;
+class StringArrayColumnAdapter : ColumnTypeAdapter<List<String>> {
+    override fun fromCursor(cursor: Cursor, columnName: String): List<String> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val sourceValue = cursor.getString(columnIndex)
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-@SuppressWarnings({"PMD.PreserveStackTrace"})
-public class StringArrayColumnAdapter implements ColumnTypeAdapter<List<String>> {
-
-    @Override
-    public List<String> fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceValue = cursor.getString(columnIndex);
-
-        if (sourceValue == null || sourceValue.equals("")) {
-            return Collections.emptyList();
-        } else if (sourceValue.charAt(0) == '/') {
-            return Arrays.asList(sourceValue.substring(1).split("/"));
+        return if (sourceValue.isNullOrEmpty()) {
+            emptyList()
+        } else if (sourceValue.startsWith("/")) {
+            sourceValue.substring(1).split("/").dropLastWhile { it.isEmpty() }
         } else {
-            ObjectMapper objectMapper  = new ObjectMapper();
-            TypeFactory typeFactory = objectMapper.getTypeFactory();
             try {
-                return objectMapper.readValue(sourceValue, typeFactory.constructCollectionType(List.class,
-                        String.class));
-            } catch (IOException e) {
-                throw new RuntimeException("Couldn't deserialize string array");
+                KotlinxJsonParser.instance.decodeFromString(ListSerializer(String.serializer()), sourceValue)
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't deserialize string array")
             }
         }
     }
 
-    @Override
-    public void toContentValues(ContentValues values, String columnName, List<String> value) {
-        values.put(columnName, serialize(value));
+    override fun toContentValues(values: ContentValues, columnName: String, value: List<String>) {
+        values.put(columnName, serialize(value))
     }
 
-    public static String serialize(List<String> value) {
-        try {
-            return new ObjectMapper().writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Couldn't serialize string array");
+    companion object {
+        fun serialize(value: List<String>?): String {
+            try {
+                return KotlinxJsonParser.instance.encodeToString(
+                    ListSerializer(String.serializer()),
+                    value ?: emptyList(),
+                )
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't serialize string array")
+            }
         }
     }
 }

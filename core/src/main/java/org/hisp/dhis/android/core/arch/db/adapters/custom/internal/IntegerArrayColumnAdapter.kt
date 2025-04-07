@@ -25,53 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-import android.content.ContentValues;
-import android.database.Cursor;
+class IntegerArrayColumnAdapter : ColumnTypeAdapter<List<Int>> {
+    override fun fromCursor(cursor: Cursor, columnName: String): List<Int> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val sourceValue = cursor.getString(columnIndex)
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-@SuppressWarnings({"PMD.PreserveStackTrace"})
-public class IntegerArrayColumnAdapter implements ColumnTypeAdapter<List<Integer>> {
-
-    @Override
-    public List<Integer> fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceValue = cursor.getString(columnIndex);
-
-        if (sourceValue == null || sourceValue.equals("")) {
-            return Collections.emptyList();
+        if (sourceValue == null || sourceValue == "") {
+            return emptyList()
         } else {
-            ObjectMapper objectMapper  = new ObjectMapper();
-            TypeFactory typeFactory = objectMapper.getTypeFactory();
             try {
-                return objectMapper.readValue(sourceValue,
-                        typeFactory.constructCollectionType(List.class, Integer.class));
-            } catch (IOException e) {
-                throw new RuntimeException("Couldn't deserialize integer array");
+                return KotlinxJsonParser.instance.decodeFromString(ListSerializer(Int.serializer()), sourceValue)
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't deserialize integer array")
             }
         }
     }
 
-    @Override
-    public void toContentValues(ContentValues values, String columnName, List<Integer> value) {
-        values.put(columnName, serialize(value));
+    override fun toContentValues(values: ContentValues, columnName: String, value: List<Int>) {
+        values.put(columnName, serialize(value))
     }
 
-    public static String serialize(List<Integer> value) {
-        try {
-            return new ObjectMapper().writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Couldn't serialize integer array");
+    companion object {
+        fun serialize(value: List<Int>?): String {
+            try {
+                return KotlinxJsonParser.instance.encodeToString(ListSerializer(Int.serializer()), value ?: emptyList())
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't serialize integer array")
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ import android.content.Context
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -89,7 +89,7 @@ internal class DatabaseImportExportImpl(
             }
 
             val metadataContent = importMetadataFile.readText(Charsets.UTF_8)
-            val metadata = objectMapper().readValue(metadataContent, DatabaseExportMetadata::class.java)
+            val metadata = KotlinxJsonParser.instance.decodeFromString<DatabaseExportMetadata>(metadataContent)
 
             when {
                 metadata.version > BaseDatabaseOpenHelper.VERSION ->
@@ -172,7 +172,7 @@ internal class DatabaseImportExportImpl(
         )
 
         exportMetadataFile.bufferedWriter(Charsets.UTF_8).use {
-            it.write(objectMapper().writeValueAsString(metadata))
+            it.write(KotlinxJsonParser.instance.encodeToString(DatabaseExportMetadata.serializer(), metadata))
         }
 
         val zipName = credentials.username + '-' + getCurrentTimeAndDate() + '-' + ExportZip

@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -104,7 +103,7 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
     }
 
     fun byOrgUnitScope(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
-        return cf.bool(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE)
     }
 
     fun byUnique(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
@@ -136,12 +135,14 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
     }
 
     fun withLegendSets(): TrackedEntityAttributeCollectionRepository {
-        return cf.withChild(TrackedEntityAttributeFields.LEGEND_SETS)
+        return cf.withChild(LEGEND_SETS)
     }
 
     internal companion object {
+        private const val LEGEND_SETS = "legendSets"
+
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityAttribute> = mapOf(
-            TrackedEntityAttributeFields.LEGEND_SETS to TrackedEntityAttributeLegendSetChildrenAppender::create,
+            LEGEND_SETS to TrackedEntityAttributeLegendSetChildrenAppender::create,
         )
     }
 }

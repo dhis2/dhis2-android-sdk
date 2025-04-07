@@ -29,37 +29,35 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.SerializationException
 
 internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>> {
-    protected abstract fun getObjectClass(): Class<Set<O>>
-
     override fun fromCursor(cursor: Cursor, columnName: String): Set<O> {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
-        return try {
-            ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
-        } catch (e: JsonProcessingException) {
-            setOf()
-        } catch (e: JsonMappingException) {
-            setOf()
-        } catch (e: IllegalArgumentException) {
-            setOf()
-        } catch (e: IllegalStateException) {
-            setOf()
-        }
+        return str?.let {
+            try {
+                deserialize(it)
+            } catch (e: SerializationException) {
+                setOf()
+            } catch (e: IllegalArgumentException) {
+                setOf()
+            } catch (e: IllegalStateException) {
+                setOf()
+            }
+        } ?: setOf()
     }
 
     override fun toContentValues(contentValues: ContentValues, columnName: String, o: Set<O>?) {
         try {
             contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }
 
     abstract fun serialize(o: Set<O>?): String?
+
+    abstract fun deserialize(str: String): Set<O>
 }

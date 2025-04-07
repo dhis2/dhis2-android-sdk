@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns
-import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

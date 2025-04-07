@@ -111,17 +111,14 @@ internal class DatabaseConfigurationMigration(
         val oldDatabaseConfigurationStore = DatabaseConfigurationInsecureStoreOld.get(insecureStore)
 
         return oldDatabaseConfigurationStore.get()?.let { config ->
-            credentialsStore.setServerUrl(ServerUrlParser.removeTrailingApi(config.loggedServerUrl()))
+            credentialsStore.setServerUrl(ServerUrlParser.removeTrailingApi(config.loggedServerUrl))
 
-            val users = config.servers().flatMap { serverConf ->
-                serverConf.users().map { userConf ->
-                    DatabaseAccount.builder()
-                        .username(userConf.username())
-                        .serverUrl(ServerUrlParser.removeTrailingApi(serverConf.serverUrl()))
-                        .databaseName(userConf.databaseName())
-                        .databaseCreationDate(userConf.databaseCreationDate())
-                        .encrypted(userConf.encrypted())
-                        .build()
+            val users = config.servers.flatMap { serverConf ->
+                serverConf.users.map { userConf ->
+                    DatabaseAccount.builder().username(userConf.username)
+                        .serverUrl(ServerUrlParser.removeTrailingApi(serverConf.serverUrl))
+                        .databaseName(userConf.databaseName).databaseCreationDate(userConf.databaseCreationDate)
+                        .encrypted(userConf.encrypted).build()
                 }
             }
             DatabasesConfiguration.builder().accounts(users).build()

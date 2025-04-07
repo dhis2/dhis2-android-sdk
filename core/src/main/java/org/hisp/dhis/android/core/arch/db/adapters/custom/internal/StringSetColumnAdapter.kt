@@ -27,20 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import java.util.*
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
 internal class StringSetColumnAdapter : JSONObjectSetColumnAdapter<String>() {
-    override fun getObjectClass(): Class<Set<String>> {
-        return HashSet<String>().javaClass
-    }
-
     override fun serialize(o: Set<String>?): String? = StringSetColumnAdapter.serialize(o)
+
+    override fun deserialize(str: String): Set<String> {
+        return KotlinxJsonParser.instance.decodeFromString<Set<String>>(str)
+    }
 
     companion object {
         fun serialize(o: Set<String>?): String? {
             return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+                KotlinxJsonParser.instance.encodeToString(SetSerializer(String.serializer()), it)
             }
         }
     }

@@ -58,7 +58,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.user.internal.UserStore
-import org.hisp.dhis.android.network.event.EventFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -249,11 +248,11 @@ class EventCollectionRepository internal constructor(
     }
 
     fun withTrackedEntityDataValues(): EventCollectionRepository {
-        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES)
+        return cf.withChild(TRACKED_ENTITY_DATA_VALUES)
     }
 
     fun withNotes(): EventCollectionRepository {
-        return cf.withChild(EventFields.NOTES)
+        return cf.withChild(NOTES)
     }
 
     fun orderByEventDate(direction: OrderByDirection?): EventCollectionRepository {
@@ -323,9 +322,12 @@ class EventCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val TRACKED_ENTITY_DATA_VALUES = "dataValues"
+        private const val NOTES = "notes"
+
         val childrenAppenders: ChildrenAppenderGetter<Event> = mapOf(
-            EventFields.TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender::create,
-            EventFields.NOTES to NoteForEventChildrenAppender::create,
+            TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender::create,
+            NOTES to NoteForEventChildrenAppender::create,
         )
     }
 }

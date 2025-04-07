@@ -32,17 +32,13 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
 public abstract class StorableObjectWithUid extends BaseObject implements ObjectWithUidInterface {
 
     @Override
     @NonNull
-    @JsonProperty(UID)
     public abstract String uid();
 
     @NonNull

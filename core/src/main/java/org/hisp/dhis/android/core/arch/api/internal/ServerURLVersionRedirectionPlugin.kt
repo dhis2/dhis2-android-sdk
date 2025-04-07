@@ -37,8 +37,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.http.takeFrom
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_ABSOLUTE_URL_ATTRIBUTE_KEY
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MAX
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.REDIRECT_MIN
 
 internal object ServerURLVersionRedirectionPlugin {
     private const val MAX_REDIRECTS = 20
@@ -48,7 +46,7 @@ internal object ServerURLVersionRedirectionPlugin {
         on(Send) { request ->
             var call = proceed(request)
 
-            while (isRedirect(call.response) && redirects <= MAX_REDIRECTS) {
+            while (call.response.status.isRedirection() && redirects <= MAX_REDIRECTS) {
                 redirects++
                 if (isInternal(request)) {
                     updateServerUrl(call.response)
@@ -58,10 +56,6 @@ internal object ServerURLVersionRedirectionPlugin {
             redirects = 0
             call
         }
-    }
-
-    private fun isRedirect(response: HttpResponse): Boolean {
-        return response.status.value in REDIRECT_MIN..REDIRECT_MAX
     }
 
     private fun isInternal(request: HttpRequestBuilder): Boolean {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user
+package org.hisp.dhis.android.core.user.loginconfig
 
-import io.reactivex.Completable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfigObjectRepository
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
-@Suppress("TooManyFunctions")
-interface UserModule {
-    fun authenticatedUser(): AuthenticatedUserObjectRepository
-    fun userRoles(): UserRoleCollectionRepository
-    fun userGroups(): UserGroupCollectionRepository
-    fun authorities(): AuthorityCollectionRepository
-    fun user(): UserObjectRepository
-    fun accountManager(): AccountManager
-    fun logIn(username: String, password: String, serverUrl: String): Single<User>
-    fun blockingLogIn(username: String, password: String, serverUrl: String): User
-    fun logOut(): Completable
-    fun blockingLogOut()
-    fun isLogged(): Single<Boolean>
-    fun blockingIsLogged(): Boolean
-    fun openIdHandler(): OpenIDConnectHandler
-    fun loginConfig(serverUrl: String): LoginConfigObjectRepository
+class LoginConfigObjectRepository internal constructor(
+    private val loginConfigCall: LoginConfigCall,
+    private val serverUrl: String,
+) : ReadOnlyObjectRepository<LoginConfig> {
+    override fun get(): Single<LoginConfig?> {
+        return rxSingle { loginConfigCall.download(serverUrl) }.map { it }
+    }
 
-    @Deprecated(message = "Use user() instead.")
-    fun userCredentials(): UserCredentialsObjectRepository
+    override fun blockingGet(): LoginConfig {
+        return runBlocking { loginConfigCall.download(serverUrl) }
+    }
+
+    override fun exists(): Single<Boolean> {
+        return get()
+            .map { true }
+            .onErrorReturn { false }
+    }
+
+    override fun blockingExists(): Boolean {
+        return exists().blockingGet()
+    }
 }

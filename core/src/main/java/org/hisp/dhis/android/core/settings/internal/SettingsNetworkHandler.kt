@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CustomIntents
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
@@ -45,4 +46,5 @@ internal interface SettingsNetworkHandler {
     suspend fun synchronizationSettings(url: String): SynchronizationSettings
     suspend fun appearanceSettings(url: String): AppearanceSettings
     suspend fun analyticsSettings(url: String): AnalyticsSettings
+    suspend fun customIntents(url: String): CustomIntents
 }

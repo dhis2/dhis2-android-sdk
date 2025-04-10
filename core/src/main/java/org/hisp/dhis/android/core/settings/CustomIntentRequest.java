@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.settings;
 
-@Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+import android.database.Cursor;
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
+import androidx.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
+import java.util.Map;
+
+@AutoValue
+public abstract class CustomIntentRequest {
+
+    @Nullable
+    public abstract Map<String, String> arguments();
+
+    public static CustomIntentRequest create(Cursor cursor) {
+        return AutoValue_CustomIntentRequest.createFromCursor(cursor);
     }
 
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+    public static Builder builder() {
+        return new AutoValue_CustomIntentRequest.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder arguments(Map<String, String> arguments);
+
+        public abstract CustomIntentRequest build();
     }
 }

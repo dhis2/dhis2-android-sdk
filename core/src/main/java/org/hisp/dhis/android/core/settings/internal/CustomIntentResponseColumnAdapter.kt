@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import org.koin.core.annotation.Singleton
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.settings.CustomIntentResponse
+import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.core.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_ARGUMENT
+import org.hisp.dhis.android.core.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_PATH
 
-@Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+internal class CustomIntentResponseColumnAdapter : ColumnTypeAdapter<CustomIntentResponse> {
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
+    override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentResponse {
+        val responseDataArgumentIndex = cursor.getColumnIndex(RESPONSE_DATA_ARGUMENT)
+        val responseDataPathIndex = cursor.getColumnIndex(RESPONSE_DATA_PATH)
+
+        val responseDataArgument = cursor.getString(responseDataArgumentIndex)
+        val responseDataPath = cursor.getString(responseDataPathIndex)
+
+        return CustomIntentResponse.builder()
+            .data(
+                CustomIntentResponseData.builder()
+                    .argument(responseDataArgument)
+                    .path(responseDataPath)
+                    .build(),
+            )
+            .build()
     }
 
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+    override fun toContentValues(values: ContentValues, columnName: String, value: CustomIntentResponse?) {
+        value?.data()?.argument()?.let {
+            values.put(RESPONSE_DATA_ARGUMENT, it)
+        }
+        value?.data()?.path()?.let {
+            values.put(RESPONSE_DATA_PATH, it)
+        }
     }
 }

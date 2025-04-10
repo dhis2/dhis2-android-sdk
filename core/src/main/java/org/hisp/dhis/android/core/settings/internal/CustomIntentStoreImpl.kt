@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+internal class CustomIntentStoreImpl(
+    databaseAdapter: DatabaseAdapter,
+) : CustomIntentStore,
+    IdentifiableObjectStoreImpl<CustomIntent>(
+        databaseAdapter,
+        CustomIntentTableInfo.TABLE_INFO,
+        BINDER,
+        { cursor: Cursor -> CustomIntent.create(cursor) },
+    ) {
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
-    }
-
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+    companion object {
+        private val BINDER = StatementBinder { o: CustomIntent, w: StatementWrapper ->
+            w.bind(1, o.uid())
+            w.bind(2, o.name())
+            w.bind(3, CustomIntentActionColumnAdapter.serialize(o.action()))
+            w.bind(4, o.packageName())
+            w.bind(5, CustomIntentRequestColumnAdapter.serialize(o.request()!!.arguments()!!))
+            w.bind(6, o.response()?.data()?.argument())
+            w.bind(7, o.response()?.data()?.path())
+        }
     }
 }

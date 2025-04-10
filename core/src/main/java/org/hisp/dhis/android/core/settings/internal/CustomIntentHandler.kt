@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableWithoutDeleteInterfaceHandlerImpl
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.hisp.dhis.android.core.settings.CustomIntentDataElement
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+internal class CustomIntentHandler(
+    store: CustomIntentStore,
+    private val customIntentDataElementTriggerHandler: CustomIntentDataElementTriggerHandler,
+    private val customIntentAttributeTriggerHandler: CustomIntentAttributeTriggerHandler,
+) : IdentifiableWithoutDeleteInterfaceHandlerImpl<CustomIntent>(store) {
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
+    override fun afterObjectHandled(o: CustomIntent, action: HandleAction) {
+        o.trigger()?.dataElements()?.let { handleDataElementTrigger(o.uid(), it) }
+        o.trigger()?.attributes()?.let { handleAttributeTrigger(o.uid(), it) }
     }
 
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+    private fun handleDataElementTrigger(customIntentUid: String, dataElementList: List<CustomIntentDataElement>) {
+        customIntentDataElementTriggerHandler.handleMany(customIntentUid, dataElementList)
+    }
+
+    private fun handleAttributeTrigger(customIntentUid: String, attributeList: List<CustomIntentAttribute>) {
+        customIntentAttributeTriggerHandler.handleMany(customIntentUid, attributeList)
     }
 }

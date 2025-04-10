@@ -25,58 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.settings
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.core.settings;
 
-@Suppress("TooManyFunctions")
-internal class SettingsService(private val client: HttpServiceClient) {
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
-    suspend fun settingsAppInfo(url: String): SettingsAppInfoDTO {
-        return client.get {
-            url(url)
-        }
+public final class CustomIntentTableInfo {
+
+    private CustomIntentTableInfo() {
     }
 
-    suspend fun generalSettings(url: String): GeneralSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    suspend fun dataSetSettings(url: String): DataSetSettingsDTO {
-        return client.get {
-            url(url)
+        @Override
+        public String name() {
+            return "CustomIntent";
         }
-    }
 
-    suspend fun programSettings(url: String): ProgramSettingsDTO {
-        return client.get {
-            url(url)
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
         }
-    }
+    };
 
-    suspend fun synchronizationSettings(url: String): SynchronizationSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
+    public static class Columns extends CoreColumns {
+        public static final String UID = IdentifiableColumns.UID;
+        public static final String NAME = IdentifiableColumns.NAME;
+        public static final String ACTION = "action";
+        public static final String PACKAGE_NAME = "packageName";
+        public static final String REQUEST_ARGUMENTS = "requestArguments";
+        public static final String RESPONSE_DATA_ARGUMENT = "responseDataArgument";
+        public static final String RESPONSE_DATA_PATH = "responseDataPath";
 
-    suspend fun appearanceSettings(url: String): AppearanceSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun analyticsSettings(url: String): AnalyticsSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun customIntents(url: String): CustomIntentsDTO {
-        return client.get {
-            url(url)
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NAME,
+                    ACTION,
+                    PACKAGE_NAME,
+                    REQUEST_ARGUMENTS,
+                    RESPONSE_DATA_ARGUMENT,
+                    RESPONSE_DATA_PATH
+            );
         }
     }
 }

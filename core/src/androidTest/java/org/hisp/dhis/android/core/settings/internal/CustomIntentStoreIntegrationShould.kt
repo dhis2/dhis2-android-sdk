@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
-
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
-    }
-
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+@RunWith(D2JunitRunner::class)
+class CustomIntentStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<CustomIntent>(
+    CustomIntentStoreImpl(TestDatabaseAdapterFactory.get()),
+    CustomIntentTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): CustomIntent {
+        return CustomIntentSamples.getCustomIntent()
     }
 }

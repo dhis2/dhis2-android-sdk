@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.testapp.settings
 
-@Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.settings.CustomIntentActionType
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
-    }
+class CustomIntentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+    @Test
+    fun find_custom_intent_settings() {
+        val customIntentSettings = d2
+            .settingModule()
+            .customIntents()
+            .blockingGet()
+
+        assertThat(customIntentSettings.size).isEqualTo(2)
+        assertThat(customIntentSettings[0].name()).isNotEmpty()
+        assertThat(customIntentSettings[1].name()).isNotEmpty()
+        assertThat(customIntentSettings[1].action()?.size).isEqualTo(2)
+        assertThat(customIntentSettings[1].action()?.get(1)).isInstanceOf(CustomIntentActionType::class.java)
+        assertThat(customIntentSettings[0].trigger()?.dataElements()?.size).isEqualTo(1)
+        assertThat(customIntentSettings[0].trigger()?.attributes()?.size).isEqualTo(1)
+        assertThat(customIntentSettings[1].trigger()?.attributes()).isEmpty()
+        assertThat(customIntentSettings[0].request()?.arguments()?.size).isEqualTo(3)
+        assertThat(customIntentSettings[1].response()?.data()?.argument()).isNotEmpty()
+        assertThat(customIntentSettings[1].response()?.data()?.path()).isNotEmpty()
     }
 }

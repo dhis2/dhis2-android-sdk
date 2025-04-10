@@ -25,58 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.settings
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.core.settings
 
-@Suppress("TooManyFunctions")
-internal class SettingsService(private val client: HttpServiceClient) {
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.CustomIntentsDTO
+import org.junit.Test
 
-    suspend fun settingsAppInfo(url: String): SettingsAppInfoDTO {
-        return client.get {
-            url(url)
-        }
-    }
+class CustomIntentsShould : BaseObjectKotlinxShould("settings/custom_intents.json"), ObjectShould {
+    @Test
+    override fun map_from_json_string() {
+        val customIntentsDTO = deserialize(CustomIntentsDTO.serializer())
+        val customIntents = customIntentsDTO.toDomain()
 
-    suspend fun generalSettings(url: String): GeneralSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
+        assertThat(customIntents.customIntents()?.size).isEqualTo(2)
+        val firstCustomIntent = customIntents.customIntents()?.get(0)!!
 
-    suspend fun dataSetSettings(url: String): DataSetSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun programSettings(url: String): ProgramSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun synchronizationSettings(url: String): SynchronizationSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun appearanceSettings(url: String): AppearanceSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun analyticsSettings(url: String): AnalyticsSettingsDTO {
-        return client.get {
-            url(url)
-        }
-    }
-
-    suspend fun customIntents(url: String): CustomIntentsDTO {
-        return client.get {
-            url(url)
-        }
+        assertThat(firstCustomIntent.uid()).isEqualTo("intent1id")
+        assertThat(firstCustomIntent.name()).isEqualTo("Face recognition")
+        assertThat(firstCustomIntent.trigger()?.dataElements()?.get(0)?.uid()).isEqualTo("dataElementUid")
+        assertThat(firstCustomIntent.trigger()?.attributes()?.get(0)?.uid()).isEqualTo("attributeUid")
+        assertThat(firstCustomIntent.action()).isEqualTo(listOf(CustomIntentActionType.DATA_ENTRY))
+        assertThat(firstCustomIntent.request()?.arguments()?.size).isEqualTo(3)
+        assertThat(firstCustomIntent.request()?.arguments()?.get("projectID")).isEqualTo("project one")
+        assertThat(firstCustomIntent.response()?.data()?.argument()).isEqualTo("registration")
+        assertThat(firstCustomIntent.response()?.data()?.path()).isEqualTo("guid")
     }
 }

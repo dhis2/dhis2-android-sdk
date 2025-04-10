@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.settings.CustomIntents
 import org.koin.core.annotation.Singleton
+import java.net.HttpURLConnection
 
 @Singleton
-internal class SettingModuleDownloader(
-    private val systemSettingCall: SystemSettingCall,
-    private val generalSettingCall: GeneralSettingCall,
-    private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val analyticsSettingCall: AnalyticsSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val appearanceSettingCall: AppearanceSettingCall,
-    private val latestAppVersionCall: LatestAppVersionCall,
-    private val customIntentsCall: CustomIntentsCall,
-) : UntypedModuleDownloaderCoroutines {
+internal class CustomIntentsCall(
+    private val customIntentHandler: CustomIntentHandler,
+    private val settingAppService: SettingAppService,
+    private val appVersionManager: SettingsAppInfoManager,
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : BaseSettingCall<CustomIntents>(coroutineAPICallExecutor) {
+    override suspend fun tryFetch(storeError: Boolean): Result<CustomIntents, D2Error> {
+        return when (val version = appVersionManager.getDataStoreVersion()) {
+            SettingsAppDataStoreVersion.V1_1 -> {
+                Result.Failure(
+                    D2Error.builder()
+                        .errorDescription("Custom Intents not found")
+                        .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                        .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                        .build(),
+                )
+            }
 
-    override suspend fun downloadMetadata() {
-        downloadFromSettingsApp()
-        userSettingsCall.download()
-        systemSettingCall.download()
-        latestAppVersionCall.download(false)
+            else -> {
+                coroutineAPICallExecutor.wrap(storeError = storeError) {
+                    settingAppService.customIntents(version)
+                }
+            }
+        }
     }
 
-    private suspend fun downloadFromSettingsApp() {
-        generalSettingCall.download(false)
-        synchronizationSettingCall.download(false)
-        appearanceSettingCall.download(false)
-        analyticsSettingCall.download(false)
-        customIntentsCall.download(false)
+    override fun process(item: CustomIntents?) {
+        val customIntentList = item?.customIntents() ?: emptyList()
+        customIntentHandler.handleMany(customIntentList)
     }
 }

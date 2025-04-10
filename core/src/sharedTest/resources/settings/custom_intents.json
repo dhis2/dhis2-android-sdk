@@ -1,0 +1,73 @@
+{
+  "customIntents": [
+    {
+      "id": "intent1id",
+      "name": "Face recognition",
+      "trigger": {
+        "dataElements": [
+          {
+            "id": "dataElementUid",
+            "program": "programUid",
+            "programStage": "programStageUid",
+            "dataSet": "dataSetUid"
+          }
+        ],
+        "attributes": [
+          {
+            "id": "attributeUid",
+            "program": "programUid"
+          }
+        ]
+      },
+      "action": [
+        "DATA_ENTRY"
+      ],
+      "packageName": "com.company.application.REGISTER",
+      "request": {
+        "arguments": {
+          "projectID": "project one",
+          "serverUrl": "https://server.org",
+          "location": "V{orgunit_uid}"
+        }
+      },
+      "response": {
+        "data": {
+          "argument": "registration",
+          "path": "guid"
+        }
+      }
+    },
+    {
+      "id": "intent2id",
+      "name": "Fingerprint",
+      "trigger": {
+        "dataElements": [
+          {
+            "id": "dataElementUid",
+            "program": "programUid",
+            "programStage": "programStageUid",
+            "dataSet": "dataSetUid"
+          }
+        ]
+      },
+      "action": [
+        "SEARCH",
+        "DATA_ENTRY"
+      ],
+      "packageName": "com.company.application.REGISTER",
+      "request": {
+        "arguments": {
+          "projectID": "project one",
+          "serverUrl": "https://server.org",
+          "location": "V{orgunit_uid}"
+        }
+      },
+      "response": {
+        "data": {
+          "argument": "registration",
+          "path": "guid"
+        }
+      }
+    }
+  ]
+}

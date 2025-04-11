@@ -27,30 +27,8 @@ buildscript {
 }
 
 plugins {
-    alias(libs.plugins.sonarqube)
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus.publish)
-}
-
-sonarqube {
-    properties {
-        val branch = System.getenv("GIT_BRANCH")
-        val targetBranch = System.getenv("GIT_BRANCH_DEST")
-        val pullRequestId = System.getenv("PULL_REQUEST")
-
-        property("sonar.projectKey", "dhis2_dhis2-android-sdk")
-        property("sonar.organization", "dhis2")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.projectName", "dhis2-android-sdk")
-
-        if (pullRequestId == null) {
-            property("sonar.branch.name", branch)
-        } else {
-            property("sonar.pullrequest.base", targetBranch)
-            property("sonar.pullrequest.branch", branch)
-            property("sonar.pullrequest.key", pullRequestId)
-        }
-    }
 }
 
 allprojects {

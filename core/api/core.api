@@ -6426,25 +6426,33 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueObjectRepositor
 	public final fun setFollowUp (Z)V
 }
 
-public class org/hisp/dhis/android/core/datavalue/DataValueTableInfo {
+public final class org/hisp/dhis/android/core/datavalue/DataValueTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/datavalue/DataValueTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 }
 
-public class org/hisp/dhis/android/core/datavalue/DataValueTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
+public final class org/hisp/dhis/android/core/datavalue/DataValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
 	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
 	public static final field COMMENT Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field FOLLOW_UP Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT Ljava/lang/String;
 	public static final field PERIOD Ljava/lang/String;
 	public static final field STORED_BY Ljava/lang/String;
+	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 	public fun whereUpdate ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/datavalue/DataValueTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/core/datavalue/internal/DataValueModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {

@@ -31,11 +31,11 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.24"
     id("kotlin-android")
     id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
     alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
@@ -128,6 +128,8 @@ android {
 dependencies {
 
     coreLibraryDesugaring(libs.desugaring)
+
+    ksp(project(":processor"))
 
     // RxJava
     api(libs.rx.java)

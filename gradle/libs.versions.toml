@@ -19,6 +19,7 @@ libraryDesugaring = "2.0.4"
 # android
 annotation = "1.6.0"
 paging = "3.2.1"
+androidx-room = "2.7.0-rc03"
 
 # java
 autoValue = "1.10.2"
@@ -71,6 +72,10 @@ rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref =
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
+
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "androidx-room" }
 
 google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autoValue" }
 google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }
@@ -127,5 +132,6 @@ api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+room = { id = "androidx.room", version.ref = "androidx-room" }
 
 [bundles]

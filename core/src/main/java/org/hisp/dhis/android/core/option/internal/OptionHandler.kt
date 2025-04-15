@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
+import android.util.Log
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.db.puresqlite.OptionsSqliteDao
+import org.hisp.dhis.android.core.arch.db.room.OptionsDao
+import org.hisp.dhis.android.core.arch.db.room.OptionsRoom.Companion.toRoom
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.option.Option
 import org.koin.core.annotation.Singleton
@@ -35,9 +40,46 @@ import org.koin.core.annotation.Singleton
 internal class OptionHandler constructor(
     optionStore: OptionStore,
     private val optionCleaner: OptionSubCollectionCleaner,
+    private val optionsDao: OptionsDao,
+    private val sqliteDao: OptionsSqliteDao,
 ) : IdentifiableHandlerImpl<Option>(optionStore) {
+
+    var timeRoom = 0L
+    var timedb = 0L
+    var timeSql = 0L
 
     override fun afterCollectionHandled(oCollection: Collection<Option>?) {
         optionCleaner.deleteNotPresent(oCollection)
+    }
+
+    override fun handleMany(oCollection: Collection<Option>?) {
+        val time = System.currentTimeMillis()
+        super.handleMany(oCollection)
+        timedb = timedb + System.currentTimeMillis() - time
+        val time2 = System.currentTimeMillis()
+        runBlocking {
+//            oCollection?.let { optionsDao.insert(oCollection.map { it.toRoom() }) }
+            oCollection?.forEach { optionsDao.insert(it.toRoom()) }
+//            Log.d("ROOM_Options", "count: ${optionsDao.getAllOptions().size}")
+        }
+        timeRoom = timeRoom + System.currentTimeMillis() - time2
+
+        val time3 = System.currentTimeMillis()
+        sqliteDao.db.beginTransaction()
+        try {
+            oCollection?.forEach { sqliteDao.insertOption(it) }
+            sqliteDao.db.setTransactionSuccessful()
+        } finally {
+            sqliteDao.db.endTransaction()
+        }
+        timeSql = timeSql + System.currentTimeMillis() - time3
+
+
+
+        Log.d("OPTIONS_OLD", "time old: $timedb")
+        Log.d("OPTIONS_ROOM", "time new: $timeRoom")
+        Log.d("OPTIONS_SQL", "time sql: $timeSql")
+
+
     }
 }

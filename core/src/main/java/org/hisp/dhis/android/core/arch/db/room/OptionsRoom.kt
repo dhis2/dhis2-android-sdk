@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,55 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.core.arch.db.room
 
-import android.util.Log
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.puresqlite.OptionsSqliteDao
-import org.hisp.dhis.android.core.arch.db.room.OptionSetsDao
-import org.hisp.dhis.android.core.arch.db.room.OptionSetsRoom.Companion.toRoom
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.option.OptionSet
-import org.koin.core.annotation.Singleton
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.util.dateFormat
 
-@Singleton
-internal class OptionSetHandler(
-    store: OptionSetStore,
-    private val optionSetsDao: OptionSetsDao,
-    private val sqliteDao: OptionsSqliteDao,
-) : IdentifiableHandlerImpl<OptionSet>(store) {
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = OptionSetsRoom::class,
+            parentColumns = arrayOf("uid"),
+            childColumns = arrayOf("optionSet"),
+            onDelete = ForeignKey.CASCADE
 
-    override fun handleMany(oCollection: Collection<OptionSet>?) {
-        super.handleMany(oCollection)
-        runBlocking {
-            oCollection?.let { optionSetsDao.insert(oCollection.map { it.toRoom() }) }
-            Log.d("ROOM_OptionSets", "count: ${optionSetsDao.getAllOptionSets().size}")
+        )
+    ]
+)
+data class OptionsRoom(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val uid: String?,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val deleted: Boolean?,
+    val sortOrder: Int?,
+    val optionSet: String,
+    val color: String?,
+    val icon: String?,
+) {
+
+    companion object {
+        fun Option.toRoom(): OptionsRoom {
+            return OptionsRoom(
+                uid = uid(),
+                code = code(),
+                name = name(),
+                displayName = displayName(),
+                created = created().dateFormat(),
+                lastUpdated = lastUpdated().dateFormat(),
+                deleted = deleted(),
+                sortOrder = sortOrder(),
+                optionSet = optionSet()?.uid()!!,
+                color = style().color(),
+                icon = style().icon(),
+            )
         }
-        sqliteDao.db.beginTransaction()
-        try {
-            oCollection?.forEach { sqliteDao.insertOptionSet(it) }
-            sqliteDao.db.setTransactionSuccessful()
-        } finally {
-            sqliteDao.db.endTransaction()
-        }
-        Log.d("SQL_OptionSets", "count: ${sqliteDao.countOptionSets()}")
-
     }
 }

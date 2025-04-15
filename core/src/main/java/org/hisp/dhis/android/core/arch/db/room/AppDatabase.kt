@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option.internal
+package org.hisp.dhis.android.core.arch.db.room
 
-import android.util.Log
-import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.puresqlite.OptionsSqliteDao
-import org.hisp.dhis.android.core.arch.db.room.OptionSetsDao
-import org.hisp.dhis.android.core.arch.db.room.OptionSetsRoom.Companion.toRoom
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.option.OptionSet
-import org.koin.core.annotation.Singleton
+import androidx.room.Database
+import androidx.room.RoomDatabase
 
-@Singleton
-internal class OptionSetHandler(
-    store: OptionSetStore,
-    private val optionSetsDao: OptionSetsDao,
-    private val sqliteDao: OptionsSqliteDao,
-) : IdentifiableHandlerImpl<OptionSet>(store) {
-
-    override fun handleMany(oCollection: Collection<OptionSet>?) {
-        super.handleMany(oCollection)
-        runBlocking {
-            oCollection?.let { optionSetsDao.insert(oCollection.map { it.toRoom() }) }
-            Log.d("ROOM_OptionSets", "count: ${optionSetsDao.getAllOptionSets().size}")
-        }
-        sqliteDao.db.beginTransaction()
-        try {
-            oCollection?.forEach { sqliteDao.insertOptionSet(it) }
-            sqliteDao.db.setTransactionSuccessful()
-        } finally {
-            sqliteDao.db.endTransaction()
-        }
-        Log.d("SQL_OptionSets", "count: ${sqliteDao.countOptionSets()}")
-
-    }
+@Database(entities = [OptionsRoom::class, OptionSetsRoom::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun optionsDao(): OptionsDao
+    abstract fun optionSetsDao(): OptionSetsDao
 }

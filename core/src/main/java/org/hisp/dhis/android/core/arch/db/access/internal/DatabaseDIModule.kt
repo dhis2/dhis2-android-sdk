@@ -27,7 +27,16 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
+import android.content.Context
+import androidx.room.Room
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.puresqlite.OptionsSqliteDao
+import org.hisp.dhis.android.core.arch.db.room.AppDatabase
+import org.hisp.dhis.android.core.arch.db.room.OptionSetsDao
+import org.hisp.dhis.android.core.arch.db.room.OptionsDao
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
@@ -35,7 +44,94 @@ import org.koin.core.annotation.Singleton
 internal class DatabaseDIModule {
 
     @Singleton
+    fun provideSQLiteOpenHelper(context: Context): SupportSQLiteOpenHelper {
+        val config = SupportSQLiteOpenHelper.Configuration.builder(context)
+            .name("my_sqlite_db")
+            .callback(object : SupportSQLiteOpenHelper.Callback(1) {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+        CREATE TABLE IF NOT EXISTS option_sets (
+            uid TEXT PRIMARY KEY,
+            code TEXT,
+            name TEXT,
+            displayName TEXT,
+            created TEXT,
+            lastUpdated TEXT,
+            deleted INTEGER,
+            version INTEGER,
+            valueType TEXT
+        )
+    """.trimIndent()
+                    )
+
+                    db.execSQL(
+                        """
+        CREATE TABLE IF NOT EXISTS options (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uid TEXT,
+            code TEXT,
+            name TEXT,
+            displayName TEXT,
+            created TEXT,
+            lastUpdated TEXT,
+            deleted INTEGER,
+            sortOrder INTEGER,
+            optionSet TEXT NOT NULL,
+            color TEXT,
+            icon TEXT,
+            FOREIGN KEY(optionSet) REFERENCES option_sets(uid) ON DELETE CASCADE
+        )
+    """.trimIndent()
+                    )
+                }
+
+                override fun onUpgrade(
+                    db: SupportSQLiteDatabase,
+                    oldVersion: Int,
+                    newVersion: Int
+                ) {
+                    // No-op
+                }
+            })
+            .build()
+
+        return FrameworkSQLiteOpenHelperFactory().create(config)
+    }
+
+    @Singleton
+    fun provideSQLiteDatabase(helper: SupportSQLiteOpenHelper): SupportSQLiteDatabase {
+        return helper.writableDatabase
+    }
+
+    @Singleton
+    fun optionsSqliteDao(db: SupportSQLiteDatabase): OptionsSqliteDao {
+        return OptionsSqliteDao(db)
+    }
+
+    @Singleton
+    fun roomDatabase(app: Context): AppDatabase {
+        return Room.databaseBuilder(
+            app,
+            AppDatabase::class.java,
+            "my_room_db"
+        ).build()
+    }
+
+
+    @Singleton
+    fun optionsDao(appDatabase: AppDatabase): OptionsDao {
+        return appDatabase.optionsDao()
+    }
+
+    @Singleton
+    fun optionSetsDao(appDatabase: AppDatabase): OptionSetsDao {
+        return appDatabase.optionSetsDao()
+    }
+
+    @Singleton
     fun databaseAdapter(adapterFactory: DatabaseAdapterFactory): DatabaseAdapter {
         return adapterFactory.newParentDatabaseAdapter()
     }
+
 }

@@ -5,6 +5,6 @@ browserstack_video=false
 browserstack_local=false
 browserstack_deviceLogs=true
 browserstack_mock_server=true
-browserstack_package="\"org.hisp.dhis.android\""
+browserstack_package="\"org.hisp.dhis.android.realservertests.performance\""
 browserstack_singleRunnerInvocation=true
 browserstack_coverage=true

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("com.android.application")
-    id("jacoco-conventions")
-    kotlin("android")
-}
+package org.hisp.dhis.android.realservertests.performance
 
-kotlin {
-    jvmToolchain(17)
-}
+import kotlinx.serialization.Serializable
 
-val sdkVersion = project.findProperty("sdkVersion")
-
-android {
-    compileSdk = libs.versions.targetSdkVersion.get().toInt()
-
-    defaultConfig {
-        applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-    }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        getByName("debug") {
-            enableAndroidTestCoverage = true
-        }
-    }
-    namespace = "org.hisp.dhis.android.instrumentedTestApp"
-}
-
-dependencies {
-    coreLibraryDesugaring(libs.desugaring)
-
-    if (sdkVersion != null && sdkVersion != "") {
-        implementation("org.hisp.dhis:android-core:$sdkVersion")
-    } else {
-        implementation(project(":core"))
-    }
-}
+@Serializable
+data class BenchmarkConfiguration(
+    val serverUrl: String,
+    val username: String,
+    val password: String,
+)

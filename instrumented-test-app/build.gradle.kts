@@ -61,5 +61,5 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
-    implementation(project(":core"))
+    implementation("org.hisp.dhis:android-core:1.8.2")
 }

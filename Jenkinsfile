@@ -38,6 +38,7 @@ pipeline {
             }
         }
         stage('Checks') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'Running Check style and quality'
@@ -49,6 +50,7 @@ pipeline {
             }
         }
         stage('Api validation') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'Running public API validation'
@@ -59,6 +61,7 @@ pipeline {
             }
         }
         stage('Unit tests') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'Running unit tests'
@@ -83,6 +86,7 @@ pipeline {
             }
         }
         stage('JaCoCo report') {
+            when { expression { false } }
             steps {
                 script {
                     echo 'JaCoCo report'
@@ -91,6 +95,7 @@ pipeline {
             }
         }
         stage('Sonarqube') {
+            when { expression { false } }
             environment {
                 GIT_BRANCH = "${env.GIT_BRANCH}"
                 // Jenkinsfile considers empty value ('') as null

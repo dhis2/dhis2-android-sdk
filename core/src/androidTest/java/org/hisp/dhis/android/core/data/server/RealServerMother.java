@@ -40,7 +40,8 @@ public class RealServerMother {
     public static String url2_37 = "https://play.dhis2.org/2.37/";
     public static String url2_38 = "https://play.dhis2.org/2.38/";
     public static String url2_39 = "https://play.dhis2.org/2.39/";
-    public static String url2_40 = "https://play.dhis2.org/40/";
+    public static String url2_40 = "https://play.dhis2.org/41/";
+    public static String url2_41 = "https://play.im.dhis2.org/stable-2-41-4-1";
     public static String url_dev = "https://play.dhis2.org/dev/";
     public static String android_current = "https://play.dhis2.org/android-current/";
     public static String android_previous1 = "https://play.dhis2.org/android-previous1/";

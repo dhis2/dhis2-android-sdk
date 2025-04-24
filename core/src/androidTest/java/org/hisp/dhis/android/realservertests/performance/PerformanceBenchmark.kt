@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.data.server.RealServerMother.password
 import org.hisp.dhis.android.core.data.server.RealServerMother.username
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
@@ -139,7 +140,7 @@ class PerformanceBenchmark {
         runWithTrace("D2 Login") {
 
 //        d2.userModule().logIn(username, password, url2_40).blockingGet()
-            d2.userModule().logIn(username, password, "http://192.168.0.117:8080").blockingGet()
+            d2.userModule().logIn(username, password, RealServerMother.url2_40).blockingGet()
 //            d2.userModule().logIn(username, password, "https://android.im.dhis2.org/sdk-performance/").blockingGet()
         }
     }

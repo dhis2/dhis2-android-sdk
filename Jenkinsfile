@@ -130,10 +130,6 @@ pipeline {
         }
     }
     post {
-        success {
-            sendNotification(env.GIT_BRANCH, '*Build Succeeded*\n', 'good')
-        }
-
         failure {
             sendNotification(env.GIT_BRANCH, '*Build Failed*\n', 'bad')
         }
@@ -141,7 +137,7 @@ pipeline {
 }
 
 def sendNotification(String branch, String messagePrefix, String color){
-   slackSend channel: '#android-sdk-app-ci', color: color, message: messagePrefix+ custom_msg()
+   slackSend channel: '#android-sdk-dev', color: color, message: messagePrefix+ custom_msg()
 }
 
 def custom_msg(){

@@ -97,6 +97,6 @@ class AnalyticsRepositoryShould {
         verify(analyticsService).evaluate(paramsCaptor.capture())
         val aggregationType = paramsCaptor.firstValue.aggregationType
 
-        assertThat(aggregationType).isEqualTo(AggregationType.MAX) // reverto AggregationType.LAST
+        assertThat(aggregationType).isEqualTo(AggregationType.LAST)
     }
 }

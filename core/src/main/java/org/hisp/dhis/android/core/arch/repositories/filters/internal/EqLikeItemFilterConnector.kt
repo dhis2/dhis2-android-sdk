@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 
 class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,
@@ -44,6 +45,12 @@ class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
     fun like(value: String): R {
         val item = RepositoryScopeFilterItem.builder()
             .key(key).operator(FilterItemOperator.LIKE).value(value).build()
+        return repositoryFactory.updated(item)
+    }
+
+    fun `in`(values: Collection<String>): R {
+        val item = RepositoryScopeFilterItem.builder()
+            .key(key).operator(FilterItemOperator.IN).value(FilterOperatorsHelper.listToStr(values)).build()
         return repositoryFactory.updated(item)
     }
 }

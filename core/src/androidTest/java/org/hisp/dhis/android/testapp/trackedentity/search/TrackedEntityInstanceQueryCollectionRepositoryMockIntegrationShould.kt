@@ -195,4 +195,13 @@ class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould :
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)
     }
+
+    @Test
+    fun find_by_in_filter() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstanceQuery()
+            .offlineOnly()
+            .byFilter("cejWyOfXge6").`in`(listOf("654321", "4081507"))
+            .blockingGet()
+        assertThat(trackedEntityInstances.size).isEqualTo(2)
+    }
 }

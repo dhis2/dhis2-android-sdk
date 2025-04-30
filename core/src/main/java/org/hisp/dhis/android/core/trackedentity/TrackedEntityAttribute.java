@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -53,95 +50,74 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeFields;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
 public abstract class TrackedEntityAttribute extends BaseNameableObject
-        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
+        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 
     @Nullable
-    @JsonProperty()
     public abstract String pattern();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer sortOrderInListNoProgram();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionSet();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @JsonProperty()
     public abstract String expression();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean programScope();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean displayInListNoProgram();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean generated();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean displayOnVisitSchedule();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean confidential();
 
     @Nullable
-    @JsonProperty(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
-    @ColumnName(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
+    @ColumnName(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE)
     public abstract Boolean orgUnitScope();
 
     @Nullable
-    @JsonProperty()
     @ColumnName(TrackedEntityAttributeTableInfo.Columns.UNIQUE)
     public abstract Boolean unique();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean inherit();
 
     @Nullable
-    @JsonProperty()
     public abstract String fieldMask();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
-    @JsonProperty()
     @ColumnAdapter(DefaultAccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
-    @JsonProperty()
     public abstract String formName();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayFormName();
 
     public static Builder builder() {
@@ -155,7 +131,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 
@@ -183,7 +158,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder confidential(Boolean confidential);
 
-        @JsonProperty(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
         public abstract Builder orgUnitScope(Boolean orgUnitScope);
 
         public abstract Builder unique(Boolean unique);
@@ -206,6 +180,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         // Auxiliary fields
         abstract Access access();
+
         abstract ObjectStyle style();
 
         public TrackedEntityAttribute build() {

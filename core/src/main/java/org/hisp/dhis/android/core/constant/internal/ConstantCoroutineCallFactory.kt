@@ -40,14 +40,14 @@ import org.koin.core.annotation.Singleton
 internal class ConstantCoroutineCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: ConstantService,
     private val handler: ConstantHandler,
+    private val networkHandler: ConstantNetworkHandler,
 ) : ListCoroutineCallFactoryImpl<Constant>(data, coroutineAPICallExecutor) {
 
     override suspend fun fetcher(): CoroutineCallFetcher<Constant> {
         return object : ConstantCallFetcher(coroutineAPICallExecutor) {
             override suspend fun getCall(): List<Constant> {
-                return service.constants(ConstantFields.allFields, false).items()
+                return networkHandler.getConstants()
             }
         }
     }

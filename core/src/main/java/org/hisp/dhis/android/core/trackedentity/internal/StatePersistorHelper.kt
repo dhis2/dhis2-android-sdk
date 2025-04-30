@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
-import org.hisp.dhis.android.core.common.DataObject
+import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.koin.core.annotation.Singleton
-import java.util.*
 
 @Singleton
 internal class StatePersistorHelper internal constructor() {
@@ -41,7 +40,7 @@ internal class StatePersistorHelper internal constructor() {
         stateMap: MutableMap<State, MutableList<String>>,
         o: O,
         forcedState: State?,
-    ) where O : DataObject, O : ObjectWithUidInterface {
+    ) where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
         val s = getStateToSet(o, forcedState)
         if (!stateMap.containsKey(s)) {
             stateMap[s] = ArrayList()
@@ -49,7 +48,10 @@ internal class StatePersistorHelper internal constructor() {
         stateMap[s]!!.add(o.uid())
     }
 
-    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject, O : ObjectWithUidInterface {
+    private fun <O> getStateToSet(
+        o: O,
+        forcedState: State?,
+    ): State where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
         return forcedState
             ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
     }

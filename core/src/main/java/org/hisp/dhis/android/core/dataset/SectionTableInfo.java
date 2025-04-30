@@ -53,11 +53,16 @@ public final class SectionTableInfo {
 
     public static class Columns extends IdentifiableColumns {
 
-        public final static String DESCRIPTION = "description";
-        public final static String SORT_ORDER = "sortOrder";
-        public final static String DATA_SET = "dataSet";
-        public final static String SHOW_ROW_TOTALS = "showRowTotals";
-        public final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
+        public static final String DESCRIPTION = "description";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String DATA_SET = "dataSet";
+        public static final String SHOW_ROW_TOTALS = "showRowTotals";
+        public static final String SHOW_COLUMN_TOTALS = "showColumnTotals";
+        public static final String DISABLE_DATA_ELEMENT_AUTO_GROUP = "disableDataElementAutoGroup";
+        public static final String BEFORE_SECTION_TEXT = "beforeSectionText";
+        public static final String AFTER_SECTION_TEXT = "afterSectionText";
+        public static final String PIVOT_MODE = "pivotMode";
+        public static final String PIVOTED_CATEGORY = "pivotedCategory";
 
         @Override
         public String[] all() {
@@ -66,7 +71,12 @@ public final class SectionTableInfo {
                     SORT_ORDER,
                     DATA_SET,
                     SHOW_ROW_TOTALS,
-                    SHOW_COLUMN_TOTALS
+                    SHOW_COLUMN_TOTALS,
+                    DISABLE_DATA_ELEMENT_AUTO_GROUP,
+                    BEFORE_SECTION_TEXT,
+                    AFTER_SECTION_TEXT,
+                    PIVOT_MODE,
+                    PIVOTED_CATEGORY
             );
         }
     }

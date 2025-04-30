@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionChildrenAppender
-import org.hisp.dhis.android.core.category.internal.CategoryFields
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.koin.core.annotation.Singleton
 
@@ -63,12 +62,14 @@ class CategoryCollectionRepository internal constructor(
     }
 
     fun withCategoryOptions(): CategoryCollectionRepository {
-        return cf.withChild(CategoryFields.CATEGORY_OPTIONS)
+        return cf.withChild(CATEGORY_OPTIONS)
     }
 
     internal companion object {
+        private const val CATEGORY_OPTIONS = "categoryOptions"
+
         val childrenAppenders: ChildrenAppenderGetter<Category> = mapOf(
-            CategoryFields.CATEGORY_OPTIONS to CategoryCategoryOptionChildrenAppender::create,
+            CATEGORY_OPTIONS to CategoryCategoryOptionChildrenAppender::create,
         )
     }
 }

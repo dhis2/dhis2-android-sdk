@@ -41,14 +41,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.network.common.PayloadJson
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,14 +56,12 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class ProgramEndpointCallShould : BaseCallShould() {
 
-    private val programService: ProgramService = mock()
+    private val programNetworkHandler: ProgramNetworkHandler = mock()
     private val programHandler: ProgramHandler = mock()
     private val dhisVersionManager: DHISVersionManager = mock()
-    private val fieldsCaptor = argumentCaptor<Fields<Program>>()
-    private val filterCaptor = argumentCaptor<Filter<Program>>()
-    private val accesDataReadFilter = argumentCaptor<String>()
+    private val uidsCaptor = argumentCaptor<Set<String>>()
 
-    private val apiCall: Payload<Program> = Payload.emptyPayload()
+    private val apiCall: PayloadJson<Program> = PayloadJson(emptyList())
 
     private val mockedApiDownloader: APIDownloader = mock()
 
@@ -87,10 +83,9 @@ class ProgramEndpointCallShould : BaseCallShould() {
     @Test
     fun call_api_downloader() = runTest {
         ProgramCall(
-            programService,
+            programNetworkHandler,
             programHandler,
             mockedApiDownloader,
-            dhisVersionManager,
         ).download(programUids)
 
         verify(mockedApiDownloader).downloadPartitioned(
@@ -102,25 +97,19 @@ class ProgramEndpointCallShould : BaseCallShould() {
     }
 
     @Test
-    fun call_service_for_real_api_downloader() = runTest {
+    fun call_network_handler_for_real_api_downloader() = runTest {
         whenever(
-            programService.getPrograms(
-                fieldsCaptor.capture(),
-                filterCaptor.capture(),
-                accesDataReadFilter.capture(),
-                any(),
+            programNetworkHandler.getPrograms(
+                uidsCaptor.capture(),
             ),
         ).doReturn(apiCall)
 
         ProgramCall(
-            programService,
+            programNetworkHandler,
             programHandler,
             APIDownloaderImpl(resourceHandler),
-            dhisVersionManager,
         ).download(programUids)
 
-        assertThat(fieldsCaptor.firstValue).isEqualTo(ProgramFields.allFields)
-        assertThat(filterCaptor.firstValue.values?.first()).isEqualTo("programUid")
-        assertThat(accesDataReadFilter.firstValue).isEqualTo("access.data.read:eq:true")
+        assertThat(uidsCaptor.firstValue).isEqualTo(programUids)
     }
 }

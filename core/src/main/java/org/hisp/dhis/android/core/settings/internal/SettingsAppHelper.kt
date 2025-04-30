@@ -27,7 +27,32 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup
+import org.hisp.dhis.android.core.settings.AnalyticsSettings
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
+import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.ChartType
+import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
+import org.hisp.dhis.android.core.settings.DataSetFilter
+import org.hisp.dhis.android.core.settings.DataSetFilters
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.HomeFilter
+import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
+import org.hisp.dhis.android.core.settings.ProgramFilter
+import org.hisp.dhis.android.core.settings.ProgramFilters
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
 
 @Suppress("TooManyFunctions")
 internal object SettingsAppHelper {
@@ -72,7 +97,6 @@ internal object SettingsAppHelper {
                 filter.value.toBuilder()
                     .scope(DataSetFilter::class.simpleName)
                     .filterType(filter.key.name)
-                    .uid(entry.key)
                     .build()
             }
         }
@@ -93,7 +117,6 @@ internal object SettingsAppHelper {
                 filter.value.toBuilder()
                     .scope(ProgramFilter::class.simpleName)
                     .filterType(filter.key.name)
-                    .uid(entry.key)
                     .build()
             }
         }
@@ -111,9 +134,24 @@ internal object SettingsAppHelper {
             }
             list.addAll(
                 settings.specificSettings()?.map { entry ->
-                    entry.value.toBuilder()
-                        .uid(entry.key)
-                        .build()
+                    entry.value
+                } ?: emptyList(),
+            )
+        }
+        return list
+    }
+
+    fun getDataSetConfigurationSettingList(
+        appearanceSettings: AppearanceSettings,
+    ): List<DataSetConfigurationSetting> {
+        val list = mutableListOf<DataSetConfigurationSetting>()
+        appearanceSettings.dataSetConfiguration()?.let { settings ->
+            settings.globalSettings()?.let {
+                list.add(it)
+            }
+            list.addAll(
+                settings.specificSettings()?.map { entry ->
+                    entry.value
                 } ?: emptyList(),
             )
         }

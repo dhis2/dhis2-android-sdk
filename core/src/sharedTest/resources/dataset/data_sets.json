@@ -19,6 +19,7 @@
       "fieldCombinationRequired": false,
       "renderHorizontally": false,
       "renderAsTabs": true,
+      "displayOptions": "{\"customText\": {\"align\": \"line-end\", \"header\": \"Title\", \"subheader\": \"Subtitle\"}, \"tabsDirection\": \"vertical\"}",
       "mobile": false,
       "periodType": "Monthly",
       "openFuturePeriods": 3,
@@ -92,7 +93,9 @@
             {
               "id": "g9eOBujte1U"
             }
-          ]
+          ],
+          "disableDataElementAutoGroup": true,
+          "displayOptions": "{\"pivotMode\":\"move_categories\",\"pivotedCategory\":\"pivoted category\",\"afterSectionText\":\"Text after section\",\"beforeSectionText\":\"Text before section\"}"
         }
       ],
       "compulsoryDataElementOperands": [
@@ -152,7 +155,8 @@
       "displayShortName": "Child Health",
       "fieldCombinationRequired": true,
       "renderHorizontally": true,
-      "renderAsTabs": false,
+      "renderAsTabs": true,
+      "displayOptions": "{\"customText\": {\"align\": \"line-start\", \"header\": \"Title\", \"subheader\": \"\"}, \"tabsDirection\": \"horizontal\"}",
       "mobile": true,
       "periodType": "Monthly",
       "openFuturePeriods": 3,
@@ -205,6 +209,7 @@
       "fieldCombinationRequired": true,
       "renderHorizontally": true,
       "renderAsTabs": false,
+      "displayOptions": "{}",
       "mobile": true,
       "periodType": "Weekly",
       "openFuturePeriods": 2,

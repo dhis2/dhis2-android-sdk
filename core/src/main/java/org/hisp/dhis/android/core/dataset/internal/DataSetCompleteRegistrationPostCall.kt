@@ -27,37 +27,26 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
-import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
-import java.net.HttpURLConnection
 
 @Singleton
 internal class DataSetCompleteRegistrationPostCall(
-    private val dataSetCompleteRegistrationService: DataSetCompleteRegistrationService,
+    private val networkHandler: DataSetCompleteRegistrationNetworkHandler,
     private val dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler,
-    private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    private val versionManager: DHISVersionManager,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataSetCompleteRegistrations(
         dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
@@ -81,14 +70,13 @@ internal class DataSetCompleteRegistrationPostCall(
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         toDeleteDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ) = flow {
-        val payload = DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations)
         val dataValueImportSummary: DataValueImportSummary =
             if (toPostDataSetCompleteRegistrations.isEmpty()) {
                 DataValueImportSummary.EMPTY
             } else {
                 markObjectsAs(toPostDataSetCompleteRegistrations, State.UPLOADING)
                 try {
-                    postCompleteRegistrations(payload).getOrThrow()
+                    postCompleteRegistrations(toPostDataSetCompleteRegistrations).getOrThrow()
                 } catch (e: D2Error) {
                     markObjectsAs(toPostDataSetCompleteRegistrations, errorIfOnline(e))
                     throw e
@@ -97,37 +85,25 @@ internal class DataSetCompleteRegistrationPostCall(
 
         val deletedDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
         val withErrorDataSetCompleteRegistrations: MutableList<DataSetCompleteRegistration> = ArrayList()
-        for (dataSetCompleteRegistration in toDeleteDataSetCompleteRegistrations) {
-            val coc = categoryOptionComboCollectionRepository
-                .withCategoryOptions()
-                .uid(dataSetCompleteRegistration.attributeOptionCombo())
-                .blockingGet()
+
+        toDeleteDataSetCompleteRegistrations.forEach { toDeleteRegistrations ->
             markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING)
-            coroutineAPICallExecutor.wrap {
-                dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
-                    dataSetCompleteRegistration.dataSet(),
-                    dataSetCompleteRegistration.period(),
-                    dataSetCompleteRegistration.organisationUnit(),
-                    coc!!.categoryCombo()!!.uid(),
-                    CollectionsHelper.semicolonSeparatedCollectionValues(getUids(coc.categoryOptions()!!)),
-                    false,
-                )
-            }.fold(
+            networkHandler.deleteDataSetCompleteRegistration(toDeleteRegistrations).fold(
                 onSuccess = { result ->
-                    if (result.status.value in HttpStatusCodes.SUCCESS_MIN..HttpStatusCodes.SUCCESS_MAX) {
-                        deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    if (result.status.isSuccess()) {
+                        deletedDataSetCompleteRegistrations.add(toDeleteRegistrations)
                     } else {
-                        withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                        withErrorDataSetCompleteRegistrations.add(toDeleteRegistrations)
                     }
                 },
-
                 onFailure = {
-                    withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration)
+                    withErrorDataSetCompleteRegistrations.add(toDeleteRegistrations)
                 },
             )
         }
+
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-            payload,
+            toPostDataSetCompleteRegistrations,
             dataValueImportSummary,
             deletedDataSetCompleteRegistrations,
             withErrorDataSetCompleteRegistrations,
@@ -136,28 +112,17 @@ internal class DataSetCompleteRegistrationPostCall(
     }
 
     private suspend fun postCompleteRegistrations(
-        payload: DataSetCompleteRegistrationPayload,
+        dataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): Result<DataValueImportSummary, D2Error> {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            coroutineAPICallExecutor.wrap(
-                acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-                errorClass = DataValueImportSummaryWebResponse::class.java,
-            ) {
-                dataSetCompleteRegistrationService.postDataSetCompleteRegistrationsWebResponse(payload)
-            }.map { it.response }
-        } else {
-            coroutineAPICallExecutor.wrap {
-                dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(payload)
-            }
-        }
+        return networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
     }
 
     private fun markObjectsAs(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
         forcedState: State?,
     ) {
-        for (dscr in dataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dscr, forcedOrOwn(dscr, forcedState))
+        dataSetCompleteRegistrations.forEach {
+            dataSetCompleteRegistrationStore.setState(it, forcedOrOwn(it, forcedState))
         }
     }
 }

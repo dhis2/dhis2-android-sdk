@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
@@ -50,7 +50,7 @@ class TrackedEntityInstanceCallOldMockIntegrationShould : TrackedEntityInstanceC
 
     override fun parseTrackedEntityInstance(file: String): TrackedEntityInstance {
         val expectedEventsResponseJson = ResourcesFileReader().getStringFromFile(file)
-        val objectMapper = ObjectMapper().setDateFormat(DateUtils.DATE_FORMAT.raw())
-        return objectMapper.readValue(expectedEventsResponseJson, TrackedEntityInstance::class.java)
+        val parser = KotlinxJsonParser.instance
+        return parser.decodeFromString(TrackedEntityInstanceDTO.serializer(), expectedEventsResponseJson).toDomain()
     }
 }

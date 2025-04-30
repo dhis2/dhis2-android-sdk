@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,49 +44,48 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataset.internal.SectionDisplayOptionsColumnAdapter;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Section.Builder.class)
 public abstract class Section extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean showRowTotals();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean showColumnTotals();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreDataElementListColumnAdapter.class)
     public abstract List<DataElement> dataElements();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreDataElementOperandListColumnAdapter.class)
     public abstract List<DataElementOperand> greyedFields();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreIndicatorListAdapter.class)
     public abstract List<Indicator> indicators();
+
+    @Nullable
+    public abstract Boolean disableDataElementAutoGroup();
+
+    @Nullable
+    @ColumnAdapter(SectionDisplayOptionsColumnAdapter.class)
+    public abstract SectionDisplayOptions displayOptions();
 
     public static Builder builder() {
         return new $$AutoValue_Section.Builder();
@@ -102,7 +98,6 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
@@ -121,6 +116,10 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
         public abstract Builder greyedFields(List<DataElementOperand> greyedFields);
 
         public abstract Builder indicators(List<Indicator> indicators);
+
+        public abstract Builder disableDataElementAutoGroup(Boolean disableDataElementAutoGroup);
+
+        public abstract Builder displayOptions(SectionDisplayOptions sectionDisplayOptions);
 
         public abstract Section build();
     }

@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.internal.EventFields
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall
 import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -249,11 +248,11 @@ class EventCollectionRepository internal constructor(
     }
 
     fun withTrackedEntityDataValues(): EventCollectionRepository {
-        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES)
+        return cf.withChild(TRACKED_ENTITY_DATA_VALUES)
     }
 
     fun withNotes(): EventCollectionRepository {
-        return cf.withChild(EventFields.NOTES)
+        return cf.withChild(NOTES)
     }
 
     fun orderByEventDate(direction: OrderByDirection?): EventCollectionRepository {
@@ -323,9 +322,12 @@ class EventCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val TRACKED_ENTITY_DATA_VALUES = "dataValues"
+        private const val NOTES = "notes"
+
         val childrenAppenders: ChildrenAppenderGetter<Event> = mapOf(
-            EventFields.TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender::create,
-            EventFields.NOTES to NoteForEventChildrenAppender::create,
+            TRACKED_ENTITY_DATA_VALUES to TrackedEntityDataValueChildrenAppender::create,
+            NOTES to NoteForEventChildrenAppender::create,
         )
     }
 }

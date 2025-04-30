@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSQLStatementBuilder
@@ -60,6 +61,20 @@ class DataSetInstanceCollectionRepository internal constructor(
         )
     },
 ) {
+
+    fun dataSetInstance(
+        dataSet: String,
+        period: String,
+        organisationUnit: String,
+        attributeOptionCombo: String,
+    ): ReadOnlyOneObjectRepositoryFinalImpl<DataSetInstance> {
+        return byDataSetUid().eq(dataSet)
+            .byPeriod().eq(period)
+            .byOrganisationUnitUid().eq(organisationUnit)
+            .byAttributeOptionComboUid().eq(attributeOptionCombo)
+            .one()
+    }
+
     fun byDataSetUid(): StringFilterConnector<DataSetInstanceCollectionRepository> {
         return cf.string(DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS)
     }

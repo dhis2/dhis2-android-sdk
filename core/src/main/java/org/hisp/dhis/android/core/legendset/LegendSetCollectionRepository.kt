@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.legendset.internal.LegendChildrenAppender
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
 import org.koin.core.annotation.Singleton
 
@@ -63,12 +62,14 @@ class LegendSetCollectionRepository internal constructor(
     }
 
     fun withLegends(): LegendSetCollectionRepository {
-        return cf.withChild(LegendSetFields.LEGENDS)
+        return cf.withChild(LEGENDS)
     }
 
     internal companion object {
+        private const val LEGENDS = "legends"
+
         val childrenAppenders: ChildrenAppenderGetter<LegendSet> = mapOf(
-            LegendSetFields.LEGENDS to LegendChildrenAppender::create,
+            LEGENDS to LegendChildrenAppender::create,
         )
     }
 }

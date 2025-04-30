@@ -29,16 +29,22 @@ package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.network.eventfilter.EventFilterDTO
 import org.junit.Test
 
-class EventFilterShould : BaseObjectShould("event/event_filter.json"), ObjectShould {
+class EventFilterShould : BaseObjectKotlinxShould("event/event_filter.json"), ObjectShould {
 
     @Test
     @Suppress("LongMethod")
     override fun map_from_json_string() {
-        val eventFilter: EventFilter = objectMapper.readValue(jsonStream, EventFilter::class.java)
+        val eventFilterDTO = deserialize(EventFilterDTO.serializer())
+        val eventFilter = eventFilterDTO.toDomain()
 
         assertThat(eventFilter.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-09-27T00:19:06.590"))
         assertThat(eventFilter.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-09-27T00:19:06.590"))

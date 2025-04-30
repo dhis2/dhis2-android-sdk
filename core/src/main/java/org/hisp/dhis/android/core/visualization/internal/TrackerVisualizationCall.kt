@@ -28,50 +28,28 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.AccessFields
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerVisualizationCall(
     private val handler: TrackerVisualizationHandler,
-    private val service: TrackerVisualizationService,
-    private val dhis2VersionManager: DHISVersionManager,
+    private val networkHandler: TrackerVisualizationNetworkHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<TrackerVisualization> {
 
     companion object {
-        // Workaround for DHIS2-16746. Force queries to entity endpoint instead of list endpoint.
+        // Workaround for DHIS2-16746. Force visualizations to be queried and saved one by one.
         private const val MAX_UID_LIST_SIZE = 1
     }
 
     override suspend fun download(uids: Set<String>): List<TrackerVisualization> {
-        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
-
-        return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            apiDownloader.downloadPartitioned(
-                uids,
-                MAX_UID_LIST_SIZE,
-                handler,
-            ) { partitionUids: Set<String> ->
-                try {
-                    val visualization = service.getSingleTrackerVisualization(
-                        partitionUids.first(),
-                        TrackerVisualizationFields.allFields,
-                        accessFilter = accessFilter,
-                        paging = false,
-                    )
-                    Payload(listOf(visualization))
-                } catch (ignored: Exception) {
-                    Payload()
-                }
-            }
-        } else {
-            emptyList()
-        }
+        return apiDownloader.downloadPartitioned(
+            uids,
+            MAX_UID_LIST_SIZE,
+            handler,
+            networkHandler::getTrackerVisualizations,
+        )
     }
 }

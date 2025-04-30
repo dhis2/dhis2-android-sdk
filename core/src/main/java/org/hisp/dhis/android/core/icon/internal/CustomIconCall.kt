@@ -29,10 +29,8 @@
 package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.icon.CustomIcon
-import org.hisp.dhis.android.core.icon.IconType
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
@@ -40,7 +38,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class CustomIconCall(
     private val handler: CustomIconHandler,
-    private val service: IconService,
+    private val networkHandker: IconNetworkHandler,
     private val dhis2VersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<CustomIcon> {
@@ -55,18 +53,8 @@ internal class CustomIconCall(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,
-            ) { partitionKeys: Set<String> ->
-                try {
-                    service.getCustomIcons(
-                        fields = CustomIconFields.allFields,
-                        keys = partitionKeys.joinToString(","),
-                        type = IconType.CUSTOM.name,
-                        paging = false,
-                    )
-                } catch (ignored: Exception) {
-                    Payload()
-                }
-            }
+                networkHandker::getCustomIcons,
+            )
         } else {
             emptyList()
         }

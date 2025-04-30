@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import androidx.annotation.Nullable;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -41,18 +40,13 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
 public abstract class OptionSet extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract Integer version();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
@@ -67,7 +61,6 @@ public abstract class OptionSet extends BaseIdentifiableObject implements CoreOb
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

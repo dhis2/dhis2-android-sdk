@@ -30,22 +30,20 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramOwnerPostCall(
-    private val ownershipService: OwnershipService,
+    private val ownershipNetworkHandler: OwnershipNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val programOwnerStore: ProgramOwnerStore,
     private val dataStatePropagator: DataStatePropagator,
-    private val parameterManager: TrackerExporterParameterManager,
 ) {
 
     suspend fun uploadProgramOwner(programOwner: ProgramOwner) {
         val response = coroutineAPICallExecutor.wrap(storeError = true) {
-            ownershipService.transfer(
-                parameterManager.getTrackedEntityForOwnershipParameter(programOwner.trackedEntityInstance()),
+            ownershipNetworkHandler.transfer(
+                programOwner.trackedEntityInstance(),
                 programOwner.program(),
                 programOwner.ownerOrgUnit(),
             )

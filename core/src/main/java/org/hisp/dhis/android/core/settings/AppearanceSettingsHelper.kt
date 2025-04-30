@@ -91,10 +91,12 @@ internal object AppearanceSettingsHelper {
     @JvmStatic
     fun toCompletionSpinner(programConfiguration: ProgramConfigurationSetting?): CompletionSpinner? {
         return programConfiguration?.let {
-            CompletionSpinner.builder()
-                .uid(it.uid())
-                .visible(it.completionSpinner())
-                .build()
+            it.completionSpinner()?.let { completionSpinner ->
+                CompletionSpinner.builder()
+                    .uid(it.uid())
+                    .visible(completionSpinner)
+                    .build()
+            }
         }
     }
 }

@@ -30,31 +30,20 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.internal.EventFields
-import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
-import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
-import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.koin.core.annotation.Singleton
 import java.text.ParseException
 
 @Singleton
 internal class TrackedEntityInstanceQueryCallFactory(
-    private val trackedEntityService: TrackedEntityInstanceService,
-    private val eventService: EventService,
-    private val mapper: SearchGridMapper,
+    private val networkHandler: TrackedEntityInstanceNetworkHandler,
+    private val eventNetworkHandler: EventNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dhisVersionManager: DHISVersionManager,
 ) {
     suspend fun getCall(query: TrackedEntityInstanceQueryOnline): TrackerQueryResult {
         return queryTrackedEntityInstances(query)
@@ -100,30 +89,8 @@ internal class TrackedEntityInstanceQueryCallFactory(
         orgunit: String?,
     ): List<Event> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
-            eventService.getEvents(
-                fields = EventFields.teiQueryFields,
-                orgUnit = getOrgunits(orgunit, query.orgUnitMode)?.firstOrNull(),
-                orgUnitMode = query.orgUnitMode?.toString(),
-                status = query.eventStatus?.toString(),
-                program = query.program,
-                programStage = query.programStage,
-                programStatus = query.enrollmentStatus?.toString(),
-                filter = toAPIFilterFormat(query.dataValueFilter, upper = true),
-                followUp = query.followUp,
-                startDate = query.eventStartDate.simpleDateFormat(),
-                endDate = query.eventEndDate.simpleDateFormat(),
-                dueDateStart = query.dueStartDate.simpleDateFormat(),
-                dueDateEnd = query.dueEndDate.simpleDateFormat(),
-                order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
-                assignedUserMode = query.assignedUserMode?.toString(),
-                paging = query.paging,
-                pageSize = query.pageSize.takeIf { query.paging },
-                page = query.page.takeIf { query.paging },
-                lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
-                lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-                includeDeleted = query.includeDeleted,
-            )
-        }.getOrThrow().items()
+            eventNetworkHandler.getEventQueryForOrgunit(query, orgunit)
+        }.getOrThrow().items
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {
@@ -132,32 +99,8 @@ internal class TrackedEntityInstanceQueryCallFactory(
                 storeError = false,
                 errorCatcher = TrackedEntityInstanceQueryErrorCatcher(),
             ) {
-                trackedEntityService.query(
-                    trackedEntityInstance = query.uids?.joinToString(";"),
-                    orgUnit = getOrgunits(query)?.joinToString(";"),
-                    orgUnitMode = query.orgUnitMode?.toString(),
-                    program = query.program,
-                    programStage = query.programStage,
-                    programStartDate = query.programStartDate.simpleDateFormat(),
-                    programEndDate = query.programEndDate.simpleDateFormat(),
-                    enrollmentStatus = query.enrollmentStatus?.toString(),
-                    programIncidentStartDate = query.incidentStartDate.simpleDateFormat(),
-                    programIncidentEndDate = query.incidentEndDate.simpleDateFormat(),
-                    followUp = query.followUp,
-                    eventStartDate = query.eventStartDate.simpleDateFormat(),
-                    eventEndDate = query.eventEndDate.simpleDateFormat(),
-                    eventStatus = getEventStatus(query),
-                    trackedEntityType = query.trackedEntityType,
-                    filter = toAPIFilterFormat(query.attributeFilter, upper = true),
-                    assignedUserMode = query.assignedUserMode?.toString(),
-                    lastUpdatedStartDate = query.lastUpdatedStartDate.simpleDateFormat(),
-                    lastUpdatedEndDate = query.lastUpdatedEndDate.simpleDateFormat(),
-                    order = toAPIOrderFormat(query.order, TrackerExporterVersion.V1),
-                    paging = query.paging,
-                    pageSize = query.pageSize.takeIf { query.paging },
-                    page = query.page.takeIf { query.paging },
-                )
-            }.getOrThrow().let { mapper.transform(it) }
+                networkHandler.getTrackedEntityQuery(query)
+            }.getOrThrow()
         } catch (pe: ParseException) {
             throw D2Error.builder()
                 .errorCode(D2ErrorCode.SEARCH_GRID_PARSE)
@@ -165,16 +108,6 @@ internal class TrackedEntityInstanceQueryCallFactory(
                 .errorDescription("Search Grid mapping exception")
                 .originalException(pe)
                 .build()
-        }
-    }
-
-    private fun getEventStatus(query: TrackedEntityInstanceQueryOnline): String? {
-        return if (query.eventStatus == null) {
-            null
-        } else if (!dhisVersionManager.isGreaterThan(DHISVersion.V2_33) && query.eventStatus == EventStatus.ACTIVE) {
-            EventStatus.VISITED.toString()
-        } else {
-            query.eventStatus.toString()
         }
     }
 

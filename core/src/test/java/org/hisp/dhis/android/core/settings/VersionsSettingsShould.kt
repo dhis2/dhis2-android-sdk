@@ -27,22 +27,23 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.settings.internal.ApkDistributionVersion
+import org.hisp.dhis.android.network.apkdistribution.ApkDistributionVersionDTO
 import org.junit.Test
 
-class VersionsSettingsShould : BaseObjectShould("settings/version.json"), ObjectShould {
+class VersionsSettingsShould : BaseObjectKotlinxShould("settings/version.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val version = objectMapper.readValue(jsonStream, ApkDistributionVersion::class.java)
+        val versionDTO = deserialize(ApkDistributionVersionDTO.serializer())
+        val version = versionDTO.toDomain()
 
-        Truth.assertThat(version.version).isEqualTo("40.1")
-        Truth.assertThat(version.isDefault).isTrue()
-        Truth.assertThat(version.userGroups?.get(0)).isEqualTo("Kk12LkEWtXp")
-        Truth.assertThat(version.downloadURL).isEqualTo(
+        assertThat(version.version).isEqualTo("40.1")
+        assertThat(version.isDefault).isTrue()
+        assertThat(version.userGroups?.get(0)).isEqualTo("Kk12LkEWtXp")
+        assertThat(version.downloadURL).isEqualTo(
             "https://github.com/dhis2/dhis2-android-capture-app/releases/download/40.1/dhis2-40.1.apk",
         )
     }

@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
@@ -190,12 +189,14 @@ class EnrollmentCollectionRepository internal constructor(
     }
 
     fun withNotes(): EnrollmentCollectionRepository {
-        return cf.withChild(EnrollmentFields.NOTES)
+        return cf.withChild(NOTES)
     }
 
     internal companion object {
+        private const val NOTES = "notes"
+
         val childrenAppenders: ChildrenAppenderGetter<Enrollment> = mapOf(
-            EnrollmentFields.NOTES to NoteForEnrollmentChildrenAppender::create,
+            NOTES to NoteForEnrollmentChildrenAppender::create,
         )
     }
 }

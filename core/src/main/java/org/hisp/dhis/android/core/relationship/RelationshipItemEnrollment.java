@@ -28,19 +28,14 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.NonNull;
 
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
 public abstract class RelationshipItemEnrollment {
 
     @NonNull
-    @JsonProperty()
     public abstract String enrollment();
 
     public static Builder builder() {
@@ -48,7 +43,6 @@ public abstract class RelationshipItemEnrollment {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder enrollment(String enrollment);
 

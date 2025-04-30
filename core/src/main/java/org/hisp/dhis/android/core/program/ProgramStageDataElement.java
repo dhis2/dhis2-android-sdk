@@ -32,8 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,7 +45,6 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramStageDataElement.Builder.class)
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -88,7 +85,6 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

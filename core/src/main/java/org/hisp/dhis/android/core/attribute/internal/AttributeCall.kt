@@ -35,14 +35,12 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AttributeCall(
-    private val service: AttributeService,
+    private val networkHandler: AttributeNetworkHandler,
     private val handler: AttributeHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<Attribute> {
     override suspend fun download(uids: Set<String>): List<Attribute> {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids ->
-            service.getAttributes(AttributeFields.allFields, AttributeFields.uid.`in`(partitionUids), false)
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getAttributes)
     }
 
     companion object {

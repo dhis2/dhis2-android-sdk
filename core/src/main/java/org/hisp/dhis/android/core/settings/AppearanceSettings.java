@@ -30,26 +30,22 @@ package org.hisp.dhis.android.core.settings;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AppearanceSettings.Builder.class)
 public abstract class AppearanceSettings {
 
     @Nullable
-    @JsonProperty
     public abstract FilterSorting filterSorting();
 
     @Nullable
-    @JsonProperty
     public abstract ProgramConfigurationSettings programConfiguration();
+
+    @Nullable
+    public abstract DataSetConfigurationSettings dataSetConfiguration();
 
     @Deprecated
     @Nullable
-    @JsonProperty
     public abstract CompletionSpinnerSetting completionSpinner();
 
     public abstract AppearanceSettings.Builder toBuilder();
@@ -59,30 +55,18 @@ public abstract class AppearanceSettings {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder filterSorting(FilterSorting filterSorting);
 
         public abstract Builder programConfiguration(ProgramConfigurationSettings programConfiguration);
 
+        public abstract Builder dataSetConfiguration(DataSetConfigurationSettings dataSetConfiguration);
+
         @Deprecated
         public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
 
-        // Auxiliary fields
-        abstract ProgramConfigurationSettings programConfiguration();
-        abstract CompletionSpinnerSetting completionSpinner();
-
-        abstract AppearanceSettings autoBuild();
-
         @SuppressWarnings("PMD.ConfusingTernary")
-        public AppearanceSettings build() {
-            if (programConfiguration() != null) {
-                completionSpinner(AppearanceSettingsHelper.programToCompletionSpinner(programConfiguration()));
-            } else if (completionSpinner() != null) {
-                programConfiguration(AppearanceSettingsHelper.completionSpinnerToProgram(completionSpinner()));
-            }
-            return autoBuild();
-        }
+        public abstract AppearanceSettings build();
     }
 }

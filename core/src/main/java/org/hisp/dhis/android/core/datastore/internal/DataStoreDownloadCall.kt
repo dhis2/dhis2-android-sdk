@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -45,41 +43,29 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DataStoreDownloadCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val dataStoreEntryService: DataStoreService,
+    private val networkHandler: DataStoreNetworkHandler,
     private val dataStoreEntryHandler: DataStoreHandler,
     private val versionManager: DHISVersionManager,
 ) {
-    fun download(params: DataStoreDownloadParams): Observable<D2Progress> {
-        return rxObservable {
-            return@rxObservable coroutineAPICallExecutor.wrapTransactionally(
-                cleanForeignKeyErrors = true,
-            ) {
-                coroutineAPICallExecutor.wrap(storeError = false) {
-                    dataStoreEntryService.getNamespaces()
-                }
-                    .map { filterNamespaces(params, it) }
-                    .fold(
-                        onSuccess = { namespaces ->
-                            val progressManager = D2ProgressManager(namespaces.size)
-                            namespaces.forEach { namespace ->
-                                downloadNamespace(namespace)
-                                send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
-                            }
-                            send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
-                        },
-                        onFailure = { t -> throw t },
-                    )
+
+    fun download(params: DataStoreDownloadParams): Observable<D2Progress> = rxObservable {
+        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            val namespaces = networkHandler.getNamespaces()
+                .map { filterNamespaces(params, it) }
+                .getOrThrow()
+
+            val progressManager = D2ProgressManager(namespaces.size)
+
+            namespaces.forEach { namespace ->
+                downloadNamespace(namespace)
+                send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
             }
+            send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
         }
     }
 
-    private fun filterNamespaces(params: DataStoreDownloadParams, namespaces: List<String>): List<String> {
-        return if (params.namespaces.isNotEmpty()) {
-            namespaces.filter { params.namespaces.contains(it) }
-        } else {
-            namespaces
-        }
-    }
+    private fun filterNamespaces(params: DataStoreDownloadParams, namespaces: List<String>): List<String> =
+        if (params.namespaces.isNotEmpty()) namespaces.filter { it in params.namespaces } else namespaces
 
     private suspend fun downloadNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         return fetchNamespace(namespace).map { list ->
@@ -97,60 +83,26 @@ internal class DataStoreDownloadCall(
     }
 
     private suspend fun fetchNamespace38(namespace: String): Result<List<DataStoreEntry>, D2Error> {
-        var pag = 1
-        var entries: Result<List<DataStoreEntry>, D2Error> = Result.Success(emptyList())
-        var lastPage: List<DataStoreEntry> = emptyList()
+        var page = 1
+        val entries = mutableListOf<DataStoreEntry>()
 
-        do {
-            val result = coroutineAPICallExecutor.wrap(storeError = false) {
-                dataStoreEntryService.getNamespaceValues38(namespace, pag, PAGE_SIZE)
+        while (true) {
+            when (val result = networkHandler.getNamespaceValues38(namespace, page, PAGE_SIZE)) {
+                is Result.Success -> {
+                    entries += result.value
+                    if (result.value.size < PAGE_SIZE) break
+                    page++
+                }
+                is Result.Failure -> return result
             }
-            result.fold(
-                onSuccess = { pagedEntry ->
-                    val pageEntries = pagedEntry.entries.map { keyValuePair ->
-                        val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(keyValuePair.value)
-                        DataStoreEntry.builder()
-                            .namespace(namespace)
-                            .key(keyValuePair.key)
-                            .value(strValue)
-                            .syncState(State.SYNCED)
-                            .deleted(false)
-                            .build()
-                    }
-
-                    entries = Result.Success((entries.getOrNull() ?: emptyList()) + pageEntries)
-                    lastPage = pageEntries
-                    pag++
-                },
-                onFailure = { t ->
-                    entries = Result.Failure(t)
-                },
-            )
-        } while (lastPage.size >= PAGE_SIZE && result.succeeded)
-
-        return entries
+        }
+        return Result.Success(entries)
     }
 
     private suspend fun fetchNamespace37(namespace: String): Result<List<DataStoreEntry>, D2Error> {
-        val result = coroutineAPICallExecutor.wrap(storeError = false) {
-            dataStoreEntryService.getNamespaceKeys(namespace)
-        }
-
-        return result.map { keys ->
+        return networkHandler.getNamespaceKeys(namespace).map { keys ->
             keys.map { key ->
-                val keyResult = coroutineAPICallExecutor.wrap(storeError = false) {
-                    dataStoreEntryService.getNamespaceKeyValue(namespace, key)
-                }
-
-                val value = keyResult.getOrThrow()
-                val strValue = ObjectMapperFactory.objectMapper().writeValueAsString(value)
-                DataStoreEntry.builder()
-                    .namespace(namespace)
-                    .key(key)
-                    .value(strValue)
-                    .syncState(State.SYNCED)
-                    .deleted(false)
-                    .build()
+                networkHandler.getNamespaceKeyValue(namespace, key).getOrThrow()
             }
         }
     }

@@ -28,15 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.network.common.fields.Field;
 
 @AutoValue
 public abstract class ObjectWithUid implements ObjectWithUidInterface {
@@ -45,11 +43,9 @@ public abstract class ObjectWithUid implements ObjectWithUidInterface {
 
     @Override
     @NonNull
-    @JsonProperty(UID)
     public abstract String uid();
 
-    @JsonCreator
-    public static ObjectWithUid create(@JsonProperty(UID) String uid) {
+    public static ObjectWithUid create(String uid) {
         return new AutoValue_ObjectWithUid(uid);
     }
 

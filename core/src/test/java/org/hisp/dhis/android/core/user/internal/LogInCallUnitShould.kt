@@ -33,7 +33,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -56,7 +55,7 @@ import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
-    private val userService: UserService = mock()
+    private val userNetworkHandler: UserNetworkHandler = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val userHandler: UserHandler = mock()
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
@@ -65,7 +64,6 @@ class LogInCallUnitShould : BaseCallShould() {
     private val apiErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
 
     private val credentialsCaptor: KArgumentCaptor<String> = argumentCaptor()
-    private val filterCaptor: KArgumentCaptor<Fields<User>> = argumentCaptor()
 
     private val apiUser: User = mock()
     private val dbUser: User = mock()
@@ -110,7 +108,7 @@ class LogInCallUnitShould : BaseCallShould() {
 
     private suspend fun instantiateCall(username: String?, password: String?, serverUrl: String?): User {
         return LogInCall(
-            coroutineAPICallExecutor, userService, credentialsSecureStore,
+            coroutineAPICallExecutor, userNetworkHandler, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
@@ -118,8 +116,8 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private fun whenAPICall(answer: Answer<User>) {
-        userService.stub {
-            onBlocking { authenticate(any(), any()) }.doAnswer(answer)
+        userNetworkHandler.stub {
+            onBlocking { authenticate(any()) }.doAnswer(answer)
         }
     }
 
@@ -158,9 +156,8 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun invoke_server_with_correct_parameters_after_call() = runTest {
         whenever(
-            userService.authenticate(
+            userNetworkHandler.authenticate(
                 credentialsCaptor.capture(),
-                filterCaptor.capture(),
             ),
         ).thenReturn(apiUser)
         login()

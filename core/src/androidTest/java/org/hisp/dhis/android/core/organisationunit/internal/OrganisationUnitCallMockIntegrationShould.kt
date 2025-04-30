@@ -31,6 +31,7 @@ import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -68,7 +69,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         val organisationUnits = listOf(orgUnit)
 
         // dependencies for the OrganisationUnitCall:
-        val organisationUnitService = OrganisationUnitService(d2.httpServiceClient())
+        val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler = DhisAndroidSdkKoinContext.koin.get()
 
         // Create a user with the root as assigned organisation unit (for the test):
         val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
@@ -95,12 +96,10 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
             ),
         )
         val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
-        val pathTransformer = OrganisationUnitDisplayPathTransformer()
         organisationUnitCall = {
             OrganisationUnitCall(
-                organisationUnitService,
+                organisationUnitNetworkHandler,
                 organisationUnitHandler,
-                pathTransformer,
                 UserOrganisationUnitLinkStoreImpl(databaseAdapter),
                 OrganisationUnitStoreImpl(databaseAdapter),
                 organisationUnitCollectionCleaner,

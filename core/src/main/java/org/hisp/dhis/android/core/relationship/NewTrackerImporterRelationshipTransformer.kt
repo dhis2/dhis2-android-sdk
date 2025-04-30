@@ -27,92 +27,49 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
 internal object NewTrackerImporterRelationshipTransformer :
-    TwoWayTransformer<Relationship, NewTrackerImporterRelationship> {
+    Transformer<Relationship, NewTrackerImporterRelationship> {
     override fun transform(o: Relationship): NewTrackerImporterRelationship {
-        return NewTrackerImporterRelationship.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .relationshipType(o.relationshipType())
-            .relationshipName(o.name())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .from(transformRelationshipItem(o.from()))
-            .to(transformRelationshipItem(o.to()))
-            .deleted(o.deleted())
-            .syncState(o.syncState())
-            .build()
-    }
-
-    override fun deTransform(t: NewTrackerImporterRelationship): Relationship {
-        return Relationship.builder()
-            .id(t.id())
-            .uid(t.uid())
-            .relationshipType(t.relationshipType())
-            .name(t.relationshipName())
-            .created(t.createdAt())
-            .lastUpdated(t.updatedAt())
-            .from(deTransformRelationshipItem(t.from()))
-            .to(deTransformRelationshipItem(t.to()))
-            .deleted(t.deleted())
-            .syncState(t.syncState())
-            .build()
+        val isBidirectional = o.from() != null && o.to() != null
+        return NewTrackerImporterRelationship(
+            uid = o.uid(),
+            relationshipType = o.relationshipType(),
+            relationshipName = o.name(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            from = transformRelationshipItem(o.from()),
+            to = transformRelationshipItem(o.to()),
+            deleted = o.deleted(),
+            syncState = o.syncState(),
+            bidirectional = isBidirectional,
+        )
     }
 
     private fun transformRelationshipItem(item: RelationshipItem?): NewTrackerImporterRelationshipItem? {
         return item?.let {
-            val builder = NewTrackerImporterRelationshipItem.builder()
-                .relationship(item.relationship()?.uid())
-                .relationshipItemType(item.relationshipItemType())
-
-            when {
-                item.hasTrackedEntityInstance() ->
-                    builder.trackedEntity(
-                        NewTrackerImporterRelationshipItemTrackedEntity.builder().trackedEntity(item.elementUid())
-                            .build(),
-                    ).build()
-                item.hasEnrollment() ->
-                    builder.enrollment(
-                        NewTrackerImporterRelationshipItemEnrollment.builder().enrollment(item.elementUid()).build(),
-                    ).build()
-                item.hasEvent() ->
-                    builder.event(
-                        NewTrackerImporterRelationshipItemEvent.builder().event(item.elementUid()).build(),
-                    ).build()
-                else -> null
-            }
-        }
-    }
-
-    private fun deTransformRelationshipItem(item: NewTrackerImporterRelationshipItem?): RelationshipItem? {
-        return item?.let {
-            val builder = RelationshipItem.builder()
-                .relationship(item.relationship()?.let { ObjectWithUid.create(it) })
-                .relationshipItemType(item.relationshipItemType())
-
-            when {
-                item.trackedEntity() != null ->
-                    builder.trackedEntityInstance(
-                        RelationshipItemTrackedEntityInstance.builder()
-                            .trackedEntityInstance(item.trackedEntity()?.trackedEntity())
-                            .build(),
-                    ).build()
-                item.enrollment() != null ->
-                    builder.enrollment(
-                        RelationshipItemEnrollment.builder()
-                            .enrollment(item.enrollment()?.enrollment())
-                            .build(),
-                    ).build()
-                item.event() != null ->
-                    builder.event(
-                        RelationshipItemEvent.builder()
-                            .event(item.event()?.event())
-                            .build(),
-                    ).build()
-                else -> null
+            val relationshipItem = NewTrackerImporterRelationshipItem(
+                relationship = item.relationship()?.uid(),
+                relationshipItemType = item.relationshipItemType(),
+                trackedEntity = if (item.hasTrackedEntityInstance()) {
+                    NewTrackerImporterRelationshipItemTrackedEntity(trackedEntity = item.elementUid())
+                } else {
+                    null
+                },
+                enrollment = if (item.hasEnrollment()) {
+                    NewTrackerImporterRelationshipItemEnrollment(enrollment = item.elementUid())
+                } else {
+                    null
+                },
+                event = if (item.hasEvent()) {
+                    NewTrackerImporterRelationshipItemEvent(event = item.elementUid())
+                } else {
+                    null
+                },
+            )
+            relationshipItem.takeIf {
+                it.trackedEntity != null || it.enrollment != null || it.event != null
             }
         }
     }

@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramIndicatorCall(
-    private val service: ProgramIndicatorService,
+    private val networkHandler: ProgramIndicatorNetworkHandler,
     private val handler: ProgramIndicatorHandler,
     private val apiDownloader: APIDownloader,
     private val programStore: ProgramStore,
@@ -51,31 +50,13 @@ internal class ProgramIndicatorCall(
         val firstPayload = apiDownloader.downloadPartitioned(
             uids = programUids.toSet(),
             pageSize = MAX_UID_LIST_SIZE,
-            pageDownloader = { partitionUids ->
-                val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true)
-                val programUidsFilter = "program.${ObjectWithUid.uid.`in`(partitionUids).generateString()}"
-                service.getProgramIndicator(
-                    fields = ProgramIndicatorFields.allFields,
-                    displayInForm = displayInFormFilter,
-                    program = programUidsFilter,
-                    uids = null,
-                    false,
-                )
-            },
+            pageDownloader = networkHandler::getDisplayInFormProgramIndicators,
         )
 
         val secondPayload = apiDownloader.downloadPartitioned(
             uids = uids,
             pageSize = MAX_UID_LIST_SIZE,
-            pageDownloader = { partitionUids ->
-                service.getProgramIndicator(
-                    fields = ProgramIndicatorFields.allFields,
-                    displayInForm = null,
-                    program = null,
-                    uids = ProgramIndicatorFields.uid.`in`(partitionUids),
-                    false,
-                )
-            },
+            pageDownloader = networkHandler::getProgramIndicatorsByUid,
         )
 
         val mergedData = (firstPayload + secondPayload).distinctBy { it.uid() }

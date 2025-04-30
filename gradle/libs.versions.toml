@@ -1,6 +1,6 @@
 [versions]
-dhis2AndroidSdkVersion = "1.11.1-SNAPSHOT"
-dhis2AndroidSdkCode = "296"
+dhis2AndroidSdkVersion = "1.12.0-SNAPSHOT"
+dhis2AndroidSdkCode = "297"
 
 gradle = "8.6.1"
 kotlin = "2.0.20"
@@ -22,11 +22,10 @@ annotation = "1.6.0"
 paging = "3.2.1"
 
 # java
-jackson = "2.13.4"
 autoValue = "1.10.2"
 autoValueCursor = "2.0.1"
 okHttp = "4.12.0"
-ktor = "2.1.3"
+ktor = "2.3.11"
 rxJava = "2.2.21"
 rxAndroid = "2.1.1"
 sqlCipher = "4.5.5"
@@ -40,6 +39,7 @@ kotlinxDatetime = "0.6.0"
 coroutines = "1.6.4"
 koin = "3.5.6"
 koinKsp = "1.3.1"
+kotlinxSerializationJson = "1.7.3"
 
 # test dependencies
 coreTesting = "2.2.0"
@@ -84,23 +84,21 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koinKsp" }
 koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinKsp" }
 
-jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
-
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okHttp" }
 
-ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
-ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor"}
-ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor"}
-ktor-jackson = { group = "io.ktor", name = "ktor-serialization-jackson", version.ref = "ktor"}
-ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor"}
+ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 dhis2-compression = { group = "com.github.dhis2", name = "sms-compression", version.ref = "smsCompression" }
 dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expression-parser", version.ref = "expressionParser" }
@@ -108,7 +106,7 @@ dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expres
 sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
 sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlLite" }
 
-zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j"}
+zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j" }
 
 openid-appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
 listenablefuture-empty = { group = "com.google.guava", name = "listenablefuture", version.ref = "listenablefuture" }
@@ -129,6 +127,7 @@ sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "apiCompatibility" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish"}
+nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]

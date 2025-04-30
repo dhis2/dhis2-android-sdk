@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
 import androidx.annotation.NonNull;
 
 public abstract class WebResponse {
@@ -46,7 +44,6 @@ public abstract class WebResponse {
     @NonNull
     public abstract String message();
 
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T extends Builder> {
         public abstract T httpStatus(String httpStatus);
 

@@ -39,9 +39,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @Singleton
 internal class OrganisationUnitCall(
-    private val organisationUnitService: OrganisationUnitService,
+    private val networkHandler: OrganisationUnitNetworkHandler,
     private val handler: OrganisationUnitHandler,
-    private val pathTransformer: OrganisationUnitDisplayPathTransformer,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitStore: OrganisationUnitStore,
     private val collectionCleaner: OrganisationUnitCollectionCleaner,
@@ -125,26 +124,19 @@ internal class OrganisationUnitCall(
         val page = AtomicInteger(1)
 
         while (true) {
-            val organisationUnits = downloadPage(orgUnit, page)
-            if (organisationUnits.size < PAGE_SIZE) {
+            val downloadedPageSize = downloadPage(orgUnit, page)
+            if (downloadedPageSize < PAGE_SIZE) {
                 break
             }
         }
     }
 
-    private suspend fun downloadPage(orgUnit: String, page: AtomicInteger): List<OrganisationUnit> {
-        val response = organisationUnitService.getOrganisationUnits(
-            OrganisationUnitFields.allFields,
-            OrganisationUnitFields.path.like(orgUnit),
-            OrganisationUnitFields.ASC_ORDER,
-            true,
-            PAGE_SIZE,
-            page.getAndIncrement(),
-        )
+    private suspend fun downloadPage(orgUnit: String, page: AtomicInteger): Int {
+        val response = networkHandler.getOrganisationUnits(orgUnit, PAGE_SIZE, page.getAndIncrement())
 
-        val items = response.items()
-        handler.handleMany(items, pathTransformer)
+        val orgunits = response.items
+        handler.handleMany(orgunits)
 
-        return items
+        return orgunits.size
     }
 }

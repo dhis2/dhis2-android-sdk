@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.VisualizationColumnsRowsFiltersChildrenAppender
-import org.hisp.dhis.android.core.visualization.internal.VisualizationFields
 import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
 import org.koin.core.annotation.Singleton
 
@@ -178,12 +177,14 @@ class VisualizationCollectionRepository internal constructor(
     }
 
     fun withColumnsRowsAndFilters(): VisualizationCollectionRepository {
-        return cf.withChild(VisualizationFields.ITEMS)
+        return cf.withChild(ITEMS)
     }
 
     internal companion object {
+        private const val ITEMS = "items"
+
         val childrenAppenders: ChildrenAppenderGetter<Visualization> = mapOf(
-            VisualizationFields.ITEMS to VisualizationColumnsRowsFiltersChildrenAppender::create,
+            ITEMS to VisualizationColumnsRowsFiltersChildrenAppender::create,
         )
     }
 }

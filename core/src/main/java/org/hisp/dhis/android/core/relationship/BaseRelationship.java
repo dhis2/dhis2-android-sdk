@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
@@ -43,43 +42,34 @@ import java.util.Date;
 public abstract class BaseRelationship extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Nullable
-    @JsonProperty(RelationshipFields.RELATIONSHIP)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
     public abstract String name();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty()
     public abstract String relationshipType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem from();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem to();
 
     public abstract static class Builder<T extends Builder> extends BaseDeletableDataObject.Builder<T> {
 
-        @JsonProperty(RelationshipFields.RELATIONSHIP)
         public abstract T uid(String uid);
 
-        @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
         public abstract T name(String name);
 
         public abstract T created(Date created);

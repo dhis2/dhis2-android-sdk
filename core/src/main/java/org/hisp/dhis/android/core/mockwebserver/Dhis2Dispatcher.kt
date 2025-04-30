@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.mockwebserver
 
 import android.util.Log
+import io.ktor.http.HttpStatusCode
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
-import org.hisp.dhis.android.core.arch.api.internal.HttpStatusCodes.INTERNAL_SERVER_ERROR
 import org.hisp.dhis.android.core.arch.file.IFileReader
 import java.io.IOException
 
@@ -60,7 +60,7 @@ class Dhis2Dispatcher internal constructor(
                 .setResponseCode(httpCode)
                 .setHeader("Content-Type", contentType!!)
         } catch (e: IOException) {
-            return MockResponse().setResponseCode(INTERNAL_SERVER_ERROR)
+            return MockResponse().setResponseCode(HttpStatusCode.InternalServerError.value)
                 .setBody("Error reading JSON file for MockServer")
         }
     }

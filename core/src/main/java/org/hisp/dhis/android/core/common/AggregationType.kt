@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.common
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
 import org.hisp.dhis.android.core.util.SqlAggregator
 
 enum class AggregationType(val sql: String?) {
@@ -51,7 +50,5 @@ enum class AggregationType(val sql: String?) {
     MAX_SUM_ORG_UNIT(null),
     NONE(null),
     CUSTOM(null),
-
-    @JsonEnumDefaultValue
     DEFAULT(null),
 }

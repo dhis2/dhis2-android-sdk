@@ -27,36 +27,20 @@
  */
 package org.hisp.dhis.android.core.note
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-internal object NewTrackerImporterNoteTransformer : TwoWayTransformer<Note, NewTrackerImporterNote> {
+internal object NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerImporterNote> {
     override fun transform(o: Note): NewTrackerImporterNote {
-        return NewTrackerImporterNote.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .noteType(o.noteType())
-            .event(o.event())
-            .enrollment(o.enrollment())
-            .value(o.value())
-            .storedBy(o.storedBy())
-            .storedAt(o.storedDate())
-            .syncState(o.syncState())
-            .build()
-    }
-
-    override fun deTransform(t: NewTrackerImporterNote): Note {
-        return Note.builder()
-            .id(t.id())
-            .uid(t.uid())
-            .deleted(t.deleted())
-            .noteType(t.noteType())
-            .event(t.event())
-            .enrollment(t.enrollment())
-            .value(t.value())
-            .storedBy(t.storedBy())
-            .storedDate(t.storedAt())
-            .syncState(t.syncState())
-            .build()
+        return NewTrackerImporterNote(
+            uid = o.uid(),
+            deleted = o.deleted(),
+            noteType = o.noteType(),
+            event = o.event(),
+            enrollment = o.enrollment(),
+            value = o.value(),
+            storedBy = o.storedBy(),
+            storedAt = o.storedDate(),
+            syncState = o.syncState(),
+        )
     }
 }

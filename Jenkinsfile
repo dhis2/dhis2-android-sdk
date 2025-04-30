@@ -1,3 +1,23 @@
+def retryOnTimeout(retries, timeoutMinutes, script) {
+    def success = false
+    for (int i = 0; i < retries; i++) {
+        try {
+            timeout(time: timeoutMinutes, unit: 'MINUTES') {
+                script()
+            }
+            success = true
+            break
+        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+            echo "Timeout occurred, retrying... (${i + 1}/${retries})"
+        } catch (Exception e) {
+            throw e
+        }
+    }
+    if (!success) {
+        error "Failed after ${retries} retries due to timeout"
+    }
+}
+
 pipeline {
     agent {
         label "ec2-android"
@@ -22,7 +42,19 @@ pipeline {
                 script {
                     echo 'Running Check style and quality'
                     sh 'chmod +x ./runChecks.sh'
-                    sh './runChecks.sh'
+                    retryOnTimeout(3, 20) {
+                        sh './runChecks.sh'
+                    }
+                }
+            }
+        }
+        stage('Api validation') {
+            steps {
+                script {
+                    echo 'Running public API validation'
+                    retryOnTimeout(3, 10) {
+                        sh './gradlew :core:apiCheck'
+                    }
                 }
             }
         }
@@ -30,7 +62,9 @@ pipeline {
             steps {
                 script {
                     echo 'Running unit tests'
-                    sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
+                    retryOnTimeout(3, 15) {
+                        sh './gradlew testDebugUnitTest --stacktrace --no-daemon'
+                    }
                 }
             }
         }
@@ -42,7 +76,9 @@ pipeline {
                 script {
                     echo 'Browserstack deployment and running tests'
                     sh 'chmod +x ./scripts/browserstackJenkins.sh'
-                    sh './scripts/browserstackJenkins.sh'
+                    retryOnTimeout(3, 20) {
+                        sh './scripts/browserstackJenkins.sh'
+                    }
                 }
             }
         }
@@ -66,10 +102,8 @@ pipeline {
                 script {
                     echo 'Sonarqube'
                     sh 'chmod +x ./scripts/sonarqube.sh'
-                    retry(3) { // Retry up to 3 times
-                        timeout(time: 10, unit: 'MINUTES') {
-                            sh './scripts/sonarqube.sh'
-                        }
+                    retryOnTimeout(3, 10) {
+                        sh './scripts/sonarqube.sh'
                     }
                 }
             }

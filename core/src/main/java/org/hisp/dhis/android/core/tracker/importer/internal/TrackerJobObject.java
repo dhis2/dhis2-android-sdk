@@ -32,8 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,7 +44,6 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
 public abstract class TrackerJobObject extends BaseObject {
 
     @NonNull
@@ -79,7 +76,6 @@ public abstract class TrackerJobObject extends BaseObject {
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder trackerType(TrackerImporterObjectType trackerType);
 

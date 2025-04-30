@@ -6,6 +6,10 @@ When using the SDK sometimes one would like to make requests that are not suppor
 
 The SDK uses `HttpServiceClient` based on Ktor for HTTP requests to the Web API. You can define custom services to interact with various endpoints using this client. The client object is available through the d2 instance.
 
+In version 1.12, Kotlinx Serialization was introduced to manage de/serialization of json objects. For this to properly work, a class annotated with `@Serializable` must be used. See UserDTO example below. 
+
+More information about serialization can be found in the [Kotlin documentation](https://kotlinlang.org/docs/serialization.html) and [Ktor documentation](https://ktor.io/docs/client-serialization.html)
+
 > **Important**
 >
 > The end-point must be an end-point supported by the Web API otherwise your request will not succeed.
@@ -20,9 +24,9 @@ class CustomService(private val client: HttpServiceClient) {
         paging: Boolean,
         page: Int?,
         pageSize: Int?,
-    ): User {
+    ): UserDTO {
         return client.get {
-            url("end-point/$path")
+            url("get-endpoint-url/$path")
             parameters{
                 attribute("field", field)
                 attribute("filter", filter)
@@ -34,14 +38,27 @@ class CustomService(private val client: HttpServiceClient) {
     }
 
     suspend fun postData(
-        body: BodyClass
-    ): Body {
+        body: UserDTO
+    ): ResponseDTO {
         return client.post {
-            url("some_endpoint")
+            url("post-endpoint")
             setBody(body)
         }
     }
 }
+
+@Serializable
+data class UserDTO(
+    val name: String,
+    val surname: String,
+    val age: Int,
+)
+
+@Serializable
+data class ResponseDTO(
+    val status: String,
+    val responseMessage: String,
+)
 ```
 
 ## Using the service
@@ -53,7 +70,7 @@ Instantiate your service and perform requests:
 val customService = CustomService(httpServiceClient)
 
 // Get data
-val data = customService.getData(
+val userDTO = customService.getData(
     "dataPath",
     "dataField",
     "dataFielter",
@@ -61,8 +78,8 @@ val data = customService.getData(
 )
 
 // Post data
-val dataBody = BodyClass(data = "some data")
-val createdData = customService.postData(dataBody)
+val dataBody = UserDTO(name = "Name", surname = "Surname", age = 20)
+val responseDTO = customService.postData(dataBody)
 ```
 
 > **Important**

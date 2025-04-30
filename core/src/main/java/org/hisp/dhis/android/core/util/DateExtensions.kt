@@ -31,6 +31,18 @@ package org.hisp.dhis.android.core.util
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import java.util.*
 
+internal fun String?.toJavaSimpleDate(): Date? {
+    return this?.let { DateUtils.SIMPLE_DATE_FORMAT.parse(it) }
+}
+
 internal fun Date?.simpleDateFormat(): String? {
     return this?.let { DateUtils.SIMPLE_DATE_FORMAT.format(it) }
+}
+
+internal fun String?.toJavaDate(): Date? {
+    return this?.let { DateUtils.DATE_FORMAT.parse(it) }
+}
+
+internal fun Date?.dateFormat(): String? {
+    return this?.let { DateUtils.DATE_FORMAT.format(it) }
 }

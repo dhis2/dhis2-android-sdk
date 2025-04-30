@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.realservertests.apischema
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.BaseFields
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.network.common.fields.BaseFields
+import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.FieldsHelper
 
 internal object ApiSchemaFields : BaseFields<ApiSchema>() {
     private const val PROPERTIES = "properties"
@@ -37,7 +37,7 @@ internal object ApiSchemaFields : BaseFields<ApiSchema>() {
     private const val PROPERTY_TYPE = "propertyType"
     private const val CONSTANTS = "constants"
 
-    private val ApiSchemaPropertyFh = FieldsHelper<ApiSchema.Companion.SchemaProperty>()
+    private val ApiSchemaPropertyFh = FieldsHelper<SchemaProperty>()
 
     private val propertyFields = Fields.from(
         ApiSchemaPropertyFh.field(KLASS),
@@ -46,6 +46,6 @@ internal object ApiSchemaFields : BaseFields<ApiSchema>() {
     )
 
     val allFields = Fields.from(
-        fh.nestedField<ApiSchema.Companion.SchemaProperty>(PROPERTIES).with(propertyFields),
+        fh.nestedField<SchemaProperty>(PROPERTIES).with(propertyFields),
     )
 }

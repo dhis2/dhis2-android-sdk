@@ -27,35 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.user.UserInfo
 
 internal object NewTrackerImporterTrackedEntityDataValueTransformer :
-    TwoWayTransformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
+    Transformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
 
     override fun transform(o: TrackedEntityDataValue): NewTrackerImporterTrackedEntityDataValue {
-        return NewTrackerImporterTrackedEntityDataValue.builder()
-            .id(o.id())
-            .event(o.event())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .dataElement(o.dataElement())
-            .createdBy(o.storedBy()?.let { UserInfo.builder().username(it).build() })
-            .value(o.value())
-            .providedElsewhere(o.providedElsewhere())
-            .build()
-    }
-
-    override fun deTransform(t: NewTrackerImporterTrackedEntityDataValue): TrackedEntityDataValue {
-        return TrackedEntityDataValue.builder()
-            .id(t.id())
-            .event(t.event())
-            .created(t.createdAt())
-            .lastUpdated(t.updatedAt())
-            .dataElement(t.dataElement())
-            .storedBy(t.createdBy()?.username())
-            .value(t.value())
-            .providedElsewhere(t.providedElsewhere())
-            .build()
+        return NewTrackerImporterTrackedEntityDataValue(
+            event = o.event(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            dataElement = o.dataElement(),
+            createdBy = o.storedBy()?.let { UserInfo(username = it) },
+            value = o.value(),
+            providedElsewhere = o.providedElsewhere(),
+        )
     }
 }

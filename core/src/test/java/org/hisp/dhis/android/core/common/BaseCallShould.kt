@@ -27,65 +27,43 @@
  */
 package org.hisp.dhis.android.core.common
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory.fromServerUrl
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import org.mockito.ArgumentMatchers
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import java.util.Date
 import javax.net.ssl.HttpsURLConnection
 
 @Suppress("UnnecessaryAbstractClass")
 abstract class BaseCallShould {
-    @Mock
-    protected lateinit var databaseAdapter: DatabaseAdapter
 
-    @Mock
-    protected lateinit var serverDate: Date
-
-    @Mock
-    internal lateinit var resourceHandler: ResourceHandler
-
-    @Mock
-    internal lateinit var genericCallData: GenericCallData
-
-    @Mock
-    protected lateinit var transaction: Transaction
-
-    @Mock
-    protected lateinit var d2Error: D2Error
+    protected val databaseAdapter: DatabaseAdapter = mock()
+    protected val serverDate: Date = mock()
+    internal val resourceHandler: ResourceHandler = mock()
+    internal val genericCallData: GenericCallData = mock()
+    protected val transaction: Transaction = mock()
+    protected val d2Error: D2Error = mock()
 
     protected lateinit var errorResponse: D2HttpException
 
     @Throws(Exception::class)
     open fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
-        var httpClient = fromServerUrl("https://fake.dhis.org")
-
-        Mockito.`when`(genericCallData.databaseAdapter).thenReturn(databaseAdapter)
-        Mockito.`when`(genericCallData.httpServiceClient).thenReturn(httpClient)
-        Mockito.`when`(
+        whenever(genericCallData.databaseAdapter).thenReturn(databaseAdapter)
+        whenever(
             genericCallData.resourceHandler,
         ).thenReturn(resourceHandler)
 
-        Mockito.`when`(
-            resourceHandler.getLastUpdated(
-                ArgumentMatchers.any(
-                    Resource.Type::class.java,
-                ),
-            ),
+        whenever(
+            resourceHandler.getLastUpdated(any()),
         ).thenReturn(null)
 
-        Mockito.`when`(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
+        whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
 
         errorResponse = D2HttpException(
             D2HttpResponse(

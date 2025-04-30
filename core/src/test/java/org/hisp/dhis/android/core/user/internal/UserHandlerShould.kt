@@ -28,11 +28,15 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserRole
 import org.junit.Before
@@ -52,7 +56,6 @@ class UserHandlerShould {
     private val userGroups: List<UserGroup> = mock()
 
     private lateinit var user: User
-    private lateinit var userCredentials: UserCredentials
 
     // object to test
     private lateinit var userHandler: UserHandler
@@ -63,13 +66,11 @@ class UserHandlerShould {
             userStore, userRoleHandler, userRoleCollectionCleaner, userGroupHandler,
             userGroupCollectionCleaner,
         )
-        userCredentials = UserCredentials.builder()
-            .username("username")
-            .userRoles(userRoles)
-            .build()
+
         user = User.builder()
             .uid("userUid")
-            .userCredentials(userCredentials)
+            .username("username")
+            .userRoles(userRoles)
             .userGroups(userGroups)
             .build()
 

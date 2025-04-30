@@ -61,8 +61,8 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
         val relationshipMap = mutableMapOf<State, MutableList<String>>()
 
         val trackedEntities = payload.trackedEntities
-        val enrollments = trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
-        val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
+        val enrollments = trackedEntities.flatMap { it.enrollments ?: emptyList() } + payload.enrollments
+        val events = enrollments.flatMap { it.events ?: emptyList() } + payload.events
         val relationships = payload.relationships
 
         trackedEntities.forEach { h.addState(teiMap, it, forcedState) }

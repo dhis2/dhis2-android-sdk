@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.map.layer
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.map.layer.ImageFormat
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
 import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemaps
@@ -44,8 +45,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
 
     @Test
     fun filter_all() {
-        val mapLayers = d2.mapsModule().mapLayers()
-            .blockingGet()
+        val mapLayers = d2.mapsModule().mapLayers().blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(9)
     }
@@ -121,6 +121,9 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .blockingGet()
 
         assertThat(mapLayers.first().imageryProviders()).isNotEmpty()
+        assertThat(mapLayers.first().imageryProviders()?.first()?.coverageAreas()?.first()).isInstanceOf(
+            MapLayerImageryProviderArea::class.java,
+        )
     }
 
     @Test

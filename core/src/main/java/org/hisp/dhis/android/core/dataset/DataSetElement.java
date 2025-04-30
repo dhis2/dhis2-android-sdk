@@ -33,9 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -45,21 +42,17 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetElement.Builder.class)
 public abstract class DataSetElement implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
     @NonNull
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
@@ -74,7 +67,6 @@ public abstract class DataSetElement implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboChildrenAppender
-import org.hisp.dhis.android.core.category.internal.CategoryComboFields
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.koin.core.annotation.Singleton
 
@@ -63,12 +62,14 @@ class CategoryComboCollectionRepository internal constructor(
     }
 
     fun withCategories(): CategoryComboCollectionRepository {
-        return cf.withChild(CategoryComboFields.CATEGORIES)
+        return cf.withChild(CATEGORIES)
     }
 
     internal companion object {
+        private const val CATEGORIES = "categories"
+
         val childrenAppenders: ChildrenAppenderGetter<CategoryCombo> = mapOf(
-            CategoryComboFields.CATEGORIES to CategoryCategoryComboChildrenAppender::create,
+            CATEGORIES to CategoryCategoryComboChildrenAppender::create,
         )
     }
 }

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException
+import kotlinx.serialization.SerializationException
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
@@ -57,7 +57,7 @@ internal class SettingsAppInfoCall(
                 exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
                     fetchV1GeneralSettings(storeError)
 
-                exception.originalException() is InvalidFormatException ->
+                exception.originalException() is SerializationException ->
                     SettingsAppVersion.DataStoreEmpty
 
                 else ->
@@ -77,7 +77,7 @@ internal class SettingsAppInfoCall(
                 exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
                     SettingsAppVersion.DataStoreEmpty
 
-                exception.originalException() is InvalidFormatException ->
+                exception.originalException() is SerializationException ->
                     SettingsAppVersion.DataStoreEmpty
 
                 else ->

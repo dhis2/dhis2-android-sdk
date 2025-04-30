@@ -70,6 +70,8 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
 
     V2_41_0(DHISVersion.V2_41, "2.41.0", SMSVersion.V2),
 
+    V2_42_0(DHISVersion.V2_42, "2.42.0", SMSVersion.V2),
+
     UNKNOWN(DHISVersion.UNKNOWN, "UNKNOWN", SMSVersion.V2),
     ;
 

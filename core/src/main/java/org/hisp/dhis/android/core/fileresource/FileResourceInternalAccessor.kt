@@ -31,4 +31,11 @@ internal object FileResourceInternalAccessor {
     fun isStored(fileResource: FileResource): Boolean {
         return fileResource.storageStatus()?.let { it == FileResourceStorageStatus.STORED } ?: true
     }
+
+    fun insertStorageStatus(
+        builder: FileResource.Builder,
+        storageStatus: FileResourceStorageStatus,
+    ): FileResource.Builder {
+        return builder.storageStatus(storageStatus)
+    }
 }

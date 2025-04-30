@@ -28,49 +28,22 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterParameterManager
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterService
+import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class NewEventEndpointCallFactory(
-    private val service: TrackerExporterService,
-    private val parameterManager: TrackerExporterParameterManager,
-) : EventEndpointCallFactory() {
+    private val networkHandler: TrackerExporterNetworkHandler,
+) : EventEndpointCallFactory {
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return service.getEvents(
-            fields = NewEventFields.allFields,
-            orgUnit = eventQuery.orgUnit,
-            orgUnitMode = parameterManager.getOrgunitModeParameter(eventQuery.commonParams.ouMode),
-            program = eventQuery.commonParams.program,
-            occurredAfter = getEventStartDate(eventQuery),
-            paging = true,
-            page = eventQuery.page,
-            pageSize = eventQuery.pageSize,
-            updatedAfter = eventQuery.lastUpdatedStr,
-            includeDeleted = true,
-            eventUid = parameterManager.getEventsParameter(eventQuery.uids),
-        ).let { mapPayload(it) }
+        return networkHandler.getEventCollectionCall(eventQuery)
     }
 
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
-        return service.getEventSingle(
-            eventUid = parameterManager.getEventsParameter(listOf(item.itemUid)),
-            fields = NewEventFields.asRelationshipFields,
-            orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
-        ).let { mapPayload(it) }
-    }
-
-    private fun mapPayload(payload: TrackerPayload<NewTrackerImporterEvent>): Payload<Event> {
-        val newItems = payload.items().map { t -> NewTrackerImporterEventTransformer.deTransform(t) }
-        return Payload(newItems)
+        return networkHandler.getEventRelationshipEntityCall(item)
     }
 }

@@ -43,7 +43,7 @@ import org.koin.core.annotation.Singleton
 internal class IndicatorEndpointCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: IndicatorService,
+    private val networkHandler: IndicatorNetworkHandler,
     private val handler: IndicatorHandler,
 ) : UidsCallFactoryImpl<Indicator>(data, coroutineAPICallExecutor) {
     override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<Indicator> {
@@ -51,12 +51,7 @@ internal class IndicatorEndpointCallFactory(
             UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
 
             override suspend fun getCall(query: UidsQuery): Payload<Indicator> {
-                return service.getIndicators(
-                    IndicatorFields.allFields,
-                    null,
-                    IndicatorFields.uid.`in`(query.uids),
-                    false,
-                )
+                return networkHandler.getIndicators(query.uids)
             }
         }
     }

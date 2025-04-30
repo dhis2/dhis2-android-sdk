@@ -28,13 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.network.tracker.NewTrackedEntityDTO
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
@@ -52,8 +51,9 @@ class TrackedEntityInstanceCallNewMockIntegrationShould : TrackedEntityInstanceC
 
     override fun parseTrackedEntityInstance(file: String): TrackedEntityInstance {
         val expectedEventsResponseJson = ResourcesFileReader().getStringFromFile(file)
-        val objectMapper = ObjectMapperFactory.objectMapper()
-        val entity = objectMapper.readValue(expectedEventsResponseJson, NewTrackerImporterTrackedEntity::class.java)
-        return NewTrackerImporterTrackedEntityTransformer.deTransform(entity)
+        val parser = KotlinxJsonParser.instance
+        val entity = parser.decodeFromString(NewTrackedEntityDTO.serializer(), expectedEventsResponseJson)
+
+        return entity.toDomain()
     }
 }

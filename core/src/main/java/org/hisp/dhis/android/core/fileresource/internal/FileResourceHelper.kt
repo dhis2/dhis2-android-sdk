@@ -37,7 +37,13 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -81,7 +87,7 @@ internal class FileResourceHelper(
         fileResources: List<FileResource>,
     ): FileResource? {
         return fileResources.find {
-            it.uid() == attributeValue.value() && isFileAttribute(attributeValue.trackedEntityAttribute())
+            it.uid() == attributeValue.value && isFileAttribute(attributeValue.trackedEntityAttribute)
         }
     }
 
@@ -99,7 +105,7 @@ internal class FileResourceHelper(
         fileResources: List<FileResource>,
     ): FileResource? {
         return fileResources.find {
-            it.uid() == dataValue.value() && isFileDataElement(dataValue.dataElement())
+            it.uid() == dataValue.value && isFileDataElement(dataValue.dataElement)
         }
     }
 

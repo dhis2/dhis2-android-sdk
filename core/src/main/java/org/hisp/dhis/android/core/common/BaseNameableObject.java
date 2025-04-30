@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
 import androidx.annotation.Nullable;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
@@ -54,7 +52,6 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     @Override
     public abstract String displayDescription();
 
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
 
         public abstract T shortName(@Nullable String shortName);

@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorFields
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.koin.core.annotation.Singleton
@@ -96,17 +95,20 @@ class ProgramIndicatorCollectionRepository internal constructor(
     }
 
     fun withLegendSets(): ProgramIndicatorCollectionRepository {
-        return cf.withChild(ProgramIndicatorFields.LEGEND_SETS)
+        return cf.withChild(LEGEND_SETS)
     }
 
     fun withAnalyticsPeriodBoundaries(): ProgramIndicatorCollectionRepository {
-        return cf.withChild(ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES)
+        return cf.withChild(ANALYTICS_PERIOD_BOUNDARIES)
     }
 
     internal companion object {
+        private const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
+        private const val LEGEND_SETS = "legendSets"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramIndicator> = mapOf(
-            ProgramIndicatorFields.LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender::create,
-            ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES to
+            LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender::create,
+            ANALYTICS_PERIOD_BOUNDARIES to
                 ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender::create,
         )
     }

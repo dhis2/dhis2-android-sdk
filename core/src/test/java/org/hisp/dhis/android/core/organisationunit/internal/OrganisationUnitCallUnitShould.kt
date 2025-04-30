@@ -31,8 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
@@ -49,15 +47,12 @@ import java.util.*
 @RunWith(JUnit4::class)
 class OrganisationUnitCallUnitShould {
     private val organisationUnitPayload: Payload<OrganisationUnit> = mock()
-    private val organisationUnitService: OrganisationUnitService = mock()
+    private val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler = mock()
 
     // Captors for the organisationUnitService arguments:
-    private val fieldsCaptor = argumentCaptor<Fields<OrganisationUnit>>()
-    private val filtersCaptor = argumentCaptor<Filter<OrganisationUnit>>()
-    private val pagingCaptor = argumentCaptor<Boolean>()
+    private val orgunitCaptor = argumentCaptor<String>()
     private val pageCaptor = argumentCaptor<Int>()
     private val pageSizeCaptor = argumentCaptor<Int>()
-    private val orderCaptor = argumentCaptor<String>()
 
     private val organisationUnit: OrganisationUnit = mock()
     private val user: User = mock()
@@ -66,7 +61,6 @@ class OrganisationUnitCallUnitShould {
     private val organisationUnitHandler: OrganisationUnitHandler = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitStore: OrganisationUnitStore = mock()
-    private val organisationUnitDisplayPathTransformer: OrganisationUnitDisplayPathTransformer = mock()
 
     // the call we are testing:
     private lateinit var lastUpdated: Date
@@ -117,9 +111,8 @@ class OrganisationUnitCallUnitShould {
 
         organisationUnitCall = {
             OrganisationUnitCall(
-                organisationUnitService,
+                organisationUnitNetworkHandler,
                 organisationUnitHandler,
-                organisationUnitDisplayPathTransformer,
                 userOrganisationUnitLinkStore,
                 organisationUnitStore,
                 collectionCleaner,
@@ -130,13 +123,10 @@ class OrganisationUnitCallUnitShould {
         val organisationUnits = listOf(organisationUnit)
         whenever(UserInternalAccessor.accessOrganisationUnits(user)).doReturn(organisationUnits)
 
-        organisationUnitService.stub {
+        organisationUnitNetworkHandler.stub {
             onBlocking {
-                organisationUnitService.getOrganisationUnits(
-                    fieldsCaptor.capture(),
-                    filtersCaptor.capture(),
-                    orderCaptor.capture(),
-                    pagingCaptor.capture(),
+                organisationUnitNetworkHandler.getOrganisationUnits(
+                    orgunitCaptor.capture(),
                     pageSizeCaptor.capture(),
                     pageCaptor.capture(),
                 )
@@ -150,11 +140,8 @@ class OrganisationUnitCallUnitShould {
     fun invoke_server_with_correct_parameters() = runTest {
         organisationUnitCall.invoke()
 
-        assertThat(fieldsCaptor.firstValue).isEqualTo(OrganisationUnitFields.allFields)
-        assertThat(filtersCaptor.firstValue.operator).isEqualTo("like")
-        assertThat(filtersCaptor.firstValue.field).isEqualTo(OrganisationUnitFields.path)
-        assertThat(orderCaptor.firstValue).isEqualTo(OrganisationUnitFields.ASC_ORDER)
-        assertThat(pagingCaptor.firstValue).isTrue()
+        assertThat(orgunitCaptor.firstValue).isEqualTo(organisationUnit.uid())
+        assertThat(pageSizeCaptor.firstValue).isEqualTo(500)
         assertThat(pageCaptor.firstValue).isEqualTo(1)
     }
 
@@ -162,7 +149,7 @@ class OrganisationUnitCallUnitShould {
     fun invoke_handler_if_request_succeeds() = runTest {
         organisationUnitCall.invoke()
 
-        verify(organisationUnitHandler, times(1)).handleMany(any(), any())
+        verify(organisationUnitHandler, times(1)).handleMany(any())
     }
 
     @Test
@@ -170,6 +157,6 @@ class OrganisationUnitCallUnitShould {
         organisationUnitCall.invoke()
         organisationUnitCall.invoke()
 
-        verify(organisationUnitHandler, times(2)).handleMany(any(), any())
+        verify(organisationUnitHandler, times(2)).handleMany(any())
     }
 }

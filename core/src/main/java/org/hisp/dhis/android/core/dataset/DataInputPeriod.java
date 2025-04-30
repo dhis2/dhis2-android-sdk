@@ -33,10 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -48,25 +44,20 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataInputPeriod.Builder.class)
 public abstract class DataInputPeriod extends BaseObject {
 
     @Nullable
-    @JsonIgnore
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
-    @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid period();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closingDate();
 
@@ -83,7 +74,6 @@ public abstract class DataInputPeriod extends BaseObject {
 
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<DataInputPeriod.Builder> {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);

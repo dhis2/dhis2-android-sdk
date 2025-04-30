@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.indicator.internal.IndicatorFields
 import org.hisp.dhis.android.core.indicator.internal.IndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.koin.core.annotation.Singleton
@@ -100,7 +99,7 @@ class IndicatorCollectionRepository internal constructor(
     }
 
     fun withLegendSets(): IndicatorCollectionRepository {
-        return cf.withChild(IndicatorFields.LEGEND_SETS)
+        return cf.withChild(LEGEND_SETS)
     }
 
     fun byDataSetUid(dataSetUid: String): IndicatorCollectionRepository {
@@ -122,8 +121,10 @@ class IndicatorCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val LEGEND_SETS = "legendSets"
+
         val childrenAppenders: ChildrenAppenderGetter<Indicator> = mapOf(
-            IndicatorFields.LEGEND_SETS to IndicatorLegendSetChildrenAppender::create,
+            LEGEND_SETS to IndicatorLegendSetChildrenAppender::create,
         )
     }
 }

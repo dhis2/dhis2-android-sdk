@@ -16,13 +16,17 @@
   "displayShortName": "ART 2010",
   "fieldCombinationRequired": false,
   "renderHorizontally": false,
-  "renderAsTabs": false,
+  "renderAsTabs": true,
+  "displayOptions": "{\"customText\": {\"align\": \"line-end\", \"header\": \"Title\", \"subheader\": \"Subtitle\"}, \"tabsDirection\": \"vertical\"}",
   "mobile": false,
   "periodType": "Monthly",
   "openFuturePeriods": 0,
   "expiryDays": 0,
   "categoryCombo": {
     "id": "O4VaNks6tta"
+  },
+  "workflow": {
+    "id": "R22tClyLU2w"
   },
   "dataSetElements": [
     {

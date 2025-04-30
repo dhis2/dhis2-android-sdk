@@ -28,12 +28,16 @@
 
 package org.hisp.dhis.android.core.data.dataset;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.CustomText;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions;
+import org.hisp.dhis.android.core.dataset.TabsDirection;
+import org.hisp.dhis.android.core.dataset.TextAlign;
 import org.hisp.dhis.android.core.period.PeriodType;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
 public class DataSetSamples {
 
@@ -47,8 +51,8 @@ public class DataSetSamples {
                 .categoryCombo(ObjectWithUid.create("comboUid"))
                 .mobile(false)
                 .version(2)
-                .expiryDays(3)
-                .timelyDays(4)
+                .expiryDays(3.0)
+                .timelyDays(4.0)
                 .notifyCompletingUser(true)
                 .openFuturePeriods(6)
                 .fieldCombinationRequired(false)
@@ -56,8 +60,16 @@ public class DataSetSamples {
                 .noValueRequiresComment(true)
                 .skipOffline(false)
                 .dataElementDecoration(true)
-                .renderAsTabs(false)
+                .renderAsTabs(true)
                 .renderHorizontally(true)
+                .displayOptions(DataSetDisplayOptions.builder()
+                        .customText(CustomText.builder()
+                                .header("header")
+                                .subHeader("subHeader")
+                                .align(TextAlign.LINE_END)
+                                .build())
+                        .tabsDirection(TabsDirection.VERTICAL)
+                        .build())
                 .access(AccessHelper.createForDataWrite(true));
         return dataSetBuilder.build();
     }

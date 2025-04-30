@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.httpservice.internal
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -40,18 +39,20 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import io.ktor.serialization.jackson.JacksonConverter
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+@Serializable
 data class MyResponse(
-    @JsonProperty("message") val message: String,
-    @JsonProperty("id") val id: Int,
+    val message: String,
+    val id: Int,
 )
 
 class HttpServiceClientShould {
@@ -75,8 +76,7 @@ class HttpServiceClientShould {
     private fun buildHttpServiceClient(mockEngine: MockEngine) {
         client = HttpClient(mockEngine) {
             install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
-                register(ContentType.Application.Json, converter)
+                json(KotlinxJsonParser.instance)
             }
         }
         service = HttpServiceClient(client)

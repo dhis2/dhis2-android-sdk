@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
@@ -47,42 +45,36 @@ public abstract class FilterOperators {
      * Less than or equal to
      */
     @Nullable
-    @JsonProperty()
     public abstract String le();
 
     /**
      * Greater than or equal to
      */
     @Nullable
-    @JsonProperty()
     public abstract String ge();
 
     /**
      * Greater than
      */
     @Nullable
-    @JsonProperty()
     public abstract String gt();
 
     /**
      * Lesser than
      */
     @Nullable
-    @JsonProperty()
     public abstract String lt();
 
     /**
      * Equal to
      */
     @Nullable
-    @JsonProperty()
     public abstract String eq();
 
     /**
      * In a list
      */
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(StringSetColumnAdapter.class)
     @ColumnName(ItemFilterTableInfo.Columns.IN)
     public abstract Set<String> in();
@@ -91,18 +83,15 @@ public abstract class FilterOperators {
      * Like
      */
     @Nullable
-    @JsonProperty()
     public abstract String like();
 
     /**
      * If the dataItem is of type date, then date filtering parameters are specified using this.
      */
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod dateFilter();
 
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T extends Builder> {
 
         public abstract T le(String le);

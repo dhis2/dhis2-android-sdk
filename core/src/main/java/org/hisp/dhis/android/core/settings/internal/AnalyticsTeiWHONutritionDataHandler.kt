@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
@@ -40,7 +40,7 @@ internal class AnalyticsTeiWHONutritionDataHandler(
     store: AnalyticsTeiWHONutritionDataStore,
     private val teiDataElementHandler: AnalyticsTeiDataElementHandler,
     private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,
-) : LinkHandlerImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>(store) {
+) : ChildElementHandlerImpl<AnalyticsTeiWHONutritionData>(store) {
 
     override fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
         val dataElementList =

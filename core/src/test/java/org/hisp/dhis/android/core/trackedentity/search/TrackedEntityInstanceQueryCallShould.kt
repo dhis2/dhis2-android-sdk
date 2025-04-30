@@ -28,7 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.anyOrNull
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -41,37 +48,28 @@ import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventInternalAccessor
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.internal.EventFields
-import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
-import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.invocation.InvocationOnMock
-import java.text.ParseException
-import java.util.*
+import java.util.Date
 import javax.net.ssl.HttpsURLConnection
 
 @RunWith(JUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
-    private val trackedEntityService: TrackedEntityInstanceService = mock()
-    private val eventService: EventService = mock()
-    private val mapper: SearchGridMapper = mock()
+    private val trackedEntityInstanceNetworkHandler: TrackedEntityInstanceNetworkHandler = mock()
+    private val eventNetworkHandler: EventNetworkHandler = mock()
     private val coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
-    private val dhisVersionManager: DHISVersionManager = mock()
-    private val searchGrid: SearchGrid = mock()
     private val teis: List<TrackedEntityInstance> = mock()
     private val eventPayload: Payload<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
@@ -111,19 +109,14 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             pageSize = 33,
         )
 
-        whenServiceQuery { searchGrid }
+        whenServiceQuery { teis }
         whenEventServiceQuery { eventPayload }
-
-        whenever(mapper.transform(any())).doReturn(teis)
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).doReturn(true)
 
         // Metadata call
         callFactory = TrackedEntityInstanceQueryCallFactory(
-            trackedEntityService,
-            eventService,
-            mapper,
+            trackedEntityInstanceNetworkHandler,
+            eventNetworkHandler,
             coroutineAPICallExecutor,
-            dhisVersionManager,
         )
     }
 
@@ -134,17 +127,10 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     @Test
-    fun call_mapper_with_search_grid() = runTest {
-        callFactory.getCall(query)
-        verify(mapper).transform(searchGrid)
-        verifyNoMoreInteractions(mapper)
-    }
-
-    @Test
     fun call_service_with_query_parameters() = runTest {
         callFactory.getCall(query)
         verifyService(query)
-        verifyNoMoreInteractions(trackedEntityService)
+        verifyNoMoreInteractions(trackedEntityInstanceNetworkHandler)
     }
 
     @Test
@@ -174,19 +160,13 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         }
     }
 
-    @Test(expected = D2Error::class)
-    fun throw_D2CallException_when_mapper_throws_exception() = runTest {
-        whenever(mapper.transform(searchGrid)).thenThrow(ParseException::class.java)
-        callFactory.getCall(query)
-    }
-
     @Test
     fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
         )
-        whenever(eventPayload.items()).doReturn(events)
+        whenever(eventPayload.items).doReturn(events)
 
         val query = query.copy(
             dataValueFilter = listOf(
@@ -208,7 +188,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     @Test
     fun should_query_events_for_multiple_orgunits() = runTest {
-        whenever(eventPayload.items()).doReturn(emptyList())
+        whenever(eventPayload.items).doReturn(emptyList())
 
         val query = query.copy(
             dataValueFilter = listOf(
@@ -228,33 +208,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     private fun verifyService(
         query: TrackedEntityInstanceQueryOnline,
-        expectedStatus: EventStatus? = query.eventStatus,
     ) = runBlocking {
-        verify(trackedEntityService).query(
-            eq(query.uids?.joinToString(";")),
-            getExpectedOrgunit(query.orgUnits, query.orgUnitMode),
-            eq(query.orgUnitMode.toString()),
-            eq(query.program),
-            eq(query.programStage),
-            eq(query.programStartDate.simpleDateFormat()),
-            eq(query.programEndDate.simpleDateFormat()),
-            eq(query.enrollmentStatus?.toString()),
-            eq(query.incidentStartDate.simpleDateFormat()),
-            eq(query.incidentEndDate.simpleDateFormat()),
-            eq(query.followUp),
-            eq(query.eventStartDate.simpleDateFormat()),
-            eq(query.eventEndDate.simpleDateFormat()),
-            eq(expectedStatus?.toString()),
-            eq(query.trackedEntityType),
-            any(),
-            eq(query.assignedUserMode?.toString()),
-            eq(query.lastUpdatedStartDate.simpleDateFormat()),
-            eq(query.lastUpdatedEndDate.simpleDateFormat()),
-            any(),
-            eq(query.paging),
-            eq(query.page.takeIf { query.paging }),
-            eq(query.pageSize.takeIf { query.paging }),
-        )
+        verify(trackedEntityInstanceNetworkHandler).getTrackedEntityQuery(query)
     }
 
     private fun verifyEventService(
@@ -270,102 +225,21 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     }
 
     private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
-        verify(eventService).getEvents(
-            eq(EventFields.teiQueryFields),
-            getExpectedOrgunit(orgunit?.let { listOf(it) }, query.orgUnitMode),
-            eq(query.orgUnitMode?.toString()),
-            eq(query.eventStatus?.toString()),
-            eq(query.program),
-            eq(query.programStage),
-            eq(query.enrollmentStatus?.toString()),
-            any(),
-            eq(query.followUp),
-            eq(query.eventStartDate.simpleDateFormat()),
-            eq(query.eventEndDate.simpleDateFormat()),
-            eq(query.dueStartDate.simpleDateFormat()),
-            eq(query.dueEndDate.simpleDateFormat()),
-            any(),
-            eq(query.assignedUserMode?.toString()),
-            eq(query.paging),
-            eq(query.page.takeIf { query.paging }),
-            eq(query.pageSize.takeIf { query.paging }),
-            eq(query.lastUpdatedStartDate.simpleDateFormat()),
-            eq(query.lastUpdatedEndDate.simpleDateFormat()),
-            eq(query.includeDeleted),
-            eq(null),
-        )
+        verify(eventNetworkHandler).getEventQueryForOrgunit(query, orgunit)
     }
 
-    private fun getExpectedOrgunit(orgUnits: List<String>?, mode: OrganisationUnitMode?): String? {
-        return if (mode == OrganisationUnitMode.ALL ||
-            mode == OrganisationUnitMode.ACCESSIBLE ||
-            mode == OrganisationUnitMode.CAPTURE
-        ) {
-            eq(null)
-        } else {
-            eq(orgUnits?.joinToString(";"))
-        }
-    }
-
-    private fun whenServiceQuery(answer: (InvocationOnMock) -> SearchGrid?) {
-        trackedEntityService.stub {
+    private fun whenServiceQuery(answer: (InvocationOnMock) -> List<TrackedEntityInstance>?) {
+        trackedEntityInstanceNetworkHandler.stub {
             onBlocking {
-                query(
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                )
+                getTrackedEntityQuery(anyOrNull())
             }.doAnswer(answer)
         }
     }
 
     private fun whenEventServiceQuery(answer: (InvocationOnMock) -> Payload<Event>) {
-        eventService.stub {
+        eventNetworkHandler.stub {
             onBlocking {
-                getEvents(
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    anyOrNull(),
-                )
+                getEventQueryForOrgunit(anyOrNull(), anyOrNull())
             }.doAnswer(answer)
         }
     }

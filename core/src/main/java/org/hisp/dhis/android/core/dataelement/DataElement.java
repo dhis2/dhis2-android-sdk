@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -54,7 +51,6 @@ import org.hisp.dhis.android.core.common.ValueType;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<DataElement, DataElement.Builder> {
 
@@ -96,7 +92,6 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
@@ -104,7 +99,6 @@ public abstract class DataElement extends BaseNameableObject
     public abstract String fieldMask();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -119,7 +113,6 @@ public abstract class DataElement extends BaseNameableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<DataElement.Builder>
             implements ObjectWithStyle.Builder<DataElement, DataElement.Builder> {
 

@@ -33,67 +33,51 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataValue.Builder.class)
 public abstract class DataValue extends BaseDeletableDataObject {
 
     @Nullable
-    @JsonProperty
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty
     public abstract String period();
 
     @Nullable
-    @JsonProperty(DataValueFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty
     public abstract String categoryOptionCombo();
 
     @Nullable
-    @JsonProperty
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty
     public abstract String value();
 
     @Nullable
-    @JsonProperty
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty
     public abstract String comment();
 
     @Nullable
-    @JsonProperty(DataValueFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @NonNull
@@ -109,7 +93,6 @@ public abstract class DataValue extends BaseDeletableDataObject {
 
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<DataValue.Builder> {
 
         public Builder() {
@@ -120,7 +103,6 @@ public abstract class DataValue extends BaseDeletableDataObject {
 
         public abstract DataValue.Builder period(@NonNull String period);
 
-        @JsonProperty(DataValueFields.ORGANISATION_UNIT)
         public abstract DataValue.Builder organisationUnit(@NonNull String organisationUnit);
 
         public abstract DataValue.Builder categoryOptionCombo(@NonNull String categoryOptionCombo);
@@ -137,7 +119,6 @@ public abstract class DataValue extends BaseDeletableDataObject {
 
         public abstract DataValue.Builder comment(@Nullable String comment);
 
-        @JsonProperty(DataValueFields.FOLLOW_UP)
         public abstract DataValue.Builder followUp(@Nullable Boolean followUp);
 
         abstract DataValue autoBuild();

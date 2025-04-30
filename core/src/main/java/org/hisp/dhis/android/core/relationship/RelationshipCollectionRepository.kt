@@ -250,12 +250,14 @@ class RelationshipCollectionRepository internal constructor(
     }
 
     fun withItems(): RelationshipCollectionRepository {
-        return cf.withChild(RelationshipFields.ITEMS)
+        return cf.withChild(ITEMS)
     }
 
     internal companion object {
+        private const val ITEMS = "items"
+
         val childrenAppenders: ChildrenAppenderGetter<Relationship> = mapOf(
-            RelationshipFields.ITEMS to ::RelationshipItemChildrenAppender,
+            ITEMS to ::RelationshipItemChildrenAppender,
         )
     }
 }

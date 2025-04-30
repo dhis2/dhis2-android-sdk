@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute3
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeAttributeComboLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeAttributeOptionLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeCombo
@@ -49,9 +50,13 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement3
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement5
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElementOperand
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.level1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.level2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.option1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.option2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.optionSet
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.organisationUnitGroup
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
@@ -90,6 +95,8 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStoreImpl
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStoreImpl
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStoreImpl
+import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
+import org.hisp.dhis.android.core.option.internal.OptionStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
@@ -131,6 +138,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected val categoryOptionComboCategoryOptionLinkStore = CategoryOptionComboCategoryOptionLinkStoreImpl(
         databaseAdapter,
     )
+    protected val optionSetStore = OptionSetStoreImpl(databaseAdapter)
+    protected val optionStore = OptionStoreImpl(databaseAdapter)
     protected val dataElementStore = DataElementStoreImpl(databaseAdapter)
     protected val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
     protected val organisationUnitLevelStore = OrganisationUnitLevelStoreImpl(databaseAdapter)
@@ -235,10 +244,15 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         categoryCategoryComboLinkStore.insert(attributeAttributeComboLink)
         categoryOptionComboCategoryOptionLinkStore.insert(attributeOptionComboAttributeOptionLink)
 
+        optionSetStore.insert(optionSet)
+        optionStore.insert(option1)
+        optionStore.insert(option2)
+
         dataElementStore.insert(dataElement1)
         dataElementStore.insert(dataElement2)
         dataElementStore.insert(dataElement3)
         dataElementStore.insert(dataElement4)
+        dataElementStore.insert(dataElement5)
 
         periodStore.insert(period2019SunW25)
         periodStore.insert(period201910)
@@ -250,6 +264,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         trackedEntityTypeStore.insert(trackedEntityType)
         trackedEntityAttributeStore.insert(attribute1)
         trackedEntityAttributeStore.insert(attribute2)
+        trackedEntityAttributeStore.insert(attribute3)
+
         programStore.insert(program)
         programStageStore.insert(programStage1)
         programStageStore.insert(programStage2)
@@ -273,6 +289,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         categoryOptionComboStore.delete()
         categoryCategoryComboLinkStore.delete()
         categoryOptionComboCategoryOptionLinkStore.delete()
+        optionSetStore.delete()
+        optionStore.delete()
         dataElementStore.delete()
         periodStore.delete()
         dataValueStore.delete()

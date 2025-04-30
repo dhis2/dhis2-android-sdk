@@ -29,11 +29,13 @@ package org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.internal.ObjectWithUidDAO
+import org.hisp.dhis.android.core.common.internal.ObjectWithUidDAO.Companion.toDao
 
 internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWithUid>> {
 
@@ -41,11 +43,10 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
-            val idList = ObjectMapperFactory.objectMapper().readValue(str, ArrayList<String>().javaClass)
-            idList.map { ObjectWithUid.create(it) }
-        } catch (e: JsonProcessingException) {
-            listOf()
-        } catch (e: JsonMappingException) {
+            KotlinxJsonParser.instance.decodeFromString<List<ObjectWithUidDAO>>(
+                str,
+            ).map { it.toDomain() }
+        } catch (e: SerializationException) {
             listOf()
         } catch (e: IllegalArgumentException) {
             listOf()
@@ -57,15 +58,16 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
     override fun toContentValues(values: ContentValues, columnName: String, value: List<ObjectWithUid>?) {
         try {
             values.put(columnName, serialize(value))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }
 
     companion object {
         fun serialize(o: List<ObjectWithUid>?): String? {
-            return o?.map { it.uid() }.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            val dao = o?.map { it.toDao() }
+            return dao?.let {
+                KotlinxJsonParser.instance.encodeToString(ListSerializer(ObjectWithUidDAO.serializer()), it)
             }
         }
     }

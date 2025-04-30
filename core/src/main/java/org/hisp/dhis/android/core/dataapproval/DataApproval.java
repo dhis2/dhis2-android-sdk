@@ -33,34 +33,24 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataApprovalStateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalFields;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataApproval.Builder.class)
 public abstract class DataApproval extends BaseObject {
 
-    @JsonProperty(DataApprovalFields.WORKFLOW)
     public abstract String workflow();
 
-    @JsonProperty(DataApprovalFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
-    @JsonProperty(DataApprovalFields.PERIOD)
     public abstract String period();
 
-    @JsonProperty(DataApprovalFields.ATTRIBUTE_OPTION_COMBO)
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DataApprovalStateColumnAdapter.class)
     public abstract DataApprovalState state();
 
@@ -77,26 +67,18 @@ public abstract class DataApproval extends BaseObject {
 
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<DataApproval.Builder> {
 
-        @JsonProperty(DataApprovalFields.WORKFLOW)
         public abstract Builder workflow(@NonNull String workflow);
 
-        @JsonProperty(DataApprovalFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(@NonNull String organisationUnit);
 
-        @JsonProperty(DataApprovalFields.PERIOD)
         public abstract Builder period(@NonNull String period);
 
-        @JsonProperty(DataApprovalFields.ATTRIBUTE_OPTION_COMBO)
         public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
 
         public abstract Builder state(@NonNull DataApprovalState state);
 
         public abstract DataApproval build();
     }
-
-
-
 }

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.common.internal.AccessFields
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.koin.core.annotation.Singleton
 
@@ -44,20 +43,13 @@ import org.koin.core.annotation.Singleton
 internal class DataElementEndpointCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: DataElementService,
+    private val networkHandler: DataElementNetworkHandler,
     private val handler: DataElementHandler,
 ) : UidsCallFactoryImpl<DataElement>(data, coroutineAPICallExecutor) {
     override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<DataElement> {
         return object : UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
-            var accessReadFilter = "access." + AccessFields.read.eq(true).generateString()
             override suspend fun getCall(query: UidsQuery): Payload<DataElement> {
-                return service.getDataElements(
-                    DataElementFields.allFields,
-                    DataElementFields.uid.`in`(query.uids),
-                    null,
-                    accessReadFilter,
-                    query.paging,
-                )
+                return networkHandler.getDataElements(query.uids)
             }
         }
     }

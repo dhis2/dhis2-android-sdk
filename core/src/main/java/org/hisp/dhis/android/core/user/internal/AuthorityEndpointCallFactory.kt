@@ -32,30 +32,20 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.ListCoroutineCall
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.user.Authority
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class AuthorityEndpointCallFactory constructor(
+internal class AuthorityEndpointCallFactory(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    handler: AuthorityHandler,
-    service: AuthorityService,
+    private val handler: AuthorityHandler,
+    private val networkHandler: AuthorityNetworkHandler,
 ) : ListCoroutineCallFactoryImpl<Authority>(data, coroutineAPICallExecutor) {
-    private val handler: Handler<Authority>
-    private val service: AuthorityService
-
-    init {
-        this.handler = handler
-        this.service = service
-    }
 
     override suspend fun fetcher(): CoroutineCallFetcher<Authority> {
         return object : AuthorityCallFetcher(coroutineAPICallExecutor) {
-            override suspend fun getCall(): List<String> {
-                return service.authorities()
-            }
+            override suspend fun getCall(): List<Authority> = networkHandler.getAuthorities()
         }
     }
 

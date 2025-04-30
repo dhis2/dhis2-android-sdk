@@ -30,20 +30,22 @@ package org.hisp.dhis.android.core.programstageworkinglist
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListDTO
 import org.junit.Test
 
 class ProgramStageWorkingListShould :
-    BaseObjectShould("programstageworkinglist/program_stage_working_list.json"),
+    BaseObjectKotlinxShould("programstageworkinglist/program_stage_working_list.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val workingList = objectMapper.readValue(jsonStream, ProgramStageWorkingList::class.java)
+        val workingListDTO = deserialize(ProgramStageWorkingListDTO.serializer())
+        val workingList = workingListDTO.toDomain()
 
         assertThat(workingList.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))
         assertThat(workingList.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))

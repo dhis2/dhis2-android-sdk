@@ -28,17 +28,19 @@
 package org.hisp.dhis.android.core.icon
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.customicon.CustomIconDTO
 import org.junit.Test
 
 class CustomIconShould :
-    BaseObjectShould("icon/custom_icon.json"),
+    BaseObjectKotlinxShould("icon/custom_icon.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val icon = objectMapper.readValue(jsonStream, CustomIcon::class.java)
+        val iconDTO = deserialize(CustomIconDTO.serializer())
+        val icon = iconDTO.toDomain()
 
         assertThat(icon.key()).isEqualTo("childIcon")
         assertThat(icon.fileResource().uid()).isEqualTo("lNrwSpIy1Q9")

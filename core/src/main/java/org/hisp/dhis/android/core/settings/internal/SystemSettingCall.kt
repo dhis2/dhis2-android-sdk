@@ -30,22 +30,19 @@ package org.hisp.dhis.android.core.settings.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.settings.SystemSetting
-import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields.allFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SystemSettingCall(
     private val apiDownloader: APIDownloader,
     private val handler: SystemSettingHandler,
-    private val service: SettingService,
-    private val settingsSplitter: SystemSettingsSplitter,
+    private val networkHandler: SystemSettingsNetworkHandler,
 ) : ListCallCoroutines<SystemSetting> {
 
     override suspend fun download(): List<SystemSetting> {
         return apiDownloader.downloadListAsCoroutine(
-            handler = handler,
-        ) {
-            settingsSplitter.splitSettings(service.getSystemSettingsSingle(allFields))
-        }
+            handler,
+            networkHandler::getSystemSettings,
+        )
     }
 }

@@ -28,7 +28,12 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
@@ -84,7 +89,7 @@ class LatestAppVersionCallShould {
 
     private suspend fun mockVersions(versions: List<ApkDistributionVersion>) {
         val payload = mock<Payload<ApkDistributionVersion>> {
-            on { items() } doReturn versions
+            on { items } doReturn versions
         }
         whenever(service.versions()).thenReturn(payload)
     }

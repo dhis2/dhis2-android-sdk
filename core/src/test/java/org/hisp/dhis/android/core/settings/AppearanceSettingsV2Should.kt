@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
-class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_settings_v2.json"), ObjectShould {
+class AppearanceSettingsV2Should : BaseObjectKotlinxShould("settings/appearance_settings_v2.json"), ObjectShould {
     @Test
-    @Throws(IOException::class, ParseException::class)
+    @Suppress("LongMethod")
     override fun map_from_json_string() {
-        val appearanceSettings = objectMapper.readValue(jsonStream, AppearanceSettings::class.java)
+        val appearanceSettingsDTO = deserialize(AppearanceSettingsDTO.serializer())
+        val appearanceSettings = appearanceSettingsDTO.toDomain()
 
         val filterSorting = appearanceSettings.filterSorting()
         val homeFilters = filterSorting!!.home()
@@ -75,9 +75,9 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(programConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(7)
         assertThat(programConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
 
-        val speficicProgramConfiguration = programConfiguration.specificSettings()
-        val specificProgramConfiguration = speficicProgramConfiguration!!["IpHINAT79UW"]!!
-        assertThat(specificProgramConfiguration.uid()).isNull()
+        val specificProgramConfigurations = programConfiguration.specificSettings()
+        val specificProgramConfiguration = specificProgramConfigurations!!["IpHINAT79UW"]!!
+        assertThat(specificProgramConfiguration.uid()).isEqualTo("IpHINAT79UW")
         assertThat(specificProgramConfiguration.completionSpinner()).isEqualTo(true)
         assertThat(specificProgramConfiguration.optionalSearch()).isEqualTo(true)
         assertThat(specificProgramConfiguration.disableReferrals()).isEqualTo(true)
@@ -85,6 +85,18 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
         assertThat(specificProgramConfiguration.itemHeader()!!.programIndicator()).isEqualTo("kALwOyvVvdT")
         assertThat(specificProgramConfiguration.minimumLocationAccuracy()).isEqualTo(5)
         assertThat(specificProgramConfiguration.disableManualLocation()).isEqualTo(true)
+        assertThat(specificProgramConfiguration.quickActions()?.size).isEqualTo(2)
+        assertThat(specificProgramConfiguration.quickActions()?.get(1)?.actionId()).isEqualTo("MORE_ENROLLMENTS")
+
+        val dataSetConfiguration = appearanceSettings.dataSetConfiguration()!!
+        assertThat(dataSetConfiguration.globalSettings()!!.uid()).isNull()
+        assertThat(dataSetConfiguration.globalSettings()!!.minimumLocationAccuracy()).isEqualTo(7)
+        assertThat(dataSetConfiguration.globalSettings()!!.disableManualLocation()).isEqualTo(false)
+        val specificDataSetConfigurations = dataSetConfiguration.specificSettings()
+        val specificDataSetConfiguration = specificDataSetConfigurations!!["lyLU2wR22tC"]!!
+        assertThat(specificDataSetConfiguration.uid()).isEqualTo("lyLU2wR22tC")
+        assertThat(specificDataSetConfiguration.minimumLocationAccuracy()).isEqualTo(8)
+        assertThat(specificDataSetConfiguration.disableManualLocation()).isEqualTo(true)
 
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()
@@ -92,7 +104,7 @@ class AppearanceSettingsV2Should : BaseObjectShould("settings/appearance_setting
 
         val specificCompletionSpinnerList = completionSpinnerSetting.specificSettings()
         val specificCompletionSpinner = specificCompletionSpinnerList!!["IpHINAT79UW"]!!
-        assertThat(specificCompletionSpinner.uid()).isNull()
+        assertThat(specificCompletionSpinner.uid()).isEqualTo("IpHINAT79UW")
         assertThat(specificCompletionSpinner.visible()).isEqualTo(true)
     }
 }

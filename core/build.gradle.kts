@@ -47,6 +47,8 @@ apply(from = project.file("plugins/android-pmd.gradle"))
 repositories {
     mavenCentral()
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+    gradlePluginPortal()
+    google()
 }
 
 group = rootProject.group
@@ -179,6 +181,10 @@ dependencies {
 
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.paging)
+    ksp(libs.androidx.room.compiler)
 
     // Java test dependencies
     testImplementation(libs.junit)

@@ -3018,8 +3018,9 @@ public final class org/hisp/dhis/android/core/arch/repositories/filters/internal
 	public final fun eq (Ljava/lang/Object;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 }
 
-public final class org/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeItemFilterConnector {
+public final class org/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeInItemFilterConnector {
 	public final fun eq (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
+	public final fun in (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 }
 
@@ -14023,12 +14024,12 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchOperators {
 	public final fun allowOnlineCache ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public final fun byAssignedUserMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
-	public final fun byAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeItemFilterConnector;
-	public final fun byDataValue (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeItemFilterConnector;
+	public final fun byAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeInItemFilterConnector;
+	public final fun byDataValue (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeInItemFilterConnector;
 	public final fun byEnrollmentStatus ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byEventDate ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/PeriodFilterConnector;
 	public final fun byEventStatus ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
-	public final fun byFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeItemFilterConnector;
+	public final fun byFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeInItemFilterConnector;
 	public final fun byFollowUp ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BoolFilterConnector;
 	public final fun byIncidentDate ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/PeriodFilterConnector;
 	public final fun byIncludeDeleted ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
@@ -14039,7 +14040,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEnt
 	public final fun byProgramDate ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/PeriodFilterConnector;
 	public final fun byProgramStage ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public final fun byProgramStageWorkingList ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
-	public final fun byQuery ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeItemFilterConnector;
+	public final fun byQuery ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqLikeInItemFilterConnector;
 	public final fun byStates ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byTrackedEntities ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byTrackedEntityInstanceFilter ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;

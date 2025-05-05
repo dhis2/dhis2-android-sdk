@@ -28,26 +28,46 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.FilterQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-internal interface BaseIdentifiableObjectDB {
-    val uid: String
-    val code: String?
-    val name: String?
-    val displayName: String?
-    val created: String?
-    val lastUpdated: String?
-    val deleted: Boolean?
+internal interface FilterQueryCriteriaDB {
+    val followUp: Boolean?
+    val organisationUnit: String?
+    val ouMode: String?
+    val assignedUserMode: String?
+    val order: String?
+    val displayColumnOrder: String?
+    val eventStatus: String?
+    val eventDate: String?
+    val lastUpdatedDate: String?
 }
 
-internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): T where
-      T : BaseIdentifiableObject.Builder<T> {
-    uid(item.uid)
-    code(item.code)
-    name(item.name)
-    displayName(item.displayName)
-    item.created?.let { created(it) } ?: { created(null) }
-    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
-    deleted(item.deleted)
+internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDB): T where
+    T : FilterQueryCriteria.Builder<T> {
+    followUp(item.followUp)
+    organisationUnit(item.organisationUnit)
+    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
+    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
+    order(item.order)
+    item.displayColumnOrder?.let {
+        displayColumnOrder(
+            KotlinxJsonParser.instance.decodeFromString<List<String>>(it)
+        )
+    }
+    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
+    item.eventDate?.let {
+        eventDate(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+        )
+    }
+    item.lastUpdatedDate?.let {
+        lastUpdatedDate(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+        )
+    }
     return this
 }

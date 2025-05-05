@@ -26,45 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal
+package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.DatePeriodType
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.util.simpleDateFormat
-import org.hisp.dhis.android.core.util.toJavaSimpleDate
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.FilterOperators
 
-@Serializable
-internal data class DateFilterPeriodDAO(
-    val startBuffer: Int?,
-    val endBuffer: Int?,
-    val startDate: String?,
-    val endDate: String?,
-    val period: String?,
-    val type: String?,
-) {
-    fun toDomain(): DateFilterPeriod {
-        return DateFilterPeriod.builder()
-            .startBuffer(startBuffer)
-            .endBuffer(endBuffer)
-            .startDate(startDate?.let { it.toJavaSimpleDate() })
-            .endDate(endDate?.let { it.toJavaSimpleDate() })
-            .period(period?.let { RelativePeriod.valueOf(it) })
-            .type(type?.let { DatePeriodType.valueOf(it) })
-            .build()
+internal interface FilterOperatorsDB {
+    val le: String?
+    val ge: String?
+    val gt: String?
+    val lt: String?
+    val eq: String?
+    val inProperty: Set<String>?
+    val like: String?
+    val dateFilter: String?
+}
+
+internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
+        T : FilterOperators.Builder<T> {
+    le(item.le)
+    ge(item.ge)
+    gt(item.gt)
+    lt(item.lt)
+    eq(item.eq)
+    `in`(item.inProperty)
+    like(item.like)
+    item.dateFilter?.let {
+        dateFilter(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+        )
     }
-
-    companion object {
-        fun DateFilterPeriod.toDao(): DateFilterPeriodDAO {
-            return DateFilterPeriodDAO(
-                startBuffer = this.startBuffer(),
-                endBuffer = this.endBuffer(),
-                startDate = this.startDate()?.simpleDateFormat(),
-                endDate = this.endDate()?.simpleDateFormat(),
-                period = this.period()?.name,
-                type = this.type()?.name,
-            )
-        }
-    }
+    return this
 }

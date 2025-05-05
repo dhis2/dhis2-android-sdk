@@ -28,26 +28,33 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.FilterOperators
 
-internal interface BaseIdentifiableObjectDB {
-    val uid: String
-    val code: String?
-    val name: String?
-    val displayName: String?
-    val created: String?
-    val lastUpdated: String?
-    val deleted: Boolean?
+internal interface FilterOperatorsDB {
+    val le: String?
+    val ge: String?
+    val gt: String?
+    val lt: String?
+    val eq: String?
+    val inProperty: Set<String>?
+    val like: String?
+    val dateFilter: String?
 }
 
-internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): T where
-      T : BaseIdentifiableObject.Builder<T> {
-    uid(item.uid)
-    code(item.code)
-    name(item.name)
-    displayName(item.displayName)
-    item.created?.let { created(it) } ?: { created(null) }
-    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
-    deleted(item.deleted)
+internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
+        T : FilterOperators.Builder<T> {
+    le(item.le)
+    ge(item.ge)
+    gt(item.gt)
+    lt(item.lt)
+    eq(item.eq)
+    `in`(item.inProperty)
+    like(item.like)
+    item.dateFilter?.let {
+        dateFilter(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+        )
+    }
     return this
 }

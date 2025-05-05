@@ -28,26 +28,45 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.common.internal.DateFilterPeriodDAO
+import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.core.util.toJavaSimpleDate
 
-internal interface BaseIdentifiableObjectDB {
-    val uid: String
-    val code: String?
-    val name: String?
-    val displayName: String?
-    val created: String?
-    val lastUpdated: String?
-    val deleted: Boolean?
-}
+@Serializable
+internal data class DateFilterPeriodDB(
+    val startBuffer: Int?,
+    val endBuffer: Int?,
+    val startDate: String?,
+    val endDate: String?,
+    val period: String?,
+    val type: String?,
+) {
+    fun toDomain(): DateFilterPeriod {
+        return DateFilterPeriod.builder()
+            .startBuffer(startBuffer)
+            .endBuffer(endBuffer)
+            .startDate(startDate?.toJavaSimpleDate())
+            .endDate(endDate?.toJavaSimpleDate())
+            .period(period?.let { RelativePeriod.valueOf(it) })
+            .type(type?.let { DatePeriodType.valueOf(it) })
+            .build()
+    }
 
-internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): T where
-      T : BaseIdentifiableObject.Builder<T> {
-    uid(item.uid)
-    code(item.code)
-    name(item.name)
-    displayName(item.displayName)
-    item.created?.let { created(it) } ?: { created(null) }
-    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
-    deleted(item.deleted)
-    return this
+
+    companion object {
+        fun DateFilterPeriod.toDb(): DateFilterPeriodDB {
+            return DateFilterPeriodDB(
+                startBuffer = this.startBuffer(),
+                endBuffer = this.endBuffer(),
+                startDate = this.startDate()?.simpleDateFormat(),
+                endDate = this.endDate()?.simpleDateFormat(),
+                period = this.period()?.name,
+                type = this.type()?.name,
+            )
+        }
+    }
 }

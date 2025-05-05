@@ -26,28 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.persistence.configuration.migration
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class DatabaseAccountImportDBDAO(
-    val status: String,
-    val protectedDbName: String,
-) {
-    fun toDomain(): DatabaseAccountImportDB {
-        return DatabaseAccountImportDB.builder()
-            .status(DatabaseAccountImportStatus.valueOf(status))
-            .protectedDbName(protectedDbName)
-            .build()
-    }
-
-    companion object {
-        fun DatabaseAccountImportDB.toDao(): DatabaseAccountImportDBDAO {
-            return DatabaseAccountImportDBDAO(
-                status = this.status().name,
-                protectedDbName = this.protectedDbName(),
-            )
-        }
-    }
-}
+internal data class DatabaseServerConfigurationOldDB(
+    val serverUrl: String,
+    val users: List<DatabaseUserConfigurationOldDB>,
+)

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
-import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB.Companion.toDao
+import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB.Companion.toDB
 
 internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
     override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
@@ -46,7 +46,7 @@ internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilte
             return o?.let {
                 KotlinxJsonParser.instance.encodeToString(
                     DateFilterPeriodDB.serializer(),
-                    it.toDao(),
+                    it.toDB(),
                 )
             }
         }

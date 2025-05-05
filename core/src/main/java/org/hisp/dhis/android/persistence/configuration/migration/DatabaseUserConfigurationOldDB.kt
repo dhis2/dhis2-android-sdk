@@ -26,26 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.persistence.configuration.migration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
 @Serializable
-internal data class TrackerVisualizationDimensionRepetitionDAO(
-    val indexes: List<Int>?,
-) {
-    fun toDomain(): TrackerVisualizationDimensionRepetition {
-        return TrackerVisualizationDimensionRepetition.builder()
-            .indexes(indexes)
-            .build()
-    }
-
-    companion object {
-        fun TrackerVisualizationDimensionRepetition.toDao(): TrackerVisualizationDimensionRepetitionDAO {
-            return TrackerVisualizationDimensionRepetitionDAO(
-                indexes = this.indexes(),
-            )
-        }
-    }
-}
+internal data class DatabaseUserConfigurationOldDB(
+    val username: String,
+    val databaseName: String,
+    val databaseCreationDate: String,
+    val encrypted: Boolean,
+)

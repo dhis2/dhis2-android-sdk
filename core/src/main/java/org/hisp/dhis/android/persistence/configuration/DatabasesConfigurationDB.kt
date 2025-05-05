@@ -26,31 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal
+package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.persistence.configuration.DatabaseAccountDB.Companion.toDB
 
 @Serializable
-internal data class MapLayerImageryProviderAreaDAO(
-    val bbox: List<Double>?,
-    val zoomMax: Int,
-    val zoomMin: Int,
+internal data class DatabasesConfigurationDB(
+    val versionCode: Long,
+    val maxAccounts: Int?,
+    val accounts: List<DatabaseAccountDB>,
 ) {
-    fun toDomain(): MapLayerImageryProviderArea {
-        return MapLayerImageryProviderArea.builder()
-            .bbox(bbox)
-            .zoomMax(zoomMax)
-            .zoomMin(zoomMin)
+    fun toDomain(): DatabasesConfiguration {
+        return DatabasesConfiguration.builder()
+            .versionCode(versionCode)
+            .maxAccounts(maxAccounts)
+            .accounts(accounts.map { it.toDomain() })
             .build()
     }
 
     companion object {
-        fun MapLayerImageryProviderArea.toDao(): MapLayerImageryProviderAreaDAO {
-            return MapLayerImageryProviderAreaDAO(
-                bbox = this.bbox(),
-                zoomMax = this.zoomMax(),
-                zoomMin = this.zoomMin(),
+        fun toDB(config: DatabasesConfiguration): DatabasesConfigurationDB {
+            return DatabasesConfigurationDB(
+                versionCode = config.versionCode(),
+                maxAccounts = config.maxAccounts(),
+                accounts = config.accounts().map { it.toDB() },
             )
         }
     }

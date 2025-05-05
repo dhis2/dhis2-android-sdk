@@ -29,20 +29,21 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
+import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DatabaseConfigurationInsecureStoreImpl(
     insecureStore: InsecureStore,
 ) : DatabaseConfigurationInsecureStore {
-    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDAO>(
+    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDB>(
         insecureStore,
         "DB_CONFIGS",
-        DatabasesConfigurationDAO.serializer(),
+        DatabasesConfigurationDB.serializer(),
     )
 
     override fun set(o: DatabasesConfiguration) {
-        return daoStore.set(DatabasesConfigurationDAO.toDao(o))
+        return daoStore.set(DatabasesConfigurationDB.toDB(o))
     }
 
     override fun get(): DatabasesConfiguration? {

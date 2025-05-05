@@ -26,14 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportDBDAO.Companion.toDao
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.persistence.configuration.DatabaseAccountImportDBDAO.Companion.toDB
 
 @Serializable
-internal data class DatabaseAccountDAO(
+internal data class DatabaseAccountDB(
     val username: String,
     val serverUrl: String,
     val databaseName: String,
@@ -55,15 +56,15 @@ internal data class DatabaseAccountDAO(
     }
 
     companion object {
-        fun DatabaseAccount.toDao(): DatabaseAccountDAO {
-            return DatabaseAccountDAO(
+        fun DatabaseAccount.toDB(): DatabaseAccountDB {
+            return DatabaseAccountDB(
                 username = this.username(),
                 serverUrl = this.serverUrl(),
                 databaseName = this.databaseName(),
                 databaseCreationDate = this.databaseCreationDate(),
                 encrypted = this.encrypted(),
                 syncState = this.syncState()?.name,
-                importDB = this.importDB()?.toDao(),
+                importDB = this.importDB()?.toDB(),
             )
         }
     }

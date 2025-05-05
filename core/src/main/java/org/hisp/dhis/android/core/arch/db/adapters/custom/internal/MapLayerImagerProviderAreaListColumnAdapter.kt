@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import kotlinx.serialization.builtins.ListSerializer
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderAreaDAO.Companion.toDao
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderAreaDB
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderAreaDB.Companion.toDB
 
 internal class MapLayerImagerProviderAreaListColumnAdapter :
     JSONObjectListColumnAdapter<MapLayerImageryProviderArea>() {
@@ -41,7 +41,7 @@ internal class MapLayerImagerProviderAreaListColumnAdapter :
 
     override fun deserialize(str: String): List<MapLayerImageryProviderArea> {
         val dao = KotlinxJsonParser.instance.decodeFromString(
-            ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
+            ListSerializer(MapLayerImageryProviderAreaDB.serializer()),
             str,
         )
         return dao.map { it.toDomain() }
@@ -50,9 +50,9 @@ internal class MapLayerImagerProviderAreaListColumnAdapter :
     companion object {
         fun serialize(o: List<MapLayerImageryProviderArea>?): String? {
             return o?.let {
-                val dao = it.map { it.toDao() }
+                val dao = it.map { it.toDB() }
                 return KotlinxJsonParser.instance.encodeToString(
-                    ListSerializer(MapLayerImageryProviderAreaDAO.serializer()),
+                    ListSerializer(MapLayerImageryProviderAreaDB.serializer()),
                     dao,
                 )
             }

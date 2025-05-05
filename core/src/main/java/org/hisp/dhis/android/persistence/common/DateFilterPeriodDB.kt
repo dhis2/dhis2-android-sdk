@@ -56,7 +56,7 @@ internal data class DateFilterPeriodDB(
     }
 
     companion object {
-        fun DateFilterPeriod.toDao(): DateFilterPeriodDB {
+        fun DateFilterPeriod.toDB(): DateFilterPeriodDB {
             return DateFilterPeriodDB(
                 startBuffer = this.startBuffer(),
                 endBuffer = this.endBuffer(),

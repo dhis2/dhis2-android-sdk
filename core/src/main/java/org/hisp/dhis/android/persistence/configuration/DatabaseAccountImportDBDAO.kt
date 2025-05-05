@@ -26,31 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountDAO.Companion.toDao
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportDB
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 
 @Serializable
-internal data class DatabasesConfigurationDAO(
-    val versionCode: Long,
-    val maxAccounts: Int?,
-    val accounts: List<DatabaseAccountDAO>,
+internal data class DatabaseAccountImportDBDAO(
+    val status: String,
+    val protectedDbName: String,
 ) {
-    fun toDomain(): DatabasesConfiguration {
-        return DatabasesConfiguration.builder()
-            .versionCode(versionCode)
-            .maxAccounts(maxAccounts)
-            .accounts(accounts.map { it.toDomain() })
+    fun toDomain(): DatabaseAccountImportDB {
+        return DatabaseAccountImportDB.builder()
+            .status(DatabaseAccountImportStatus.valueOf(status))
+            .protectedDbName(protectedDbName)
             .build()
     }
 
     companion object {
-        fun toDao(config: DatabasesConfiguration): DatabasesConfigurationDAO {
-            return DatabasesConfigurationDAO(
-                versionCode = config.versionCode(),
-                maxAccounts = config.maxAccounts(),
-                accounts = config.accounts().map { it.toDao() },
+        fun DatabaseAccountImportDB.toDB(): DatabaseAccountImportDBDAO {
+            return DatabaseAccountImportDBDAO(
+                status = this.status().name,
+                protectedDbName = this.protectedDbName(),
             )
         }
     }

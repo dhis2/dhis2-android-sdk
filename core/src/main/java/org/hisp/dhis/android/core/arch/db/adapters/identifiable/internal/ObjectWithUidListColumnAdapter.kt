@@ -34,8 +34,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.internal.ObjectWithUidDAO
-import org.hisp.dhis.android.core.common.internal.ObjectWithUidDAO.Companion.toDao
+import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
+import org.hisp.dhis.android.persistence.common.ObjectWithUidDB.Companion.toDB
 
 internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWithUid>> {
 
@@ -43,7 +43,7 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
-            KotlinxJsonParser.instance.decodeFromString<List<ObjectWithUidDAO>>(
+            KotlinxJsonParser.instance.decodeFromString<List<ObjectWithUidDB>>(
                 str,
             ).map { it.toDomain() }
         } catch (e: SerializationException) {
@@ -65,9 +65,9 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
 
     companion object {
         fun serialize(o: List<ObjectWithUid>?): String? {
-            val dao = o?.map { it.toDao() }
+            val dao = o?.map { it.toDB() }
             return dao?.let {
-                KotlinxJsonParser.instance.encodeToString(ListSerializer(ObjectWithUidDAO.serializer()), it)
+                KotlinxJsonParser.instance.encodeToString(ListSerializer(ObjectWithUidDB.serializer()), it)
             }
         }
     }

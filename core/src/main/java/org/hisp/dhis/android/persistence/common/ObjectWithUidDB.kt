@@ -26,12 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal.migration
+package org.hisp.dhis.android.persistence.common
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Serializable
-internal data class DatabaseServerConfigurationOldDAO(
-    val serverUrl: String,
-    val users: List<DatabaseUserConfigurationOldDAO>,
-)
+internal data class ObjectWithUidDB(
+    val uid: String,
+) {
+    fun toDomain(): ObjectWithUid {
+        return ObjectWithUid.create(uid)
+    }
+
+    companion object {
+        fun ObjectWithUid.toDB(): ObjectWithUidDB {
+            return ObjectWithUidDB(uid())
+        }
+    }
+}

@@ -26,12 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal.migration
+package org.hisp.dhis.android.persistence.map
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 
 @Serializable
-internal data class DatabasesConfigurationOldDAO(
-    val loggedServerUrl: String,
-    val servers: List<DatabaseServerConfigurationOldDAO>,
-)
+internal data class MapLayerImageryProviderAreaDB(
+    val bbox: List<Double>?,
+    val zoomMax: Int,
+    val zoomMin: Int,
+) {
+    fun toDomain(): MapLayerImageryProviderArea {
+        return MapLayerImageryProviderArea.builder()
+            .bbox(bbox)
+            .zoomMax(zoomMax)
+            .zoomMin(zoomMin)
+            .build()
+    }
+
+    companion object {
+        fun MapLayerImageryProviderArea.toDB(): MapLayerImageryProviderAreaDB {
+            return MapLayerImageryProviderAreaDB(
+                bbox = this.bbox(),
+                zoomMax = this.zoomMax(),
+                zoomMin = this.zoomMin(),
+            )
+        }
+    }
+}

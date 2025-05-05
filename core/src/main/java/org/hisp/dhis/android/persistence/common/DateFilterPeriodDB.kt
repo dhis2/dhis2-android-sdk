@@ -48,8 +48,6 @@ internal data class DateFilterPeriodDB(
         return DateFilterPeriod.builder()
             .startBuffer(startBuffer)
             .endBuffer(endBuffer)
-            .startDate(startDate?.let { it.toJavaSimpleDate() })
-            .endDate(endDate?.let { it.toJavaSimpleDate() })
             .period(period?.let { RelativePeriod.valueOf(it) })
             .type(type?.let { DatePeriodType.valueOf(it) })
             .build()

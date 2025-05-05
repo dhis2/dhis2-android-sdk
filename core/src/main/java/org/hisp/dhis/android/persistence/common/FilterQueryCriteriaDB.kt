@@ -55,18 +55,18 @@ internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDB): 
     order(item.order)
     item.displayColumnOrder?.let {
         displayColumnOrder(
-            KotlinxJsonParser.instance.decodeFromString<List<String>>(it)
+            KotlinxJsonParser.instance.decodeFromString<List<String>>(it),
         )
     }
     item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
     item.eventDate?.let {
         eventDate(
-            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
         )
     }
     item.lastUpdatedDate?.let {
         lastUpdatedDate(
-            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
         )
     }
     return this

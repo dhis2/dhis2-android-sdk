@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.util.simpleDateFormat
-import org.hisp.dhis.android.core.util.toJavaSimpleDate
 
 @Serializable
 internal data class DateFilterPeriodDB(

@@ -43,7 +43,7 @@ internal interface FilterOperatorsDB {
 }
 
 internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
-        T : FilterOperators.Builder<T> {
+      T : FilterOperators.Builder<T> {
     le(item.le)
     ge(item.ge)
     gt(item.gt)
@@ -53,7 +53,7 @@ internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
     like(item.like)
     item.dateFilter?.let {
         dateFilter(
-            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
         )
     }
     return this

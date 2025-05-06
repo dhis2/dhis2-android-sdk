@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -94,18 +93,12 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         transform: (O) -> P,
     ): List<P> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)
-
         val results = mutableListOf<P>()
-        val startTime = System.currentTimeMillis()
 
         partitions.forEach { partition ->
             val transformedItems = pageDownloader(partition).items.map { transform(it) }
             results.addAll(transformedItems)
         }
-        Log.i(
-            "META",
-            "Elapsed time: ${System.currentTimeMillis() - startTime} ms",
-        )
         return results
     }
 

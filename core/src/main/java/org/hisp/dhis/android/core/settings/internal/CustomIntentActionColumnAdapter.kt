@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+package org.hisp.dhis.android.core.settings.internal
 
-class EqLikeItemFilterConnector<R : BaseRepository> internal constructor(
-    private val key: String,
-    private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
-) {
-    fun eq(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.EQ).value(value).build()
-        return repositoryFactory.updated(item)
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.JSONObjectListColumnAdapter
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.settings.CustomIntentActionType
+
+internal class CustomIntentActionColumnAdapter : JSONObjectListColumnAdapter<CustomIntentActionType>() {
+
+    override fun serialize(o: List<CustomIntentActionType>?): String = CustomIntentActionColumnAdapter.serialize(o)
+
+    override fun deserialize(str: String): List<CustomIntentActionType> {
+        return KotlinxJsonParser.instance.decodeFromString<List<String>>(str).map { CustomIntentActionType.valueOf(it) }
     }
 
-    fun like(value: String): R {
-        val item = RepositoryScopeFilterItem.builder()
-            .key(key).operator(FilterItemOperator.LIKE).value(value).build()
-        return repositoryFactory.updated(item)
+    companion object {
+        fun serialize(o: List<CustomIntentActionType>?): String {
+            return o?.map { it.name }?.let {
+                KotlinxJsonParser.instance.encodeToString(ListSerializer(String.serializer()), it)
+            } ?: ""
+        }
     }
 }

@@ -1,0 +1,1 @@
+// CREATE TABLE ValueTypeDeviceRendering (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT, objectTable TEXT, deviceType TEXT, type TEXT, min INTEGER, max INTEGER, step INTEGER, decimalPoints INTEGER, UNIQUE (uid, deviceType));

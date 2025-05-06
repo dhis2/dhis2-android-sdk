@@ -1,0 +1,1 @@
+// CREATE TABLE AnalyticsDhisVisualization (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL);

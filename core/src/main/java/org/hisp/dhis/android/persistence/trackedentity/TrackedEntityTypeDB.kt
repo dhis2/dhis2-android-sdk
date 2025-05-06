@@ -1,0 +1,1 @@
+// CREATE TABLE TrackedEntityType (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, featureType TEXT, color TEXT, icon TEXT, accessDataWrite INTEGER);

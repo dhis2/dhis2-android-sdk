@@ -1,0 +1,1 @@
+// CREATE TABLE GeneralSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, encryptDB INTEGER, lastUpdated TEXT, reservedValues INTEGER, smsGateway TEXT, smsResultSender TEXT, matomoID INTEGER, matomoURL TEXT, allowScreenCapture INTEGER, messageOfTheDay TEXT, experimentalFeatures TEXT, bypassDHIS2VersionCheck INTEGER);

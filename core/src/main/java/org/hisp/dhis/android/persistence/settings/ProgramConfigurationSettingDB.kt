@@ -1,0 +1,1 @@
+// CREATE TABLE ProgramConfigurationSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT, completionSpinner INTEGER, optionalSearch INTEGER, disableReferrals INTEGER, disableCollapsibleSections INTEGER, itemHeaderProgramIndicator TEXT, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER, quickActions TEXT);

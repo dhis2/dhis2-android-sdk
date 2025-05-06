@@ -1,0 +1,1 @@
+// CREATE TABLE VisualizationDimensionItem(_id INTEGER PRIMARY KEY AUTOINCREMENT, visualization TEXT NOT NULL, position TEXT NOT NULL, dimension TEXT NOT NULL, dimensionItem TEXT, dimensionItemType TEXT, FOREIGN KEY (visualization) REFERENCES Visualization (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

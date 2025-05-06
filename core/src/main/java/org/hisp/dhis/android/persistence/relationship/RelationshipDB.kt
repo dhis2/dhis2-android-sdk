@@ -1,0 +1,1 @@
+// CREATE TABLE Relationship (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, name TEXT, created TEXT, lastUpdated TEXT, relationshipType TEXT NOT NULL, syncState TEXT, deleted INTEGER, FOREIGN KEY (relationshipType) REFERENCES RelationshipType (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

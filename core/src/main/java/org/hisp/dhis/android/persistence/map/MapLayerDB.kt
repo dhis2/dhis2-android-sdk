@@ -1,0 +1,1 @@
+// CREATE TABLE MapLayer (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, name TEXT NOT NULL, displayName TEXT NOT NULL, external INTEGER, mapLayerPosition TEXT NOT NULL, style TEXT, imageUrl TEXT NOT NULL, subdomains TEXT, subdomainPlaceholder TEXT, code TEXT, mapService TEXT, imageFormat TEXT, layers TEXT);

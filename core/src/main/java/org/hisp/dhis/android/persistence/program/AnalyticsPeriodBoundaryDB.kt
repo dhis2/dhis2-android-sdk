@@ -1,0 +1,1 @@
+// CREATE TABLE AnalyticsPeriodBoundary (_id INTEGER PRIMARY KEY AUTOINCREMENT, programIndicator TEXT NOT NULL, boundaryTarget TEXT, analyticsPeriodBoundaryType TEXT, offsetPeriods INTEGER, offsetPeriodType TEXT, FOREIGN KEY (programIndicator) REFERENCES ProgramIndicator (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

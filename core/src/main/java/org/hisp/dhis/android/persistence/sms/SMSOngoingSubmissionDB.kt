@@ -1,0 +1,1 @@
+// CREATE TABLE SMSOngoingSubmission (_id INTEGER PRIMARY KEY AUTOINCREMENT, submissionId INTEGER, type TEXT);

@@ -1,0 +1,1 @@
+// CREATE TABLE LatestAppVersion (_id INTEGER PRIMARY KEY AUTOINCREMENT, downloadURL TEXT, version TEXT);

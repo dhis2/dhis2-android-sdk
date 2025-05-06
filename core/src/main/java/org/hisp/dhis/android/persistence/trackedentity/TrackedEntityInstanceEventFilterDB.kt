@@ -1,0 +1,1 @@
+// CREATE TABLE TrackedEntityInstanceEventFilter (_id INTEGER PRIMARY KEY AUTOINCREMENT, trackedEntityInstanceFilter TEXT NOT NULL, programStage TEXT, eventStatus TEXT, periodFrom INTEGER, periodTo INTEGER, assignedUserMode TEXT, FOREIGN KEY (trackedEntityInstanceFilter) REFERENCES TrackedEntityInstanceFilter (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

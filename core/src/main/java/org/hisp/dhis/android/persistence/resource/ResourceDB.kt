@@ -1,0 +1,1 @@
+// CREATE TABLE Resource (_id INTEGER PRIMARY KEY AUTOINCREMENT, resourceType TEXT NOT NULL, lastSynced TEXT);

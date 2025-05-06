@@ -1,0 +1,1 @@
+// CREATE TABLE User (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, birthday TEXT, education TEXT, gender TEXT, jobTitle TEXT, surname TEXT, firstName TEXT, introduction TEXT, employer TEXT, interests TEXT, languages TEXT, email TEXT, phoneNumber TEXT, nationality TEXT, username TEXT);

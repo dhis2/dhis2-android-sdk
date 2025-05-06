@@ -1,0 +1,1 @@
+// CREATE TABLE CustomIntent (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, name TEXT, action TEXT, packageName TEXT, requestArguments TEXT, responseDataArgument TEXT, responseDataPath TEXT);

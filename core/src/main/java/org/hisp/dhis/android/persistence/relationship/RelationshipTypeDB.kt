@@ -1,0 +1,1 @@
+// CREATE TABLE RelationshipType (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, fromToName TEXT, toFromName TEXT, bidirectional INTEGER, accessDataWrite INTEGER );

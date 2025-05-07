@@ -30,6 +30,7 @@ package org.hisp.dhis.android.persistence.constant
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.util.dateFormat
@@ -37,7 +38,11 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
-@Entity
+@Entity(
+    indices = [
+        Index(value = ["uid"], unique = true),
+    ],
+)
 internal data class ConstantDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")

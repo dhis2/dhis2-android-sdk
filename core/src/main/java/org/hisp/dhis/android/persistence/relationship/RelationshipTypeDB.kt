@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -5,12 +6,13 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "RelationshipType",
     indices = [
-        Index(value = ["uid"], unique = true)
-    ]
+        Index(value = ["uid"], unique = true),
+    ],
 )
 internal data class RelationshipTypeDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -20,5 +22,5 @@ internal data class RelationshipTypeDB(
     val fromToName: String?,
     val toFromName: String?,
     val bidirectional: Int?,
-    val accessDataWrite: Int?
+    val accessDataWrite: Int?,
 )

@@ -1,9 +1,11 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Authority")
 internal data class AuthorityDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
-    val name: String?
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
+    val name: String?,
 )

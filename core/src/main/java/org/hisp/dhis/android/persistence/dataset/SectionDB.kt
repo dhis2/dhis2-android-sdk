@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,17 +11,18 @@ import androidx.room.PrimaryKey
             entity = DataSetDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["uid"], unique = true),
-        Index(value = ["dataSet"])
-    ]
+        Index(value = ["dataSet"]),
+    ],
 )
 internal data class SectionDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -36,5 +38,5 @@ internal data class SectionDB(
     val pivotMode: String?,
     val pivotedCategory: String?,
     val afterSectionText: String?,
-    val beforeSectionText: String?
+    val beforeSectionText: String?,
 )

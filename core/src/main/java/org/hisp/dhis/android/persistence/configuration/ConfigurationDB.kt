@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -5,11 +6,12 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "Configuration",
     indices = [
-        Index(value = ["serverUrl"], unique = true)
-    ]
+        Index(value = ["serverUrl"], unique = true),
+    ],
 )
 internal data class ConfigurationDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
-    val serverUrl: String
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
+    val serverUrl: String,
 )

@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,31 +11,32 @@ import androidx.room.PrimaryKey
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = ProgramStageDB::class,
             parentColumns = ["uid"],
             childColumns = ["programStage"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["orgUnit"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["uid"], unique = true),
         Index(value = ["program"]),
         Index(value = ["programStage"]),
-        Index(value = ["orgUnit"])
-    ]
+        Index(value = ["orgUnit"]),
+    ],
 )
 internal data class ProgramStageWorkingListDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -55,5 +57,5 @@ internal data class ProgramStageWorkingListDB(
     val displayColumnOrder: String?,
     val orgUnit: String?,
     val ouMode: String?,
-    val assignedUserMode: String?
+    val assignedUserMode: String?,
 )

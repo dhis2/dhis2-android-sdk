@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,30 +11,31 @@ import androidx.room.PrimaryKey
             entity = TrackerVisualizationDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackerVisualization"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = ProgramStageDB::class,
             parentColumns = ["uid"],
             childColumns = ["programStage"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["trackerVisualization"]),
         Index(value = ["program"]),
-        Index(value = ["programStage"])
-    ]
+        Index(value = ["programStage"]),
+    ],
 )
 internal data class TrackerVisualizationDimensionDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val trackerVisualization: String,
     val position: String,
     val dimension: String,
@@ -42,5 +44,5 @@ internal data class TrackerVisualizationDimensionDB(
     val programStage: String?,
     val items: String?,
     val filter: String?,
-    val repetition: String?
+    val repetition: String?,
 )

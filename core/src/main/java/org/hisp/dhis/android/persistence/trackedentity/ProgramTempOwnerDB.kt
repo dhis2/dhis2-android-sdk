@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,20 +11,21 @@ import androidx.room.PrimaryKey
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["program"]),
-        Index(value = ["trackedEntityInstance"])
-    ]
+        Index(value = ["trackedEntityInstance"]),
+    ],
 )
 internal data class ProgramTempOwnerDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val program: String,
     val trackedEntityInstance: String,
     val created: String,
     val validUntil: String,
-    val reason: String
+    val reason: String,
 )

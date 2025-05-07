@@ -1,10 +1,12 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "ForeignKeyViolation")
 internal data class ForeignKeyViolationDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val fromTable: String?,
     val fromColumn: String?,
     val toTable: String?,
@@ -12,5 +14,5 @@ internal data class ForeignKeyViolationDB(
     val notFoundValue: String?,
     val fromObjectUid: String?,
     val fromObjectRow: String?,
-    val created: String?
+    val created: String?,
 )

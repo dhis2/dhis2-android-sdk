@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,24 +11,25 @@ import androidx.room.PrimaryKey
             entity = TrackedEntityAttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["attribute"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = AnalyticsTeiSettingDB::class,
             parentColumns = ["uid"],
             childColumns = ["teiSetting"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["attribute"]),
-        Index(value = ["teiSetting"])
-    ]
+        Index(value = ["teiSetting"]),
+    ],
 )
 internal data class AnalyticsTeiAttributeDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val teiSetting: String,
     val whoComponent: String?,
-    val attribute: String
+    val attribute: String,
 )

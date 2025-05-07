@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,30 +11,31 @@ import androidx.room.PrimaryKey
             entity = EventFilterDB::class,
             parentColumns = ["uid"],
             childColumns = ["eventFilter"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TrackedEntityInstanceFilterDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityInstanceFilter"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = ProgramStageWorkingListDB::class,
             parentColumns = ["uid"],
             childColumns = ["programStageWorkingList"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["eventFilter"]),
         Index(value = ["trackedEntityInstanceFilter"]),
-        Index(value = ["programStageWorkingList"])
-    ]
+        Index(value = ["programStageWorkingList"]),
+    ],
 )
 internal data class ItemFilterDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val eventFilter: String?,
     val dataItem: String?,
     val trackedEntityInstanceFilter: String?,
@@ -48,5 +50,5 @@ internal data class ItemFilterDB(
     val eq: String?,
     val inProperty: String?,
     val like: String?,
-    val dateFilter: String?
+    val dateFilter: String?,
 )

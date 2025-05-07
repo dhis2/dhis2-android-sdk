@@ -1,5 +1,6 @@
 
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -12,24 +13,25 @@ import androidx.room.PrimaryKey
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOptionCombo"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = CategoryOptionDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOption"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["categoryOptionCombo", "categoryOption"], unique = true),
         Index(value = ["categoryOptionCombo"]),
-        Index(value = ["categoryOption"])
-    ]
+        Index(value = ["categoryOption"]),
+    ],
 )
 internal data class CategoryOptionComboCategoryOptionLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val categoryOptionCombo: String,
-    val categoryOption: String
+    val categoryOption: String,
 )

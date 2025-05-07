@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,24 +11,25 @@ import androidx.room.PrimaryKey
             entity = EventDB::class,
             parentColumns = ["uid"],
             childColumns = ["event"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["event"]),
         Index(value = ["dataElement"]),
-        Index(value = ["event", "dataElement"], unique = true)
-    ]
+        Index(value = ["event", "dataElement"], unique = true),
+    ],
 )
 internal data class TrackedEntityDataValueDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val event: String,
     val dataElement: String,
     val storedBy: String?,
@@ -35,5 +37,5 @@ internal data class TrackedEntityDataValueDB(
     val created: String?,
     val lastUpdated: String?,
     val providedElsewhere: Int?,
-    val syncState: String?
+    val syncState: String?,
 )

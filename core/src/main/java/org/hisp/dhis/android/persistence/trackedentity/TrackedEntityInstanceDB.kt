@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,24 +11,25 @@ import androidx.room.PrimaryKey
             entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["organisationUnit"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TrackedEntityTypeDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityType"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["uid"], unique = true),
         Index(value = ["organisationUnit"]),
-        Index(value = ["trackedEntityType"])
-    ]
+        Index(value = ["trackedEntityType"]),
+    ],
 )
 internal data class TrackedEntityInstanceDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val created: String?,
     val lastUpdated: String?,
@@ -39,5 +41,5 @@ internal data class TrackedEntityInstanceDB(
     val geometryCoordinates: String?,
     val syncState: String?,
     val aggregatedSyncState: String?,
-    val deleted: Int?
+    val deleted: Int?,
 )

@@ -1,10 +1,12 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "GeneralSetting")
 internal data class GeneralSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val encryptDB: Int?,
     val lastUpdated: String?,
     val reservedValues: Int?,
@@ -15,5 +17,5 @@ internal data class GeneralSettingDB(
     val allowScreenCapture: Int?,
     val messageOfTheDay: String?,
     val experimentalFeatures: String?,
-    val bypassDHIS2VersionCheck: Int?
+    val bypassDHIS2VersionCheck: Int?,
 )

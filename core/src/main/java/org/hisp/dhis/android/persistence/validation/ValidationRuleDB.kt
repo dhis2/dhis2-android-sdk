@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -5,12 +6,13 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "ValidationRule",
     indices = [
-        Index(value = ["uid"], unique = true)
-    ]
+        Index(value = ["uid"], unique = true),
+    ],
 )
 internal data class ValidationRuleDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -32,5 +34,5 @@ internal data class ValidationRuleDB(
     val rightSideExpression: String?,
     val rightSideDescription: String?,
     val rightSideMissingValueStrategy: String?,
-    val organisationUnitLevels: String?
+    val organisationUnitLevels: String?,
 )

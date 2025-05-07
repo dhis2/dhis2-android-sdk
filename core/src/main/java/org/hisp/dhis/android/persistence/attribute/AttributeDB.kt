@@ -1,12 +1,12 @@
-
-
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Attribute")
 internal data class AttributeDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -49,5 +49,5 @@ internal data class AttributeDB(
     val organisationUnitGroupAttribute: Int?,
     val dataElementGroupSetAttribute: Int?,
     val organisationUnitGroupSetAttribute: Int?,
-    val optionAttribute: Int?
+    val optionAttribute: Int?,
 )

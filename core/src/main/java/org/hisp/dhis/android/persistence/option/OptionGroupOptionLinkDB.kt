@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,24 +11,25 @@ import androidx.room.PrimaryKey
             entity = OptionGroupDB::class,
             parentColumns = ["uid"],
             childColumns = ["optionGroup"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = OptionDB::class,
             parentColumns = ["uid"],
             childColumns = ["option"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["optionGroup", "option"], unique = true),
         Index(value = ["optionGroup"]),
-        Index(value = ["option"])
-    ]
+        Index(value = ["option"]),
+    ],
 )
 internal data class OptionGroupOptionLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val optionGroup: String,
-    val option: String
+    val option: String,
 )

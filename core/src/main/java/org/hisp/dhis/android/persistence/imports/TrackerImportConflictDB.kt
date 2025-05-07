@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -9,25 +10,26 @@ import androidx.room.PrimaryKey
             entity = TrackedEntityInstanceDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityInstance"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = EnrollmentDB::class,
             parentColumns = ["uid"],
             childColumns = ["enrollment"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = EventDB::class,
             parentColumns = ["uid"],
             childColumns = ["event"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 internal data class TrackerImportConflictDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val conflict: String?,
     val value: String?,
     val trackedEntityInstance: String?,
@@ -39,5 +41,5 @@ internal data class TrackerImportConflictDB(
     val created: String?,
     val displayDescription: String?,
     val trackedEntityAttribute: String?,
-    val dataElement: String?
+    val dataElement: String?,
 )

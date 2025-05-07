@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,25 +11,26 @@ import androidx.room.PrimaryKey
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = LegendSetDB::class,
             parentColumns = ["uid"],
             childColumns = ["legendSet"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["dataElement", "legendSet"], unique = true),
         Index(value = ["dataElement"]),
-        Index(value = ["legendSet"])
-    ]
+        Index(value = ["legendSet"]),
+    ],
 )
 internal data class DataElementLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val dataElement: String,
     val legendSet: String,
-    val sortOrder: Int?
+    val sortOrder: Int?,
 )

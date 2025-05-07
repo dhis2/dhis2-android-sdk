@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,24 +11,25 @@ import androidx.room.PrimaryKey
             entity = EventDB::class,
             parentColumns = ["uid"],
             childColumns = ["event"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = EnrollmentDB::class,
             parentColumns = ["uid"],
             childColumns = ["enrollment"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["noteType", "event", "enrollment", "value", "storedBy", "storedDate"], unique = true),
         Index(value = ["event"]),
-        Index(value = ["enrollment"])
-    ]
+        Index(value = ["enrollment"]),
+    ],
 )
 internal data class NoteDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val noteType: String?,
     val event: String?,
     val enrollment: String?,
@@ -36,5 +38,5 @@ internal data class NoteDB(
     val storedDate: String?,
     val uid: String?,
     val syncState: String?,
-    val deleted: Int?
+    val deleted: Int?,
 )

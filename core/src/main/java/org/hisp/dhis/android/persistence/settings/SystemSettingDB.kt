@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -5,12 +6,13 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "SystemSetting",
     indices = [
-        Index(value = ["key"], unique = true)
-    ]
+        Index(value = ["key"], unique = true),
+    ],
 )
 internal data class SystemSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val key: String?,
-    val value: String?
+    val value: String?,
 )

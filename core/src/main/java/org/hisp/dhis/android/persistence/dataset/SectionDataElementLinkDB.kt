@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,25 +11,26 @@ import androidx.room.PrimaryKey
             entity = SectionDB::class,
             parentColumns = ["uid"],
             childColumns = ["section"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["section", "dataElement"], unique = true),
         Index(value = ["section"]),
-        Index(value = ["dataElement"])
-    ]
+        Index(value = ["dataElement"]),
+    ],
 )
 internal data class SectionDataElementLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val section: String,
     val dataElement: String,
-    val sortOrder: Int?
+    val sortOrder: Int?,
 )

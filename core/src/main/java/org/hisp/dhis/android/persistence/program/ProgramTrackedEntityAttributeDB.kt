@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,24 +11,25 @@ import androidx.room.PrimaryKey
             entity = TrackedEntityAttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityAttribute"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["uid"], unique = true),
         Index(value = ["trackedEntityAttribute"]),
-        Index(value = ["program"])
-    ]
+        Index(value = ["program"]),
+    ],
 )
 internal data class ProgramTrackedEntityAttributeDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -44,5 +46,5 @@ internal data class ProgramTrackedEntityAttributeDB(
     val displayInList: Int?,
     val program: String,
     val sortOrder: Int?,
-    val searchable: Int?
+    val searchable: Int?,
 )

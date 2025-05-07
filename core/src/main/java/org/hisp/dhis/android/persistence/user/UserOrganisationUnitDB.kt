@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,20 +11,21 @@ import androidx.room.PrimaryKey
             entity = UserDB::class,
             parentColumns = ["uid"],
             childColumns = ["user"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["organisationUnitScope", "user", "organisationUnit"], unique = true),
-        Index(value = ["user"])
-    ]
+        Index(value = ["user"]),
+    ],
 )
 internal data class UserOrganisationUnitDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val user: String,
     val organisationUnit: String,
     val organisationUnitScope: String,
     val root: Int?,
-    val userAssigned: Int?
+    val userAssigned: Int?,
 )

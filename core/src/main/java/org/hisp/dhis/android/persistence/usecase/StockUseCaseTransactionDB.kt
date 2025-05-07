@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,21 +11,22 @@ import androidx.room.PrimaryKey
             entity = StockUseCaseDB::class,
             parentColumns = ["uid"],
             childColumns = ["programUid"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
-        Index(value = ["programUid"])
-    ]
+        Index(value = ["programUid"]),
+    ],
 )
 internal data class StockUseCaseTransactionDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val programUid: String,
     val sortOrder: Int?,
     val transactionType: String?,
     val distributedTo: String?,
     val stockDistributed: String?,
     val stockDiscarded: String?,
-    val stockCount: String?
+    val stockCount: String?,
 )

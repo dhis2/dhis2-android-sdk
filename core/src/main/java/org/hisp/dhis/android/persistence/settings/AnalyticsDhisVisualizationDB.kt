@@ -1,10 +1,12 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "AnalyticsDhisVisualization")
 internal data class AnalyticsDhisVisualizationDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val scopeUid: String?,
     val scope: String?,
@@ -12,5 +14,5 @@ internal data class AnalyticsDhisVisualizationDB(
     val groupName: String?,
     val timestamp: String?,
     val name: String?,
-    val type: String
+    val type: String,
 )

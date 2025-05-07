@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,18 +11,19 @@ import androidx.room.PrimaryKey
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
-        Index(value = ["program", "organisationUnitIdsHash"], unique = true)
-    ]
+        Index(value = ["program", "organisationUnitIdsHash"], unique = true),
+    ],
 )
 internal data class TrackedEntityInstanceSyncDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val program: String?,
     val organisationUnitIdsHash: Int?,
     val downloadLimit: Int,
-    val lastUpdated: String
+    val lastUpdated: String,
 )

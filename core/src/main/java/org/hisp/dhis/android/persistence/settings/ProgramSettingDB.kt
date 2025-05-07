@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,16 +11,17 @@ import androidx.room.PrimaryKey
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["uid"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
-        Index(value = ["uid"], unique = true)
-    ]
+        Index(value = ["uid"], unique = true),
+    ],
 )
 internal data class ProgramSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String?,
     val name: String?,
     val lastUpdated: String?,
@@ -36,5 +38,5 @@ internal data class ProgramSettingDB(
     val eventDateDownload: String?,
     val eventDateDBTrimming: String?,
     val enrollmentDateDownload: String?,
-    val enrollmentDateDBTrimming: String?
+    val enrollmentDateDBTrimming: String?,
 )

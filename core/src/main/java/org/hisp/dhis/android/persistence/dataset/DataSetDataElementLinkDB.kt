@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,25 +11,26 @@ import androidx.room.PrimaryKey
             entity = DataSetDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["dataSet", "dataElement"], unique = true),
         Index(value = ["dataSet"]),
-        Index(value = ["dataElement"])
-    ]
+        Index(value = ["dataElement"]),
+    ],
 )
 internal data class DataSetDataElementLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val dataSet: String,
     val dataElement: String,
-    val categoryCombo: String?
+    val categoryCombo: String?,
 )

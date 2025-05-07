@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -5,12 +6,13 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "User",
     indices = [
-        Index(value = ["uid"], unique = true)
-    ]
+        Index(value = ["uid"], unique = true),
+    ],
 )
 internal data class UserDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -30,5 +32,5 @@ internal data class UserDB(
     val email: String?,
     val phoneNumber: String?,
     val nationality: String?,
-    val username: String?
+    val username: String?,
 )

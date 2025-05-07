@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,32 +11,32 @@ import androidx.room.PrimaryKey
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = ProgramStageDB::class,
             parentColumns = ["uid"],
             childColumns = ["programStage"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = EnrollmentDB::class,
             parentColumns = ["uid"],
             childColumns = ["enrollment"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["organisationUnit"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["attributeOptionCombo"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["uid"], unique = true),
@@ -43,12 +44,13 @@ import androidx.room.PrimaryKey
         Index(value = ["programStage"]),
         Index(value = ["enrollment"]),
         Index(value = ["organisationUnit"]),
-        Index(value = ["attributeOptionCombo"])
-    ]
+        Index(value = ["attributeOptionCombo"]),
+    ],
 )
 internal data class EventDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val enrollment: String?,
     val created: String?,
@@ -69,5 +71,5 @@ internal data class EventDB(
     val attributeOptionCombo: String?,
     val deleted: Int?,
     val assignedUser: String?,
-    val completedBy: String?
+    val completedBy: String?,
 )

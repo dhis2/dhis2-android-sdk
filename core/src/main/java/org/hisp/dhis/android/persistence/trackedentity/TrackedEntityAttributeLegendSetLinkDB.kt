@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,25 +11,26 @@ import androidx.room.PrimaryKey
             entity = TrackedEntityAttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityAttribute"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = LegendSetDB::class,
             parentColumns = ["uid"],
             childColumns = ["legendSet"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["trackedEntityAttribute", "legendSet"], unique = true),
         Index(value = ["trackedEntityAttribute"]),
-        Index(value = ["legendSet"])
-    ]
+        Index(value = ["legendSet"]),
+    ],
 )
 internal data class TrackedEntityAttributeLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val trackedEntityAttribute: String,
     val legendSet: String,
-    val sortOrder: Int?
+    val sortOrder: Int?,
 )

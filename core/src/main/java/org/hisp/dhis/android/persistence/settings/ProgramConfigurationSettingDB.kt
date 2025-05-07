@@ -1,10 +1,12 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "ProgramConfigurationSetting")
 internal data class ProgramConfigurationSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String?,
     val completionSpinner: Int?,
     val optionalSearch: Int?,
@@ -13,5 +15,5 @@ internal data class ProgramConfigurationSettingDB(
     val itemHeaderProgramIndicator: String?,
     val minimumLocationAccuracy: Int?,
     val disableManualLocation: Int?,
-    val quickActions: String?
+    val quickActions: String?,
 )

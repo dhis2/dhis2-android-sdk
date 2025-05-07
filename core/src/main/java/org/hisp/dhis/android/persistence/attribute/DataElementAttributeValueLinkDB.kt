@@ -1,5 +1,6 @@
 
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -12,25 +13,26 @@ import androidx.room.PrimaryKey
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = AttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["attribute"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["dataElement", "attribute"], unique = true),
         Index(value = ["dataElement"]),
-        Index(value = ["attribute"])
-    ]
+        Index(value = ["attribute"]),
+    ],
 )
 internal data class DataElementAttributeValueLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val dataElement: String,
     val attribute: String,
-    val value: String?
+    val value: String?,
 )

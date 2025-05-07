@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,32 +11,33 @@ import androidx.room.PrimaryKey
             entity = SectionDB::class,
             parentColumns = ["uid"],
             childColumns = ["section"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = DataElementOperandDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElementOperand"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOptionCombo"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["section", "dataElementOperand", "categoryOptionCombo"], unique = true),
         Index(value = ["section"]),
         Index(value = ["dataElementOperand"]),
-        Index(value = ["categoryOptionCombo"])
-    ]
+        Index(value = ["categoryOptionCombo"]),
+    ],
 )
 internal data class SectionGreyedFieldsLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val section: String,
     val dataElementOperand: String,
-    val categoryOptionCombo: String?
+    val categoryOptionCombo: String?,
 )

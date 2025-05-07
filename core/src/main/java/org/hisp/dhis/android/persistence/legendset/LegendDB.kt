@@ -1,3 +1,4 @@
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,17 +11,18 @@ import androidx.room.PrimaryKey
             entity = LegendSetDB::class,
             parentColumns = ["uid"],
             childColumns = ["legendSet"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["uid"], unique = true),
-        Index(value = ["legendSet"])
-    ]
+        Index(value = ["legendSet"]),
+    ],
 )
 internal data class LegendDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val uid: String,
     val code: String?,
     val name: String?,
@@ -30,5 +32,5 @@ internal data class LegendDB(
     val startValue: Double?,
     val endValue: Double?,
     val color: String?,
-    val legendSet: String?
+    val legendSet: String?,
 )

@@ -15,7 +15,8 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index(value = ["uid"], unique = true),
-        Index(value = ["optionSet"])
+        Index(value = ["optionSet"]),
+        Index(value = ["optionSet", "code"])
     ]
 )
 internal data class OptionDB(

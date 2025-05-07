@@ -21,7 +21,8 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index(value = ["trackedEntityAttribute"]),
-        Index(value = ["trackedEntityInstance"])
+        Index(value = ["trackedEntityInstance"]),
+        Index(value = ["trackedEntityInstance", "trackedEntityAttribute"], unique = true)
     ]
 )
 internal data class TrackedEntityAttributeValueDB(

@@ -21,7 +21,8 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index(value = ["event"]),
-        Index(value = ["dataElement"])
+        Index(value = ["dataElement"]),
+        Index(value = ["event", "dataElement"], unique = true)
     ]
 )
 internal data class TrackedEntityDataValueDB(

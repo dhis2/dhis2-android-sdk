@@ -34,7 +34,7 @@ import androidx.room.PrimaryKey
 )
 internal data class ProgramStageWorkingListDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val uid: String,
     val code: String?,
     val name: String?,

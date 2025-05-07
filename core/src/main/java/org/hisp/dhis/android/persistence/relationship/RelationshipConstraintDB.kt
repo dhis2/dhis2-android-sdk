@@ -34,7 +34,7 @@ import androidx.room.PrimaryKey
 )
 internal data class RelationshipConstraintDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val relationshipType: String,
     val constraintType: String,
     val relationshipEntity: String?,

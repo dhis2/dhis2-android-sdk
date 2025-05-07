@@ -20,7 +20,7 @@ import androidx.room.PrimaryKey
 )
 internal data class UserOrganisationUnitDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val user: String,
     val organisationUnit: String,
     val organisationUnitScope: String,

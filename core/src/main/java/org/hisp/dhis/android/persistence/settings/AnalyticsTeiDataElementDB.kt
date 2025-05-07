@@ -33,7 +33,7 @@ import androidx.room.PrimaryKey
 )
 internal data class AnalyticsTeiDataElementDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val teiSetting: String,
     val whoComponent: String?,
     val programStage: String?,

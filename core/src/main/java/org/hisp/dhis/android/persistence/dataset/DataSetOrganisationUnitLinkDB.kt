@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class DataSetOrganisationUnitLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val dataSet: String,
     val organisationUnit: String
 )

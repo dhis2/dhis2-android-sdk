@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class ProgramSectionAttributeLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val programSection: String,
     val attribute: String,
     val sortOrder: Int?

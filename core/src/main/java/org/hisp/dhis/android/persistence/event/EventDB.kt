@@ -48,7 +48,7 @@ import androidx.room.PrimaryKey
 )
 internal data class EventDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val uid: String,
     val enrollment: String?,
     val created: String?,

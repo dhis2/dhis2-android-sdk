@@ -33,7 +33,7 @@ import androidx.room.PrimaryKey
 )
 internal data class ItemFilterDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val eventFilter: String?,
     val dataItem: String?,
     val trackedEntityInstanceFilter: String?,

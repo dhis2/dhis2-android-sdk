@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "SystemInfo")
 internal data class SystemInfoDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val serverDate: String?,
     val dateFormat: String?,
     val version: String?,

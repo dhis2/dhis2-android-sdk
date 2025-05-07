@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class TrackedEntityDataValueDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val event: String,
     val dataElement: String,
     val storedBy: String?,

@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
 )
 internal data class FileResourceDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val uid: String,
     val name: String?,
     val created: String?,

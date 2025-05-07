@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "TrackerJobObject")
 internal data class TrackerJobObjectDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val trackerType: String,
     val objectUid: String,
     val jobUid: String,

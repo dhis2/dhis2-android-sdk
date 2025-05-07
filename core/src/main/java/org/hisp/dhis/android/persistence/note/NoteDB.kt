@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class NoteDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val noteType: String?,
     val event: String?,
     val enrollment: String?,

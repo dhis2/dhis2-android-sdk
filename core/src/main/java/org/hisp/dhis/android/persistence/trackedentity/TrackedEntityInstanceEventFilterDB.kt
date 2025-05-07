@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 internal data class TrackedEntityInstanceEventFilterDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val trackedEntityInstanceFilter: String,
     val programStage: String?,
     val eventStatus: String?,

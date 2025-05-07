@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class IndicatorLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val indicator: String,
     val legendSet: String,
     val sortOrder: Int?

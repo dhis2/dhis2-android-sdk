@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "FilterSetting")
 internal data class FilterSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val scope: String?,
     val filterType: String?,
     val uid: String?,

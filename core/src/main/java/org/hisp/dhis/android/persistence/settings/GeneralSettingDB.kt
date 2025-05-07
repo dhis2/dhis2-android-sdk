@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "GeneralSetting")
 internal data class GeneralSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val encryptDB: Int?,
     val lastUpdated: String?,
     val reservedValues: Int?,

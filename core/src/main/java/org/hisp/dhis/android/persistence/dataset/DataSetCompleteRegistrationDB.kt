@@ -41,7 +41,7 @@ import androidx.room.PrimaryKey
 )
 internal data class DataSetCompleteRegistrationDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val period: String,
     val dataSet: String,
     val organisationUnit: String,

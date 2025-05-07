@@ -28,7 +28,7 @@ import androidx.room.PrimaryKey
     )]
 )
 internal data class RelationshipItemDB(
-    @PrimaryKey(autoGenerate = true) val _id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val _id: Int,
     val relationship: String,
     val relationshipItemType: String,
     val trackedEntityInstance: String?,

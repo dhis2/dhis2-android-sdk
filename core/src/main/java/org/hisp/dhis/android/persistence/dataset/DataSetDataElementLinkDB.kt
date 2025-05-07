@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class DataSetDataElementLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val dataSet: String,
     val dataElement: String,
     val categoryCombo: String?

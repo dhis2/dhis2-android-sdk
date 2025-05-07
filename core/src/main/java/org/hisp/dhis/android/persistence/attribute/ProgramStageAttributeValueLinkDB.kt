@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey
 )
 internal data class ProgramStageAttributeValueLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val programStage: String,
     val attribute: String,
     val value: String?

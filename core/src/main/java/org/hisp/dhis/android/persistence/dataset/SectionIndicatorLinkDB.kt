@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class SectionIndicatorLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val section: String,
     val indicator: String
 )

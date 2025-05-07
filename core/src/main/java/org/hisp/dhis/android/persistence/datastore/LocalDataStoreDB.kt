@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
 )
 internal data class LocalDataStoreDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val key: String,
     val value: String?
 )

@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 internal data class VisualizationDimensionItemDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val visualization: String,
     val position: String,
     val dimension: String,

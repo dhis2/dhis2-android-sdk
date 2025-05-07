@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey
 )
 internal data class CategoryOptionOrganisationUnitLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val categoryOption: String,
     val organisationUnit: String?,
     val restriction: String?

@@ -26,7 +26,7 @@ import androidx.room.PrimaryKey
 )
 internal data class TrackedEntityTypeAttributeDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val trackedEntityType: String?,
     val trackedEntityAttribute: String?,
     val displayInList: Int?,

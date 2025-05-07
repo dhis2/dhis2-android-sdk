@@ -10,6 +10,6 @@ import androidx.room.PrimaryKey
 )
 internal data class ConfigurationDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val serverUrl: String
 )

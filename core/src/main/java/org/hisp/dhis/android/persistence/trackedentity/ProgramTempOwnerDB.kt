@@ -20,7 +20,7 @@ import androidx.room.PrimaryKey
 )
 internal data class ProgramTempOwnerDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val program: String,
     val trackedEntityInstance: String,
     val created: String,

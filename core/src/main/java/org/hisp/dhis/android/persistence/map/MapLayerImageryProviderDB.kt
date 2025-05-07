@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 internal data class MapLayerImageryProviderDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val mapLayer: String,
     val attribution: String,
     val coverageAreas: String?

@@ -51,7 +51,7 @@ import androidx.room.PrimaryKey
 )
 internal data class DataValueDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val dataElement: String,
     val period: String,
     val organisationUnit: String,

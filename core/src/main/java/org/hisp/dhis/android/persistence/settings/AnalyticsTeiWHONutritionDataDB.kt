@@ -26,7 +26,7 @@ import androidx.room.PrimaryKey
 )
 internal data class AnalyticsTeiWHONutritionDataDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val teiSetting: String,
     val chartType: String?,
     val genderAttribute: String,

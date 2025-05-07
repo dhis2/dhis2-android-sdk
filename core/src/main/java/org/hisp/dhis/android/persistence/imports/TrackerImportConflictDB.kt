@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class TrackerImportConflictDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val conflict: String?,
     val value: String?,
     val trackedEntityInstance: String?,

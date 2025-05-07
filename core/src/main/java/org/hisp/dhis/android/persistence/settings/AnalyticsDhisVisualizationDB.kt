@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "AnalyticsDhisVisualization")
 internal data class AnalyticsDhisVisualizationDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val uid: String,
     val scopeUid: String?,
     val scope: String?,

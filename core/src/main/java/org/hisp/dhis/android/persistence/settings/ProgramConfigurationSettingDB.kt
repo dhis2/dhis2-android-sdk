@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "ProgramConfigurationSetting")
 internal data class ProgramConfigurationSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val uid: String?,
     val completionSpinner: Int?,
     val optionalSearch: Int?,

@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "SynchronizationSetting")
 internal data class SynchronizationSettingDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val dataSync: String?,
     val metadataSync: String?,
     val trackerImporterVersion: String?,

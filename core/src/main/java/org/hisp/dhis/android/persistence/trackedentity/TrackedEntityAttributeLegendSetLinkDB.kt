@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
 )
 internal data class TrackedEntityAttributeLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val trackedEntityAttribute: String,
     val legendSet: String,
     val sortOrder: Int?

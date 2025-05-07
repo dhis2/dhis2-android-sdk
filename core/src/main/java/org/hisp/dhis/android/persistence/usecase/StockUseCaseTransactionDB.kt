@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 internal data class StockUseCaseTransactionDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    val _id: Int,
     val programUid: String,
     val sortOrder: Int?,
     val transactionType: String?,

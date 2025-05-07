@@ -38,7 +38,7 @@ import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
 @Entity
 internal data class ConstantDB(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val _id: Long = 0,
     override val uid: String,
     override val code: String?,
     override val name: String?,

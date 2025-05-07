@@ -37,7 +37,7 @@ internal interface FilterOperatorsDB {
     val gt: String?
     val lt: String?
     val eq: String?
-    val inProperty: Set<String>?
+    val inProperty: String?
     val like: String?
     val dateFilter: String?
 }
@@ -49,7 +49,11 @@ internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
     gt(item.gt)
     lt(item.lt)
     eq(item.eq)
-    `in`(item.inProperty)
+    item.inProperty?.let {
+        `in`(
+            KotlinxJsonParser.instance.decodeFromString<Set<String>>(it),
+        )
+    }
     like(item.like)
     item.dateFilter?.let {
         dateFilter(

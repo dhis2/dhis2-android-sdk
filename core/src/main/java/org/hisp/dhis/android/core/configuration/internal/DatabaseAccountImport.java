@@ -32,7 +32,7 @@ import androidx.annotation.NonNull;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class DatabaseAccountImportDB {
+public abstract class DatabaseAccountImport {
 
     @NonNull
     public abstract DatabaseAccountImportStatus status();
@@ -43,7 +43,7 @@ public abstract class DatabaseAccountImportDB {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_DatabaseAccountImportDB.Builder();
+        return new AutoValue_DatabaseAccountImport.Builder();
     }
 
     @AutoValue.Builder
@@ -53,6 +53,6 @@ public abstract class DatabaseAccountImportDB {
 
         public abstract Builder protectedDbName(String protectedDbName);
 
-        public abstract DatabaseAccountImportDB build();
+        public abstract DatabaseAccountImport build();
     }
 }

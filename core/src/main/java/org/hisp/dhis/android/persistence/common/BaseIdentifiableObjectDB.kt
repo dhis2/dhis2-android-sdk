@@ -26,26 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
-@Serializable
-internal data class TrackerVisualizationDimensionRepetitionDAO(
-    val indexes: List<Int>?,
-) {
-    fun toDomain(): TrackerVisualizationDimensionRepetition {
-        return TrackerVisualizationDimensionRepetition.builder()
-            .indexes(indexes)
-            .build()
-    }
+internal interface BaseIdentifiableObjectDB {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: String?
+    val lastUpdated: String?
+    val deleted: Boolean?
+}
 
-    companion object {
-        fun TrackerVisualizationDimensionRepetition.toDao(): TrackerVisualizationDimensionRepetitionDAO {
-            return TrackerVisualizationDimensionRepetitionDAO(
-                indexes = this.indexes(),
-            )
-        }
-    }
+internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): T where
+      T : BaseIdentifiableObject.Builder<T> {
+    uid(item.uid)
+    code(item.code)
+    name(item.name)
+    displayName(item.displayName)
+    item.created?.let { created(it) } ?: { created(null) }
+    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
+    deleted(item.deleted)
+    return this
 }

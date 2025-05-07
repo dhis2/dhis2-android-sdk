@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
-import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.persistence.constant
 
-@Singleton
-internal class DatabaseConfigurationInsecureStoreImpl(
-    insecureStore: InsecureStore,
-) : DatabaseConfigurationInsecureStore {
-    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDB>(
-        insecureStore,
-        "DB_CONFIGS",
-        DatabasesConfigurationDB.serializer(),
-    )
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
-    override fun set(o: DatabasesConfiguration) {
-        return daoStore.set(DatabasesConfigurationDB.toDB(o))
+@Entity
+internal data class ConstantDB(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val deleted: Boolean?,
+    val value: Double?,
+) : EntityDB<Constant>, BaseIdentifiableObjectDB {
+
+    override fun toDomain(): Constant {
+        return Constant.builder()
+            .applyBaseIdentifiableFields(this)
+            .value(value)
+            .build()
     }
 
-    override fun get(): DatabasesConfiguration? {
-        return daoStore.get()?.toDomain()
-    }
-
-    override fun remove() {
-        daoStore.remove()
+    companion object {
+        fun Constant.toRoom(): ConstantDB {
+            return ConstantDB(
+                uid = uid(),
+                code = code(),
+                name = name(),
+                displayName = displayName(),
+                created = created().dateFormat(),
+                lastUpdated = lastUpdated().dateFormat(),
+                deleted = deleted(),
+                value = value(),
+            )
+        }
     }
 }

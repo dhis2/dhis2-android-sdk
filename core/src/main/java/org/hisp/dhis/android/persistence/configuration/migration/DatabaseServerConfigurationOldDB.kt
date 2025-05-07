@@ -26,45 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal
+package org.hisp.dhis.android.persistence.configuration.migration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.DatePeriodType
-import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.util.simpleDateFormat
-import org.hisp.dhis.android.core.util.toJavaSimpleDate
 
 @Serializable
-internal data class DateFilterPeriodDAO(
-    val startBuffer: Int?,
-    val endBuffer: Int?,
-    val startDate: String?,
-    val endDate: String?,
-    val period: String?,
-    val type: String?,
-) {
-    fun toDomain(): DateFilterPeriod {
-        return DateFilterPeriod.builder()
-            .startBuffer(startBuffer)
-            .endBuffer(endBuffer)
-            .startDate(startDate?.let { it.toJavaSimpleDate() })
-            .endDate(endDate?.let { it.toJavaSimpleDate() })
-            .period(period?.let { RelativePeriod.valueOf(it) })
-            .type(type?.let { DatePeriodType.valueOf(it) })
-            .build()
-    }
-
-    companion object {
-        fun DateFilterPeriod.toDao(): DateFilterPeriodDAO {
-            return DateFilterPeriodDAO(
-                startBuffer = this.startBuffer(),
-                endBuffer = this.endBuffer(),
-                startDate = this.startDate()?.simpleDateFormat(),
-                endDate = this.endDate()?.simpleDateFormat(),
-                period = this.period()?.name,
-                type = this.type()?.name,
-            )
-        }
-    }
-}
+internal data class DatabaseServerConfigurationOldDB(
+    val serverUrl: String,
+    val users: List<DatabaseUserConfigurationOldDB>,
+)

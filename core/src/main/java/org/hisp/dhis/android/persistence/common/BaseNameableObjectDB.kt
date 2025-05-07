@@ -26,14 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal.migration
+package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.BaseNameableObject
 
-@Serializable
-internal data class DatabaseUserConfigurationOldDAO(
-    val username: String,
-    val databaseName: String,
-    val databaseCreationDate: String,
-    val encrypted: Boolean,
-)
+internal interface BaseNameableObjectDB : BaseIdentifiableObjectDB {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
+}
+
+internal fun <T> T.applyBaseNameableFields(item: BaseNameableObjectDB): T where
+      T : BaseNameableObject.Builder<T> {
+    applyBaseIdentifiableFields(item)
+    shortName(item.shortName)
+    displayShortName(item.displayShortName)
+    description(item.description)
+    displayDescription(item.displayDescription)
+    return this
+}

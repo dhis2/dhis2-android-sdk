@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
-import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.persistence.configuration
 
-@Singleton
-internal class DatabaseConfigurationInsecureStoreImpl(
-    insecureStore: InsecureStore,
-) : DatabaseConfigurationInsecureStore {
-    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDB>(
-        insecureStore,
-        "DB_CONFIGS",
-        DatabasesConfigurationDB.serializer(),
-    )
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.persistence.configuration.DatabaseAccountImportDBDAO.Companion.toDB
 
-    override fun set(o: DatabasesConfiguration) {
-        return daoStore.set(DatabasesConfigurationDB.toDB(o))
+@Serializable
+internal data class DatabaseAccountDB(
+    val username: String,
+    val serverUrl: String,
+    val databaseName: String,
+    val databaseCreationDate: String,
+    val encrypted: Boolean,
+    val syncState: String?,
+    val importDB: DatabaseAccountImportDBDAO?,
+) {
+    fun toDomain(): DatabaseAccount {
+        return DatabaseAccount.builder()
+            .username(username)
+            .serverUrl(serverUrl)
+            .databaseName(databaseName)
+            .databaseCreationDate(databaseCreationDate)
+            .encrypted(encrypted)
+            .syncState(syncState?.let { State.valueOf(it) })
+            .importDB(importDB?.toDomain())
+            .build()
     }
 
-    override fun get(): DatabasesConfiguration? {
-        return daoStore.get()?.toDomain()
-    }
-
-    override fun remove() {
-        daoStore.remove()
+    companion object {
+        fun DatabaseAccount.toDB(): DatabaseAccountDB {
+            return DatabaseAccountDB(
+                username = this.username(),
+                serverUrl = this.serverUrl(),
+                databaseName = this.databaseName(),
+                databaseCreationDate = this.databaseCreationDate(),
+                encrypted = this.encrypted(),
+                syncState = this.syncState()?.name,
+                importDB = this.importDB()?.toDB(),
+            )
+        }
     }
 }

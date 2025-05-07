@@ -34,11 +34,11 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseServerConfigurationOldDAO
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseUserConfigurationOldDAO
-import org.hisp.dhis.android.core.configuration.internal.migration.DatabasesConfigurationOldDAO
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.configuration.migration.DatabaseServerConfigurationOldDB
+import org.hisp.dhis.android.persistence.configuration.migration.DatabaseUserConfigurationOldDB
+import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -130,13 +130,13 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     fun migrate_from_old_database_configuration() {
-        val oldDatabaseConfiguration = DatabasesConfigurationOldDAO(
+        val oldDatabaseConfiguration = DatabasesConfigurationOldDB(
             loggedServerUrl = serverUrlWithApi,
             servers = listOf(
-                DatabaseServerConfigurationOldDAO(
+                DatabaseServerConfigurationOldDB(
                     serverUrl = serverUrlWithApi,
                     users = listOf(
-                        DatabaseUserConfigurationOldDAO(
+                        DatabaseUserConfigurationOldDB(
                             username = username,
                             databaseName = newName,
                             databaseCreationDate = "2014-06-06T20:44:21.375",

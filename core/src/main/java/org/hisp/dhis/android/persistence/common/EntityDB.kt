@@ -26,32 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal
+package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
-
-@Serializable
-internal data class MapLayerImageryProviderAreaDAO(
-    val bbox: List<Double>?,
-    val zoomMax: Int,
-    val zoomMin: Int,
-) {
-    fun toDomain(): MapLayerImageryProviderArea {
-        return MapLayerImageryProviderArea.builder()
-            .bbox(bbox)
-            .zoomMax(zoomMax)
-            .zoomMin(zoomMin)
-            .build()
-    }
-
-    companion object {
-        fun MapLayerImageryProviderArea.toDao(): MapLayerImageryProviderAreaDAO {
-            return MapLayerImageryProviderAreaDAO(
-                bbox = this.bbox(),
-                zoomMax = this.zoomMax(),
-                zoomMin = this.zoomMin(),
-            )
-        }
-    }
+internal interface EntityDB<D> {
+    fun toDomain(): D
 }

@@ -26,28 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.persistence.dependencyinjection
 
-import kotlinx.serialization.Serializable
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-@Serializable
-internal data class DatabaseAccountImportDBDAO(
-    val status: String,
-    val protectedDbName: String,
-) {
-    fun toDomain(): DatabaseAccountImportDB {
-        return DatabaseAccountImportDB.builder()
-            .status(DatabaseAccountImportStatus.valueOf(status))
-            .protectedDbName(protectedDbName)
-            .build()
-    }
-
-    companion object {
-        fun DatabaseAccountImportDB.toDao(): DatabaseAccountImportDBDAO {
-            return DatabaseAccountImportDBDAO(
-                status = this.status().name,
-                protectedDbName = this.protectedDbName(),
-            )
-        }
-    }
-}
+@Module
+@ComponentScan("org.hisp.dhis.android.persistence")
+internal class PersistenceDIModule

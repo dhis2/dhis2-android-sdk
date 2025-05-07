@@ -25,33 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import kotlinx.serialization.builtins.ListSerializer
+package org.hisp.dhis.android.persistence.common
+
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.settings.QuickAction
-import org.hisp.dhis.android.persistence.settings.QuickActionDB
-import org.hisp.dhis.android.persistence.settings.QuickActionDB.Companion.toDB
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.FilterQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickAction>() {
+internal interface FilterQueryCriteriaDB {
+    val followUp: Boolean?
+    val organisationUnit: String?
+    val ouMode: String?
+    val assignedUserMode: String?
+    val order: String?
+    val displayColumnOrder: String?
+    val eventStatus: String?
+    val eventDate: String?
+    val lastUpdatedDate: String?
+}
 
-    override fun serialize(o: List<QuickAction>?): String? =
-        QuickActionListColumnAdapter.serialize(o)
-
-    override fun deserialize(str: String): List<QuickAction> {
-        return KotlinxJsonParser.instance.decodeFromString<List<QuickActionDB>>(
-            str,
-        ).map { it.toDomain() }
+internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDB): T where
+      T : FilterQueryCriteria.Builder<T> {
+    followUp(item.followUp)
+    organisationUnit(item.organisationUnit)
+    item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
+    item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
+    order(item.order)
+    item.displayColumnOrder?.let {
+        displayColumnOrder(
+            KotlinxJsonParser.instance.decodeFromString<List<String>>(it),
+        )
     }
-
-    companion object {
-        fun serialize(o: List<QuickAction>?): String? {
-            return o?.let {
-                KotlinxJsonParser.instance.encodeToString(
-                    ListSerializer(QuickActionDB.serializer()),
-                    it.map { it.toDB() },
-                )
-            }
-        }
+    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
+    item.eventDate?.let {
+        eventDate(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
+        )
     }
+    item.lastUpdatedDate?.let {
+        lastUpdatedDate(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
+        )
+    }
+    return this
 }

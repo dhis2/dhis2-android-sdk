@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
-import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.persistence.common
 
-@Singleton
-internal class DatabaseConfigurationInsecureStoreImpl(
-    insecureStore: InsecureStore,
-) : DatabaseConfigurationInsecureStore {
-    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDB>(
-        insecureStore,
-        "DB_CONFIGS",
-        DatabasesConfigurationDB.serializer(),
-    )
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.FilterOperators
 
-    override fun set(o: DatabasesConfiguration) {
-        return daoStore.set(DatabasesConfigurationDB.toDB(o))
+internal interface FilterOperatorsDB {
+    val le: String?
+    val ge: String?
+    val gt: String?
+    val lt: String?
+    val eq: String?
+    val inProperty: Set<String>?
+    val like: String?
+    val dateFilter: String?
+}
+
+internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
+      T : FilterOperators.Builder<T> {
+    le(item.le)
+    ge(item.ge)
+    gt(item.gt)
+    lt(item.lt)
+    eq(item.eq)
+    `in`(item.inProperty)
+    like(item.like)
+    item.dateFilter?.let {
+        dateFilter(
+            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
+        )
     }
-
-    override fun get(): DatabasesConfiguration? {
-        return daoStore.get()?.toDomain()
-    }
-
-    override fun remove() {
-        daoStore.remove()
-    }
+    return this
 }

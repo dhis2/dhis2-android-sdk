@@ -26,12 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal.migration
+package org.hisp.dhis.android.persistence.settings
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.QuickAction
 
 @Serializable
-internal data class DatabaseServerConfigurationOldDAO(
-    val serverUrl: String,
-    val users: List<DatabaseUserConfigurationOldDAO>,
-)
+internal data class QuickActionDB(
+    val actionId: String,
+) {
+    fun toDomain(): QuickAction {
+        return QuickAction.builder()
+            .actionId(actionId)
+            .build()
+    }
+
+    companion object {
+        fun QuickAction.toDB(): QuickActionDB {
+            return QuickActionDB(
+                actionId = this.actionId(),
+            )
+        }
+    }
+}

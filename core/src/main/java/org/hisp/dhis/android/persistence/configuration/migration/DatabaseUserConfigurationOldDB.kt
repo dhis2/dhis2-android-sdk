@@ -26,45 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.persistence.configuration.migration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportDBDAO.Companion.toDao
 
 @Serializable
-internal data class DatabaseAccountDAO(
+internal data class DatabaseUserConfigurationOldDB(
     val username: String,
-    val serverUrl: String,
     val databaseName: String,
     val databaseCreationDate: String,
     val encrypted: Boolean,
-    val syncState: String?,
-    val importDB: DatabaseAccountImportDBDAO?,
-) {
-    fun toDomain(): DatabaseAccount {
-        return DatabaseAccount.builder()
-            .username(username)
-            .serverUrl(serverUrl)
-            .databaseName(databaseName)
-            .databaseCreationDate(databaseCreationDate)
-            .encrypted(encrypted)
-            .syncState(syncState?.let { State.valueOf(it) })
-            .importDB(importDB?.toDomain())
-            .build()
-    }
-
-    companion object {
-        fun DatabaseAccount.toDao(): DatabaseAccountDAO {
-            return DatabaseAccountDAO(
-                username = this.username(),
-                serverUrl = this.serverUrl(),
-                databaseName = this.databaseName(),
-                databaseCreationDate = this.databaseCreationDate(),
-                encrypted = this.encrypted(),
-                syncState = this.syncState()?.name,
-                importDB = this.importDB()?.toDao(),
-            )
-        }
-    }
-}
+)

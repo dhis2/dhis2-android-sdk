@@ -26,16 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountDAO.Companion.toDao
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.persistence.configuration.DatabaseAccountDB.Companion.toDB
 
 @Serializable
-internal data class DatabasesConfigurationDAO(
+internal data class DatabasesConfigurationDB(
     val versionCode: Long,
     val maxAccounts: Int?,
-    val accounts: List<DatabaseAccountDAO>,
+    val accounts: List<DatabaseAccountDB>,
 ) {
     fun toDomain(): DatabasesConfiguration {
         return DatabasesConfiguration.builder()
@@ -46,11 +47,11 @@ internal data class DatabasesConfigurationDAO(
     }
 
     companion object {
-        fun toDao(config: DatabasesConfiguration): DatabasesConfigurationDAO {
-            return DatabasesConfigurationDAO(
+        fun toDB(config: DatabasesConfiguration): DatabasesConfigurationDB {
+            return DatabasesConfigurationDB(
                 versionCode = config.versionCode(),
                 maxAccounts = config.maxAccounts(),
-                accounts = config.accounts().map { it.toDao() },
+                accounts = config.accounts().map { it.toDB() },
             )
         }
     }

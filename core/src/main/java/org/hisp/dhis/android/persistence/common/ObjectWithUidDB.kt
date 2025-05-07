@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
 
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
-import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
-import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.persistence.common
 
-@Singleton
-internal class DatabaseConfigurationInsecureStoreImpl(
-    insecureStore: InsecureStore,
-) : DatabaseConfigurationInsecureStore {
-    val daoStore = JsonKeyValueStoreImpl<DatabasesConfigurationDB>(
-        insecureStore,
-        "DB_CONFIGS",
-        DatabasesConfigurationDB.serializer(),
-    )
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-    override fun set(o: DatabasesConfiguration) {
-        return daoStore.set(DatabasesConfigurationDB.toDB(o))
+@Serializable
+internal data class ObjectWithUidDB(
+    val uid: String,
+) {
+    fun toDomain(): ObjectWithUid {
+        return ObjectWithUid.create(uid)
     }
 
-    override fun get(): DatabasesConfiguration? {
-        return daoStore.get()?.toDomain()
-    }
-
-    override fun remove() {
-        daoStore.remove()
+    companion object {
+        fun ObjectWithUid.toDB(): ObjectWithUidDB {
+            return ObjectWithUidDB(uid())
+        }
     }
 }

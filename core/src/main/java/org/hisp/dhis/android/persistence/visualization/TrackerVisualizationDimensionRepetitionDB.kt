@@ -26,25 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.visualization
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.settings.QuickAction
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
 @Serializable
-internal data class QuickActionDAO(
-    val actionId: String,
+internal data class TrackerVisualizationDimensionRepetitionDB(
+    val indexes: List<Int>?,
 ) {
-    fun toDomain(): QuickAction {
-        return QuickAction.builder()
-            .actionId(actionId)
+    fun toDomain(): TrackerVisualizationDimensionRepetition {
+        return TrackerVisualizationDimensionRepetition.builder()
+            .indexes(indexes)
             .build()
     }
 
     companion object {
-        fun QuickAction.toDao(): QuickActionDAO {
-            return QuickActionDAO(
-                actionId = this.actionId(),
+        fun TrackerVisualizationDimensionRepetition.toDB(): TrackerVisualizationDimensionRepetitionDB {
+            return TrackerVisualizationDimensionRepetitionDB(
+                indexes = this.indexes(),
             )
         }
     }

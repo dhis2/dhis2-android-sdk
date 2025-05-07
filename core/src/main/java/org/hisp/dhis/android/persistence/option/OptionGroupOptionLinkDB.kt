@@ -1,1 +1,33 @@
-// CREATE TABLE OptionGroupOptionLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, optionGroup TEXT NOT NULL, option TEXT NOT NULL, FOREIGN KEY (optionGroup) REFERENCES OptionGroup (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (option) REFERENCES Option (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (optionGroup, option));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "OptionGroupOptionLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = OptionGroupDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["optionGroup"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = OptionDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["option"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["optionGroup", "option"], unique = true),
+        Index(value = ["optionGroup"]),
+        Index(value = ["option"])
+    ]
+)
+internal data class OptionGroupOptionLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val optionGroup: String,
+    val option: String
+)

@@ -1,1 +1,73 @@
-// CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, enrollment TEXT, created TEXT, lastUpdated TEXT, createdAtClient TEXT, lastUpdatedAtClient TEXT, status TEXT, geometryType TEXT, geometryCoordinates TEXT, program TEXT NOT NULL, programStage TEXT NOT NULL, organisationUnit TEXT NOT NULL, eventDate TEXT, completedDate TEXT, dueDate TEXT, syncState TEXT, aggregatedSyncState TEXT, attributeOptionCombo TEXT, deleted INTEGER, assignedUser TEXT, completedBy TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "Event",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ProgramStageDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programStage"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = EnrollmentDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["enrollment"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = OrganisationUnitDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["organisationUnit"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = CategoryOptionComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["attributeOptionCombo"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["program"]),
+        Index(value = ["programStage"]),
+        Index(value = ["enrollment"]),
+        Index(value = ["organisationUnit"]),
+        Index(value = ["attributeOptionCombo"])
+    ]
+)
+internal data class EventDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val enrollment: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val createdAtClient: String?,
+    val lastUpdatedAtClient: String?,
+    val status: String?,
+    val geometryType: String?,
+    val geometryCoordinates: String?,
+    val program: String,
+    val programStage: String,
+    val organisationUnit: String,
+    val eventDate: String?,
+    val completedDate: String?,
+    val dueDate: String?,
+    val syncState: String?,
+    val aggregatedSyncState: String?,
+    val attributeOptionCombo: String?,
+    val deleted: Int?,
+    val assignedUser: String?,
+    val completedBy: String?
+)

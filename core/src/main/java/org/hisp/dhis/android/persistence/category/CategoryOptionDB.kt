@@ -1,4 +1,4 @@
-// CREATE TABLE CategoryOption (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, startDate TEXT, endDate TEXT, accessDataWrite INTEGER);
+
 
 import androidx.room.Entity
 import androidx.room.Index
@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
         Index(value = ["uid"], unique = true)
     ]
 )
-internal data class CategoryOption(
+internal data class CategoryOptionDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val uid: String,

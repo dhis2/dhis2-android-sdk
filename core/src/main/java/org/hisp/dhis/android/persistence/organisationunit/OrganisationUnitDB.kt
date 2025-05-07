@@ -1,1 +1,32 @@
-// CREATE TABLE OrganisationUnit (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, path TEXT, openingDate TEXT, closedDate TEXT, level INTEGER, parent TEXT, displayNamePath TEXT, geometryType TEXT, geometryCoordinates TEXT);
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "OrganisationUnit",
+    indices = [
+        Index(value = ["uid"], unique = true)
+    ]
+)
+internal data class OrganisationUnitDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val shortName: String?,
+    val displayShortName: String?,
+    val description: String?,
+    val displayDescription: String?,
+    val path: String?,
+    val openingDate: String?,
+    val closedDate: String?,
+    val level: Int?,
+    val parent: String?,
+    val displayNamePath: String?,
+    val geometryType: String?,
+    val geometryCoordinates: String?
+)

@@ -1,4 +1,4 @@
-// CREATE TABLE CategoryCategoryComboLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT NOT NULL, categoryCombo TEXT NOT NULL, sortOrder INTEGER, FOREIGN KEY (category) REFERENCES Category (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryCombo) REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (category, categoryCombo));
+
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -9,13 +9,13 @@ import androidx.room.PrimaryKey
     tableName = "CategoryCategoryComboLink",
     foreignKeys = [
         ForeignKey(
-            entity = Category::class,
+            entity = CategoryDB::class,
             parentColumns = ["uid"],
             childColumns = ["category"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = CategoryCombo::class,
+            entity = CategoryComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE
@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
         Index(value = ["categoryCombo"])
     ]
 )
-internal data class CategoryCategoryComboLink(
+internal data class CategoryCategoryComboLinkDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val category: String,

@@ -1,1 +1,30 @@
-// CREATE TABLE StockUseCaseTransaction (_id INTEGER PRIMARY KEY AUTOINCREMENT, programUid TEXT NOT NULL, sortOrder INTEGER, transactionType TEXT, distributedTo TEXT, stockDistributed TEXT, stockDiscarded TEXT, stockCount TEXT, FOREIGN KEY (programUid) REFERENCES StockUseCase (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "StockUseCaseTransaction",
+    foreignKeys = [
+        ForeignKey(
+            entity = StockUseCaseDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programUid"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["programUid"])
+    ]
+)
+internal data class StockUseCaseTransactionDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val programUid: String,
+    val sortOrder: Int?,
+    val transactionType: String?,
+    val distributedTo: String?,
+    val stockDistributed: String?,
+    val stockDiscarded: String?,
+    val stockCount: String?
+)

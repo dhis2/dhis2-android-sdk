@@ -1,1 +1,29 @@
-// CREATE TABLE StockUseCase (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, itemCode TEXT, itemDescription TEXT, programType TEXT, description TEXT, stockOnHand TEXT, FOREIGN KEY (uid) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "StockUseCase",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["uid"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true)
+    ]
+)
+internal data class StockUseCaseDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val itemCode: String?,
+    val itemDescription: String?,
+    val programType: String?,
+    val description: String?,
+    val stockOnHand: String?
+)

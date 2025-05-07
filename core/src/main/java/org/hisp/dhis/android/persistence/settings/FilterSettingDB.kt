@@ -1,1 +1,13 @@
-// CREATE TABLE FilterSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, scope TEXT, filterType TEXT, uid TEXT, sort INTEGER, filter INTEGER);
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "FilterSetting")
+internal data class FilterSettingDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val scope: String?,
+    val filterType: String?,
+    val uid: String?,
+    val sort: Int?,
+    val filter: Int?
+)

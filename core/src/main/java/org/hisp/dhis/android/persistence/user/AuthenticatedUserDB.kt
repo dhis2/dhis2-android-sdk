@@ -1,1 +1,25 @@
-// CREATE TABLE AuthenticatedUser (_id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL UNIQUE, hash TEXT, FOREIGN KEY (user) REFERENCES User (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "AuthenticatedUser",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["user"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["user"], unique = true)
+    ]
+)
+internal data class AuthenticatedUserDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val user: String,
+    val hash: String?
+)

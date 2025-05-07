@@ -1,1 +1,50 @@
-// CREATE TABLE TrackedEntityInstanceFilter (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, color TEXT, icon TEXT, program TEXT NOT NULL, description TEXT, sortOrder INTEGER, enrollmentStatus TEXT, followUp INTEGER, organisationUnit TEXT, ouMode TEXT, assignedUserMode TEXT, orderProperty TEXT, displayColumnOrder TEXT, eventStatus TEXT, eventDate TEXT, lastUpdatedDate TEXT, programStage TEXT, trackedEntityInstances TEXT, enrollmentIncidentDate TEXT, enrollmentCreatedDate TEXT, trackedEntityType TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "TrackedEntityInstanceFilter",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["program"])
+    ]
+)
+internal data class TrackedEntityInstanceFilterDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val color: String?,
+    val icon: String?,
+    val program: String,
+    val description: String?,
+    val sortOrder: Int?,
+    val enrollmentStatus: String?,
+    val followUp: Int?,
+    val organisationUnit: String?,
+    val ouMode: String?,
+    val assignedUserMode: String?,
+    val orderProperty: String?,
+    val displayColumnOrder: String?,
+    val eventStatus: String?,
+    val eventDate: String?,
+    val lastUpdatedDate: String?,
+    val programStage: String?,
+    val trackedEntityInstances: String?,
+    val enrollmentIncidentDate: String?,
+    val enrollmentCreatedDate: String?,
+    val trackedEntityType: String?
+)

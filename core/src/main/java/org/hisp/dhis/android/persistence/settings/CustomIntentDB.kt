@@ -1,1 +1,21 @@
-// CREATE TABLE CustomIntent (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, name TEXT, action TEXT, packageName TEXT, requestArguments TEXT, responseDataArgument TEXT, responseDataPath TEXT);
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "CustomIntent",
+    indices = [
+        Index(value = ["uid"], unique = true)
+    ]
+)
+internal data class CustomIntentDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val name: String?,
+    val action: String?,
+    val packageName: String?,
+    val requestArguments: String?,
+    val responseDataArgument: String?,
+    val responseDataPath: String?
+)

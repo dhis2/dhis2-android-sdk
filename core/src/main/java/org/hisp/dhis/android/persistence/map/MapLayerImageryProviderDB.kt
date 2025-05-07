@@ -1,1 +1,26 @@
-// CREATE TABLE MapLayerImageryProvider (_id INTEGER PRIMARY KEY AUTOINCREMENT, mapLayer TEXT NOT NULL, attribution TEXT NOT NULL, coverageAreas TEXT, FOREIGN KEY (mapLayer) REFERENCES MapLayer (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "MapLayerImageryProvider",
+    foreignKeys = [
+        ForeignKey(
+            entity = MapLayerDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["mapLayer"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["mapLayer"])
+    ]
+)
+internal data class MapLayerImageryProviderDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val mapLayer: String,
+    val attribution: String,
+    val coverageAreas: String?
+)

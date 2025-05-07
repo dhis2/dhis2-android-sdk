@@ -1,1 +1,30 @@
-// CREATE TABLE AggregatedDataSync (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL UNIQUE, periodType TEXT NOT NULL, pastPeriods INTEGER NOT NULL, futurePeriods INTEGER NOT NULL, dataElementsHash INTEGER NOT NULL, organisationUnitsHash INTEGER NOT NULL, lastUpdated TEXT NOT NULL, FOREIGN KEY (dataSet) REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "AggregatedDataSync",
+    foreignKeys = [
+        ForeignKey(
+            entity = DataSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataSet"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["dataSet"], unique = true)
+    ]
+)
+internal data class AggregatedDataSyncDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val dataSet: String,
+    val periodType: String,
+    val pastPeriods: Int,
+    val futurePeriods: Int,
+    val dataElementsHash: Int,
+    val organisationUnitsHash: Int,
+    val lastUpdated: String
+)

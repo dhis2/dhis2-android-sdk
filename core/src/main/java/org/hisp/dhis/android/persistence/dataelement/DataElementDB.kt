@@ -1,1 +1,52 @@
-// CREATE TABLE DataElement (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, valueType TEXT, zeroIsSignificant INTEGER, aggregationType TEXT, formName TEXT, domainType TEXT, displayFormName TEXT, optionSet TEXT, categoryCombo TEXT NOT NULL, fieldMask TEXT, color TEXT, icon TEXT, FOREIGN KEY (optionSet) REFERENCES OptionSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryCombo) REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "DataElement",
+    foreignKeys = [
+        ForeignKey(
+            entity = OptionSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["optionSet"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["categoryCombo"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["optionSet"]),
+        Index(value = ["categoryCombo"])
+    ]
+)
+internal data class DataElementDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val shortName: String?,
+    val displayShortName: String?,
+    val description: String?,
+    val displayDescription: String?,
+    val valueType: String?,
+    val zeroIsSignificant: Int?,
+    val aggregationType: String?,
+    val formName: String?,
+    val domainType: String?,
+    val displayFormName: String?,
+    val optionSet: String?,
+    val categoryCombo: String,
+    val fieldMask: String?,
+    val color: String?,
+    val icon: String?
+)

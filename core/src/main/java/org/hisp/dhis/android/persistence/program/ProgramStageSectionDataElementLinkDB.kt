@@ -1,1 +1,33 @@
-// CREATE TABLE ProgramStageSectionDataElementLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, programStageSection TEXT NOT NULL, dataElement TEXT NOT NULL, sortOrder INTEGER NOT NULL, FOREIGN KEY (programStageSection) REFERENCES ProgramStageSection (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "ProgramStageSectionDataElementLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramStageSectionDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programStageSection"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = DataElementDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataElement"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["programStageSection"]),
+        Index(value = ["dataElement"])
+    ]
+)
+internal data class ProgramStageSectionDataElementLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val programStageSection: String,
+    val dataElement: String,
+    val sortOrder: Int
+)

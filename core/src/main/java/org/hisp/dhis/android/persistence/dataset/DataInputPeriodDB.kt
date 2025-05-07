@@ -1,1 +1,27 @@
-// CREATE TABLE DataInputPeriod (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL, period TEXT NOT NULL, openingDate TEXT, closingDate TEXT, FOREIGN KEY (dataSet) REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "DataInputPeriod",
+    foreignKeys = [
+        ForeignKey(
+            entity = DataSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataSet"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["dataSet"])
+    ]
+)
+internal data class DataInputPeriodDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val dataSet: String,
+    val period: String,
+    val openingDate: String?,
+    val closingDate: String?
+)

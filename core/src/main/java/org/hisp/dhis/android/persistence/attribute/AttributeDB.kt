@@ -1,10 +1,10 @@
-// CREATE TABLE Attribute (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, valueType TEXT, uniqueProperty INTEGER,  mandatory INTEGER, indicatorAttribute INTEGER, indicatorGroupAttribute INTEGER, userGroupAttribute INTEGER, dataElementAttribute INTEGER, constantAttribute INTEGER, categoryOptionAttribute INTEGER, optionSetAttribute INTEGER, sqlViewAttribute INTEGER, legendSetAttribute INTEGER, trackedEntityAttributeAttribute INTEGER, organisationUnitAttribute INTEGER, dataSetAttribute INTEGER, documentAttribute INTEGER, validationRuleGroupAttribute INTEGER, dataElementGroupAttribute INTEGER, sectionAttribute INTEGER, trackedEntityTypeAttribute INTEGER, userAttribute INTEGER, categoryOptionGroupAttribute INTEGER, programStageAttribute INTEGER, programAttribute INTEGER, categoryAttribute INTEGER, categoryOptionComboAttribute INTEGER, categoryOptionGroupSetAttribute INTEGER, validationRuleAttribute INTEGER, programIndicatorAttribute INTEGER, organisationUnitGroupAttribute INTEGER, dataElementGroupSetAttribute INTEGER, organisationUnitGroupSetAttribute INTEGER, optionAttribute INTEGER);
+
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Attribute")
-internal data class Attribute(
+internal data class AttributeDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val uid: String,

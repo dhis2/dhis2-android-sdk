@@ -1,1 +1,33 @@
-// CREATE TABLE DataSetCompulsoryDataElementOperandsLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL, dataElementOperand TEXT NOT NULL, FOREIGN KEY (dataSet) REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataElementOperand) REFERENCES DataElementOperand (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataSet, dataElementOperand));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "DataSetCompulsoryDataElementOperandsLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = DataSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataSet"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = DataElementOperandDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataElementOperand"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["dataSet", "dataElementOperand"], unique = true),
+        Index(value = ["dataSet"]),
+        Index(value = ["dataElementOperand"])
+    ]
+)
+internal data class DataSetCompulsoryDataElementOperandsLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val dataSet: String,
+    val dataElementOperand: String
+)

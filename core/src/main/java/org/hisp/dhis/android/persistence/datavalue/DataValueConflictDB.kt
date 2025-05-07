@@ -1,1 +1,19 @@
-// CREATE TABLE DataValueConflict (_id INTEGER PRIMARY KEY AUTOINCREMENT, conflict TEXT, value TEXT, attributeOptionCombo TEXT, categoryOptionCombo TEXT, dataElement TEXT, period TEXT, orgUnit TEXT, errorCode TEXT, status TEXT, created TEXT, displayDescription TEXT);
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "DataValueConflict")
+internal data class DataValueConflictDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val conflict: String?,
+    val value: String?,
+    val attributeOptionCombo: String?,
+    val categoryOptionCombo: String?,
+    val dataElement: String?,
+    val period: String?,
+    val orgUnit: String?,
+    val errorCode: String?,
+    val status: String?,
+    val created: String?,
+    val displayDescription: String?
+)

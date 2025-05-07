@@ -1,1 +1,33 @@
-// CREATE TABLE AnalyticsTeiAttribute (_id INTEGER PRIMARY KEY AUTOINCREMENT, teiSetting TEXT NOT NULL, whoComponent TEXT, attribute TEXT NOT NULL, FOREIGN KEY (attribute) REFERENCES trackedEntityAttribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (teiSetting) REFERENCES AnalyticsTeiSetting (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "AnalyticsTeiAttribute",
+    foreignKeys = [
+        ForeignKey(
+            entity = TrackedEntityAttributeDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["attribute"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = AnalyticsTeiSettingDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["teiSetting"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["attribute"]),
+        Index(value = ["teiSetting"])
+    ]
+)
+internal data class AnalyticsTeiAttributeDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val teiSetting: String,
+    val whoComponent: String?,
+    val attribute: String
+)

@@ -1,4 +1,4 @@
-// CREATE TABLE CategoryOptionOrganisationUnitLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, categoryOption TEXT NOT NULL, organisationUnit TEXT, restriction TEXT, FOREIGN KEY (categoryOption) REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (categoryOption, organisationUnit));
+
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -9,13 +9,13 @@ import androidx.room.PrimaryKey
     tableName = "CategoryOptionOrganisationUnitLink",
     foreignKeys = [
         ForeignKey(
-            entity = CategoryOption::class,
+            entity = CategoryOptionDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOption"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = OrganisationUnit::class,
+            entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["organisationUnit"],
             onDelete = ForeignKey.CASCADE
@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
         Index(value = ["organisationUnit"])
     ]
 )
-internal data class CategoryOptionOrganisationUnitLink(
+internal data class CategoryOptionOrganisationUnitLinkDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val categoryOption: String,

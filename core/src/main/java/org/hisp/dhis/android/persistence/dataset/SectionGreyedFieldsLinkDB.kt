@@ -1,1 +1,41 @@
-// CREATE TABLE SectionGreyedFieldsLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, section TEXT NOT NULL, dataElementOperand TEXT NOT NULL, categoryOptionCombo TEXT, FOREIGN KEY (section) REFERENCES Section (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataElementOperand) REFERENCES DataElementOperand (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (section, dataElementOperand, categoryOptionCombo));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "SectionGreyedFieldsLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = SectionDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["section"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = DataElementOperandDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataElementOperand"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = CategoryOptionComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["categoryOptionCombo"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["section", "dataElementOperand", "categoryOptionCombo"], unique = true),
+        Index(value = ["section"]),
+        Index(value = ["dataElementOperand"]),
+        Index(value = ["categoryOptionCombo"])
+    ]
+)
+internal data class SectionGreyedFieldsLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val section: String,
+    val dataElementOperand: String,
+    val categoryOptionCombo: String?
+)

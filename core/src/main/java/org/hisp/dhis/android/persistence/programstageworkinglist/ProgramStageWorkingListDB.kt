@@ -1,1 +1,59 @@
-// CREATE TABLE ProgramStageWorkingList (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT, program TEXT NOT NULL, programStage TEXT NOT NULL, eventStatus TEXT, eventCreatedAt TEXT, eventOccurredAt TEXT, eventScheduledAt TEXT, enrollmentStatus TEXT, enrolledAt TEXT, enrollmentOccurredAt TEXT, orderProperty TEXT, displayColumnOrder TEXT, orgUnit TEXT, ouMode TEXT, assignedUserMode TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (orgUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "ProgramStageWorkingList",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ProgramStageDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programStage"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = OrganisationUnitDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["orgUnit"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["program"]),
+        Index(value = ["programStage"]),
+        Index(value = ["orgUnit"])
+    ]
+)
+internal data class ProgramStageWorkingListDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val description: String?,
+    val program: String,
+    val programStage: String,
+    val eventStatus: String?,
+    val eventCreatedAt: String?,
+    val eventOccurredAt: String?,
+    val eventScheduledAt: String?,
+    val enrollmentStatus: String?,
+    val enrolledAt: String?,
+    val enrollmentOccurredAt: String?,
+    val orderProperty: String?,
+    val displayColumnOrder: String?,
+    val orgUnit: String?,
+    val ouMode: String?,
+    val assignedUserMode: String?
+)

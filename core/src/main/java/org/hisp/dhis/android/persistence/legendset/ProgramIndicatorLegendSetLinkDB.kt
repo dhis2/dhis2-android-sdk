@@ -1,1 +1,34 @@
-// CREATE TABLE ProgramIndicatorLegendSetLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, programIndicator TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER, FOREIGN KEY (programIndicator) REFERENCES ProgramIndicator (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (programIndicator, legendSet));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "ProgramIndicatorLegendSetLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramIndicatorDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programIndicator"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = LegendSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["legendSet"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["programIndicator", "legendSet"], unique = true),
+        Index(value = ["programIndicator"]),
+        Index(value = ["legendSet"])
+    ]
+)
+internal data class ProgramIndicatorLegendSetLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val programIndicator: String,
+    val legendSet: String,
+    val sortOrder: Int?
+)

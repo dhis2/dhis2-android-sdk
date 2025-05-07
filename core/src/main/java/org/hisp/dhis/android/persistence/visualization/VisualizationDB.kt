@@ -1,1 +1,50 @@
-// CREATE TABLE Visualization (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT, displayDescription TEXT, displayFormName TEXT, title TEXT, displayTitle TEXT, subtitle TEXT, displaySubtitle TEXT, type TEXT, hideTitle INTEGER, hideSubtitle INTEGER, hideEmptyColumns INTEGER, hideEmptyRows INTEGER, hideEmptyRowItems TEXT, hideLegend INTEGER, showHierarchy INTEGER, rowTotals INTEGER, rowSubTotals INTEGER, colTotals INTEGER, colSubTotals INTEGER, showDimensionLabels INTEGER, percentStackedValues INTEGER, noSpaceBetweenColumns INTEGER, skipRounding INTEGER, displayDensity TEXT, digitGroupSeparator TEXT, legendShowKey TEXT, legendStyle TEXT, legendSetId TEXT, legendStrategy TEXT, aggregationType TEXT);
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "Visualization",
+    indices = [
+        Index(value = ["uid"], unique = true)
+    ]
+)
+internal data class VisualizationDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val description: String?,
+    val displayDescription: String?,
+    val displayFormName: String?,
+    val title: String?,
+    val displayTitle: String?,
+    val subtitle: String?,
+    val displaySubtitle: String?,
+    val type: String?,
+    val hideTitle: Int?,
+    val hideSubtitle: Int?,
+    val hideEmptyColumns: Int?,
+    val hideEmptyRows: Int?,
+    val hideEmptyRowItems: String?,
+    val hideLegend: Int?,
+    val showHierarchy: Int?,
+    val rowTotals: Int?,
+    val rowSubTotals: Int?,
+    val colTotals: Int?,
+    val colSubTotals: Int?,
+    val showDimensionLabels: Int?,
+    val percentStackedValues: Int?,
+    val noSpaceBetweenColumns: Int?,
+    val skipRounding: Int?,
+    val displayDensity: String?,
+    val digitGroupSeparator: String?,
+    val legendShowKey: String?,
+    val legendStyle: String?,
+    val legendSetId: String?,
+    val legendStrategy: String?,
+    val aggregationType: String?
+)

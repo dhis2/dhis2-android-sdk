@@ -1,1 +1,34 @@
-// CREATE TABLE User (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, birthday TEXT, education TEXT, gender TEXT, jobTitle TEXT, surname TEXT, firstName TEXT, introduction TEXT, employer TEXT, interests TEXT, languages TEXT, email TEXT, phoneNumber TEXT, nationality TEXT, username TEXT);
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "User",
+    indices = [
+        Index(value = ["uid"], unique = true)
+    ]
+)
+internal data class UserDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val birthday: String?,
+    val education: String?,
+    val gender: String?,
+    val jobTitle: String?,
+    val surname: String?,
+    val firstName: String?,
+    val introduction: String?,
+    val employer: String?,
+    val interests: String?,
+    val languages: String?,
+    val email: String?,
+    val phoneNumber: String?,
+    val nationality: String?,
+    val username: String?
+)

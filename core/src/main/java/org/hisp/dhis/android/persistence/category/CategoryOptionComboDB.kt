@@ -1,4 +1,4 @@
-// CREATE TABLE CategoryOptionCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, categoryCombo TEXT, FOREIGN KEY (categoryCombo) REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
     tableName = "CategoryOptionCombo",
     foreignKeys = [
         ForeignKey(
-            entity = CategoryCombo::class,
+            entity = CategoryComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE
@@ -20,7 +20,7 @@ import androidx.room.PrimaryKey
         Index(value = ["categoryCombo"])
     ]
 )
-internal data class CategoryOptionCombo(
+internal data class CategoryOptionComboDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val uid: String,

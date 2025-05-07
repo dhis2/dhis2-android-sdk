@@ -1,1 +1,29 @@
-// CREATE TABLE UserOrganisationUnit (_id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, organisationUnit TEXT NOT NULL, organisationUnitScope TEXT NOT NULL, root INTEGER, userAssigned INTEGER, FOREIGN KEY (user) REFERENCES User (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (organisationUnitScope, user, organisationUnit));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "UserOrganisationUnit",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["user"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["organisationUnitScope", "user", "organisationUnit"], unique = true),
+        Index(value = ["user"])
+    ]
+)
+internal data class UserOrganisationUnitDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val user: String,
+    val organisationUnit: String,
+    val organisationUnitScope: String,
+    val root: Int?,
+    val userAssigned: Int?
+)

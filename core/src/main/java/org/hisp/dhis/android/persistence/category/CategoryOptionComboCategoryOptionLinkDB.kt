@@ -1,4 +1,4 @@
-// CREATE TABLE CategoryOptionComboCategoryOptionLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, categoryOptionCombo TEXT NOT NULL, categoryOption TEXT NOT NULL, FOREIGN KEY (categoryOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOption) REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (categoryOptionCombo, categoryOption));
+
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -9,13 +9,13 @@ import androidx.room.PrimaryKey
     tableName = "CategoryOptionComboCategoryOptionLink",
     foreignKeys = [
         ForeignKey(
-            entity = CategoryOptionCombo::class,
+            entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOptionCombo"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = CategoryOption::class,
+            entity = CategoryOptionDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOption"],
             onDelete = ForeignKey.CASCADE
@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
         Index(value = ["categoryOption"])
     ]
 )
-internal data class CategoryOptionComboCategoryOptionLink(
+internal data class CategoryOptionComboCategoryOptionLinkDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val categoryOptionCombo: String,

@@ -1,1 +1,29 @@
-// CREATE TABLE ProgramTempOwner (_id INTEGER PRIMARY KEY AUTOINCREMENT, program TEXT NOT NULL, trackedEntityInstance TEXT NOT NULL, created TEXT NOT NULL, validUntil TEXT NOT NULL, reason TEXT NOT NULL, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "ProgramTempOwner",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["program"]),
+        Index(value = ["trackedEntityInstance"])
+    ]
+)
+internal data class ProgramTempOwnerDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val program: String,
+    val trackedEntityInstance: String,
+    val created: String,
+    val validUntil: String,
+    val reason: String
+)

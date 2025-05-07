@@ -1,1 +1,27 @@
-// CREATE TABLE TrackedEntityInstanceSync (_id INTEGER PRIMARY KEY AUTOINCREMENT, program TEXT, organisationUnitIdsHash INTEGER, downloadLimit INTEGER NOT NULL, lastUpdated TEXT NOT NULL, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (program, organisationUnitIdsHash));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "TrackedEntityInstanceSync",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["program", "organisationUnitIdsHash"], unique = true)
+    ]
+)
+internal data class TrackedEntityInstanceSyncDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val program: String?,
+    val organisationUnitIdsHash: Int?,
+    val downloadLimit: Int,
+    val lastUpdated: String
+)

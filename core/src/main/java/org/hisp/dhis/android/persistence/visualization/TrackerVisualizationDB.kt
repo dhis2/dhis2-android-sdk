@@ -1,1 +1,51 @@
-// CREATE TABLE TrackerVisualization(_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT, displayDescription TEXT, type TEXT, outputType TEXT, program TEXT, programStage TEXT, trackedEntityType TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (trackedEntityType) REFERENCES TrackedEntityType (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "TrackerVisualization",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ProgramStageDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programStage"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = TrackedEntityTypeDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["trackedEntityType"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["program"]),
+        Index(value = ["programStage"]),
+        Index(value = ["trackedEntityType"])
+    ]
+)
+internal data class TrackerVisualizationDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val description: String?,
+    val displayDescription: String?,
+    val type: String?,
+    val outputType: String?,
+    val program: String?,
+    val programStage: String?,
+    val trackedEntityType: String?
+)

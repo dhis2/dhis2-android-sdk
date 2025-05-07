@@ -1,1 +1,33 @@
-// CREATE TABLE OrganisationUnitOrganisationUnitGroupLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, organisationUnit TEXT NOT NULL, organisationUnitGroup TEXT NOT NULL, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnitGroup) REFERENCES OrganisationUnitGroup (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (organisationUnit, organisationUnitGroup));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "OrganisationUnitOrganisationUnitGroupLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = OrganisationUnitDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["organisationUnit"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = OrganisationUnitGroupDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["organisationUnitGroup"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["organisationUnit", "organisationUnitGroup"], unique = true),
+        Index(value = ["organisationUnit"]),
+        Index(value = ["organisationUnitGroup"])
+    ]
+)
+internal data class OrganisationUnitOrganisationUnitGroupLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val organisationUnit: String,
+    val organisationUnitGroup: String
+)

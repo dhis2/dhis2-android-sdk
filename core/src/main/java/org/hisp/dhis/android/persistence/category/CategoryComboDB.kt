@@ -1,4 +1,4 @@
-// CREATE TABLE CategoryCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, isDefault INTEGER);
+
 
 import androidx.room.Entity
 import androidx.room.Index
@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
         Index(value = ["uid"], unique = true)
     ]
 )
-internal data class CategoryCombo(
+internal data class CategoryComboDB(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val uid: String,

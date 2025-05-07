@@ -1,1 +1,13 @@
-// CREATE TABLE TrackerJobObject (_id INTEGER PRIMARY KEY AUTOINCREMENT, trackerType TEXT NOT NULL, objectUid TEXT NOT NULL, jobUid TEXT NOT NULL, lastUpdated TEXT NOT NULL, fileResources TEXT);
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "TrackerJobObject")
+internal data class TrackerJobObjectDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val trackerType: String,
+    val objectUid: String,
+    val jobUid: String,
+    val lastUpdated: String,
+    val fileResources: String?
+)

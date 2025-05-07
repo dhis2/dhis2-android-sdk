@@ -1,1 +1,28 @@
-// CREATE TABLE VisualizationDimensionItem(_id INTEGER PRIMARY KEY AUTOINCREMENT, visualization TEXT NOT NULL, position TEXT NOT NULL, dimension TEXT NOT NULL, dimensionItem TEXT, dimensionItemType TEXT, FOREIGN KEY (visualization) REFERENCES Visualization (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "VisualizationDimensionItem",
+    foreignKeys = [
+        ForeignKey(
+            entity = VisualizationDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["visualization"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["visualization"])
+    ]
+)
+internal data class VisualizationDimensionItemDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val visualization: String,
+    val position: String,
+    val dimension: String,
+    val dimensionItem: String?,
+    val dimensionItemType: String?
+)

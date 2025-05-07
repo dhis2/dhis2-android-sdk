@@ -1,1 +1,34 @@
-// CREATE TABLE Legend (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, startValue REAL, endValue REAL, color TEXT, legendSet TEXT, FOREIGN KEY (legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "Legend",
+    foreignKeys = [
+        ForeignKey(
+            entity = LegendSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["legendSet"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["legendSet"])
+    ]
+)
+internal data class LegendDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val startValue: Double?,
+    val endValue: Double?,
+    val color: String?,
+    val legendSet: String?
+)

@@ -1,1 +1,41 @@
-// CREATE TABLE AnalyticsTeiIndicator (_id INTEGER PRIMARY KEY AUTOINCREMENT, teiSetting TEXT NOT NULL, whoComponent TEXT, programStage TEXT, indicator TEXT NOT NULL, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (indicator) REFERENCES ProgramIndicator (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (teiSetting) REFERENCES AnalyticsTeiSetting (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "AnalyticsTeiIndicator",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramStageDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programStage"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ProgramIndicatorDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["indicator"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = AnalyticsTeiSettingDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["teiSetting"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["programStage"]),
+        Index(value = ["indicator"]),
+        Index(value = ["teiSetting"])
+    ]
+)
+internal data class AnalyticsTeiIndicatorDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val teiSetting: String,
+    val whoComponent: String?,
+    val programStage: String?,
+    val indicator: String
+)

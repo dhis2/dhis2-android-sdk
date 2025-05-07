@@ -1,1 +1,35 @@
-// CREATE TABLE AnalyticsTeiWHONutritionData (_id INTEGER PRIMARY KEY AUTOINCREMENT, teiSetting TEXT NOT NULL, chartType TEXT, genderAttribute TEXT NOT NULL, genderFemale TEXT, genderMale TEXT, FOREIGN KEY (genderAttribute) REFERENCES trackedEntityAttribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (teiSetting) REFERENCES AnalyticsTeiSetting (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "AnalyticsTeiWHONutritionData",
+    foreignKeys = [
+        ForeignKey(
+            entity = TrackedEntityAttributeDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["genderAttribute"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = AnalyticsTeiSettingDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["teiSetting"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["genderAttribute"]),
+        Index(value = ["teiSetting"])
+    ]
+)
+internal data class AnalyticsTeiWHONutritionDataDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val teiSetting: String,
+    val chartType: String?,
+    val genderAttribute: String,
+    val genderFemale: String?,
+    val genderMale: String?
+)

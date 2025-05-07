@@ -1,1 +1,29 @@
-// CREATE TABLE TrackedEntityInstanceEventFilter (_id INTEGER PRIMARY KEY AUTOINCREMENT, trackedEntityInstanceFilter TEXT NOT NULL, programStage TEXT, eventStatus TEXT, periodFrom INTEGER, periodTo INTEGER, assignedUserMode TEXT, FOREIGN KEY (trackedEntityInstanceFilter) REFERENCES TrackedEntityInstanceFilter (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "TrackedEntityInstanceEventFilter",
+    foreignKeys = [
+        ForeignKey(
+            entity = TrackedEntityInstanceFilterDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["trackedEntityInstanceFilter"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["trackedEntityInstanceFilter"])
+    ]
+)
+internal data class TrackedEntityInstanceEventFilterDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val trackedEntityInstanceFilter: String,
+    val programStage: String?,
+    val eventStatus: String?,
+    val periodFrom: Int?,
+    val periodTo: Int?,
+    val assignedUserMode: String?
+)

@@ -1,1 +1,36 @@
-// CREATE TABLE ProgramStageSection (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, sortOrder INTEGER, programStage TEXT NOT NULL, desktopRenderType TEXT, mobileRenderType TEXT, description TEXT, displayDescription TEXT, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "ProgramStageSection",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramStageDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["programStage"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["uid"], unique = true),
+        Index(value = ["programStage"])
+    ]
+)
+internal data class ProgramStageSectionDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String,
+    val code: String?,
+    val name: String?,
+    val displayName: String?,
+    val created: String?,
+    val lastUpdated: String?,
+    val sortOrder: Int?,
+    val programStage: String,
+    val desktopRenderType: String?,
+    val mobileRenderType: String?,
+    val description: String?,
+    val displayDescription: String?
+)

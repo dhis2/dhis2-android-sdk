@@ -1,1 +1,33 @@
-// CREATE TABLE OrganisationUnitProgramLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, organisationUnit TEXT NOT NULL, program TEXT NOT NULL, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (organisationUnit, program));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "OrganisationUnitProgramLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = OrganisationUnitDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["organisationUnit"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["organisationUnit", "program"], unique = true),
+        Index(value = ["organisationUnit"]),
+        Index(value = ["program"])
+    ]
+)
+internal data class OrganisationUnitProgramLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val organisationUnit: String,
+    val program: String
+)

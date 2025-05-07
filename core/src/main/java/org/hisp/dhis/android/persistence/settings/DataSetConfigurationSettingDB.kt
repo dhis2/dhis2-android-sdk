@@ -1,1 +1,11 @@
-// CREATE TABLE DataSetConfigurationSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER);
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "DataSetConfigurationSetting")
+internal data class DataSetConfigurationSettingDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val uid: String?,
+    val minimumLocationAccuracy: Int?,
+    val disableManualLocation: Int?
+)

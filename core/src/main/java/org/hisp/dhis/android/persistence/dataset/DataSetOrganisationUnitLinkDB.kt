@@ -1,1 +1,33 @@
-// CREATE TABLE DataSetOrganisationUnitLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL, organisationUnit TEXT NOT NULL, FOREIGN KEY (dataSet) REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (organisationUnit, dataSet));
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "DataSetOrganisationUnitLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = DataSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataSet"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = OrganisationUnitDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["organisationUnit"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["organisationUnit", "dataSet"], unique = true),
+        Index(value = ["dataSet"]),
+        Index(value = ["organisationUnit"])
+    ]
+)
+internal data class DataSetOrganisationUnitLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val dataSet: String,
+    val organisationUnit: String
+)

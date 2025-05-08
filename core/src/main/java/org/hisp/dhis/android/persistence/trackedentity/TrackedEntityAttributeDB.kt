@@ -15,6 +15,7 @@ import org.hisp.dhis.android.persistence.option.OptionSetDB
             parentColumns = ["uid"],
             childColumns = ["optionSet"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

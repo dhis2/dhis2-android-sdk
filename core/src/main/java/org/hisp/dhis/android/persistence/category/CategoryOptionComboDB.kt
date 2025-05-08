@@ -15,6 +15,7 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

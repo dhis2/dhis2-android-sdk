@@ -16,24 +16,28 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
             parentColumns = ["uid"],
             childColumns = ["program"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = ProgramStageDB::class,
             parentColumns = ["uid"],
             childColumns = ["programStage"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = TrackedEntityAttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityAttribute"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

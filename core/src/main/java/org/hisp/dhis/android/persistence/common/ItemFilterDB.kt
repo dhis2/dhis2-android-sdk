@@ -17,18 +17,21 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilt
             parentColumns = ["uid"],
             childColumns = ["eventFilter"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = TrackedEntityInstanceFilterDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityInstanceFilter"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = ProgramStageWorkingListDB::class,
             parentColumns = ["uid"],
             childColumns = ["programStageWorkingList"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

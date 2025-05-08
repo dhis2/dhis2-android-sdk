@@ -15,12 +15,14 @@ import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOptionCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

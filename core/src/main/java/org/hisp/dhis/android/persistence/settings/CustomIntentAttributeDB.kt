@@ -14,6 +14,8 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["customIntentUid"],
             onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.SET_DEFAULT,
+            deferred = true,
         ),
     ],
     indices = [
@@ -23,7 +25,7 @@ import androidx.room.PrimaryKey
 internal data class CustomIntentAttributeDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val customIntentUid: String,
 )

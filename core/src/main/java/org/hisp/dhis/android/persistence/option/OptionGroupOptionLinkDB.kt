@@ -14,12 +14,14 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["optionGroup"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = OptionDB::class,
             parentColumns = ["uid"],
             childColumns = ["option"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

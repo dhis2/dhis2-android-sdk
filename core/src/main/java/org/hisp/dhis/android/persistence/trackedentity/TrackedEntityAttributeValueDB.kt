@@ -14,12 +14,14 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["trackedEntityAttribute"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = TrackedEntityInstanceDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityInstance"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

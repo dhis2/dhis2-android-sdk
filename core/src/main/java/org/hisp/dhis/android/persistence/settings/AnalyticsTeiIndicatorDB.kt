@@ -16,18 +16,21 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
             parentColumns = ["uid"],
             childColumns = ["programStage"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = ProgramIndicatorDB::class,
             parentColumns = ["uid"],
             childColumns = ["indicator"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = AnalyticsTeiSettingDB::class,
             parentColumns = ["uid"],
             childColumns = ["teiSetting"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

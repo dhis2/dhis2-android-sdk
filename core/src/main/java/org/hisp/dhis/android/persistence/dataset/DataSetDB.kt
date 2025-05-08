@@ -15,6 +15,7 @@ import org.hisp.dhis.android.persistence.category.CategoryComboDB
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

@@ -15,12 +15,14 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = IndicatorDB::class,
             parentColumns = ["uid"],
             childColumns = ["indicator"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

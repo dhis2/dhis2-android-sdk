@@ -15,6 +15,7 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
             parentColumns = ["uid"],
             childColumns = ["uid"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

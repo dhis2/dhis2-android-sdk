@@ -16,18 +16,21 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
             parentColumns = ["uid"],
             childColumns = ["section"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = DataElementOperandDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElementOperand"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryOptionCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

@@ -14,10 +14,10 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["programIndicator"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [
-        Index(value = ["uid"], unique = true),
         Index(value = ["programIndicator"]),
     ],
 )
@@ -25,13 +25,9 @@ internal data class AnalyticsPeriodBoundaryDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int = 0,
-    val uid: String,
-    val analyticsPeriodBoundaryType: String?,
-    val boundaryTarget: String?,
     val programIndicator: String,
-    val eventDate: String?,
-    val enrollmentDate: String?,
-    val incidentDate: String?,
-    val created: String?,
-    val lastUpdated: String?,
+    val boundaryTarget: String?,
+    val analyticsPeriodBoundaryType: String?,
+    val offsetPeriods: Int?,
+    val offsetPeriodType: String?,
 )

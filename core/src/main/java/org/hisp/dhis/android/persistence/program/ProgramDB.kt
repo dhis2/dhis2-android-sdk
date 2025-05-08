@@ -16,12 +16,14 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
             parentColumns = ["uid"],
             childColumns = ["trackedEntityType"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = CategoryComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

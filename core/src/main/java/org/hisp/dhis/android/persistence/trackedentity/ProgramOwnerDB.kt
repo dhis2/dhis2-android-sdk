@@ -16,18 +16,21 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
             parentColumns = ["uid"],
             childColumns = ["program"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = TrackedEntityInstanceDB::class,
             parentColumns = ["uid"],
             childColumns = ["trackedEntityInstance"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["ownerOrgUnit"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

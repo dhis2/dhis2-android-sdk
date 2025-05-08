@@ -14,12 +14,14 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["category"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = CategoryComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

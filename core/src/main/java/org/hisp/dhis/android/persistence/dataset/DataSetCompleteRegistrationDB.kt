@@ -17,24 +17,28 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = PeriodDB::class,
             parentColumns = ["periodId"],
             childColumns = ["period"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["organisationUnit"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["attributeOptionCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

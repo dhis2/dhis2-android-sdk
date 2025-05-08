@@ -16,12 +16,14 @@ import org.hisp.dhis.android.persistence.option.OptionSetDB
             parentColumns = ["uid"],
             childColumns = ["optionSet"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = CategoryComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

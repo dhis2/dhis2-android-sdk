@@ -16,18 +16,21 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
             parentColumns = ["uid"],
             childColumns = ["trackedEntityInstance"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = EnrollmentDB::class,
             parentColumns = ["uid"],
             childColumns = ["enrollment"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = EventDB::class,
             parentColumns = ["uid"],
             childColumns = ["event"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
 )

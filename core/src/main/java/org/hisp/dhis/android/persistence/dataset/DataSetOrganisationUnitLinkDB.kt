@@ -15,12 +15,14 @@ import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = OrganisationUnitDB::class,
             parentColumns = ["uid"],
             childColumns = ["organisationUnit"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

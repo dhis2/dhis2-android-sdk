@@ -16,12 +16,14 @@ import org.hisp.dhis.android.persistence.event.EventDB
             parentColumns = ["uid"],
             childColumns = ["event"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = EnrollmentDB::class,
             parentColumns = ["uid"],
             childColumns = ["enrollment"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
 @Entity(
+    tableName = "Constant",
     indices = [
         Index(value = ["uid"], unique = true),
     ],

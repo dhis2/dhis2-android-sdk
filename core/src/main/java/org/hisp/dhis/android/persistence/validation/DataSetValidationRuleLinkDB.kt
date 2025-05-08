@@ -15,12 +15,14 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = ValidationRuleDB::class,
             parentColumns = ["uid"],
             childColumns = ["validationRule"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

@@ -15,12 +15,14 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
             parentColumns = ["uid"],
             childColumns = ["section"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
         ForeignKey(
             entity = IndicatorDB::class,
             parentColumns = ["uid"],
             childColumns = ["indicator"],
             onDelete = ForeignKey.CASCADE,
+            deferred = true,
         ),
     ],
     indices = [

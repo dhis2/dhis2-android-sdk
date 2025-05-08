@@ -1,3 +1,4 @@
+package org.hisp.dhis.android.persistence.category
 
 
 import androidx.room.ColumnInfo
@@ -5,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 
 @Entity(
     tableName = "CategoryOptionOrganisationUnitLink",

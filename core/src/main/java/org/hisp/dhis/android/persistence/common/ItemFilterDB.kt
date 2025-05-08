@@ -1,8 +1,13 @@
+package org.hisp.dhis.android.persistence.common
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.event.EventFilterDB
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListDB
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterDB
 
 @Entity(
     tableName = "ItemFilter",

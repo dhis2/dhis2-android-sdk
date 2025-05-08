@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.persistence.datastore
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index

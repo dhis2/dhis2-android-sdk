@@ -1,8 +1,12 @@
+package org.hisp.dhis.android.persistence.trackedentity
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.persistence.event.EventDB
 
 @Entity(
     tableName = "TrackedEntityDataValue",

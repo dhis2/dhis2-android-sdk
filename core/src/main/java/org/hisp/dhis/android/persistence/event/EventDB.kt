@@ -1,8 +1,15 @@
+package org.hisp.dhis.android.persistence.event
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentDB
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
+import org.hisp.dhis.android.persistence.program.ProgramDB
+import org.hisp.dhis.android.persistence.program.ProgramStageDB
 
 @Entity(
     tableName = "Event",

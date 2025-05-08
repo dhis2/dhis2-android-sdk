@@ -1,9 +1,11 @@
+package org.hisp.dhis.android.persistence.attribute
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.persistence.attribute.AttributeDB
+import org.hisp.dhis.android.persistence.program.ProgramDB
 
 @Entity(
     tableName = "ProgramAttributeValueLink",

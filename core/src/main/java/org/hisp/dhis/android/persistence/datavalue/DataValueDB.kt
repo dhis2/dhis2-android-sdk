@@ -1,8 +1,14 @@
+package org.hisp.dhis.android.persistence.datavalue
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
+import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
+import org.hisp.dhis.android.persistence.period.PeriodDB
 
 @Entity(
     tableName = "DataValue",

@@ -1,8 +1,12 @@
+package org.hisp.dhis.android.persistence.dataelement
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.category.CategoryComboDB
+import org.hisp.dhis.android.persistence.option.OptionSetDB
 
 @Entity(
     tableName = "DataElement",

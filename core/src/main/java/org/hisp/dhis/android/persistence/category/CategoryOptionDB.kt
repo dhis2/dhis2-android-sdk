@@ -1,3 +1,4 @@
+package org.hisp.dhis.android.persistence.category
 
 
 import androidx.room.ColumnInfo

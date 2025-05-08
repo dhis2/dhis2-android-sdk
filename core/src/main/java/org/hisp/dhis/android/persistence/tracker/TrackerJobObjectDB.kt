@@ -1,3 +1,5 @@
+package org.hisp.dhis.android.persistence.tracker
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

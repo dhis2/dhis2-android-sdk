@@ -75,6 +75,7 @@ import org.hisp.dhis.android.core.validation.ValidationDIModule
 import org.hisp.dhis.android.core.visualization.VisualizationDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
 import org.hisp.dhis.android.network.dependencyinjection.NetworkDIModule
+import org.hisp.dhis.android.persistence.dependencyinjection.PersistenceDIModule
 import org.koin.core.Koin
 import org.koin.dsl.koinApplication
 import org.koin.ksp.generated.module
@@ -121,6 +122,7 @@ internal object DhisAndroidSdkKoinContext {
                 OrganisationUnitDIModule().module,
                 ParserDIModule().module,
                 PeriodDIModule().module,
+                PersistenceDIModule().module,
                 ProgramDIModule().module,
                 ProgramStageWorkingListDIModule().module,
                 RelationshipDIModule().module,

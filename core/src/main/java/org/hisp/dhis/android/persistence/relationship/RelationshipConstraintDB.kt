@@ -1,8 +1,13 @@
+package org.hisp.dhis.android.persistence.relationship
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.program.ProgramDB
+import org.hisp.dhis.android.persistence.program.ProgramStageDB
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
 
 @Entity(
     tableName = "RelationshipConstraint",

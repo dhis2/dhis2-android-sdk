@@ -1,7 +1,12 @@
+package org.hisp.dhis.android.persistence.imports
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentDB
+import org.hisp.dhis.android.persistence.event.EventDB
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
 
 @Entity(
     tableName = "TrackerImportConflict",

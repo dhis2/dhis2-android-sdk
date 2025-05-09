@@ -5,8 +5,14 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionRepetitionDB.Companion.toDB
+import org.json.JSONArray
 
 @Entity(
     tableName = "TrackerVisualizationDimension",
@@ -52,4 +58,50 @@ internal data class TrackerVisualizationDimensionDB(
     val items: String?,
     val filter: String?,
     val repetition: String?,
-)
+) {
+    fun toDomain(): TrackerVisualizationDimension {
+        return TrackerVisualizationDimension.builder()
+            .trackerVisualization(trackerVisualization)
+            .position(position.let { LayoutPosition.valueOf(it) })
+            .dimension(dimension)
+            .dimensionType(dimensionType)
+            .program(ObjectWithUid.create(program))
+            .programStage(ObjectWithUid.create(programStage))
+            .items(items?.let {
+                val jsonArray = JSONArray(it)
+                (0 until jsonArray.length()).map { i ->
+                    ObjectWithUid.create(jsonArray.getString(i))
+                }
+            })
+            .filter(filter)
+            .repetition(repetition?.let {
+                KotlinxJsonParser.instance.decodeFromString<TrackerVisualizationDimensionRepetitionDB>(
+                    it,
+                ).toDomain()
+            })
+            .build()
+    }
+}
+
+internal fun TrackerVisualizationDimension.toDB(): TrackerVisualizationDimensionDB {
+    return TrackerVisualizationDimensionDB(
+        trackerVisualization = trackerVisualization()!!,
+        position = position()!!.name,
+        dimension = dimension()!!,
+        dimensionType = dimensionType(),
+        program = program()?.uid(),
+        programStage = programStage()?.uid(),
+        items = items()?.let { items ->
+            JSONArray().apply {
+                items.forEach { put(it.uid()) }
+            }.toString()
+        },
+        filter = filter(),
+        repetition = repetition()?.let {
+            KotlinxJsonParser.instance.encodeToString(
+                TrackerVisualizationDimensionRepetitionDB.serializer(),
+                it.toDB(),
+            )
+        }
+    )
+}

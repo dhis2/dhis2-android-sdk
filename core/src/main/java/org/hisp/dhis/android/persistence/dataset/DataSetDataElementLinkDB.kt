@@ -30,7 +30,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
             parentColumns = ["uid"],
             childColumns = ["categoryCombo"],
             onDelete = ForeignKey.CASCADE,
-            deferred = true
+            deferred = true,
         ),
     ],
     indices = [

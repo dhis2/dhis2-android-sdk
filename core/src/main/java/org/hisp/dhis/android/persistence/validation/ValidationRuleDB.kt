@@ -69,14 +69,14 @@ internal data class ValidationRuleDB(
                     .expression(leftSideExpression)
                     .description(leftSideDescription)
                     .missingValueStrategy(leftSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
-                    .build()
+                    .build(),
             )
             .rightSide(
                 ValidationRuleExpression.builder()
                     .expression(rightSideExpression)
                     .description(rightSideDescription)
                     .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
-                    .build()
+                    .build(),
             )
             .organisationUnitLevels(IntegerArrayDB.toDomain(organisationUnitLevels))
             .build()
@@ -106,6 +106,6 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         rightSideExpression = rightSide().expression(),
         rightSideDescription = rightSide().description(),
         rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
-        organisationUnitLevels = IntegerArrayDB.toDB(organisationUnitLevels())
+        organisationUnitLevels = IntegerArrayDB.toDB(organisationUnitLevels()),
     )
 }

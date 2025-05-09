@@ -56,4 +56,3 @@ internal fun InternalStockUseCase.toDB(): StockUseCaseDB {
         stockOnHand = stockOnHand(),
     )
 }
-

@@ -101,4 +101,3 @@ internal fun TrackerVisualization.toDB(): TrackerVisualizationDB {
         trackedEntityType = this.trackedEntityType()?.uid(),
     )
 }
-

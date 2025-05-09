@@ -49,11 +49,11 @@ internal object IntegerArrayDB {
     fun toDB(value: List<Int>?): String {
         try {
             return KotlinxJsonParser.instance.encodeToString(
-                ListSerializer(Int.serializer()), value ?: emptyList()
+                ListSerializer(Int.serializer()),
+                value ?: emptyList(),
             )
         } catch (e: SerializationException) {
             throw SerializationException("Couldn't serialize integer array")
         }
     }
-
 }

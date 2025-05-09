@@ -58,4 +58,3 @@ internal fun InternalStockUseCaseTransaction.toDB(): StockUseCaseTransactionDB {
         stockCount = stockCount(),
     )
 }
-

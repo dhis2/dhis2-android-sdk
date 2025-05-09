@@ -53,5 +53,3 @@ internal fun UserOrganisationUnitLink.toDB(): UserOrganisationUnitDB {
         userAssigned = userAssigned(),
     )
 }
-
-

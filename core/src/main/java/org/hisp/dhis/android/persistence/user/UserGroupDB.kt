@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.user.Authority
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -48,5 +47,3 @@ internal fun UserGroup.toDB(): UserGroupDB {
         lastUpdated = lastUpdated().dateFormat(),
     )
 }
-
-

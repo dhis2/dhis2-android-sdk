@@ -50,6 +50,6 @@ internal fun VisualizationDimensionItem.toDB(): VisualizationDimensionItemDB {
         position = position()!!.name,
         dimension = dimension()!!,
         dimensionItem = dimensionItem(),
-        dimensionItemType = dimensionItemType()
+        dimensionItemType = dimensionItemType(),
     )
 }

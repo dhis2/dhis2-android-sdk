@@ -45,6 +45,5 @@ internal fun UserRole.toDB(): UserRoleDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-
-        )
+    )
 }

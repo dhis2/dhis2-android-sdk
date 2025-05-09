@@ -103,7 +103,9 @@ internal data class VisualizationDB(
                         .set(legendSetId?.let { ObjectWithUid.create(it) })
                         .strategy(legendStrategy?.let { LegendStrategy.valueOf(it) })
                         .build()
-                } else null
+                } else {
+                    null
+                },
             )
             .displayDensity(displayDensity?.let { DisplayDensity.valueOf(it) })
             .digitGroupSeparator(digitGroupSeparator?.let { DigitGroupSeparator.valueOf(it) })

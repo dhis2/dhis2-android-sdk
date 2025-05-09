@@ -89,5 +89,3 @@ internal fun User.toDB(): UserDB {
         username = username(),
     )
 }
-
-

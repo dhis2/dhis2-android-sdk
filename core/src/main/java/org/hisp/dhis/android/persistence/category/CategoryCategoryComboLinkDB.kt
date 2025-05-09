@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "CategoryCategoryComboLink",
@@ -37,4 +39,24 @@ internal data class CategoryCategoryComboLinkDB(
     val category: String,
     val categoryCombo: String,
     val sortOrder: Int?,
-)
+) : EntityDB<CategoryCategoryComboLink> {
+
+    override fun toDomain(): CategoryCategoryComboLink {
+        return CategoryCategoryComboLink.builder()
+            .id(id.toLong())
+            .category(category)
+            .categoryCombo(categoryCombo)
+            .sortOrder(sortOrder)
+            .build()
+    }
+
+    companion object {
+        fun CategoryCategoryComboLink.toDB(): CategoryCategoryComboLinkDB {
+            return CategoryCategoryComboLinkDB(
+                category = category()!!,
+                categoryCombo = categoryCombo()!!,
+                sortOrder = sortOrder(),
+            )
+        }
+    }
+}

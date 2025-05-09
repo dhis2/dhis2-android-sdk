@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "CategoryOptionComboCategoryOptionLink",
@@ -36,4 +38,22 @@ internal data class CategoryOptionComboCategoryOptionLinkDB(
     val id: Int? = 0,
     val categoryOptionCombo: String,
     val categoryOption: String,
-)
+) : EntityDB<CategoryOptionComboCategoryOptionLink> {
+
+    override fun toDomain(): CategoryOptionComboCategoryOptionLink {
+        return CategoryOptionComboCategoryOptionLink.builder()
+            .id(id.toLong())
+            .categoryOptionCombo(categoryOptionCombo)
+            .categoryOption(categoryOption)
+            .build()
+    }
+
+    companion object {
+        fun CategoryOptionComboCategoryOptionLink.toDB(): CategoryOptionComboCategoryOptionLinkDB {
+            return CategoryOptionComboCategoryOptionLinkDB(
+                categoryOptionCombo = categoryOptionCombo()!!,
+                categoryOption = categoryOption()!!,
+            )
+        }
+    }
+}

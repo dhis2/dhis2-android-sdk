@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 
 @Entity(
     tableName = "StockUseCaseTransaction",
@@ -32,4 +33,29 @@ internal data class StockUseCaseTransactionDB(
     val stockDistributed: String?,
     val stockDiscarded: String?,
     val stockCount: String?,
-)
+) {
+    fun toDomain(): InternalStockUseCaseTransaction {
+        return InternalStockUseCaseTransaction.builder()
+            .programUid(programUid)
+            .sortOrder(sortOrder)
+            .transactionType(transactionType)
+            .distributedTo(distributedTo)
+            .stockDistributed(stockDistributed)
+            .stockDiscarded(stockDiscarded)
+            .stockCount(stockCount)
+            .build()
+    }
+}
+
+internal fun InternalStockUseCaseTransaction.toDB(): StockUseCaseTransactionDB {
+    return StockUseCaseTransactionDB(
+        programUid = programUid()!!,
+        sortOrder = sortOrder(),
+        transactionType = transactionType(),
+        distributedTo = distributedTo(),
+        stockDistributed = stockDistributed(),
+        stockDiscarded = stockDiscarded(),
+        stockCount = stockCount(),
+    )
+}
+

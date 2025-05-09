@@ -93,6 +93,7 @@ internal data class AttributeDB(
     val organisationUnitGroupSetAttribute: Boolean?,
     val optionAttribute: Boolean?,
 ) : EntityDB<Attribute>, BaseNameableObjectDB {
+
     override fun toDomain(): Attribute {
         return Attribute.builder().apply {
             applyBaseNameableFields(this@AttributeDB)
@@ -177,7 +178,7 @@ internal data class AttributeDB(
                 organisationUnitGroupAttribute = organisationUnitGroupAttribute(),
                 dataElementGroupSetAttribute = dataElementGroupSetAttribute(),
                 organisationUnitGroupSetAttribute = organisationUnitGroupSetAttribute(),
-                optionAttribute = optionAttribute()
+                optionAttribute = optionAttribute(),
             )
         }
     }

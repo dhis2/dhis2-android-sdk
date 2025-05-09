@@ -41,6 +41,7 @@ internal data class ProgramStageAttributeValueLinkDB(
     val attribute: String,
     val value: String?,
 ) : EntityDB<ProgramStageAttributeValueLink> {
+
     override fun toDomain(): ProgramStageAttributeValueLink {
         return ProgramStageAttributeValueLink.builder()
             .id(id.toLong())

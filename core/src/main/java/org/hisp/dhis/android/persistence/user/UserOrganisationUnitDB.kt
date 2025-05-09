@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 
 @Entity(
     tableName = "UserOrganisationUnit",
@@ -29,6 +30,28 @@ internal data class UserOrganisationUnitDB(
     val user: String,
     val organisationUnit: String,
     val organisationUnitScope: String,
-    val root: Int?,
-    val userAssigned: Int?,
-)
+    val root: Boolean?,
+    val userAssigned: Boolean?,
+) {
+    fun toDomain(): UserOrganisationUnitLink {
+        return UserOrganisationUnitLink.builder()
+            .user(user)
+            .organisationUnit(organisationUnit)
+            .organisationUnitScope(organisationUnitScope)
+            .root(root)
+            .userAssigned(userAssigned)
+            .build()
+    }
+}
+
+internal fun UserOrganisationUnitLink.toDB(): UserOrganisationUnitDB {
+    return UserOrganisationUnitDB(
+        user = user(),
+        organisationUnit = organisationUnit(),
+        organisationUnitScope = organisationUnitScope(),
+        root = root(),
+        userAssigned = userAssigned(),
+    )
+}
+
+

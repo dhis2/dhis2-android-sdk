@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 
 @Entity(
@@ -38,4 +40,23 @@ internal data class ProgramStageAttributeValueLinkDB(
     val programStage: String,
     val attribute: String,
     val value: String?,
-)
+) : EntityDB<ProgramStageAttributeValueLink> {
+    override fun toDomain(): ProgramStageAttributeValueLink {
+        return ProgramStageAttributeValueLink.builder()
+            .id(id.toLong())
+            .programStage(programStage)
+            .attribute(attribute)
+            .value(value)
+            .build()
+    }
+
+    companion object {
+        fun ProgramStageAttributeValueLink.toDB(): ProgramStageAttributeValueLinkDB {
+            return ProgramStageAttributeValueLinkDB(
+                programStage = programStage()!!,
+                attribute = attribute()!!,
+                value = value(),
+            )
+        }
+    }
+}

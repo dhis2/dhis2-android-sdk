@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
 @Entity(
@@ -38,4 +40,24 @@ internal data class DataElementAttributeValueLinkDB(
     val dataElement: String,
     val attribute: String,
     val value: String?,
-)
+) : EntityDB<DataElementAttributeValueLink> {
+
+    override fun toDomain(): DataElementAttributeValueLink {
+        return DataElementAttributeValueLink.builder()
+            .id(id.toLong())
+            .dataElement(dataElement)
+            .attribute(attribute)
+            .value(value)
+            .build()
+    }
+
+    companion object {
+        fun DataElementAttributeValueLink.toDB(): DataElementAttributeValueLinkDB {
+            return DataElementAttributeValueLinkDB(
+                dataElement = dataElement()!!,
+                attribute = attribute()!!,
+                value = value(),
+            )
+        }
+    }
+}

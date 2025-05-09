@@ -5,7 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.period.PeriodDB
 
@@ -50,4 +53,28 @@ internal data class DataApprovalDB(
     val period: String,
     val attributeOptionCombo: String,
     val state: String?,
-)
+) : EntityDB<DataApproval> {
+
+    override fun toDomain(): DataApproval {
+        return DataApproval.builder().apply {
+            id(id.toLong())
+            workflow(workflow)
+            organisationUnit(organisationUnit)
+            period(period)
+            attributeOptionCombo(attributeOptionCombo)
+            state?.let { state(DataApprovalState.valueOf(it)) }
+        }.build()
+    }
+
+    companion object {
+        fun DataApproval.toDB(): DataApprovalDB {
+            return DataApprovalDB(
+                workflow = workflow()!!,
+                organisationUnit = organisationUnit()!!,
+                period = period()!!,
+                attributeOptionCombo = attributeOptionCombo()!!,
+                state = state()?.name,
+            )
+        }
+    }
+}

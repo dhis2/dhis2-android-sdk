@@ -40,7 +40,7 @@ internal interface BaseIdentifiableObjectDB {
 }
 
 internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): T where
-      T : BaseIdentifiableObject.Builder<T> {
+        T : BaseIdentifiableObject.Builder<T> {
     uid(item.uid)
     code(item.code)
     name(item.name)

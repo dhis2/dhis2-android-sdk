@@ -65,7 +65,7 @@ internal data class ConstantDB(
     }
 
     companion object {
-        fun Constant.toRoom(): ConstantDB {
+        fun Constant.toDB(): ConstantDB {
             return ConstantDB(
                 uid = uid(),
                 code = code(),

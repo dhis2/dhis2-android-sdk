@@ -4,9 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -15,6 +12,7 @@ import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
+import org.hisp.dhis.android.persistence.common.IntegerArrayDB
 
 @Entity(
     tableName = "ValidationRule",
@@ -80,11 +78,7 @@ internal data class ValidationRuleDB(
                     .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
                     .build()
             )
-            .organisationUnitLevels(
-                organisationUnitLevels?.let {
-                    KotlinxJsonParser.instance.decodeFromString(ListSerializer(Int.serializer()), it)
-                } ?: emptyList()
-            )
+            .organisationUnitLevels(IntegerArrayDB.toDomain(organisationUnitLevels))
             .build()
     }
 }
@@ -112,9 +106,6 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         rightSideExpression = rightSide().expression(),
         rightSideDescription = rightSide().description(),
         rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
-        organisationUnitLevels = KotlinxJsonParser.instance.encodeToString(
-            ListSerializer(Int.serializer()),
-            organisationUnitLevels() ?: emptyList()
-        )
+        organisationUnitLevels = IntegerArrayDB.toDB(organisationUnitLevels())
     )
 }

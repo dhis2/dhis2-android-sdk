@@ -52,7 +52,7 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
 internal data class DataSetCompleteRegistrationDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val period: String,
     val dataSet: String,
     val organisationUnit: String,

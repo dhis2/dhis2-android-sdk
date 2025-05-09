@@ -25,7 +25,7 @@ import androidx.room.PrimaryKey
 internal data class RelationshipDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val name: String?,
     val created: String?,

@@ -33,7 +33,7 @@ import androidx.room.PrimaryKey
 internal data class TrackedEntityAttributeValueDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val created: String?,
     val lastUpdated: String?,
     val value: String?,

@@ -44,7 +44,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
 internal data class RelationshipConstraintDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val relationshipType: String,
     val constraintType: String,
     val relationshipEntity: String?,

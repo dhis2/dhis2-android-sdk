@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 internal data class DataValueConflictDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val conflict: String?,
     val value: String?,
     val attributeOptionCombo: String?,

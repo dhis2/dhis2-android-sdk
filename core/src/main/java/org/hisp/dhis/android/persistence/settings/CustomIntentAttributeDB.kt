@@ -14,7 +14,6 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["customIntentUid"],
             onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.SET_DEFAULT,
             deferred = true,
         ),
     ],

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
 internal data class IndicatorLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val indicator: String,
     val legendSet: String,
     val sortOrder: Int?,

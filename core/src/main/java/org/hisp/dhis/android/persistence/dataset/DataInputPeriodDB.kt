@@ -24,7 +24,7 @@ import androidx.room.PrimaryKey
 internal data class DataInputPeriodDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val dataSet: String,
     val period: String,
     val openingDate: String?,

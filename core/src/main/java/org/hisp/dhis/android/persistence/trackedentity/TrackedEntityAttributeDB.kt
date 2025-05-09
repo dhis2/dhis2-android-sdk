@@ -26,7 +26,7 @@ import org.hisp.dhis.android.persistence.option.OptionSetDB
 internal data class TrackedEntityAttributeDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val code: String?,
     val name: String?,

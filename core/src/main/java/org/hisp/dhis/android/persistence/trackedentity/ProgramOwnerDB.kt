@@ -43,7 +43,7 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
 internal data class ProgramOwnerDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val program: String,
     val trackedEntityInstance: String,
     val ownerOrgUnit: String,

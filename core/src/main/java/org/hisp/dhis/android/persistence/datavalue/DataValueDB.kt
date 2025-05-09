@@ -64,7 +64,7 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
 internal data class DataValueDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val dataElement: String,
     val period: String,
     val organisationUnit: String,

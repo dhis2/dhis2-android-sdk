@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
 internal data class SectionIndicatorLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val section: String,
     val indicator: String,
 )

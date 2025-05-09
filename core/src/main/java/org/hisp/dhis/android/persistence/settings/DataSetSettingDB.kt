@@ -25,7 +25,7 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
 internal data class DataSetSettingDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String?,
     val name: String?,
     val lastUpdated: String?,

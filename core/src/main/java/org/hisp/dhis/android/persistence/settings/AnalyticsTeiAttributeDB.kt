@@ -15,14 +15,14 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
             parentColumns = ["uid"],
             childColumns = ["attribute"],
             onDelete = ForeignKey.CASCADE,
-deferred = true,
+            deferred = true,
         ),
         ForeignKey(
             entity = AnalyticsTeiSettingDB::class,
             parentColumns = ["uid"],
             childColumns = ["teiSetting"],
             onDelete = ForeignKey.CASCADE,
-deferred = true,
+            deferred = true,
         ),
     ],
     indices = [
@@ -33,7 +33,7 @@ deferred = true,
 internal data class AnalyticsTeiAttributeDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val teiSetting: String,
     val whoComponent: String?,
     val attribute: String,

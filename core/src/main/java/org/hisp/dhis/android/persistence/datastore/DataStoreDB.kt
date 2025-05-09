@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
 internal data class DataStoreDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val namespace: String,
     val key: String,
     val value: String?,

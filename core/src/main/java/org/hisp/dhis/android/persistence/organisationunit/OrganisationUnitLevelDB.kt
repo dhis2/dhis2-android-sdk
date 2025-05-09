@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
 internal data class OrganisationUnitLevelDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val code: String?,
     val name: String?,

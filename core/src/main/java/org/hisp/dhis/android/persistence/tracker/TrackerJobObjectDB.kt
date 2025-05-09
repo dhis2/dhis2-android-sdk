@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 internal data class TrackerJobObjectDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val trackerType: String,
     val objectUid: String,
     val jobUid: String,

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 internal data class TrackedEntityInstanceDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val created: String?,
     val lastUpdated: String?,

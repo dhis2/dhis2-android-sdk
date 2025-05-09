@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 internal data class ResourceDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val resourceType: String,
     val lastSynced: String?,
 )

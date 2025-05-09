@@ -43,7 +43,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilt
 internal data class ItemFilterDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val eventFilter: String?,
     val dataItem: String?,
     val trackedEntityInstanceFilter: String?,

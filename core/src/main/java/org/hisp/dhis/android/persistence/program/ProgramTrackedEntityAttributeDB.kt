@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
 internal data class ProgramTrackedEntityAttributeDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val code: String?,
     val name: String?,

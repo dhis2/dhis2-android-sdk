@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 internal data class DataElementAttributeValueLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val dataElement: String,
     val attribute: String,
     val value: String?,

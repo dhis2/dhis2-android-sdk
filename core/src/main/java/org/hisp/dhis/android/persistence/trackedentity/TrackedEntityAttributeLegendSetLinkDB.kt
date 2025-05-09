@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.legendset.LegendSetDB
 internal data class TrackedEntityAttributeLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val trackedEntityAttribute: String,
     val legendSet: String,
     val sortOrder: Int?,

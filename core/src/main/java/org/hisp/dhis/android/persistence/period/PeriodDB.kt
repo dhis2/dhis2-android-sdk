@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
 internal data class PeriodDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val periodId: String?,
     val periodType: String?,
     val startDate: String?,

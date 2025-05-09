@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
 internal data class DataSetValidationRuleLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val dataSet: String,
     val validationRule: String,
 )

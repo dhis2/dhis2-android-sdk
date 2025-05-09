@@ -33,7 +33,7 @@ import androidx.room.PrimaryKey
 internal data class CategoryCategoryOptionLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val category: String,
     val categoryOption: String,
     val sortOrder: Int?,

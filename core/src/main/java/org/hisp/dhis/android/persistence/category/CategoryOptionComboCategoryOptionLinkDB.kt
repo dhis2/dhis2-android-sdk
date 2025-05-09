@@ -34,7 +34,7 @@ import androidx.room.PrimaryKey
 internal data class CategoryOptionComboCategoryOptionLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val categoryOptionCombo: String,
     val categoryOption: String,
 )

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.program.ProgramIndicatorDB
 internal data class ProgramIndicatorLegendSetLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val programIndicator: String,
     val legendSet: String,
     val sortOrder: Int?,

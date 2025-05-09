@@ -15,14 +15,14 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
             parentColumns = ["uid"],
             childColumns = ["programStage"],
             onDelete = ForeignKey.CASCADE,
-deferred = true,
+            deferred = true,
         ),
         ForeignKey(
             entity = DataElementDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataElement"],
             onDelete = ForeignKey.CASCADE,
-deferred = true,
+            deferred = true,
         ),
     ],
     indices = [
@@ -34,7 +34,7 @@ deferred = true,
 internal data class ProgramStageDataElementDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val uid: String,
     val code: String?,
     val name: String?,

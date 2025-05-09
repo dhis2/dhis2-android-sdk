@@ -33,7 +33,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
 internal data class AnalyticsTeiWHONutritionDataDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val teiSetting: String,
     val chartType: String?,
     val genderAttribute: String,

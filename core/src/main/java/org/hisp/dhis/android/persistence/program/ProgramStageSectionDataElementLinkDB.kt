@@ -33,7 +33,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 internal data class ProgramStageSectionDataElementLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val programStageSection: String,
     val dataElement: String,
     val sortOrder: Int,

@@ -25,7 +25,7 @@ import androidx.room.PrimaryKey
 internal data class UserOrganisationUnitDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val user: String,
     val organisationUnit: String,
     val organisationUnitScope: String,

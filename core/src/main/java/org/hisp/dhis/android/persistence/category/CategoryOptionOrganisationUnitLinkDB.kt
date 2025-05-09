@@ -35,7 +35,7 @@ import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 internal data class CategoryOptionOrganisationUnitLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val categoryOption: String,
     val organisationUnit: String?,
     val restriction: String?,

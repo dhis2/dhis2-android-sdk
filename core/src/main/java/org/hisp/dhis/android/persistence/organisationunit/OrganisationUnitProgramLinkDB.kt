@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
 internal data class OrganisationUnitProgramLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val organisationUnit: String,
     val program: String,
 )

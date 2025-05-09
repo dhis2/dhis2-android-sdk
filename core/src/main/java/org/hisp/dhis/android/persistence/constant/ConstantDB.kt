@@ -47,21 +47,20 @@ import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 internal data class ConstantDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     override val uid: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
-    val value: Double?,
+    val value: String?,
 ) : EntityDB<Constant>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): Constant {
         return Constant.builder()
             .applyBaseIdentifiableFields(this)
-            .value(value)
+            .value(value?.toDoubleOrNull())
             .build()
     }
 
@@ -74,8 +73,7 @@ internal data class ConstantDB(
                 displayName = displayName(),
                 created = created().dateFormat(),
                 lastUpdated = lastUpdated().dateFormat(),
-                deleted = deleted(),
-                value = value(),
+                value = value().toString(),
             )
         }
     }

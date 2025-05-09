@@ -35,7 +35,7 @@ import org.hisp.dhis.android.persistence.event.EventDB
 internal data class NoteDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int = 0,
+    val id: Int? = 0,
     val noteType: String?,
     val event: String?,
     val enrollment: String?,

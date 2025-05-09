@@ -29,24 +29,24 @@
 package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportDB
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 
 @Serializable
-internal data class DatabaseAccountImportDBDAO(
+internal data class DatabaseAccountImportDB(
     val status: String,
     val protectedDbName: String,
 ) {
-    fun toDomain(): DatabaseAccountImportDB {
-        return DatabaseAccountImportDB.builder()
+    fun toDomain(): DatabaseAccountImport {
+        return DatabaseAccountImport.builder()
             .status(DatabaseAccountImportStatus.valueOf(status))
             .protectedDbName(protectedDbName)
             .build()
     }
 
     companion object {
-        fun DatabaseAccountImportDB.toDB(): DatabaseAccountImportDBDAO {
-            return DatabaseAccountImportDBDAO(
+        fun DatabaseAccountImport.toDB(): DatabaseAccountImportDB {
+            return DatabaseAccountImportDB(
                 status = this.status().name,
                 protectedDbName = this.protectedDbName(),
             )

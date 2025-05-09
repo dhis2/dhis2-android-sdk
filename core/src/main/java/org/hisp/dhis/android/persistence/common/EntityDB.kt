@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common
 
-internal interface EntityDB<D> {
+internal fun interface EntityDB<D> {
     fun toDomain(): D
 }

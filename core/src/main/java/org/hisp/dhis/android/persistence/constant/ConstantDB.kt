@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.persistence.constant
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.util.dateFormat
@@ -36,23 +38,29 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
-@Entity
+@Entity(
+    tableName = "Constant",
+    indices = [
+        Index(value = ["uid"], unique = true),
+    ],
+)
 internal data class ConstantDB(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int? = 0,
     override val uid: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
-    val value: Double?,
+    val value: String?,
 ) : EntityDB<Constant>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): Constant {
         return Constant.builder()
             .applyBaseIdentifiableFields(this)
-            .value(value)
+            .value(value?.toDoubleOrNull())
             .build()
     }
 
@@ -65,8 +73,7 @@ internal data class ConstantDB(
                 displayName = displayName(),
                 created = created().dateFormat(),
                 lastUpdated = lastUpdated().dateFormat(),
-                deleted = deleted(),
-                value = value(),
+                value = value().toString(),
             )
         }
     }

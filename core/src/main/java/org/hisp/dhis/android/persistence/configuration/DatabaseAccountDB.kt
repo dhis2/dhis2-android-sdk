@@ -31,7 +31,7 @@ package org.hisp.dhis.android.persistence.configuration
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.persistence.configuration.DatabaseAccountImportDBDAO.Companion.toDB
+import org.hisp.dhis.android.persistence.configuration.DatabaseAccountImportDB.Companion.toDB
 
 @Serializable
 internal data class DatabaseAccountDB(
@@ -41,7 +41,7 @@ internal data class DatabaseAccountDB(
     val databaseCreationDate: String,
     val encrypted: Boolean,
     val syncState: String?,
-    val importDB: DatabaseAccountImportDBDAO?,
+    val importDB: DatabaseAccountImportDB?,
 ) {
     fun toDomain(): DatabaseAccount {
         return DatabaseAccount.builder()

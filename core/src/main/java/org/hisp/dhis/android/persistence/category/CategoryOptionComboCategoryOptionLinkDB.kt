@@ -42,7 +42,7 @@ internal data class CategoryOptionComboCategoryOptionLinkDB(
 
     override fun toDomain(): CategoryOptionComboCategoryOptionLink {
         return CategoryOptionComboCategoryOptionLink.builder()
-            .id(id.toLong())
+            .id(id?.toLong())
             .categoryOptionCombo(categoryOptionCombo)
             .categoryOption(categoryOption)
             .build()

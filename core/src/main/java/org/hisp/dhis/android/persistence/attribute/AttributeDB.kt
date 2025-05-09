@@ -97,7 +97,7 @@ internal data class AttributeDB(
     override fun toDomain(): Attribute {
         return Attribute.builder().apply {
             applyBaseNameableFields(this@AttributeDB)
-            id(id.toLong())
+            id(id?.toLong())
             valueType?.let { valueType(ValueType.valueOf(it)) }
             unique(uniqueProperty)
             mandatory(mandatory)

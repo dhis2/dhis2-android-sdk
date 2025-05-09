@@ -43,7 +43,7 @@ internal data class CategoryCategoryOptionLinkDB(
 
     override fun toDomain(): CategoryCategoryOptionLink {
         return CategoryCategoryOptionLink.builder()
-            .id(id.toLong())
+            .id(id?.toLong())
             .category(category)
             .categoryOption(categoryOption)
             .sortOrder(sortOrder)

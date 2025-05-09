@@ -43,7 +43,7 @@ internal data class CategoryCategoryComboLinkDB(
 
     override fun toDomain(): CategoryCategoryComboLink {
         return CategoryCategoryComboLink.builder()
-            .id(id.toLong())
+            .id(id?.toLong())
             .category(category)
             .categoryCombo(categoryCombo)
             .sortOrder(sortOrder)

@@ -44,7 +44,7 @@ internal data class ProgramAttributeValueLinkDB(
 
     override fun toDomain(): ProgramAttributeValueLink {
         return ProgramAttributeValueLink.builder()
-            .id(id.toLong())
+            .id(id?.toLong())
             .program(program)
             .attribute(attribute)
             .value(value)

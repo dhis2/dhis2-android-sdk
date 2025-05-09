@@ -57,7 +57,7 @@ internal data class DataApprovalDB(
 
     override fun toDomain(): DataApproval {
         return DataApproval.builder().apply {
-            id(id.toLong())
+            id(id?.toLong())
             workflow(workflow)
             organisationUnit(organisationUnit)
             period(period)

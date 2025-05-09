@@ -45,7 +45,7 @@ internal data class DataElementOperandDB(
 
     override fun toDomain(): DataElementOperand {
         return DataElementOperand.builder().apply {
-            id(id.toLong())
+            id(id?.toLong())
             uid(uid)
             deleted(false)
             dataElement?.let { dataElement(ObjectWithUidDB(it).toDomain()) }

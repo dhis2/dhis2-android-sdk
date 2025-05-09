@@ -44,7 +44,7 @@ internal data class DataElementAttributeValueLinkDB(
 
     override fun toDomain(): DataElementAttributeValueLink {
         return DataElementAttributeValueLink.builder()
-            .id(id.toLong())
+            .id(id?.toLong())
             .dataElement(dataElement)
             .attribute(attribute)
             .value(value)

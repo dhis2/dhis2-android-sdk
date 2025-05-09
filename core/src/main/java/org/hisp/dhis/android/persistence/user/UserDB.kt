@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
 
 @Entity(
     tableName = "User",
@@ -35,4 +38,56 @@ internal data class UserDB(
     val phoneNumber: String?,
     val nationality: String?,
     val username: String?,
-)
+) {
+    fun toDomain(): User {
+        return User.builder()
+            .uid(uid)
+            .code(code)
+            .name(name)
+            .displayName(displayName)
+            .created(created.toJavaDate())
+            .lastUpdated(lastUpdated.toJavaDate())
+            .birthday(birthday)
+            .education(education)
+            .gender(gender)
+            .jobTitle(jobTitle)
+            .surname(surname)
+            .firstName(firstName)
+            .introduction(introduction)
+            .employer(employer)
+            .interests(interests)
+            .languages(languages)
+            .email(email)
+            .phoneNumber(phoneNumber)
+            .nationality(nationality)
+            .username(username)
+            .build()
+    }
+}
+
+internal fun User.toDB(): UserDB {
+    return UserDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        birthday = birthday(),
+        education = education(),
+        gender = gender(),
+        jobTitle = jobTitle(),
+        surname = surname(),
+        firstName = firstName(),
+        introduction = introduction(),
+        employer = employer(),
+        interests = interests(),
+        languages = languages(),
+        email = email(),
+        phoneNumber = phoneNumber(),
+        nationality = nationality(),
+        username = username(),
+    )
+}
+
+

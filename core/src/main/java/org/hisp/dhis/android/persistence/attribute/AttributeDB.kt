@@ -32,6 +32,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.attribute.Attribute
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 
 @Entity(
     tableName = "Attribute",
@@ -43,47 +49,136 @@ internal data class AttributeDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val uid: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: String?,
-    val lastUpdated: String?,
-    val shortName: String?,
-    val displayShortName: String?,
-    val description: String?,
-    val displayDescription: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
     val valueType: String?,
-    val uniqueProperty: Int?,
-    val mandatory: Int?,
-    val indicatorAttribute: Int?,
-    val indicatorGroupAttribute: Int?,
-    val userGroupAttribute: Int?,
-    val dataElementAttribute: Int?,
-    val constantAttribute: Int?,
-    val categoryOptionAttribute: Int?,
-    val optionSetAttribute: Int?,
-    val sqlViewAttribute: Int?,
-    val legendSetAttribute: Int?,
-    val trackedEntityAttributeAttribute: Int?,
-    val organisationUnitAttribute: Int?,
-    val dataSetAttribute: Int?,
-    val documentAttribute: Int?,
-    val validationRuleGroupAttribute: Int?,
-    val dataElementGroupAttribute: Int?,
-    val sectionAttribute: Int?,
-    val trackedEntityTypeAttribute: Int?,
-    val userAttribute: Int?,
-    val categoryOptionGroupAttribute: Int?,
-    val programStageAttribute: Int?,
-    val programAttribute: Int?,
-    val categoryAttribute: Int?,
-    val categoryOptionComboAttribute: Int?,
-    val categoryOptionGroupSetAttribute: Int?,
-    val validationRuleAttribute: Int?,
-    val programIndicatorAttribute: Int?,
-    val organisationUnitGroupAttribute: Int?,
-    val dataElementGroupSetAttribute: Int?,
-    val organisationUnitGroupSetAttribute: Int?,
-    val optionAttribute: Int?,
-)
+    val uniqueProperty: Boolean?,
+    val mandatory: Boolean?,
+    val indicatorAttribute: Boolean?,
+    val indicatorGroupAttribute: Boolean?,
+    val userGroupAttribute: Boolean?,
+    val dataElementAttribute: Boolean?,
+    val constantAttribute: Boolean?,
+    val categoryOptionAttribute: Boolean?,
+    val optionSetAttribute: Boolean?,
+    val sqlViewAttribute: Boolean?,
+    val legendSetAttribute: Boolean?,
+    val trackedEntityAttributeAttribute: Boolean?,
+    val organisationUnitAttribute: Boolean?,
+    val dataSetAttribute: Boolean?,
+    val documentAttribute: Boolean?,
+    val validationRuleGroupAttribute: Boolean?,
+    val dataElementGroupAttribute: Boolean?,
+    val sectionAttribute: Boolean?,
+    val trackedEntityTypeAttribute: Boolean?,
+    val userAttribute: Boolean?,
+    val categoryOptionGroupAttribute: Boolean?,
+    val programStageAttribute: Boolean?,
+    val programAttribute: Boolean?,
+    val categoryAttribute: Boolean?,
+    val categoryOptionComboAttribute: Boolean?,
+    val categoryOptionGroupSetAttribute: Boolean?,
+    val validationRuleAttribute: Boolean?,
+    val programIndicatorAttribute: Boolean?,
+    val organisationUnitGroupAttribute: Boolean?,
+    val dataElementGroupSetAttribute: Boolean?,
+    val organisationUnitGroupSetAttribute: Boolean?,
+    val optionAttribute: Boolean?,
+) : EntityDB<Attribute>, BaseNameableObjectDB {
+    override fun toDomain(): Attribute {
+        return Attribute.builder().apply {
+            applyBaseNameableFields(this@AttributeDB)
+            valueType?.let { valueType(ValueType.valueOf(it)) }
+            unique(uniqueProperty)
+            mandatory(mandatory)
+            indicatorAttribute(indicatorAttribute)
+            indicatorGroupAttribute(indicatorGroupAttribute)
+            userGroupAttribute(userGroupAttribute)
+            dataElementAttribute(dataElementAttribute)
+            constantAttribute(constantAttribute)
+            categoryOptionAttribute(categoryOptionAttribute)
+            optionSetAttribute(optionSetAttribute)
+            sqlViewAttribute(sqlViewAttribute)
+            legendSetAttribute(legendSetAttribute)
+            trackedEntityAttributeAttribute(trackedEntityAttributeAttribute)
+            organisationUnitAttribute(organisationUnitAttribute)
+            dataSetAttribute(dataSetAttribute)
+            documentAttribute(documentAttribute)
+            validationRuleGroupAttribute(validationRuleGroupAttribute)
+            dataElementGroupAttribute(dataElementGroupAttribute)
+            sectionAttribute(sectionAttribute)
+            trackedEntityTypeAttribute(trackedEntityTypeAttribute)
+            userAttribute(userAttribute)
+            categoryOptionGroupAttribute(categoryOptionGroupAttribute)
+            programStageAttribute(programStageAttribute)
+            programAttribute(programAttribute)
+            categoryAttribute(categoryAttribute)
+            categoryOptionComboAttribute(categoryOptionComboAttribute)
+            categoryOptionGroupSetAttribute(categoryOptionGroupSetAttribute)
+            validationRuleAttribute(validationRuleAttribute)
+            programIndicatorAttribute(programIndicatorAttribute)
+            organisationUnitGroupAttribute(organisationUnitGroupAttribute)
+            dataElementGroupSetAttribute(dataElementGroupSetAttribute)
+            organisationUnitGroupSetAttribute(organisationUnitGroupSetAttribute)
+            optionAttribute(optionAttribute)
+        }.build()
+    }
+
+    companion object {
+        fun Attribute.toDB(): AttributeDB {
+            return AttributeDB(
+                uid = uid(),
+                code = code(),
+                name = name(),
+                displayName = displayName(),
+                created = created().dateFormat(),
+                lastUpdated = lastUpdated().dateFormat(),
+                shortName = shortName(),
+                displayShortName = displayShortName(),
+                description = description(),
+                displayDescription = displayDescription(),
+                valueType = valueType()?.name,
+                uniqueProperty = unique(),
+                mandatory = mandatory(),
+                indicatorAttribute = indicatorAttribute(),
+                indicatorGroupAttribute = indicatorGroupAttribute(),
+                userGroupAttribute = userGroupAttribute(),
+                dataElementAttribute = dataElementAttribute(),
+                constantAttribute = constantAttribute(),
+                categoryOptionAttribute = categoryOptionAttribute(),
+                optionSetAttribute = optionSetAttribute(),
+                sqlViewAttribute = sqlViewAttribute(),
+                legendSetAttribute = legendSetAttribute(),
+                trackedEntityAttributeAttribute = trackedEntityAttributeAttribute(),
+                organisationUnitAttribute = organisationUnitAttribute(),
+                dataSetAttribute = dataSetAttribute(),
+                documentAttribute = documentAttribute(),
+                validationRuleGroupAttribute = validationRuleGroupAttribute(),
+                dataElementGroupAttribute = dataElementGroupAttribute(),
+                sectionAttribute = sectionAttribute(),
+                trackedEntityTypeAttribute = trackedEntityTypeAttribute(),
+                userAttribute = userAttribute(),
+                categoryOptionGroupAttribute = categoryOptionGroupAttribute(),
+                programStageAttribute = programStageAttribute(),
+                programAttribute = programAttribute(),
+                categoryAttribute = categoryAttribute(),
+                categoryOptionComboAttribute = categoryOptionComboAttribute(),
+                categoryOptionGroupSetAttribute = categoryOptionGroupSetAttribute(),
+                validationRuleAttribute = validationRuleAttribute(),
+                programIndicatorAttribute = programIndicatorAttribute(),
+                organisationUnitGroupAttribute = organisationUnitGroupAttribute(),
+                dataElementGroupSetAttribute = dataElementGroupSetAttribute(),
+                organisationUnitGroupSetAttribute = organisationUnitGroupSetAttribute(),
+                optionAttribute = optionAttribute()
+            )
+        }
+    }
+}

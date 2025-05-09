@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import android.content.Context
-import androidx.room.Room
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.persistence.db.AppDatabase
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
@@ -38,19 +35,7 @@ import org.koin.core.annotation.Singleton
 internal class DatabaseDIModule {
 
     @Singleton
-    fun roomDatabase(app: Context): AppDatabase {
-        return Room.databaseBuilder(
-            app,
-            AppDatabase::class.java,
-            "database-from-room-integration-should"
-        )
-            .addMigrations()
-            .build()
-    }
-
-    @Singleton
     fun databaseAdapter(adapterFactory: DatabaseAdapterFactory): DatabaseAdapter {
         return adapterFactory.newParentDatabaseAdapter()
     }
-
 }

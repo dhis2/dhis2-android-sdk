@@ -6,9 +6,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
 @Entity(
     tableName = "User",
@@ -43,29 +43,24 @@ internal data class UserDB(
 ) : EntityDB<User>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): User {
-        return User.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created.toJavaDate())
-            .lastUpdated(lastUpdated.toJavaDate())
-            .birthday(birthday)
-            .education(education)
-            .gender(gender)
-            .jobTitle(jobTitle)
-            .surname(surname)
-            .firstName(firstName)
-            .introduction(introduction)
-            .employer(employer)
-            .interests(interests)
-            .languages(languages)
-            .email(email)
-            .phoneNumber(phoneNumber)
-            .nationality(nationality)
-            .username(username)
-            .build()
+        return User.builder().apply {
+            applyBaseIdentifiableFields(this@UserDB)
+            id(id?.toLong())
+            birthday(birthday)
+            education(education)
+            gender(gender)
+            jobTitle(jobTitle)
+            surname(surname)
+            firstName(firstName)
+            introduction(introduction)
+            employer(employer)
+            interests(interests)
+            languages(languages)
+            email(email)
+            phoneNumber(phoneNumber)
+            nationality(nationality)
+            username(username)
+        }.build()
     }
 }
 

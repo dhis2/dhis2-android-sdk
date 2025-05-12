@@ -7,12 +7,12 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationType
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
@@ -68,22 +68,17 @@ internal data class TrackerVisualizationDB(
     val trackedEntityType: String?,
 ) : EntityDB<TrackerVisualization>, BaseIdentifiableObjectDB {
     override fun toDomain(): TrackerVisualization {
-        return TrackerVisualization.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created.toJavaDate())
-            .lastUpdated(lastUpdated.toJavaDate())
-            .description(description)
-            .displayDescription(displayDescription)
-            .type(type?.let { TrackerVisualizationType.valueOf(it) })
-            .outputType(outputType?.let { TrackerVisualizationOutputType.valueOf(it) })
-            .program(ObjectWithUid.create(program))
-            .programStage(ObjectWithUid.create(programStage))
-            .trackedEntityType(ObjectWithUid.create(trackedEntityType))
-            .build()
+        return TrackerVisualization.builder().apply {
+            applyBaseIdentifiableFields(this@TrackerVisualizationDB)
+            id(id?.toLong())
+            description(description)
+            displayDescription(displayDescription)
+            type(type?.let { TrackerVisualizationType.valueOf(it) })
+            outputType(outputType?.let { TrackerVisualizationOutputType.valueOf(it) })
+            program(ObjectWithUid.create(program))
+            programStage(ObjectWithUid.create(programStage))
+            trackedEntityType(ObjectWithUid.create(trackedEntityType))
+        }.build()
     }
 }
 

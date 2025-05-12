@@ -40,6 +40,7 @@ internal data class DataSetValidationRuleLinkDB(
     val dataSet: String,
     val validationRule: String,
 ) : EntityDB<DataSetValidationRuleLink> {
+
     override fun toDomain(): DataSetValidationRuleLink {
         return DataSetValidationRuleLink.builder()
             .id(id?.toLong())

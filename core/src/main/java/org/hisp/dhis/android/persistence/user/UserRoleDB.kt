@@ -6,9 +6,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
 @Entity(
     tableName = "UserRole",
@@ -29,15 +29,10 @@ internal data class UserRoleDB(
 ) : EntityDB<UserRole>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): UserRole {
-        return UserRole.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created.toJavaDate())
-            .lastUpdated(lastUpdated.toJavaDate())
-            .build()
+        return UserRole.builder().apply {
+            applyBaseIdentifiableFields(this@UserRoleDB)
+            id(id?.toLong())
+        }.build()
     }
 }
 

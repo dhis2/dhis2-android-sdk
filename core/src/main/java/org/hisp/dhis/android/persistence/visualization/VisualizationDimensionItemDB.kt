@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "VisualizationDimensionItem",
@@ -32,8 +33,8 @@ internal data class VisualizationDimensionItemDB(
     val dimension: String,
     val dimensionItem: String?,
     val dimensionItemType: String?,
-) {
-    fun toDomain(): VisualizationDimensionItem {
+) : EntityDB<VisualizationDimensionItem> {
+    override fun toDomain(): VisualizationDimensionItem {
         return VisualizationDimensionItem.builder()
             .id(id?.toLong())
             .visualization(visualization)

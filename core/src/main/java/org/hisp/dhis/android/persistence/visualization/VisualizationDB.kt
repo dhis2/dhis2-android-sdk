@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
 import org.hisp.dhis.android.core.visualization.DisplayDensity
 import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
@@ -18,6 +17,7 @@ import org.hisp.dhis.android.core.visualization.VisualizationLegend
 import org.hisp.dhis.android.core.visualization.VisualizationType
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
 @Entity(
     tableName = "Visualization",
@@ -67,38 +67,33 @@ internal data class VisualizationDB(
     val aggregationType: String?,
 ) : EntityDB<Visualization>, BaseIdentifiableObjectDB {
     override fun toDomain(): Visualization {
-        return Visualization.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created?.toJavaDate())
-            .lastUpdated(lastUpdated?.toJavaDate())
-            .description(description)
-            .displayDescription(displayDescription)
-            .displayFormName(displayFormName)
-            .title(title)
-            .displayTitle(displayTitle)
-            .subtitle(subtitle)
-            .displaySubtitle(displaySubtitle)
-            .type(type?.let { VisualizationType.valueOf(it) })
-            .hideTitle(hideTitle)
-            .hideSubtitle(hideSubtitle)
-            .hideEmptyColumns(hideEmptyColumns)
-            .hideEmptyRows(hideEmptyRows)
-            .hideEmptyRowItems(hideEmptyRowItems?.let { HideEmptyItemStrategy.valueOf(it) })
-            .hideLegend(hideLegend)
-            .showHierarchy(showHierarchy)
-            .rowTotals(rowTotals)
-            .rowSubTotals(rowSubTotals)
-            .colTotals(colTotals)
-            .colSubTotals(colSubTotals)
-            .showDimensionLabels(showDimensionLabels)
-            .percentStackedValues(percentStackedValues)
-            .noSpaceBetweenColumns(noSpaceBetweenColumns)
-            .skipRounding(skipRounding)
-            .legend(
+        return Visualization.builder().apply {
+            applyBaseIdentifiableFields(this@VisualizationDB)
+            id(id?.toLong())
+            description(description)
+            displayDescription(displayDescription)
+            displayFormName(displayFormName)
+            title(title)
+            displayTitle(displayTitle)
+            subtitle(subtitle)
+            displaySubtitle(displaySubtitle)
+            type(type?.let { VisualizationType.valueOf(it) })
+            hideTitle(hideTitle)
+            hideSubtitle(hideSubtitle)
+            hideEmptyColumns(hideEmptyColumns)
+            hideEmptyRows(hideEmptyRows)
+            hideEmptyRowItems(hideEmptyRowItems?.let { HideEmptyItemStrategy.valueOf(it) })
+            hideLegend(hideLegend)
+            showHierarchy(showHierarchy)
+            rowTotals(rowTotals)
+            rowSubTotals(rowSubTotals)
+            colTotals(colTotals)
+            colSubTotals(colSubTotals)
+            showDimensionLabels(showDimensionLabels)
+            percentStackedValues(percentStackedValues)
+            noSpaceBetweenColumns(noSpaceBetweenColumns)
+            skipRounding(skipRounding)
+            legend(
                 if (sequenceOf(legendShowKey, legendStyle, legendSetId, legendStrategy).any { it != null }) {
                     VisualizationLegend.builder()
                         .showKey(legendShowKey == "1")
@@ -110,10 +105,10 @@ internal data class VisualizationDB(
                     null
                 },
             )
-            .displayDensity(displayDensity?.let { DisplayDensity.valueOf(it) })
-            .digitGroupSeparator(digitGroupSeparator?.let { DigitGroupSeparator.valueOf(it) })
-            .aggregationType(aggregationType?.let { AggregationType.valueOf(it) })
-            .build()
+            displayDensity(displayDensity?.let { DisplayDensity.valueOf(it) })
+            digitGroupSeparator(digitGroupSeparator?.let { DigitGroupSeparator.valueOf(it) })
+            aggregationType(aggregationType?.let { AggregationType.valueOf(it) })
+        }.build()
     }
 }
 

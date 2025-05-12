@@ -6,9 +6,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
 @Entity(
     tableName = "UserGroup",
@@ -29,15 +29,10 @@ internal data class UserGroupDB(
 ) : EntityDB<UserGroup>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): UserGroup {
-        return UserGroup.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created.toJavaDate())
-            .lastUpdated(lastUpdated.toJavaDate())
-            .build()
+        return UserGroup.builder().apply {
+            applyBaseIdentifiableFields(this@UserGroupDB)
+            id(id?.toLong())
+        }.build()
     }
 }
 

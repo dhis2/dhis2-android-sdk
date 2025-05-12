@@ -6,7 +6,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression
@@ -15,6 +14,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.IntegerListDB
+import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
@@ -50,40 +50,32 @@ internal data class ValidationRuleDB(
     val rightSideMissingValueStrategy: String?,
     val organisationUnitLevels: IntegerListDB?,
 ) : EntityDB<ValidationRule>, BaseNameableObjectDB {
+
     override fun toDomain(): ValidationRule {
-        return ValidationRule.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .code(code)
-            .name(name)
-            .displayName(displayName)
-            .created(created?.toJavaDate())
-            .lastUpdated(lastUpdated?.toJavaDate())
-            .shortName(shortName)
-            .displayShortName(displayShortName)
-            .description(description)
-            .displayDescription(displayDescription)
-            .instruction(instruction)
-            .importance(importance?.let { ValidationRuleImportance.valueOf(it) })
-            .operator(operator?.let { ValidationRuleOperator.valueOf(it) })
-            .periodType(periodType?.let { PeriodType.valueOf(it) })
-            .skipFormValidation(skipFormValidation)
-            .leftSide(
+        return ValidationRule.builder().apply {
+            applyBaseNameableFields(this@ValidationRuleDB)
+            id(id?.toLong())
+            instruction(instruction)
+            importance(importance?.let { ValidationRuleImportance.valueOf(it) })
+            operator(operator?.let { ValidationRuleOperator.valueOf(it) })
+            periodType(periodType?.let { PeriodType.valueOf(it) })
+            skipFormValidation(skipFormValidation)
+            leftSide(
                 ValidationRuleExpression.builder()
                     .expression(leftSideExpression)
                     .description(leftSideDescription)
                     .missingValueStrategy(leftSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
                     .build(),
             )
-            .rightSide(
+            rightSide(
                 ValidationRuleExpression.builder()
                     .expression(rightSideExpression)
                     .description(rightSideDescription)
                     .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
                     .build(),
             )
-            .organisationUnitLevels(organisationUnitLevels?.toDomain())
-            .build()
+            organisationUnitLevels(organisationUnitLevels?.toDomain())
+        }.build()
     }
 }
 

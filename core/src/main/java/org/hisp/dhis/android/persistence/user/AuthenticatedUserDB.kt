@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.AuthenticatedUser
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "AuthenticatedUser",
@@ -28,9 +29,11 @@ internal data class AuthenticatedUserDB(
     val id: Int? = 0,
     val user: String,
     val hash: String?,
-) {
-    fun toDomain(): AuthenticatedUser {
+) : EntityDB<AuthenticatedUser> {
+
+    override fun toDomain(): AuthenticatedUser {
         return AuthenticatedUser.builder()
+            .id(id?.toLong())
             .hash(hash)
             .user(user)
             .build()

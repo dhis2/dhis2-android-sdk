@@ -5,7 +5,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.period.PeriodDB
 
@@ -60,5 +65,33 @@ internal data class DataSetCompleteRegistrationDB(
     val date: String?,
     val storedBy: String?,
     val syncState: String?,
-    val deleted: Int?,
-)
+    val deleted: Boolean?,
+) : EntityDB<DataSetCompleteRegistration> {
+
+    override fun toDomain(): DataSetCompleteRegistration {
+        return DataSetCompleteRegistration.builder().apply {
+            id(id?.toLong())
+            period(period)
+            dataSet(dataSet)
+            organisationUnit(organisationUnit)
+            attributeOptionCombo?.let { attributeOptionCombo(it) }
+            date(date?.toJavaDate())
+            storedBy(storedBy)
+            syncState?.let { syncState(State.valueOf(it)) }
+            deleted(deleted)
+        }.build()
+    }
+}
+
+internal fun DataSetCompleteRegistration.toDB(): DataSetCompleteRegistrationDB {
+    return DataSetCompleteRegistrationDB(
+        period = period()!!,
+        dataSet = dataSet()!!,
+        organisationUnit = organisationUnit()!!,
+        attributeOptionCombo = attributeOptionCombo(),
+        date = date()?.dateFormat(),
+        storedBy = storedBy(),
+        syncState = syncState()?.name,
+        deleted = deleted(),
+    )
+}

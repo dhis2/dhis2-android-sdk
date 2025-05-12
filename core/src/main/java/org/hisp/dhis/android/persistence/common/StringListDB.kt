@@ -45,6 +45,6 @@ value class StringListDB(
 
 internal fun List<String>.toDB(): StringListDB {
     return StringListDB(
-        KotlinxJsonParser.instance.encodeToString(ListSerializer(String.serializer()), this)
+        KotlinxJsonParser.instance.encodeToString(ListSerializer(String.serializer()), this),
     )
 }

@@ -5,7 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.persistence.category.CategoryComboDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
 @Entity(
@@ -47,4 +50,22 @@ internal data class DataSetDataElementLinkDB(
     val dataSet: String,
     val dataElement: String,
     val categoryCombo: String?,
-)
+) : EntityDB<DataSetElement> {
+
+    override fun toDomain(): DataSetElement {
+        return DataSetElement.builder().apply {
+            id(id?.toLong())
+            dataSet(ObjectWithUid.create(dataSet))
+            dataElement(ObjectWithUid.create(dataElement))
+            categoryCombo?.let { categoryCombo(ObjectWithUid.create(it)) }
+        }.build()
+    }
+}
+
+internal fun DataSetElement.toDB(): DataSetDataElementLinkDB {
+    return DataSetDataElementLinkDB(
+        dataSet = dataSet()!!.uid(),
+        dataElement = dataElement().uid(),
+        categoryCombo = categoryCombo()?.uid(),
+    )
+}

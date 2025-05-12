@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
 @JvmInline
 internal value class IntegerListDB(
-    val value: String
+    val value: String,
 ) {
     fun toDomain(): List<Int> {
         return if (value == "") {
@@ -56,7 +56,7 @@ internal fun <T : List<Int>> T.toDB(): IntegerListDB {
             KotlinxJsonParser.instance.encodeToString(
                 ListSerializer(Int.serializer()),
                 this,
-            )
+            ),
         )
     } catch (e: SerializationException) {
         throw SerializationException("Couldn't serialize integer array")

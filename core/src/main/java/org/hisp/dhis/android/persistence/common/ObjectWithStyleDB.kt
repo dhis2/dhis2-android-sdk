@@ -28,18 +28,20 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyle
 
-@Serializable
-internal data class ObjectWithStyleDB(
-    val color: String?,
-    val icon: String?,
-) {
-    fun toDomain(): ObjectStyle {
-        return ObjectStyle.builder()
-            .color(color)
-            .icon(icon)
-            .build()
-    }
+internal interface ObjectWithStyleDB {
+    val color: String?
+    val icon: String?
+}
+
+internal fun <O, B> B.applyStyleFields(item: ObjectWithStyleDB): B where B : ObjectWithStyle.Builder<O, B> {
+    style(
+        ObjectStyle.builder()
+            .color(item.color)
+            .icon(item.icon)
+            .build(),
+    )
+    return this
 }

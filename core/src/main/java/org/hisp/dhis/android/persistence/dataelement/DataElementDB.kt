@@ -14,6 +14,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
+import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.option.OptionSetDB
 
 @Entity(
@@ -63,13 +64,14 @@ internal data class DataElementDB(
     val optionSet: String?,
     val categoryCombo: String,
     val fieldMask: String?,
-    val color: String?,
-    val icon: String?,
-) : EntityDB<DataElement>, BaseNameableObjectDB {
+    override val color: String?,
+    override val icon: String?,
+) : EntityDB<DataElement>, BaseNameableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): DataElement {
         return DataElement.builder().apply {
             applyBaseNameableFields(this@DataElementDB)
+            applyStyleFields(this@DataElementDB)
             id(id?.toLong())
             valueType?.let { valueType(ValueType.valueOf(it)) }
             zeroIsSignificant(zeroIsSignificant)
@@ -80,7 +82,6 @@ internal data class DataElementDB(
             optionSet?.let { optionSet(ObjectWithUidDB(it).toDomain()) }
             categoryCombo(ObjectWithUidDB(categoryCombo).toDomain())
             fieldMask(fieldMask)
-            style(ObjectWithStyleDB(color, icon).toDomain())
         }.build()
     }
 }

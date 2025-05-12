@@ -69,5 +69,13 @@ internal object TrackerVisualizationSamples {
                     .build(),
             ),
         )
+        .sorting(
+            listOf(
+                TrackerVisualizationSorting.builder()
+                    .dimension("dimension")
+                    .direction("ASC")
+                    .build(),
+            ),
+        )
         .build()
 }

@@ -55,6 +55,7 @@ internal data class TrackerVisualizationDTO(
     val trackedEntityType: ObjectWithUidDTO?,
     val columns: List<TrackerVisualizationDimensionDTO> = emptyList(),
     val filters: List<TrackerVisualizationDimensionDTO> = emptyList(),
+    val sorting: List<TrackerVisualizationSortingDTO> = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): TrackerVisualization {
         return TrackerVisualization.builder().apply {
@@ -68,6 +69,7 @@ internal data class TrackerVisualizationDTO(
             trackedEntityType(trackedEntityType?.toDomain())
             columns(columns.map { it.toDomain(id, LayoutPosition.COLUMN) })
             filters(filters.map { it.toDomain(id, LayoutPosition.FILTER) })
+            sorting(sorting.map { it.toDomain() })
         }.build()
     }
 }

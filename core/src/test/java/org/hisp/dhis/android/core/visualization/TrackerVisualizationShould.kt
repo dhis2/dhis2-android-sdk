@@ -65,5 +65,9 @@ class TrackerVisualizationShould : BaseObjectKotlinxShould("visualization/tracke
         assertThat(visualization.filters()!![0].dimensionType()).isEqualTo("PERIOD")
         assertThat(visualization.filters()!![0].items()!!.size).isEqualTo(1)
         assertThat(visualization.filters()!![0].items()!![0].uid()).isEqualTo("LAST_5_YEARS")
+
+        assertThat(visualization.sorting()?.size).isEqualTo(1)
+        assertThat(visualization.sorting()!![0].dimension()).isEqualTo("w75KJ2mc4zz")
+        assertThat(visualization.sorting()!![0].direction()).isEqualTo("ASC")
     }
 }

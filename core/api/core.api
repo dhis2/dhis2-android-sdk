@@ -14901,6 +14901,7 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public abstract fun outputType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public abstract fun sorting ()Ljava/util/List;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 	public abstract fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun type ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
@@ -14917,6 +14918,7 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public abstract fun outputType (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public abstract fun sorting (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 	public abstract fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 	public abstract fun type (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 }
@@ -15009,6 +15011,21 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 	public static fun values ()[Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
 }
 
+public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	public abstract fun dimension ()Ljava/lang/String;
+	public abstract fun direction ()Ljava/lang/String;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
+	public abstract fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	public abstract fun direction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+}
+
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -15021,6 +15038,7 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 	public static final field OUTPUT_TYPE Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
+	public static final field SORTING Ljava/lang/String;
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public fun <init> ()V

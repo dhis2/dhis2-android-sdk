@@ -52,5 +52,11 @@
   ],
   "displayName": "Child line list",
   "displayDescription": "Child line list description",
-  "id": "s85urBIkN0z"
+  "id": "s85urBIkN0z",
+  "sorting": [
+    {
+      "dimension": "w75KJ2mc4zz",
+      "direction": "ASC"
+    }
+  ]
 }

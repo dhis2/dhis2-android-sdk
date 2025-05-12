@@ -50,14 +50,12 @@ internal data class CategoryOptionOrganisationUnitLinkDB(
             .restriction(restriction)
             .build()
     }
+}
 
-    companion object {
-        fun CategoryOptionOrganisationUnitLink.toDB(): CategoryOptionOrganisationUnitLinkDB {
-            return CategoryOptionOrganisationUnitLinkDB(
-                categoryOption = categoryOption(),
-                organisationUnit = organisationUnit(),
-                restriction = restriction(),
-            )
-        }
-    }
+internal fun CategoryOptionOrganisationUnitLink.toDB(): CategoryOptionOrganisationUnitLinkDB {
+    return CategoryOptionOrganisationUnitLinkDB(
+        categoryOption = categoryOption(),
+        organisationUnit = organisationUnit(),
+        restriction = restriction(),
+    )
 }

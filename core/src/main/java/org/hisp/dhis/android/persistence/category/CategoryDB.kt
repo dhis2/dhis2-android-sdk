@@ -36,18 +36,16 @@ internal data class CategoryDB(
             .dataDimensionType(dataDimensionType)
             .build()
     }
+}
 
-    companion object {
-        fun Category.toDB(): CategoryDB {
-            return CategoryDB(
-                uid = uid(),
-                code = code(),
-                name = name(),
-                displayName = displayName(),
-                created = created().dateFormat(),
-                lastUpdated = lastUpdated().dateFormat(),
-                dataDimensionType = dataDimensionType(),
-            )
-        }
-    }
+internal fun Category.toDB(): CategoryDB {
+    return CategoryDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        dataDimensionType = dataDimensionType(),
+    )
 }

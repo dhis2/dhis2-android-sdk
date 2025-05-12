@@ -83,32 +83,30 @@ internal data class DataElementDB(
             style(ObjectWithStyleDB(color, icon).toDomain())
         }.build()
     }
+}
 
-    companion object {
-        fun DataElement.toDB(): DataElementDB {
-            return DataElementDB(
-                uid = uid(),
-                code = code(),
-                name = name(),
-                displayName = displayName(),
-                created = created().dateFormat(),
-                lastUpdated = lastUpdated().dateFormat(),
-                shortName = shortName(),
-                displayShortName = displayShortName(),
-                description = description(),
-                displayDescription = displayDescription(),
-                valueType = valueType()?.name,
-                zeroIsSignificant = zeroIsSignificant(),
-                aggregationType = aggregationType(),
-                formName = formName(),
-                domainType = domainType(),
-                displayFormName = displayFormName(),
-                optionSet = optionSet()?.uid(),
-                categoryCombo = categoryCombo()!!.uid(),
-                fieldMask = fieldMask(),
-                color = style().color(),
-                icon = style().icon(),
-            )
-        }
-    }
+internal fun DataElement.toDB(): DataElementDB {
+    return DataElementDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        shortName = shortName(),
+        displayShortName = displayShortName(),
+        description = description(),
+        displayDescription = displayDescription(),
+        valueType = valueType()?.name,
+        zeroIsSignificant = zeroIsSignificant(),
+        aggregationType = aggregationType(),
+        formName = formName(),
+        domainType = domainType(),
+        displayFormName = displayFormName(),
+        optionSet = optionSet()?.uid(),
+        categoryCombo = categoryCombo()!!.uid(),
+        fieldMask = fieldMask(),
+        color = style().color(),
+        icon = style().icon(),
+    )
 }

@@ -47,13 +47,11 @@ internal data class CategoryOptionComboCategoryOptionLinkDB(
             .categoryOption(categoryOption)
             .build()
     }
+}
 
-    companion object {
-        fun CategoryOptionComboCategoryOptionLink.toDB(): CategoryOptionComboCategoryOptionLinkDB {
-            return CategoryOptionComboCategoryOptionLinkDB(
-                categoryOptionCombo = categoryOptionCombo()!!,
-                categoryOption = categoryOption()!!,
-            )
-        }
-    }
+internal fun CategoryOptionComboCategoryOptionLink.toDB(): CategoryOptionComboCategoryOptionLinkDB {
+    return CategoryOptionComboCategoryOptionLinkDB(
+        categoryOptionCombo = categoryOptionCombo()!!,
+        categoryOption = categoryOption()!!,
+    )
 }

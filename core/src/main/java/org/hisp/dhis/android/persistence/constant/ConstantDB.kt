@@ -64,18 +64,16 @@ internal data class ConstantDB(
             .value(value?.toDoubleOrNull())
             .build()
     }
+}
 
-    companion object {
-        fun Constant.toDB(): ConstantDB {
-            return ConstantDB(
-                uid = uid(),
-                code = code(),
-                name = name(),
-                displayName = displayName(),
-                created = created().dateFormat(),
-                lastUpdated = lastUpdated().dateFormat(),
-                value = value().toString(),
-            )
-        }
-    }
+internal fun Constant.toDB(): ConstantDB {
+    return ConstantDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        value = value().toString(),
+    )
 }

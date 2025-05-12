@@ -65,16 +65,14 @@ internal data class DataApprovalDB(
             state?.let { state(DataApprovalState.valueOf(it)) }
         }.build()
     }
+}
 
-    companion object {
-        fun DataApproval.toDB(): DataApprovalDB {
-            return DataApprovalDB(
-                workflow = workflow()!!,
-                organisationUnit = organisationUnit()!!,
-                period = period()!!,
-                attributeOptionCombo = attributeOptionCombo()!!,
-                state = state()?.name,
-            )
-        }
-    }
+internal fun DataApproval.toDB(): DataApprovalDB {
+    return DataApprovalDB(
+        workflow = workflow()!!,
+        organisationUnit = organisationUnit()!!,
+        period = period()!!,
+        attributeOptionCombo = attributeOptionCombo()!!,
+        state = state()?.name,
+    )
 }

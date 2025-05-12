@@ -50,14 +50,12 @@ internal data class DataElementAttributeValueLinkDB(
             .value(value)
             .build()
     }
+}
 
-    companion object {
-        fun DataElementAttributeValueLink.toDB(): DataElementAttributeValueLinkDB {
-            return DataElementAttributeValueLinkDB(
-                dataElement = dataElement()!!,
-                attribute = attribute()!!,
-                value = value(),
-            )
-        }
-    }
+internal fun DataElementAttributeValueLink.toDB(): DataElementAttributeValueLinkDB {
+    return DataElementAttributeValueLinkDB(
+        dataElement = dataElement()!!,
+        attribute = attribute()!!,
+        value = value(),
+    )
 }

@@ -48,18 +48,16 @@ internal data class CategoryOptionComboDB(
             categoryCombo?.let { ObjectWithUidDB(categoryCombo).toDomain() }
         }.build()
     }
+}
 
-    companion object {
-        fun CategoryOptionCombo.toDB(): CategoryOptionComboDB {
-            return CategoryOptionComboDB(
-                uid = uid(),
-                code = code(),
-                name = name(),
-                displayName = displayName(),
-                created = created().dateFormat(),
-                lastUpdated = lastUpdated().dateFormat(),
-                categoryCombo = categoryCombo()?.uid(),
-            )
-        }
-    }
+internal fun CategoryOptionCombo.toDB(): CategoryOptionComboDB {
+    return CategoryOptionComboDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        categoryCombo = categoryCombo()?.uid(),
+    )
 }

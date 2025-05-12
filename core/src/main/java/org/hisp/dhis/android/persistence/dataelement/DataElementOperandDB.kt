@@ -52,14 +52,12 @@ internal data class DataElementOperandDB(
             categoryOptionCombo?.let { categoryOptionCombo(ObjectWithUidDB(it).toDomain()) }
         }.build()
     }
+}
 
-    companion object {
-        fun DataElementOperand.toDB(): DataElementOperandDB {
-            return DataElementOperandDB(
-                uid = uid()!!,
-                dataElement = dataElement()?.uid(),
-                categoryOptionCombo = categoryOptionCombo()?.uid(),
-            )
-        }
-    }
+internal fun DataElementOperand.toDB(): DataElementOperandDB {
+    return DataElementOperandDB(
+        uid = uid()!!,
+        dataElement = dataElement()?.uid(),
+        categoryOptionCombo = categoryOptionCombo()?.uid(),
+    )
 }

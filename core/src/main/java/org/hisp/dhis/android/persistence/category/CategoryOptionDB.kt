@@ -8,10 +8,10 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.AccessDB
-import org.hisp.dhis.android.persistence.common.AccessDB.Companion.toDB
 import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "CategoryOption",
@@ -47,24 +47,22 @@ internal data class CategoryOptionDB(
             accessDataWrite?.let { AccessDB(accessDataWrite).toDomain() }
         }.build()
     }
+}
 
-    companion object {
-        fun CategoryOption.toDB(): CategoryOptionDB {
-            return CategoryOptionDB(
-                uid = uid(),
-                code = code(),
-                name = name(),
-                displayName = displayName(),
-                created = created().dateFormat(),
-                lastUpdated = lastUpdated().dateFormat(),
-                shortName = shortName(),
-                displayShortName = displayShortName(),
-                description = description(),
-                displayDescription = displayDescription(),
-                startDate = startDate()?.dateFormat(),
-                endDate = endDate()?.dateFormat(),
-                accessDataWrite = access().toDB(),
-            )
-        }
-    }
+internal fun CategoryOption.toDB(): CategoryOptionDB {
+    return CategoryOptionDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        shortName = shortName(),
+        displayShortName = displayShortName(),
+        description = description(),
+        displayDescription = displayDescription(),
+        startDate = startDate()?.dateFormat(),
+        endDate = endDate()?.dateFormat(),
+        accessDataWrite = access().toDB(),
+    )
 }

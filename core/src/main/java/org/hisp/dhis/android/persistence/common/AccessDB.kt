@@ -47,10 +47,8 @@ internal data class AccessDB(
                     .build(),
             ).build()
     }
+}
 
-    companion object {
-        fun Access.toDB(): Boolean {
-            return this.data().write()
-        }
-    }
+internal fun Access.toDB(): Boolean {
+    return this.data().write()
 }

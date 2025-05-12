@@ -49,14 +49,12 @@ internal data class CategoryCategoryComboLinkDB(
             .sortOrder(sortOrder)
             .build()
     }
+}
 
-    companion object {
-        fun CategoryCategoryComboLink.toDB(): CategoryCategoryComboLinkDB {
-            return CategoryCategoryComboLinkDB(
-                category = category()!!,
-                categoryCombo = categoryCombo()!!,
-                sortOrder = sortOrder(),
-            )
-        }
-    }
+internal fun CategoryCategoryComboLink.toDB(): CategoryCategoryComboLinkDB {
+    return CategoryCategoryComboLinkDB(
+        category = category()!!,
+        categoryCombo = categoryCombo()!!,
+        sortOrder = sortOrder(),
+    )
 }

@@ -50,14 +50,12 @@ internal data class ProgramStageAttributeValueLinkDB(
             .value(value)
             .build()
     }
+}
 
-    companion object {
-        fun ProgramStageAttributeValueLink.toDB(): ProgramStageAttributeValueLinkDB {
-            return ProgramStageAttributeValueLinkDB(
-                programStage = programStage()!!,
-                attribute = attribute()!!,
-                value = value(),
-            )
-        }
-    }
+internal fun ProgramStageAttributeValueLink.toDB(): ProgramStageAttributeValueLinkDB {
+    return ProgramStageAttributeValueLinkDB(
+        programStage = programStage()!!,
+        attribute = attribute()!!,
+        value = value(),
+    )
 }

@@ -36,18 +36,16 @@ internal data class CategoryComboDB(
             .isDefault(isDefault)
             .build()
     }
+}
 
-    companion object {
-        fun CategoryCombo.toDB(): CategoryComboDB {
-            return CategoryComboDB(
-                uid = uid(),
-                code = code(),
-                name = name(),
-                displayName = displayName(),
-                created = created().dateFormat(),
-                lastUpdated = lastUpdated().dateFormat(),
-                isDefault = isDefault(),
-            )
-        }
-    }
+internal fun CategoryCombo.toDB(): CategoryComboDB {
+    return CategoryComboDB(
+        uid = uid(),
+        code = code(),
+        name = name(),
+        displayName = displayName(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        isDefault = isDefault(),
+    )
 }

@@ -33,9 +33,12 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-internal object IntegerArrayDB {
-    fun toDomain(value: String?): List<Int> {
-        return if (value == null || value == "") {
+@JvmInline
+internal value class IntegerListDB(
+    val value: String
+) {
+    fun toDomain(): List<Int> {
+        return if (value == "") {
             emptyList()
         } else {
             try {
@@ -45,15 +48,17 @@ internal object IntegerArrayDB {
             }
         }
     }
+}
 
-    fun toDB(value: List<Int>?): String {
-        try {
-            return KotlinxJsonParser.instance.encodeToString(
+internal fun <T : List<Int>> T.toDB(): IntegerListDB {
+    try {
+        return IntegerListDB(
+            KotlinxJsonParser.instance.encodeToString(
                 ListSerializer(Int.serializer()),
-                value ?: emptyList(),
+                this,
             )
-        } catch (e: SerializationException) {
-            throw SerializationException("Couldn't serialize integer array")
-        }
+        )
+    } catch (e: SerializationException) {
+        throw SerializationException("Couldn't serialize integer array")
     }
 }

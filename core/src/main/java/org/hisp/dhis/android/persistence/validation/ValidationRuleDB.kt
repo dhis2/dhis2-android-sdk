@@ -14,7 +14,8 @@ import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.IntegerArrayDBMapper
+import org.hisp.dhis.android.persistence.common.IntegerListDB
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "ValidationRule",
@@ -47,7 +48,7 @@ internal data class ValidationRuleDB(
     val rightSideExpression: String?,
     val rightSideDescription: String?,
     val rightSideMissingValueStrategy: String?,
-    val organisationUnitLevels: String?,
+    val organisationUnitLevels: IntegerListDB?,
 ) : EntityDB<ValidationRule>, BaseNameableObjectDB {
     override fun toDomain(): ValidationRule {
         return ValidationRule.builder()
@@ -81,7 +82,7 @@ internal data class ValidationRuleDB(
                     .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
                     .build(),
             )
-            .organisationUnitLevels(IntegerArrayDBMapper.toDomain(organisationUnitLevels))
+            .organisationUnitLevels(organisationUnitLevels?.toDomain())
             .build()
     }
 }
@@ -109,6 +110,6 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         rightSideExpression = rightSide().expression(),
         rightSideDescription = rightSide().description(),
         rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
-        organisationUnitLevels = IntegerArrayDBMapper.toDB(organisationUnitLevels()),
+        organisationUnitLevels = organisationUnitLevels()?.toDB(),
     )
 }

@@ -26,26 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.visualization
+package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.persistence.common.ObjectWithUidDB.Companion.toDB
 
-@Serializable
-internal data class TrackerVisualizationDimensionRepetitionDB(
-    val indexes: List<Int>?,
+@JvmInline
+internal value class ObjectWithUidListDB(
+    val value: String?,
 ) {
-    fun toDomain(): TrackerVisualizationDimensionRepetition {
-        return TrackerVisualizationDimensionRepetition.builder()
-            .indexes(indexes)
-            .build()
-    }
-
-    companion object {
-        fun TrackerVisualizationDimensionRepetition.toDBSerializable(): TrackerVisualizationDimensionRepetitionDB {
-            return TrackerVisualizationDimensionRepetitionDB(
-                indexes = this.indexes(),
-            )
+    fun toDomain(): List<ObjectWithUid> {
+        val value = value ?: return listOf()
+        return try {
+            KotlinxJsonParser.instance.decodeFromString<List<ObjectWithUidDB>>(
+                value,
+            ).map { it.toDomain() }
+        } catch (e: SerializationException) {
+            listOf()
+        } catch (e: IllegalArgumentException) {
+            listOf()
+        } catch (e: IllegalStateException) {
+            listOf()
         }
     }
+}
+
+internal fun <T : List<ObjectWithUid>> T.toDB(): ObjectWithUidListDB {
+    return ObjectWithUidListDB(
+        KotlinxJsonParser.instance.encodeToString(ListSerializer(ObjectWithUidDB.serializer()), this.map { it.toDB() }),
+    )
 }

@@ -26,26 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.visualization
+package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-@Serializable
-internal data class TrackerVisualizationDimensionRepetitionDB(
-    val indexes: List<Int>?,
+@JvmInline
+internal value class IntegerListDB(
+    val value: String,
 ) {
-    fun toDomain(): TrackerVisualizationDimensionRepetition {
-        return TrackerVisualizationDimensionRepetition.builder()
-            .indexes(indexes)
-            .build()
-    }
-
-    companion object {
-        fun TrackerVisualizationDimensionRepetition.toDBSerializable(): TrackerVisualizationDimensionRepetitionDB {
-            return TrackerVisualizationDimensionRepetitionDB(
-                indexes = this.indexes(),
-            )
+    fun toDomain(): List<Int> {
+        return if (value == "") {
+            emptyList()
+        } else {
+            try {
+                return KotlinxJsonParser.instance.decodeFromString(ListSerializer(Int.serializer()), value)
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't deserialize integer array")
+            }
         }
+    }
+}
+
+internal fun <T : List<Int>> T.toDB(): IntegerListDB {
+    try {
+        return IntegerListDB(
+            KotlinxJsonParser.instance.encodeToString(
+                ListSerializer(Int.serializer()),
+                this,
+            ),
+        )
+    } catch (e: SerializationException) {
+        throw SerializationException("Couldn't serialize integer array")
     }
 }

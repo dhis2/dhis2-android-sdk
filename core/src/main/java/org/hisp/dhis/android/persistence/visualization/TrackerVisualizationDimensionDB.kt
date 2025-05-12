@@ -5,6 +5,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.visualization.LayoutPosition
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.ObjectWithUidListDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 
@@ -49,7 +55,36 @@ internal data class TrackerVisualizationDimensionDB(
     val dimensionType: String?,
     val program: String?,
     val programStage: String?,
-    val items: String?,
+    val items: ObjectWithUidListDB?,
     val filter: String?,
-    val repetition: String?,
-)
+    val repetition: RepetitionDB?,
+) : EntityDB<TrackerVisualizationDimension> {
+    override fun toDomain(): TrackerVisualizationDimension {
+        return TrackerVisualizationDimension.builder()
+            .id(id?.toLong())
+            .trackerVisualization(trackerVisualization)
+            .position(position.let { LayoutPosition.valueOf(it) })
+            .dimension(dimension)
+            .dimensionType(dimensionType)
+            .program(ObjectWithUid.create(program))
+            .programStage(ObjectWithUid.create(programStage))
+            .items(items?.toDomain())
+            .filter(filter)
+            .repetition(repetition?.toDomain())
+            .build()
+    }
+}
+
+internal fun TrackerVisualizationDimension.toDB(): TrackerVisualizationDimensionDB {
+    return TrackerVisualizationDimensionDB(
+        trackerVisualization = trackerVisualization()!!,
+        position = position()!!.name,
+        dimension = dimension()!!,
+        dimensionType = dimensionType(),
+        program = program()?.uid(),
+        programStage = programStage()?.uid(),
+        items = items()?.toDB(),
+        filter = filter(),
+        repetition = repetition()?.toDB(),
+    )
+}

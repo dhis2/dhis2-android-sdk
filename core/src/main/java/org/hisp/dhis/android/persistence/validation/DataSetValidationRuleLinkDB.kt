@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDB
 
 @Entity(
@@ -37,4 +39,20 @@ internal data class DataSetValidationRuleLinkDB(
     val id: Int? = 0,
     val dataSet: String,
     val validationRule: String,
-)
+) : EntityDB<DataSetValidationRuleLink> {
+
+    override fun toDomain(): DataSetValidationRuleLink {
+        return DataSetValidationRuleLink.builder()
+            .id(id?.toLong())
+            .dataSet(dataSet)
+            .validationRule(validationRule)
+            .build()
+    }
+}
+
+internal fun DataSetValidationRuleLink.toDB(): DataSetValidationRuleLinkDB {
+    return DataSetValidationRuleLinkDB(
+        dataSet = dataSet()!!,
+        validationRule = validationRule()!!,
+    )
+}

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.persistence.configuration
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.persistence.configuration.DatabaseAccountImportDB.Companion.toDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Serializable
 internal data class DatabaseAccountDB(
@@ -42,8 +42,9 @@ internal data class DatabaseAccountDB(
     val encrypted: Boolean,
     val syncState: String?,
     val importDB: DatabaseAccountImportDB?,
-) {
-    fun toDomain(): DatabaseAccount {
+) : EntityDB<DatabaseAccount> {
+
+    override fun toDomain(): DatabaseAccount {
         return DatabaseAccount.builder()
             .username(username)
             .serverUrl(serverUrl)
@@ -54,18 +55,16 @@ internal data class DatabaseAccountDB(
             .importDB(importDB?.toDomain())
             .build()
     }
+}
 
-    companion object {
-        fun DatabaseAccount.toDB(): DatabaseAccountDB {
-            return DatabaseAccountDB(
-                username = this.username(),
-                serverUrl = this.serverUrl(),
-                databaseName = this.databaseName(),
-                databaseCreationDate = this.databaseCreationDate(),
-                encrypted = this.encrypted(),
-                syncState = this.syncState()?.name,
-                importDB = this.importDB()?.toDB(),
-            )
-        }
-    }
+internal fun DatabaseAccount.toDB(): DatabaseAccountDB {
+    return DatabaseAccountDB(
+        username = username(),
+        serverUrl = serverUrl(),
+        databaseName = databaseName(),
+        databaseCreationDate = databaseCreationDate(),
+        encrypted = encrypted(),
+        syncState = syncState()?.name,
+        importDB = importDB()?.toDB(),
+    )
 }

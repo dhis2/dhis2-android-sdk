@@ -16,6 +16,8 @@ import org.hisp.dhis.android.core.visualization.LegendStyle
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationLegend
 import org.hisp.dhis.android.core.visualization.VisualizationType
+import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "Visualization",
@@ -27,12 +29,12 @@ internal data class VisualizationDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val uid: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: String?,
-    val lastUpdated: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
     val description: String?,
     val displayDescription: String?,
     val displayFormName: String?,
@@ -63,9 +65,10 @@ internal data class VisualizationDB(
     val legendSetId: String?,
     val legendStrategy: String?,
     val aggregationType: String?,
-) {
-    fun toDomain(): Visualization {
+) : EntityDB<Visualization>, BaseIdentifiableObjectDB {
+    override fun toDomain(): Visualization {
         return Visualization.builder()
+            .id(id?.toLong())
             .uid(uid)
             .code(code)
             .name(name)

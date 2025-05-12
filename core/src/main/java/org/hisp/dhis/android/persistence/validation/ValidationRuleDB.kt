@@ -12,7 +12,9 @@ import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
-import org.hisp.dhis.android.persistence.common.IntegerArrayDB
+import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.IntegerArrayDBMapper
 
 @Entity(
     tableName = "ValidationRule",
@@ -24,16 +26,16 @@ internal data class ValidationRuleDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val uid: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: String?,
-    val lastUpdated: String?,
-    val shortName: String?,
-    val displayShortName: String?,
-    val description: String?,
-    val displayDescription: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
     val instruction: String?,
     val importance: String?,
     val operator: String?,
@@ -46,9 +48,10 @@ internal data class ValidationRuleDB(
     val rightSideDescription: String?,
     val rightSideMissingValueStrategy: String?,
     val organisationUnitLevels: String?,
-) {
-    fun toDomain(): ValidationRule {
+) : EntityDB<ValidationRule>, BaseNameableObjectDB {
+    override fun toDomain(): ValidationRule {
         return ValidationRule.builder()
+            .id(id?.toLong())
             .uid(uid)
             .code(code)
             .name(name)
@@ -78,7 +81,7 @@ internal data class ValidationRuleDB(
                     .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
                     .build(),
             )
-            .organisationUnitLevels(IntegerArrayDB.toDomain(organisationUnitLevels))
+            .organisationUnitLevels(IntegerArrayDBMapper.toDomain(organisationUnitLevels))
             .build()
     }
 }
@@ -106,6 +109,6 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         rightSideExpression = rightSide().expression(),
         rightSideDescription = rightSide().description(),
         rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
-        organisationUnitLevels = IntegerArrayDB.toDB(organisationUnitLevels()),
+        organisationUnitLevels = IntegerArrayDBMapper.toDB(organisationUnitLevels()),
     )
 }

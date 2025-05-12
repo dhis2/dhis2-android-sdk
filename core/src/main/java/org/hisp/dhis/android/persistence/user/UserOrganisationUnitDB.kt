@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "UserOrganisationUnit",
@@ -32,9 +33,11 @@ internal data class UserOrganisationUnitDB(
     val organisationUnitScope: String,
     val root: Boolean?,
     val userAssigned: Boolean?,
-) {
-    fun toDomain(): UserOrganisationUnitLink {
+) : EntityDB<UserOrganisationUnitLink> {
+
+    override fun toDomain(): UserOrganisationUnitLink {
         return UserOrganisationUnitLink.builder()
+            .id(id?.toLong())
             .user(user)
             .organisationUnit(organisationUnit)
             .organisationUnitScope(organisationUnitScope)

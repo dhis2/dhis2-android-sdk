@@ -35,6 +35,7 @@ internal data class VisualizationDimensionItemDB(
 ) {
     fun toDomain(): VisualizationDimensionItem {
         return VisualizationDimensionItem.builder()
+            .id(id?.toLong())
             .visualization(visualization)
             .position(LayoutPosition.valueOf(position))
             .dimension(dimension)

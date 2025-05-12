@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "User",
@@ -18,12 +20,12 @@ internal data class UserDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val uid: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: String?,
-    val lastUpdated: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
     val birthday: String?,
     val education: String?,
     val gender: String?,
@@ -38,9 +40,11 @@ internal data class UserDB(
     val phoneNumber: String?,
     val nationality: String?,
     val username: String?,
-) {
-    fun toDomain(): User {
+) : EntityDB<User>, BaseIdentifiableObjectDB {
+
+    override fun toDomain(): User {
         return User.builder()
+            .id(id?.toLong())
             .uid(uid)
             .code(code)
             .name(name)

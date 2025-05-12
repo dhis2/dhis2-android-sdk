@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "UserGroup",
@@ -18,15 +20,17 @@ internal data class UserGroupDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val uid: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: String?,
-    val lastUpdated: String?,
-) {
-    fun toDomain(): UserGroup {
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
+) : EntityDB<UserGroup>, BaseIdentifiableObjectDB {
+
+    override fun toDomain(): UserGroup {
         return UserGroup.builder()
+            .id(id?.toLong())
             .uid(uid)
             .code(code)
             .name(name)

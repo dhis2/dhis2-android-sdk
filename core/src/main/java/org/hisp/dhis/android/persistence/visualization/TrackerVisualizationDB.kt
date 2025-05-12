@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationType
+import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
@@ -51,12 +53,12 @@ internal data class TrackerVisualizationDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val uid: String,
-    val code: String?,
-    val name: String?,
-    val displayName: String?,
-    val created: String?,
-    val lastUpdated: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: String?,
+    override val lastUpdated: String?,
     val description: String?,
     val displayDescription: String?,
     val type: String?,
@@ -64,9 +66,10 @@ internal data class TrackerVisualizationDB(
     val program: String?,
     val programStage: String?,
     val trackedEntityType: String?,
-) {
-    fun toDomain(): TrackerVisualization {
+) : EntityDB<TrackerVisualization>, BaseIdentifiableObjectDB {
+    override fun toDomain(): TrackerVisualization {
         return TrackerVisualization.builder()
+            .id(id?.toLong())
             .uid(uid)
             .code(code)
             .name(name)

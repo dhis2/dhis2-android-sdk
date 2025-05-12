@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
-import org.hisp.dhis.android.persistence.common.toDB
+package org.hisp.dhis.android.persistence.common
 
-internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
 
-    override fun deserialize(str: String): DateFilterPeriod {
-        return KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(
-            str,
-        ).toDomain()
+@Serializable
+internal data class AccessDB(
+    val accessDataWrite: Boolean,
+) {
+    fun toDomain(): Access {
+        return Access.builder()
+            .read(true)
+            .write(true)
+            .data(
+                DataAccess.builder()
+                    .read(true)
+                    .write(accessDataWrite)
+                    .build(),
+            ).build()
     }
+}
 
-    companion object {
-        fun serialize(o: DateFilterPeriod?): String? {
-            return o?.let {
-                KotlinxJsonParser.instance.encodeToString(
-                    DateFilterPeriodDB.serializer(),
-                    it.toDB(),
-                )
-            }
-        }
-    }
+internal fun Access.toDB(): Boolean {
+    return this.data().write()
 }

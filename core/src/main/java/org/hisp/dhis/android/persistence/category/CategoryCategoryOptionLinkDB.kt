@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "CategoryCategoryOptionLink",
@@ -37,4 +39,22 @@ internal data class CategoryCategoryOptionLinkDB(
     val category: String,
     val categoryOption: String,
     val sortOrder: Int?,
-)
+) : EntityDB<CategoryCategoryOptionLink> {
+
+    override fun toDomain(): CategoryCategoryOptionLink {
+        return CategoryCategoryOptionLink.builder()
+            .id(id?.toLong())
+            .category(category)
+            .categoryOption(categoryOption)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun CategoryCategoryOptionLink.toDB(): CategoryCategoryOptionLinkDB {
+    return CategoryCategoryOptionLinkDB(
+        category = category()!!,
+        categoryOption = categoryOption()!!,
+        sortOrder = sortOrder(),
+    )
+}

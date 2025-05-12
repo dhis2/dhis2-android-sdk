@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
-import org.hisp.dhis.android.persistence.common.toDB
+package org.hisp.dhis.android.persistence.common
 
-internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyle
 
-    override fun deserialize(str: String): DateFilterPeriod {
-        return KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(
-            str,
-        ).toDomain()
-    }
+internal interface ObjectWithStyleDB {
+    val color: String?
+    val icon: String?
+}
 
-    companion object {
-        fun serialize(o: DateFilterPeriod?): String? {
-            return o?.let {
-                KotlinxJsonParser.instance.encodeToString(
-                    DateFilterPeriodDB.serializer(),
-                    it.toDB(),
-                )
-            }
-        }
-    }
+internal fun <O, B> B.applyStyleFields(item: ObjectWithStyleDB): B where B : ObjectWithStyle.Builder<O, B> {
+    style(
+        ObjectStyle.builder()
+            .color(item.color)
+            .icon(item.icon)
+            .build(),
+    )
+    return this
 }

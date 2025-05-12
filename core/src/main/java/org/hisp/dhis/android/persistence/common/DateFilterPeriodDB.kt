@@ -54,17 +54,15 @@ internal data class DateFilterPeriodDB(
             .type(type?.let { DatePeriodType.valueOf(it) })
             .build()
     }
+}
 
-    companion object {
-        fun DateFilterPeriod.toDB(): DateFilterPeriodDB {
-            return DateFilterPeriodDB(
-                startBuffer = this.startBuffer(),
-                endBuffer = this.endBuffer(),
-                startDate = this.startDate()?.simpleDateFormat(),
-                endDate = this.endDate()?.simpleDateFormat(),
-                period = this.period()?.name,
-                type = this.type()?.name,
-            )
-        }
-    }
+internal fun DateFilterPeriod.toDB(): DateFilterPeriodDB {
+    return DateFilterPeriodDB(
+        startBuffer = this.startBuffer(),
+        endBuffer = this.endBuffer(),
+        startDate = this.startDate()?.simpleDateFormat(),
+        endDate = this.endDate()?.simpleDateFormat(),
+        period = this.period()?.name,
+        type = this.type()?.name,
+    )
 }

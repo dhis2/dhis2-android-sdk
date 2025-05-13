@@ -42,7 +42,7 @@ internal data class TrackerVisualizationDimensionRepetitionDB(
     }
 
     companion object {
-        fun TrackerVisualizationDimensionRepetition.toDB(): TrackerVisualizationDimensionRepetitionDB {
+        fun TrackerVisualizationDimensionRepetition.toDBSerializable(): TrackerVisualizationDimensionRepetitionDB {
             return TrackerVisualizationDimensionRepetitionDB(
                 indexes = this.indexes(),
             )

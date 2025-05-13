@@ -29,14 +29,33 @@
 package org.hisp.dhis.android.persistence.common
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.hisp.dhis.android.core.util.toJavaSimpleDate
 
+@JvmInline
+internal value class DateFilterPeriodDB(
+    val value: String,
+) {
+    fun toDomain(): DateFilterPeriod {
+        return KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDBSerializable>(value).toDomain()
+    }
+}
+
+internal fun DateFilterPeriod.toDB(): DateFilterPeriodDB {
+    return DateFilterPeriodDB(
+        KotlinxJsonParser.instance.encodeToString(
+            DateFilterPeriodDBSerializable.serializer(),
+            this.toDBSerializable(),
+        ),
+    )
+}
+
 @Serializable
-internal data class DateFilterPeriodDB(
+private data class DateFilterPeriodDBSerializable(
     val startBuffer: Int?,
     val endBuffer: Int?,
     val startDate: String?,
@@ -56,8 +75,8 @@ internal data class DateFilterPeriodDB(
     }
 }
 
-internal fun DateFilterPeriod.toDB(): DateFilterPeriodDB {
-    return DateFilterPeriodDB(
+private fun DateFilterPeriod.toDBSerializable(): DateFilterPeriodDBSerializable {
+    return DateFilterPeriodDBSerializable(
         startBuffer = this.startBuffer(),
         endBuffer = this.endBuffer(),
         startDate = this.startDate()?.simpleDateFormat(),

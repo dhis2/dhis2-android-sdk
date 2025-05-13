@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
-import org.hisp.dhis.android.persistence.common.toDB
+package org.hisp.dhis.android.persistence.visualization
 
-internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionRepetitionDB.Companion.toDBSerializable
 
-    override fun deserialize(str: String): DateFilterPeriod {
-        return DateFilterPeriodDB(str).toDomain()
-    }
-
-    companion object {
-        fun serialize(o: DateFilterPeriod?): String? {
-            return o?.let { it.toDB().value }
+@JvmInline
+internal value class RepetitionDB(
+    val value: String,
+) {
+    fun toDomain(): TrackerVisualizationDimensionRepetition {
+        return value.let {
+            KotlinxJsonParser.instance.decodeFromString<TrackerVisualizationDimensionRepetitionDB>(
+                it,
+            ).toDomain()
         }
     }
+}
+
+internal fun TrackerVisualizationDimensionRepetition.toDB(): RepetitionDB {
+    return RepetitionDB(
+        this.let {
+            KotlinxJsonParser.instance.encodeToString(
+                TrackerVisualizationDimensionRepetitionDB.serializer(),
+                it.toDBSerializable(),
+            )
+        },
+    )
 }

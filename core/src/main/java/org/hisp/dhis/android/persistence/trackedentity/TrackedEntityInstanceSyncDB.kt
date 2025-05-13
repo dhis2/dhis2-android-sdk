@@ -5,6 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSync
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 
 @Entity(
@@ -30,4 +34,23 @@ internal data class TrackedEntityInstanceSyncDB(
     val organisationUnitIdsHash: Int?,
     val downloadLimit: Int,
     val lastUpdated: String,
-)
+) : EntityDB<TrackedEntityInstanceSync> {
+    override fun toDomain(): TrackedEntityInstanceSync {
+        return TrackedEntityInstanceSync.builder()
+            .id(id?.toLong())
+            .program(program)
+            .organisationUnitIdsHash(organisationUnitIdsHash!!)
+            .downloadLimit(downloadLimit)
+            .lastUpdated(lastUpdated.toJavaDate())
+            .build()
+    }
+}
+
+internal fun TrackedEntityInstanceSync.toDB(): TrackedEntityInstanceSyncDB {
+    return TrackedEntityInstanceSyncDB(
+        program = program(),
+        organisationUnitIdsHash = organisationUnitIdsHash(),
+        downloadLimit = downloadLimit(),
+        lastUpdated = lastUpdated().dateFormat()!!,
+    )
+}

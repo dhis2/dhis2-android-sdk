@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
-import org.hisp.dhis.android.persistence.common.toDB
+package org.hisp.dhis.android.persistence.common
 
-internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-    override fun deserialize(str: String): DateFilterPeriod {
-        return DateFilterPeriodDB(str).toDomain()
-    }
-
-    companion object {
-        fun serialize(o: DateFilterPeriod?): String? {
-            return o?.let { it.toDB().value }
+@JvmInline
+internal value class StringSetDB(
+    val value: String,
+) {
+    fun toDomain(): Set<String> {
+        return if (value == "") {
+            emptySet()
+        } else {
+            try {
+                KotlinxJsonParser.instance.decodeFromString<Set<String>>(value)
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't deserialize string set")
+            }
         }
+    }
+}
+
+internal fun <T : Set<String>> T.toDB(): StringSetDB {
+    try {
+        return StringSetDB(
+            KotlinxJsonParser.instance.encodeToString(
+                SetSerializer(String.serializer()),
+                this,
+            ),
+        )
+    } catch (e: SerializationException) {
+        throw SerializationException("Couldn't serialize string set")
     }
 }

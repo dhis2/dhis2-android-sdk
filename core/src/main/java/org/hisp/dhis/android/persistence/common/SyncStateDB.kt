@@ -42,4 +42,3 @@ internal value class SyncStateDB(
 internal fun State.toDB(): SyncStateDB {
     return SyncStateDB(name)
 }
-

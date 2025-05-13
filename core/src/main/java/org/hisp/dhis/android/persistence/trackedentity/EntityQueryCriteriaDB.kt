@@ -28,62 +28,43 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.FilterQueryCriteriaDB
 import org.hisp.dhis.android.persistence.common.StringListDB
+import org.hisp.dhis.android.persistence.common.applyFilterQueryCriteriaFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 internal data class EntityQueryCriteriaDB(
     val enrollmentStatus: String?,
-    val followUp: Boolean?,
-    val organisationUnit: String?,
-    val ouMode: String?,
-    val assignedUserMode: String?,
-    val orderProperty: String?,
-    val displayColumnOrder: StringListDB?,
-    val eventStatus: String?,
-    val eventDate: String?,
-    val lastUpdatedDate: String?,
+    override val followUp: Boolean?,
+    override val organisationUnit: String?,
+    override val ouMode: String?,
+    override val assignedUserMode: String?,
+    override val orderProperty: String?,
+    override val displayColumnOrder: StringListDB?,
+    override val eventStatus: String?,
+    override val eventDate: DateFilterPeriodDB?,
+    override val lastUpdatedDate: DateFilterPeriodDB?,
     val programStage: String?,
     val trackedEntityInstances: StringListDB?,
-    val enrollmentIncidentDate: String?,
-    val enrollmentCreatedDate: String?,
+    val enrollmentIncidentDate: DateFilterPeriodDB?,
+    val enrollmentCreatedDate: DateFilterPeriodDB?,
     val trackedEntityType: String?,
-) : EntityDB<EntityQueryCriteria> {
+) : EntityDB<EntityQueryCriteria>, FilterQueryCriteriaDB {
+
     override fun toDomain(): EntityQueryCriteria {
-        return EntityQueryCriteria.builder()
-            .enrollmentStatus(enrollmentStatus?.let { EnrollmentStatus.valueOf(it) })
-            .followUp(followUp)
-            .organisationUnit(organisationUnit)
-            .ouMode(ouMode?.let { OrganisationUnitMode.valueOf(it) })
-            .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
-            .order(orderProperty)
-            .displayColumnOrder(displayColumnOrder?.toDomain())
-            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
-            .eventDate(eventDate?.let {
-                KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
-            })
-            .lastUpdatedDate(lastUpdatedDate?.let {
-                KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
-            })
-            .programStage(programStage)
-            .trackedEntityInstances(trackedEntityInstances?.toDomain())
-            .enrollmentIncidentDate(enrollmentIncidentDate?.let {
-                KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
-            })
-            .enrollmentCreatedDate(enrollmentCreatedDate?.let {
-                KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain()
-            })
-            .trackedEntityType(trackedEntityType)
-            .build()
+        return EntityQueryCriteria.builder().apply {
+            applyFilterQueryCriteriaFields(this@EntityQueryCriteriaDB)
+            enrollmentStatus(enrollmentStatus?.let { EnrollmentStatus.valueOf(it) })
+            programStage(programStage)
+            trackedEntityInstances(trackedEntityInstances?.toDomain())
+            enrollmentIncidentDate(enrollmentIncidentDate?.let { it.toDomain() })
+            enrollmentCreatedDate(enrollmentCreatedDate?.let { it.toDomain() })
+            trackedEntityType(trackedEntityType)
+        }.build()
     }
 }
 
@@ -97,32 +78,12 @@ internal fun EntityQueryCriteria.toDB(): EntityQueryCriteriaDB {
         orderProperty = order(),
         displayColumnOrder = displayColumnOrder()?.toDB(),
         eventStatus = eventStatus()?.name,
-        eventDate = eventDate()?.let {
-            KotlinxJsonParser.instance.encodeToString(
-                DateFilterPeriodDB.serializer(),
-                it.toDB(),
-            )
-        },
-        lastUpdatedDate = lastUpdatedDate()?.let {
-            KotlinxJsonParser.instance.encodeToString(
-                DateFilterPeriodDB.serializer(),
-                it.toDB(),
-            )
-        },
+        eventDate = eventDate()?.let { it.toDB() },
+        lastUpdatedDate = lastUpdatedDate()?.let { it.toDB() },
         programStage = programStage(),
         trackedEntityInstances = trackedEntityInstances()?.toDB(),
-        enrollmentIncidentDate = enrollmentIncidentDate()?.let {
-            KotlinxJsonParser.instance.encodeToString(
-                DateFilterPeriodDB.serializer(),
-                it.toDB(),
-            )
-        },
-        enrollmentCreatedDate = enrollmentCreatedDate()?.let {
-            KotlinxJsonParser.instance.encodeToString(
-                DateFilterPeriodDB.serializer(),
-                it.toDB(),
-            )
-        },
-        trackedEntityType = trackedEntityType()
+        enrollmentIncidentDate = enrollmentIncidentDate()?.let { it.toDB() },
+        enrollmentCreatedDate = enrollmentCreatedDate()?.let { it.toDB() },
+        trackedEntityType = trackedEntityType(),
     )
 }

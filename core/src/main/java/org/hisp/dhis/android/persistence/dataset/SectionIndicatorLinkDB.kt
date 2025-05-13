@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.indicator.IndicatorDB
 
 @Entity(
@@ -37,4 +39,20 @@ internal data class SectionIndicatorLinkDB(
     val id: Int? = 0,
     val section: String,
     val indicator: String,
-)
+) : EntityDB<SectionIndicatorLink> {
+
+    override fun toDomain(): SectionIndicatorLink {
+        return SectionIndicatorLink.builder()
+            .id(id?.toLong())
+            .section(section)
+            .indicator(indicator)
+            .build()
+    }
+}
+
+internal fun SectionIndicatorLink.toDB(): SectionIndicatorLinkDB {
+    return SectionIndicatorLinkDB(
+        section = section()!!,
+        indicator = indicator()!!,
+    )
+}

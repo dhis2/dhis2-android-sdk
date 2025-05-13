@@ -28,26 +28,17 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.State
 
 @JvmInline
-internal value class AccessDB(
-    val accessDataWrite: Boolean,
+internal value class SyncStateDB(
+    val value: String,
 ) {
-    fun toDomain(): Access {
-        return Access.builder()
-            .read(true)
-            .write(true)
-            .data(
-                DataAccess.builder()
-                    .read(true)
-                    .write(accessDataWrite)
-                    .build(),
-            ).build()
+    fun toDomain(): State {
+        return State.valueOf(value)
     }
 }
 
-internal fun Access.toDB(): AccessDB {
-    return AccessDB(data().write())
+internal fun State.toDB(): SyncStateDB {
+    return SyncStateDB(name)
 }

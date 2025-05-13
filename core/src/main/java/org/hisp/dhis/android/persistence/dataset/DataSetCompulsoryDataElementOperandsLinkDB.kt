@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
 
 @Entity(
@@ -37,4 +39,20 @@ internal data class DataSetCompulsoryDataElementOperandsLinkDB(
     val id: Int? = 0,
     val dataSet: String,
     val dataElementOperand: String,
-)
+) : EntityDB<DataSetCompulsoryDataElementOperandLink> {
+
+    override fun toDomain(): DataSetCompulsoryDataElementOperandLink {
+        return DataSetCompulsoryDataElementOperandLink.builder()
+            .id(id?.toLong())
+            .dataSet(dataSet)
+            .dataElementOperand(dataElementOperand)
+            .build()
+    }
+}
+
+internal fun DataSetCompulsoryDataElementOperandLink.toDB(): DataSetCompulsoryDataElementOperandsLinkDB {
+    return DataSetCompulsoryDataElementOperandsLinkDB(
+        dataSet = dataSet()!!,
+        dataElementOperand = dataElementOperand()!!,
+    )
+}

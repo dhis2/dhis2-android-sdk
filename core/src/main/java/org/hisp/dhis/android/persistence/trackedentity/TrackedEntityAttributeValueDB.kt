@@ -5,11 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.SyncStateDB
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "TrackedEntityAttributeValue",
@@ -44,19 +46,19 @@ internal data class TrackedEntityAttributeValueDB(
     val value: String?,
     val trackedEntityAttribute: String,
     val trackedEntityInstance: String,
-    val syncState: String?,
-) : EntityDB<TrackedEntityAttributeValue> {
+    override val syncState: SyncStateDB?,
+) : EntityDB<TrackedEntityAttributeValue>, DataObjectDB {
 
     override fun toDomain(): TrackedEntityAttributeValue {
-        return TrackedEntityAttributeValue.builder()
-            .id(id?.toLong())
-            .created(created?.toJavaDate())
-            .lastUpdated(lastUpdated?.toJavaDate())
-            .value(value)
-            .trackedEntityAttribute(trackedEntityAttribute)
-            .trackedEntityInstance(trackedEntityInstance)
-            .syncState(syncState?.let { State.valueOf(it) })
-            .build()
+        return TrackedEntityAttributeValue.builder().apply {
+            id(id?.toLong())
+            created(created?.toJavaDate())
+            lastUpdated(lastUpdated?.toJavaDate())
+            value(value)
+            trackedEntityAttribute(trackedEntityAttribute)
+            trackedEntityInstance(trackedEntityInstance)
+            syncState?.let { syncState(it.toDomain()) }
+        }.build()
     }
 }
 
@@ -67,6 +69,6 @@ internal fun TrackedEntityAttributeValue.toDB(): TrackedEntityAttributeValueDB {
         value = value(),
         trackedEntityAttribute = trackedEntityAttribute()!!,
         trackedEntityInstance = trackedEntityInstance()!!,
-        syncState = syncState()?.name,
+        syncState = syncState()?.toDB(),
     )
 }

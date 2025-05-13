@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.dataset.SectionDataElementLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
 @Entity(
@@ -38,4 +40,22 @@ internal data class SectionDataElementLinkDB(
     val section: String,
     val dataElement: String,
     val sortOrder: Int?,
-)
+) : EntityDB<SectionDataElementLink> {
+
+    override fun toDomain(): SectionDataElementLink {
+        return SectionDataElementLink.builder()
+            .id(id?.toLong())
+            .section(section)
+            .dataElement(dataElement)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun SectionDataElementLink.toDB(): SectionDataElementLinkDB {
+    return SectionDataElementLinkDB(
+        section = section()!!,
+        dataElement = dataElement()!!,
+        sortOrder = sortOrder(),
+    )
+}

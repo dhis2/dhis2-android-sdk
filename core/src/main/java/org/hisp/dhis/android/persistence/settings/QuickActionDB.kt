@@ -29,10 +29,31 @@
 package org.hisp.dhis.android.persistence.settings
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.QuickAction
 
+@JvmInline
+internal value class QuickActionsDB(
+    val value: String,
+) {
+    fun toDomain(): List<QuickAction> {
+        return KotlinxJsonParser.instance.decodeFromString<List<QuickActionDBSerializable>>(value)
+            .map { it.toDomain() }
+    }
+}
+
+internal fun List<QuickAction>.toDB(): QuickActionsDB {
+    return QuickActionsDB(
+        KotlinxJsonParser.instance.encodeToString(
+            ListSerializer(QuickActionDBSerializable.serializer()),
+            this.toDBSerializable(),
+        ),
+    )
+}
+
 @Serializable
-internal data class QuickActionDB(
+private data class QuickActionDBSerializable(
     val actionId: String,
 ) {
     fun toDomain(): QuickAction {
@@ -40,12 +61,12 @@ internal data class QuickActionDB(
             .actionId(actionId)
             .build()
     }
+}
 
-    companion object {
-        fun QuickAction.toDB(): QuickActionDB {
-            return QuickActionDB(
-                actionId = this.actionId(),
-            )
-        }
+private fun List<QuickAction>.toDBSerializable(): List<QuickActionDBSerializable> {
+    return this.map {
+        QuickActionDBSerializable(
+            actionId = it.actionId(),
+        )
     }
 }

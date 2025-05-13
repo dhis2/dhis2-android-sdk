@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.datastore.KeyValuePair
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "SMSConfig",
@@ -17,4 +19,21 @@ internal data class SMSConfigDB(
     val id: Int? = 0,
     val key: String,
     val value: String?,
-)
+) : EntityDB<KeyValuePair> {
+    override fun toDomain(): KeyValuePair {
+        return KeyValuePair.builder()
+            .id(id?.toLong())
+            .key(key)
+            .value(value)
+            .build()
+    }
+
+    companion object {
+        fun KeyValuePair.toDB(): SMSConfigDB {
+            return SMSConfigDB(
+                key = key()!!,
+                value = value()
+            )
+        }
+    }
+}

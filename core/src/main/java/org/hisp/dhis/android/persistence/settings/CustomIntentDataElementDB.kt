@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.settings.CustomIntentDataElement
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "CustomIntentDataElement",
@@ -27,4 +29,20 @@ internal data class CustomIntentDataElementDB(
     val id: Int? = 0,
     val uid: String,
     val customIntentUid: String,
-)
+) : EntityDB<CustomIntentDataElement> {
+
+    override fun toDomain(): CustomIntentDataElement {
+        return CustomIntentDataElement.builder()
+            .id(id?.toLong())
+            .uid(uid)
+            .customIntentUid(customIntentUid)
+            .build()
+    }
+}
+
+internal fun CustomIntentDataElement.toDB(): CustomIntentDataElementDB {
+    return CustomIntentDataElementDB(
+        uid = uid(),
+        customIntentUid = customIntentUid(),
+    )
+}

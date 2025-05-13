@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 
 @Entity(
@@ -37,4 +39,20 @@ internal data class DataSetOrganisationUnitLinkDB(
     val id: Int? = 0,
     val dataSet: String,
     val organisationUnit: String,
-)
+) : EntityDB<DataSetOrganisationUnitLink> {
+
+    override fun toDomain(): DataSetOrganisationUnitLink {
+        return DataSetOrganisationUnitLink.builder()
+            .id(id?.toLong())
+            .dataSet(dataSet)
+            .organisationUnit(organisationUnit)
+            .build()
+    }
+}
+
+internal fun DataSetOrganisationUnitLink.toDB(): DataSetOrganisationUnitLinkDB {
+    return DataSetOrganisationUnitLinkDB(
+        dataSet = dataSet()!!,
+        organisationUnit = organisationUnit()!!,
+    )
+}

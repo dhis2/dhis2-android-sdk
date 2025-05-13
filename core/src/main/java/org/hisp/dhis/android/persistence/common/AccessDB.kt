@@ -33,7 +33,8 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 
 @Serializable
-internal data class AccessDB(
+@JvmInline
+internal value class AccessDB(
     val accessDataWrite: Boolean,
 ) {
     fun toDomain(): Access {
@@ -49,6 +50,6 @@ internal data class AccessDB(
     }
 }
 
-internal fun Access.toDB(): Boolean {
-    return this.data().write()
+internal fun Access.toDB(): AccessDB {
+    return AccessDB(data().write())
 }

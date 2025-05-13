@@ -5,7 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
 
 @Entity(
@@ -47,4 +49,22 @@ internal data class SectionGreyedFieldsLinkDB(
     val section: String,
     val dataElementOperand: String,
     val categoryOptionCombo: String?,
-)
+) : EntityDB<SectionGreyedFieldsLink> {
+
+    override fun toDomain(): SectionGreyedFieldsLink {
+        return SectionGreyedFieldsLink.builder()
+            .id(id?.toLong())
+            .section(section)
+            .dataElementOperand(dataElementOperand)
+            .categoryOptionCombo(categoryOptionCombo)
+            .build()
+    }
+}
+
+internal fun SectionGreyedFieldsLink.toDB(): SectionGreyedFieldsLinkDB {
+    return SectionGreyedFieldsLinkDB(
+        section = section()!!,
+        dataElementOperand = dataElementOperand()!!,
+        categoryOptionCombo = categoryOptionCombo(),
+    )
+}

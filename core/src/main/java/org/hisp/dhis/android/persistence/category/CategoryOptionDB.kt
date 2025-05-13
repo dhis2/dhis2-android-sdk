@@ -35,7 +35,7 @@ internal data class CategoryOptionDB(
     override val displayDescription: String?,
     val startDate: String?,
     val endDate: String?,
-    val accessDataWrite: Boolean?,
+    val accessDataWrite: AccessDB?,
 ) : EntityDB<CategoryOption>, BaseNameableObjectDB {
 
     override fun toDomain(): CategoryOption {
@@ -44,7 +44,7 @@ internal data class CategoryOptionDB(
             id(id?.toLong())
             startDate(startDate.toJavaDate())
             endDate(endDate.toJavaDate())
-            accessDataWrite?.let { AccessDB(accessDataWrite).toDomain() }
+            accessDataWrite?.let { access(it.toDomain()) }
         }.build()
     }
 }

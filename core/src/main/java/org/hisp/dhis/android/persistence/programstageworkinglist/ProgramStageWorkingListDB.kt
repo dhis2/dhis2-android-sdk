@@ -85,6 +85,7 @@ internal data class ProgramStageWorkingListDB(
     override fun toDomain(): ProgramStageWorkingList {
         return ProgramStageWorkingList.builder()
             .applyBaseIdentifiableFields(this)
+            .id(id?.toLong())
             .description(description)
             .program(ObjectWithUidDB(program).toDomain())
             .programStage(ObjectWithUidDB(programStage).toDomain())

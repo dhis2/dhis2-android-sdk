@@ -42,6 +42,7 @@ internal data class RelationshipDB(
 
     override fun toDomain(): Relationship {
         return Relationship.builder()
+            .id(id?.toLong())
             .uid(uid)
             .name(name)
             .created(created.toJavaDate())

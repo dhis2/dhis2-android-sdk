@@ -42,7 +42,7 @@ internal data class RelationshipTypeDB(
                 fromToName(fromToName)
                 toFromName(toFromName)
                 bidirectional(bidirectional)
-                accessDataWrite?.toDomain()
+                accessDataWrite?.let { access(it.toDomain()) }
             }.build()
     }
 }

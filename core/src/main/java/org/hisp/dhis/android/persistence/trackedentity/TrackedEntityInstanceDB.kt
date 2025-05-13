@@ -5,6 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.GeometryDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 
 @Entity(
@@ -46,5 +53,39 @@ internal data class TrackedEntityInstanceDB(
     val geometryCoordinates: String?,
     val syncState: String?,
     val aggregatedSyncState: String?,
-    val deleted: Int?,
-)
+    val deleted: Boolean?,
+) : EntityDB<TrackedEntityInstance> {
+    override fun toDomain(): TrackedEntityInstance {
+        return TrackedEntityInstance.builder()
+            .id(id?.toLong())
+            .uid(uid)
+            .created(created?.toJavaDate())
+            .lastUpdated(lastUpdated?.toJavaDate())
+            .createdAtClient(createdAtClient?.toJavaDate())
+            .lastUpdatedAtClient(lastUpdatedAtClient?.toJavaDate())
+            .organisationUnit(organisationUnit)
+            .trackedEntityType(trackedEntityType)
+            .geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
+            .syncState(syncState?.let { State.valueOf(it) })
+            .aggregatedSyncState(aggregatedSyncState?.let { State.valueOf(it) })
+            .deleted(deleted)
+            .build()
+    }
+}
+
+internal fun TrackedEntityInstance.toDB(): TrackedEntityInstanceDB {
+    return TrackedEntityInstanceDB(
+        uid = uid(),
+        created = created()?.dateFormat(),
+        lastUpdated = lastUpdated()?.dateFormat(),
+        createdAtClient = createdAtClient()?.dateFormat(),
+        lastUpdatedAtClient = lastUpdatedAtClient()?.dateFormat(),
+        organisationUnit = organisationUnit(),
+        trackedEntityType = trackedEntityType(),
+        geometryType = geometry().toDB().geometryType,
+        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        syncState = syncState()?.name,
+        aggregatedSyncState = aggregatedSyncState()?.name,
+        deleted = deleted(),
+    )
+}

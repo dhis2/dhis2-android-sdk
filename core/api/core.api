@@ -13710,6 +13710,18 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceFilterCall$Companion {
 }
 
+public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
+}
+
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/BaseObject {
 	public fun <init> ()V
 	public abstract fun downloadLimit ()Ljava/lang/Integer;

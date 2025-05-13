@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 
@@ -48,4 +51,24 @@ internal data class ProgramOwnerDB(
     val trackedEntityInstance: String,
     val ownerOrgUnit: String,
     val syncState: String?,
-)
+) : EntityDB<ProgramOwner> {
+
+    override fun toDomain(): ProgramOwner {
+        return ProgramOwner.builder()
+            .id(id?.toLong())
+            .program(program)
+            .trackedEntityInstance(trackedEntityInstance)
+            .ownerOrgUnit(ownerOrgUnit)
+            .syncState(syncState?.let { State.valueOf(it) })
+            .build()
+    }
+}
+
+internal fun ProgramOwner.toDB(): ProgramOwnerDB {
+    return ProgramOwnerDB(
+        program = program(),
+        trackedEntityInstance = trackedEntityInstance(),
+        ownerOrgUnit = ownerOrgUnit(),
+        syncState = syncState()?.name,
+    )
+}

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.FilterOperators
 
 internal interface FilterOperatorsDB {
@@ -37,9 +36,9 @@ internal interface FilterOperatorsDB {
     val gt: String?
     val lt: String?
     val eq: String?
-    val inProperty: String?
+    val inProperty: StringSetDB?
     val like: String?
-    val dateFilter: String?
+    val dateFilter: DateFilterPeriodDB?
 }
 
 internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
@@ -49,16 +48,8 @@ internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
     gt(item.gt)
     lt(item.lt)
     eq(item.eq)
-    item.inProperty?.let {
-        `in`(
-            KotlinxJsonParser.instance.decodeFromString<Set<String>>(it),
-        )
-    }
+    item.inProperty?.let { `in`(it.toDomain()) }
     like(item.like)
-    item.dateFilter?.let {
-        dateFilter(
-            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
-        )
-    }
+    item.dateFilter?.let { dateFilter(it.toDomain()) }
     return this
 }

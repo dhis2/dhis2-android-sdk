@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
-import org.hisp.dhis.android.persistence.common.toDB
+package org.hisp.dhis.android.persistence.common
 
-internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-    override fun deserialize(str: String): DateFilterPeriod {
-        return DateFilterPeriodDB(str).toDomain()
-    }
-
-    companion object {
-        fun serialize(o: DateFilterPeriod?): String? {
-            return o?.let { it.toDB().value }
+@JvmInline
+internal value class StringListDB(
+    val value: String,
+) {
+    fun toDomain(): List<String> {
+        return if (value == "") {
+            emptyList()
+        } else {
+            try {
+                return KotlinxJsonParser.instance.decodeFromString(ListSerializer(String.serializer()), value)
+            } catch (e: SerializationException) {
+                throw SerializationException("Couldn't deserialize integer array")
+            }
         }
+    }
+}
+
+internal fun <T : List<String>> T.toDB(): StringListDB {
+    try {
+        return StringListDB(
+            KotlinxJsonParser.instance.encodeToString(
+                ListSerializer(String.serializer()),
+                this,
+            ),
+        )
+    } catch (e: SerializationException) {
+        throw SerializationException("Couldn't serialize integer array")
     }
 }

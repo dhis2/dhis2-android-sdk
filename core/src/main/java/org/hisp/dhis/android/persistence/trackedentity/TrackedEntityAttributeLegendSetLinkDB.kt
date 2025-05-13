@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.legendset.LegendSetDB
 
 @Entity(
@@ -38,4 +40,22 @@ internal data class TrackedEntityAttributeLegendSetLinkDB(
     val trackedEntityAttribute: String,
     val legendSet: String,
     val sortOrder: Int?,
-)
+) : EntityDB<TrackedEntityAttributeLegendSetLink> {
+
+    override fun toDomain(): TrackedEntityAttributeLegendSetLink {
+        return TrackedEntityAttributeLegendSetLink.builder()
+            .id(id?.toLong())
+            .trackedEntityAttribute(trackedEntityAttribute)
+            .legendSet(legendSet)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun TrackedEntityAttributeLegendSetLink.toDB(): TrackedEntityAttributeLegendSetLinkDB {
+    return TrackedEntityAttributeLegendSetLinkDB(
+        trackedEntityAttribute = trackedEntityAttribute(),
+        legendSet = legendSet(),
+        sortOrder = sortOrder(),
+    )
+}

@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "TrackedEntityTypeAttribute",
@@ -35,8 +38,31 @@ internal data class TrackedEntityTypeAttributeDB(
     val id: Int? = 0,
     val trackedEntityType: String?,
     val trackedEntityAttribute: String?,
-    val displayInList: Int?,
-    val mandatory: Int?,
-    val searchable: Int?,
+    val displayInList: Boolean?,
+    val mandatory: Boolean?,
+    val searchable: Boolean?,
     val sortOrder: Int?,
-)
+) : EntityDB<TrackedEntityTypeAttribute> {
+    override fun toDomain(): TrackedEntityTypeAttribute {
+        return TrackedEntityTypeAttribute.builder()
+            .id(id?.toLong())
+            .trackedEntityType(ObjectWithUid.create(trackedEntityType))
+            .trackedEntityAttribute(trackedEntityAttribute?.let { ObjectWithUid.create(it) })
+            .displayInList(displayInList)
+            .mandatory(mandatory?.let { it })
+            .searchable(searchable)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun TrackedEntityTypeAttribute.toDB(): TrackedEntityTypeAttributeDB {
+    return TrackedEntityTypeAttributeDB(
+        trackedEntityType = trackedEntityType().uid(),
+        trackedEntityAttribute = trackedEntityAttribute()?.uid(),
+        displayInList = displayInList(),
+        mandatory = mandatory(),
+        searchable = searchable(),
+        sortOrder = sortOrder(),
+    )
+}

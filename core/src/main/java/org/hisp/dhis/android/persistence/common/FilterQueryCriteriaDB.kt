@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.FilterQueryCriteria
 import org.hisp.dhis.android.core.event.EventStatus
@@ -39,11 +38,11 @@ internal interface FilterQueryCriteriaDB {
     val organisationUnit: String?
     val ouMode: String?
     val assignedUserMode: String?
-    val order: String?
-    val displayColumnOrder: String?
+    val orderProperty: String?
+    val displayColumnOrder: StringListDB?
     val eventStatus: String?
-    val eventDate: String?
-    val lastUpdatedDate: String?
+    val eventDate: DateFilterPeriodDB?
+    val lastUpdatedDate: DateFilterPeriodDB?
 }
 
 internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDB): T where
@@ -52,22 +51,10 @@ internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDB): 
     organisationUnit(item.organisationUnit)
     item.ouMode?.let { ouMode(OrganisationUnitMode.valueOf(it)) }
     item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
-    order(item.order)
-    item.displayColumnOrder?.let {
-        displayColumnOrder(
-            KotlinxJsonParser.instance.decodeFromString<List<String>>(it),
-        )
-    }
+    order(item.orderProperty)
+    item.displayColumnOrder?.let { displayColumnOrder(it.toDomain()) }
     item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
-    item.eventDate?.let {
-        eventDate(
-            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
-        )
-    }
-    item.lastUpdatedDate?.let {
-        lastUpdatedDate(
-            KotlinxJsonParser.instance.decodeFromString<DateFilterPeriodDB>(it).toDomain(),
-        )
-    }
+    item.eventDate?.let { eventDate(it.toDomain()) }
+    item.lastUpdatedDate?.let { lastUpdatedDate(it.toDomain()) }
     return this
 }

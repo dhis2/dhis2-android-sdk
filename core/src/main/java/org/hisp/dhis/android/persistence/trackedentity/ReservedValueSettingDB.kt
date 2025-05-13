@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "ReservedValueSetting",
@@ -27,4 +29,20 @@ internal data class ReservedValueSettingDB(
     val id: Int? = 0,
     val uid: String?,
     val numberOfValuesToReserve: Int?,
-)
+) : EntityDB<ReservedValueSetting> {
+
+    override fun toDomain(): ReservedValueSetting {
+        return ReservedValueSetting.builder()
+            .id(id?.toLong())
+            .uid(uid)
+            .numberOfValuesToReserve(numberOfValuesToReserve)
+            .build()
+    }
+}
+
+internal fun ReservedValueSetting.toDB(): ReservedValueSettingDB {
+    return ReservedValueSettingDB(
+        uid = uid(),
+        numberOfValuesToReserve = numberOfValuesToReserve(),
+    )
+}

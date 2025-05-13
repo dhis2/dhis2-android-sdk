@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 
@@ -47,4 +50,24 @@ internal data class AnalyticsTeiDataElementDB(
     val whoComponent: String?,
     val programStage: String?,
     val dataElement: String,
-)
+) : EntityDB<AnalyticsTeiDataElement> {
+
+    override fun toDomain(): AnalyticsTeiDataElement {
+        return AnalyticsTeiDataElement.builder()
+            .id(id?.toLong())
+            .teiSetting(teiSetting)
+            .whoComponent(whoComponent?.let { WHONutritionComponent.valueOf(it) })
+            .programStage(programStage)
+            .dataElement(dataElement)
+            .build()
+    }
+}
+
+internal fun AnalyticsTeiDataElement.toDB(): AnalyticsTeiDataElementDB {
+    return AnalyticsTeiDataElementDB(
+        teiSetting = teiSetting()!!,
+        whoComponent = whoComponent()?.name,
+        programStage = programStage(),
+        dataElement = dataElement(),
+    )
+}

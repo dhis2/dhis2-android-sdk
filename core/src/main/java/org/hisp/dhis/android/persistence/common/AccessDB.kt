@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 
-@Serializable
 @JvmInline
 internal value class AccessDB(
     val accessDataWrite: Boolean,

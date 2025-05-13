@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.State
 
-@Serializable
 @JvmInline
 internal value class SyncStateDB(
     val value: String,

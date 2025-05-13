@@ -8,7 +8,6 @@ internal data class GeometryDB(
     val geometryCoordinates: String?,
 ) : EntityDB<Geometry?> {
     override fun toDomain(): Geometry? {
-
         return if (geometryType != null && geometryCoordinates != null) {
             FeatureType.valueOfFeatureType(geometryType)?.let { type ->
                 Geometry.builder()
@@ -16,13 +15,15 @@ internal data class GeometryDB(
                     .coordinates(geometryCoordinates)
                     .build()
             }
-        } else null
+        } else {
+            null
+        }
     }
 }
 
 internal fun Geometry?.toDB(): GeometryDB {
     return GeometryDB(
         geometryType = this?.type()?.geometryType,
-        geometryCoordinates = this?.coordinates()
+        geometryCoordinates = this?.coordinates(),
     )
 }

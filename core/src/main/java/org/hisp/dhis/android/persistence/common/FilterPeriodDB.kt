@@ -13,13 +13,15 @@ internal data class FilterPeriodDB(
                 .periodFrom(periodFrom)
                 .periodTo(periodTo)
                 .build()
-        } else null
+        } else {
+            null
+        }
     }
 }
 
 internal fun FilterPeriod?.toDB(): FilterPeriodDB {
     return FilterPeriodDB(
         periodFrom = this?.periodFrom(),
-        periodTo = this?.periodTo()
+        periodTo = this?.periodTo(),
     )
 }

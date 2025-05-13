@@ -6,8 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDB
 

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.settings.CustomIntentActionType
 
 @JvmInline
 internal value class CustomIntentActionTypeListDB(
-    val value: String?
+    val value: String?,
 ) {
     fun toDomain(): List<CustomIntentActionType> {
         return if (value == null) {
@@ -51,6 +51,6 @@ internal fun List<CustomIntentActionType>.toDB(): CustomIntentActionTypeListDB {
     return CustomIntentActionTypeListDB(
         this.map { it.name }.let {
             KotlinxJsonParser.instance.encodeToString(ListSerializer(String.serializer()), it)
-        }
+        },
     )
 }

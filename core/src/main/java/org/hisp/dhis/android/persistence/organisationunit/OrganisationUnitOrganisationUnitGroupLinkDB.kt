@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "OrganisationUnitOrganisationUnitGroupLink",
@@ -36,4 +38,20 @@ internal data class OrganisationUnitOrganisationUnitGroupLinkDB(
     val id: Int? = 0,
     val organisationUnit: String,
     val organisationUnitGroup: String,
-)
+) : EntityDB<OrganisationUnitOrganisationUnitGroupLink> {
+
+    override fun toDomain(): OrganisationUnitOrganisationUnitGroupLink {
+        return OrganisationUnitOrganisationUnitGroupLink.builder()
+            .id(id?.toLong())
+            .organisationUnit(organisationUnit)
+            .organisationUnitGroup(organisationUnitGroup)
+            .build()
+    }
+}
+
+internal fun OrganisationUnitOrganisationUnitGroupLink.toDB(): OrganisationUnitOrganisationUnitGroupLinkDB {
+    return OrganisationUnitOrganisationUnitGroupLinkDB(
+        organisationUnit = organisationUnit()!!,
+        organisationUnitGroup = organisationUnitGroup()!!,
+    )
+}

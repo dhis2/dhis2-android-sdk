@@ -103,7 +103,7 @@ internal data class ProgramStageWorkingListDB(
                     .orgUnit(orgUnit)
                     .ouMode(ouMode?.let { OrganisationUnitMode.valueOf(it) })
                     .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
-                    .build()
+                    .build(),
             )
             .build()
     }

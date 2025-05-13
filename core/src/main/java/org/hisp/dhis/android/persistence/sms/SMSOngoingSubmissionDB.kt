@@ -15,7 +15,7 @@ internal data class SMSOngoingSubmissionDB(
     val submissionId: Int?,
     val type: String?,
 ) : EntityDB<SMSOngoingSubmission> {
-    
+
     override fun toDomain(): SMSOngoingSubmission {
         return SMSOngoingSubmission.builder()
             .id(id?.toLong())
@@ -28,7 +28,7 @@ internal data class SMSOngoingSubmissionDB(
         fun SMSOngoingSubmission.toDB(): SMSOngoingSubmissionDB {
             return SMSOngoingSubmissionDB(
                 submissionId = submissionId(),
-                type = type().name
+                type = type().name,
             )
         }
     }

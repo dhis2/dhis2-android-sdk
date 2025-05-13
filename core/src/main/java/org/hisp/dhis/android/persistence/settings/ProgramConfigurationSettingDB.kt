@@ -36,7 +36,7 @@ internal data class ProgramConfigurationSettingDB(
                     ProgramItemHeader.builder()
                         .programIndicator(it)
                         .build()
-                }
+                },
             )
             .minimumLocationAccuracy(minimumLocationAccuracy)
             .disableManualLocation(disableManualLocation)

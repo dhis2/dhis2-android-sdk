@@ -58,9 +58,9 @@ internal data class AnalyticsTeiWHONutritionDataDB(
                         AnalyticsTeiWHONutritionGenderValues.builder()
                             .female(genderFemale)
                             .male(genderMale)
-                            .build()
+                            .build(),
                     )
-                    .build()
+                    .build(),
             )
             .build()
     }

@@ -50,7 +50,7 @@ internal value class StringStringMapDB(
 internal fun Map<String, String>.toDB(): StringStringMapDB {
     return try {
         StringStringMapDB(
-            Json.encodeToString(MapSerializer(String.serializer(), String.serializer()), this)
+            Json.encodeToString(MapSerializer(String.serializer(), String.serializer()), this),
         )
     } catch (e: SerializationException) {
         StringStringMapDB("{}")

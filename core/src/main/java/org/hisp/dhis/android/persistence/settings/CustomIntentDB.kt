@@ -41,15 +41,15 @@ internal data class CustomIntentDB(
                     CustomIntentRequest.builder()
                         .arguments(requestArguments.toDomain())
                         .build()
-                }
+                },
             )
             .response(
                 CustomIntentResponse.builder().data(
                     CustomIntentResponseData.builder()
                         .argument(responseDataArgument)
                         .path(responseDataPath)
-                        .build()
-                ).build()
+                        .build(),
+                ).build(),
             )
             .build()
     }

@@ -5,12 +5,15 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
+import org.hisp.dhis.android.persistence.common.DataObjectDB
+import org.hisp.dhis.android.persistence.common.DeletableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.SyncStateDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.period.PeriodDB
 
@@ -64,9 +67,9 @@ internal data class DataSetCompleteRegistrationDB(
     val attributeOptionCombo: String?,
     val date: String?,
     val storedBy: String?,
-    val syncState: String?,
-    val deleted: Boolean?,
-) : EntityDB<DataSetCompleteRegistration> {
+    override val syncState: SyncStateDB?,
+    override val deleted: Boolean?,
+) : EntityDB<DataSetCompleteRegistration>, DeletableObjectDB, DataObjectDB {
 
     override fun toDomain(): DataSetCompleteRegistration {
         return DataSetCompleteRegistration.builder().apply {
@@ -77,7 +80,7 @@ internal data class DataSetCompleteRegistrationDB(
             attributeOptionCombo?.let { attributeOptionCombo(it) }
             date(date?.toJavaDate())
             storedBy(storedBy)
-            syncState?.let { syncState(State.valueOf(it)) }
+            syncState(syncState?.toDomain())
             deleted(deleted)
         }.build()
     }
@@ -91,7 +94,7 @@ internal fun DataSetCompleteRegistration.toDB(): DataSetCompleteRegistrationDB {
         attributeOptionCombo = attributeOptionCombo(),
         date = date()?.dateFormat(),
         storedBy = storedBy(),
-        syncState = syncState()?.name,
+        syncState = syncState()?.toDB(),
         deleted = deleted(),
     )
 }

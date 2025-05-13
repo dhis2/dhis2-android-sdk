@@ -52,30 +52,6 @@ internal data class ProgramSettingDB(
     val enrollmentDateDBTrimming: String?,
 ) : EntityDB<ProgramSetting> {
 
-    companion object {
-        internal fun ProgramSetting.toDB(): ProgramSettingDB {
-            return ProgramSettingDB(
-                uid = uid(),
-                name = name(),
-                lastUpdated = lastUpdated()?.dateFormat(),
-                teiDownload = teiDownload(),
-                teiDBTrimming = teiDBTrimming(),
-                eventsDownload = eventsDownload(),
-                eventsDBTrimming = eventsDBTrimming(),
-                updateDownload = updateDownload()?.name,
-                updateDBTrimming = updateDBTrimming()?.name,
-                settingDownload = settingDownload()?.name,
-                settingDBTrimming = settingDBTrimming()?.name,
-                enrollmentDownload = enrollmentDownload()?.name,
-                enrollmentDBTrimming = enrollmentDBTrimming()?.name,
-                eventDateDownload = eventDateDownload()?.name,
-                eventDateDBTrimming = eventDateDBTrimming()?.name,
-                enrollmentDateDownload = enrollmentDateDownload()?.name,
-                enrollmentDateDBTrimming = enrollmentDateDBTrimming()?.name,
-            )
-        }
-    }
-
     override fun toDomain(): ProgramSetting {
         return ProgramSetting.builder()
             .id(id?.toLong())
@@ -98,4 +74,26 @@ internal data class ProgramSettingDB(
             .enrollmentDateDBTrimming(enrollmentDateDBTrimming?.let { DownloadPeriod.valueOf(it) })
             .build()
     }
+}
+
+internal fun ProgramSetting.toDB(): ProgramSettingDB {
+    return ProgramSettingDB(
+        uid = uid(),
+        name = name(),
+        lastUpdated = lastUpdated()?.dateFormat(),
+        teiDownload = teiDownload(),
+        teiDBTrimming = teiDBTrimming(),
+        eventsDownload = eventsDownload(),
+        eventsDBTrimming = eventsDBTrimming(),
+        updateDownload = updateDownload()?.name,
+        updateDBTrimming = updateDBTrimming()?.name,
+        settingDownload = settingDownload()?.name,
+        settingDBTrimming = settingDBTrimming()?.name,
+        enrollmentDownload = enrollmentDownload()?.name,
+        enrollmentDBTrimming = enrollmentDBTrimming()?.name,
+        eventDateDownload = eventDateDownload()?.name,
+        eventDateDBTrimming = eventDateDBTrimming()?.name,
+        enrollmentDateDownload = enrollmentDateDownload()?.name,
+        enrollmentDateDBTrimming = enrollmentDateDBTrimming()?.name,
+    )
 }

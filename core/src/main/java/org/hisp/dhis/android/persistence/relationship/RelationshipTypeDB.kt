@@ -31,7 +31,7 @@ internal data class RelationshipTypeDB(
     val fromToName: String?,
     val toFromName: String?,
     val bidirectional: Boolean?,
-    val accessDataWrite: Boolean?,
+    val accessDataWrite: AccessDB?,
 ) : EntityDB<RelationshipType>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): RelationshipType {
@@ -42,7 +42,7 @@ internal data class RelationshipTypeDB(
                 fromToName(fromToName)
                 toFromName(toFromName)
                 bidirectional(bidirectional)
-                accessDataWrite?.let { AccessDB(accessDataWrite).toDomain() }
+                accessDataWrite?.toDomain()
             }.build()
     }
 }

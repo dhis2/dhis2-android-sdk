@@ -28,7 +28,7 @@ internal data class SmsMetadataIdDB(
         fun SMSMetadataId.toDB(): SmsMetadataIdDB {
             return SmsMetadataIdDB(
                 type = type().name,
-                uid = uid()
+                uid = uid(),
             )
         }
     }

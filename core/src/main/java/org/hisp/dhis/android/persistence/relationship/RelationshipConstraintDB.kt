@@ -76,7 +76,7 @@ internal data class RelationshipConstraintDB(
                 TrackerDataView.builder()
                     .attributes(trackerDataViewAttributes?.toDomain())
                     .dataElements(trackerDataViewDataElements?.toDomain())
-                    .build()
+                    .build(),
             )
             .build()
     }

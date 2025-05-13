@@ -28,6 +28,6 @@ internal data class ResourceDB(
 internal fun Resource.toDB(): ResourceDB {
     return ResourceDB(
         resourceType = resourceType()?.name!!,
-        lastSynced = lastSynced().toString()
+        lastSynced = lastSynced().toString(),
     )
 }

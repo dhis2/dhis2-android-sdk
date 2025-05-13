@@ -32,7 +32,7 @@ internal data class SMSConfigDB(
         fun KeyValuePair.toDB(): SMSConfigDB {
             return SMSConfigDB(
                 key = key()!!,
-                value = value()
+                value = value(),
             )
         }
     }

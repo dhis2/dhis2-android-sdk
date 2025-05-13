@@ -38,7 +38,7 @@ internal data class SystemInfoDB(
                 dateFormat = dateFormat(),
                 version = version(),
                 contextPath = contextPath(),
-                systemName = systemName()
+                systemName = systemName(),
             )
         }
     }

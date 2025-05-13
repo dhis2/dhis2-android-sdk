@@ -74,7 +74,7 @@ internal data class RelationshipItemDB(
             .trackedEntityInstance(
                 RelationshipItemTrackedEntityInstance.builder()
                     .trackedEntityInstance(trackedEntityInstance)
-                    .build()
+                    .build(),
             )
             .enrollment(RelationshipItemEnrollment.builder().enrollment(enrollment).build())
             .event(RelationshipItemEvent.builder().event(event).build())

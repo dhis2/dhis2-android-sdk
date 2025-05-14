@@ -43,7 +43,9 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
     ],
 )
 internal data class AnalyticsTeiDataElementDB(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") val id: Int? = 0,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int? = 0,
     val teiSetting: String,
     val whoComponent: String?,
     val programStage: String?,

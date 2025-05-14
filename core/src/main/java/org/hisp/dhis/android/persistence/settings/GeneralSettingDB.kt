@@ -48,16 +48,16 @@ internal data class GeneralSettingDB(
 
 internal fun GeneralSettings.toDB(): GeneralSettingDB {
     return GeneralSettingDB(
-        encryptDB = this.encryptDB(),
-        lastUpdated = this.lastUpdated().dateFormat(),
-        reservedValues = this.reservedValues(),
-        smsGateway = this.smsGateway(),
-        smsResultSender = this.smsResultSender(),
-        matomoID = this.matomoID(),
-        matomoURL = this.matomoURL(),
-        allowScreenCapture = this.allowScreenCapture(),
-        messageOfTheDay = this.messageOfTheDay(),
-        experimentalFeatures = this.experimentalFeatures()?.toDB(),
-        bypassDHIS2VersionCheck = this.bypassDHIS2VersionCheck(),
+        encryptDB = encryptDB(),
+        lastUpdated = lastUpdated().dateFormat(),
+        reservedValues = reservedValues(),
+        smsGateway = smsGateway(),
+        smsResultSender = smsResultSender(),
+        matomoID = matomoID(),
+        matomoURL = matomoURL(),
+        allowScreenCapture = allowScreenCapture(),
+        messageOfTheDay = messageOfTheDay(),
+        experimentalFeatures = experimentalFeatures()?.toDB(),
+        bypassDHIS2VersionCheck = bypassDHIS2VersionCheck(),
     )
 }

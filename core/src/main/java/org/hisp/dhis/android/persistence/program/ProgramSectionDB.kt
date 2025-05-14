@@ -63,8 +63,8 @@ internal data class ProgramSectionDB(
             renderType(
                 SectionRendering.create(
                     SectionDeviceRendering.create(desktopRenderType?.let { SectionRenderingType.valueOf(it) }),
-                    SectionDeviceRendering.create(mobileRenderType?.let { SectionRenderingType.valueOf(it) })
-                )
+                    SectionDeviceRendering.create(mobileRenderType?.let { SectionRenderingType.valueOf(it) }),
+                ),
             )
             style(ObjectStyle.builder().color(color).icon(icon).build())
         }.build()

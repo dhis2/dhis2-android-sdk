@@ -58,8 +58,8 @@ internal data class ProgramStageSectionDB(
             .renderType(
                 SectionRendering.create(
                     SectionDeviceRendering.create(desktopRenderType?.let { SectionRenderingType.valueOf(it) }),
-                    SectionDeviceRendering.create(mobileRenderType?.let { SectionRenderingType.valueOf(it) })
-                )
+                    SectionDeviceRendering.create(mobileRenderType?.let { SectionRenderingType.valueOf(it) }),
+                ),
             )
             .description(description)
             .displayDescription(displayDescription)

@@ -82,7 +82,11 @@ internal data class ProgramRuleVariableDB(
             programStage?.let { programStage(ObjectWithUid.create(it)) }
             dataElement?.let { dataElement(ObjectWithUid.create(it)) }
             trackedEntityAttribute?.let { trackedEntityAttribute(ObjectWithUid.create(it)) }
-            programRuleVariableSourceType?.let { programRuleVariableSourceType(ProgramRuleVariableSourceType.valueOf(it)) }
+            programRuleVariableSourceType?.let {
+                programRuleVariableSourceType(
+                    ProgramRuleVariableSourceType.valueOf(it),
+                )
+            }
         }.build()
     }
 }

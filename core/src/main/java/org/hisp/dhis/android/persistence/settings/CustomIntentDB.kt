@@ -38,7 +38,7 @@ internal data class CustomIntentDB(
             packageName(packageName)
             requestArguments?.let {
                 request(
-                    CustomIntentRequest.builder().arguments(requestArguments.toDomain()).build()
+                    CustomIntentRequest.builder().arguments(requestArguments.toDomain()).build(),
                 )
             }
             response(
